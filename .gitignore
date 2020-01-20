@@ -28,5 +28,5 @@ out/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
-.vscode/
+### Mac ###
+*.DS_Store
