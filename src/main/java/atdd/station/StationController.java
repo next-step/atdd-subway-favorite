@@ -1,4 +1,4 @@
-package camp.nextstep.atdd.station;
+package atdd.station;
 
 import org.springframework.web.bind.annotation.RestController;
 
