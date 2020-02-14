@@ -59,7 +59,7 @@ public class LineDao {
         return mapLine(result);
     }
 
-    public List<Line> findAllWithEdges() {
+    public List<Line> findAll() {
         String sql = "select L.id as line_id, L.name as line_name, L.start_time as start_time, L.end_time as end_time, L.interval_time as interval_time, " +
                 "E.id as edge_id, E.distance as distance, " +
                 "S.id as source_station_id, S.name as source_station_name,\n" +
@@ -110,4 +110,5 @@ public class LineDao {
                                 (int) it.getValue().get(0).get("DISTANCE")))
                 .collect(Collectors.toList());
     }
+
 }

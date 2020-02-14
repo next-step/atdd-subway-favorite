@@ -99,7 +99,7 @@ public class LineDaoTest {
         lineDao.save(TEST_LINE_2);
         lineDao.save(TEST_LINE_3);
 
-        List<Line> persistLines = lineDao.findAllWithEdges();
+        List<Line> persistLines = lineDao.findAll();
 
         assertThat(persistLines.size()).isEqualTo(3);
     }
@@ -118,14 +118,14 @@ public class LineDaoTest {
         edgeDao.save(savedLine2.getId(), Edge.of(station3, station4, distance));
         edgeDao.save(savedLine2.getId(), Edge.of(station4, station1, distance));
 
-        List<Line> persistLines = lineDao.findAllWithEdges();
+        List<Line> persistLines = lineDao.findAll();
 
         assertThat(persistLines.size()).isEqualTo(2);
     }
 
     @Test
     public void findAllWhenEmpty() {
-        List<Line> persistLines = lineDao.findAllWithEdges();
+        List<Line> persistLines = lineDao.findAll();
 
         assertThat(persistLines.size()).isEqualTo(0);
     }

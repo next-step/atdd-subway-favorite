@@ -42,7 +42,7 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity showLine() {
-        List<Line> persistLines = lineDao.findAllWithEdges();
+        List<Line> persistLines = lineDao.findAll();
         return ResponseEntity.ok().body(LineResponseView.listOf(persistLines));
     }
 
