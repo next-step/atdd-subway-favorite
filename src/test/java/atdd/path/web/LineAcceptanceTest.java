@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.LineResponseView;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
@@ -24,6 +25,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         this.lineHttpTest = new LineHttpTest(webTestClient);
     }
 
+    @DisplayName("지하철 노선 등록")
     @Test
     public void createLine() {
         // when
@@ -34,6 +36,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(getResponse.getResponseBody().getName()).isEqualTo(LINE_NAME);
     }
 
+    @DisplayName("지하철 노선 정보 조회")
     @Test
     public void retrieveLine() {
         // given
@@ -49,6 +52,25 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(getResponse.getResponseBody().getInterval()).isEqualTo(30);
     }
 
+    @DisplayName("구건이 연결된 지하철 노선 조회")
+    @Test
+    public void retrieveLineWithStation() {
+        // given
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
+        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
+
+        // when
+        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(LINE_URL + "/" + lineId);
+
+        // then
+        assertThat(lineResult.getResponseBody().getStations().size()).isEqualTo(2);
+        assertThat(lineResult.getResponseBody().getStations().get(0).getName()).isEqualTo(STATION_NAME);
+        assertThat(lineResult.getResponseBody().getStations().get(1).getName()).isEqualTo(STATION_NAME_2);
+    }
+
+    @DisplayName("지하철 노선 목록 조회")
     @Test
     public void showLines() {
         // given
@@ -63,6 +85,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(response.getResponseBody().size()).isEqualTo(3);
     }
 
+    @DisplayName("지하철 노선 삭제")
     @Test
     public void deleteLine() {
         // given
@@ -79,6 +102,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
                 .expectStatus().isNotFound();
     }
 
+    @DisplayName("지하철노선에 지하철 구간을 등록")
     @Test
     public void createEdge() {
         // given
@@ -96,6 +120,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(lineResult.getResponseBody().getStations().get(1).getName()).isEqualTo(STATION_NAME_2);
     }
 
+    @DisplayName("지하철노선에 지하철 구간을 제외")
     @Test
     public void deleteEdge() {
         // given
@@ -117,22 +142,5 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(lineResult.getResponseBody().getStations().get(0).getName()).isEqualTo(STATION_NAME);
         assertThat(lineResult.getResponseBody().getStations().get(1).getName()).isEqualTo(STATION_NAME_3);
 
-    }
-
-    @Test
-    public void retrieveLineWithStation() {
-        // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
-
-        // when
-        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
-
-        // then
-        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(LINE_URL + "/" + lineId);
-        assertThat(lineResult.getResponseBody().getStations().size()).isEqualTo(2);
-        assertThat(lineResult.getResponseBody().getStations().get(0).getName()).isEqualTo(STATION_NAME);
-        assertThat(lineResult.getResponseBody().getStations().get(1).getName()).isEqualTo(STATION_NAME_2);
     }
 }

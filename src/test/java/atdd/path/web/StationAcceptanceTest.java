@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.StationResponseView;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
@@ -22,6 +23,7 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
         this.stationHttpTest = new StationHttpTest(webTestClient);
     }
 
+    @DisplayName("지하철역 등록")
     @Test
     public void createStation() {
         // when
@@ -32,6 +34,7 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(response.getResponseBody().getName()).isEqualTo(STATION_NAME);
     }
 
+    @DisplayName("지하철역 정보 조회")
     @Test
     public void retrieveStation() {
         // given
@@ -45,38 +48,7 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(response.getResponseBody().getName()).isEqualTo(STATION_NAME);
     }
 
-    @Test
-    public void showStations() {
-        // given
-        stationHttpTest.createStationRequest(STATION_NAME);
-        stationHttpTest.createStationRequest(STATION_NAME_2);
-        stationHttpTest.createStationRequest(STATION_NAME_3);
-
-        // when
-        EntityExchangeResult<List<StationResponseView>> response = stationHttpTest.showStationsRequest();
-
-        // then
-        assertThat(response.getResponseBody().size()).isEqualTo(3);
-    }
-
-    @Test
-    public void deleteStation() {
-        // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId);
-
-
-        // when
-        webTestClient.delete().uri(STATION_URL + "/" + stationId)
-                .exchange()
-                .expectStatus().isNoContent();
-
-        // then
-        webTestClient.get().uri(STATION_URL + "/" + stationId)
-                .exchange()
-                .expectStatus().isNotFound();
-    }
-
+    @DisplayName("구간이 연결된 지하철역 정보 조회")
     @Test
     public void retrieveStationWithLine() {
         // given
@@ -95,6 +67,41 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(response.getResponseBody().getId()).isEqualTo(stationId);
         assertThat(response.getResponseBody().getName()).isEqualTo(STATION_NAME);
         assertThat(response.getResponseBody().getLines().size()).isEqualTo(2);
+    }
+
+
+    @DisplayName("지하철역 목록 조회")
+    @Test
+    public void showStations() {
+        // given
+        stationHttpTest.createStationRequest(STATION_NAME);
+        stationHttpTest.createStationRequest(STATION_NAME_2);
+        stationHttpTest.createStationRequest(STATION_NAME_3);
+
+        // when
+        EntityExchangeResult<List<StationResponseView>> response = stationHttpTest.showStationsRequest();
+
+        // then
+        assertThat(response.getResponseBody().size()).isEqualTo(3);
+    }
+
+    @DisplayName("지하철역 삭제")
+    @Test
+    public void deleteStation() {
+        // given
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId);
+
+
+        // when
+        webTestClient.delete().uri(STATION_URL + "/" + stationId)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // then
+        webTestClient.get().uri(STATION_URL + "/" + stationId)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
 
