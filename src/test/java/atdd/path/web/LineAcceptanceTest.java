@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LineAcceptanceTest extends AbstractAcceptanceTest {
     public static final String LINE_URL = "/lines";
     public static final String EDGE_URL = "/edges";
+
     private StationHttpTest stationHttpTest;
     private LineHttpTest lineHttpTest;
 
@@ -141,6 +142,5 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(lineResult.getResponseBody().getStations().size()).isEqualTo(2);
         assertThat(lineResult.getResponseBody().getStations().get(0).getName()).isEqualTo(STATION_NAME);
         assertThat(lineResult.getResponseBody().getStations().get(1).getName()).isEqualTo(STATION_NAME_3);
-
     }
 }

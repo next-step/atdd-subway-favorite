@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class StationAcceptanceTest extends AbstractAcceptanceTest {
     public static final String STATION_URL = "/stations";
+
     private LineHttpTest lineHttpTest;
     private StationHttpTest stationHttpTest;
 
@@ -92,7 +93,6 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
         Long stationId = stationHttpTest.createStation(STATION_NAME);
         EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId);
 
-
         // when
         webTestClient.delete().uri(STATION_URL + "/" + stationId)
                 .exchange()
@@ -103,6 +103,4 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
                 .exchange()
                 .expectStatus().isNotFound();
     }
-
-
 }
