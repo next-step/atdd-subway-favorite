@@ -4,7 +4,6 @@ import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.UserRequestView;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import reactor.core.publisher.Mono;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
@@ -16,9 +15,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .password("subway")
                 .build();
 
-        webTestClient.post().uri("/user")
+        webTestClient.post().uri("/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(userInfo), String.class)
+                .bodyValue(userInfo)
                 .exchange()
                 .expectHeader().exists("Location")
                 .expectStatus().is2xxSuccessful();
