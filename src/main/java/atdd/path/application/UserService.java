@@ -18,4 +18,8 @@ public class UserService {
     public UserResponseView createUser(UserRequestView userRequestView) {
         return UserResponseView.of(userDao.save(userRequestView.toUser()));
     }
+
+    public void deleteUser(Long id) {
+        userDao.deleteById(id);
+    }
 }

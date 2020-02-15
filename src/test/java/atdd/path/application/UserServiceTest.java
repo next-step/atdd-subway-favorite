@@ -46,4 +46,10 @@ public class UserServiceTest {
         // then
         assertThat(response.getName()).isEqualTo("브라운");
     }
+
+    @DisplayName("회원 탈퇴가 된다")
+    @Test
+    void deleteUserTest() {
+    }
 }
+

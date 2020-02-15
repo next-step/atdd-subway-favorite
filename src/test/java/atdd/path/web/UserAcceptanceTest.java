@@ -1,11 +1,9 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.UserRequestView;
 import atdd.path.application.dto.UserResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,11 +34,6 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         // when
         webTestClient.delete().uri(USER_URL + "/" + response.getId())
-                .exchange()
-                .expectStatus().is2xxSuccessful();
-
-        // then
-        webTestClient.get().uri(USER_URL + "/" + response.getId())
                 .exchange()
                 .expectStatus().isNoContent();
     }

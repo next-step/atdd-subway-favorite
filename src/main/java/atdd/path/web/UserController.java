@@ -4,10 +4,7 @@ import atdd.path.application.UserService;
 import atdd.path.application.dto.UserRequestView;
 import atdd.path.application.dto.UserResponseView;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -26,5 +23,11 @@ public class UserController {
         UserResponseView savedUser = userService.createUser(userRequestView);
         return ResponseEntity.created(URI.create("user/" + savedUser.getId()))
                 .body(savedUser);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

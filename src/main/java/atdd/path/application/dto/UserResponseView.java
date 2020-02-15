@@ -19,6 +19,7 @@ public class UserResponseView {
 
     public static UserResponseView of(User user) {
         return UserResponseView.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .build();
