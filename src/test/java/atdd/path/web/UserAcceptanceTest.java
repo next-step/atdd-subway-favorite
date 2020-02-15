@@ -30,4 +30,22 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
         assertThat(response.getResponseBody().getEmail()).isEqualTo(USER_EMAIL_1);
     }
+
+    @Test
+    @DisplayName("회원 탈퇴")
+    public void deleteUser() {
+        // given
+        Long userId = userHttpTest.createUser(USER_EMAIL_1, USER_NAME_1, USER_PASSWORD_1);
+        EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
+
+        // when
+        webTestClient.delete().uri(USER_BASE_URL + "/" + response.getResponseBody().getId())
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // then
+        webTestClient.get().uri(USER_BASE_URL + "/" + response.getResponseBody().getId())
+                .exchange()
+                .expectStatus().isNotFound();
+    }
 }
