@@ -27,7 +27,7 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<MemberResponseView> createMember(@RequestBody CreateMemberRequestView view,
                                                            HttpServletRequest request) {
-        log.debug("[dev] view: {}", view);
+
         final Member savedMember = memberDao.save(view.toMember());
         return ResponseEntity.created(URI.create(request.getServletPath() +"/"+ savedMember.getId()))
                 .body(new MemberResponseView(savedMember));

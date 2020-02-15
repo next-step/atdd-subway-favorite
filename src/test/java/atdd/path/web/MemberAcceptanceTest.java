@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
 import static atdd.path.TestConstant.*;
 
 public class MemberAcceptanceTest extends AbstractAcceptanceTest {
@@ -15,13 +13,7 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("회원 가입을 할 수 있다")
     @Test
     void beAbleToJoin() throws Exception {
-        Map<String, String> data = Map.ofEntries(
-                Map.entry("email", TEST_MEMBER_EMAIL),
-                Map.entry("name", TEST_MEMBER_NAME),
-                Map.entry("password", TEST_MEMBER_PASSWORD)
-        );
-
-        String inputJson = objectMapper.writeValueAsString(data);
+        String inputJson = objectMapper.writeValueAsString(TEST_MEMBER);
 
         webTestClient.post().uri("/members")
                 .contentType(MediaType.APPLICATION_JSON)
