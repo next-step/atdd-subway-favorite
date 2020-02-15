@@ -2,24 +2,46 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.UserRequestView;
+import atdd.path.application.dto.UserResponseView;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
+
+    public static final String USER_URL = "/users";
+
+    public UserHttpTest userHttpTest;
+
+    @BeforeEach
+    void setUp() {
+        this.userHttpTest = new UserHttpTest(webTestClient);
+    }
 
     @Test
     void 회원_가입() {
-        UserRequestView userInfo = UserRequestView.builder()
-                .email("boorwonie@email.com")
-                .name("브라운")
-                .password("subway")
-                .build();
+        // when
+        UserResponseView response = userHttpTest.createUserTest().getResponseBody();
 
-        webTestClient.post().uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(userInfo)
+        // then
+        assertThat(response.getName()).isEqualTo("브라운");
+    }
+
+    @Test
+    void 회원_탈퇴() {
+        // given
+        UserResponseView response = userHttpTest.createUserTest().getResponseBody();
+
+        // when
+        webTestClient.delete().uri(USER_URL + "/" + response.getId())
                 .exchange()
-                .expectHeader().exists("Location")
                 .expectStatus().is2xxSuccessful();
+
+        // then
+        webTestClient.get().uri(USER_URL + "/" + response.getId())
+                .exchange()
+                .expectStatus().isNoContent();
     }
 }
