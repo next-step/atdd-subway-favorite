@@ -44,9 +44,14 @@ public class MemberDao {
         return findById(memberId).orElseThrow(NoDataException::new);
     }
 
+    public void deleteById(Long memberId) {
+        final Member findMember = findById(memberId).orElseThrow(NoDataException::new);
+        jdbcTemplate.update("delete from member where id = ?", findMember.getId());
+    }
+
     private Optional<Member> findById(Long memberId) {
         final List<Member> results = jdbcTemplate.query(
-                "select id, email, name, password from member m where m.id=?",
+                "select id, email, name, password from member m where m.id = ?",
                 new Object[]{memberId},
                 mapper);
 
@@ -59,4 +64,5 @@ public class MemberDao {
             rs.getString("NAME"),
             rs.getString("PASSWORD")
     );
+
 }

@@ -33,4 +33,10 @@ public class MemberController {
                 .body(new MemberResponseView(savedMember));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteMember(@PathVariable("id") Long memberId) {
+        memberDao.deleteById(memberId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
