@@ -6,13 +6,11 @@ public class UserResponseView implements Serializable {
   private Long id;
   private String email;
   private String name;
-  private String password;
 
-  public UserResponseView(Long id, String email, String name, String password) {
+  public UserResponseView(Long id, String email, String name) {
     this.id = id;
     this.email = email;
     this.name = name;
-    this.password = password;
   }
 
   public Long getId() {
@@ -25,9 +23,5 @@ public class UserResponseView implements Serializable {
 
   public String getName() {
     return name;
-  }
-
-  public String getPassword() {
-    return password;
   }
 }

@@ -25,34 +25,54 @@ public class UserManageAcceptanceTest extends AbstractAcceptanceTest {
   public void createUser() {
     //When
     Long userID = userManageHttpTest.createNewUser(
-        TEST_USER_1_EMAIL, 
-        TEST_USER_1_NAME,
-        TEST_USER_1_PASSWORD
+        USER_1_EMAIL, 
+        USER_1_NAME,
+        USER_1_PASSWORD
         );
 
     EntityExchangeResult<UserResponseView> response = userManageHttpTest.retrieveUser(userID);
 
     //then
-    assertThat(response.getResponseBody().getName()).isEqualTo(TEST_USER_1_NAME);
-    assertThat(response.getResponseBody().getEmail()).isEqualTo(TEST_USER_1_EMAIL);
-    assertThat(response.getResponseBody().getPassword()).isEqualTo(TEST_USER_1_PASSWORD);
+    assertThat(response.getResponseBody().getName()).isEqualTo(USER_1_NAME);
+    assertThat(response.getResponseBody().getEmail()).isEqualTo(USER_1_EMAIL);
   }
 
   @Test
   public void retrieveUser() {
     //Given
     Long userID = userManageHttpTest.createNewUser(
-        TEST_USER_1_EMAIL, 
-        TEST_USER_1_NAME,
-        TEST_USER_1_PASSWORD
+        USER_1_EMAIL, 
+        USER_1_NAME,
+        USER_1_PASSWORD
         );
 
     //When
     EntityExchangeResult<UserResponseView> response = userManageHttpTest.retrieveUser(userID);
 
     //then
-    assertThat(response.getResponseBody().getName()).isEqualTo(TEST_USER_1_NAME);
-    assertThat(response.getResponseBody().getEmail()).isEqualTo(TEST_USER_1_EMAIL);
-    assertThat(response.getResponseBody().getPassword()).isEqualTo(TEST_USER_1_PASSWORD);
+    assertThat(response.getResponseBody().getName()).isEqualTo(USER_1_NAME);
+    assertThat(response.getResponseBody().getEmail()).isEqualTo(USER_1_EMAIL);
+  }
+
+  @Test
+  public void deleteUser() {
+    //Given
+    Long userID = userManageHttpTest.createNewUser(
+        USER_1_EMAIL, 
+        USER_1_NAME,
+        USER_1_PASSWORD
+        );
+
+    userManageHttpTest.retrieveUser(userID);
+
+    //When
+    webTestClient.delete().uri(USER_URL + "/" + userID.toString())
+      .exchange()
+      .expectStatus().isNoContent();
+
+    //Then
+    webTestClient.get().uri(USER_URL + "/" + userID.toString())
+      .exchange()
+      .expectStatus().isNotFound();
   }
 }
