@@ -3,18 +3,16 @@ package atdd.path.web;
 import java.net.URI;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriBuilderFactory;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import atdd.path.application.UserService;
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.UserResponseView;
 import atdd.path.entity.User;
@@ -22,6 +20,7 @@ import atdd.path.repository.UserRepository;
 
 @RestController
 public class UserController {
+  private UserService userService;
   private UserRepository userRepository;
 
   public UserController(UserRepository userRepository) {
@@ -30,20 +29,11 @@ public class UserController {
 
   @PostMapping("/user")
   public ResponseEntity createUser(@RequestBody CreateUserRequestView view) {
-    User createdUser = userRepository.save(new User(
-          view.getEmail(),
-          view.getName(),
-          view.getPassword()
-          ));
-
-    UserResponseView userResponseView = new UserResponseView(
-        createdUser.getId(),
-        createdUser.getEmail(),
-        createdUser.getName()
-        );
+    UserResponseView userResponseView = userService.SignupUser(view);
     return ResponseEntity.created(
-        URI.create("/user/" + createdUser.getId().toString()))
-      .body(userResponseView);
+        URI.create("/user/" + userResponseView.getId().toString())
+        )
+        .body(userResponseView);
   }
 
   @GetMapping("/user/{id}")
@@ -65,6 +55,15 @@ public class UserController {
   public ResponseEntity deleteUser(@PathVariable("id") Long id) {
     userRepository.deleteById(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @Autowired
+  public UserController(UserService userService, UserRepository userRepository) {
+    this.userService = userService;
+    this.userRepository = userRepository;
+  }
+
+  public UserController() {
   }
 
 }

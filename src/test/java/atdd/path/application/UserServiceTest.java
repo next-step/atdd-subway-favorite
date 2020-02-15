@@ -11,6 +11,7 @@ import atdd.path.application.dto.UserResponseView;
 import atdd.path.entity.User;
 import atdd.path.repository.UserRepository;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static atdd.path.TestConstant.*;
@@ -33,17 +34,16 @@ public class UserServiceTest {
   @Test
   public void signupUser() {
     String encryptedUserPassword = USER_1_PASSWORD.toUpperCase();
-    User user = new User(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
-    User encryptedUser = new User(1L, USER_1_EMAIL, USER_1_NAME, encryptedUserPassword);
+    User expectUser = new User(1L, USER_1_EMAIL, USER_1_NAME, encryptedUserPassword);
 
     given(passwordEncoder.encode(USER_1_PASSWORD)).willReturn(encryptedUserPassword);
-    given(userRepository.save(user)).willReturn(encryptedUser);
+    given(userRepository.save(any(User.class))).willReturn(expectUser);
 
     CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
     UserResponseView result = userService.SignupUser(createUserRequestView);
 
-    assertThat(result.getId()).isEqualTo(encryptedUser.getId());
-    assertThat(result.getEmail()).isEqualTo(encryptedUser.getEmail());
-    assertThat(result.getName()).isEqualTo(encryptedUser.getName());
+    assertThat(result.getId()).isEqualTo(expectUser.getId());
+    assertThat(result.getEmail()).isEqualTo(expectUser.getEmail());
+    assertThat(result.getName()).isEqualTo(expectUser.getName());
   }
 }
