@@ -1,6 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
+import atdd.path.application.dto.CreateUserRequestView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -15,9 +16,8 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String EMAIL_IN_RESPONSE="$.email";
     public static final String PWD_IN_RESPONSE="$.password";
 
-    @DisplayName("회원 등록이 제대로 되는가")
     @Test
-    public void createUser(){
+    public void 회원_가입하기(){
         //given
         CreateUserRequestView request = new CreateUserRequestView(EMAIL_IN_REQUEST, NAME_IN_REQUEST, PWD_IN_REQUEST);
 
