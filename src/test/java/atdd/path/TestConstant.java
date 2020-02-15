@@ -149,4 +149,16 @@ public class TestConstant {
     public static Line TEST_LINE_2 = new Line(LINE_ID_2, LINE_NAME_2, Lists.list(TEST_EDGE_5, TEST_EDGE_6, TEST_EDGE_7, TEST_EDGE_8, TEST_EDGE_9), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
     public static Line TEST_LINE_3 = new Line(LINE_ID_3, LINE_NAME_3, Lists.list(TEST_EDGE_10, TEST_EDGE_11, TEST_EDGE_12, TEST_EDGE_13, TEST_EDGE_14, TEST_EDGE_15), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
     public static Line TEST_LINE_4 = new Line(LINE_ID_4, LINE_NAME_4, Lists.list(TEST_EDGE_16, TEST_EDGE_17, TEST_EDGE_18, TEST_EDGE_19, TEST_EDGE_20, TEST_EDGE_21, TEST_EDGE_22), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
+
+  public static String TEST_USER_1_NAME = new String("손건");
+  public static String TEST_USER_1_EMAIL = new String("user1@gmail.com");
+  public static String TEST_USER_1_PASSWORD = new String("asdf");
+  
+  public static String TEST_USER_2_NAME = new String("손건2");
+  public static String TEST_USER_2_EMAIL = new String("user2@gmail.com");
+  public static String TEST_USER_2_PASSWORD = new String("asdf");
+
+  public static String TEST_USER_3_NAME = new String("손건3");
+  public static String TEST_USER_3_EMAIL = new String("user3@gmail.com");
+  public static String TEST_USER_3_PASSWORD = new String("asdf");
 }

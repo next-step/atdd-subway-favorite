@@ -18,6 +18,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.jgrapht:jgrapht-core:1.0.1'
+  compileOnly 'org.projectlombok:lombok:1.18.12'
+	annotationProcessor 'org.projectlombok:lombok:1.18.12'
+	
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
 	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -28,4 +34,8 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+  testLogging {
+        outputs.upToDateWhen {false}
+        showStandardStreams = true
+    }
 }
