@@ -6,14 +6,22 @@ import java.util.StringJoiner;
 
 public class MemberResponseView {
 
+    private Long id;
     private String email;
     private String name;
     private String password;
 
+    protected MemberResponseView() {}
+
     public MemberResponseView(Member member) {
+        this.id = member.getId();
         this.email = member.getEmail();
         this.name = member.getName();
         this.password = member.getPassword();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {
@@ -31,6 +39,7 @@ public class MemberResponseView {
     @Override
     public String toString() {
         return new StringJoiner(", ", MemberResponseView.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
                 .add("email='" + email + "'")
                 .add("name='" + name + "'")
                 .add("password='" + password + "'")
