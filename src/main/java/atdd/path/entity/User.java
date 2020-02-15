@@ -6,7 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.springframework.stereotype.Repository;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 @Entity
 public class User {
@@ -47,5 +48,12 @@ public class User {
   }
 
   public User() {
+  }
+
+  public User(Long id, String email, String name, String password) {
+    this.id = id;
+    this.email = email;
+    this.name = name;
+    this.password = password;
   }
 }
