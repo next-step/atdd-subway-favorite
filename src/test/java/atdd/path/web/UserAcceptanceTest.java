@@ -2,10 +2,10 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.CreateUserRequestView;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
+import java.net.URI;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String BASE_URI="/user";
@@ -32,5 +32,32 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectBody().jsonPath(NAME_IN_RESPONSE).isEqualTo(NAME_IN_REQUEST)
                 .jsonPath(EMAIL_IN_RESPONSE).isEqualTo(EMAIL_IN_REQUEST)
                 .jsonPath(PWD_IN_RESPONSE).isEqualTo(PWD_IN_REQUEST);
+    }
+
+    public URI createUser(String EMAIL_IN_REQUEST, String NAME_IN_REQUEST, String PWD_IN_REQUEST){
+        CreateUserRequestView request = new CreateUserRequestView(EMAIL_IN_REQUEST, NAME_IN_REQUEST, PWD_IN_REQUEST);
+        return webTestClient.post().uri(BASE_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), CreateUserRequestView.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().exists("Location")
+                .returnResult(String.class)
+                .getResponseHeaders()
+                .getLocation();
+    }
+
+    @Test
+    public void 회원_탈퇴하기(){
+        //given
+        URI location=createUser(EMAIL_IN_REQUEST, NAME_IN_REQUEST, PWD_IN_REQUEST);
+
+        //when, then
+        webTestClient.delete().uri(location)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus().isNoContent();
     }
 }
