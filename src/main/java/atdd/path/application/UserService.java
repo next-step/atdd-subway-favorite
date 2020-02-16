@@ -25,4 +25,9 @@ public class UserService {
 
         return newUser;
     }
+
+    public User retrieveUser(Long id) {
+
+        return userDao.findById(id);
+    }
 }

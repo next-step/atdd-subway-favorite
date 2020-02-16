@@ -11,6 +11,10 @@ public class UserResponseView {
     String password;
 
     public UserResponseView(Long id, String email, String name, String password) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
     }
 
     public static UserResponseView of(User user) {

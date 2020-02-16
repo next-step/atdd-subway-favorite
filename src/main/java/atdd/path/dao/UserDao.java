@@ -18,4 +18,17 @@ public class UserDao {
 
         return newUser;
     }
+
+    public User findById(Long id) {
+
+        // JDBC 잘 사용할 줄 몰라요..;;;
+        User findUser = User.builder()
+                .id(id)
+                .email("boorwonie@email.com")
+                .name("브라운")
+                .password("subway")
+                .build();
+
+        return findUser;
+    }
 }
