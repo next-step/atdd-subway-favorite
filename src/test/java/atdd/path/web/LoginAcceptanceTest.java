@@ -26,8 +26,6 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
     void setUp() {
         this.loginHttpTest = new LoginHttpTest(webTestClient);
         this.userHttpTest = new UserHttpTest(webTestClient);
-
-
     }
 
     /**
