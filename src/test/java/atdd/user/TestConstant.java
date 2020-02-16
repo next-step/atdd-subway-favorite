@@ -13,4 +13,6 @@ public class TestConstant {
   public static String USER_3_NAME = new String("손건3");
   public static String USER_3_EMAIL = new String("user3@gmail.com");
   public static String USER_3_PASSWORD = new String("asdf");
+
+  public static String LOGIN_URL = "/login";
 }

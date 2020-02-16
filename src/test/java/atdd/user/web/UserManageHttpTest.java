@@ -4,7 +4,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import atdd.user.application.dto.AuthInfoView;
 import atdd.user.application.dto.UserResponseView;
+import static atdd.user.TestConstant.*;
 import reactor.core.publisher.Mono;
 
 public class UserManageHttpTest {
@@ -42,6 +44,21 @@ public class UserManageHttpTest {
       .expectStatus().isOk()
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
       .expectBody(UserResponseView.class)
+      .returnResult();
+  }
+
+  public EntityExchangeResult<AuthInfoView> loginUser(String email, String password) {
+    String requestBody = "{" 
+      + "\"email\" : \"" + email + "\","
+      + "\"password\" : \"" + password + "\""
+      + "}";
+
+    return webTestClient.post().uri(LOGIN_URL)
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(Mono.just(requestBody), String.class)
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody(AuthInfoView.class)
       .returnResult();
   }
 }

@@ -2,12 +2,14 @@ package atdd.user.web;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.user.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import atdd.AbstractAcceptanceTest;
+import atdd.user.application.dto.AuthInfoView;
 import atdd.user.application.dto.UserResponseView;
 
 public class UserManageAcceptanceTest extends AbstractAcceptanceTest {
@@ -71,5 +73,24 @@ public class UserManageAcceptanceTest extends AbstractAcceptanceTest {
     webTestClient.get().uri(USER_URL + "/" + userID.toString())
       .exchange()
       .expectStatus().isNotFound();
+  }
+
+  @Test
+  public void loginUser() {
+    //Given
+    Long userID = userManageHttpTest.createNewUser(
+        USER_1_EMAIL, 
+        USER_1_NAME,
+        USER_1_PASSWORD
+        );
+
+    //When
+    EntityExchangeResult<AuthInfoView> result = userManageHttpTest.loginUser(
+        USER_1_EMAIL, USER_1_PASSWORD);
+
+    //then
+    AuthInfoView authInfoView = result.getResponseBody();
+    assertThat(authInfoView.getAccessToken()).isNotNull();
+    assertThat(authInfoView.getTokenType()).isNotNull();
   }
 }
