@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Builder
 @Accessors(chain = true)
-public class UserRequestView {
+public class CreateUserRequestView {
     String email;
     String name;
     String password;

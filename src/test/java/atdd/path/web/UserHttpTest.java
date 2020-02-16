@@ -1,6 +1,6 @@
 package atdd.path.web;
 
-import atdd.path.application.dto.UserRequestView;
+import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.UserResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
@@ -14,8 +14,8 @@ public class UserHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<Long> createUserRequest() {
-        UserRequestView userRequestView = UserRequestView.builder()
+    public EntityExchangeResult<UserResponseView> createUserRequest() {
+        CreateUserRequestView createUserRequestView = CreateUserRequestView.builder()
                 .email("boorwonie@email.com")
                 .name("브라운")
                 .password("subway")
@@ -23,12 +23,12 @@ public class UserHttpTest {
 
         return webTestClient.post().uri("/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(userRequestView), UserRequestView.class)
+                .body(Mono.just(createUserRequestView), CreateUserRequestView.class)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectHeader().exists("Location")
-                .expectBody(Long.class)
+                .expectBody(UserResponseView.class)
                 .returnResult();
     }
 
@@ -42,8 +42,8 @@ public class UserHttpTest {
     }
 
     public Long createUser() {
-        EntityExchangeResult<Long> stationResponse = createUserRequest();
-        return stationResponse.getResponseBody();
+        EntityExchangeResult<UserResponseView> stationResponse = createUserRequest();
+        return stationResponse.getResponseBody().getId();
     }
 
     public EntityExchangeResult<UserResponseView> retrieveStation(Long userId) {
