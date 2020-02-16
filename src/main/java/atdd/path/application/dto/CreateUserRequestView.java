@@ -7,10 +7,16 @@ import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import javax.validation.constraints.*;
 
 public class CreateUserRequestView {
+    @NotBlank
+    @Email
     private String email;
 
+    @NotBlank
+    @Size(min = 2)
     private String name;
 
+    @NotBlank
+    @Size(min = 6)
     private String password;
 
     public String getEmail() {
