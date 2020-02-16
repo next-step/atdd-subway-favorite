@@ -22,10 +22,17 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("회원 가입")
     @Test
     public void createUser() {
+        // Given
+        UserRequestView userRequestView = UserRequestView.builder()
+                .email("boorwonie@email.com")
+                .name("브라운")
+                .password("subway")
+                .build();
+
         // When
         Long userId = userHttpTest.createUser(userRequestView);
 
-        // then
+        // Then
         EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveStation(userId);
         assertThat(response.getResponseBody().getEmail()).isEqualTo(userRequestView.getEmail());
     }
