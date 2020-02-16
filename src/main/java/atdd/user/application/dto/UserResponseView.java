@@ -1,4 +1,4 @@
-package atdd.path.application.dto;
+package atdd.user.application.dto;
 
 import java.io.Serializable;
 

@@ -1,6 +1,4 @@
-package atdd.path.application.dto;
-
-import java.io.Serializable;
+package atdd.user.application.dto;
 
 public class CreateUserRequestView {
   private String email;
