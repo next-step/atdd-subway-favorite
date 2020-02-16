@@ -1,7 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.StationResponseView;
+import atdd.path.application.dto.UserResponseView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -37,10 +37,10 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectBody(UserResponseView.class)
                 .returnResult();
 
-        Long userId = userResponseAfterCreate.getId();
+        Long userId = userResponseAfterCreate.getResponseBody().getId();
 
         // then
-        EntityExchangeResult<List<StationResponseView>> userResponseAfterGet = webTestClient
+        EntityExchangeResult<List<UserResponseView>> userResponseAfterGet = webTestClient
                 .get()
                 .uri(USER_URL)
                 .exchange()
