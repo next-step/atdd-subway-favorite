@@ -1,31 +1,45 @@
 package atdd.path.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
+@Entity
 public class Line {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private LocalTime startTime;
     private LocalTime endTime;
-    private int interval;
+
+    @Column(nullable = true)
+    private int stationInterval;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "edges_id", referencedColumnName = "id", insertable=false, updatable=false)
+    @JsonIgnore
     private Edges edges;
+
+    protected Line() {}
 
     public Line(Long id, String name) {
         this(id, name, Collections.EMPTY_LIST, null, null, 0);
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int interval) {
-        this(id, name, Collections.EMPTY_LIST, startTime, endTime, interval);
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int stationInterval) {
+        this(id, name, Collections.EMPTY_LIST, startTime, endTime, stationInterval);
     }
 
-    public Line(Long id, String name, List<Edge> edges, LocalTime startTime, LocalTime endTime, int interval) {
+    public Line(Long id, String name, List<Edge> edges, LocalTime startTime, LocalTime endTime, int stationInterval) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.interval = interval;
+        this.stationInterval = stationInterval;
         this.edges = new Edges(edges);
     }
 
@@ -33,8 +47,8 @@ public class Line {
         return new Line(name, startTime, endTime, interval);
     }
 
-    private Line(String name, LocalTime startTime, LocalTime endTime, int interval) {
-        this(null, name, Collections.EMPTY_LIST, startTime, endTime, interval);
+    private Line(String name, LocalTime startTime, LocalTime endTime, int stationInterval) {
+        this(null, name, Collections.EMPTY_LIST, startTime, endTime, stationInterval);
     }
 
     public Long getId() {
@@ -57,8 +71,8 @@ public class Line {
         return endTime;
     }
 
-    public int getInterval() {
-        return interval;
+    public int getStationInterval() {
+        return stationInterval;
     }
 
     public List<Station> getStations() {

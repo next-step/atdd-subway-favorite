@@ -1,12 +1,22 @@
 package atdd.path.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Station {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "line_id", referencedColumnName = "id")
+    @JsonIgnore
     private List<Line> lines = new ArrayList<>();
 
     public Station() {

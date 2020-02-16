@@ -50,7 +50,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(getResponse.getResponseBody().getName()).isEqualTo(LINE_NAME);
         assertThat(getResponse.getResponseBody().getStartTime()).isEqualTo(LocalTime.of(0, 0).toString());
         assertThat(getResponse.getResponseBody().getEndTime()).isEqualTo(LocalTime.of(23, 30).toString());
-        assertThat(getResponse.getResponseBody().getInterval()).isEqualTo(30);
+        assertThat(getResponse.getResponseBody().getStationInterval()).isEqualTo(30);
     }
 
     @DisplayName("구건이 연결된 지하철 노선 조회")

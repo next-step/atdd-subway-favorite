@@ -1,9 +1,25 @@
 package atdd.path.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+
+@Entity
 public class Edge {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_station_id")
+    @JsonIgnore
     private Station sourceStation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_station_id")
+    @JsonIgnore
     private Station targetStation;
+
     private int distance;
 
     public Edge() {
