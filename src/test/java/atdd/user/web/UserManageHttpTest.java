@@ -1,10 +1,10 @@
-package atdd.path.web;
+package atdd.user.web;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import atdd.path.application.dto.UserResponseView;
+import atdd.user.application.dto.UserResponseView;
 import reactor.core.publisher.Mono;
 
 public class UserManageHttpTest {

@@ -1,9 +1,10 @@
 package atdd.path.web;
 
-import atdd.path.AbstractAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+
+import atdd.AbstractAcceptanceTest;
 
 import static atdd.path.TestConstant.*;
 

@@ -1,4 +1,4 @@
-package atdd.path.web;
+package atdd.user.web;
 
 import java.net.URI;
 import java.util.Optional;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import atdd.path.application.UserService;
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.UserResponseView;
-import atdd.path.entity.User;
-import atdd.path.repository.UserRepository;
+import atdd.user.application.UserService;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.UserResponseView;
+import atdd.user.entity.User;
+import atdd.user.repository.UserRepository;
 
 @RestController
 public class UserController {

@@ -1,4 +1,4 @@
-package atdd.path.application;
+package atdd.user.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,15 +6,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.UserResponseView;
-import atdd.path.entity.User;
-import atdd.path.repository.UserRepository;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.UserResponseView;
+import atdd.user.entity.User;
+import atdd.user.repository.UserRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
-import static atdd.path.TestConstant.*;
+import static atdd.user.TestConstant.*;
 
 @SpringBootTest(classes = UserService.class)
 public class UserServiceTest {

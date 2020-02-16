@@ -1,13 +1,13 @@
-package atdd.path.application;
+package atdd.user.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.UserResponseView;
-import atdd.path.entity.User;
-import atdd.path.repository.UserRepository;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.UserResponseView;
+import atdd.user.entity.User;
+import atdd.user.repository.UserRepository;
 
 @Service
 public class UserService {
