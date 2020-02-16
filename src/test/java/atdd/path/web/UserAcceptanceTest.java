@@ -34,4 +34,22 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
         assertEquals(userId, response.getResponseBody().getId());
     }
+
+    @DisplayName("회원 탈퇴")
+    @Test
+    public void deleteUser() {
+        // Given
+        Long userId = userHttpTest.createUser();
+        EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
+
+        // When
+        webTestClient.delete().uri("/users/" + userId)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // Then
+        webTestClient.get().uri("/users/" + userId)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
 }
