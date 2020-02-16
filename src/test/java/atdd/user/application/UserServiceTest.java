@@ -57,4 +57,39 @@ public class UserServiceTest {
     assertThat(result.getName()).isEqualTo(expectUser.getName());
     assertThat(createUserRequestView.getPassword()).isNotEqualTo(expectUser.getPassword());
   }
+
+  @Test
+  public void retriveUser() {
+    CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
+
+    UserResponseView expectResult = userService.SignupUser(createUserRequestView);
+
+    Optional<UserResponseView> optionalUser = userService.RetrieveUser(expectResult.getId());
+    if (!optionalUser.isPresent()) {
+      fail("회원가입한 유저를 찾을 수 없음");
+      return;
+    }
+
+    UserResponseView result = optionalUser.get();
+
+    assertThat(result.getId()).isEqualTo(expectResult.getId());
+    assertThat(result.getEmail()).isEqualTo(expectResult.getEmail());
+    assertThat(result.getName()).isEqualTo(expectResult.getName());
+  }
+
+  @Test
+  public void deleteUser() {
+    CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
+    UserResponseView expectResult = userService.SignupUser(createUserRequestView);
+
+    userService.DeleteUser(expectResult.getId());
+
+
+    Optional<UserResponseView> optionalUser = userService.RetrieveUser(expectResult.getId());
+    if (optionalUser.isPresent()) {
+      fail("회원 탈퇴가 정상적으로 되지 않음");
+      return;
+    }
+
+  }
 }

@@ -38,22 +38,17 @@ public class UserController {
 
   @GetMapping("/user/{id}")
   public ResponseEntity retrieveUser(@PathVariable("id") Long id) {
-    Optional<User> optionalUser = userRepository.findById(id);
-    if (optionalUser.isPresent()) {
-      User user = optionalUser.get();
-      UserResponseView userResponseView = new UserResponseView(
-          user.getId(),
-          user.getEmail(),
-          user.getName()
-          );
-      return ResponseEntity.ok(userResponseView);
+    Optional<UserResponseView> result = userService.RetrieveUser(id);
+    if(!result.isPresent()) {
+      return ResponseEntity.notFound().build();
     }
-    return ResponseEntity.notFound().build();
+
+    return ResponseEntity.ok(result.get());
   }
 
   @DeleteMapping("/user/{id}")
   public ResponseEntity deleteUser(@PathVariable("id") Long id) {
-    userRepository.deleteById(id);
+    userService.DeleteUser(id);
     return ResponseEntity.noContent().build();
   }
 
