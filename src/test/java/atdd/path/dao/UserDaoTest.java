@@ -55,6 +55,7 @@ public class UserDaoTest {
     public void deleteById() {
         userDao.deleteById(savedUser.getId());
 
-        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> userDao.findById(savedUser.getId()));
+        Assertions.assertThrows(EmptyResultDataAccessException.class,
+                () -> userDao.findById(savedUser.getId()), "조회 결과가 없습니다.");
     }
 }

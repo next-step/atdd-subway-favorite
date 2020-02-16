@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.path.TestConstant.*;
+import static atdd.path.application.base.BaseUriConstants.USER_BASE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
-    public static final String USER_BASE_URL = "/users";
 
     private UserHttpTest userHttpTest;
 
@@ -46,6 +46,8 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         // then
         webTestClient.get().uri(USER_BASE_URL + "/" + response.getResponseBody().getId())
                 .exchange()
-                .expectStatus().isNotFound();
+                .expectStatus().isOk()
+                .expectBody().jsonPath("$.status")
+                .isEqualTo(4040);
     }
 }
