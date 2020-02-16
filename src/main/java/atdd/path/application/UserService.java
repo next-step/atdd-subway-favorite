@@ -6,6 +6,7 @@ import atdd.path.domain.User;
 import atdd.path.domain.UserRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
 @Service

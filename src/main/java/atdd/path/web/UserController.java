@@ -26,11 +26,12 @@ public class UserController {
 
     @PostMapping(BASE_URI)
     public ResponseEntity<UserResponseView> create(@RequestBody @Valid CreateUserRequestView request, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .badRequest()
                     .build();
         }
+
         UserResponseView response = userService.createUser(request);
         return ResponseEntity
                 .created(URI.create(BASE_URI + "/" + response.getId()))

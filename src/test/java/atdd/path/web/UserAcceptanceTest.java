@@ -43,6 +43,14 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .body(Mono.just(wrong_request), CreateUserRequestView.class)
                 .exchange()
                 .expectStatus().isBadRequest();
+
+        webTestClient.post().uri(BASE_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), CreateUserRequestView.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody().isEmpty();
     }
 
     public String createUser(String EMAIL_IN_REQUEST, String NAME_IN_REQUEST, String PWD_IN_REQUEST) {
