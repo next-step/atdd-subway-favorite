@@ -2,6 +2,8 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.TestConstant;
+import atdd.path.application.dto.LoginRequestView;
+import atdd.path.application.dto.LoginResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,15 +28,16 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
         userHttpTest.createUserTest(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
 
         // when, then
-        String request = "{\"email\":\"" + TestConstant.EMAIL_BROWN + "\"," +
-                "\"password\":\"" + TestConstant.PASSWORD_BROWN + "\"}";
+        LoginRequestView request = LoginRequestView.builder()
+                .email(TestConstant.EMAIL_BROWN)
+                .password(TestConstant.PASSWORD_BROWN)
+                .build();
 
         webTestClient.post().uri(LOGIN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), String.class)
+                .bodyValue(request)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.tokenType").isEqualTo("bearer");
+                .expectBody(LoginResponseView.class);
     }
 }
