@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("회원 관리")
 public class MemberAcceptanceTest extends AbstractAcceptanceTest {
+	public static final String MEMBER_URL = "/members";
 
 	private MemberHttpTest memberHttpTest;
 
@@ -30,5 +31,22 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest {
 		EntityExchangeResult<MemberResponseView> response = memberHttpTest.retrieveMember(memberId);
 		assertThat(response.getResponseBody().getEmail()).isEqualTo(MEMBER_EMAIL);
 		assertThat(response.getResponseBody().getName()).isEqualTo(MEMBER_NAME);
+	}
+
+	@DisplayName("회원 탈퇴")
+	@Test
+	void deleteMember() {
+		// given
+		Long memberId = memberHttpTest.createMember(MEMBER_EMAIL, MEMBER_NAME, MEMBER_PASSWORD);
+
+		// when
+		webTestClient.delete().uri(MEMBER_URL + "/" + memberId)
+			.exchange()
+			.expectStatus().isNoContent();
+
+		// then
+		webTestClient.get().uri(MEMBER_URL + "/" + memberId)
+			.exchange()
+			.expectStatus().isNotFound();
 	}
 }

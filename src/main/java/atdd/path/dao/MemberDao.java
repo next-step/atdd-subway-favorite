@@ -55,4 +55,8 @@ public class MemberDao {
 		));
 		return Optional.ofNullable(member);
 	}
+
+	public void deleteById(final Long id) {
+		jdbcTemplate.update("delete from MEMBER where id = ?", id);
+	}
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
 class MemberDaoTest {
@@ -59,5 +61,21 @@ class MemberDaoTest {
 		// then
 		assertThat(byId.get().getEmail()).isEqualTo(MEMBER_EMAIL);
 		assertThat(byId.get().getName()).isEqualTo(MEMBER_NAME);
+	}
+
+	@DisplayName("id로 Member 삭제")
+	@Test
+	void deleteById() {
+		// given
+		Member member = new Member(MEMBER_EMAIL, MEMBER_NAME, MEMBER_PASSWORD);
+		Member persistMember = memberDao.save(member);
+
+		// when
+		memberDao.deleteById(persistMember.getId());
+
+		// then
+		assertThrows(EmptyResultDataAccessException.class, () -> {
+			memberDao.findById(persistMember.getId());
+		});
 	}
 }
