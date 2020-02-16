@@ -22,29 +22,34 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 "브라운", "subway");
 
         // when
-        EntityExchangeResult<UserResponseView> userResponseAfterCreate = webTestClient.post()
-                                   .uri(USER_URL)
-                                   .contentType(MediaType.APPLICATION_JSON)
-                                   .body(Mono.just(inputJson), String.class)
-                                   .exchange()
-                                   .expectStatus()
-                                   .isCreated()
-                                   .expectHeader()
-                                   .contentType(MediaType.APPLICATION_JSON)
-                                   .expectHeader()
-                                   .exists("Location")
-                                   .expectBody(UserResponseView.class)
-                                   .returnResult();
+        EntityExchangeResult<UserResponseView> userResponseAfterCreate = webTestClient
+                .post()
+                .uri(USER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(inputJson), String.class)
+                .exchange()
+                .expectStatus()
+                .isCreated()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
+                .expectHeader()
+                .exists("Location")
+                .expectBody(UserResponseView.class)
+                .returnResult();
 
         Long userId = userResponseAfterCreate.getId();
 
         // then
-        EntityExchangeResult<List<StationResponseView>> userResponseAfterGet = webTestClient.get().uri(USER_URL)
-                                                    .exchange()
-                                                    .expectStatus().isOk()
-                                                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                                                    .expectBodyList(UserResponseView.class)
-                                                    .returnResult();
+        EntityExchangeResult<List<StationResponseView>> userResponseAfterGet = webTestClient
+                .get()
+                .uri(USER_URL)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(UserResponseView.class)
+                .returnResult();
 
         assertThat(userResponseAfterGet.getResponseBody().get(0).getName()).isEqualTo("브라운");
     }
