@@ -32,6 +32,12 @@ public class UserController {
                     .build();
         }
 
+        if (checkExistingUser(request)) {
+            return ResponseEntity
+                    .ok()
+                    .build();
+        }
+
         UserResponseView response = userService.createUser(request);
         return ResponseEntity
                 .created(URI.create(BASE_URI + "/" + response.getId()))
@@ -45,5 +51,9 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
+    }
+
+    private boolean checkExistingUser(CreateUserRequestView request) {
+        return userService.checkUserExist(request);
     }
 }

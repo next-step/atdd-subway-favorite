@@ -27,4 +27,12 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 사용자가 존재하지 않습니다."));
         userRepository.delete(user);
     }
+
+    public boolean checkUserExist(CreateUserRequestView request) {
+        return userRepository
+                .findAll()
+                .stream()
+                .map(User::getEmail)
+                .anyMatch(a -> a.equals(request.getEmail()));
+    }
 }
