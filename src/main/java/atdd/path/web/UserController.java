@@ -27,14 +27,14 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity showUsers() {
-        List<User> persistUsers = new ArrayList<User>();
+        List<User> users = new ArrayList<User>();
 
         String userEmail = "boorwonie@email.com";
         String userName = "브라운";
         String password = "subway";
 
         User user = new User(userEmail, userName, password);
-        persistUsers.add(user);
-        return ResponseEntity.ok().body(UserResponseView.listOf(persistUsers));
+        users.add(user);
+        return ResponseEntity.ok().body(UserResponseView.listOf(users));
     }
 }
