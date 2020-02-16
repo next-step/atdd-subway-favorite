@@ -5,11 +5,13 @@ import atdd.path.application.dto.UserResponseView;
 import atdd.path.domain.User;
 import atdd.path.domain.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService {
     private UserRepository userRepository;
 
@@ -17,6 +19,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = false)
     public UserResponseView createUser(CreateUserRequestView request) {
         User createdUser = userRepository.save(request.toEntity());
         return UserResponseView.of(createdUser);
