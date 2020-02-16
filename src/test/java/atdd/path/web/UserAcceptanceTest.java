@@ -18,8 +18,8 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("회원 가입")
     @Test
     public void createUser() {
-        String inputJson = String.format("{\"email\": %s, \"name\": %s, \"password\": %s}", "boorwonie@email.com",
-                "브라운", "subway");
+        String inputJson = String.format("{\"email\": \"%s\", \"name\": \"%s\", \"password\": \"%s\"}",
+                "boorwonie@email.com", "브라운", "subway");
 
         // when
         EntityExchangeResult<UserResponseView> userResponseAfterCreate = webTestClient
