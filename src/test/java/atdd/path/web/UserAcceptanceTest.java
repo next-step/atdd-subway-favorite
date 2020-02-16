@@ -31,7 +31,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         Long userId = userHttpTest.createUser();
 
         // Then
-        EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveStation(userId);
+        EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
         assertEquals(userId, response.getResponseBody().getId());
     }
 }
