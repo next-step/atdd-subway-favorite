@@ -30,4 +30,9 @@ public class UserService {
 
         return userDao.findById(id);
     }
+
+    public void deleteById(Long id) {
+
+        userDao.deleteById(id);
+    }
 }

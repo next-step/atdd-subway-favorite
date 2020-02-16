@@ -31,4 +31,8 @@ public class UserDao {
 
         return findUser;
     }
+
+    public void deleteById(Long id) {
+        // delete user
+    }
 }
