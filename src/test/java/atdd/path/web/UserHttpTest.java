@@ -32,7 +32,7 @@ public class UserHttpTest {
                 .returnResult();
     }
 
-    public EntityExchangeResult<UserResponseView> retrieveStationRequest(Long userId) {
+    public EntityExchangeResult<UserResponseView> retrieveUserRequest(Long userId) {
         return webTestClient.get().uri("/users/" + userId)
                 .exchange()
                 .expectStatus().isOk()
@@ -46,7 +46,7 @@ public class UserHttpTest {
         return stationResponse.getResponseBody().getId();
     }
 
-    public EntityExchangeResult<UserResponseView> retrieveStation(Long userId) {
-        return retrieveStationRequest(userId);
+    public EntityExchangeResult<UserResponseView> retrieveUser(Long userId) {
+        return retrieveUserRequest(userId);
     }
 }
