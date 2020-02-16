@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,12 +20,18 @@ public class Line {
     @Column(nullable = true)
     private int stationInterval;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "edges_id", referencedColumnName = "id", insertable=false, updatable=false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "edges_id", referencedColumnName = "id")
     @JsonIgnore
     private Edges edges;
 
-    protected Line() {}
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "edge_id", referencedColumnName = "id")
+    @JsonIgnore
+    private List<Edge> edgeList = new ArrayList<Edge>();
+
+    protected Line() {
+    }
 
     public Line(Long id, String name) {
         this(id, name, Collections.EMPTY_LIST, null, null, 0);
@@ -81,6 +88,7 @@ public class Line {
 
     public void addEdge(Edge edge) {
         this.edges = this.edges.add(edge);
+        this.edgeList.add(edge);
     }
 
     public Edges removeStation(Station station) {
@@ -88,4 +96,7 @@ public class Line {
         return this.edges;
     }
 
+    public List<Edge> getEdgeList() {
+        return edgeList;
+    }
 }

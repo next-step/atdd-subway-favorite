@@ -1,8 +1,8 @@
 package atdd.path.application;
 
-import atdd.path.dao.LineDao;
 import atdd.path.domain.Line;
 import atdd.path.domain.Station;
+import atdd.path.repository.LineRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,11 +21,11 @@ public class GraphServiceTest {
     private GraphService graphService;
 
     @MockBean
-    private LineDao lineDao;
+    private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
-        this.graphService = new GraphService(lineDao);
+        this.graphService = new GraphService(lineRepository);
     }
 
     @DisplayName("출발역과 도착역 사이의 최단경로 Station 목록을 응답받기")
@@ -34,7 +34,7 @@ public class GraphServiceTest {
         Long startId = 1L;
         Long endId = 3L;
         List<Line> lines = Lists.list(TEST_LINE, TEST_LINE_2, TEST_LINE_3, TEST_LINE_4);
-        given(lineDao.findAll()).willReturn(lines);
+        given(lineRepository.findAll()).willReturn(lines);
 
         List<Station> shortestPath = graphService.findPath(startId, endId);
 

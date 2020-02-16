@@ -3,6 +3,8 @@ package atdd.path.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Edge {
@@ -21,6 +23,11 @@ public class Edge {
     private Station targetStation;
 
     private int distance;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "line_id", referencedColumnName = "id")
+    @JsonIgnore
+    private List<Line> lines = new ArrayList<Line>();
 
     public Edge() {
     }
