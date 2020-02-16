@@ -2,10 +2,17 @@ package atdd.path.application.dto;
 
 import atdd.path.domain.User;
 
-public class UserResponseView {
+import java.io.Serializable;
+
+public class UserResponseView implements Serializable {
+    private static final long serialVersionUID = 8806009416105685525L;
+
     private Long id;
     private String email;
     private String name;
+
+    public UserResponseView() {
+    }
 
     public UserResponseView(Long id, String email, String name) {
         this.id = id;
