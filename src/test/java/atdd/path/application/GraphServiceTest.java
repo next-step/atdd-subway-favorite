@@ -18,6 +18,7 @@ import static org.mockito.BDDMockito.given;
 
 @SpringBootTest(classes = GraphService.class)
 public class GraphServiceTest {
+    //특정 빈만 가지고오기 때문에 더 빠르다
     private GraphService graphService;
 
     @MockBean
