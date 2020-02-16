@@ -16,12 +16,14 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String NAME_IN_RESPONSE = "$.name";
     public static final String EMAIL_IN_RESPONSE = "$.email";
     public static final String PWD_IN_RESPONSE = "$.password";
+    public static final String BLANK_INPUT = "   ";
 
     @DisplayName("회원 가입하기")
     @Test
     public void 회원_가입하기() {
         //given
         CreateUserRequestView request = new CreateUserRequestView(EMAIL_IN_REQUEST, NAME_IN_REQUEST, PWD_IN_REQUEST);
+        CreateUserRequestView wrong_request = new CreateUserRequestView(BLANK_INPUT, NAME_IN_REQUEST, PWD_IN_REQUEST);
 
         //when, then
         webTestClient.post().uri(BASE_URI)
@@ -34,6 +36,13 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectBody().jsonPath(NAME_IN_RESPONSE).isEqualTo(NAME_IN_REQUEST)
                 .jsonPath(EMAIL_IN_RESPONSE).isEqualTo(EMAIL_IN_REQUEST)
                 .jsonPath(PWD_IN_RESPONSE).isEqualTo(PWD_IN_REQUEST);
+
+        webTestClient.post().uri(BASE_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(wrong_request), CreateUserRequestView.class)
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 
     public String createUser(String EMAIL_IN_REQUEST, String NAME_IN_REQUEST, String PWD_IN_REQUEST) {

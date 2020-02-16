@@ -6,9 +6,14 @@ import atdd.path.application.dto.UserResponseView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.net.URI;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -20,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping(BASE_URI)
-    public ResponseEntity<UserResponseView> create(@RequestBody CreateUserRequestView request) {
+    public ResponseEntity<UserResponseView> create(@RequestBody CreateUserRequestView request, BindingResult bindingResult) {
         UserResponseView response = userService.createUser(request);
         return ResponseEntity
                 .created(URI.create(BASE_URI + "/" + response.getId()))
