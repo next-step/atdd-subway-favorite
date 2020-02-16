@@ -37,10 +37,10 @@ public class UserServiceTest {
                 .name("브라운")
                 .password("subway")
                 .build();
+        given(userDao.save(any(User.class)))
+                .willReturn(User.createBuilder().email("boorwonie@email.com").name("브라운").build());
 
         // when
-        when(userDao.save(any(User.class)))
-                .thenReturn(User.createBuilder().email("boorwonie@email.com").name("브라운").build());
         UserResponseView response = userService.createUser(userInfo);
 
         // then
