@@ -2,24 +2,23 @@ package atdd.path.application;
 
 import atdd.path.application.dto.UserRequestView;
 import atdd.path.application.dto.UserResponseView;
-import atdd.path.dao.UserDao;
-import atdd.path.domain.User;
+import atdd.path.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public UserResponseView createUser(UserRequestView userRequestView) {
-        return UserResponseView.of(userDao.save(userRequestView.toUser()));
+        return UserResponseView.of(userRepository.save(userRequestView.toUser()));
     }
 
     public void deleteUser(Long id) {
-        userDao.deleteById(id);
+        userRepository.deleteById(id);
     }
 }

@@ -16,11 +16,11 @@ public class UserHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<UserResponseView> createUserTest() {
+    public EntityExchangeResult<UserResponseView> createUserTest(String email, String name, String password) {
         UserRequestView userInfo = UserRequestView.builder()
-                .email("boorwonie@email.com")
-                .name("브라운")
-                .password("subway")
+                .email(email)
+                .name(name)
+                .password(password)
                 .build();
 
         return webTestClient.post().uri(USER_URL)
@@ -28,7 +28,7 @@ public class UserHttpTest {
                 .bodyValue(userInfo)
                 .exchange()
                 .expectHeader().exists("Location")
-                .expectStatus().is2xxSuccessful()
+                .expectStatus().isCreated()
                 .expectBody(UserResponseView.class)
                 .returnResult();
 
