@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 
 import static atdd.path.TestConstant.*;
 import static atdd.path.TestUtils.jsonOf;
+import static atdd.path.application.provider.JwtTokenProvider.AUTHORIZATION;
 import static atdd.path.application.provider.JwtTokenProvider.TOKEN_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -62,7 +63,7 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest {
         String authorization = view.getTokenType() +" "+ view.getAccessToken();
 
         webTestClient.get().uri("/members/me")
-                .header("authorization", authorization)
+                .header(AUTHORIZATION, authorization)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)

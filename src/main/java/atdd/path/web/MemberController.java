@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.application.dto.CreateMemberRequestView;
 import atdd.path.application.dto.MemberResponseView;
+import atdd.path.application.resolver.LoginUser;
 import atdd.path.dao.MemberDao;
 import atdd.path.domain.Member;
 import org.slf4j.Logger;
@@ -31,6 +32,11 @@ public class MemberController {
         final Member savedMember = memberDao.save(view.toMember());
         return ResponseEntity.created(URI.create(request.getServletPath() +"/"+ savedMember.getId()))
                 .body(new MemberResponseView(savedMember));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponseView> findMe(@LoginUser Member loginMember) {
+        return ResponseEntity.ok(new MemberResponseView(loginMember));
     }
 
     @DeleteMapping("/{id}")

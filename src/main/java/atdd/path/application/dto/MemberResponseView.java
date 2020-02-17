@@ -42,7 +42,6 @@ public class MemberResponseView {
                 .add("id=" + id)
                 .add("email='" + email + "'")
                 .add("name='" + name + "'")
-                .add("password='" + password + "'")
                 .toString();
     }
 
