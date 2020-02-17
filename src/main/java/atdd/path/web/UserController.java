@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -23,7 +24,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity createUser(@RequestBody CreateUserRequestView view) {
         User persistUser = userRepository.save(view.toUser());
-        return ResponseEntity.created(URI.create("/lines/" + persistUser.getId())).body(UserResponseView.of(persistUser));
+        return ResponseEntity
+                .created(URI.create("/lines/" + persistUser.getId()))
+                .body(UserResponseView.of(persistUser));
     }
 
     @GetMapping
@@ -37,7 +40,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity showUser(@PathVariable Long id) {
-        return ResponseEntity.notFound().build();
+        Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser
+                .map(user -> ResponseEntity.ok().body(UserResponseView.of(user)))
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @DeleteMapping("/{id}")
