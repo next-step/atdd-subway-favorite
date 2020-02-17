@@ -10,12 +10,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 class MemberDaoTest {
@@ -74,8 +73,7 @@ class MemberDaoTest {
 		memberDao.deleteById(persistMember.getId());
 
 		// then
-		assertThrows(EmptyResultDataAccessException.class, () -> {
-			memberDao.findById(persistMember.getId());
-		});
+		assertThatThrownBy(() -> memberDao.findById(persistMember.getId()))
+			.isInstanceOf(EmptyResultDataAccessException.class);
 	}
 }
