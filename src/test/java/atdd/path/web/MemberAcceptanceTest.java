@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,10 +33,34 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest {
         EntityExchangeResult<MemberResponseView> result = createMember();
         MemberResponseView view = result.getResponseBody();
 
-        webTestClient.delete().uri("/members/"+ view.getId())
+        webTestClient.delete().uri("/members/" + view.getId())
                 .exchange()
                 .expectStatus()
                 .isNoContent();
+    }
+
+    @DisplayName("로그인을 할 수 있다")
+    @Test
+    void beAbleToLogin() throws Exception {
+        createMember();
+
+        Map<String, String> map = Map.ofEntries(
+                Map.entry("email", TEST_MEMBER_EMAIL),
+                Map.entry("password", TEST_MEMBER_PASSWORD)
+        );
+
+        String inputJson = objectMapper.writeValueAsString(map);
+
+        webTestClient.post().uri("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(inputJson), String.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.accessToken").isNotEmpty()
+                .jsonPath("$.tokenType").isEqualTo("bearer");
+
     }
 
     private EntityExchangeResult<MemberResponseView> createMember() throws Exception {
