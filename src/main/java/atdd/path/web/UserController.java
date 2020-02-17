@@ -34,4 +34,14 @@ public class UserController {
 
         return ResponseEntity.ok().body(UserResponseView.listOf(users));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity showUser(@PathVariable Long id) {
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        return ResponseEntity.noContent().build();
+    }
 }
