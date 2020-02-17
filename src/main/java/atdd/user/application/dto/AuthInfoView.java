@@ -16,4 +16,7 @@ public class AuthInfoView {
   public String getTokenType() {
     return tokenType;
   }
+
+  public AuthInfoView() {
+  }
 }
