@@ -17,12 +17,7 @@ public class UserController {
     public ResponseEntity createUser(@RequestBody CreateUserRequestView view) {
         Long id = 1L;
 
-        String userEmail = "boorwonie@email.com";
-        String userName = "브라운";
-        String password = "subway";
-
-        User user = new User(userEmail, userName, password);
-        return ResponseEntity.created(URI.create("/lines/" + id)).body(UserResponseView.of(user));
+        return ResponseEntity.created(URI.create("/lines/" + id)).body(UserResponseView.of(view.toUser()));
     }
 
     @GetMapping
@@ -35,6 +30,7 @@ public class UserController {
 
         User user = new User(userEmail, userName, password);
         users.add(user);
+
         return ResponseEntity.ok().body(UserResponseView.listOf(users));
     }
 }

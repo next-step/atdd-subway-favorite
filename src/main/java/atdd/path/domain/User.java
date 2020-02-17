@@ -18,6 +18,11 @@ public class User {
     protected User() {
     }
 
+    public User(String email, String name) {
+        this.email = email;
+        this.name = name;
+    }
+
     public User(String email, String name, String password) {
         this.email = email;
         this.name = name;

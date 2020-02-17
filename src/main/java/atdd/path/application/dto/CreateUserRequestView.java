@@ -1,10 +1,15 @@
 package atdd.path.application.dto;
 
+import atdd.path.domain.User;
+
 public class CreateUserRequestView {
     private String name;
     private String email;
     private String password;
 
+    public User toUser() {
+       return new User(email, name);
+    }
 
     public String getName() {
         return name;
