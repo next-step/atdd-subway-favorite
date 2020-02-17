@@ -1,11 +1,15 @@
 package atdd.path.web;
 
 import atdd.path.application.dto.UserResponseView;
-import atdd.path.domain.User;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserHttpTest {
     public WebTestClient webTestClient;
@@ -14,7 +18,7 @@ public class UserHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<UserResponseView> createUserTest(String reqUri, String inputJson) {
+    private EntityExchangeResult<UserResponseView> createUserTest(String reqUri, String inputJson) {
         return webTestClient
                 .post()
                 .uri(reqUri)
@@ -28,6 +32,17 @@ public class UserHttpTest {
                 .expectHeader()
                 .exists("Location")
                 .expectBody(UserResponseView.class)
+                .consumeWith(result -> {
+                    HttpHeaders responseHeaders = result.getResponseHeaders();
+                    URI location = responseHeaders.getLocation();
+                    String stringifyLocation = location.toString();
+                    assertThat(stringifyLocation).isEqualTo(reqUri + "/" + result.getResponseBody().getId());
+                })
                 .returnResult();
+    }
+
+    public Long createUserSuccess(String reqUri, String inputJson) {
+        EntityExchangeResult<UserResponseView> responseEntity = createUserTest(reqUri, inputJson);
+        return responseEntity.getResponseBody().getId();
     }
 }
