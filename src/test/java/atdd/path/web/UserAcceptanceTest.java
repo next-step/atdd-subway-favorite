@@ -31,10 +31,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 "boorwonie@email.com", "브라운", "subway");
 
         // when
-        EntityExchangeResult<UserResponseView> userResponseAfterCreate = userHttpTest.createUserTest(USER_URL,
-                inputJson);
-
-        Long userId = userResponseAfterCreate.getResponseBody().getId();
+        userHttpTest.createUserSuccess(USER_URL, inputJson);
 
         // then
         EntityExchangeResult<List<UserResponseView>> userResponseAfterGet = webTestClient
@@ -59,12 +56,8 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         String secondInputJson = String.format("{\"email\": \"%s\", \"name\": \"%s\", \"password\": \"%s\"}",
                 "irrationnelle@email.com", "라세", "station");
         // given
-        EntityExchangeResult<UserResponseView> firstUserResponse = userHttpTest.createUserTest(USER_URL,
-                firstInputJson);
-        EntityExchangeResult<UserResponseView> secondUserResponse = userHttpTest.createUserTest(USER_URL,
-                secondInputJson);
-        Long firstUserId = firstUserResponse.getResponseBody().getId();
-        Long secondUserId = secondUserResponse.getResponseBody().getId();
+        Long firstUserId = userHttpTest.createUserSuccess(USER_URL, firstInputJson);
+        Long secondUserId = userHttpTest.createUserSuccess(USER_URL, secondInputJson);
 
         // when
         webTestClient.delete().uri(USER_URL + "/" + firstUserId).exchange().expectStatus().isNoContent();
