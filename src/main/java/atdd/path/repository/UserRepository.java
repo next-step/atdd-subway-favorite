@@ -1,9 +1,6 @@
 package atdd.path.repository;
 
 import atdd.path.domain.User;
+import org.springframework.data.repository.CrudRepository;
 
-public class UserRepository {
-    public User save(User newUser) {
-        return new User("mock@email.net", "mock");
-    }
-}
+public interface UserRepository extends CrudRepository<User, Long> {}
