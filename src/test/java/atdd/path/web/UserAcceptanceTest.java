@@ -59,12 +59,26 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public void deleteUser() {
         // given
         createUser();
-        Long id = 1L;
+        createUser();
+        Long firstUserId = 1L;
+        Long secondUserId = 2L;
 
         // when
-        webTestClient.delete().uri(USER_URL + "/" + id).exchange().expectStatus().isNoContent();
+        webTestClient.delete().uri(USER_URL + "/" + firstUserId).exchange().expectStatus().isNoContent();
 
         // then
-        webTestClient.get().uri(USER_URL + "/" + id).exchange().expectStatus().isNotFound();
+        webTestClient.get().uri(USER_URL + "/" + firstUserId).exchange().expectStatus().isNotFound();
+        EntityExchangeResult<UserResponseView> userResponseAfterGet = webTestClient
+                .get()
+                .uri(USER_URL + "/" + secondUserId)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
+                .expectBody(UserResponseView.class)
+                .returnResult();
+
+        assertThat(userResponseAfterGet.getResponseBody().getName()).isEqualTo("브라운");
     }
 }
