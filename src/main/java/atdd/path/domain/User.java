@@ -1,7 +1,6 @@
 package atdd.path.domain;
 
 import lombok.Builder;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 

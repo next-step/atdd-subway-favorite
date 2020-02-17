@@ -1,10 +1,10 @@
 package atdd.path.application.dto;
 
 import atdd.path.domain.User;
-import lombok.Builder;
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class CreateUserRequestView {
     @NotBlank
