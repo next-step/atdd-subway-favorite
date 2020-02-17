@@ -45,4 +45,15 @@ public class UserHttpTest {
         EntityExchangeResult<UserResponseView> responseEntity = createUserTest(reqUri, inputJson);
         return responseEntity.getResponseBody().getId();
     }
+
+    public WebTestClient.ResponseSpec showUsersAndSingleUserTest(String reqUri) {
+        return webTestClient
+                .get()
+                .uri(reqUri)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON);
+    }
 }
