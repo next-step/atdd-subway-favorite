@@ -43,11 +43,12 @@ public class UserController {
         Optional<User> optionalUser = userRepository.findById(id);
         return optionalUser
                 .map(user -> ResponseEntity.ok().body(UserResponseView.of(user)))
-                .orElseGet(() -> ResponseEntity.noContent().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
