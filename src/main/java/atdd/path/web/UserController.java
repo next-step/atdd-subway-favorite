@@ -25,7 +25,7 @@ public class UserController {
     public ResponseEntity createUser(@RequestBody CreateUserRequestView view) {
         User persistUser = userRepository.save(view.toUser());
         return ResponseEntity
-                .created(URI.create("/lines/" + persistUser.getId()))
+                .created(URI.create("/users/" + persistUser.getId()))
                 .body(UserResponseView.of(persistUser));
     }
 
