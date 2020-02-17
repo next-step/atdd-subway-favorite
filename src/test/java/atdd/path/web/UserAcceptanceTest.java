@@ -2,6 +2,8 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -15,6 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String USER_URL = "/users";
 
+    private UserHttpTest userHttpTest;
+
+    @BeforeEach
+    void setUp() {
+        this.userHttpTest = new UserHttpTest(webTestClient);
+    }
+
     @DisplayName("회원 가입")
     @Test
     public void createUser() {
@@ -22,20 +31,8 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 "boorwonie@email.com", "브라운", "subway");
 
         // when
-        EntityExchangeResult<UserResponseView> userResponseAfterCreate = webTestClient
-                .post()
-                .uri(USER_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(inputJson), String.class)
-                .exchange()
-                .expectStatus()
-                .isCreated()
-                .expectHeader()
-                .contentType(MediaType.APPLICATION_JSON)
-                .expectHeader()
-                .exists("Location")
-                .expectBody(UserResponseView.class)
-                .returnResult();
+        EntityExchangeResult<UserResponseView> userResponseAfterCreate = userHttpTest.createUserTest(USER_URL,
+                inputJson);
 
         Long userId = userResponseAfterCreate.getResponseBody().getId();
 
@@ -57,11 +54,17 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("회원 탈퇴")
     @Test
     public void deleteUser() {
+        String firstInputJson = String.format("{\"email\": \"%s\", \"name\": \"%s\", \"password\": \"%s\"}",
+                "boorwonie@email.com", "브라운", "subway");
+        String secondInputJson = String.format("{\"email\": \"%s\", \"name\": \"%s\", \"password\": \"%s\"}",
+                "irrationnelle@email.com", "라세", "station");
         // given
-        createUser();
-        createUser();
-        Long firstUserId = 1L;
-        Long secondUserId = 2L;
+        EntityExchangeResult<UserResponseView> firstUserResponse = userHttpTest.createUserTest(USER_URL,
+                firstInputJson);
+        EntityExchangeResult<UserResponseView> secondUserResponse = userHttpTest.createUserTest(USER_URL,
+                secondInputJson);
+        Long firstUserId = firstUserResponse.getResponseBody().getId();
+        Long secondUserId = secondUserResponse.getResponseBody().getId();
 
         // when
         webTestClient.delete().uri(USER_URL + "/" + firstUserId).exchange().expectStatus().isNoContent();
@@ -79,6 +82,6 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectBody(UserResponseView.class)
                 .returnResult();
 
-        assertThat(userResponseAfterGet.getResponseBody().getName()).isEqualTo("브라운");
+        assertThat(userResponseAfterGet.getResponseBody().getName()).isEqualTo("라세");
     }
 }
