@@ -30,12 +30,7 @@ public class UserController {
     public ResponseEntity showUsers() {
         List<User> users = new ArrayList<User>();
 
-        String userEmail = "boorwonie@email.com";
-        String userName = "브라운";
-        String password = "subway";
-
-        User user = new User(userEmail, userName, password);
-        users.add(user);
+        userRepository.findAll().forEach(users::add);
 
         return ResponseEntity.ok().body(UserResponseView.listOf(users));
     }
