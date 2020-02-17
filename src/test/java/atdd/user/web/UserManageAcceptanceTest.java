@@ -17,9 +17,6 @@ import atdd.user.application.dto.UserResponseView;
 public class UserManageAcceptanceTest extends AbstractAcceptanceTest {
   private UserManageHttpTest userManageHttpTest;
 
-  @Autowired
-  private JwtConfig jwtConfig;
-
   @BeforeEach
   void setUp() {
     this.userManageHttpTest = new UserManageHttpTest(webTestClient);

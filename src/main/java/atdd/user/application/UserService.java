@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import atdd.user.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.LoginUserRequestView;
 import atdd.user.application.dto.UserResponseView;
 import atdd.user.entity.User;
 import atdd.user.repository.UserRepository;
@@ -14,22 +16,24 @@ import atdd.user.repository.UserRepository;
 @Service
 public class UserService {
   private BCryptPasswordEncoder passwordEncoder;
+  private AuthService authService;
   private UserRepository userRepository;
 
-  public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository) {
-    this.passwordEncoder = passwordEncoder;
-    this.userRepository = userRepository;
-  }
-
   public UserResponseView SignupUser(CreateUserRequestView createUserRequestView) {
-    String encryptedUserPassword = passwordEncoder.encode(createUserRequestView.getPassword());
-    User createdUser = userRepository.save(new User(
-        createUserRequestView.getEmail(),
-        createUserRequestView.getName(),
-        encryptedUserPassword
+    String encryptedUserPassword = HashingPassword(createUserRequestView.getPassword());
+    System.out.println(encryptedUserPassword);
+    User createdUser = userRepository.save(
+        new User(
+          createUserRequestView.getEmail(),
+          createUserRequestView.getName(),
+          encryptedUserPassword
         )
       );
     return new UserResponseView(createdUser.getId(), createdUser.getEmail(), createdUser.getName());
+  }
+
+  private String HashingPassword(String password) {
+    return passwordEncoder.encode(password);
   }
 
   public Optional<UserResponseView> RetrieveUser(Long id) {
@@ -46,14 +50,44 @@ public class UserService {
     return Optional.of(userResponseView);
   }
 
+  public Optional<AuthInfoView> LoginUser(LoginUserRequestView loginUserRequestView) {
+    Optional<User> result = userRepository.findByEmail(
+        loginUserRequestView.getEmail()
+        );
+
+    if (!result.isPresent()) {
+      return Optional.empty();
+    }
+    User user = result.get();
+
+    if( !passwordEncoder.matches(
+          loginUserRequestView.getPassword(),
+          user.getPassword())
+        ) {
+      return Optional.empty();
+    }
+
+    return Optional.of(
+        authService.GenerateAuthToken(
+          user.getEmail()
+          ));
+  }
+
   public void DeleteUser(Long id) {
     userRepository.deleteById(id);
     return;
   }
 
+  public UserService(BCryptPasswordEncoder passwordEncoder, AuthService authService, UserRepository userRepository) {
+    this.passwordEncoder = passwordEncoder;
+    this.authService = authService;
+    this.userRepository = userRepository;
+  }
+
   @Autowired
-  public UserService(UserRepository userRepository) {
-    passwordEncoder = new BCryptPasswordEncoder();
+  public UserService(AuthService authService, UserRepository userRepository) {
+    this.passwordEncoder = new BCryptPasswordEncoder();
+    this.authService = authService;
     this.userRepository = userRepository;
   }
 

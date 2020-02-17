@@ -6,9 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import atdd.configure.JwtConfig;
+import atdd.user.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.LoginUserRequestView;
 import atdd.user.application.dto.UserResponseView;
 import atdd.user.entity.User;
 import atdd.user.repository.UserRepository;
@@ -21,12 +25,15 @@ import static atdd.user.TestConstant.*;
 
 @DataJpaTest
 @AutoConfigureDataJpa
+@Import(JwtConfig.class)
 public class UserServiceTest {
   @Autowired
-  private TestEntityManager testEntityManager;
+  private JwtConfig jwtConfig;
 
   @Autowired
   private UserRepository userRepository;
+
+  private AuthService authService;
 
   private UserService userService;
 
@@ -35,8 +42,8 @@ public class UserServiceTest {
 
   @BeforeEach
   void setUp() {
-    this.passwordEncoder = new BCryptPasswordEncoder();
-    this.userService = new UserService(passwordEncoder, userRepository);
+    this.authService = new AuthService(jwtConfig);
+    this.userService = new UserService(authService, userRepository);
   }
 
   @Test
@@ -88,6 +95,20 @@ public class UserServiceTest {
     Optional<UserResponseView> optionalUser = userService.RetrieveUser(expectResult.getId());
     if (optionalUser.isPresent()) {
       fail("회원 탈퇴가 정상적으로 되지 않음");
+      return;
+    }
+  }
+
+  @Test
+  public void loginUser() {
+    CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
+    UserResponseView expectResult = userService.SignupUser(createUserRequestView);
+
+    LoginUserRequestView loginUserRequestView = new LoginUserRequestView(USER_1_EMAIL, USER_1_PASSWORD);
+
+    Optional<AuthInfoView> result = userService.LoginUser(loginUserRequestView);
+    if (!result.isPresent()) {
+      fail("로그인 실패");
       return;
     }
 
