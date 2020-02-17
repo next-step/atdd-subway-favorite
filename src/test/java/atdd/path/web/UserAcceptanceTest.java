@@ -62,9 +62,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         Long id = 1L;
 
         // when
-        webTestClient.delete().uri(USER_URL + id).exchange().expectStatus().isNoContent();
+        webTestClient.delete().uri(USER_URL + "/" + id).exchange().expectStatus().isNoContent();
 
         // then
-        webTestClient.get().uri(USER_URL + id).exchange().expectStatus().isNotFound();
+        webTestClient.get().uri(USER_URL + "/" + id).exchange().expectStatus().isNotFound();
     }
 }
