@@ -46,6 +46,23 @@ public class UserDao {
         return getUser(new Object[]{id}, sql);
     }
 
+    public User findByEmail(String email) {
+        String sql = "SELECT id, email, name, password " +
+                "FROM USER " +
+                "WHERE email = ?";
+
+        return getUser(new Object[]{email}, sql);
+    }
+
+    public User findByEmailAndPassword(String email, String password) {
+        String sql = "SELECT id, email, name, password " +
+                "FROM USER " +
+                "WHERE email = ?" +
+                "AND password = ?";
+
+        return getUser(new Object[]{email, password}, sql);
+    }
+
     private User getUser(Object[] objects, String sql) {
         return jdbcTemplate.queryForObject(sql, objects, (rs, rowNum) ->
                 new User(

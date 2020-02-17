@@ -11,8 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
-import static atdd.path.TestConstant.TEST_USER;
-import static atdd.path.TestConstant.USER_EMAIL_1;
+import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
@@ -52,9 +51,28 @@ public class UserDaoTest {
     }
 
     @Test
+    public void findEmail() {
+        User findUser = userDao.findByEmail(savedUser.getEmail());
+
+        assertThat(findUser.getEmail()).isNotNull();
+        assertThat(findUser.getEmail()).isEqualTo(USER_EMAIL_1);
+    }
+
+    @Test
+    public void findByEmailAndPassword() {
+        User findUser = userDao.findByEmailAndPassword(savedUser.getEmail(), savedUser.getPassword());
+
+        assertThat(findUser.getEmail()).isNotNull();
+        assertThat(findUser.getEmail()).isEqualTo(USER_EMAIL_1);
+        assertThat(findUser.getPassword()).isNotNull();
+        assertThat(findUser.getPassword()).isEqualTo(USER_PASSWORD_1);
+    }
+
+    @Test
     public void deleteById() {
         userDao.deleteById(savedUser.getId());
 
-        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> userDao.findById(savedUser.getId()));
+        Assertions.assertThrows(EmptyResultDataAccessException.class,
+                () -> userDao.findById(savedUser.getId()), "조회 결과가 없습니다.");
     }
 }
