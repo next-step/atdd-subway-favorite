@@ -24,3 +24,12 @@ create table if not exists EDGE
     distance int,
     primary key(id)
 );
+
+create table if not exists MEMBER
+(
+    id bigint auto_increment not null,
+    email varchar(100) not null unique,
+    name varchar(100) not null,
+    password varchar(30) not null,
+    primary key(id)
+);

@@ -2,6 +2,7 @@ package atdd.path;
 
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
+import atdd.path.domain.Member;
 import atdd.path.domain.Station;
 import org.assertj.core.util.Lists;
 
@@ -90,6 +91,14 @@ public class TestConstant {
     public static final Long EDGE_ID_21 = 21L;
     public static final Long EDGE_ID_22 = 22L;
     public static final Long EDGE_ID_23 = 23L;
+
+    public static final Long MEMBER_ID = 1L;
+
+    public static final String MEMBER_EMAIL = "starkying@gmail.com";
+
+    public static final String MEMBER_NAME = "김규민";
+
+    public static final String MEMBER_PASSWORD = "12345678";
 
     public static Station TEST_STATION = new Station(STATION_ID, STATION_NAME);
     public static Station TEST_STATION_2 = new Station(STATION_ID_2, STATION_NAME_2);
