@@ -15,16 +15,17 @@ import javax.validation.ValidationException;
 import java.net.URI;
 import java.util.stream.Collectors;
 
-@RestController
-public class UserController {
-    private static final String BASE_URI = "/user";
-    private final UserService userService;
+import static atdd.path.web.Constant.*;
 
+@RestController
+@RequestMapping(USER_BASE_URI)
+public class UserController {
+    private final UserService userService;
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping(BASE_URI)
+    @PostMapping
     public ResponseEntity<UserResponseView> create(@RequestBody @Valid CreateUserRequestView request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity
@@ -34,22 +35,22 @@ public class UserController {
 
         if (checkExistingUser(request)) {
             return ResponseEntity
-                    .ok()
+                    .status(HttpStatus.CONFLICT)
                     .build();
         }
 
         UserResponseView response = userService.createUser(request);
         return ResponseEntity
-                .created(URI.create(BASE_URI + "/" + response.getId()))
+                .created(URI.create("/" + response.getId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
 
-    @DeleteMapping(BASE_URI + "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<UserResponseView> delete(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
+                .notFound()
                 .build();
     }
 
