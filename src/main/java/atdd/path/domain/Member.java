@@ -20,6 +20,10 @@ public class Member {
         this(null, email, name, password);
     }
 
+    public boolean isMatchPassword(String password) {
+        return this.password.equals(password);
+    }
+
     public Long getId() {
         return id;
     }
