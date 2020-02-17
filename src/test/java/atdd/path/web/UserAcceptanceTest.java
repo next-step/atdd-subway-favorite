@@ -53,4 +53,18 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         assertThat(userResponseAfterGet.getResponseBody().get(0).getName()).isEqualTo("브라운");
     }
+
+    @DisplayName("회원 탈퇴")
+    @Test
+    public void deleteUser() {
+        // given
+        createUser();
+        Long id = 1L;
+
+        // when
+        webTestClient.delete().uri(USER_URL + id).exchange().expectStatus().isNoContent();
+
+        // then
+        webTestClient.get().uri(USER_URL + id).exchange().expectStatus().isNotFound();
+    }
 }
