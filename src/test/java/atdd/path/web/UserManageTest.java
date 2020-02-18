@@ -26,13 +26,13 @@ public class UserManageTest extends AbstractAcceptanceTest {
 
     @DisplayName("회원 가입")
     @Test
-    public void CreateMemeber() {
-        String memberName = "봉일균";
-        Integer age = 33;
-        String cellPhone = "010-6616-6609";
-        String inputJson = "{\"name\":\"" + memberName + "\"," +
-                "\"age\":\"" + age + "\"," +
-                "\"cellPhone\":\"" + cellPhone + "\"}";
+    public void CreateUser() {
+        String email = "boorwonie@email.com";
+        String name = "브라운";
+        String password = "subway";
+        String inputJson = "{\"email\":\"" + email + "\"," +
+                "\"name\":\"" + name + "\"," +
+                "\"password\":\"" + password + "\"}";
 
         webTestClient.post().uri("/user")
             .contentType(MediaType.APPLICATION_JSON)
