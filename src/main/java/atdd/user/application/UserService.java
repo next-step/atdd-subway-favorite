@@ -78,6 +78,24 @@ public class UserService {
     return;
   }
 
+  public Optional<UserResponseView> RetrieveUserByAuthToken(AuthInfoView authInfoView) {
+    Optional<String> authResult = authService.AuthUser(authInfoView);
+    if(!authResult.isPresent()) {
+      return Optional.empty();
+    }
+
+    String email = authResult.get();
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if(!optionalUser.isPresent()) {
+      return Optional.empty();
+    }
+    User user = optionalUser.get();
+
+    UserResponseView userResponseView = new UserResponseView(
+        user.getId(), user.getEmail(), user.getName());
+    return Optional.of(userResponseView);
+  }
+
   public UserService(BCryptPasswordEncoder passwordEncoder, AuthService authService, UserRepository userRepository) {
     this.passwordEncoder = passwordEncoder;
     this.authService = authService;
