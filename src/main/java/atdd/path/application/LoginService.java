@@ -6,7 +6,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LoginService {
+
+    public final JwtTokenProvider jwtTokenProvider;
+
+    public LoginService(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     public LoginResponseView login(LoginRequestView loginRequestView) {
-        return null;
+        String token = jwtTokenProvider.createToken(loginRequestView.getEmail());
+
+        return LoginResponseView.builder()
+                .accessToken(token)
+                .build();
     }
 }
