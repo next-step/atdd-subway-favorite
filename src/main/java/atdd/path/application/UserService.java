@@ -33,11 +33,7 @@ public class UserService {
     }
 
     public Optional<User> findByEmail(String email) {
-        return userRepository
-                .findAll()
-                .stream()
-                .map(Optional::of)
-                .collect(Collectors.toList())
-                .get(0);
+        User user=userRepository.findByEmail(email);
+        return Optional.of(user);
     }
 }

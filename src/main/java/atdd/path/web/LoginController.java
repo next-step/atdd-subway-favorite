@@ -38,7 +38,7 @@ public class LoginController {
                     .status(HttpStatus.CONFLICT)
                     .build();
         }
-        String accessToken = "";
+        String accessToken = jwtTokenProvider.createToken(request.getEmail());
         String tokenType = "bearer";
         return ResponseEntity
                 .created(URI.create("/oauth/token"))

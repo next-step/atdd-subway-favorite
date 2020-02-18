@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @EnableConfigurationProperties(ReadProperties.class)
 public class Properties {
     private String secretKey;
-    private int expireLength;
+    private Long expireLength;
 
     public Properties(ReadProperties readProperties) {
         this.secretKey = readProperties.getSecretKey();
@@ -18,7 +18,7 @@ public class Properties {
         return secretKey;
     }
 
-    public int getExpireLength() {
+    public Long getExpireLength() {
         return expireLength;
     }
 }

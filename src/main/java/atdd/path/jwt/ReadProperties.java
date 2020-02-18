@@ -5,13 +5,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "token")
 public class ReadProperties {
     private String secretKey;
-    private int expireLength;
+    private Long expireLength;
 
     public String getSecretKey() {
         return secretKey;
     }
 
-    public int getExpireLength() {
+    public Long getExpireLength() {
         return expireLength;
     }
 
@@ -19,7 +19,7 @@ public class ReadProperties {
         this.secretKey = secretKey;
     }
 
-    public void setExpireLength(int expireLength) {
+    public void setExpireLength(Long expireLength) {
         this.expireLength = expireLength;
     }
 }
