@@ -62,4 +62,8 @@ public class UserDao {
                 (String) result.get(0).get("user_password")
         );
     }
+
+    public void deleteById(Long id) {
+        jdbcTemplate.update("delete from USER where id = ?", id);
+    }
 }
