@@ -46,6 +46,10 @@ public class AuthService {
     return new AuthInfoView(accessToken, tokenType);
   }
 
+  public Optional<String> AuthUser(AuthInfoView authInfoView) {
+    return Optional.of("user1@gmail.com");
+  }
+
   public AuthService() {
   }
 

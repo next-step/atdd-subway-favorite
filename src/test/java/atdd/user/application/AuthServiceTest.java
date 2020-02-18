@@ -51,4 +51,17 @@ public class AuthServiceTest {
     assertThat(claims.getSubject()).isEqualTo(USER_1_EMAIL);
   }
 
+  @Test
+  void authUserToken() {
+    AuthInfoView authInfoView = authService.GenerateAuthToken(USER_1_EMAIL);
+
+    Optional<String> result = authService.AuthUser(authInfoView);
+    if(!result.isPresent()) {
+      fail("인증 실패");
+      return;
+    }
+
+    assertThat(result.get()).isEqualTo(USER_1_EMAIL);
+  }
+
 }
