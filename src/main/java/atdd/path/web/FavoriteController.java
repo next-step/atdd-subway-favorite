@@ -41,4 +41,10 @@ public class FavoriteController {
         return ResponseEntity.ok(new FavoriteStationsResponseView(favorites));
     }
 
+    @DeleteMapping("/stations/{id}")
+    public ResponseEntity<Object> deleteFavoriteStation(@PathVariable("id") Long favoriteId) {
+        favoriteDao.deleteForStationById(favoriteId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

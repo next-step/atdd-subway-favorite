@@ -78,4 +78,9 @@ public class FavoriteDao {
         return new FavoriteStation(rs.getLong("ID"), findStation);
     };
 
+    public void deleteForStationById(Long favoriteId) {
+        final FavoriteStation findFavorite = findFavoriteStationById(favoriteId).orElseThrow(NoDataException::new);
+        jdbcTemplate.update("delete from favorite_station where id = ?", findFavorite.getId());
+    }
+
 }

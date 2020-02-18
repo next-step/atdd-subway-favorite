@@ -1,5 +1,6 @@
 package atdd.path.dao;
 
+import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.FavoriteStation;
 import atdd.path.domain.Member;
 import atdd.path.domain.Station;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
 class FavoriteDaoTest {
@@ -71,6 +73,21 @@ class FavoriteDaoTest {
         assertThat(favorites.size()).isEqualTo(3);
         assertThat(favorites).extracting("station.name")
                 .containsExactly(STATION_NAME, STATION_NAME_2, STATION_NAME_3);
+    }
+
+    @DisplayName("즐겨찾기 아이디로 즐겨찾기 한 지하철역을 삭제해야 한다")
+    @Test
+    void mustDeleteById() {
+        Member savedMember = memberDao.save(TEST_MEMBER);
+        Station savedStation = stationDao.save(TEST_STATION);
+        FavoriteStation savedFavorite = favoriteDao.saveForStation(savedMember, savedStation);
+
+        favoriteDao.deleteForStationById(savedFavorite.getId());
+
+        assertThrows(
+                NoDataException.class,
+                () -> favoriteDao.deleteForStationById(savedFavorite.getId())
+        );
     }
 
 }
