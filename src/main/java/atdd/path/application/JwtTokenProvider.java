@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -41,6 +42,37 @@ public class JwtTokenProvider
                 .setExpiration(Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public boolean validateToken(String token)
+    {
+        try
+        {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            if (claims.getBody().getExpiration().before(new Date()))
+                return false;
+
+            return true;
+        }
+        catch (JwtException | IllegalArgumentException e)
+        {
+            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
+        }
+    }
+
+    public String resolveToken(HttpServletRequest req)
+    {
+        String bearerToken = req.getHeader("Authorization");
+        if( bearerToken != null && bearerToken.startsWith("Bearer "))
+        {
+            return bearerToken.substring(7, bearerToken.length());
+        }
+        return null;
+    }
+
+    public String getMemberEmail(String token)
+    {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
 }
