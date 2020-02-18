@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Optional;
 
 import static atdd.path.web.Constant.USER_BASE_URI;
 
@@ -33,7 +32,8 @@ public class UserController {
                     .build();
         }
 
-        if (isExistingUser(request)) {
+        User user = isExistingUser(request);
+        if (user != null) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .build();
@@ -54,8 +54,8 @@ public class UserController {
                 .build();
     }
 
-    private boolean isExistingUser(CreateUserRequestView request) {
-        Optional<User> user = userService.findByEmail(request.getEmail());
-        return user.isPresent();
+    private User isExistingUser(CreateUserRequestView request) {
+        User user = userService.findByEmail(request.getEmail());
+        return user;
     }
 }

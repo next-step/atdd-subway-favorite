@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 
 import static atdd.path.web.Constant.LOGIN_BASE_URI;
@@ -30,18 +29,18 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<LoginReponseView> login(@RequestBody LoginRequestView request) {
-        User user = userService.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("유효하지 않은 이메일입니다."));
+        User user = userService.findByEmail(request.getEmail());
         boolean isMatch = user.getPassword().equals(request.getPassword());
         if (!isMatch) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .build();
         }
-        String accessToken = jwtTokenProvider.createToken(request.getEmail());
+        String accessToken = jwtTokenProvider.createToken(user.getEmail());
         String tokenType = "bearer";
+        LoginReponseView response=new LoginReponseView(accessToken, tokenType);
         return ResponseEntity
                 .created(URI.create("/oauth/token"))
-                .body(new LoginReponseView(accessToken, tokenType));
+                .body(response);
     }
 }

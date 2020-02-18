@@ -32,8 +32,8 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public Optional<User> findByEmail(String email) {
+    public User findByEmail(String email) {
         User user=userRepository.findByEmail(email);
-        return Optional.of(user);
+        return user;
     }
 }
