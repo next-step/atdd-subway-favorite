@@ -21,7 +21,7 @@ public class AuthInfoView {
     return tokenType + " " + accessToken;
   }
 
-  public void fromHeaderString(String headerString) {
+  public AuthInfoView(String headerString) {
     String[] splited = headerString.split(" ");
     this.tokenType = splited[0];
     this.accessToken = splited[1];

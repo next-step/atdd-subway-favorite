@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import atdd.user.application.UserService;
+import atdd.user.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
 import atdd.user.application.dto.UserResponseView;
 import atdd.user.entity.User;
@@ -55,8 +58,11 @@ public class UserController {
   }
 
   @GetMapping("/user/me")
-  public ResponseEntity retrieveUserByAuthToken(@RequestHeader Map<String, String> requestHeader) {
-    Optional<UserResponseView> result = userService.RetrieveUser(1L);
+  public ResponseEntity retrieveUserByAuthToken(
+      @RequestHeader(value=HttpHeaders.AUTHORIZATION) String authToken) {
+    AuthInfoView authInfoView = new AuthInfoView(authToken);
+
+    Optional<UserResponseView> result = userService.RetrieveUserByAuthToken(authInfoView);
     if(!result.isPresent()) {
       return ResponseEntity.notFound().build();
     }

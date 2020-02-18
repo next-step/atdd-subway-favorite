@@ -114,8 +114,5 @@ public class UserManageAcceptanceTest extends AbstractAcceptanceTest {
     UserResponseView userResponseView = result.getResponseBody();
     assertThat(userResponseView.getId()).isEqualTo(userID);
     assertThat(userResponseView.getEmail()).isEqualTo(USER_1_EMAIL);
-
-
-    
   }
 }
