@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.application.UserService;
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.domain.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 import static atdd.path.web.Constant.USER_BASE_URI;
 
@@ -31,7 +33,7 @@ public class UserController {
                     .build();
         }
 
-        if (checkExistingUser(request)) {
+        if (isExistingUser(request)) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .build();
@@ -52,7 +54,8 @@ public class UserController {
                 .build();
     }
 
-    private boolean checkExistingUser(CreateUserRequestView request) {
-        return userService.checkUserExist(request);
+    private boolean isExistingUser(CreateUserRequestView request) {
+        Optional<User> user = userService.findByEmail(request.getEmail());
+        return user.isPresent();
     }
 }

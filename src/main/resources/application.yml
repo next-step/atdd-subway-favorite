@@ -5,8 +5,6 @@ spring:
     username: sa
     password: password
 
-security:
-  jwt:
-    token:
-      secret-key: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
-      expire-length: 3600000
+token:
+  secret-key: secretkey
+  expire-length: 200000

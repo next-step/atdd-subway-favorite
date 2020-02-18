@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,11 +32,12 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public boolean checkUserExist(CreateUserRequestView request) {
+    public Optional<User> findByEmail(String email) {
         return userRepository
                 .findAll()
                 .stream()
-                .map(User::getEmail)
-                .anyMatch(a -> a.equals(request.getEmail()));
+                .map(Optional::of)
+                .collect(Collectors.toList())
+                .get(0);
     }
 }
