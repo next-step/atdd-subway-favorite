@@ -76,4 +76,18 @@ public class MemberDaoTest
                 () -> memberDao.findById(persistMember.getId())
         );
     }
+
+    @DisplayName("Email, Password로 조회")
+    @Test
+    public void findByEmailAndPassword()
+    {
+        // when
+        Member memberByEmailAndPassword
+                = memberDao.findByEmailAndPassword(persistMember.getEmail(), persistMember.getPassword());
+
+        // then
+        assertThat(memberByEmailAndPassword.getId()).isNotNull();
+        assertThat(memberByEmailAndPassword.getEmail()).isEqualTo(MEMBER_EMAIL);
+        assertThat(memberByEmailAndPassword.getName()).isEqualTo(MEMBER_NAME);
+    }
 }
