@@ -1,7 +1,7 @@
-package atdd.path.web;
+package atdd.member.web;
 
-import atdd.path.application.dto.CreateMemberRequestView;
-import atdd.path.application.dto.MemberResponseView;
+import atdd.member.application.dto.CreateMemberRequestView;
+import atdd.member.application.dto.MemberResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;

@@ -1,6 +1,6 @@
-package atdd.path.dao;
+package atdd.member.dao;
 
-import atdd.path.domain.Member;
+import atdd.member.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;

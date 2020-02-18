@@ -1,7 +1,7 @@
-package atdd.path.dao;
+package atdd.member.dao;
 
-import atdd.path.application.exception.NoDataException;
-import atdd.path.domain.Member;
+import atdd.member.dao.MemberDao;
+import atdd.member.domain.Member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
-package atdd.path.application.dto;
+package atdd.member.application.dto;
 
-import atdd.path.domain.Member;
+import atdd.member.domain.Member;
 
 public class CreateMemberRequestView
 {

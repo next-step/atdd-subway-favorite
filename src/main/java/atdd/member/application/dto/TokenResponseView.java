@@ -1,4 +1,4 @@
-package atdd.path.application.dto;
+package atdd.member.application.dto;
 
 public class TokenResponseView
 {

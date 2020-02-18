@@ -1,6 +1,6 @@
-package atdd.path.application;
+package atdd.member.application;
 
-import atdd.path.application.exception.InvalidJwtAuthenticationException;
+import atdd.member.application.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

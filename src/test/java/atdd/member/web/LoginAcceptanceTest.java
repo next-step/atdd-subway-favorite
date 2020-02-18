@@ -1,7 +1,7 @@
-package atdd.path.web;
+package atdd.member.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.TokenResponseView;
+import atdd.member.application.dto.TokenResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

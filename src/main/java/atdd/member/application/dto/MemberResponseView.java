@@ -1,27 +1,25 @@
-package atdd.path.domain;
+package atdd.member.application.dto;
 
-public class Member
+import atdd.member.domain.Member;
+
+public class MemberResponseView
 {
     private Long id;
     private String email;
     private String name;
     private String password;
 
-    public Member() {}
-
-    public Member(Long id, String email, String name, String password)
+    public MemberResponseView(Long id, String email, String name, String password)
     {
         this.id = id;
         this.email = email;
         this.name = name;
-        this.password = password;
+        this.password =password;
     }
 
-    public Member(String email, String name, String password)
+    public static MemberResponseView of(Member member)
     {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        return new MemberResponseView(member.getId(), member.getEmail(), member.getName(), member.getPassword());
     }
 
     public Long getId()

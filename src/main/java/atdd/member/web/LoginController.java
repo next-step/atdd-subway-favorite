@@ -1,10 +1,10 @@
-package atdd.path.web;
+package atdd.member.web;
 
-import atdd.path.application.JwtTokenProvider;
-import atdd.path.application.dto.CreateMemberRequestView;
-import atdd.path.application.dto.TokenResponseView;
-import atdd.path.dao.MemberDao;
-import atdd.path.domain.Member;
+import atdd.member.application.JwtTokenProvider;
+import atdd.member.application.dto.CreateMemberRequestView;
+import atdd.member.application.dto.TokenResponseView;
+import atdd.member.dao.MemberDao;
+import atdd.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

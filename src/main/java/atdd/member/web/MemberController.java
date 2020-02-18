@@ -1,11 +1,11 @@
-package atdd.path.web;
+package atdd.member.web;
 
-import atdd.path.application.JwtTokenProvider;
-import atdd.path.application.dto.CreateMemberRequestView;
-import atdd.path.application.dto.MemberResponseView;
-import atdd.path.application.exception.InvalidJwtAuthenticationException;
-import atdd.path.dao.MemberDao;
-import atdd.path.domain.Member;
+import atdd.member.application.JwtTokenProvider;
+import atdd.member.application.dto.CreateMemberRequestView;
+import atdd.member.application.dto.MemberResponseView;
+import atdd.member.application.exception.InvalidJwtAuthenticationException;
+import atdd.member.dao.MemberDao;
+import atdd.member.domain.Member;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;

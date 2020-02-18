@@ -1,13 +1,10 @@
-package atdd.path.web;
+package atdd.member.web;
 
-import atdd.path.application.dto.TokenResponseView;
+import atdd.member.application.dto.TokenResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
-
-import static atdd.path.TestConstant.MEMBER_EMAIL;
-import static atdd.path.TestConstant.MEMBER_PASSWORD;
 
 public class LoginHttpTest
 {
