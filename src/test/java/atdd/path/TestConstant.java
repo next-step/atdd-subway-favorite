@@ -1,5 +1,6 @@
 package atdd.path;
 
+import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
 import atdd.path.domain.Station;
@@ -154,4 +155,7 @@ public class TestConstant {
     public static String USER_NAME1 = "브라운";
     public static String USER_EMAIL1 = "boorwonie@email.com";
     public static String USER_PASSWORD1 = "subway";
+
+    public static CreateUserRequestView CREATE_USER_REQUEST1 = CreateUserRequestView.builder().email(USER_EMAIL1).name(USER_NAME1).password(USER_PASSWORD1).build();
+
 }

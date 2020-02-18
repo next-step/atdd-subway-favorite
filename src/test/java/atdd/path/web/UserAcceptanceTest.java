@@ -19,10 +19,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @Test
     public void userCreate() {
-        CreateUserRequestView view = CreateUserRequestView.builder()
-                .name(USER_NAME1)
-                .email(USER_EMAIL1)
-                .password(USER_PASSWORD1).build();
+        CreateUserRequestView view = CREATE_USER_REQUEST1;
 
         User user = userHttpTest.createUserRequest(view)
                 .getResponseBody();
@@ -31,4 +28,5 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(user.getEmail()).isEqualTo(USER_EMAIL1);
         assertThat(user.getPassword()).isEqualTo(USER_PASSWORD1);
     }
+
 }
