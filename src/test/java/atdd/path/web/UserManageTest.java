@@ -2,11 +2,19 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.LineResponseView;
+import atdd.path.application.dto.StationResponseView;
+import atdd.path.application.dto.UserResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserManageTest extends AbstractAcceptanceTest {
 //    Feature: 회원 정보 관리
@@ -34,13 +42,19 @@ public class UserManageTest extends AbstractAcceptanceTest {
                 "\"name\":\"" + name + "\"," +
                 "\"password\":\"" + password + "\"}";
 
-        webTestClient.post().uri("/user")
+        // when
+        EntityExchangeResult<UserResponseView> userResponse = webTestClient.post().uri("/user")
             .contentType(MediaType.APPLICATION_JSON)
             .body(Mono.just(inputJson), String.class)
             .exchange()
             .expectStatus().isCreated()
             .expectHeader().contentType(MediaType.APPLICATION_JSON)
             .expectHeader().exists("Location")
-            .expectBody(LineResponseView.class);
+            .expectBody(UserResponseView.class)
+            .returnResult();
+
+        // then
+        assertThat(userResponse.getResponseBody().getEmail()).isEqualTo(email);
+
     }
 }

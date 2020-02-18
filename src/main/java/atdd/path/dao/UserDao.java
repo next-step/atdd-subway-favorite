@@ -40,8 +40,8 @@ public class UserDao {
     }
 
     public User findById(Long id) {
-        String sql = "select U.id as user_id " +
-                "U.email as user_email, U.name as user_name\n" +
+        String sql = "select U.id as user_id, " +
+                "U.email as user_email, U.name as user_name," +
                 "U.password as user_password\n" +
                 "from USER U \n" +
                 "WHERE U.id = ?";
