@@ -58,6 +58,10 @@ public class UserDao {
         return jdbcTemplate.queryForList(sql, email);
     }
 
+    public void deleteById(Long id) {
+        jdbcTemplate.update("DELETE FROM USER WHERE id = ?", id);
+    }
+
     User mapUser(List<Map<String, Object>> result) {
         checkFindResultIsEmpty(result);
 
