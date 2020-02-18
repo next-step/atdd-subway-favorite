@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
+    private final String FAVORITES_STATIONS_URL = "/favorites/stations";
+
     private MemberHttpTest memberHttpTest;
     private StationHttpTest stationHttpTest;
 
@@ -53,18 +55,19 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         createForStationRequest(stationId2, token);
         createForStationRequest(stationId3, token);
 
-        webTestClient.get().uri("/favorites/stations")
+        webTestClient.get().uri(FAVORITES_STATIONS_URL)
                 .header(AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.count").isEqualTo(3)
-                .jsonPath("$.stations[0].name").isEqualTo(STATION_NAME);
+                .jsonPath("$.favorites[0].id").isEqualTo(FAVORITE_STATION_ID)
+                .jsonPath("$.favorites[0].station.name").isEqualTo(STATION_NAME);
     }
 
     public EntityExchangeResult<FavoriteStationResponseView> createForStationRequest(Long stationId, String token) {
-        return webTestClient.post().uri("/favorites/stations/" + stationId)
+        return webTestClient.post().uri(FAVORITES_STATIONS_URL + "/" + stationId)
                 .header(AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isCreated()

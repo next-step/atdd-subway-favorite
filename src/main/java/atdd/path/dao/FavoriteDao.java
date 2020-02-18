@@ -60,7 +60,15 @@ public class FavoriteDao {
     }
 
     public List<FavoriteStation> findForStations(Long memberId) {
-        return null;
+        final String sql = "select fs.id, s.id as station_id, s.name as station_name " +
+                "from favorite_station fs " +
+                "inner join station s on fs.station_id = s.id " +
+                "where fs.member_id = ?";
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{memberId},
+                mapper);
     }
 
     private static RowMapper<FavoriteStation> mapper = (rs, rowNum) -> {
