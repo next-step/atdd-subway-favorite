@@ -32,6 +32,12 @@ public class UserHttpTest {
                 .returnResult();
     }
 
+    public void deleteUserRequest(final long id) {
+        webTestClient.delete().uri(USER_PATH + "/" + id)
+                .exchange()
+                .expectStatus().isNoContent();
+    }
+
     private String writeValueAsString(Object object) {
         try {
             return mapper.writeValueAsString(object);

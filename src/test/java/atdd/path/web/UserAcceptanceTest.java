@@ -19,14 +19,29 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     @Test
-    public void userCreate() {
+    public void createUser() {
+        CreateUserRequestView view = CREATE_USER_REQUEST1;
+
+        //when
+        User user = userHttpTest.createUserRequest(view)
+                .getResponseBody();
+
+        //then
+        assertThat(user.getName()).isEqualTo(USER_NAME1);
+        assertThat(user.getEmail()).isEqualTo(USER_EMAIL1);
+        assertThat(BCrypt.checkpw(USER_PASSWORD1, user.getPassword())).isTrue();
+    }
+
+    @Test
+    public void deleteUser() {
+        //given
         CreateUserRequestView view = CREATE_USER_REQUEST1;
 
         User user = userHttpTest.createUserRequest(view)
                 .getResponseBody();
 
-        assertThat(user.getName()).isEqualTo(USER_NAME1);
-        assertThat(user.getEmail()).isEqualTo(USER_EMAIL1);
-        assertThat(BCrypt.checkpw(USER_PASSWORD1, user.getPassword())).isTrue();
+        //when
+        //then
+        userHttpTest.deleteUserRequest(user.getId());
     }
 }
