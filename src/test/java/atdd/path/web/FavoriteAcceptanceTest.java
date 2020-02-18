@@ -23,7 +23,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("지하철역 즐겨찾기 등록을 할 수 있다")
     @Test
-    void beAbleToSaveFavoriteStation() {
+    void beAbleToSaveForStation() {
         Long stationId = stationHttpTest.createStation(STATION_NAME);
 
         memberHttpTest.createMemberRequest(TEST_MEMBER);
