@@ -8,19 +8,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static atdd.path.dao.UserDao.*;
+
 public class UserFixture {
+    public static final Long KIM_ID = 1L;
     public static final String KIM_NAME = "김상구";
     public static final String KIM_EMAIL = "sgkim94@github.com";
     public static final String KIM_PASSWORD = "password";
     public static final UserSighUpRequestView USER_SIGH_UP_REQUEST_DTO = new UserSighUpRequestView(KIM_EMAIL, KIM_NAME, KIM_PASSWORD);
-    public static final User NEW_USER = new User(1L, KIM_EMAIL, KIM_NAME, KIM_PASSWORD);
+    public static final User NEW_USER = new User(KIM_ID, KIM_EMAIL, KIM_NAME, KIM_PASSWORD);
 
-    public static List<Map<String, Object>> getDaoUser() {
+    public static List<Map<String, Object>> getDaoUsers() {
+        return Collections.singletonList(getDaoUser());
+    }
+
+    public static Map<String, Object> getDaoUser() {
         Map<String, Object> savedUser = new HashMap<>();
-        savedUser.put("ID", 1L);
-        savedUser.put("NAME", KIM_NAME);
-        savedUser.put("EMAIL", KIM_EMAIL);
-        return Collections.singletonList(savedUser);
+        savedUser.put(ID_KEY, KIM_ID);
+        savedUser.put(NAME_KEY, KIM_NAME);
+        savedUser.put(EMAIL_KEY, KIM_EMAIL);
+        return savedUser;
     }
 
 }
