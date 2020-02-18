@@ -2,8 +2,11 @@ package atdd.path.application;
 
 import atdd.path.application.dto.UserRequestView;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.domain.User;
 import atdd.path.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class UserService {
@@ -20,5 +23,9 @@ public class UserService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public UserResponseView retrieveUser(HttpServletRequest request) {
+        return UserResponseView.of(User.createBuilder().email("boorwonie@email.com").build());
     }
 }

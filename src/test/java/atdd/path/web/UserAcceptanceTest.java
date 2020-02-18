@@ -57,5 +57,4 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectStatus().isOk()
                 .expectBody().jsonPath("$.email").isEqualTo(TestConstant.EMAIL_BROWN);
     }
-
 }
