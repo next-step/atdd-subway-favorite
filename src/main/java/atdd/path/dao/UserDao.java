@@ -20,7 +20,7 @@ public class UserDao {
     @Autowired
     public void setDataSource(final DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("STATION")
+                .withTableName("USER")
                 .usingGeneratedKeyColumns("ID");
     }
 
@@ -32,32 +32,39 @@ public class UserDao {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("ID", user.getId());
         parameters.put("NAME", user.getName());
+        parameters.put("EMAIL", user.getEmail());
+        parameters.put("PASSWORD", user.getPassword());
 
-        Long stationId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-        return findById(stationId);
+        Long userId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
+        return findById(userId);
     }
 
     public User findById(Long id) {
-        String sql = "select L.id as line_id, L.name as line_name, L.start_time as start_time, L.end_time as end_time, L.interval_time as interval_time, " +
-                "S.id as station_id, S.name as station_name\n" +
-                "from STATION S \n" +
-                "left outer join EDGE E on E.source_station_id = S.id or E.target_station_id = S.id \n" +
-                "left outer join LINE L on E.line_id = L.id\n" +
-                "WHERE S.id = ?";
+        String sql = "SELECT id, name, email \n" +
+                "FROM USER \n" +
+                "WHERE id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
         return mapUser(result);
     }
 
-    private User mapUser(List<Map<String, Object>> result) {
+    User mapUser(List<Map<String, Object>> result) {
+        checkFindResultIsEmpty(result);
+
+        return makeUserByFindData(result.get(0));
+    }
+
+    void checkFindResultIsEmpty(List<Map<String, Object>> result) {
         if (result.isEmpty()) {
             throw new NoDataException();
         }
+    }
 
+    User makeUserByFindData(Map<String, Object> user) {
         return User.builder()
-                .id((Long)result.get(0).get("USER_ID"))
-                .email((String)result.get(0).get("USER_EMAIL"))
-                .name((String) result.get(0).get("USER_NAME"))
+                .id((Long)user.get("ID"))
+                .email((String)user.get("EMAIL"))
+                .name((String) user.get("NAME"))
                 .build();
     }
 
