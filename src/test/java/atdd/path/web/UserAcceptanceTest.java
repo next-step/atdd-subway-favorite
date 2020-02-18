@@ -29,7 +29,6 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         //then
         assertThat(user.getName()).isEqualTo(USER_NAME1);
         assertThat(user.getEmail()).isEqualTo(USER_EMAIL1);
-        assertThat(BCrypt.checkpw(USER_PASSWORD1, user.getPassword())).isTrue();
     }
 
     @Test
