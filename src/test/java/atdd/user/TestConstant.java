@@ -15,4 +15,6 @@ public class TestConstant {
   public static String USER_3_PASSWORD = new String("asdf");
 
   public static String LOGIN_URL = "/login";
+
+  public static String MY_INFO_URL = "/user/me";
 }

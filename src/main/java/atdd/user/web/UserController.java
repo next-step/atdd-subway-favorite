@@ -1,6 +1,7 @@
 package atdd.user.web;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import atdd.user.application.UserService;
@@ -50,6 +52,16 @@ public class UserController {
   public ResponseEntity deleteUser(@PathVariable("id") Long id) {
     userService.DeleteUser(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/user/me")
+  public ResponseEntity retrieveUserByAuthToken(@RequestHeader Map<String, String> requestHeader) {
+    Optional<UserResponseView> result = userService.RetrieveUser(1L);
+    if(!result.isPresent()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(result.get());
   }
 
   @Autowired

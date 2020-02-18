@@ -95,4 +95,27 @@ public class UserManageAcceptanceTest extends AbstractAcceptanceTest {
     assertThat(authInfoView.getAccessToken()).isNotNull();
     assertThat(authInfoView.getTokenType()).isNotNull();
   }
+
+  @Test
+  public void getMyInfo() {
+    //Given
+    Long userID = userManageHttpTest.createNewUser(
+        USER_1_EMAIL, 
+        USER_1_NAME,
+        USER_1_PASSWORD
+        );
+    AuthInfoView authInfoView = userManageHttpTest.loginUser(
+        USER_1_EMAIL, USER_1_PASSWORD).getResponseBody();
+
+    //When
+    EntityExchangeResult<UserResponseView> result = userManageHttpTest.getMyResult(authInfoView);
+
+    //Then
+    UserResponseView userResponseView = result.getResponseBody();
+    assertThat(userResponseView.getId()).isEqualTo(userID);
+    assertThat(userResponseView.getEmail()).isEqualTo(USER_1_EMAIL);
+
+
+    
+  }
 }

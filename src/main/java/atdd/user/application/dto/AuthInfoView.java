@@ -17,6 +17,16 @@ public class AuthInfoView {
     return tokenType;
   }
 
+  public String toHeaderString() {
+    return tokenType + " " + accessToken;
+  }
+
+  public void fromHeaderString(String headerString) {
+    String[] splited = headerString.split(" ");
+    this.tokenType = splited[0];
+    this.accessToken = splited[1];
+  }
+
   public AuthInfoView() {
   }
 }

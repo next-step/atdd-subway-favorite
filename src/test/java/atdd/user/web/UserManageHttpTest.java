@@ -1,5 +1,6 @@
 package atdd.user.web;
 
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -59,6 +60,15 @@ public class UserManageHttpTest {
       .exchange()
       .expectStatus().isOk()
       .expectBody(AuthInfoView.class)
+      .returnResult();
+  }
+
+  public EntityExchangeResult<UserResponseView> getMyResult(AuthInfoView authInfoView) {
+    return webTestClient.get().uri(MY_INFO_URL)
+      .header("Authorization", authInfoView.toHeaderString())
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody(UserResponseView.class)
       .returnResult();
   }
 }
