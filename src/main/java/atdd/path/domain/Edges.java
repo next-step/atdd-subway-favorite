@@ -123,4 +123,11 @@ public class Edges {
         newEdges.add(edge);
         return new Edges(newEdges);
     }
+
+    public Edge checkContainOldEdge(List<Edge> oldEdges) {
+        return this.edges.stream()
+                .filter(it -> !oldEdges.contains(it))
+                .findFirst().orElseThrow(RuntimeException::new);
+    }
+
 }
