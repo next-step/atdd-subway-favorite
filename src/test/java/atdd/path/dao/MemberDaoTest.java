@@ -90,4 +90,16 @@ public class MemberDaoTest
         assertThat(memberByEmailAndPassword.getEmail()).isEqualTo(MEMBER_EMAIL);
         assertThat(memberByEmailAndPassword.getName()).isEqualTo(MEMBER_NAME);
     }
+
+    @DisplayName("Email로 조회")
+    @Test
+    public void findByEmail()
+    {
+        // when
+        Member memberByEmail = memberDao.findByEmail(persistMember.getEmail());
+
+        // then
+        assertThat(memberByEmail.getId()).isNotNull();
+        assertThat(memberByEmail.getName()).isEqualTo(MEMBER_NAME);
+    }
 }
