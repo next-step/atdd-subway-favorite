@@ -1,5 +1,6 @@
 package atdd.path.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,11 @@ public class User extends BaseEntity {
 
     @Setter
     @Column
+    @JsonIgnore
     private String password;
+
+    public User() {
+    }
 
     @Builder
     private User(String name, String email, String password) {
