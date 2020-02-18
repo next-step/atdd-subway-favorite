@@ -59,6 +59,10 @@ public class FavoriteDao {
         return ofNullable(CollectionUtils.isEmpty(results) ? null : results.get(0));
     }
 
+    public List<FavoriteStation> findForStations(Long memberId) {
+        return null;
+    }
+
     private static RowMapper<FavoriteStation> mapper = (rs, rowNum) -> {
         Station findStation = new Station(
                 rs.getLong("STATION_ID"), rs.getString("STATION_NAME"));

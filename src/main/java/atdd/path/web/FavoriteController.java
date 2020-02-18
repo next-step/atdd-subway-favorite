@@ -2,25 +2,27 @@ package atdd.path.web;
 
 import atdd.path.application.FavoriteService;
 import atdd.path.application.dto.FavoriteStationResponseView;
+import atdd.path.application.dto.FavoriteStationsResponseView;
 import atdd.path.application.resolver.LoginUser;
+import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.FavoriteStation;
 import atdd.path.domain.Member;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RequestMapping("/favorites")
 @RestController
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
+    private final FavoriteDao favoriteDao;
 
-    public FavoriteController(FavoriteService favoriteService) {
+    public FavoriteController(FavoriteService favoriteService, FavoriteDao favoriteDao) {
         this.favoriteService = favoriteService;
+        this.favoriteDao = favoriteDao;
     }
 
     @PostMapping("/stations/{id}")
@@ -31,6 +33,12 @@ public class FavoriteController {
 
         return ResponseEntity.created(URI.create("/favorites/"+ savedFavoriteStation.getId()))
                 .body(new FavoriteStationResponseView(savedFavoriteStation));
+    }
+
+    @GetMapping("/stations")
+    public ResponseEntity<FavoriteStationsResponseView> findFavoriteStations(@LoginUser Member member) {
+        final List<FavoriteStation> favorites = favoriteDao.findForStations(member.getId());
+        return ResponseEntity.ok(new FavoriteStationsResponseView(favorites));
     }
 
 }
