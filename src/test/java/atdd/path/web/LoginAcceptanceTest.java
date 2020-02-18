@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.LoginRequestView;
 import atdd.path.domain.UserRepository;
+import atdd.path.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
@@ -40,5 +44,22 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
                 .expectStatus().isCreated()
                 .expectBody().jsonPath("$.accessToken").isNotEmpty()
                 .jsonPath("$.tokenType").isNotEmpty();
+    }
+
+    @Test
+    public void 회원정보_요청하기() {
+        //given
+        userHttpTest.createUser(EMAIL, NAME, PASSWORD);
+        String token = jwtTokenProvider.createToken(EMAIL);
+
+        //when
+        webTestClient.get().uri(LOGIN_BASE_URI + "/me")
+                .header("Authorization", "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.email").isEqualTo(EMAIL)
+                .jsonPath("$.password").isEqualTo(PASSWORD);
     }
 }
