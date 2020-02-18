@@ -87,4 +87,18 @@ public class UserDaoTest {
             userDao.checkFindResultIsEmpty(new ArrayList<>());
         });
     }
+
+    @DisplayName("회원 탈퇴가 성공하는지")
+    @Test
+    public void deleteById() {
+        User savedUser = userDao.save(NEW_USER);
+
+        userDao.deleteById(savedUser.getId());
+
+        Assertions.assertThrows(NoDataException.class, () -> {
+            userDao.findById(savedUser.getId());
+        });
+
+    }
+
 }
