@@ -33,9 +33,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("유저_회원_탈퇴가_성공하는지")
     @Test
     public void userDelete() {
-        String id = createUser();
+        String createLocation = createUser();
 
-        webTestClient.delete().uri("/users/" + id)
+        webTestClient.delete().uri(createLocation)
                 .exchange()
                 .expectStatus().isOk();
     }
