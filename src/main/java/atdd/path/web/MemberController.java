@@ -4,6 +4,7 @@ import atdd.path.application.dto.CreateMemberRequestView;
 import atdd.path.application.dto.MemberResponseView;
 import atdd.path.dao.MemberDao;
 import atdd.path.domain.Member;
+import atdd.path.exception.MemberNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +32,10 @@ public class MemberController {
 	@GetMapping("/{id}")
 	public ResponseEntity retrieveMember(@PathVariable Long id) {
 		try {
-			Member persistMember = memberDao.findById(id).get();
+			Member persistMember = memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
 			return ResponseEntity.ok(MemberResponseView.of(persistMember));
 		} catch (EmptyResultDataAccessException e) {
-			return ResponseEntity.notFound().build();
+			throw new MemberNotFoundException(e);
 		}
 	}
 
