@@ -1,6 +1,6 @@
 package atdd.path.web;
 
-import atdd.path.AbstractAcceptanceTest;
+import atdd.AbstractAcceptanceTest;
 import atdd.path.application.dto.LineResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
