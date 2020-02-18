@@ -1,5 +1,7 @@
 package atdd.path.web;
 
+import atdd.path.application.dto.LoginRequestView;
+import atdd.path.application.dto.LoginResponseView;
 import atdd.path.application.dto.UserRequestView;
 import atdd.path.application.dto.UserResponseView;
 import org.springframework.http.MediaType;
@@ -32,5 +34,20 @@ public class UserHttpTest {
                 .expectBody(UserResponseView.class)
                 .returnResult();
 
+    }
+
+    public EntityExchangeResult<LoginResponseView> loginUserTest(String email, String password) {
+        LoginRequestView request = LoginRequestView.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        return webTestClient.post().uri("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LoginResponseView.class)
+                .returnResult();
     }
 }

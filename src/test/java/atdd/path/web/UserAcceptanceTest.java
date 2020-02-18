@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.TestConstant;
+import atdd.path.application.dto.LoginResponseView;
 import atdd.path.application.dto.UserResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,4 +42,20 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .exchange()
                 .expectStatus().isNoContent();
     }
+
+    @DisplayName("회원 정보 조회")
+    @Test
+    void getUserInfoTest() {
+        // given
+        userHttpTest.createUserTest(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
+        LoginResponseView responseView = userHttpTest
+                .loginUserTest(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
+
+        webTestClient.post().uri(USER_URL + "/me")
+                .header("Authorization", String.format("%s %s", responseView.getTokenType(), responseView.getAccessToken()))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody().jsonPath("$.email").isEqualTo(TestConstant.EMAIL_BROWN);
+    }
+
 }
