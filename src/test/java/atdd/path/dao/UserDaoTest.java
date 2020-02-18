@@ -17,6 +17,8 @@ import javax.sql.DataSource;
 
 import java.util.*;
 
+import static atdd.path.dao.UserDao.EMAIL_KEY;
+import static atdd.path.dao.UserDao.ID_KEY;
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,10 +63,11 @@ public class UserDaoTest {
     public void findByEmail(SoftAssertions softly) {
         User savedUser = userDao.save(NEW_USER);
 
-        User persistUser = userDao.findByEmail(savedUser.getId());
+        List<Map<String, Object>> persistUser = userDao.findByEmail(savedUser.getEmail());
 
-        softly.assertThat(persistUser.getId()).isNotNull();
-        softly.assertThat(persistUser.getEmail()).isEqualTo(KIM_EMAIL);
+        Map<String, Object> user = persistUser.get(0);
+        softly.assertThat(user.get(ID_KEY)).isNotNull();
+        softly.assertThat(user.get(EMAIL_KEY)).isEqualTo(KIM_EMAIL);
     }
 
 
