@@ -1,15 +1,9 @@
 package atdd.member.dao;
 
 
-import static atdd.path.TestConstant.LINE_NAME;
-import static atdd.path.TestConstant.TEST_LINE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import atdd.member.domain.Member;
-import atdd.path.dao.EdgeDao;
-import atdd.path.dao.LineDao;
-import atdd.path.dao.StationDao;
-import atdd.path.domain.Line;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @JdbcTest
 public class MemberDaoTest {
 
-    private static final Member MEMBER = new Member("seok2@naver.com", "이재석" , "1234");
+    private static final Member MEMBER = new Member("seok2@naver.com", "이재석", "1234");
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired

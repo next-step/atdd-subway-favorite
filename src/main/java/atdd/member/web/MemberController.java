@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("members")
 public class MemberController {
+
     private static final String DEFAULT_URL = "members";
     private final MemberDao memberDao;
 
@@ -32,7 +33,7 @@ public class MemberController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> withdraw(@PathVariable long id){
+    public ResponseEntity<Void> withdraw(@PathVariable long id) {
         memberDao.deleteById(id);
         return ResponseEntity.noContent().build();
     }

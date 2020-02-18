@@ -40,7 +40,7 @@ public class MemberDao {
 
     public Member findById(Long id) {
         Map<String, Object> result = jdbcTemplate.queryForMap(
-            "select id , email, name from member where id = ?",id);
+            "select id , email, name from member where id = ?", id);
         return new Member((long) result.get("ID"), (String) result.get("EMAIL"), (String) result.get("NAME"));
     }
 
