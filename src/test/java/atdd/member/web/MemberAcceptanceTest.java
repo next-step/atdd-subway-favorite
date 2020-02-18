@@ -36,6 +36,7 @@ public class MemberAcceptanceTest {
         EntityExchangeResult<MemberResponseView> response = join(MEMBER);
 
         // then
+        assertThat(response.getResponseBody().getId()).isNotNull();
         assertThat(response.getResponseBody().getEmail()).isNotNull().isEqualTo(MEMBER_EMAIL);
         assertThat(response.getResponseBody().getName()).isNotNull().isEqualTo(MEMBER_NAME);
     }
