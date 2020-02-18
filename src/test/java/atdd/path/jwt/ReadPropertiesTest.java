@@ -20,6 +20,6 @@ public class ReadPropertiesTest {
     @Test
     public void properties의_유효기간_값이_들어온다() {
         int expireLength = properties.getExpireLength();
-        assertEquals(10000, expireLength);
+        assertEquals(200000, expireLength);
     }
 }
