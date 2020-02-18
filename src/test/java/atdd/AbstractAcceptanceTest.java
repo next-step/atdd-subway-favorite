@@ -1,4 +1,4 @@
-package atdd.path;
+package atdd;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
