@@ -4,6 +4,7 @@ import atdd.path.AbstractAcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import reactor.core.publisher.Mono;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("유저_회원가입이_성공하는지")
@@ -11,11 +12,15 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public void userSighUp() {
         String email = "sgkim94@github.com";
         String name = "김상구";
+        String inputJson = "{\"email\":\"" + email + "\",\"name\":\"" + name + "\"}";
 
         webTestClient.post().uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(inputJson), String.class)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
                 .expectBody()
                 .jsonPath("$.email").isEqualTo(email)
                 .jsonPath("$.name").isEqualTo(name);
