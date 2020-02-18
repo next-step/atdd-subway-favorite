@@ -8,20 +8,26 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public class UserDao {
+    public static final String ID_KEY = "ID";
+    public static final String NAME_KEY = "NAME";
+    public static final String EMAIL_KEY = "EMAIL";
+    public static final String PASSWORD_KEY = "PASSWORD";
+    public static final int FIRST_INDEX = 0;
+    public static final String USER_TABLE_NAME = "USER";
+
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
     @Autowired
     public void setDataSource(final DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("USER")
-                .usingGeneratedKeyColumns("ID");
+                .withTableName(USER_TABLE_NAME)
+                .usingGeneratedKeyColumns(ID_KEY);
     }
 
     public UserDao(JdbcTemplate jdbcTemplate) {
@@ -29,13 +35,10 @@ public class UserDao {
     }
 
     public User save(User user) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("ID", user.getId());
-        parameters.put("NAME", user.getName());
-        parameters.put("EMAIL", user.getEmail());
-        parameters.put("PASSWORD", user.getPassword());
+        Long userId = simpleJdbcInsert
+                .executeAndReturnKey(User.getSaveParameterByUser(user))
+                .longValue();
 
-        Long userId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return findById(userId);
     }
 
@@ -44,14 +47,21 @@ public class UserDao {
                 "FROM USER \n" +
                 "WHERE id = ?";
 
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, id);
-        return mapUser(result);
+        return mapUser(jdbcTemplate.queryForList(sql, id));
+    }
+
+    public User findByEmail(String email) {
+        String sql = "SELECT id, name, email \n" +
+                "FROM USER \n" +
+                "WHERE email = ?";
+
+        return mapUser(jdbcTemplate.queryForList(sql, email));
     }
 
     User mapUser(List<Map<String, Object>> result) {
         checkFindResultIsEmpty(result);
 
-        return makeUserByFindData(result.get(0));
+        return User.getUserByFindData(result.get(FIRST_INDEX));
     }
 
     void checkFindResultIsEmpty(List<Map<String, Object>> result) {
@@ -59,17 +69,4 @@ public class UserDao {
             throw new NoDataException();
         }
     }
-
-    User makeUserByFindData(Map<String, Object> user) {
-        return User.builder()
-                .id((Long)user.get("ID"))
-                .email((String)user.get("EMAIL"))
-                .name((String) user.get("NAME"))
-                .build();
-    }
-
-    private boolean hasLine(List<Map<String, Object>> result) {
-        return result.size() == 0 || result.get(0).get("LINE_ID") == null;
-    }
-
 }
