@@ -1,14 +1,20 @@
 package atdd.path.application.dto;
 
 import lombok.Builder;
-import lombok.experimental.Accessors;
+import lombok.NoArgsConstructor;
 
-@Builder
-@Accessors(chain = true)
+@NoArgsConstructor
 public class CreateUserRequestView {
     String email;
     String name;
     String password;
+
+    @Builder
+    public CreateUserRequestView(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
 
     public String getEmail() { return email; }
 
