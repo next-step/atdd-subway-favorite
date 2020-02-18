@@ -4,9 +4,12 @@ import atdd.path.domain.entity.User;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Builder;
 
+import javax.validation.constraints.Email;
+
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class CreateUserRequestView {
     private String name;
+    @Email
     private String email;
     private String password;
 
