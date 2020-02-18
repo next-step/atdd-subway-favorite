@@ -2,10 +2,13 @@ package atdd.path.dao;
 
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.User;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +21,7 @@ import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
+@ExtendWith(SoftAssertionsExtension.class)
 public class UserDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -34,31 +38,43 @@ public class UserDaoTest {
 
     @DisplayName("회원가입 시 유저가 저장되는지")
     @Test
-    public void save() {
+    public void save(SoftAssertions softly) {
         User persistUser = userDao.save(NEW_USER);
 
-        assertThat(persistUser.getId()).isNotNull();
-        assertThat(persistUser.getName()).isEqualTo(KIM_NAME);
+        softly.assertThat(persistUser.getId()).isNotNull();
+        softly.assertThat(persistUser.getName()).isEqualTo(KIM_NAME);
     }
 
     @DisplayName("id 로 저장된 회원을 찾는지")
     @Test
-    public void findById() {
+    public void findById(SoftAssertions softly) {
         User savedUser = userDao.save(NEW_USER);
 
         User persistUser = userDao.findById(savedUser.getId());
 
-        assertThat(persistUser.getId()).isNotNull();
-        assertThat(persistUser.getName()).isEqualTo(KIM_NAME);
+        softly.assertThat(persistUser.getId()).isNotNull();
+        softly.assertThat(persistUser.getName()).isEqualTo(KIM_NAME);
     }
+
+    @DisplayName("email 로 저장된 회원을 찾는지")
+    @Test
+    public void findByEmail(SoftAssertions softly) {
+        User savedUser = userDao.save(NEW_USER);
+
+        User persistUser = userDao.findByEmail(savedUser.getId());
+
+        softly.assertThat(persistUser.getId()).isNotNull();
+        softly.assertThat(persistUser.getEmail()).isEqualTo(KIM_EMAIL);
+    }
+
 
     @DisplayName("findById 로 나온 결과를 User 로 만들어주는지")
     @Test
-    public void mapUser() {
-        User user = userDao.mapUser(getDaoUser());
+    public void mapUser(SoftAssertions softly) {
+        User user = userDao.mapUser(getDaoUsers());
 
-        assertThat(user.getId()).isNotNull();
-        assertThat(user.getName()).isEqualTo(KIM_NAME);
+        softly.assertThat(user.getId()).isNotNull();
+        softly.assertThat(user.getName()).isEqualTo(KIM_NAME);
     }
 
     @DisplayName("findById 결과가 empty 일 때 NoDataException 예외를 던지는지")
