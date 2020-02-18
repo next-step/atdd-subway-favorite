@@ -5,7 +5,9 @@ import atdd.path.application.dto.UserResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -13,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String USER_URL = "/users";
-    String firstInputJson = String.format("{\"email\": \"%s\", \"name\": \"%s\", \"password\": \"%s\"}",
-            "boorwonie@email.com", "브라운", "subway");
+    String firstInputJson = String.format("{\"email\": \"%s\", \"name\": \"%s\", \"password\": \"%s\"}", "boorwonie" +
+            "@email.com", "브라운", "subway");
     String secondInputJson = String.format("{\"email\": \"%s\", \"name\": \"%s\", \"password\": \"%s\"}",
             "irrationnelle@email.com", "라세", "station");
 
@@ -60,5 +62,30 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .returnResult();
 
         assertThat(userResponseAfterGet.getResponseBody().getName()).isEqualTo("라세");
+    }
+
+    @DisplayName("로그인 요청 후 토큰 발급")
+    @Test
+    public void signInUser() {
+        // given
+        Long firstUserId = userHttpTest.createUserSuccess(USER_URL, firstInputJson);
+
+        String signInUri = "/login";
+        String inputJson = String.format("{\"email\": %s, \"password\" : %s", "boorwonie@email.com", "subway");
+
+        EntityExchangeResult<?> response = webTestClient
+                .post()
+                .uri(signInUri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(inputJson), String.class)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.accessToken").isNotEmpty()
+                .jsonPath("$.tokenType").isNotEmpty()
+                .returnResult();
     }
 }
