@@ -86,4 +86,23 @@ public class MemberDao
                 ));
         return member;
     }
+
+    public Member findByEmail(String email)
+    {
+        String sql = "SELECT ID" +
+                     "     , EMAIL" +
+                     "     , NAME" +
+                     "     , PASSWORD" +
+                     "  FROM MEMBER" +
+                     " WHERE EMAIL = ?";
+
+        Member member = jdbcTemplate.queryForObject(sql, new Object[]{email}, (rs, rowNum) ->
+                new Member(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("password")
+                ));
+        return member;
+    }
 }
