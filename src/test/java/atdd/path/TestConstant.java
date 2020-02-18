@@ -92,8 +92,8 @@ public class TestConstant {
     public static final Long MEMBER_ID = 1L;
 
     public static final Long FAVORITE_STATION_ID = 1L;
-    public static final Long FAVORITE_STATION_ID_2 = 2L;
-    public static final Long FAVORITE_STATION_ID_3 = 3L;
+
+    public static final Long FAVORITE_PATH_ID = 1L;
 
     public static Station TEST_STATION = new Station(STATION_ID, STATION_NAME);
     public static Station TEST_STATION_2 = new Station(STATION_ID_2, STATION_NAME_2);
@@ -163,6 +163,8 @@ public class TestConstant {
 
     // 지하철역 즐겨찾기
     public static FavoriteStation TEST_FAVORITE_STATION = new FavoriteStation(FAVORITE_STATION_ID, TEST_STATION);
-    public static FavoriteStation TEST_FAVORITE_STATION_2 = new FavoriteStation(FAVORITE_STATION_ID_2, TEST_STATION_2);
-    public static FavoriteStation TEST_FAVORITE_STATION_3 = new FavoriteStation(FAVORITE_STATION_ID_3, TEST_STATION_3);
+
+    // 경로 즐겨찾기
+    public static FavoritePath TEST_FAVORITE_PATH = new FavoritePath(FAVORITE_PATH_ID, TEST_STATION, TEST_STATION_4);
+
 }

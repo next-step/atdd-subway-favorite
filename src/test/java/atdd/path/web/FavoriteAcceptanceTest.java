@@ -1,8 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.FavoriteStationResponseView;
-import atdd.path.application.dto.FavoriteStationsResponseView;
+import atdd.path.application.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,14 +15,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     private final String FAVORITES_STATIONS_URL = "/favorites/stations";
+    private final String FAVORITES_PATH_URL = "/favorites/paths";
 
     private MemberHttpTest memberHttpTest;
     private StationHttpTest stationHttpTest;
+    private LineHttpTest lineHttpTest;
+    private GraphHttpTest graphHttpTest;
 
     @BeforeEach
     void setUp() {
         memberHttpTest = new MemberHttpTest(webTestClient);
         stationHttpTest = new StationHttpTest(webTestClient);
+        lineHttpTest = new LineHttpTest(webTestClient);
+        graphHttpTest = new GraphHttpTest(webTestClient);
     }
 
     @DisplayName("지하철역 즐겨찾기 등록을 할 수 있다")
@@ -85,6 +89,37 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(findView.getCount()).isEqualTo(0);
     }
 
+    @DisplayName("경로 즐겨찾기 등록을 할 수 있다")
+    @Test
+    void beAbleToSaveForPath() {
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
+        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
+        Long stationId4 = stationHttpTest.createStation(STATION_NAME_4);
+        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
+        lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
+        lineHttpTest.createEdgeRequest(lineId, stationId3, stationId4);
+
+        PathResponseView findView = graphHttpTest.findPath(stationId, stationId4);
+
+        memberHttpTest.createMemberRequest(TEST_MEMBER);
+        String token = memberHttpTest.loginMember(TEST_MEMBER);
+
+        EntityExchangeResult<FavoritePathResponseView> result = createForPathRequest(
+                findView.getStartStationId(),
+                findView.getEndStationId(),
+                token);
+
+        FavoritePathResponseView favoriteView = result.getResponseBody();
+        PathResponseView pathView = favoriteView.getPath();
+
+        assertThat(favoriteView).isNotNull();
+        assertThat(pathView.getStartStationId()).isEqualTo(STATION_ID);
+        assertThat(pathView.getEndStationId()).isEqualTo(STATION_ID_4);
+        assertThat(pathView.getStations().size()).isEqualTo(4);
+    }
+
     private FavoriteStationResponseView createForStation(Long stationId, String token) {
         EntityExchangeResult<FavoriteStationResponseView> result = createForStationRequest(stationId, token);
         return result.getResponseBody();
@@ -113,6 +148,17 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(FavoriteStationsResponseView.class)
+                .returnResult();
+    }
+
+    public EntityExchangeResult<FavoritePathResponseView> createForPathRequest(Long startId, Long endId, String token) {
+        return webTestClient.post().uri(FAVORITES_PATH_URL + "?startId=" + startId + "&endId=" + endId)
+                .header(AUTHORIZATION, token)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
+                .expectBody(FavoritePathResponseView.class)
                 .returnResult();
     }
 
