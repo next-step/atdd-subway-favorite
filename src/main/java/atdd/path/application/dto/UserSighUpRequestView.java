@@ -25,6 +25,7 @@ public class UserSighUpRequestView {
         return User.builder()
                 .name(user.getName())
                 .email(user.getEmail())
+                .password(user.getPassword())
                 .build();
     }
 
