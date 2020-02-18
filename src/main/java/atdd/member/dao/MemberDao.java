@@ -1,9 +1,10 @@
 package atdd.member.dao;
 
 import atdd.member.domain.Member;
-
+import atdd.path.application.exception.NoDataException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -42,8 +43,12 @@ public class MemberDao {
             "select id , email, name from member where id = ?",
             new Object[]{id}
         );
+        return new Member((long) result.get("ID"), (String) result.get("EMAIL"), (String) result.get("NAME"));
+    }
 
-        return new Member((long) result.get("ID"), (String) result.get("EMAIL") , (String) result.get("NAME"));
+    public void deleteById(Long id) {
+        Member member = Optional.ofNullable(findById(id)).orElseThrow(NoDataException::new);
+        jdbcTemplate.update("delete from member where id =?", new Object[]{id});
     }
 
 

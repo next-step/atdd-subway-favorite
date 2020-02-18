@@ -34,7 +34,6 @@ public class MemberAcceptanceTest {
     public void join() {
         // when
         EntityExchangeResult<MemberResponseView> response = join(MEMBER);
-
         // then
         assertThat(response.getResponseBody().getId()).isNotNull();
         assertThat(response.getResponseBody().getEmail()).isNotNull().isEqualTo(MEMBER_EMAIL);
@@ -45,15 +44,12 @@ public class MemberAcceptanceTest {
     @Test
     @DisplayName("회원 탈퇴")
     public void createStation() {
-
         //given
         EntityExchangeResult<MemberResponseView> response = join(MEMBER);
-
         // when & than
         webTestClient.delete().uri(MEMBER_BASE_URL + "/" + response.getResponseBody().getId())
             .exchange()
             .expectStatus().isNoContent();
-
     }
 
     private EntityExchangeResult<MemberResponseView> join(CreateMemberRequestView view) {

@@ -5,6 +5,7 @@ import atdd.member.application.dto.MemberResponseView;
 import atdd.member.dao.MemberDao;
 import atdd.member.domain.Member;
 import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<MemberResponseView> join(@RequestBody CreateMemberRequestView view) {
+    public ResponseEntity<MemberResponseView> join(@Valid @RequestBody CreateMemberRequestView view) {
         Member member = memberDao.save(view.toMember());
         return ResponseEntity.created(URI.create(DEFAULT_URL + "/" + member.getId()))
             .body(MemberResponseView.of(member));
@@ -32,6 +33,7 @@ public class MemberController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> withdraw(@PathVariable long id){
+        memberDao.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
