@@ -49,4 +49,15 @@ public class MemberHttpTest
     {
         return retrieveMemberRequest(MEMBER_URL + "/" + id);
     }
+
+    public EntityExchangeResult<MemberResponseView> retrieveMyInfo(String email, String password, String accessToken)
+    {
+        return webTestClient.get().uri(MEMBER_URL + "/me")
+                .header("Authorization", "Bearer " + accessToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(MemberResponseView.class)
+                .returnResult();
+    }
 }
