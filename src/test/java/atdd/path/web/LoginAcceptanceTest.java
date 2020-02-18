@@ -52,12 +52,11 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
         userHttpTest.createUser(EMAIL, NAME, PASSWORD);
         String token = jwtTokenProvider.createToken(EMAIL);
 
-        //when
-        webTestClient.get().uri(LOGIN_BASE_URI + "/me")
+        //when, then
+        webTestClient.get().uri(Constant.USER_BASE_URI + "/me")
                 .header("Authorization", "Bearer " + token)
                 .exchange()
                 .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.email").isEqualTo(EMAIL)
                 .jsonPath("$.password").isEqualTo(PASSWORD);

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -52,6 +53,16 @@ public class UserController {
         return ResponseEntity
                 .notFound()
                 .build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseView> retrieveInfo(HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        User user = userService.findByEmail(email);
+        UserResponseView response = new UserResponseView(user.getEmail(), user.getName(), user.getPassword());
+        return ResponseEntity
+                .ok()
+                .body(response);
     }
 
     private User isExistingUser(CreateUserRequestView request) {

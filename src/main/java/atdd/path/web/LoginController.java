@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.application.UserService;
 import atdd.path.application.dto.LoginReponseView;
 import atdd.path.application.dto.LoginRequestView;
+import atdd.path.application.dto.UserResponseView;
 import atdd.path.domain.User;
 import atdd.path.jwt.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
