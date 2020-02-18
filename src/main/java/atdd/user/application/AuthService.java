@@ -47,7 +47,17 @@ public class AuthService {
   }
 
   public Optional<String> AuthUser(AuthInfoView authInfoView) {
-    return Optional.of("user1@gmail.com");
+    Claims claim = Jwts.parser()
+      .setSigningKey(jwtKey)
+      .parseClaimsJws(authInfoView.getAccessToken())
+      .getBody();
+
+    Date now = new Date();
+    if(now.compareTo(claim.getExpiration()) > 0) {
+      return Optional.empty();
+    }
+
+    return Optional.of(claim.getSubject());
   }
 
   public AuthService() {
