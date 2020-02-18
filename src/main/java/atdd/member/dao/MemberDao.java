@@ -40,15 +40,13 @@ public class MemberDao {
 
     public Member findById(Long id) {
         Map<String, Object> result = jdbcTemplate.queryForMap(
-            "select id , email, name from member where id = ?",
-            new Object[]{id}
-        );
+            "select id , email, name from member where id = ?",id);
         return new Member((long) result.get("ID"), (String) result.get("EMAIL"), (String) result.get("NAME"));
     }
 
     public void deleteById(Long id) {
-        Member member = Optional.ofNullable(findById(id)).orElseThrow(NoDataException::new);
-        jdbcTemplate.update("delete from member where id =?", new Object[]{id});
+        Optional.ofNullable(findById(id)).orElseThrow(NoDataException::new);
+        jdbcTemplate.update("delete from member where id =?", id);
     }
 
 
