@@ -1,6 +1,5 @@
 package atdd.path;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +12,4 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 public class AbstractAcceptanceTest {
     @Autowired
     public WebTestClient webTestClient;
-
-    @Autowired
-    public ObjectMapper objectMapper;
 }

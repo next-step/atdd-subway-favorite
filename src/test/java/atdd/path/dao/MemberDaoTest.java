@@ -43,6 +43,18 @@ class MemberDaoTest {
         assertThat(savedMember.getPassword()).isEqualTo(TEST_MEMBER_PASSWORD);
     }
 
+    @DisplayName("이메일로 회원 정보를 가져와야 한다")
+    @Test
+    void mustFindByEmail() {
+        Member savedMember = memberDao.save(TEST_MEMBER);
+        String email = savedMember.getEmail();
+
+        Member findMember = memberDao.findByEmail(email).orElse(null);
+
+        assertThat(findMember.getId()).isNotNull();
+        assertThat(findMember.getEmail()).isEqualTo(email);
+    }
+
     @DisplayName("회원 아이디로 회원 정보를 삭제해야 한다")
     @Test
     void mustDeleteById() {

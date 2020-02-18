@@ -5,6 +5,12 @@ spring:
     username: sa
     password: password
 
+  security:
+    jwt:
+      token:
+        secret-key: anrndghkRhcdlvlduTtmqslek
+        expire-length: 60000
+
 logging:
   level:
     atdd: debug
