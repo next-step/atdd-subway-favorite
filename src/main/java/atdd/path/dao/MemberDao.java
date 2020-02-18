@@ -66,4 +66,24 @@ public class MemberDao
                      " WHERE ID = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public Member findByEmailAndPassword(String email, String password)
+    {
+        String sql = "SELECT ID" +
+                     "     , EMAIL" +
+                     "     , NAME" +
+                     "     , PASSWORD" +
+                     "  FROM MEMBER" +
+                     " WHERE EMAIL = ?" +
+                     "   AND PASSWORD = ?";
+
+        Member member = jdbcTemplate.queryForObject(sql, new Object[]{email, password}, (rs, rowNum) ->
+                new Member(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("password")
+                ));
+        return member;
+    }
 }
