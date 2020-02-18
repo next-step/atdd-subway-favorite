@@ -1,6 +1,8 @@
 package atdd.path.dao;
 
+import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,16 +55,17 @@ public class UserDaoTest {
     @DisplayName("findById 로 나온 결과를 User 로 만들어주는지")
     @Test
     public void mapUser() {
-        Map<String, Object> savedUser = new HashMap<>();
-        savedUser.put("ID", 1);
-        savedUser.put("NAME", "김상구");
-        savedUser.put("EMAIL", "sgkim94@github.com");
-        List<Map<String, Object>> users = Collections.singletonList(savedUser);
-
-        User user = userDao.mapUser(users);
+        User user = userDao.mapUser(getDaoUser());
 
         assertThat(user.getId()).isNotNull();
         assertThat(user.getName()).isEqualTo(KIM_NAME);
     }
 
+    @DisplayName("findById 결과가 empty 일 때 NoDataException 예외를 던지는지")
+    @Test
+    public void MapUserNoDataException() {
+        Assertions.assertThrows(NoDataException.class, () -> {
+            userDao.checkFindResultIsEmpty(new ArrayList<>());
+        });
+    }
 }
