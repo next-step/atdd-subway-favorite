@@ -20,12 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@SpringBootTest(classes = {UserService.class, LoginService.class, JwtTokenProvider.class})
+@SpringBootTest(classes = {UserService.class, JwtTokenProvider.class})
 public class UserServiceTest {
 
     private UserService userService;
-
-    private LoginService loginService;
 
     @MockBean
     private UserRepository userRepository;
@@ -36,7 +34,6 @@ public class UserServiceTest {
     @BeforeEach
     void setUp() {
         this.userService = new UserService(userRepository, jwtTokenProvider);
-        this.loginService = new LoginService(jwtTokenProvider);
     }
 
     @DisplayName("회원 등록이 된다")
@@ -83,8 +80,13 @@ public class UserServiceTest {
     void retrieveUserTest() throws InvalidJwtAuthenticationException {
         // given
         given(userRepository.findUserByEmail(TestConstant.EMAIL_BROWN))
-                .willReturn(User.infoBuilder().id(1L).email(TestConstant.EMAIL_BROWN).name(TestConstant.NAME_BROWN).build());
-        LoginResponseView token = loginService.login(LoginRequestView.builder()
+                .willReturn(User.createBuilder()
+                        .id(1L)
+                        .email(TestConstant.EMAIL_BROWN)
+                        .name(TestConstant.NAME_BROWN)
+                        .password(TestConstant.PASSWORD_BROWN)
+                        .build());
+        LoginResponseView token = userService.login(LoginRequestView.builder()
                 .email(TestConstant.EMAIL_BROWN)
                 .password(TestConstant.PASSWORD_BROWN).build());
 
@@ -96,6 +98,34 @@ public class UserServiceTest {
         // then
         assertThat(info.getEmail()).isEqualTo(TestConstant.EMAIL_BROWN);
         assertThat(info.getName()).isEqualTo(TestConstant.NAME_BROWN);
+    }
+
+    @DisplayName("사용자는 자신의 정보를 통해 로그인을 요청하고 인증 정보를 받는다")
+    @Test
+    void loginTest() {
+        // given
+        User brown = User.createBuilder()
+                .id(1L)
+                .name(TestConstant.NAME_BROWN)
+                .email(TestConstant.EMAIL_BROWN)
+                .password(TestConstant.PASSWORD_BROWN)
+                .build();
+
+        given(userRepository.save(any(User.class)))
+                .willReturn(brown);
+        given(userRepository.findUserByEmail(TestConstant.EMAIL_BROWN)).willReturn(brown);
+        userService.createUser(new UserRequestView());
+
+        // when
+        LoginRequestView loginRequest = LoginRequestView.builder()
+                .email(TestConstant.EMAIL_BROWN)
+                .password(TestConstant.PASSWORD_BROWN)
+                .build();
+        LoginResponseView response = userService.login(loginRequest);
+
+        // then
+        assertThat(response.getTokenType()).isEqualTo("Bearer");
+        assertThat(response.getAccessToken()).isNotNull();
     }
 }
 
