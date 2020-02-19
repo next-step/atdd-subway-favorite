@@ -21,7 +21,7 @@ public class LineHttpTest {
         String inputJson = "{\"name\":\"" + lineName + "\"," +
                 "\"startTime\":\"" + LocalTime.of(0, 0) + "\"," +
                 "\"endTime\":\"" + LocalTime.of(23, 30) + "\"," +
-                "\"interval\":\"" + 30 + "\"}";
+                "\"stationInterval\":\"" + 30 + "\"}";
 
         return webTestClient.post().uri(LINE_URL)
                 .contentType(MediaType.APPLICATION_JSON)

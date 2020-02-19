@@ -1,14 +1,24 @@
 package atdd.path.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Entity
 public class Graph {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long id;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "line_id", referencedColumnName = "id")
+    @JsonIgnore
     private List<Line> lines;
 
     public Graph(List<Line> lines) {

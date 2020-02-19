@@ -1,39 +1,41 @@
 package atdd.path.web;
 
 import atdd.path.application.dto.CreateEdgeRequestView;
-import atdd.path.dao.LineDao;
+import atdd.path.application.exception.NoDataException;
 import atdd.path.application.LineService;
 import atdd.path.application.dto.CreateLineRequestView;
 import atdd.path.application.dto.LineResponseView;
 import atdd.path.domain.Line;
+import atdd.path.repository.LineRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-    private LineDao lineDao;
+    private LineRepository lineRepository;
     private LineService lineService;
 
-    public LineController(LineDao lineDao, LineService lineService) {
-        this.lineDao = lineDao;
+    public LineController(LineRepository lineRepository, LineService lineService) {
+        this.lineRepository = lineRepository;
         this.lineService = lineService;
     }
 
     @PostMapping
     public ResponseEntity createLine(@RequestBody CreateLineRequestView view) {
-        Line persistLine = lineDao.save(view.toLine());
+        Line persistLine = lineRepository.save(view.toLine());
         return ResponseEntity.created(URI.create("/lines/" + persistLine.getId())).body(LineResponseView.of(persistLine));
     }
 
     @GetMapping("{id}")
     public ResponseEntity retrieveLine(@PathVariable Long id) {
         try {
-            Line persistLine = lineDao.findById(id);
+            Line persistLine = lineRepository.findById(id).orElseThrow(NoDataException::new);
             return ResponseEntity.ok().body(LineResponseView.of(persistLine));
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.notFound().build();
@@ -42,13 +44,14 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity showLine() {
-        List<Line> persistLines = lineDao.findAll();
+        List<Line> persistLines = new ArrayList<Line>();
+        lineRepository.findAll().forEach(persistLines::add);
         return ResponseEntity.ok().body(LineResponseView.listOf(persistLines));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteLine(@PathVariable Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 

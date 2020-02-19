@@ -8,10 +8,10 @@ public class CreateLineRequestView {
     private String name;
     private String startTime;
     private String endTime;
-    private int interval;
+    private int stationInterval;
 
     public Line toLine() {
-        return Line.of(name, LocalTime.parse(startTime), LocalTime.parse(endTime), interval);
+        return Line.of(name, LocalTime.parse(startTime), LocalTime.parse(endTime), stationInterval);
     }
 
     public String getName() {
@@ -26,7 +26,7 @@ public class CreateLineRequestView {
         return endTime;
     }
 
-    public int getInterval() {
-        return interval;
+    public int getStationInterval() {
+        return stationInterval;
     }
 }

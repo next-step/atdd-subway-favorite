@@ -11,28 +11,28 @@ public class LineResponseView {
     private String name;
     private String startTime;
     private String endTime;
-    private int interval;
+    private int stationInterval;
     private List<StationResponseView> stations;
 
     public LineResponseView() {
     }
 
-    public LineResponseView(Long id, String name, String startTime, String endTime, int interval, List<Station> stations) {
+    public LineResponseView(Long id, String name, String startTime, String endTime, int stationInterval, List<Station> stations) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.interval = interval;
+        this.stationInterval = stationInterval;
         this.stations = StationResponseView.listOf(stations);
     }
 
     public static LineResponseView of(Line line) {
-        return new LineResponseView(line.getId(), line.getName(), line.getStartTime().toString(), line.getEndTime().toString(), line.getInterval(), line.getStations());
+        return new LineResponseView(line.getId(), line.getName(), line.getStartTime().toString(), line.getEndTime().toString(), line.getStationInterval(), line.getStations());
     }
 
     public static List<LineResponseView> listOf(List<Line> lines) {
         return lines.stream()
-                .map(it -> new LineResponseView(it.getId(), it.getName(), it.getStartTime().toString(), it.getEndTime().toString(), it.getInterval(), it.getStations()))
+                .map(it -> new LineResponseView(it.getId(), it.getName(), it.getStartTime().toString(), it.getEndTime().toString(), it.getStationInterval(), it.getStations()))
                 .collect(Collectors.toList());
     }
 
@@ -52,8 +52,8 @@ public class LineResponseView {
         return endTime;
     }
 
-    public int getInterval() {
-        return interval;
+    public int getStationInterval() {
+        return stationInterval;
     }
 
     public List<StationResponseView> getStations() {
