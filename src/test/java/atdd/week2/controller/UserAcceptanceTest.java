@@ -37,8 +37,6 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         String inputJson = "{\"email\":\"boorwonie@email.com\"" +"," +"\"name\":\"브라운\"" +"," +"\"password\":\"subway\"}";
 
-        System.out.println(inputJson);
-
         return webTestClient.post().uri("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(inputJson), String.class)
