@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.auth.JwtTokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,7 +85,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         String signInUri = USER_URL + "/login";
         String inputJson = String.format("{\"email\": \"%s\", \"password\" : \"%s\"}", "boorwonie@email.com", "subway");
 
-        EntityExchangeResult<?> response = webTestClient
+        EntityExchangeResult<JwtTokenDTO> getTokenResponse = webTestClient
                 .post()
                 .uri(signInUri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -94,11 +95,13 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .isOk()
                 .expectHeader()
                 .contentType(MediaType.APPLICATION_JSON)
-                .expectBody()
-                .jsonPath("$.accessToken")
-                .isNotEmpty()
-                .jsonPath("$.tokenType")
-                .isNotEmpty()
+                .expectBody(JwtTokenDTO.class)
+                .consumeWith(result -> {
+                    assertThat(result.getResponseBody()
+                                     .getAccessToken()).isNotEmpty();
+                    assertThat(result.getResponseBody()
+                                     .getTokenType()).isNotEmpty();
+                })
                 .returnResult();
 
         String improperJson = String.format("{\"email\": \"%s\", \"password\" : \"%s\"}", "boorwonie@email.com", "station");
@@ -111,5 +114,24 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .exchange()
                 .expectStatus()
                 .isUnauthorized();
+
+        String accessToken = getTokenResponse.getResponseBody()
+                                             .getAccessToken();
+        String tokenType = getTokenResponse.getResponseBody()
+                                           .getTokenType();
+
+        webTestClient.get()
+                     .uri(USER_URL + "/me")
+                     .header("Authorization", tokenType + " " + accessToken)
+                     .exchange()
+                     .expectStatus()
+                     .isOk()
+                     .expectHeader()
+                     .contentType(MediaType.APPLICATION_JSON)
+                     .expectBody(UserResponseView.class)
+                     .consumeWith(result -> {
+                         assertThat(result.getResponseBody().getName()).isEqualTo("브라운");
+                         assertThat(result.getResponseBody().getEmail()).isEqualTo("boorwonie@email.com");
+                     });
     }
 }
