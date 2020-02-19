@@ -15,9 +15,9 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.4.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.4.RELEASE'
 
-    compile group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
