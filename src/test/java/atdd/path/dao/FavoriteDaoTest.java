@@ -49,7 +49,7 @@ class FavoriteDaoTest {
         Member savedMember = memberDao.save(TEST_MEMBER);
         Station savedStation = stationDao.save(TEST_STATION);
 
-        FavoriteStation savedFavoriteStation = favoriteDao.saveForStation(savedMember, savedStation);
+        FavoriteStation savedFavoriteStation = favoriteDao.saveForStation(new FavoriteStation(savedMember, savedStation));
         Station station = savedFavoriteStation.getStation();
 
         assertThat(savedFavoriteStation).isNotNull();
@@ -64,11 +64,11 @@ class FavoriteDaoTest {
         Station savedStation = stationDao.save(TEST_STATION);
         Station savedStation2 = stationDao.save(TEST_STATION_2);
         Station savedStation3 = stationDao.save(TEST_STATION_3);
-        favoriteDao.saveForStation(savedMember, savedStation);
-        favoriteDao.saveForStation(savedMember, savedStation2);
-        favoriteDao.saveForStation(savedMember, savedStation3);
+        favoriteDao.saveForStation(new FavoriteStation(savedMember, savedStation));
+        favoriteDao.saveForStation(new FavoriteStation(savedMember, savedStation2));
+        favoriteDao.saveForStation(new FavoriteStation(savedMember, savedStation3));
 
-        final List<FavoriteStation> favorites = favoriteDao.findForStations(savedMember.getId());
+        final List<FavoriteStation> favorites = favoriteDao.findForStations(savedMember);
 
         assertThat(favorites.size()).isEqualTo(3);
         assertThat(favorites).extracting("station.name")
@@ -80,7 +80,7 @@ class FavoriteDaoTest {
     void mustDeleteById() {
         Member savedMember = memberDao.save(TEST_MEMBER);
         Station savedStation = stationDao.save(TEST_STATION);
-        FavoriteStation savedFavorite = favoriteDao.saveForStation(savedMember, savedStation);
+        FavoriteStation savedFavorite = favoriteDao.saveForStation(new FavoriteStation(savedMember, savedStation));
 
         favoriteDao.deleteForStationById(savedFavorite.getId());
 

@@ -20,7 +20,7 @@ public class FavoriteService {
 
     public FavoriteStation saveForStation(Member member, Long stationId) {
         final Station findStation = stationDao.findById(stationId);
-        return favoriteDao.saveForStation(member, findStation);
+        return favoriteDao.saveForStation(new FavoriteStation(member, findStation));
     }
 
 }

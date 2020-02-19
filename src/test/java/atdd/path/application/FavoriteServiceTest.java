@@ -36,7 +36,7 @@ class FavoriteServiceTest {
     @Test
     public void mustSaveForStation() {
         given(stationDao.findById(anyLong())).willReturn(TEST_STATION);
-        given(favoriteDao.saveForStation(any(), any())).willReturn(TEST_FAVORITE_STATION);
+        given(favoriteDao.saveForStation(any())).willReturn(TEST_FAVORITE_STATION);
 
         FavoriteStation favoriteStation = favoriteService.saveForStation(TEST_MEMBER, STATION_ID);
         Station station = favoriteStation.getStation();

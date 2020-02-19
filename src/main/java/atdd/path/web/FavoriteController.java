@@ -37,7 +37,7 @@ public class FavoriteController {
 
     @GetMapping("/stations")
     public ResponseEntity<FavoriteStationsResponseView> findFavoriteStations(@LoginUser Member member) {
-        final List<FavoriteStation> favorites = favoriteDao.findForStations(member.getId());
+        final List<FavoriteStation> favorites = favoriteDao.findForStations(member);
         return ResponseEntity.ok(new FavoriteStationsResponseView(favorites));
     }
 

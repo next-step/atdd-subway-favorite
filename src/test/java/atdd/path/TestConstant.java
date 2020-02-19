@@ -162,7 +162,7 @@ public class TestConstant {
     public static final Member TEST_MEMBER = new Member(MEMBER_ID, TEST_MEMBER_EMAIL, TEST_MEMBER_NAME, TEST_MEMBER_PASSWORD);
 
     // 지하철역 즐겨찾기
-    public static FavoriteStation TEST_FAVORITE_STATION = new FavoriteStation(FAVORITE_STATION_ID, TEST_STATION);
+    public static FavoriteStation TEST_FAVORITE_STATION = new FavoriteStation(FAVORITE_STATION_ID, TEST_MEMBER, TEST_STATION);
 
     // 경로 즐겨찾기
     public static FavoritePath TEST_FAVORITE_PATH = new FavoritePath(FAVORITE_PATH_ID, TEST_STATION, TEST_STATION_4);

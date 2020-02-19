@@ -35,10 +35,10 @@ public class FavoriteDao {
                 .usingGeneratedKeyColumns("ID");
     }
 
-    public FavoriteStation saveForStation(Member member, Station station) {
+    public FavoriteStation saveForStation(FavoriteStation favoriteStation) {
         final Map<String, Long> params = Map.ofEntries(
-                Map.entry("member_id", member.getId()),
-                Map.entry("station_id", station.getId())
+                Map.entry("member_id", favoriteStation.getMember().getId()),
+                Map.entry("station_id", favoriteStation.getStation().getId())
         );
 
         final Long favoriteId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
@@ -46,8 +46,14 @@ public class FavoriteDao {
     }
 
     private Optional<FavoriteStation> findFavoriteStationById(Long favoriteId) {
-        final String sql = "select fs.id, s.id as station_id, s.name as station_name " +
+        final String sql = "select fs.id, " +
+                "m.id as member_id, " +
+                "m.email, " +
+                "m.name, " +
+                "s.id as station_id, " +
+                "s.name as station_name " +
                 "from favorite_station fs " +
+                "inner join member m on fs.member_id = m.id " +
                 "inner join station s on fs.station_id = s.id " +
                 "where fs.id = ?";
 
@@ -59,15 +65,21 @@ public class FavoriteDao {
         return ofNullable(CollectionUtils.isEmpty(results) ? null : results.get(0));
     }
 
-    public List<FavoriteStation> findForStations(Long memberId) {
-        final String sql = "select fs.id, s.id as station_id, s.name as station_name " +
+    public List<FavoriteStation> findForStations(Member member) {
+        final String sql = "select fs.id, " +
+                "m.id as member_id, " +
+                "m.email, " +
+                "m.name, " +
+                "s.id as station_id, " +
+                "s.name as station_name " +
                 "from favorite_station fs " +
+                "inner join member m on fs.member_id = m.id " +
                 "inner join station s on fs.station_id = s.id " +
                 "where fs.member_id = ?";
 
         return jdbcTemplate.query(
                 sql,
-                new Object[]{memberId},
+                new Object[]{member.getId()},
                 mapper);
     }
 
@@ -75,7 +87,11 @@ public class FavoriteDao {
         Station findStation = new Station(
                 rs.getLong("STATION_ID"), rs.getString("STATION_NAME"));
 
-        return new FavoriteStation(rs.getLong("ID"), findStation);
+        Member findMember = new Member(rs.getLong("MEMBER_ID"),
+                rs.getString("EMAIL"),
+                rs.getString("NAME"), "");
+
+        return new FavoriteStation(rs.getLong("ID"), findMember, findStation);
     };
 
     public void deleteForStationById(Long favoriteId) {
