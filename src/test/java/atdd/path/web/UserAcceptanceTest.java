@@ -39,7 +39,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectBodyList(UserResponseView.class)
                 .returnResult();
 
-        assertThat(userResponseAfterGet.getResponseBody().get(0).getName()).isEqualTo("브라운");
+        assertThat(userResponseAfterGet.getResponseBody()
+                                       .get(0)
+                                       .getName()).isEqualTo("브라운");
     }
 
     @DisplayName("회원 탈퇴")
@@ -50,10 +52,18 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         Long secondUserId = userHttpTest.createUserSuccess(USER_URL, secondInputJson);
 
         // when
-        webTestClient.delete().uri(USER_URL + "/" + firstUserId).exchange().expectStatus().isNoContent();
+        webTestClient.delete()
+                     .uri(USER_URL + "/" + firstUserId)
+                     .exchange()
+                     .expectStatus()
+                     .isNoContent();
 
         // then
-        webTestClient.get().uri(USER_URL + "/" + firstUserId).exchange().expectStatus().isNotFound();
+        webTestClient.get()
+                     .uri(USER_URL + "/" + firstUserId)
+                     .exchange()
+                     .expectStatus()
+                     .isNotFound();
 
         String reqUriForSingleUser = USER_URL + "/" + secondUserId;
         EntityExchangeResult<UserResponseView> userResponseAfterGet = userHttpTest
@@ -61,17 +71,18 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectBody(UserResponseView.class)
                 .returnResult();
 
-        assertThat(userResponseAfterGet.getResponseBody().getName()).isEqualTo("라세");
+        assertThat(userResponseAfterGet.getResponseBody()
+                                       .getName()).isEqualTo("라세");
     }
 
     @DisplayName("로그인 요청 후 토큰 발급")
     @Test
     public void signInUser() {
         // given
-        Long firstUserId = userHttpTest.createUserSuccess(USER_URL, firstInputJson);
+        userHttpTest.createUserSuccess(USER_URL, firstInputJson);
 
-        String signInUri = "/login";
-        String inputJson = String.format("{\"email\": %s, \"password\" : %s", "boorwonie@email.com", "subway");
+        String signInUri = USER_URL + "/login";
+        String inputJson = String.format("{\"email\": \"%s\", \"password\" : \"%s\"}", "boorwonie@email.com", "subway");
 
         EntityExchangeResult<?> response = webTestClient
                 .post()
@@ -84,8 +95,21 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .expectHeader()
                 .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$.accessToken").isNotEmpty()
-                .jsonPath("$.tokenType").isNotEmpty()
+                .jsonPath("$.accessToken")
+                .isNotEmpty()
+                .jsonPath("$.tokenType")
+                .isNotEmpty()
                 .returnResult();
+
+        String improperJson = String.format("{\"email\": \"%s\", \"password\" : \"%s\"}", "boorwonie@email.com", "station");
+
+        webTestClient
+                .post()
+                .uri(signInUri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(improperJson), String.class)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
     }
 }
