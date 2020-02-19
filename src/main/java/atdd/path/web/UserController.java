@@ -56,7 +56,8 @@ public class UserController {
     }
 
     private ResponseEntity getUserResponse(User user) {
-        return ResponseEntity.ok().body(UserResponseView.of(user));
+        return ResponseEntity.ok()
+                             .body(UserResponseView.of(user));
     }
 
     @DeleteMapping("/{id}")
@@ -75,19 +76,34 @@ public class UserController {
     }
 
     private ResponseEntity getTokenOrUnAuthResponse(User user, SignInUserRequestView view) {
-        boolean isValidateUser = user.getPassword().equals(view.getPassword());
+        boolean isValidateUser = user.getPassword()
+                                     .equals(view.getPassword());
         if (isValidateUser) {
             String accessToken = jwtTokenProvider.createToken(view.getEmail());
             String tokenType = "Bearer";
 
             JwtTokenDTO jwtTokenDTO = new JwtTokenDTO(accessToken, tokenType);
 
-            return ResponseEntity.ok().body(jwtTokenDTO);
+            return ResponseEntity.ok()
+                                 .body(jwtTokenDTO);
         }
         return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
     }
 
     private ResponseEntity noContentResponse() {
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                             .build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity showSignedInUser(@RequestHeader(value = "Authorization") String authorization) {
+        String token = authorization.split(" ")[1];
+
+        String parsedEmail = jwtTokenProvider.parseToken(token);
+
+        Optional<User> optionalUser = userRepository.findByEmail(parsedEmail);
+
+        return optionalUser.map(this::getUserResponse)
+                           .orElseGet(this::noContentResponse);
     }
 }
