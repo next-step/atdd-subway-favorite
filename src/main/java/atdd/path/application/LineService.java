@@ -40,9 +40,8 @@ public class LineService {
 
         List<Edge> oldEdges = persistLine.getEdges();
         Edges edges = persistLine.removeStation(station);
-        Edge newEdge = edges.getEdges().stream()
-                .filter(it -> !oldEdges.contains(it))
-                .findFirst().orElseThrow(RuntimeException::new);
+
+        Edge newEdge = edges.checkContainOldEdge(oldEdges);
 
         edgeDao.deleteByStationId(stationId);
         edgeDao.save(persistLine.getId(), newEdge);
