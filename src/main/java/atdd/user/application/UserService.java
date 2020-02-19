@@ -26,7 +26,7 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public UserResponseView SignupUser(CreateUserRequestView createUserRequestView) {
+  public UserResponseView signupUser(CreateUserRequestView createUserRequestView) {
     User createdUser = userRepository.save(
         new User(
           createUserRequestView.getEmail(),
@@ -37,7 +37,7 @@ public class UserService {
     return new UserResponseView(createdUser.getId(), createdUser.getEmail(), createdUser.getName());
   }
 
-  public UserResponseView RetrieveUser(Long id) {
+  public UserResponseView retrieveUser(Long id) {
     User user = userRepository.findById(id)
       .orElseThrow(NoDataException::new);
 
@@ -49,31 +49,28 @@ public class UserService {
     return userResponseView;
   }
 
-  public Optional<AuthInfoView> LoginUser(LoginUserRequestView loginUserRequestView) {
-    Optional<User> result = userRepository.findByEmail(
+  public AuthInfoView loginUser(LoginUserRequestView loginUserRequestView) {
+    User user = userRepository.findByEmail(
         loginUserRequestView.getEmail()
-        );
+        ).orElseThrow(NoDataException::new);
 
-    User user = result.orElseThrow(NoDataException::new);
 
     if( !loginUserRequestView.getPassword()
         .equals(user.getPassword())) {
       throw new UnauthorizedException();
     }
 
-    return Optional.of(
-        authService.GenerateAuthToken(
-          user.getEmail()
-          ));
+    return authService.generateAuthToken(
+        user.getEmail());
   }
 
-  public void DeleteUser(Long id) {
+  public void deleteUser(Long id) {
     userRepository.deleteById(id);
     return;
   }
 
-  public UserResponseView RetrieveUserByAuthToken(AuthInfoView authInfoView) {
-    String email = authService.AuthUser(authInfoView);
+  public UserResponseView retrieveUserByAuthToken(AuthInfoView authInfoView) {
+    String email = authService.authUser(authInfoView);
 
     User user = userRepository
       .findByEmail(email)
@@ -83,6 +80,4 @@ public class UserService {
         user.getId(), user.getEmail(), user.getName());
     return userResponseView;
   }
-
-
 }

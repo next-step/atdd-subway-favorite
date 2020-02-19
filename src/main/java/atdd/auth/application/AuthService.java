@@ -26,13 +26,16 @@ public class AuthService {
   @Autowired
   public AuthService(JwtConfig jwtConfig) {
     this.jwtConfig = jwtConfig;
+    initJwtKey();
   }
 
+  private void initJwtKey() {
+    byte[] rawKey = Decoders.BASE64
+      .decode(jwtConfig.getKey());
+    jwtKey = Keys.hmacShaKeyFor(rawKey);
+  }
 
-  public AuthInfoView GenerateAuthToken(String email) {
-    if(jwtKey == null){
-      InitJwtKey();
-    }
+  public AuthInfoView generateAuthToken(String email) {
     Claims claims = Jwts.claims().setSubject(email);
 
     Date now = new Date();
@@ -47,7 +50,7 @@ public class AuthService {
     return new AuthInfoView(accessToken, tokenType);
   }
 
-  public String AuthUser(AuthInfoView authInfoView) {
+  public String authUser(AuthInfoView authInfoView) {
     Claims claim = Jwts.parser()
       .setSigningKey(jwtKey)
       .parseClaimsJws(authInfoView.getAccessToken())
@@ -59,11 +62,5 @@ public class AuthService {
     }
 
     return claim.getSubject();
-  }
-
-  private void InitJwtKey() {
-    byte[] rawKey = Decoders.BASE64
-      .decode(jwtConfig.getKey());
-    jwtKey = Keys.hmacShaKeyFor(rawKey);
   }
 }

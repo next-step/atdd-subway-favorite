@@ -29,7 +29,7 @@ public class UserController {
 
   @PostMapping("/user")
   public ResponseEntity createUser(@RequestBody CreateUserRequestView view) {
-    UserResponseView userResponseView = userService.SignupUser(view);
+    UserResponseView userResponseView = userService.signupUser(view);
     return ResponseEntity.created(
         URI.create("/user/" + userResponseView.getId().toString())
         )
@@ -38,12 +38,12 @@ public class UserController {
 
   @GetMapping("/user/{id}")
   public ResponseEntity retrieveUser(@PathVariable("id") Long id) {
-    return ResponseEntity.ok(userService.RetrieveUser(id));
+    return ResponseEntity.ok(userService.retrieveUser(id));
   }
 
   @DeleteMapping("/user/{id}")
   public ResponseEntity deleteUser(@PathVariable("id") Long id) {
-    userService.DeleteUser(id);
+    userService.deleteUser(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -54,7 +54,7 @@ public class UserController {
 
     return ResponseEntity.ok(
         userService
-        .RetrieveUserByAuthToken(authInfoView));
+        .retrieveUserByAuthToken(authInfoView));
   }
 }
 

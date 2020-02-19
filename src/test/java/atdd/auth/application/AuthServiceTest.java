@@ -32,7 +32,7 @@ public class AuthServiceTest {
 
   @Test
   void generateAuthToken() {
-    AuthInfoView authInfoView = authService.GenerateAuthToken(USER_1_EMAIL);
+    AuthInfoView authInfoView = authService.generateAuthToken(USER_1_EMAIL);
 
     assertThat(authInfoView.getTokenType()).isNotNull();
     assertThat(authInfoView.getAccessToken()).isNotNull();
@@ -43,9 +43,9 @@ public class AuthServiceTest {
 
   @Test
   void authUserToken() {
-    AuthInfoView authInfoView = authService.GenerateAuthToken(USER_1_EMAIL);
+    AuthInfoView authInfoView = authService.generateAuthToken(USER_1_EMAIL);
 
-    String tokenEmail = authService.AuthUser(authInfoView);
+    String tokenEmail = authService.authUser(authInfoView);
 
     assertThat(tokenEmail).isEqualTo(USER_1_EMAIL);
   }

@@ -47,7 +47,7 @@ public class UserServiceTest {
   public void signupUser() {
     CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
 
-    UserResponseView result = userService.SignupUser(createUserRequestView);
+    UserResponseView result = userService.signupUser(createUserRequestView);
 
     Optional<User> findResult = userRepository.findById(result.getId());
     if (!findResult.isPresent()) {
@@ -65,9 +65,9 @@ public class UserServiceTest {
   public void retriveUser() {
     CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
 
-    UserResponseView expectResult = userService.SignupUser(createUserRequestView);
+    UserResponseView expectResult = userService.signupUser(createUserRequestView);
 
-    UserResponseView result = userService.RetrieveUser(expectResult.getId());
+    UserResponseView result = userService.retrieveUser(expectResult.getId());
 
     assertThat(result.getId()).isEqualTo(expectResult.getId());
     assertThat(result.getEmail()).isEqualTo(expectResult.getEmail());
@@ -77,13 +77,13 @@ public class UserServiceTest {
   @Test
   public void deleteUser() {
     CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
-    UserResponseView expectResult = userService.SignupUser(createUserRequestView);
+    UserResponseView expectResult = userService.signupUser(createUserRequestView);
 
-    userService.DeleteUser(expectResult.getId());
+    userService.deleteUser(expectResult.getId());
 
 
     try {
-      userService.RetrieveUser(expectResult.getId());
+      userService.retrieveUser(expectResult.getId());
     } catch (NoDataException e) {
       return;
     } catch (Exception e) {
@@ -98,12 +98,13 @@ public class UserServiceTest {
   @Test
   public void loginUser() {
     CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
-    UserResponseView expectResult = userService.SignupUser(createUserRequestView);
+    UserResponseView expectResult = userService.signupUser(createUserRequestView);
 
     LoginUserRequestView loginUserRequestView = new LoginUserRequestView(USER_1_EMAIL, USER_1_PASSWORD);
 
-    Optional<AuthInfoView> result = userService.LoginUser(loginUserRequestView);
-    if (!result.isPresent()) {
+    try {
+      AuthInfoView result = userService.loginUser(loginUserRequestView);
+    } catch (Exception e) {
       fail("로그인 실패");
       return;
     }
@@ -112,11 +113,11 @@ public class UserServiceTest {
   @Test
   public void retriveUserByAuthToken() {
     CreateUserRequestView createUserRequestView = new CreateUserRequestView(USER_1_EMAIL, USER_1_NAME, USER_1_PASSWORD);
-    UserResponseView expectResult = userService.SignupUser(createUserRequestView);
+    UserResponseView expectResult = userService.signupUser(createUserRequestView);
 
-    AuthInfoView authInfoView = authService.GenerateAuthToken(expectResult.getEmail());
+    AuthInfoView authInfoView = authService.generateAuthToken(expectResult.getEmail());
 
-    UserResponseView result = userService.RetrieveUserByAuthToken(authInfoView);
+    UserResponseView result = userService.retrieveUserByAuthToken(authInfoView);
 
     assertThat(result.getId()).isEqualTo(expectResult.getId());
     assertThat(result.getEmail()).isEqualTo(expectResult.getEmail());
