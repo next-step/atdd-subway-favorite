@@ -1,7 +1,10 @@
 package atdd.path.web;
 
 import atdd.path.application.dto.CreateUserRequestView;
+import atdd.path.application.dto.SignInUserRequestView;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.auth.JwtTokenDTO;
+import atdd.path.auth.JwtTokenProvider;
 import atdd.path.domain.User;
 import atdd.path.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +19,11 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
     private UserRepository userRepository;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping
@@ -50,5 +55,15 @@ public class UserController {
     public ResponseEntity deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity signInUser(@RequestBody SignInUserRequestView view) {
+        String accessToken = jwtTokenProvider.createToken(view.getEmail());
+        String tokenType = "Bearer";
+
+        JwtTokenDTO jwtTokenDTO = new JwtTokenDTO(accessToken, tokenType);
+
+        return ResponseEntity.ok().body(jwtTokenDTO);
     }
 }
