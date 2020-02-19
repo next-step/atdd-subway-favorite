@@ -8,7 +8,7 @@ public class CreateUserRequestView {
     private String password;
 
     public User toUser() {
-       return new User(email, name);
+       return new User(email, name, password);
     }
 
     public String getName() {
