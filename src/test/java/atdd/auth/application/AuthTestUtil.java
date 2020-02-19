@@ -1,4 +1,4 @@
-package atdd.user.application;
+package atdd.auth.application;
 
 import javax.crypto.SecretKey;
 

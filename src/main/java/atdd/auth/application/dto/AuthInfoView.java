@@ -1,4 +1,4 @@
-package atdd.user.application.dto;
+package atdd.auth.application.dto;
 
 public class AuthInfoView {
   String accessToken;

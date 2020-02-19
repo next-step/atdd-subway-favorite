@@ -5,12 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import atdd.configure.JwtConfig;
-import atdd.user.application.dto.AuthInfoView;
+import atdd.auth.application.AuthService;
+import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
 import atdd.user.application.dto.LoginUserRequestView;
 import atdd.user.application.dto.UserResponseView;
@@ -37,9 +36,6 @@ public class UserServiceTest {
 
   private UserService userService;
 
-  private BCryptPasswordEncoder passwordEncoder;
-
-
   @BeforeEach
   void setUp() {
     this.authService = new AuthService(jwtConfig);
@@ -62,7 +58,6 @@ public class UserServiceTest {
     assertThat(result.getId()).isEqualTo(expectUser.getId());
     assertThat(result.getEmail()).isEqualTo(expectUser.getEmail());
     assertThat(result.getName()).isEqualTo(expectUser.getName());
-    assertThat(createUserRequestView.getPassword()).isNotEqualTo(expectUser.getPassword());
   }
 
   @Test

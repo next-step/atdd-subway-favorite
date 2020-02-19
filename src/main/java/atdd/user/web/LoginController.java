@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import atdd.configure.JwtConfig;
 import atdd.user.application.UserService;
-import atdd.user.application.dto.AuthInfoView;
+import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.LoginUserRequestView;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

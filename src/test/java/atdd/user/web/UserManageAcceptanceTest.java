@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import atdd.AbstractAcceptanceTest;
 import atdd.configure.JwtConfig;
-import atdd.user.application.dto.AuthInfoView;
+import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.UserResponseView;
 
 public class UserManageAcceptanceTest extends AbstractAcceptanceTest {

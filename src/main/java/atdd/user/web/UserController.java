@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import atdd.user.application.UserService;
-import atdd.user.application.dto.AuthInfoView;
+import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
 import atdd.user.application.dto.UserResponseView;
 import atdd.user.entity.User;

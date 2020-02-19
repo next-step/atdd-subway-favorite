@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import atdd.user.application.dto.AuthInfoView;
+import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.UserResponseView;
 import static atdd.user.TestConstant.*;
 import reactor.core.publisher.Mono;

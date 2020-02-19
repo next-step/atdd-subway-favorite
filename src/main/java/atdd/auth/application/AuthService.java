@@ -1,4 +1,4 @@
-package atdd.user.application;
+package atdd.auth.application;
 
 import java.util.Date;
 import java.util.Optional;
@@ -6,14 +6,10 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import atdd.configure.JwtConfig;
-import atdd.user.application.dto.AuthInfoView;
-import atdd.user.application.dto.LoginUserRequestView;
-import atdd.user.entity.User;
-import atdd.user.repository.UserRepository;
+import atdd.auth.application.dto.AuthInfoView;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
