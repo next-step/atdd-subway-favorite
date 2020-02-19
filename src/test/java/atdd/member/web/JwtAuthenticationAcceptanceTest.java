@@ -1,8 +1,8 @@
 package atdd.member.web;
 
+
 import static atdd.member.MemberConstant.LOGIN_MEMBER_VIEW;
 import static atdd.member.MemberConstant.MEMBER_VIEW;
-import static atdd.member.MemberConstant.MEMBER_BASE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import atdd.member.application.dto.JwtTokenResponseView;
@@ -17,12 +17,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "100000")
-public class MemberAcceptanceTest {
-
+public class JwtAuthenticationAcceptanceTest {
 
     @Autowired
     private WebTestClient webTestClient;
@@ -36,38 +34,12 @@ public class MemberAcceptanceTest {
     }
 
     @Test
-    @DisplayName("회원 가입")
+    @DisplayName("로그인")
     public void join() {
         // when
-        EntityExchangeResult<MemberResponseView> response = memberHttpTest.join(MEMBER_VIEW);
+        EntityExchangeResult<JwtTokenResponseView> response = loginHttpTest.login(LOGIN_MEMBER_VIEW);
         // then
-        assertThat(response.getResponseBody().getId()).isNotNull();
-        assertThat(response.getResponseBody().getEmail()).isNotNull().isEqualTo(MEMBER_VIEW.getEmail());
-        assertThat(response.getResponseBody().getName()).isNotNull().isEqualTo(MEMBER_VIEW.getName());
-    }
-
-
-    @Test
-    @DisplayName("회원 탈퇴")
-    public void createStation() {
-        //given
-        EntityExchangeResult<MemberResponseView> response = memberHttpTest.join(MEMBER_VIEW);
-        // when & than
-        webTestClient.delete().uri(MEMBER_BASE_URL + "/" + response.getResponseBody().getId())
-            .exchange()
-            .expectStatus().isNoContent();
-    }
-
-    @Test
-    @DisplayName("회원 조회")
-    public void me() {
-        //given
-        memberHttpTest.join(MEMBER_VIEW);
-        // when & than
-        webTestClient.get().uri(MEMBER_BASE_URL + "/me")
-            .header("Authorization", "Bearer " + loginHttpTest.getToken(LOGIN_MEMBER_VIEW))
-            .exchange()
-            .expectStatus().isNoContent();
+        assertThat(response.getResponseBody().getToken()).isNotNull();
     }
 
 }

@@ -8,6 +8,7 @@ import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,12 @@ public class MemberController {
     public ResponseEntity<Void> withdraw(@PathVariable long id) {
         memberDao.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("me")
+    public ResponseEntity<MemberResponseView> me() {
+        Member m = new Member(1,"seok2@naver.com", "이재석");
+        return ResponseEntity.ok(MemberResponseView.of(m));
     }
 
 }
