@@ -2,15 +2,12 @@ package atdd.user.web;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.user.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import atdd.AbstractAcceptanceTest;
-import atdd.configure.JwtConfig;
 import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.UserResponseView;
 

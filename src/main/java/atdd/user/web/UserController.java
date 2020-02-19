@@ -1,12 +1,9 @@
 package atdd.user.web;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,16 +17,14 @@ import atdd.user.application.UserService;
 import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
 import atdd.user.application.dto.UserResponseView;
-import atdd.user.entity.User;
-import atdd.user.repository.UserRepository;
 
 @RestController
 public class UserController {
   private UserService userService;
-  private UserRepository userRepository;
 
-  public UserController(UserRepository userRepository) {
-    this.userRepository = userRepository;
+  @Autowired
+  public UserController(UserService userService) {
+    this.userService = userService;
   }
 
   @PostMapping("/user")
@@ -43,12 +38,7 @@ public class UserController {
 
   @GetMapping("/user/{id}")
   public ResponseEntity retrieveUser(@PathVariable("id") Long id) {
-    Optional<UserResponseView> result = userService.RetrieveUser(id);
-    if(!result.isPresent()) {
-      return ResponseEntity.notFound().build();
-    }
-
-    return ResponseEntity.ok(result.get());
+    return ResponseEntity.ok(userService.RetrieveUser(id));
   }
 
   @DeleteMapping("/user/{id}")
@@ -62,23 +52,10 @@ public class UserController {
       @RequestHeader(value=HttpHeaders.AUTHORIZATION) String authToken) {
     AuthInfoView authInfoView = new AuthInfoView(authToken);
 
-    Optional<UserResponseView> result = userService.RetrieveUserByAuthToken(authInfoView);
-    if(!result.isPresent()) {
-      return ResponseEntity.notFound().build();
-    }
-
-    return ResponseEntity.ok(result.get());
+    return ResponseEntity.ok(
+        userService
+        .RetrieveUserByAuthToken(authInfoView));
   }
-
-  @Autowired
-  public UserController(UserService userService, UserRepository userRepository) {
-    this.userService = userService;
-    this.userRepository = userRepository;
-  }
-
-  public UserController() {
-  }
-
 }
 
 

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 
 import atdd.auth.application.AuthService;
 import atdd.auth.application.dto.AuthInfoView;
+import atdd.path.application.exception.NoDataException;
 import atdd.user.application.dto.CreateUserRequestView;
 import atdd.user.application.dto.LoginUserRequestView;
 import atdd.user.application.dto.UserResponseView;
+import atdd.user.application.exception.UnauthorizedException;
 import atdd.user.entity.User;
 import atdd.user.repository.UserRepository;
 
@@ -35,18 +37,16 @@ public class UserService {
     return new UserResponseView(createdUser.getId(), createdUser.getEmail(), createdUser.getName());
   }
 
-  public Optional<UserResponseView> RetrieveUser(Long id) {
-    Optional<User> optionalUser = userRepository.findById(id);
-    if (!optionalUser.isPresent()) {
-      return Optional.empty();
-    }
-    User user = optionalUser.get();
+  public UserResponseView RetrieveUser(Long id) {
+    User user = userRepository.findById(id)
+      .orElseThrow(NoDataException::new);
+
     UserResponseView userResponseView = new UserResponseView(
         user.getId(),
         user.getEmail(),
         user.getName()
         );
-    return Optional.of(userResponseView);
+    return userResponseView;
   }
 
   public Optional<AuthInfoView> LoginUser(LoginUserRequestView loginUserRequestView) {
@@ -54,14 +54,11 @@ public class UserService {
         loginUserRequestView.getEmail()
         );
 
-    if (!result.isPresent()) {
-      return Optional.empty();
-    }
-    User user = result.get();
+    User user = result.orElseThrow(NoDataException::new);
 
     if( !loginUserRequestView.getPassword()
         .equals(user.getPassword())) {
-      return Optional.empty();
+      throw new UnauthorizedException();
     }
 
     return Optional.of(
@@ -75,22 +72,16 @@ public class UserService {
     return;
   }
 
-  public Optional<UserResponseView> RetrieveUserByAuthToken(AuthInfoView authInfoView) {
-    Optional<String> authResult = authService.AuthUser(authInfoView);
-    if(!authResult.isPresent()) {
-      return Optional.empty();
-    }
+  public UserResponseView RetrieveUserByAuthToken(AuthInfoView authInfoView) {
+    String email = authService.AuthUser(authInfoView);
 
-    String email = authResult.get();
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if(!optionalUser.isPresent()) {
-      return Optional.empty();
-    }
-    User user = optionalUser.get();
+    User user = userRepository
+      .findByEmail(email)
+      .orElseThrow(NoDataException::new);
 
     UserResponseView userResponseView = new UserResponseView(
         user.getId(), user.getEmail(), user.getName());
-    return Optional.of(userResponseView);
+    return userResponseView;
   }
 
 

@@ -1,7 +1,6 @@
 package atdd.auth.application;
 
 import java.util.Date;
-import java.util.Optional;
 
 import javax.crypto.SecretKey;
 
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import atdd.configure.JwtConfig;
+import atdd.user.application.exception.UnauthorizedException;
 import atdd.auth.application.dto.AuthInfoView;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,12 +17,17 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class AuthService {
-
   private JwtConfig jwtConfig;
   private SecretKey jwtKey;
 
   private static final String tokenType = "bearer";
   private static final Long tokenDuration = 30 * 60 * 1000L;
+
+  @Autowired
+  public AuthService(JwtConfig jwtConfig) {
+    this.jwtConfig = jwtConfig;
+  }
+
 
   public AuthInfoView GenerateAuthToken(String email) {
     if(jwtKey == null){
@@ -42,7 +47,7 @@ public class AuthService {
     return new AuthInfoView(accessToken, tokenType);
   }
 
-  public Optional<String> AuthUser(AuthInfoView authInfoView) {
+  public String AuthUser(AuthInfoView authInfoView) {
     Claims claim = Jwts.parser()
       .setSigningKey(jwtKey)
       .parseClaimsJws(authInfoView.getAccessToken())
@@ -50,18 +55,10 @@ public class AuthService {
 
     Date now = new Date();
     if(now.compareTo(claim.getExpiration()) > 0) {
-      return Optional.empty();
+      throw new UnauthorizedException();
     }
 
-    return Optional.of(claim.getSubject());
-  }
-
-  public AuthService() {
-  }
-
-  @Autowired
-  public AuthService(JwtConfig jwtConfig) {
-    this.jwtConfig = jwtConfig;
+    return claim.getSubject();
   }
 
   private void InitJwtKey() {

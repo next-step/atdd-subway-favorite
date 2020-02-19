@@ -12,9 +12,6 @@ import atdd.auth.application.AuthTestUtil;
 import io.jsonwebtoken.Claims;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Optional;
 
 import static atdd.user.TestConstant.*;
 
@@ -48,13 +45,9 @@ public class AuthServiceTest {
   void authUserToken() {
     AuthInfoView authInfoView = authService.GenerateAuthToken(USER_1_EMAIL);
 
-    Optional<String> result = authService.AuthUser(authInfoView);
-    if(!result.isPresent()) {
-      fail("인증 실패");
-      return;
-    }
+    String tokenEmail = authService.AuthUser(authInfoView);
 
-    assertThat(result.get()).isEqualTo(USER_1_EMAIL);
+    assertThat(tokenEmail).isEqualTo(USER_1_EMAIL);
   }
 
 }

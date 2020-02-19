@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import atdd.configure.JwtConfig;
+import atdd.path.application.exception.NoDataException;
 import atdd.auth.application.AuthService;
 import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
@@ -66,13 +67,7 @@ public class UserServiceTest {
 
     UserResponseView expectResult = userService.SignupUser(createUserRequestView);
 
-    Optional<UserResponseView> optionalUser = userService.RetrieveUser(expectResult.getId());
-    if (!optionalUser.isPresent()) {
-      fail("회원가입한 유저를 찾을 수 없음");
-      return;
-    }
-
-    UserResponseView result = optionalUser.get();
+    UserResponseView result = userService.RetrieveUser(expectResult.getId());
 
     assertThat(result.getId()).isEqualTo(expectResult.getId());
     assertThat(result.getEmail()).isEqualTo(expectResult.getEmail());
@@ -87,11 +82,17 @@ public class UserServiceTest {
     userService.DeleteUser(expectResult.getId());
 
 
-    Optional<UserResponseView> optionalUser = userService.RetrieveUser(expectResult.getId());
-    if (optionalUser.isPresent()) {
-      fail("회원 탈퇴가 정상적으로 되지 않음");
+    try {
+      userService.RetrieveUser(expectResult.getId());
+    } catch (NoDataException e) {
+      return;
+    } catch (Exception e) {
+      fail("Unknown Exception : " + e.toString());
       return;
     }
+
+    fail("회원 탈퇴가 정상적으로 되지 않음");
+    return;
   }
 
   @Test
@@ -115,13 +116,7 @@ public class UserServiceTest {
 
     AuthInfoView authInfoView = authService.GenerateAuthToken(expectResult.getEmail());
 
-    Optional<UserResponseView> optionalUser = userService.RetrieveUserByAuthToken(authInfoView);
-    if (!optionalUser.isPresent()) {
-      fail("토큰으로 유저를 찾을 수 없음");
-      return;
-    }
-
-    UserResponseView result = optionalUser.get();
+    UserResponseView result = userService.RetrieveUserByAuthToken(authInfoView);
 
     assertThat(result.getId()).isEqualTo(expectResult.getId());
     assertThat(result.getEmail()).isEqualTo(expectResult.getEmail());
