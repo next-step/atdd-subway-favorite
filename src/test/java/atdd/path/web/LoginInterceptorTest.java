@@ -27,7 +27,7 @@ public class LoginInterceptorTest {
     private HttpServletRequest request;
 
     @Test
-    public void 인터셉터에선_토큰을_만들_때_쓴_이메일을_리턴한다() {
+    public void 토큰이_유효하면_이메일이_요청에_담긴다() {
         //given
         String email = "abc@email.com";
         String secretKey = readProperties.getSecretKey();

@@ -23,8 +23,11 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token = jwtTokenProvider.resolveToken(request);
         String secretKey = readProperties.getSecretKey();
         boolean isValidToken = jwtTokenProvider.validateToken(token);
-        String email = jwtTokenProvider.getUserEmail(token);
-        request.setAttribute("email", email);
-        return true;
+        if (isValidToken) {
+            String email = jwtTokenProvider.getUserEmail(token);
+            request.setAttribute("email", email);
+            return true;
+        }
+        return false;
     }
 }
