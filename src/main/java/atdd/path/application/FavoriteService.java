@@ -2,6 +2,7 @@ package atdd.path.application;
 
 import atdd.path.dao.FavoriteDao;
 import atdd.path.dao.StationDao;
+import atdd.path.domain.FavoritePath;
 import atdd.path.domain.FavoriteStation;
 import atdd.path.domain.Member;
 import atdd.path.domain.Station;
@@ -21,6 +22,10 @@ public class FavoriteService {
     public FavoriteStation saveForStation(Member member, Long stationId) {
         final Station findStation = stationDao.findById(stationId);
         return favoriteDao.saveForStation(new FavoriteStation(member, findStation));
+    }
+
+    public FavoritePath saveFavoritePath(Long startId, Long endId, Member member) {
+        return null;
     }
 
 }
