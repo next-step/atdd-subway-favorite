@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ public class User extends BaseEntity {
     private User(String name, String email, String password) {
         this.name = name;
         this.email = email;
-        this.password = password;
+
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }
