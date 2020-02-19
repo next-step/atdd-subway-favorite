@@ -2,9 +2,11 @@ package atdd.path.application;
 
 import atdd.path.application.dto.UserRequestView;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.application.exception.InvalidJwtAuthenticationException;
 import atdd.path.domain.User;
 import atdd.path.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,8 +15,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public UserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public UserResponseView createUser(UserRequestView userRequestView) {
@@ -25,7 +30,18 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserResponseView retrieveUser(HttpServletRequest request) {
-        return UserResponseView.of(User.createBuilder().email("boorwonie@email.com").build());
+    public UserResponseView retrieveUser(HttpServletRequest request)  {
+        String email = this.extractEmail(request);
+
+        User persistUser = userRepository.findUserByEmail(email);
+        return UserResponseView.of(persistUser);
+    }
+
+    private String extractEmail(HttpServletRequest req) {
+        String token = jwtTokenProvider.resolveToken(req);
+        if (StringUtils.isEmpty(token) || !jwtTokenProvider.validateToken(token)) {
+            throw new InvalidJwtAuthenticationException("invalid token");
+        }
+        return jwtTokenProvider.getUserEmail(token);
     }
 }

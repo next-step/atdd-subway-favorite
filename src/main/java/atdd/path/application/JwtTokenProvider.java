@@ -50,7 +50,7 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) throws InvalidJwtAuthenticationException {
+    public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 

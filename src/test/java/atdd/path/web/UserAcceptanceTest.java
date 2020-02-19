@@ -52,7 +52,8 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .loginUserTest(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
 
         webTestClient.post().uri(USER_URL + "/me")
-                .header("Authorization", String.format("%s %s", responseView.getTokenType(), responseView.getAccessToken()))
+                .header("Authorization",
+                        String.format("%s %s", responseView.getTokenType(), responseView.getAccessToken()))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody().jsonPath("$.email").isEqualTo(TestConstant.EMAIL_BROWN);

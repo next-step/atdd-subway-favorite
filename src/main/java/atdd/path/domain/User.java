@@ -30,4 +30,11 @@ public class User {
         this.name = name;
         this.password = password;
     }
+
+    @Builder(builderClassName = "infoBuilder", builderMethodName = "infoBuilder")
+    public User(Long id, String email, String name) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+    }
 }

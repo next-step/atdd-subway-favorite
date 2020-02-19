@@ -33,7 +33,7 @@ public class LoginServiceTest {
     @BeforeEach
     void setUp() {
         this.loginService = new LoginService(jwtTokenProvider);
-        this.userService = new UserService(userRepository);
+        this.userService = new UserService(userRepository, jwtTokenProvider);
     }
 
     @DisplayName("사용자는 자신의 정보를 통해 로그인을 요청하고 인증 정보를 받는다")
