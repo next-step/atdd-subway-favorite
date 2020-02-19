@@ -101,10 +101,10 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
         lineHttpTest.createEdgeRequest(lineId, stationId3, stationId4);
 
-        PathResponseView findView = graphHttpTest.findPath(stationId, stationId4);
-
         memberHttpTest.createMemberRequest(TEST_MEMBER);
         String token = memberHttpTest.loginMember(TEST_MEMBER);
+
+        PathResponseView findView = graphHttpTest.findPath(stationId, stationId4);
 
         EntityExchangeResult<FavoritePathResponseView> result = createForPathRequest(
                 findView.getStartStationId(),
@@ -118,6 +118,34 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(pathView.getStartStationId()).isEqualTo(STATION_ID);
         assertThat(pathView.getEndStationId()).isEqualTo(STATION_ID_4);
         assertThat(pathView.getStations().size()).isEqualTo(4);
+    }
+
+    @DisplayName("경로 즐겨찾기 목록을 조회 할 수 있다.")
+    @Test
+    void beAbleToFindForPath() {
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
+        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
+        Long stationId4 = stationHttpTest.createStation(STATION_NAME_4);
+        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
+        lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
+        lineHttpTest.createEdgeRequest(lineId, stationId3, stationId4);
+
+        memberHttpTest.createMemberRequest(TEST_MEMBER);
+        String token = memberHttpTest.loginMember(TEST_MEMBER);
+
+        createForPathRequest(STATION_ID, STATION_ID_3, token);
+        createForPathRequest(STATION_ID_2, STATION_ID_4, token);
+        createForPathRequest(STATION_ID, STATION_ID_4, token);
+
+        FavoritePathsResponseView view = findForPaths(token);
+
+        assertThat(view).isNotNull();
+        assertThat(view.getCount()).isEqualTo(3);
+        assertThat(view.getFavorites())
+                .extracting("path[0].stations[0].name")
+                .containsExactly(STATION_NAME, STATION_NAME_2, STATION_NAME_3);
     }
 
     private FavoriteStationResponseView createForStation(Long stationId, String token) {
@@ -159,6 +187,20 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectHeader().exists("Location")
                 .expectBody(FavoritePathResponseView.class)
+                .returnResult();
+    }
+
+    private FavoritePathsResponseView findForPaths(String token) {
+        EntityExchangeResult<FavoritePathsResponseView> result = findForPathsRequest(token);
+        return result.getResponseBody();
+    }
+
+    public EntityExchangeResult<FavoritePathsResponseView> findForPathsRequest(String token) {
+        return webTestClient.get().uri("/favorites/paths")
+                .header(AUTHORIZATION, token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(FavoritePathsResponseView.class)
                 .returnResult();
     }
 

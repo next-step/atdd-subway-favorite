@@ -14,8 +14,10 @@ public class FavoritePathResponseView {
 
     public FavoritePathResponseView(FavoritePath favoritePath, List<Station> stations) {
         this.id = favoritePath.getId();
-        this.path = new PathResponseView(favoritePath.getSourceStation().getId(),
-                favoritePath.getTargetStation().getId(), stations);
+        this.path = new PathResponseView(
+                favoritePath.getSourceStation().getId(),
+                favoritePath.getTargetStation().getId(),
+                stations);
     }
 
     public Long getId() {

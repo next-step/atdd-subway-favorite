@@ -152,4 +152,7 @@ public class FavoriteDao {
                 "");
     }
 
+    public List<FavoritePath> findFavoritePath(Member member) {
+        return null;
+    }
 }

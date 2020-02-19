@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.application.FavoriteService;
 import atdd.path.application.GraphService;
 import atdd.path.application.dto.FavoritePathResponseView;
+import atdd.path.application.dto.FavoritePathsResponseView;
 import atdd.path.application.dto.FavoriteStationResponseView;
 import atdd.path.application.dto.FavoriteStationsResponseView;
 import atdd.path.application.resolver.LoginUser;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @RequestMapping("/favorites")
 @RestController
@@ -64,6 +67,17 @@ public class FavoriteController {
 
         return ResponseEntity.created(URI.create("/favorites/"+ savedFavoritePath.getId()))
                 .body(new FavoritePathResponseView(savedFavoritePath, stations));
+    }
+
+    @GetMapping("/paths")
+    public ResponseEntity<FavoritePathsResponseView> findFavoritePath(@LoginUser Member member) {
+        final List<FavoritePath> findFavoritePaths = favoriteDao.findFavoritePath(member);
+
+        final List<FavoritePathResponseView> views = findFavoritePaths.stream()
+                .map(path -> new FavoritePathResponseView(path, graphService.findPath(path)))
+                .collect(toList());
+
+        return ResponseEntity.ok(new FavoritePathsResponseView(views));
     }
 
 }
