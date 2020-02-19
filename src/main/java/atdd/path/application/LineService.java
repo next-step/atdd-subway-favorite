@@ -56,8 +56,6 @@ public class LineService {
                                 .findFirst().orElseThrow(RuntimeException::new);
 
         edgeRepository.deleteById(deletedEdge.getId());
-//        edgeRepository.deleteByStationId(stationId);
-//        persistLine.addEdge(newEdge);
         edgeRepository.save(newEdge);
     }
 }
