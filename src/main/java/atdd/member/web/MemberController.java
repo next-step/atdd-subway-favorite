@@ -1,13 +1,17 @@
-package atdd.path.web;
+package atdd.member.web;
 
-import atdd.path.application.dto.CreateMemberRequestView;
-import atdd.path.application.dto.MemberResponseView;
-import atdd.path.dao.MemberDao;
-import atdd.path.domain.Member;
+import atdd.member.application.JwtTokenProvider;
+import atdd.member.application.dto.CreateMemberRequestView;
+import atdd.member.application.dto.MemberResponseView;
+import atdd.member.application.exception.InvalidJwtAuthenticationException;
+import atdd.member.dao.MemberDao;
+import atdd.member.domain.Member;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -16,10 +20,12 @@ public class MemberController
 {
     public static final String MEMBER_URL = "/members";
     private MemberDao memberDao;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberDao memberDao)
+    public MemberController(MemberDao memberDao, JwtTokenProvider jwtTokenProvider)
     {
         this.memberDao = memberDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping
@@ -50,5 +56,23 @@ public class MemberController
     {
         memberDao.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity retrieveMember(HttpServletRequest req)
+    {
+        String extractEmail = extractEmail(req);
+        Member persistMember = memberDao.findByEmail(extractEmail);
+        return ResponseEntity.ok().body(MemberResponseView.of(persistMember));
+    }
+
+    public String extractEmail(HttpServletRequest req)
+    {
+        String token = jwtTokenProvider.resolveToken(req);
+        if( StringUtils.isEmpty(token) || !jwtTokenProvider.validateToken(token) )
+        {
+            throw new InvalidJwtAuthenticationException("invalid token");
+        }
+        return jwtTokenProvider.getMemberEmail(token);
     }
 }

@@ -1,7 +1,7 @@
-package atdd.path.dao;
+package atdd.member.dao;
 
-import atdd.path.application.exception.NoDataException;
-import atdd.path.domain.Member;
+import atdd.member.dao.MemberDao;
+import atdd.member.domain.Member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -75,5 +75,31 @@ public class MemberDaoTest
                 EmptyResultDataAccessException.class,
                 () -> memberDao.findById(persistMember.getId())
         );
+    }
+
+    @DisplayName("Email, Password로 조회")
+    @Test
+    public void findByEmailAndPassword()
+    {
+        // when
+        Member memberByEmailAndPassword
+                = memberDao.findByEmailAndPassword(persistMember.getEmail(), persistMember.getPassword());
+
+        // then
+        assertThat(memberByEmailAndPassword.getId()).isNotNull();
+        assertThat(memberByEmailAndPassword.getEmail()).isEqualTo(MEMBER_EMAIL);
+        assertThat(memberByEmailAndPassword.getName()).isEqualTo(MEMBER_NAME);
+    }
+
+    @DisplayName("Email로 조회")
+    @Test
+    public void findByEmail()
+    {
+        // when
+        Member memberByEmail = memberDao.findByEmail(persistMember.getEmail());
+
+        // then
+        assertThat(memberByEmail.getId()).isNotNull();
+        assertThat(memberByEmail.getName()).isEqualTo(MEMBER_NAME);
     }
 }

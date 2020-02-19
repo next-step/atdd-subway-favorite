@@ -1,8 +1,7 @@
-package atdd.path.web;
+package atdd.member.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.MemberResponseView;
-import net.bytebuddy.build.ToStringPlugin;
+import atdd.member.application.dto.MemberResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +15,13 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest
     public static final String MEMBER_URL = "/members";
 
     private MemberHttpTest memberHttpTest;
+    private LoginHttpTest loginHttpTest;
 
     @BeforeEach
     void setUp()
     {
         this.memberHttpTest = new MemberHttpTest(webTestClient);
+        this.loginHttpTest = new LoginHttpTest(webTestClient);
     }
 
     @DisplayName("회원 가입")
@@ -53,5 +54,24 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest
         webTestClient.get().uri(MEMBER_URL + "/" + memberId)
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @DisplayName("회원 정보 요청")
+    @Test
+    public void retrieveMyInfo()
+    {
+        // given
+        Long memberId = memberHttpTest.createMember(MEMBER_EMAIL, MEMBER_NAME, MEMBER_PASSWORD);
+
+        // and
+        String accessToken = loginHttpTest.login(MEMBER_EMAIL, MEMBER_PASSWORD).getResponseBody().getAccessToken();
+
+        // when
+        EntityExchangeResult<MemberResponseView> response
+                = memberHttpTest.retrieveMyInfo(MEMBER_EMAIL, MEMBER_PASSWORD, accessToken);
+
+        // then
+        assertThat(response.getResponseBody().getEmail()).isEqualTo(MEMBER_EMAIL);
+        assertThat(response.getResponseBody().getName()).isEqualTo(MEMBER_NAME);
     }
 }

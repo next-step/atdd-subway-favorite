@@ -1,6 +1,6 @@
-package atdd.path.dao;
+package atdd.member.dao;
 
-import atdd.path.domain.Member;
+import atdd.member.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -65,5 +65,44 @@ public class MemberDao
                      "  FROM MEMBER" +
                      " WHERE ID = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public Member findByEmailAndPassword(String email, String password)
+    {
+        String sql = "SELECT ID" +
+                     "     , EMAIL" +
+                     "     , NAME" +
+                     "     , PASSWORD" +
+                     "  FROM MEMBER" +
+                     " WHERE EMAIL = ?" +
+                     "   AND PASSWORD = ?";
+
+        Member member = jdbcTemplate.queryForObject(sql, new Object[]{email, password}, (rs, rowNum) ->
+                new Member(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("password")
+                ));
+        return member;
+    }
+
+    public Member findByEmail(String email)
+    {
+        String sql = "SELECT ID" +
+                     "     , EMAIL" +
+                     "     , NAME" +
+                     "     , PASSWORD" +
+                     "  FROM MEMBER" +
+                     " WHERE EMAIL = ?";
+
+        Member member = jdbcTemplate.queryForObject(sql, new Object[]{email}, (rs, rowNum) ->
+                new Member(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("password")
+                ));
+        return member;
     }
 }
