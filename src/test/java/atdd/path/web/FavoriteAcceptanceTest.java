@@ -92,19 +92,9 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("경로 즐겨찾기 등록을 할 수 있다")
     @Test
     void beAbleToSaveForPath() {
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
-        Long stationId4 = stationHttpTest.createStation(STATION_NAME_4);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
-        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
-        lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
-        lineHttpTest.createEdgeRequest(lineId, stationId3, stationId4);
+        String token = setUpPath();
 
-        memberHttpTest.createMemberRequest(TEST_MEMBER);
-        String token = memberHttpTest.loginMember(TEST_MEMBER);
-
-        PathResponseView findView = graphHttpTest.findPath(stationId, stationId4);
+        PathResponseView findView = graphHttpTest.findPath(STATION_ID, STATION_ID_4);
 
         EntityExchangeResult<FavoritePathResponseView> result = createForPathRequest(
                 findView.getStartStationId(),
@@ -123,17 +113,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("경로 즐겨찾기 목록을 조회 할 수 있다.")
     @Test
     void beAbleToFindForPath() {
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
-        Long stationId4 = stationHttpTest.createStation(STATION_NAME_4);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
-        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
-        lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
-        lineHttpTest.createEdgeRequest(lineId, stationId3, stationId4);
-
-        memberHttpTest.createMemberRequest(TEST_MEMBER);
-        String token = memberHttpTest.loginMember(TEST_MEMBER);
+        String token = setUpPath();
 
         createForPathRequest(STATION_ID, STATION_ID_3, token);
         createForPathRequest(STATION_ID_2, STATION_ID_4, token);
@@ -148,20 +128,45 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 .containsExactly(STATION_ID, STATION_ID_3);
     }
 
+    @DisplayName("경로 즐겨찾기 삭제를 할 수 있다")
+    @Test
+    void beAbleToDeleteForPath() {
+        String token = setUpPath();
+
+        FavoritePathResponseView createView = createForPath(STATION_ID, STATION_ID_3, token);
+
+        webTestClient.delete().uri(FAVORITES_PATH_URL + "/" + createView.getId())
+                .header(AUTHORIZATION, token)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        FavoritePathsResponseView findView = findForPaths(token);
+
+        assertThat(findView).isNotNull();
+        assertThat(findView.getCount()).isEqualTo(0);
+    }
+
+    private String setUpPath() {
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
+        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
+        Long stationId4 = stationHttpTest.createStation(STATION_NAME_4);
+        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
+        lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
+        lineHttpTest.createEdgeRequest(lineId, stationId3, stationId4);
+
+        memberHttpTest.createMemberRequest(TEST_MEMBER);
+        return memberHttpTest.loginMember(TEST_MEMBER);
+    }
+
     private FavoriteStationResponseView createForStation(Long stationId, String token) {
         EntityExchangeResult<FavoriteStationResponseView> result = createForStationRequest(stationId, token);
         return result.getResponseBody();
     }
 
     public EntityExchangeResult<FavoriteStationResponseView> createForStationRequest(Long stationId, String token) {
-        return webTestClient.post().uri(FAVORITES_STATIONS_URL + "/" + stationId)
-                .header(AUTHORIZATION, token)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectHeader().exists("Location")
-                .expectBody(FavoriteStationResponseView.class)
-                .returnResult();
+        return createRequest(FavoriteStationResponseView.class, FAVORITES_STATIONS_URL + "/" + stationId, token);
     }
 
     private FavoriteStationsResponseView findForStations(String token) {
@@ -170,24 +175,17 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     public EntityExchangeResult<FavoriteStationsResponseView> findForStationRequest(String token) {
-        return webTestClient.get().uri(FAVORITES_STATIONS_URL)
-                .header(AUTHORIZATION, token)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(FavoriteStationsResponseView.class)
-                .returnResult();
+        return findRequest(FavoriteStationsResponseView.class, FAVORITES_STATIONS_URL, token);
+    }
+
+    private FavoritePathResponseView createForPath(Long startId, Long endId, String token) {
+        EntityExchangeResult<FavoritePathResponseView> result = createForPathRequest(startId, endId, token);
+        return result.getResponseBody();
     }
 
     public EntityExchangeResult<FavoritePathResponseView> createForPathRequest(Long startId, Long endId, String token) {
-        return webTestClient.post().uri(FAVORITES_PATH_URL + "?startId=" + startId + "&endId=" + endId)
-                .header(AUTHORIZATION, token)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectHeader().exists("Location")
-                .expectBody(FavoritePathResponseView.class)
-                .returnResult();
+        return createRequest(FavoritePathResponseView.class,
+                FAVORITES_PATH_URL + "?startId=" + startId + "&endId=" + endId, token);
     }
 
     private FavoritePathsResponseView findForPaths(String token) {
@@ -196,11 +194,27 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     public EntityExchangeResult<FavoritePathsResponseView> findForPathsRequest(String token) {
-        return webTestClient.get().uri("/favorites/paths")
+        return findRequest(FavoritePathsResponseView.class, FAVORITES_PATH_URL, token);
+    }
+
+    private <T> EntityExchangeResult<T> createRequest(Class<T> classT, String uri, String token) {
+        return webTestClient.post().uri(uri)
+                .header(AUTHORIZATION, token)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
+                .expectBody(classT)
+                .returnResult();
+    }
+
+    private <T> EntityExchangeResult<T> findRequest(Class<T> classT, String uri, String token) {
+        return webTestClient.get().uri(uri)
                 .header(AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(FavoritePathsResponseView.class)
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(classT)
                 .returnResult();
     }
 
