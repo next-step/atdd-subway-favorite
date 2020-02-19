@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.domain.User;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -14,11 +15,12 @@ public class UserHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<UserResponseView> createUserRequest() {
+    public EntityExchangeResult<UserResponseView> createUserRequest(User user) {
         CreateUserRequestView createUserRequestView = CreateUserRequestView.builder()
-                .email("boorwonie@email.com")
-                .name("브라운")
-                .password("subway")
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .password(user.getPassword())
                 .build();
 
         return webTestClient.post().uri("/users")
@@ -41,8 +43,8 @@ public class UserHttpTest {
                 .returnResult();
     }
 
-    public Long createUser() {
-        EntityExchangeResult<UserResponseView> stationResponse = createUserRequest();
+    public Long createUser(User user) {
+        EntityExchangeResult<UserResponseView> stationResponse = createUserRequest(user);
         return stationResponse.getResponseBody().getId();
     }
 

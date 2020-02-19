@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static atdd.path.UserTestConstant.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -28,7 +28,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         // Given
 
         // When
-        Long userId = userHttpTest.createUser();
+        Long userId = userHttpTest.createUser(TEST_USER_1);
 
         // Then
         EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
@@ -39,16 +39,16 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void deleteUser() {
         // Given
-        Long userId = userHttpTest.createUser();
+        Long userId = userHttpTest.createUser(TEST_USER_1); // 조회 성공
         EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
 
         // When
-        webTestClient.delete().uri("/users/" + userId)
+        webTestClient.delete().uri("/users/" + userId)  // 삭제
                 .exchange()
                 .expectStatus().isNoContent();
 
         // Then
-        webTestClient.get().uri("/users/" + userId)
+        webTestClient.get().uri("/users/" + userId)     // 조회 실패
                 .exchange()
                 .expectStatus().isNotFound();
     }

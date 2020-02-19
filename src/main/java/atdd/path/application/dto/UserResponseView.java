@@ -1,6 +1,7 @@
 package atdd.path.application.dto;
 
 import atdd.path.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -10,6 +11,7 @@ public class UserResponseView {
     String name;
     String password;
 
+    @Builder
     public UserResponseView(Long id, String email, String name, String password) {
         this.id = id;
         this.email = email;

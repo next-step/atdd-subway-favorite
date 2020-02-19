@@ -2,9 +2,8 @@ package atdd.path.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-@NoArgsConstructor
 @Getter
 public class User {
     Long id;

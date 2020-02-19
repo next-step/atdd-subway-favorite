@@ -5,6 +5,8 @@ import atdd.path.dao.UserDao;
 import atdd.path.domain.User;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -14,8 +16,10 @@ public class UserService {
         this.userDao = userDao;
     }
 
+
     public User createUser(CreateUserRequestView view) {
         User user = User.builder()
+                .id(view.getId())
                 .email(view.getEmail())
                 .name(view.getName())
                 .password(view.getPassword())
@@ -28,7 +32,16 @@ public class UserService {
 
     public User retrieveUser(Long id) {
 
-        return userDao.findById(id);
+        Optional<User> findUser = Optional.ofNullable(userDao.findById(id));
+
+        return findUser
+                .map(user -> User.builder()
+                        .id(findUser.get().getId())
+                        .email(findUser.get().getEmail())
+                        .name(findUser.get().getName())
+                        .password(findUser.get().getPassword())
+                        .build())
+                .orElseGet(() -> null);
     }
 
     public void deleteById(Long id) {

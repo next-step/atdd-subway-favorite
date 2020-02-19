@@ -10,7 +10,7 @@ public class UserDao {
 
         // JDBC 잘 사용할 줄 몰라요... ㅠㅠ
         User newUser = User.builder()
-                .id(1L)
+                .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .password(user.getPassword())
