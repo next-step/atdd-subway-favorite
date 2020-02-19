@@ -139,10 +139,31 @@ public class FavoriteDao {
                     stationOf(rs, "SOURCE"),
                     stationOf(rs, "TARGET"));
 
+    public List<FavoritePath> findForPaths(Member member) {
+        final String sql = "select fp.id, " +
+                "m.id as member_id, " +
+                "m.email, " +
+                "m.name, " +
+                "s1.id as source_station_id,   " +
+                "s1.name as source_station_name,  " +
+                "s2.id as target_station_id,   " +
+                "s2.name as target_station_name  " +
+                "from favorite_path fp " +
+                "inner join member m on fp.member_id = m.id " +
+                "inner join station s1 on fp.source_station_id = s1.id " +
+                "inner join station s2 on fp.target_station_id = s2.id " +
+                "where fp.member_id = ?";
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{member.getId()},
+                pathRowMapper);
+    }
+
     private static Station stationOf(ResultSet rs, String prefix) throws SQLException {
         final String newPrefix = StringUtils.isEmpty(prefix) ? "" : prefix + "_";
         return new Station(rs.getLong(newPrefix + "STATION_ID"),
-                rs.getString(newPrefix +"STATION_NAME"));
+                rs.getString(newPrefix + "STATION_NAME"));
     }
 
     private static Member memberOf(ResultSet rs) throws SQLException {
@@ -151,8 +172,5 @@ public class FavoriteDao {
                 rs.getString("NAME"),
                 "");
     }
-
-    public List<FavoritePath> findFavoritePath(Member member) {
-        return null;
-    }
+    
 }

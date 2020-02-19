@@ -124,4 +124,33 @@ class FavoriteDaoTest {
         assertThat(targetStation.getName()).isEqualTo(STATION_NAME_4);
     }
 
+    @DisplayName("경로 즐겨찾기 목록을 조회해야 한다")
+    @Test
+    void mustFindFavoritePath() {
+        Station savedStation = stationDao.save(TEST_STATION);
+        Station savedStation2 = stationDao.save(TEST_STATION_2);
+        Station savedStation3 = stationDao.save(TEST_STATION_3);
+        Station savedStation4 = stationDao.save(TEST_STATION_4);
+
+        Line savedLine = lineDao.save(TEST_LINE);
+        int distance = 10;
+
+        edgeDao.save(savedLine.getId(), Edge.of(savedStation, savedStation2, distance));
+        edgeDao.save(savedLine.getId(), Edge.of(savedStation2, savedStation3, distance));
+        edgeDao.save(savedLine.getId(), Edge.of(savedStation3, savedStation4, distance));
+
+        Member savedMember = memberDao.save(TEST_MEMBER);
+
+        favoriteDao.saveForPath(new FavoritePath(savedMember, savedStation, savedStation3));
+        favoriteDao.saveForPath(new FavoritePath(savedMember, savedStation2, savedStation4));
+        favoriteDao.saveForPath(new FavoritePath(savedMember, savedStation, savedStation4));
+
+        List<FavoritePath> favorites = favoriteDao.findForPaths(savedMember);
+
+        assertThat(favorites.size()).isEqualTo(3);
+        assertThat(favorites).extracting("sourceStation.name")
+                .containsExactly(STATION_NAME, STATION_NAME_2, STATION_NAME);
+
+    }
+
 }

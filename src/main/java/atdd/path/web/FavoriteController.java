@@ -71,7 +71,7 @@ public class FavoriteController {
 
     @GetMapping("/paths")
     public ResponseEntity<FavoritePathsResponseView> findFavoritePath(@LoginUser Member member) {
-        final List<FavoritePath> findFavoritePaths = favoriteDao.findFavoritePath(member);
+        final List<FavoritePath> findFavoritePaths = favoriteDao.findForPaths(member);
 
         final List<FavoritePathResponseView> views = findFavoritePaths.stream()
                 .map(path -> new FavoritePathResponseView(path, graphService.findPath(path)))

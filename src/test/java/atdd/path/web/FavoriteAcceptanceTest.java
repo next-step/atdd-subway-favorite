@@ -143,9 +143,9 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
         assertThat(view).isNotNull();
         assertThat(view.getCount()).isEqualTo(3);
-        assertThat(view.getFavorites())
-                .extracting("path[0].stations[0].name")
-                .containsExactly(STATION_NAME, STATION_NAME_2, STATION_NAME_3);
+        assertThat(view.getFavorites().get(0))
+                .extracting("path.startStationId", "path.endStationId")
+                .containsExactly(STATION_ID, STATION_ID_3);
     }
 
     private FavoriteStationResponseView createForStation(Long stationId, String token) {
