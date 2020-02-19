@@ -2,7 +2,9 @@ package atdd.path.dao;
 
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.Member;
+import atdd.path.exception.MemberNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -45,14 +47,19 @@ public class MemberDao {
 			"FROM MEMBER M " +
 			"WHERE M.id = ?";
 
-		Member member = jdbcTemplate.queryForObject(sql, new Object[]{id}, ((rs, rowNum) ->
-			new Member(
-				rs.getLong("id"),
-				rs.getString("email"),
-				rs.getString("name"),
-				rs.getString("password")
-			)
-		));
+		Member member;
+		try {
+			member = jdbcTemplate.queryForObject(sql, new Object[]{id}, ((rs, rowNum) ->
+				new Member(
+					rs.getLong("id"),
+					rs.getString("email"),
+					rs.getString("name"),
+					rs.getString("password")
+				)
+			));
+		} catch (EmptyResultDataAccessException e) {
+			throw new MemberNotFoundException();
+		}
 		return Optional.ofNullable(member);
 	}
 
