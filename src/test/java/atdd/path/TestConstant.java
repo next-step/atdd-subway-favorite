@@ -165,6 +165,6 @@ public class TestConstant {
     public static FavoriteStation TEST_FAVORITE_STATION = new FavoriteStation(FAVORITE_STATION_ID, TEST_MEMBER, TEST_STATION);
 
     // 경로 즐겨찾기
-    public static FavoritePath TEST_FAVORITE_PATH = new FavoritePath(FAVORITE_PATH_ID, TEST_STATION, TEST_STATION_4);
+    public static FavoritePath TEST_FAVORITE_PATH = new FavoritePath(FAVORITE_PATH_ID, TEST_MEMBER, TEST_STATION, TEST_STATION_4);
 
 }

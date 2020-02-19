@@ -24,8 +24,10 @@ public class FavoriteService {
         return favoriteDao.saveForStation(new FavoriteStation(member, findStation));
     }
 
-    public FavoritePath saveFavoritePath(Long startId, Long endId, Member member) {
-        return null;
+    public FavoritePath saveForPath(Member member, Long startId, Long endId) {
+        final Station sourceStation = stationDao.findById(startId);
+        final Station targetStation = stationDao.findById(endId);
+        return favoriteDao.saveForPath(new FavoritePath(member, sourceStation, targetStation));
     }
 
 }

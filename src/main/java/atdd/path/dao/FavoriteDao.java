@@ -1,6 +1,7 @@
 package atdd.path.dao;
 
 import atdd.path.application.exception.NoDataException;
+import atdd.path.domain.FavoritePath;
 import atdd.path.domain.FavoriteStation;
 import atdd.path.domain.Member;
 import atdd.path.domain.Station;
@@ -43,6 +44,10 @@ public class FavoriteDao {
 
         final Long favoriteId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return findFavoriteStationById(favoriteId).orElseThrow(NoDataException::new);
+    }
+
+    public FavoritePath saveForPath(FavoritePath favoritePath) {
+        return null;
     }
 
     private Optional<FavoriteStation> findFavoriteStationById(Long favoriteId) {

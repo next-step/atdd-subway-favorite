@@ -59,7 +59,7 @@ public class FavoriteController {
                                                                           @RequestParam Long endId,
                                                                           @LoginUser Member member) {
 
-        final FavoritePath savedFavoritePath = favoriteService.saveFavoritePath(startId, endId, member);
+        final FavoritePath savedFavoritePath = favoriteService.saveForPath(member, startId, endId);
         final List<Station> stations = graphService.findPath(savedFavoritePath);
 
         return ResponseEntity.created(URI.create("/favorites/"+ savedFavoritePath.getId()))
