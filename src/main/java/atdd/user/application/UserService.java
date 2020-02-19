@@ -71,6 +71,10 @@ public class UserService {
   public UserResponseView retrieveUserByAuthToken(AuthInfoView authInfoView) {
     String email = authService.authUser(authInfoView);
 
+    return retrieveUserByEmail(email);
+  }
+
+  public UserResponseView retrieveUserByEmail(String email) {
     User user = userRepository
       .findByEmail(email)
       .orElseThrow(NoDataException::new);

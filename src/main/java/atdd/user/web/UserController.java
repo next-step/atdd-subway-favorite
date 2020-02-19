@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import atdd.user.application.UserService;
+import atdd.auth.LoginUser;
 import atdd.auth.application.dto.AuthInfoView;
 import atdd.user.application.dto.CreateUserRequestView;
 import atdd.user.application.dto.UserResponseView;
@@ -49,12 +50,8 @@ public class UserController {
 
   @GetMapping("/user/me")
   public ResponseEntity retrieveUserByAuthToken(
-      @RequestHeader(value=HttpHeaders.AUTHORIZATION) String authToken) {
-    AuthInfoView authInfoView = new AuthInfoView(authToken);
-
-    return ResponseEntity.ok(
-        userService
-        .retrieveUserByAuthToken(authInfoView));
+      @LoginUser UserResponseView userResponseView) {
+    return ResponseEntity.ok(userResponseView);
   }
 }
 

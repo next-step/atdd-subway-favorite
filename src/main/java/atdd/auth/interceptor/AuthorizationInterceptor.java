@@ -8,12 +8,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import atdd.auth.application.AuthConstants;
 import atdd.auth.application.AuthService;
 import atdd.auth.application.dto.AuthInfoView;
 
 @Component
 public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
-  private final static String UserEmailAttribute = "UserEmail";
   private AuthService authService;
 
   @Autowired
@@ -25,7 +25,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     String authToken = request.getHeader(HttpHeaders.AUTHORIZATION);
     String email = authService.authUser(new AuthInfoView(authToken));
-    request.setAttribute(UserEmailAttribute, email);
+    request.setAttribute(AuthConstants.UserEmailAttribute, email);
     return super.preHandle(request, response, handler);
   }
 }
