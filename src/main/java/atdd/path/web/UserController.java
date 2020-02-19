@@ -30,34 +30,25 @@ public class UserController {
     @PostMapping
     public ResponseEntity createUser(@RequestBody CreateUserRequestView view) {
         User persistUser = userRepository.save(view.toUser());
-        return ResponseEntity
-                .created(URI.create("/users/" + persistUser.getId()))
-                .body(UserResponseView.of(persistUser));
+        return ResponseEntity.created(URI.create("/users/" + persistUser.getId()))
+                             .body(UserResponseView.of(persistUser));
     }
 
     @GetMapping
     public ResponseEntity showUsers() {
         List<User> users = new ArrayList<User>();
 
-        userRepository.findAll()
-                      .forEach(users::add);
+        userRepository.findAll().forEach(users::add);
 
-        return ResponseEntity.ok()
-                             .body(UserResponseView.listOf(users));
+        return ResponseEntity.ok().body(UserResponseView.listOf(users));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity showUser(@PathVariable Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
-        return optionalUser
-                .map(this::getUserResponse)
-                .orElseGet(this::noContentResponse);
-    }
-
-    private ResponseEntity getUserResponse(User user) {
-        return ResponseEntity.ok()
-                             .body(UserResponseView.of(user));
+        return optionalUser.map(this::getUserResponse)
+                           .orElseGet(this::notFoundResponse);
     }
 
     @DeleteMapping("/{id}")
@@ -75,25 +66,6 @@ public class UserController {
                         .orElseGet(this::noContentResponse);
     }
 
-    private ResponseEntity getTokenOrUnAuthResponse(User user, SignInUserRequestView view) {
-        boolean isValidateUser = user.getPassword()
-                                     .equals(view.getPassword());
-        if (isValidateUser) {
-            String accessToken = jwtTokenProvider.createToken(view.getEmail());
-            String tokenType = "Bearer";
-
-            JwtTokenDTO jwtTokenDTO = new JwtTokenDTO(accessToken, tokenType);
-
-            return ResponseEntity.ok()
-                                 .body(jwtTokenDTO);
-        }
-        return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
-    }
-
-    private ResponseEntity noContentResponse() {
-        return ResponseEntity.noContent()
-                             .build();
-    }
 
     @GetMapping("/me")
     public ResponseEntity showSignedInUser(@RequestHeader(value = "Authorization") String authorization) {
@@ -104,6 +76,32 @@ public class UserController {
         Optional<User> optionalUser = userRepository.findByEmail(parsedEmail);
 
         return optionalUser.map(this::getUserResponse)
-                           .orElseGet(this::noContentResponse);
+                           .orElseGet(this::notFoundResponse);
+    }
+
+    private ResponseEntity getUserResponse(User user) {
+        return ResponseEntity.ok().body(UserResponseView.of(user));
+    }
+
+    private ResponseEntity getTokenOrUnAuthResponse(User user, SignInUserRequestView view) {
+        boolean isValidateUser = user.getPassword().equals(view.getPassword());
+
+        if (isValidateUser) {
+            String accessToken = jwtTokenProvider.createToken(view.getEmail());
+            String tokenType = "Bearer";
+
+            JwtTokenDTO jwtTokenDTO = new JwtTokenDTO(accessToken, tokenType);
+
+            return ResponseEntity.ok().body(jwtTokenDTO);
+        }
+        return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+    }
+
+    private ResponseEntity noContentResponse() {
+        return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity notFoundResponse() {
+        return ResponseEntity.notFound().build();
     }
 }
