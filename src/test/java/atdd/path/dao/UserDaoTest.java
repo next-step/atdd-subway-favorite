@@ -1,30 +1,27 @@
 package atdd.path.dao;
 
+import atdd.path.SoftAssertionTest;
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 import static atdd.path.dao.UserDao.EMAIL_KEY;
 import static atdd.path.dao.UserDao.ID_KEY;
 import static atdd.path.fixture.UserFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
-@ExtendWith(SoftAssertionsExtension.class)
-public class UserDaoTest {
+public class UserDaoTest extends SoftAssertionTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
@@ -63,11 +60,10 @@ public class UserDaoTest {
     public void findByEmail(SoftAssertions softly) {
         User savedUser = userDao.save(NEW_USER);
 
-        List<Map<String, Object>> persistUser = userDao.findByEmail(savedUser.getEmail());
+        Map<String, Object> persistUser = userDao.findByEmail(savedUser.getEmail());
 
-        Map<String, Object> user = persistUser.get(0);
-        softly.assertThat(user.get(ID_KEY)).isNotNull();
-        softly.assertThat(user.get(EMAIL_KEY)).isEqualTo(KIM_EMAIL);
+        softly.assertThat(persistUser.get(ID_KEY)).isNotNull();
+        softly.assertThat(persistUser.get(EMAIL_KEY)).isEqualTo(KIM_EMAIL);
     }
 
 
