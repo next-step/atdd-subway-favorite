@@ -36,7 +36,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody final LoginRequestView view) {
-        String token = userService.login(view.toUser());
+        String token = userService.login(view.getEmail(), view.getPassword());
 
         return ResponseEntity.noContent()
                 .header(ACCESS_TOKEN_HEADER, token).build();

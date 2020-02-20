@@ -17,12 +17,12 @@ public class JwtUtils {
     @Value("${authentication.jwt.expirationPeriod}")
     private long expirationPeriod;
 
-    public String createToken(final String name) {
+    public String createToken(final String email) {
         long currentTimeMillis = System.currentTimeMillis() + expirationPeriod;
 
         return JWT.create()
                 .withExpiresAt(new Date(currentTimeMillis))
-                .withClaim("name", name)
+                .withClaim("email", email)
                 .sign(Algorithm.HMAC256(secret));
     }
 
@@ -31,6 +31,6 @@ public class JwtUtils {
                 .build();
 
         DecodedJWT decodedJWT = verifier.verify(token);
-        return decodedJWT.getClaim("name").toString();
+        return decodedJWT.getClaim("email").toString();
     }
 }

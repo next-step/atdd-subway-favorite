@@ -28,16 +28,16 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public String login(User user) {
+    public String login(final String email, final String password) {
         User findUser;
         try {
-            findUser = userRepository.findByName(user.getName());
+            findUser = userRepository.findByEmail(email);
         } catch (EntityNotFoundException e) {
             throw new InvalidUserException();
         }
 
-        findUser.checkPassword(user.getPassword());
+        findUser.checkPassword(password);
 
-        return jwtUtils.createToken(findUser.getName());
+        return jwtUtils.createToken(findUser.getEmail());
     }
 }
