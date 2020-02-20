@@ -76,4 +76,19 @@ class MemberDaoTest {
 		assertThatThrownBy(() -> memberDao.findById(persistMember.getId()))
 			.isInstanceOf(EmptyResultDataAccessException.class);
 	}
+
+	@DisplayName("email로 Member 조회")
+	@Test
+	void findByEmail() {
+		// given
+		Member member = new Member(MEMBER_EMAIL, MEMBER_NAME, MEMBER_PASSWORD);
+		Member persistMember = memberDao.save(member);
+
+		// when
+		Optional<Member> memberOptional = memberDao.findByEmail(persistMember.getEmail());
+
+		// then
+		assertThat(memberOptional.get().getEmail()).isEqualTo(MEMBER_EMAIL);
+		assertThat(memberOptional.get().getName()).isEqualTo(MEMBER_NAME);
+	}
 }

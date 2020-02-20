@@ -66,4 +66,25 @@ public class MemberDao {
 	public void deleteById(final Long id) {
 		jdbcTemplate.update("delete from MEMBER where id = ?", id);
 	}
+
+	public Optional<Member> findByEmail(final String email) {
+		String sql = "SELECT id, email, name, password " +
+			"FROM MEMBER M " +
+			"WHERE M.email = ?";
+
+		Member member;
+		try {
+			member = jdbcTemplate.queryForObject(sql, new Object[]{email}, ((rs, rowNum) ->
+				new Member(
+					rs.getLong("id"),
+					rs.getString("email"),
+					rs.getString("name"),
+					rs.getString("password")
+				)
+			));
+		} catch (EmptyResultDataAccessException e) {
+			throw new MemberNotFoundException();
+		}
+		return Optional.ofNullable(member);
+	}
 }
