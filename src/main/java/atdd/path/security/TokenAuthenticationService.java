@@ -1,7 +1,6 @@
 package atdd.path.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -26,5 +25,11 @@ public class TokenAuthenticationService {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .signWith(SignatureAlgorithm.HS256, this.generateKey(SALT))
                 .compact();
+    }
+
+    public Jws<Claims> getJwtClaim(String jwt) {
+        return Jwts.parser()
+                .setSigningKey(generateKey(SALT))
+                .parseClaimsJws(jwt);
     }
 }
