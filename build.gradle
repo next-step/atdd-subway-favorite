@@ -19,6 +19,8 @@ dependencies {
 
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
+    implementation 'com.auth0:java-jwt:3.10.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.jgrapht:jgrapht-core:1.0.1'
