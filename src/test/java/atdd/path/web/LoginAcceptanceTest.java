@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import reactor.core.publisher.Mono;
 
 public class LoginAcceptanceTest extends AbstractAcceptanceTest {
 
@@ -23,9 +22,9 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("로그인")
     @Test
-    void loginTest() {
+    void login() {
         //given
-        userHttpTest.createUserTest(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
+        userHttpTest.createUser(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
 
         // when, then
         LoginRequestView request = LoginRequestView.builder()
@@ -38,6 +37,8 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(LoginResponseView.class);
+                .expectBody(LoginResponseView.class)
+                .returnResult().getResponseBody()
+                .getTokenType().contentEquals("Bearer");
     }
 }

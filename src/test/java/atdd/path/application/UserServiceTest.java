@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {UserService.class, JwtTokenProvider.class})
 public class UserServiceTest {
@@ -38,7 +38,7 @@ public class UserServiceTest {
 
     @DisplayName("회원 등록이 된다")
     @Test
-    void createUserTest() {
+    void createUser() {
         // given
         UserRequestView userInfo = UserRequestView.builder()
                 .email(TestConstant.EMAIL_BROWN)
@@ -57,7 +57,7 @@ public class UserServiceTest {
 
     @DisplayName("회원 탈퇴가 된다")
     @Test
-    void deleteUserTest() {
+    void deleteUser() {
         // give
         UserRequestView userInfo = UserRequestView.builder()
                 .email(TestConstant.EMAIL_BROWN)
@@ -72,12 +72,12 @@ public class UserServiceTest {
         userService.deleteUser(response.getId());
 
         // then
-        assertThat(userRepository.findById(response.getId()).orElse(null)).isNull();
+        verify(userRepository).deleteById(any());
     }
 
     @DisplayName("회원 정보를 가져온다")
     @Test
-    void retrieveUserTest() throws InvalidJwtAuthenticationException {
+    void retrieveUser() throws InvalidJwtAuthenticationException {
         // given
         given(userRepository.findUserByEmail(TestConstant.EMAIL_BROWN))
                 .willReturn(User.createBuilder()
@@ -91,9 +91,7 @@ public class UserServiceTest {
                 .password(TestConstant.PASSWORD_BROWN).build());
 
         // when
-        MockHttpServletRequest req = new MockHttpServletRequest();
-        req.addHeader("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()));
-        UserResponseView info = userService.retrieveUser(req);
+        UserResponseView info = userService.retrieveUser(String.format("%s %s", token.getTokenType(), token.getAccessToken()));
 
         // then
         assertThat(info.getEmail()).isEqualTo(TestConstant.EMAIL_BROWN);
@@ -102,7 +100,7 @@ public class UserServiceTest {
 
     @DisplayName("사용자는 자신의 정보를 통해 로그인을 요청하고 인증 정보를 받는다")
     @Test
-    void loginTest() {
+    void login() {
         // given
         User brown = User.createBuilder()
                 .id(1L)

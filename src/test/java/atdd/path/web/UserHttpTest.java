@@ -18,7 +18,7 @@ public class UserHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<UserResponseView> createUserTest(String email, String name, String password) {
+    public EntityExchangeResult<UserResponseView> createUser(String email, String name, String password) {
         UserRequestView userInfo = UserRequestView.builder()
                 .email(email)
                 .name(name)
@@ -36,7 +36,7 @@ public class UserHttpTest {
 
     }
 
-    public EntityExchangeResult<LoginResponseView> loginUserTest(String email, String password) {
+    public EntityExchangeResult<LoginResponseView> loginUser(String email, String password) {
         LoginRequestView request = LoginRequestView.builder()
                 .email(email)
                 .password(password)

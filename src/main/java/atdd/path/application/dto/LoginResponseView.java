@@ -11,9 +11,9 @@ public class LoginResponseView {
     private String tokenType;
 
     @Builder
-    public LoginResponseView(String accessToken) {
+    public LoginResponseView(String accessToken, String tokenType) {
         this.accessToken = accessToken;
-        this.tokenType = "Bearer";
+        this.tokenType = tokenType;
 
     }
 }

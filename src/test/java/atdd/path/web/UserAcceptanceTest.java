@@ -23,9 +23,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("회원 가입")
     @Test
-    void createUserTest() {
+    void createUser() {
         // when
-        UserResponseView response = userHttpTest.createUserTest(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
+        UserResponseView response = userHttpTest.createUser(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
 
         // then
         assertThat(response.getName()).isEqualTo(TestConstant.NAME_BROWN);
@@ -33,9 +33,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("회원 탈퇴")
     @Test
-    void deleteUserTest() {
+    void deleteUser() {
         // given
-        UserResponseView response = userHttpTest.createUserTest(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
+        UserResponseView response = userHttpTest.createUser(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
 
         // when
         webTestClient.delete().uri(USER_URL + "/" + response.getId())
@@ -45,11 +45,11 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("회원 정보 조회")
     @Test
-    void getUserInfoTest() {
+    void getUserInfo() {
         // given
-        userHttpTest.createUserTest(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
+        userHttpTest.createUser(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
         LoginResponseView responseView = userHttpTest
-                .loginUserTest(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
+                .loginUser(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
 
         webTestClient.post().uri(USER_URL + "/me")
                 .header("Authorization",

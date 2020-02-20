@@ -11,7 +11,6 @@ import atdd.path.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @Service
@@ -34,32 +33,32 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserResponseView retrieveUser(HttpServletRequest request) {
-        String email = this.extractEmail(request);
+    public UserResponseView retrieveUser(String requestToken) {
+        String email = this.extractEmail(requestToken);
 
         User persistUser = userRepository.findUserByEmail(email);
         return UserResponseView.of(persistUser);
     }
 
-    private String extractEmail(HttpServletRequest req) {
-        String token = jwtTokenProvider.resolveToken(req);
-        if (StringUtils.isEmpty(token) || !jwtTokenProvider.validateToken(token)) {
+    private String extractEmail(String requestToken) {
+        if (StringUtils.isEmpty(requestToken) || !jwtTokenProvider.validateToken(requestToken)) {
             throw new InvalidJwtAuthenticationException("invalid token");
         }
-        return jwtTokenProvider.getUserEmail(token);
+        return jwtTokenProvider.getUserEmail(requestToken);
     }
 
 
     public LoginResponseView login(LoginRequestView loginRequestView) {
         User userInfo = userRepository.findUserByEmail(loginRequestView.getEmail());
 
-        if (Objects.isNull(userInfo) || !userInfo.getPassword().equals(loginRequestView.getPassword())) {
+        if (Objects.isNull(userInfo) || !userInfo.validatePassword(loginRequestView.getPassword())) {
             throw new FailedLoginException();
         }
 
         String token = jwtTokenProvider.createToken(loginRequestView.getEmail());
         return LoginResponseView.builder()
                 .accessToken(token)
+                .tokenType("Bearer")
                 .build();
     }
 }

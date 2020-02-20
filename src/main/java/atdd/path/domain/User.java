@@ -37,4 +37,8 @@ public class User {
         this.email = email;
         this.name = name;
     }
+
+    public boolean validatePassword(String password) {
+        return this.password.equals(password);
+    }
 }
