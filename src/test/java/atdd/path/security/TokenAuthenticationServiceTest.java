@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static atdd.path.fixture.UserFixture.KIM_EMAIL;
+
 public class TokenAuthenticationServiceTest extends SoftAssertionTest {
     private static final String SALT = "63B75D39E3F6BFE72263F7C1145AC22E";
 
@@ -26,6 +28,19 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
 
         //then
         softly.assertThat(key).isEqualTo(SALT.getBytes());
+    }
+
+    @DisplayName("Jwt Token 을 생성하는지")
+    @Test
+    public void toJwtByEmail(SoftAssertions softly) {
+        //given
+        String email = KIM_EMAIL;
+
+        //when
+        String jwt = tokenAuthenticationService.toJwtByEmail(email);
+
+        //then
+        softly.assertThat(jwt).isNotEmpty();
     }
 }
 
