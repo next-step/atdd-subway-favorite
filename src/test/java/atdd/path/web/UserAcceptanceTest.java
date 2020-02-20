@@ -4,15 +4,23 @@ import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.LoginRequestView;
 import atdd.path.domain.entity.User;
+import atdd.path.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
+    final String ACCESS_TOKEN_HEADER = "Authorization";
+
+    @Autowired
+    private UserRepository userRepository;
+
     private UserHttpTest userHttpTest;
+
 
     @BeforeEach
     void setUp() {
@@ -21,44 +29,62 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @Test
     public void createUser() {
-        CreateUserRequestView view = CREATE_USER_REQUEST1;
+        //given
+        User givenUser = givenUser(CREATE_USER_REQUEST1);
+        String accessToken = givenAccessToken(givenUser);
 
         //when
-        User user = userHttpTest.createUserRequest(view)
+        CreateUserRequestView view = CREATE_USER_REQUEST2;
+        User user = userHttpTest.createUserRequest(view, accessToken)
                 .getResponseBody();
 
         //then
-        assertThat(user.getName()).isEqualTo(USER_NAME1);
-        assertThat(user.getEmail()).isEqualTo(USER_EMAIL1);
+        assertThat(user.getName()).isEqualTo(USER_NAME2);
+        assertThat(user.getEmail()).isEqualTo(USER_EMAIL2);
     }
 
     @Test
     public void deleteUser() {
         //given
-        CreateUserRequestView view = CREATE_USER_REQUEST1;
+        User givenUser = givenUser(CREATE_USER_REQUEST1);
+        String accessToken = givenAccessToken(givenUser);
 
-        User user = userHttpTest.createUserRequest(view)
+        CreateUserRequestView view = CREATE_USER_REQUEST2;
+        User user = userHttpTest.createUserRequest(view, accessToken)
                 .getResponseBody();
 
         //when
         //then
-        userHttpTest.deleteUserRequest(user.getId());
+        userHttpTest.deleteUserRequest(user.getId(), accessToken);
     }
 
     @Test
     public void login() {
         //given
-        CreateUserRequestView view = CREATE_USER_REQUEST1;
-
-        User user = userHttpTest.createUserRequest(view)
-                .getResponseBody();
+        User givenUser = givenUser(CREATE_USER_REQUEST1);
 
         //when
+        HttpHeaders headers = userHttpTest.loginRequest(LoginRequestView.builder()
+                .email(givenUser.getEmail())
+                .password(USER_PASSWORD1).build()).getResponseHeaders();
+
+        //then
+        assertThat(headers.get(ACCESS_TOKEN_HEADER).size()).isEqualTo(1);
+    }
+
+    private User givenUser(CreateUserRequestView view) {
+        User user = view.toUSer();
+        user.encryptPassword();
+
+        return userRepository.save(user);
+    }
+
+    private String givenAccessToken(final User user) {
         HttpHeaders headers = userHttpTest.loginRequest(LoginRequestView.builder()
                 .email(user.getEmail())
                 .password(USER_PASSWORD1).build()).getResponseHeaders();
 
-        //then
-        assertThat(headers.get("Authorization").size()).isEqualTo(1);
+        return headers.get(ACCESS_TOKEN_HEADER).get(0);
     }
+
 }

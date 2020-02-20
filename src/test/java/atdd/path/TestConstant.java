@@ -156,6 +156,10 @@ public class TestConstant {
     public static String USER_EMAIL1 = "boorwonie@email.com";
     public static String USER_PASSWORD1 = "subway";
 
-    public static CreateUserRequestView CREATE_USER_REQUEST1 = CreateUserRequestView.builder().email(USER_EMAIL1).name(USER_NAME1).password(USER_PASSWORD1).build();
+    public static String USER_NAME2 = "과제가밀렸어요";
+    public static String USER_EMAIL2 = "homework@email.com";
+    public static String USER_PASSWORD2 = "crycry";
 
+    public static CreateUserRequestView CREATE_USER_REQUEST1 = CreateUserRequestView.builder().email(USER_EMAIL1).name(USER_NAME1).password(USER_PASSWORD1).build();
+    public static CreateUserRequestView CREATE_USER_REQUEST2 = CreateUserRequestView.builder().email(USER_EMAIL2).name(USER_NAME2).password(USER_PASSWORD2).build();
 }
