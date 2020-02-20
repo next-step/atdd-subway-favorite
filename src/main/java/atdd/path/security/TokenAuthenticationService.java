@@ -32,4 +32,8 @@ public class TokenAuthenticationService {
                 .setSigningKey(generateKey(SALT))
                 .parseClaimsJws(jwt);
     }
+
+    public String getEmailByClaims(Jws<Claims> claims) {
+        return claims.getBody().get(EMAIL_KEY).toString();
+    }
 }
