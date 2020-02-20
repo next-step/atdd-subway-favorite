@@ -73,14 +73,12 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
     @Test
     public void getTokenType() {
         String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
-        Jws<Claims> claims = tokenAuthenticationService.getJwtClaim(jwt);
 
         //when
-        String tokenType = tokenAuthenticationService.getTokenType(claims);
+        String tokenType = tokenAuthenticationService.getTokenTypeByJwt(jwt);
 
         //then
         assertThat(tokenType).isEqualTo(BEARER_TOKEN_TYPE);
     }
-
 }
 
