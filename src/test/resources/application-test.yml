@@ -1,0 +1,5 @@
+spring:
+  security:
+    jwt:
+      token:
+        expire-length: 2000
