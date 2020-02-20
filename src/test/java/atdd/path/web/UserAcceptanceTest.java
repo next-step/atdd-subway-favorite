@@ -1,6 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
+import atdd.path.application.dto.UserLoginResponseView;
 import atdd.path.application.dto.UserSighUpResponseView;
 import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
@@ -63,11 +64,11 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userLogin(SoftAssertions softly) {
         //given
-        String createLocation = createUser();
+        createUser();
 
         //when
-        EntityExchangeResult<User> expectResponse
-                = restWebClientTest.postMethodAcceptance(createLocation, LOGIN_USER, User.class);
+        EntityExchangeResult<UserLoginResponseView> expectResponse
+                = restWebClientTest.postMethodAcceptance("/users/login", LOGIN_USER, UserLoginResponseView.class);
 
         UserLoginResponseView responseBody = expectResponse.getResponseBody();
 
