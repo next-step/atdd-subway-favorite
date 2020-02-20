@@ -25,7 +25,7 @@ create table if not exists EDGE
     primary key(id)
 );
 
-create table if not exists USERS
+create table if not exists users
 (
     id bigint auto_increment not null,
     email varchar(100),

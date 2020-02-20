@@ -1,13 +1,11 @@
 package atdd.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
 public class UserResponseDto {
 
-    @JsonIgnore
     private Long id;
     private String email;
     @JsonProperty("이름")

@@ -4,3 +4,7 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password: password
+
+logging:
+  level:
+    org.springframework.jdbc.core: TRACE

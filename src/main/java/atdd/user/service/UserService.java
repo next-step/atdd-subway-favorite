@@ -24,4 +24,9 @@ public class UserService {
         return UserResponseDto.of(createdUser.getId(), createdUser.getEmail(), createdUser.getName(), createdUser.getPassword());
     }
 
+    @Transactional
+    public void delete(Long id) {
+        userDao.delete(id);
+    }
+
 }
