@@ -2,7 +2,7 @@ package atdd.path.security;
 
 import atdd.path.SoftAssertionTest;
 import io.jsonwebtoken.Claims;
-import org.assertj.core.api.SoftAssertions;
+import io.jsonwebtoken.Jws;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,10 +49,23 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
         String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
 
         //when
-        Claims claims = tokenAuthenticationService.getJwtClaim(jwt);
+        Jws<Claims> claims = tokenAuthenticationService.getJwtClaim(jwt);
 
         //then
-        assertThat(claims.get(EMAIL_KEY)).isEqualTo(KIM_EMAIL);
+        assertThat(claims.getBody().get(EMAIL_KEY)).isEqualTo(KIM_EMAIL);
+    }
+
+    @DisplayName("Claims 에서 email 을 가져오는지")
+    @Test
+    public void getEmailByClaim() {
+        String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
+        Jws<Claims> claims = tokenAuthenticationService.getJwtClaim(jwt);
+
+        //when
+        String email = tokenAuthenticationService.getEmailByClaims(claims);
+
+        //then
+        assertThat(email).isEqualTo(KIM_EMAIL);
     }
 
 }
