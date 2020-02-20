@@ -21,7 +21,7 @@ public class FindByEmailResponseView {
         this.name = name;
     }
 
-    public FindByEmailResponseView toDtoEntity(Map<String, Object> user) {
+    public static FindByEmailResponseView toDtoEntity(Map<String, Object> user) {
         return FindByEmailResponseView.builder()
                 .id((Long)user.get(ID_KEY))
                 .email(user.get(EMAIL_KEY).toString())

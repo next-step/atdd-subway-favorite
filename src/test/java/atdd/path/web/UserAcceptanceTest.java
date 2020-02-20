@@ -75,10 +75,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         //then
         softly.assertThat(responseBody.getAccessToken()).isNotNull();
         softly.assertThat(responseBody.getTokenType()).isEqualTo("Bearer");
-
     }
-
-
 
     public String createUser() {
         return Objects.requireNonNull(webTestClient.post().uri("/users")
