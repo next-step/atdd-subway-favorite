@@ -1,5 +1,6 @@
 package atdd.path.dao;
 
+import atdd.path.application.dto.FindByEmailResponseView;
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +51,13 @@ public class UserDao {
         return mapUser(jdbcTemplate.queryForList(sql, id));
     }
 
-    public Map<String, Object> findByEmail(String email) {
+    public FindByEmailResponseView findByEmail(String email) {
         String sql = "SELECT id, name, email \n" +
                 "FROM USER \n" +
                 "WHERE email = ?";
 
-        return jdbcTemplate.queryForList(sql, email).get(FIRST_INDEX);
+        return FindByEmailResponseView
+                .toDtoEntity(jdbcTemplate.queryForList(sql, email).get(FIRST_INDEX));
     }
 
     public void deleteById(Long id) {
