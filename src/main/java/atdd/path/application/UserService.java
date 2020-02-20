@@ -20,14 +20,10 @@ public class UserService {
     public UserSighUpResponseView singUp(UserSighUpRequestView newUser) {
         List<Map<String, Object>> user = userDao.findByEmail(newUser.getEmail());
 
-        if (isExistUser(user)) {
+        if (!user.isEmpty()) {
             throw new ExistUserException();
         }
 
         return UserSighUpResponseView.toDtoEntity(userDao.save(UserSighUpRequestView.toEntity(newUser)));
-    }
-
-    private boolean isExistUser(List<Map<String, Object>> user) {
-        return user.size() != 0;
     }
 }
