@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static atdd.path.dao.UserDao.EMAIL_KEY;
 import static atdd.path.fixture.UserFixture.KIM_EMAIL;
+import static atdd.path.security.TokenAuthenticationService.BEARER_TOKEN_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TokenAuthenticationServiceTest extends SoftAssertionTest {
@@ -66,6 +67,19 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
 
         //then
         assertThat(email).isEqualTo(KIM_EMAIL);
+    }
+
+    @DisplayName("Claims 에서 tokenType 을 가져오는지")
+    @Test
+    public void getTokenType() {
+        String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
+        Jws<Claims> claims = tokenAuthenticationService.getJwtClaim(jwt);
+
+        //when
+        String tokenType = tokenAuthenticationService.getTokenType(claims);
+
+        //then
+        assertThat(tokenType).isEqualTo(BEARER_TOKEN_TYPE);
     }
 
 }
