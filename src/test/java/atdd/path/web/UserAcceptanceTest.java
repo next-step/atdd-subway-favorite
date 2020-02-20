@@ -55,7 +55,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         HttpHeaders headers = userHttpTest.loginRequest(LoginRequestView.builder()
-                .name(user.getName())
+                .email(user.getEmail())
                 .password(USER_PASSWORD1).build()).getResponseHeaders();
 
         //then
