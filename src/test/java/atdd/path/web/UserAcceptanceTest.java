@@ -2,9 +2,11 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.CreateUserRequestView;
+import atdd.path.application.dto.LoginRequestView;
 import atdd.path.domain.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,5 +43,22 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         //when
         //then
         userHttpTest.deleteUserRequest(user.getId());
+    }
+
+    @Test
+    public void login() {
+        //given
+        CreateUserRequestView view = CREATE_USER_REQUEST1;
+
+        User user = userHttpTest.createUserRequest(view)
+                .getResponseBody();
+
+        //when
+        HttpHeaders headers = userHttpTest.loginRequest(LoginRequestView.builder()
+                .name(user.getName())
+                .password(USER_PASSWORD1).build()).getResponseHeaders();
+
+        //then
+        assertThat(headers.get("Authorization").size()).isEqualTo(1);
     }
 }

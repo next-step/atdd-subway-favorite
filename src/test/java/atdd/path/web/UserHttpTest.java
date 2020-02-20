@@ -1,6 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.application.dto.CreateUserRequestView;
+import atdd.path.application.dto.LoginRequestView;
 import atdd.path.domain.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +37,17 @@ public class UserHttpTest {
         webTestClient.delete().uri(USER_PATH + "/" + id)
                 .exchange()
                 .expectStatus().isNoContent();
+    }
+
+    public EntityExchangeResult loginRequest(LoginRequestView view) {
+        String inputJson = writeValueAsString(view);
+
+        return webTestClient.post().uri(USER_PATH + "/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(inputJson), String.class)
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().returnResult();
     }
 
     private String writeValueAsString(Object object) {
