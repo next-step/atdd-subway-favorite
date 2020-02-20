@@ -50,12 +50,12 @@ public class UserDao {
         return mapUser(jdbcTemplate.queryForList(sql, id));
     }
 
-    public List<Map<String, Object>> findByEmail(String email) {
+    public Map<String, Object> findByEmail(String email) {
         String sql = "SELECT id, name, email \n" +
                 "FROM USER \n" +
                 "WHERE email = ?";
 
-        return jdbcTemplate.queryForList(sql, email);
+        return jdbcTemplate.queryForList(sql, email).get(FIRST_INDEX);
     }
 
     public void deleteById(Long id) {
