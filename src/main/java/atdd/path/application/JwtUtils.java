@@ -1,13 +1,12 @@
 package atdd.path.application;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import atdd.path.application.exception.InvalidTokenException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 
 @Component
 public class JwtUtils {
@@ -19,18 +18,25 @@ public class JwtUtils {
 
     public String createToken(final String email) {
         long currentTimeMillis = System.currentTimeMillis() + expirationPeriod;
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("email", email);
 
-        return JWT.create()
-                .withExpiresAt(new Date(currentTimeMillis))
-                .withClaim("email", email)
-                .sign(Algorithm.HMAC256(secret));
+        return Jwts.builder()
+                .setExpiration(new Date(currentTimeMillis))
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
-    public String verify(String token) {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
-                .build();
+    public boolean verify(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token).getBody();
 
-        DecodedJWT decodedJWT = verifier.verify(token);
-        return decodedJWT.getClaim("email").toString();
+            return true;
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
+            throw new InvalidTokenException();
+        }
     }
 }
