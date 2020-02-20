@@ -6,6 +6,7 @@ import atdd.path.dao.MemberDao;
 import atdd.path.domain.Member;
 import atdd.path.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +21,7 @@ public class UserService {
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
+	@Transactional(readOnly = true)
 	public UserResponseView retrieveMyInfo(final HttpServletRequest req) {
 		String token = jwtTokenProvider.resolveToken(req);
 		if (!jwtTokenProvider.validateToken(token)) {
