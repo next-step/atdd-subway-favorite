@@ -2,7 +2,6 @@ package atdd.path.application.resolver;
 
 import atdd.path.application.exception.InvalidJwtAuthenticationException;
 import atdd.path.dao.MemberDao;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -31,11 +30,6 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         String email = (String) webRequest.getAttribute("loginUserEmail", SCOPE_REQUEST);
-
-        if (Strings.isBlank(email)) {
-            return null;
-        }
-
         return memberDao.findByEmail(email).orElseThrow(InvalidJwtAuthenticationException::new);
     }
 
