@@ -1,12 +1,15 @@
 package atdd.path.security;
 
 import atdd.path.SoftAssertionTest;
+import io.jsonwebtoken.Claims;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static atdd.path.dao.UserDao.EMAIL_KEY;
 import static atdd.path.fixture.UserFixture.KIM_EMAIL;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TokenAuthenticationServiceTest extends SoftAssertionTest {
     private static final String SALT = "63B75D39E3F6BFE72263F7C1145AC22E";
@@ -20,27 +23,37 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
 
     @DisplayName("JWT 를 위한 키가 생성되는지")
     @Test
-    public void generateKey(SoftAssertions softly) {
+    public void generateKey() {
         //given
         byte[] key = tokenAuthenticationService.generateKey(SALT);
 
         //when
 
         //then
-        softly.assertThat(key).isEqualTo(SALT.getBytes());
+        assertThat(key).isEqualTo(SALT.getBytes());
     }
 
     @DisplayName("Jwt Token 을 생성하는지")
     @Test
-    public void toJwtByEmail(SoftAssertions softly) {
-        //given
-        String email = KIM_EMAIL;
-
+    public void toJwtByEmail() {
         //when
-        String jwt = tokenAuthenticationService.toJwtByEmail(email);
+        String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
 
         //then
-        softly.assertThat(jwt).isNotEmpty();
+        assertThat(jwt).isNotEmpty();
     }
+
+    @DisplayName("JWT 에서 Claim 을 가져오는지")
+    @Test
+    public void getJwtClaim() {
+        String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
+
+        //when
+        Claims claims = tokenAuthenticationService.getJwtClaim(jwt);
+
+        //then
+        assertThat(claims.get(EMAIL_KEY)).isEqualTo(KIM_EMAIL);
+    }
+
 }
 
