@@ -16,4 +16,11 @@ public class UserLoginResponseView {
         this.accessToken = accessToken;
         this.tokenType = tokenType;
     }
+
+    public static UserLoginResponseView toDtoEntity(String accessToken, String tokenType) {
+        return UserLoginResponseView.builder()
+                .accessToken(accessToken)
+                .tokenType(tokenType)
+                .build();
+    }
 }
