@@ -35,7 +35,7 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public void passwordEncrypt() {
+    public void encryptPassword() {
         this.password = encrypt(this.password);
     }
 

@@ -12,14 +12,14 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private JwtUtils jwtUtils;
 
     @Autowired
-    private JwtUtils jwtUtils;
+    private UserRepository userRepository;
 
     public User createUser(CreateUserRequestView view) {
         User user = view.toUSer();
-        user.passwordEncrypt();
+        user.encryptPassword();
 
         return userRepository.save(user);
     }
