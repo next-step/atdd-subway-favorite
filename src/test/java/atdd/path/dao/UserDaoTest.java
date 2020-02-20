@@ -1,6 +1,7 @@
 package atdd.path.dao;
 
 import atdd.path.SoftAssertionTest;
+import atdd.path.application.dto.FindByEmailResponseView;
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
@@ -60,10 +61,10 @@ public class UserDaoTest extends SoftAssertionTest {
     public void findByEmail(SoftAssertions softly) {
         User savedUser = userDao.save(NEW_USER);
 
-        Map<String, Object> persistUser = userDao.findByEmail(savedUser.getEmail());
+        FindByEmailResponseView persistUser = userDao.findByEmail(savedUser.getEmail());
 
-        softly.assertThat(persistUser.get(ID_KEY)).isNotNull();
-        softly.assertThat(persistUser.get(EMAIL_KEY)).isEqualTo(KIM_EMAIL);
+        softly.assertThat(persistUser.getId()).isNotNull();
+        softly.assertThat(persistUser.getEmail()).isEqualTo(KIM_EMAIL);
     }
 
 
