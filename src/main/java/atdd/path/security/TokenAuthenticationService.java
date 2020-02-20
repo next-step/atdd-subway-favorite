@@ -10,7 +10,8 @@ import static atdd.path.dao.UserDao.EMAIL_KEY;
 @Component
 public class TokenAuthenticationService {
     private static final String SALT = "63B75D39E3F6BFE72263F7C1145AC22E";
-    private static final String HEADER_STRING = "Authorization";
+    static final String BEARER_TOKEN_TYPE = "Bearer";
+    private static final String TOKEN_TYPE_KEY = "tokenType";
 
 
     public byte[] generateKey(String salt) {
@@ -20,7 +21,7 @@ public class TokenAuthenticationService {
     public String toJwtByEmail(String email) {
         return Jwts.builder()
                 .claim(EMAIL_KEY, email)
-                .setHeaderParam("tokenType", "Bearer")
+                .setHeaderParam(TOKEN_TYPE_KEY, BEARER_TOKEN_TYPE)
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .signWith(SignatureAlgorithm.HS256, this.generateKey(SALT))
@@ -35,5 +36,9 @@ public class TokenAuthenticationService {
 
     public String getEmailByClaims(Jws<Claims> claims) {
         return claims.getBody().get(EMAIL_KEY).toString();
+    }
+
+    public String getTokenTypeByJwt(String jwt) {
+        return getJwtClaim(jwt).getHeader().get(TOKEN_TYPE_KEY).toString();
     }
 }
