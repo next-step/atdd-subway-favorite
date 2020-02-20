@@ -1,12 +1,12 @@
 package atdd.path.dao;
 
 import atdd.path.domain.Member;
+import atdd.path.exception.MemberNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -74,7 +74,7 @@ class MemberDaoTest {
 
 		// then
 		assertThatThrownBy(() -> memberDao.findById(persistMember.getId()))
-			.isInstanceOf(EmptyResultDataAccessException.class);
+			.isInstanceOf(MemberNotFoundException.class);
 	}
 
 	@DisplayName("email로 Member 조회")
