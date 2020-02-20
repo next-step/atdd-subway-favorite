@@ -80,4 +80,10 @@ public class FavoriteController {
         return ResponseEntity.ok(new FavoritePathsResponseView(views));
     }
 
+    @DeleteMapping("/paths/{id}")
+    public ResponseEntity<Object> deleteFavoritePaths(@PathVariable("id") Long favoriteId) {
+        favoriteDao.deleteForPathById(favoriteId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

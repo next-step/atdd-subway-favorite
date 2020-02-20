@@ -83,7 +83,7 @@ class FavoriteDaoTest {
 
     @DisplayName("즐겨찾기 아이디로 즐겨찾기 한 지하철역을 삭제해야 한다")
     @Test
-    void mustDeleteById() {
+    void mustDeleteForStationById() {
         Member savedMember = memberDao.save(TEST_MEMBER);
         Station savedStation = stationDao.save(TEST_STATION);
         FavoriteStation savedFavorite = favoriteDao.saveForStation(new FavoriteStation(savedMember, savedStation));
@@ -98,7 +98,7 @@ class FavoriteDaoTest {
 
     @DisplayName("경로를 즐겨찾기로 저장해야 한다")
     @Test
-    void mustSaveFavoritePath() {
+    void mustSaveForPath() {
         Station savedStation = stationDao.save(TEST_STATION);
         Station savedStation2 = stationDao.save(TEST_STATION_2);
         Station savedStation3 = stationDao.save(TEST_STATION_3);
@@ -126,7 +126,7 @@ class FavoriteDaoTest {
 
     @DisplayName("경로 즐겨찾기 목록을 조회해야 한다")
     @Test
-    void mustFindFavoritePath() {
+    void mustFindForPath() {
         Station savedStation = stationDao.save(TEST_STATION);
         Station savedStation2 = stationDao.save(TEST_STATION_2);
         Station savedStation3 = stationDao.save(TEST_STATION_3);
@@ -151,6 +151,34 @@ class FavoriteDaoTest {
         assertThat(favorites).extracting("sourceStation.name")
                 .containsExactly(STATION_NAME, STATION_NAME_2, STATION_NAME);
 
+    }
+
+    @DisplayName("즐겨찾기 아이디로 즐겨찾기 한 지하철역을 삭제해야 한다")
+    @Test
+    void mustDeleteForPathById() {
+        Station savedStation = stationDao.save(TEST_STATION);
+        Station savedStation2 = stationDao.save(TEST_STATION_2);
+        Station savedStation3 = stationDao.save(TEST_STATION_3);
+        Station savedStation4 = stationDao.save(TEST_STATION_4);
+
+        Line savedLine = lineDao.save(TEST_LINE);
+        int distance = 10;
+
+        edgeDao.save(savedLine.getId(), Edge.of(savedStation, savedStation2, distance));
+        edgeDao.save(savedLine.getId(), Edge.of(savedStation2, savedStation3, distance));
+        edgeDao.save(savedLine.getId(), Edge.of(savedStation3, savedStation4, distance));
+
+        Member savedMember = memberDao.save(TEST_MEMBER);
+
+        final FavoritePath savedFavorite = favoriteDao.saveForPath(
+                new FavoritePath(savedMember, savedStation, savedStation3));
+
+        favoriteDao.deleteForPathById(savedFavorite.getId());
+
+        assertThrows(
+                NoDataException.class,
+                () -> favoriteDao.deleteForPathById(savedFavorite.getId())
+        );
     }
 
 }

@@ -133,12 +133,6 @@ public class FavoriteDao {
         return ofNullable(CollectionUtils.isEmpty(results) ? null : results.get(0));
     }
 
-    private static RowMapper<FavoritePath> pathRowMapper = (rs, rowNum) ->
-            new FavoritePath(rs.getLong("ID"),
-                    memberOf(rs),
-                    stationOf(rs, "SOURCE"),
-                    stationOf(rs, "TARGET"));
-
     public List<FavoritePath> findForPaths(Member member) {
         final String sql = "select fp.id, " +
                 "m.id as member_id, " +
@@ -160,6 +154,17 @@ public class FavoriteDao {
                 pathRowMapper);
     }
 
+    private static RowMapper<FavoritePath> pathRowMapper = (rs, rowNum) ->
+            new FavoritePath(rs.getLong("ID"),
+                    memberOf(rs),
+                    stationOf(rs, "SOURCE"),
+                    stationOf(rs, "TARGET"));
+
+    public void deleteForPathById(Long favoriteId) {
+        final FavoritePath findFavorite = findFavoritePathById(favoriteId).orElseThrow(NoDataException::new);
+        jdbcTemplate.update("delete from favorite_path where id = ?", findFavorite.getId());
+    }
+
     private static Station stationOf(ResultSet rs, String prefix) throws SQLException {
         final String newPrefix = StringUtils.isEmpty(prefix) ? "" : prefix + "_";
         return new Station(rs.getLong(newPrefix + "STATION_ID"),
@@ -172,5 +177,5 @@ public class FavoriteDao {
                 rs.getString("NAME"),
                 "");
     }
-    
+
 }
