@@ -1,11 +1,10 @@
 package atdd.path.web;
 
 import atdd.path.application.UserService;
-import atdd.path.application.dto.UserLoginResponseView;
+import atdd.path.application.dto.UserLoginRequestView;
 import atdd.path.application.dto.UserSighUpRequestView;
 import atdd.path.application.dto.UserSighUpResponseView;
 import atdd.path.dao.UserDao;
-import atdd.path.domain.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody User loginUser) {
-        return ResponseEntity.ok().body(UserLoginResponseView.builder().accessToken("toekn").tokenType("Bearer").build());
+    public ResponseEntity login(@RequestBody UserLoginRequestView loginUser) {
+        return ResponseEntity.ok().body(userService.login(loginUser));
     }
 }
