@@ -31,7 +31,10 @@ public class User extends BaseEntity {
     private User(String name, String email, String password) {
         this.name = name;
         this.email = email;
+        this.password = password;
+    }
 
+    public void passwordEncrypt() {
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }

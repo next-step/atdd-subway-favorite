@@ -13,6 +13,7 @@ public class UserService {
 
     public User createUser(CreateUserRequestView view) {
         User user = view.toUSer();
+        user.passwordEncrypt();
 
         return userRepository.save(user);
     }
