@@ -1,5 +1,6 @@
 package atdd.path.domain.entity;
 
+import atdd.path.application.exception.InvalidUserException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +36,15 @@ public class User extends BaseEntity {
     }
 
     public void passwordEncrypt() {
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.password = encrypt(this.password);
+    }
+
+    public void checkPassword(String password) {
+        if (BCrypt.checkpw(password, encrypt(this.password)))
+            throw new InvalidUserException();
+    }
+
+    private String encrypt(final String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }
