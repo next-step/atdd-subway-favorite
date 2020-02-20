@@ -5,11 +5,11 @@ import atdd.path.application.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.path.TestConstant.*;
-import static atdd.path.application.provider.JwtTokenProvider.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
@@ -79,7 +79,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         FavoriteStationResponseView createView = createForStation(stationId, token);
 
         webTestClient.delete().uri(FAVORITES_STATIONS_URL + "/" + createView.getId())
-                .header(AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isNoContent();
 
@@ -136,7 +136,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         FavoritePathResponseView createView = createForPath(STATION_ID, STATION_ID_3, token);
 
         webTestClient.delete().uri(FAVORITES_PATH_URL + "/" + createView.getId())
-                .header(AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isNoContent();
 
@@ -199,7 +199,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     private <T> EntityExchangeResult<T> createRequest(Class<T> classT, String uri, String token) {
         return webTestClient.post().uri(uri)
-                .header(AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -210,7 +210,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     private <T> EntityExchangeResult<T> findRequest(Class<T> classT, String uri, String token) {
         return webTestClient.get().uri(uri)
-                .header(AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)

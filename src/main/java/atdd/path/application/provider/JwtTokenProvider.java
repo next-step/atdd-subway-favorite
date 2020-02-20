@@ -11,7 +11,6 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     public static final String TOKEN_TYPE = "bearer";
-    public static final String AUTHORIZATION = "authorization";
 
     @Value("${spring.security.jwt.token.secret-key}")
     private String secretKey;

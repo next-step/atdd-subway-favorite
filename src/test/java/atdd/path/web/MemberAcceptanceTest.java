@@ -5,10 +5,10 @@ import atdd.path.application.dto.MemberResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import static atdd.path.TestConstant.*;
-import static atdd.path.application.provider.JwtTokenProvider.AUTHORIZATION;
 import static atdd.path.application.provider.JwtTokenProvider.TOKEN_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,7 +64,7 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest {
         String token = memberHttpTest.loginMember(TEST_MEMBER);
 
         webTestClient.get().uri("/members/me")
-                .header(AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
