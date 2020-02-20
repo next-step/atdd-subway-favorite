@@ -72,6 +72,20 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(headers.get(ACCESS_TOKEN_HEADER).size()).isEqualTo(1);
     }
 
+    @Test
+    public void myInfo() {
+        //given
+        User givenUser = givenUser(CREATE_USER_REQUEST1);
+        String accessToken = givenAccessToken(givenUser);
+
+        //when
+        User user = userHttpTest.myInfoRequest(accessToken).getResponseBody();
+
+        //then
+        assertThat(user.getName()).isEqualTo(givenUser.getName());
+        assertThat(user.getEmail()).isEqualTo(givenUser.getEmail());
+    }
+
     private User givenUser(CreateUserRequestView view) {
         User user = view.toUSer();
         user.encryptPassword();
@@ -86,5 +100,4 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         return headers.get(ACCESS_TOKEN_HEADER).get(0);
     }
-
 }

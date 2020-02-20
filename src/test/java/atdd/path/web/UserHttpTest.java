@@ -54,6 +54,14 @@ public class UserHttpTest {
                 .expectBody().returnResult();
     }
 
+    public EntityExchangeResult<User> myInfoRequest(final String accessToken) {
+        return webTestClient.get().uri(USER_PATH + "/my-info")
+                .header(ACCESS_TOKEN_HEADER, accessToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class).returnResult();
+    }
+
     private String writeValueAsString(Object object) {
         try {
             return mapper.writeValueAsString(object);
