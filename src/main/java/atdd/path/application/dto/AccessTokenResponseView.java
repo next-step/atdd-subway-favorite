@@ -4,6 +4,9 @@ public class AccessTokenResponseView {
 
 	private String accessToken;
 
+	public AccessTokenResponseView() {
+	}
+
 	public AccessTokenResponseView(final String accessToken) {
 		this.accessToken = accessToken;
 	}
