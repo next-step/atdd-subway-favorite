@@ -12,4 +12,4 @@ pluginManagement {
 		}
 	}
 }
-rootProject.name = 'atdd'
+rootProject.name = 'atdd-subway-favorite'
