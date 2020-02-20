@@ -4,6 +4,7 @@ import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.exception.InvalidUserException;
 import atdd.path.domain.entity.User;
 import atdd.path.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +40,12 @@ public class UserService {
         findUser.checkPassword(password);
 
         return jwtUtils.createToken(findUser.getEmail());
+    }
+
+    public User myInfo(final String accessToken) {
+        Claims claims = jwtUtils.tokenClaims(accessToken);
+        String email = claims.get("email").toString();
+
+        return userRepository.findByEmail(email);
     }
 }

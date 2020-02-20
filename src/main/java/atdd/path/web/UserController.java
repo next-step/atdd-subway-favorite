@@ -41,4 +41,9 @@ public class UserController {
         return ResponseEntity.noContent()
                 .header(ACCESS_TOKEN_HEADER, token).build();
     }
+
+    @GetMapping("/my-info")
+    public ResponseEntity myInfo(@RequestHeader(name = "Authorization") String token) {
+        return ResponseEntity.ok(userService.myInfo(token));
+    }
 }

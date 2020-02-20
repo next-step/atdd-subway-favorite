@@ -30,11 +30,20 @@ public class JwtUtils {
 
     public boolean verify(String token) {
         try {
-            Claims claims = Jwts.parser()
+            tokenClaims(token);
+
+            return true;
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
+            throw new InvalidTokenException();
+        }
+    }
+
+    public Claims tokenClaims(final String token) {
+        try {
+            return Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token).getBody();
 
-            return true;
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             throw new InvalidTokenException();
         }
