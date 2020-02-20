@@ -31,13 +31,6 @@ public class User {
         this.password = password;
     }
 
-    @Builder(builderClassName = "infoBuilder", builderMethodName = "infoBuilder")
-    public User(Long id, String email, String name) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-    }
-
     public boolean validatePassword(String password) {
         return this.password.equals(password);
     }
