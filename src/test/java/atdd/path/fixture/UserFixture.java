@@ -1,5 +1,7 @@
 package atdd.path.fixture;
 
+import atdd.path.application.dto.FindByEmailResponseView;
+import atdd.path.application.dto.UserLoginRequestView;
 import atdd.path.application.dto.UserSighUpRequestView;
 import atdd.path.domain.User;
 
@@ -16,6 +18,8 @@ public class UserFixture {
     public static final String KIM_EMAIL = "sgkim94@github.com";
     public static final String KIM_PASSWORD = "password";
     public static final UserSighUpRequestView USER_SIGH_UP_REQUEST_DTO = new UserSighUpRequestView(KIM_EMAIL, KIM_NAME, KIM_PASSWORD);
+    public static final UserLoginRequestView USER_LOGIN_REQUEST_DTO = new UserLoginRequestView(KIM_EMAIL, KIM_PASSWORD);
+    public static final FindByEmailResponseView FIND_BY_EMAIL_RESPONSE_VIEW = new FindByEmailResponseView(KIM_ID, KIM_EMAIL, KIM_PASSWORD);
     public static final User NEW_USER = new User(KIM_ID, KIM_EMAIL, KIM_NAME, KIM_PASSWORD);
 
     public static final User LOGIN_USER = User.builder().email(KIM_EMAIL).password(KIM_PASSWORD).build();
