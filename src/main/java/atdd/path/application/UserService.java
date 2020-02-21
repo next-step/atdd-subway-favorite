@@ -20,7 +20,7 @@ public class UserService {
     public UserSighUpResponseView singUp(UserSighUpRequestView newUser) {
         FindByEmailResponseView user = userDao.findByEmail(newUser.getEmail());
 
-        if (user != null) {
+        if (!isExistUser(user)) {
             throw new ExistUserException();
         }
 
@@ -30,11 +30,15 @@ public class UserService {
     public UserLoginResponseView login(UserLoginRequestView newUser) {
         FindByEmailResponseView user = userDao.findByEmail(newUser.getEmail());
 
-        if (user == null) {
+        if (isExistUser(user)) {
             throw new NotExistUserException();
         }
 
         String jwt = tokenAuthenticationService.toJwtByEmail(user.getEmail());
         return UserLoginResponseView.toDtoEntity(jwt, tokenAuthenticationService.getTokenTypeByJwt(jwt));
+    }
+
+    private boolean isExistUser(FindByEmailResponseView user) {
+        return user.getId() == null;
     }
 }

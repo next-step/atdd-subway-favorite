@@ -57,7 +57,7 @@ public class UserDao {
                 "WHERE email = ?";
 
         return FindByEmailResponseView
-                .toDtoEntity(jdbcTemplate.queryForList(sql, email).get(FIRST_INDEX));
+                .toDtoEntity(jdbcTemplate.queryForList(sql, email));
     }
 
     public void deleteById(Long id) {
