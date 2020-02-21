@@ -4,3 +4,8 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password: password
+security:
+  jwt:
+    token:
+      secret-key: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
+      expire-length: 3600000

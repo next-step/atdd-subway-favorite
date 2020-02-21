@@ -1,5 +1,7 @@
 package atdd.path.web;
 
+import atdd.path.application.dto.LoginRequestView;
+import atdd.path.application.dto.LoginResponseView;
 import atdd.path.application.dto.UserRequestView;
 import atdd.path.application.dto.UserResponseView;
 import org.springframework.http.MediaType;
@@ -16,11 +18,11 @@ public class UserHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<UserResponseView> createUserTest() {
+    public EntityExchangeResult<UserResponseView> createUser(String email, String name, String password) {
         UserRequestView userInfo = UserRequestView.builder()
-                .email("boorwonie@email.com")
-                .name("브라운")
-                .password("subway")
+                .email(email)
+                .name(name)
+                .password(password)
                 .build();
 
         return webTestClient.post().uri(USER_URL)
@@ -28,9 +30,24 @@ public class UserHttpTest {
                 .bodyValue(userInfo)
                 .exchange()
                 .expectHeader().exists("Location")
-                .expectStatus().is2xxSuccessful()
+                .expectStatus().isCreated()
                 .expectBody(UserResponseView.class)
                 .returnResult();
 
+    }
+
+    public EntityExchangeResult<LoginResponseView> loginUser(String email, String password) {
+        LoginRequestView request = LoginRequestView.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        return webTestClient.post().uri("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LoginResponseView.class)
+                .returnResult();
     }
 }

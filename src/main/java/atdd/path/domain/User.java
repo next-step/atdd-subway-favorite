@@ -30,4 +30,8 @@ public class User {
         this.name = name;
         this.password = password;
     }
+
+    public boolean validatePassword(String password) {
+        return this.password.equals(password);
+    }
 }
