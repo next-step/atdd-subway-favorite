@@ -51,7 +51,7 @@ public class UserServiceTest extends SoftAssertionTest {
     @DisplayName("회원이 정상적으로 등록되는지")
     @Test
     public void signUp() {
-        when(userDao.findByEmail(any())).thenReturn(null);
+        when(userDao.findByEmail(any())).thenReturn(FindByEmailResponseView.builder().build());
         when(userDao.save(any())).thenReturn(NEW_USER);
 
         UserSighUpResponseView user = userService.singUp(USER_SIGH_UP_REQUEST_DTO);
