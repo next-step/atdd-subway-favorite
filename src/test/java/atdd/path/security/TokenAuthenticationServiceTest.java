@@ -80,5 +80,18 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
         //then
         assertThat(tokenType).isEqualTo(BEARER_TOKEN_TYPE);
     }
+
+    @DisplayName("jwt 가 검증된 토큰인지 확인")
+    @Test
+    public void isVerifyToken() {
+        String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
+
+        //when
+        boolean isVerify = tokenAuthenticationService.isVerifyToken(jwt);
+
+        //then
+        assertThat(isVerify).isTrue();
+    }
+
 }
 
