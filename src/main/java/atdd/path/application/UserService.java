@@ -7,8 +7,9 @@ import atdd.path.domain.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,11 +32,8 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public boolean checkUserExist(CreateUserRequestView request) {
-        return userRepository
-                .findAll()
-                .stream()
-                .map(User::getEmail)
-                .anyMatch(a -> a.equals(request.getEmail()));
+    public User findByEmail(String email) {
+        User user=userRepository.findByEmail(email);
+        return user;
     }
 }

@@ -3,28 +3,29 @@ package atdd.path.web;
 import atdd.path.application.UserService;
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.domain.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.net.URI;
-import java.util.stream.Collectors;
+
+import static atdd.path.web.Constant.USER_BASE_URI;
 
 @RestController
+@RequestMapping(USER_BASE_URI)
 public class UserController {
-    private static final String BASE_URI = "/user";
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping(BASE_URI)
+    @PostMapping
     public ResponseEntity<UserResponseView> create(@RequestBody @Valid CreateUserRequestView request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity
@@ -32,28 +33,40 @@ public class UserController {
                     .build();
         }
 
-        if (checkExistingUser(request)) {
+        User user = isExistingUser(request);
+        if (user != null) {
             return ResponseEntity
-                    .ok()
+                    .status(HttpStatus.CONFLICT)
                     .build();
         }
 
         UserResponseView response = userService.createUser(request);
         return ResponseEntity
-                .created(URI.create(BASE_URI + "/" + response.getId()))
+                .created(URI.create("/" + response.getId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
 
-    @DeleteMapping(BASE_URI + "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<UserResponseView> delete(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
+                .notFound()
                 .build();
     }
 
-    private boolean checkExistingUser(CreateUserRequestView request) {
-        return userService.checkUserExist(request);
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseView> retrieveInfo(HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        User user = userService.findByEmail(email);
+        UserResponseView response = new UserResponseView(user.getEmail(), user.getName(), user.getPassword());
+        return ResponseEntity
+                .ok()
+                .body(response);
+    }
+
+    private User isExistingUser(CreateUserRequestView request) {
+        User user = userService.findByEmail(request.getEmail());
+        return user;
     }
 }
