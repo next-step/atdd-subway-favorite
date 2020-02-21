@@ -2,6 +2,7 @@ package atdd.path.application;
 
 import atdd.path.dao.UserRepository;
 import atdd.path.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,7 +18,8 @@ public class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
 
-    UserServiceTest() {
+    @BeforeEach
+    void setUp() {
         this.userService = new UserServiceImpl(userRepository);
     }
 
