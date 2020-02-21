@@ -2,7 +2,6 @@ package atdd.path;
 
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
-import atdd.path.domain.Member;
 import atdd.path.domain.Station;
 import org.assertj.core.util.Lists;
 
@@ -158,4 +157,6 @@ public class TestConstant {
     public static Line TEST_LINE_2 = new Line(LINE_ID_2, LINE_NAME_2, Lists.list(TEST_EDGE_5, TEST_EDGE_6, TEST_EDGE_7, TEST_EDGE_8, TEST_EDGE_9), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
     public static Line TEST_LINE_3 = new Line(LINE_ID_3, LINE_NAME_3, Lists.list(TEST_EDGE_10, TEST_EDGE_11, TEST_EDGE_12, TEST_EDGE_13, TEST_EDGE_14, TEST_EDGE_15), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
     public static Line TEST_LINE_4 = new Line(LINE_ID_4, LINE_NAME_4, Lists.list(TEST_EDGE_16, TEST_EDGE_17, TEST_EDGE_18, TEST_EDGE_19, TEST_EDGE_20, TEST_EDGE_21, TEST_EDGE_22), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
+
+    public static final String TOKEN_1 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdGFya3lpbmdAZ21haWwuY29tIiwiaWF0IjoxNTgyMTY5OTI4LCJleHAiOjE1ODIxNzM1Mjh9.O7YGgja_V4yHnlQZ6ch8Roj0m9Pds-x3E-c6_bWADWQ";
 }

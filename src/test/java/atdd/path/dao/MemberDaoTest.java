@@ -1,21 +1,20 @@
 package atdd.path.dao;
 
 import atdd.path.domain.Member;
+import atdd.path.exception.MemberNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 class MemberDaoTest {
@@ -74,8 +73,22 @@ class MemberDaoTest {
 		memberDao.deleteById(persistMember.getId());
 
 		// then
-		assertThrows(EmptyResultDataAccessException.class, () -> {
-			memberDao.findById(persistMember.getId());
-		});
+		assertThatThrownBy(() -> memberDao.findById(persistMember.getId()))
+			.isInstanceOf(MemberNotFoundException.class);
+	}
+
+	@DisplayName("email로 Member 조회")
+	@Test
+	void findByEmail() {
+		// given
+		Member member = new Member(MEMBER_EMAIL, MEMBER_NAME, MEMBER_PASSWORD);
+		Member persistMember = memberDao.save(member);
+
+		// when
+		Optional<Member> memberOptional = memberDao.findByEmail(persistMember.getEmail());
+
+		// then
+		assertThat(memberOptional.get().getEmail()).isEqualTo(MEMBER_EMAIL);
+		assertThat(memberOptional.get().getName()).isEqualTo(MEMBER_NAME);
 	}
 }

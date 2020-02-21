@@ -20,9 +20,7 @@ public class MemberHttpTest {
 		return responseView.getResponseBody().getId();
 	}
 
-	public EntityExchangeResult<MemberResponseView> createMemberRequest(final String email, final String name,
-																			  final String password) {
-
+	public EntityExchangeResult<MemberResponseView> createMemberRequest(final String email, final String name, final String password) {
 		CreateMemberRequestView createMemberRequestView = new CreateMemberRequestView(email, name, password);
 		return webTestClient.post().uri("/members")
 			.contentType(MediaType.APPLICATION_JSON)
