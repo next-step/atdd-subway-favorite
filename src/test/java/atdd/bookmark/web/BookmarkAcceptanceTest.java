@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import atdd.AbstractAcceptanceTest;
-import atdd.bookmark.dto.StationBookmarkResponseView;
-import atdd.bookmark.dto.StationBookmarkSimpleResponseView;
+import atdd.bookmark.application.dto.StationBookmarkResponseView;
+import atdd.bookmark.application.dto.StationBookmarkSimpleResponseView;
 import atdd.path.web.LineHttpTest;
 import atdd.path.web.StationHttpTest;
 import atdd.user.web.UserManageHttpTest;

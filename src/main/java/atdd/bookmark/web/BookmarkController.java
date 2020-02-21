@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import atdd.auth.LoginUser;
-import atdd.bookmark.dto.StationBookmarkRequestView;
+import atdd.bookmark.application.dto.StationBookmarkRequestView;
 import atdd.user.application.dto.UserResponseView;
 
 @Controller

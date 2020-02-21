@@ -4,8 +4,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import atdd.bookmark.dto.StationBookmarkResponseView;
-import atdd.bookmark.dto.StationBookmarkSimpleResponseView;
+import atdd.bookmark.application.dto.StationBookmarkResponseView;
+import atdd.bookmark.application.dto.StationBookmarkSimpleResponseView;
 import reactor.core.publisher.Mono;
 
 import static atdd.bookmark.TestConstant.*;
