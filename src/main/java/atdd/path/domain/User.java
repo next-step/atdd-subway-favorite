@@ -1,20 +1,19 @@
 package atdd.path.domain;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static atdd.path.dao.UserDao.*;
 
+@NoArgsConstructor
 public class User {
     private Long id;
     private String email;
     private String name;
     private String password;
-
-    public User() {
-    }
 
     @Builder
     public User(Long id, String email, String name, String password) {
