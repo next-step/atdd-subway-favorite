@@ -1,9 +1,6 @@
 package atdd.path.application;
 
 import atdd.path.application.exception.NoDataException;
-import atdd.path.dao.EdgeDao;
-import atdd.path.dao.LineDao;
-import atdd.path.dao.StationDao;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Edges;
 import atdd.path.domain.Line;
@@ -59,8 +56,6 @@ public class LineService {
                                 .findFirst().orElseThrow(RuntimeException::new);
 
         edgeRepository.deleteById(deletedEdge.getId());
-//        edgeRepository.deleteByStationId(stationId);
-//        persistLine.addEdge(newEdge);
         edgeRepository.save(newEdge);
     }
 }
