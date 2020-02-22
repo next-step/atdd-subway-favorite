@@ -1,7 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.StationResponseView;
+import atdd.path.application.dto.Station.StationResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

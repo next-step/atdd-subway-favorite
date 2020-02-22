@@ -1,7 +1,7 @@
 package atdd.path.dao;
 
 import atdd.path.SoftAssertionTest;
-import atdd.path.application.dto.FindByEmailResponseView;
+import atdd.path.application.dto.User.FindByEmailResponseView;
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
@@ -15,10 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
-import java.util.Map;
 
-import static atdd.path.dao.UserDao.EMAIL_KEY;
-import static atdd.path.dao.UserDao.ID_KEY;
 import static atdd.path.fixture.UserFixture.*;
 
 @JdbcTest

@@ -1,8 +1,8 @@
 package atdd.path.fixture;
 
-import atdd.path.application.dto.FindByEmailResponseView;
-import atdd.path.application.dto.UserLoginRequestView;
-import atdd.path.application.dto.UserSighUpRequestView;
+import atdd.path.application.dto.User.FindByEmailResponseView;
+import atdd.path.application.dto.User.UserLoginRequestView;
+import atdd.path.application.dto.User.UserSighUpRequestView;
 import atdd.path.domain.User;
 
 import java.util.Collections;

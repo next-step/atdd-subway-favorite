@@ -1,4 +1,4 @@
-package atdd.path.application.dto;
+package atdd.path.application.dto.User;
 
 import lombok.Builder;
 import lombok.Getter;
