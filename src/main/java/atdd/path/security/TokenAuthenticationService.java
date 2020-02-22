@@ -1,6 +1,9 @@
 package atdd.path.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -10,7 +13,7 @@ import static atdd.path.dao.UserDao.EMAIL_KEY;
 @Component
 public class TokenAuthenticationService {
     private static final String SALT = "63B75D39E3F6BFE72263F7C1145AC22E";
-    static final String BEARER_TOKEN_TYPE = "Bearer";
+    public static final String BEARER_TOKEN_TYPE = "Bearer";
     private static final String TOKEN_TYPE_KEY = "tokenType";
 
 

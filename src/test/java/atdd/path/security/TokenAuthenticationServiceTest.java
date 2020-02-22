@@ -28,8 +28,6 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
         //given
         byte[] key = tokenAuthenticationService.generateKey(SALT);
 
-        //when
-
         //then
         assertThat(key).isEqualTo(SALT.getBytes());
     }

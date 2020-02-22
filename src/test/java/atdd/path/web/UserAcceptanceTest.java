@@ -4,6 +4,7 @@ import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.User.UserLoginResponseView;
 import atdd.path.application.dto.User.UserSighUpResponseView;
 import atdd.path.domain.User;
+import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +26,12 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String LOGIN_API_URL = "/login";
 
     private RestWebClientTest restWebClientTest;
+    private TokenAuthenticationService tokenAuthenticationService;
 
     @BeforeEach
     void setUp() {
         this.restWebClientTest = new RestWebClientTest(this.webTestClient);
+        this.tokenAuthenticationService = new TokenAuthenticationService();
     }
 
     @DisplayName("유저_회원가입이_성공하는지")
@@ -50,13 +53,13 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("유저_회원_탈퇴가_성공하는지")
     @Test
-    public void userDelete() {
+    public void userDeleteWithAuth() {
         //given
-        String createLocation = createUser();
+        createUser();
 
         //when
         EntityExchangeResult<Void> expectResponse
-                = restWebClientTest.deleteMethodAcceptance(createLocation);
+                = restWebClientTest.deleteMethodWithAuthAcceptance(USER_BASE_URL, getJwt());
 
         //then
         assertThat(expectResponse.getStatus()).isEqualTo(HttpStatus.OK);
@@ -81,13 +84,13 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("사용자가_로그인한_상태에서_본인_정보를_조회할수_있는지")
     @Test
-    public void userDetailWithAuthorization(SoftAssertions softly) {
+    public void userDetailWithAuth(SoftAssertions softly) {
         //given
         String location = createUser();
 
         //when
         EntityExchangeResult<User> expectResponse
-                = restWebClientTest.getMethodAcceptance(location, User.class);
+                = restWebClientTest.getMethodWithAuthAcceptance(USER_BASE_URL, User.class, getJwt());
 
         User responseBody = expectResponse.getResponseBody();
 
@@ -98,7 +101,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
 
     public String createUser() {
-        return Objects.requireNonNull(webTestClient.post().uri("/users")
+        return Objects.requireNonNull(webTestClient.post().uri(USER_BASE_URL + "/sigh-up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(KIM_INPUT_JSON), String.class)
                 .exchange()
@@ -107,5 +110,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .getResponseHeaders()
                 .getLocation())
                 .getPath();
+    }
+
+    private String getJwt() {
+        return tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
     }
 }
