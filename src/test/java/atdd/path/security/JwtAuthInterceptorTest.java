@@ -11,8 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static atdd.path.fixture.UserFixture.FIND_BY_EMAIL_RESPONSE_VIEW;
-import static atdd.path.fixture.UserFixture.KIM_EMAIL;
+import static atdd.path.fixture.UserFixture.*;
 import static atdd.path.security.JwtAuthInterceptor.AUTH_USER_KEY;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +41,7 @@ public class JwtAuthInterceptorTest extends SoftAssertionTest {
 
         //then
         softly.assertThat(isAuthorization).isTrue();
-        softly.assertThat(request.getAttribute(AUTH_USER_KEY)).isEqualTo(FIND_BY_EMAIL_RESPONSE_VIEW);
+        softly.assertThat(request.getAttribute(AUTH_USER_KEY)).isEqualTo(NEW_USER);
     }
 
     private MockHttpServletRequest jwtAuthHttpRequest(String email) {

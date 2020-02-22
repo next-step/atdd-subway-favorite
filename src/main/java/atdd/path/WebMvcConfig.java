@@ -19,6 +19,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static String[] INTERCEPTOR_WITHE_LIST = {
             "/users/login",
             "/users/sigh-up",
+            "/stations/**",
+            "/paths/**",
+            "/lines/**",
     };
 
     public WebMvcConfig(UserDao userDao) {
