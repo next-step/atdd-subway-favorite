@@ -1,6 +1,6 @@
 package atdd.path.security;
 
-import atdd.path.application.dto.FindByEmailResponseView;
+import atdd.path.application.dto.User.FindByEmailResponseView;
 import atdd.path.dao.UserDao;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @AllArgsConstructor
 public class JwtAuthInterceptor extends HandlerInterceptorAdapter {
+    public static final String AUTH_USER_KEY = "user";
     private TokenAuthenticationService tokenAuthenticationService;
     private UserDao userDao;
 
@@ -33,7 +34,7 @@ public class JwtAuthInterceptor extends HandlerInterceptorAdapter {
         }
 
         FindByEmailResponseView user = userDao.findByEmail(email);
-        request.setAttribute("user", user);
+        request.setAttribute(AUTH_USER_KEY, user.toEntity());
 
         return true;
     }
