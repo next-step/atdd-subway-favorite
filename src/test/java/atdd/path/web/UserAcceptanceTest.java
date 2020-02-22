@@ -1,8 +1,8 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.UserLoginResponseView;
-import atdd.path.application.dto.UserSighUpResponseView;
+import atdd.path.application.dto.User.UserLoginResponseView;
+import atdd.path.application.dto.User.UserSighUpResponseView;
 import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +87,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         EntityExchangeResult<User> expectResponse
-                = restWebClientTest.postMethodAcceptance(location, LOGIN_USER, User.class);
+                = restWebClientTest.getMethodAcceptance(location, User.class);
 
         User responseBody = expectResponse.getResponseBody();
 
