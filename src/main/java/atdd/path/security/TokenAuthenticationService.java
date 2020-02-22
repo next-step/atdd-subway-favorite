@@ -28,10 +28,21 @@ public class TokenAuthenticationService {
                 .compact();
     }
 
+    public String getEmailByJwt(String jwt) {
+        Jws<Claims> claims =  getJwtClaim(jwt);
+        return getEmailByClaims(claims);
+    }
+
+
     public Jws<Claims> getJwtClaim(String jwt) {
         return Jwts.parser()
                 .setSigningKey(generateKey(SALT))
                 .parseClaimsJws(jwt);
+    }
+
+    public Boolean isVerifyToken(String jwt) {
+        return Jwts.parser()
+                .isSigned(jwt);
     }
 
     public String getEmailByClaims(Jws<Claims> claims) {
