@@ -1,21 +1,27 @@
 package atdd.path.security;
 
+import atdd.path.dao.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static atdd.path.fixture.UserFixture.KIM_EMAIL;
+import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 public class JwtAuthInterceptorTest {
     private JwtAuthInterceptor jwtAuthInterceptor;
     private TokenAuthenticationService tokenAuthenticationService;
 
+    @MockBean
+    private UserDao userDao;
+
     @BeforeEach
     void setUp() {
-        this.jwtAuthInterceptor = new JwtAuthInterceptor();
+        this.jwtAuthInterceptor = new JwtAuthInterceptor(tokenAuthenticationService, userDao);
         this.tokenAuthenticationService = new TokenAuthenticationService();
     }
 
@@ -23,6 +29,7 @@ public class JwtAuthInterceptorTest {
     @Test
     public void preHandle() throws Exception {
         //given
+        when(userDao.findByEmail(KIM_EMAIL)).thenReturn(FIND_BY_EMAIL_RESPONSE_VIEW);
         MockHttpServletRequest request = jwtAuthHttpRequest(KIM_EMAIL);
 
         //when
