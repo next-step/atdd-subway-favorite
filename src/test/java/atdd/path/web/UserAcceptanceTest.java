@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String KIM_INPUT_JSON = "{\"email\":\"" + KIM_EMAIL + "\",\"password\":\"" + KIM_PASSWORD + "\",\"name\":\"" + KIM_NAME + "\"}";;
+    public static final String USER_BASE_URL = "/users";
+    public static final String LOGIN_API_URL = "/login";
 
     private RestWebClientTest restWebClientTest;
 
@@ -34,7 +36,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public void userSighUp(SoftAssertions softly) {
         //when
         EntityExchangeResult<User> expectResponse
-                = restWebClientTest.postMethodAcceptance("/users", KIM_INPUT_JSON, User.class);
+                = restWebClientTest.postMethodAcceptance(USER_BASE_URL, KIM_INPUT_JSON, User.class);
 
         //then
         HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
@@ -68,7 +70,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         EntityExchangeResult<UserLoginResponseView> expectResponse
-                = restWebClientTest.postMethodAcceptance("/users/login", LOGIN_USER, UserLoginResponseView.class);
+                = restWebClientTest.postMethodAcceptance(USER_BASE_URL + LOGIN_API_URL, LOGIN_USER, UserLoginResponseView.class);
 
         UserLoginResponseView responseBody = expectResponse.getResponseBody();
 
@@ -76,6 +78,24 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         softly.assertThat(responseBody.getAccessToken()).isNotNull();
         softly.assertThat(responseBody.getTokenType()).isEqualTo("Bearer");
     }
+
+    @DisplayName("사용자가_로그인한_상태에서_본인_정보를_조회할수_있는지")
+    @Test
+    public void userDetailWithAuthorization(SoftAssertions softly) {
+        //given
+        String location = createUser();
+
+        //when
+        EntityExchangeResult<User> expectResponse
+                = restWebClientTest.postMethodAcceptance(location, LOGIN_USER, User.class);
+
+        User responseBody = expectResponse.getResponseBody();
+
+        //then
+        softly.assertThat(responseBody.getEmail()).isEqualTo(KIM_EMAIL);
+        softly.assertThat(responseBody.getName()).isEqualTo(KIM_NAME);
+    }
+
 
     public String createUser() {
         return Objects.requireNonNull(webTestClient.post().uri("/users")
