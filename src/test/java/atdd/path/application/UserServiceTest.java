@@ -1,7 +1,6 @@
 package atdd.path.application;
 
 import atdd.path.SoftAssertionTest;
-
 import atdd.path.application.dto.User.FindByEmailResponseView;
 import atdd.path.application.dto.User.UserDetailResponseView;
 import atdd.path.application.dto.User.UserLoginResponseView;
@@ -18,11 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static atdd.path.fixture.UserFixture.*;
+import static atdd.path.security.TokenAuthenticationService.BEARER_TOKEN_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = UserService.class)
+@SpringBootTest
 public class UserServiceTest extends SoftAssertionTest {
     private UserService userService;
 
@@ -34,6 +34,7 @@ public class UserServiceTest extends SoftAssertionTest {
 
     @BeforeEach
     void setUp() {
+        this.tokenAuthenticationService = new TokenAuthenticationService();
         this.userService = new UserService(tokenAuthenticationService, userDao);
     }
 
@@ -65,8 +66,8 @@ public class UserServiceTest extends SoftAssertionTest {
 
         UserLoginResponseView user = userService.login(USER_LOGIN_REQUEST_DTO);
 
-        softly.assertThat(user.getAccessToken()).isEqualTo("accessToken");
-        softly.assertThat(user.getTokenType()).isEqualTo("tokenType");
+        softly.assertThat(user.getAccessToken()).isNotNull();
+        softly.assertThat(user.getTokenType()).isEqualTo(BEARER_TOKEN_TYPE);
     }
 
     @DisplayName("회원의 ID 로 상세정보가 되는지")
