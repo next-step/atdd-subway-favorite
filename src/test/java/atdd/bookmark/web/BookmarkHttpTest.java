@@ -1,6 +1,7 @@
 package atdd.bookmark.web;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -21,14 +22,15 @@ public class BookmarkHttpTest {
 
   public EntityExchangeResult<StationBookmarkSimpleResponseView> addStationBookmark(Long stationId) {
     String requestBody = "{" 
-      + "\"sourceStationId\" : " + stationId.toString()
+      + "\"stationId\" : " + stationId.toString()
       + "}";
 
     return webTestClient.post().uri(STATION_BOOKMARK_URL)
       .header(HttpHeaders.AUTHORIZATION, authToken)
+      .contentType(MediaType.APPLICATION_JSON)
       .body(Mono.just(requestBody), String.class)
       .exchange()
-      .expectStatus().isOk()
+      .expectStatus().isCreated()
       .expectBody(StationBookmarkSimpleResponseView.class)
       .returnResult();
   }

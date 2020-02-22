@@ -1,5 +1,7 @@
 package atdd.bookmark.web;
 
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,13 +12,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import atdd.auth.LoginUser;
 import atdd.bookmark.application.dto.StationBookmarkRequestView;
+import atdd.bookmark.application.dto.StationBookmarkSimpleResponseView;
+import atdd.bookmark.entity.Bookmark;
+import atdd.bookmark.repository.BookmarkRepository;
+import atdd.path.application.dto.StationResponseView;
+import atdd.path.application.exception.NoDataException;
+import atdd.path.domain.Station;
+import atdd.path.repository.StationRepository;
 import atdd.user.application.dto.UserResponseView;
 
 @Controller
 public class BookmarkController {
+  private BookmarkRepository bookmarkRepository;
+  private StationRepository stationRepository;
+
+  public BookmarkController(BookmarkRepository bookmarkRepository, StationRepository stationRepository) {
+    this.bookmarkRepository = bookmarkRepository;
+    this.stationRepository = stationRepository;
+  }
+
+
   @PostMapping("/bookmark/station")
   public ResponseEntity addStationBookmark(@LoginUser UserResponseView userResponseView, @RequestBody StationBookmarkRequestView stationBookmarkRequestView) {
-    return null;
+    Station sourceStation = stationRepository.findById(stationBookmarkRequestView.getStationId()).orElseThrow(NoDataException::new);
+
+    Bookmark entity = Bookmark.builder()
+      .userID(userResponseView.getId())
+      .sourceStation(sourceStation)
+      .build();
+        
+    Bookmark created = bookmarkRepository.save(entity); 
+    System.out.println("@bookmark"+created.getSourceStation().toString());
+
+    return ResponseEntity
+      .created(URI.create("/bookmark/station/" + entity.getId()))
+      .body(
+          new StationBookmarkSimpleResponseView(
+            created.getId(),
+            new StationResponseView(
+              created.getSourceStation().getId(),
+              created.getSourceStation().getName()
+              )
+            ));
   }
 
   @GetMapping("/bookmark/station")
@@ -33,4 +70,5 @@ public class BookmarkController {
   public ResponseEntity removeStationBookmarks(@LoginUser UserResponseView userResponseView, @PathVariable Long id) {
     return null;
   }
+
 }

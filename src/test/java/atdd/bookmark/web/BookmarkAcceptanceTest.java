@@ -13,9 +13,9 @@ import atdd.user.web.UserManageHttpTest;
 import static atdd.path.TestConstant.*;
 import static atdd.user.TestConstant.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static atdd.bookmark.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
@@ -32,6 +32,7 @@ public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
     this.stationHttpTest = new StationHttpTest(webTestClient);
     this.lineHttpTest = new LineHttpTest(webTestClient);
     this.userManageHttpTest = new UserManageHttpTest(webTestClient);
+    this.stations = new ArrayList<>();
 
     userManageHttpTest.createNewUser(
         USER_1_EMAIL, 
@@ -65,7 +66,7 @@ public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
 
     //then
     assertThat(stationBookmarkResponseView.getId()).isNotNull();
-    assertThat(stationBookmarkResponseView.getStation()).isNotNull();
+    assertThat(stationBookmarkResponseView.getStation().getName()).isNotNull();
   }
 
   @Test
