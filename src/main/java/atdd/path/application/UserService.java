@@ -1,6 +1,6 @@
 package atdd.path.application;
 
-import atdd.path.application.dto.*;
+import atdd.path.application.dto.User.*;
 import atdd.path.application.exception.ExistUserException;
 import atdd.path.application.exception.NotExistUserException;
 import atdd.path.dao.UserDao;
@@ -40,5 +40,9 @@ public class UserService {
 
     private boolean isExistUser(FindByEmailResponseView user) {
         return user.getId() == null;
+    }
+
+    public UserDetailResponseView findById(Long id) {
+        return UserDetailResponseView.toDtoEntity(userDao.findById(id));
     }
 }
