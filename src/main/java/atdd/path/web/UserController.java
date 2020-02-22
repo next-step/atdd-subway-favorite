@@ -5,6 +5,7 @@ import atdd.path.application.dto.UserLoginRequestView;
 import atdd.path.application.dto.UserSighUpRequestView;
 import atdd.path.application.dto.UserSighUpResponseView;
 import atdd.path.dao.UserDao;
+import atdd.path.domain.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,4 +38,10 @@ public class UserController {
     public ResponseEntity login(@RequestBody UserLoginRequestView loginUser) {
         return ResponseEntity.ok().body(userService.login(loginUser));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detail(@PathVariable Long id) {
+        return ResponseEntity.ok().body(User.of(0L, "sgkim94@github.com", "김상구", "password"));
+    }
+
 }
