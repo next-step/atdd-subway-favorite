@@ -1,9 +1,9 @@
 package atdd.path.web;
 
 import atdd.path.application.UserService;
-import atdd.path.application.dto.UserLoginRequestView;
-import atdd.path.application.dto.UserSighUpRequestView;
-import atdd.path.application.dto.UserSighUpResponseView;
+import atdd.path.application.dto.User.UserLoginRequestView;
+import atdd.path.application.dto.User.UserSighUpRequestView;
+import atdd.path.application.dto.User.UserSighUpResponseView;
 import atdd.path.dao.UserDao;
 import atdd.path.domain.User;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity detail(@PathVariable Long id) {
-        return ResponseEntity.ok().body(User.of(0L, "sgkim94@github.com", "김상구", "password"));
+        return ResponseEntity.ok().body(userService.findById(id));
     }
 
 }
