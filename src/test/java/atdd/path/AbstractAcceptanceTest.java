@@ -9,7 +9,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "100000")
-public class AbstractAcceptanceTest extends SoftAssertionTest{
+public class AbstractAcceptanceTest extends SoftAssertionTest {
     @Autowired
     public WebTestClient webTestClient;
 }
