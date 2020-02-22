@@ -4,10 +4,8 @@ import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.LoginRequestView;
 import atdd.path.domain.entity.User;
-import atdd.path.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 import static atdd.path.TestConstant.*;
@@ -15,9 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     final String ACCESS_TOKEN_HEADER = "Authorization";
-
-    @Autowired
-    private UserRepository userRepository;
 
     private UserHttpTest userHttpTest;
 
@@ -29,13 +24,9 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @Test
     public void createUser() {
-        //given
-        User givenUser = givenUser(CREATE_USER_REQUEST1);
-        String accessToken = givenAccessToken(givenUser);
-
         //when
         CreateUserRequestView view = CREATE_USER_REQUEST2;
-        User user = userHttpTest.createUserRequest(view, accessToken)
+        User user = userHttpTest.createUserRequest(view)
                 .getResponseBody();
 
         //then
@@ -46,11 +37,11 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void deleteUser() {
         //given
-        User givenUser = givenUser(CREATE_USER_REQUEST1);
+        User givenUser = userHttpTest.createUserRequest(CREATE_USER_REQUEST1).getResponseBody();
         String accessToken = givenAccessToken(givenUser);
 
         CreateUserRequestView view = CREATE_USER_REQUEST2;
-        User user = userHttpTest.createUserRequest(view, accessToken)
+        User user = userHttpTest.createUserRequest(view)
                 .getResponseBody();
 
         //when
@@ -61,7 +52,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void login() {
         //given
-        User givenUser = givenUser(CREATE_USER_REQUEST1);
+        User givenUser = userHttpTest.createUserRequest(CREATE_USER_REQUEST1).getResponseBody();
 
         //when
         HttpHeaders headers = userHttpTest.loginRequest(LoginRequestView.builder()
@@ -75,7 +66,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void myInfo() {
         //given
-        User givenUser = givenUser(CREATE_USER_REQUEST1);
+        User givenUser = userHttpTest.createUserRequest(CREATE_USER_REQUEST1).getResponseBody();
         String accessToken = givenAccessToken(givenUser);
 
         //when
@@ -84,13 +75,6 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         //then
         assertThat(user.getName()).isEqualTo(givenUser.getName());
         assertThat(user.getEmail()).isEqualTo(givenUser.getEmail());
-    }
-
-    private User givenUser(CreateUserRequestView view) {
-        User user = view.toUSer();
-        user.encryptPassword();
-
-        return userRepository.save(user);
     }
 
     private String givenAccessToken(final User user) {

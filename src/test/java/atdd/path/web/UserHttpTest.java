@@ -22,11 +22,10 @@ public class UserHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<User> createUserRequest(CreateUserRequestView view, final String accessToken) {
+    public EntityExchangeResult<User> createUserRequest(CreateUserRequestView view) {
         String inputJson = writeValueAsString(view);
 
         return webTestClient.post().uri(USER_PATH)
-                .header(ACCESS_TOKEN_HEADER, accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(inputJson), String.class)
                 .exchange()
