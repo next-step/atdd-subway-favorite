@@ -39,7 +39,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public void userSighUp(SoftAssertions softly) {
         //when
         EntityExchangeResult<User> expectResponse
-                = restWebClientTest.postMethodAcceptance(USER_BASE_URL, KIM_INPUT_JSON, User.class);
+                = restWebClientTest.postMethodAcceptance(USER_BASE_URL + "/sigh-up", KIM_INPUT_JSON, User.class);
 
         //then
         HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
@@ -86,7 +86,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userDetailWithAuth(SoftAssertions softly) {
         //given
-        String location = createUser();
+        createUser();
 
         //when
         EntityExchangeResult<User> expectResponse
