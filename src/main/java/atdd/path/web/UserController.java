@@ -6,6 +6,7 @@ import atdd.path.application.dto.User.UserSighUpRequestView;
 import atdd.path.application.dto.User.UserSighUpResponseView;
 import atdd.path.dao.UserDao;
 import atdd.path.domain.User;
+import atdd.path.security.LoginUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,16 +23,10 @@ public class UserController {
         this.userDao = userDao;
     }
 
-    @PostMapping("")
+    @PostMapping("/sigh-up")
     public ResponseEntity signUp(@RequestBody UserSighUpRequestView user) {
         UserSighUpResponseView savedUser = userService.singUp(user);
         return ResponseEntity.created(URI.create("/users/" + savedUser.getId())).body(savedUser);
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
-        userDao.deleteById(id);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
@@ -39,9 +34,14 @@ public class UserController {
         return ResponseEntity.ok().body(userService.login(loginUser));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity detail(@PathVariable Long id) {
-        return ResponseEntity.ok().body(userService.findById(id));
+    @DeleteMapping("")
+    public ResponseEntity delete(@LoginUser User user) {
+        userDao.deleteById(user.getId());
+        return ResponseEntity.ok().build();
     }
 
+    @GetMapping("")
+    public ResponseEntity detail(@LoginUser User user) {
+        return ResponseEntity.ok().body(userService.findById(user.getId()));
+    }
 }
