@@ -1,18 +1,23 @@
 package atdd.path.security;
 
+import atdd.path.SoftAssertionTest;
 import atdd.path.dao.UserDao;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static atdd.path.fixture.UserFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static atdd.path.fixture.UserFixture.FIND_BY_EMAIL_RESPONSE_VIEW;
+import static atdd.path.fixture.UserFixture.KIM_EMAIL;
+import static atdd.path.security.JwtAuthInterceptor.AUTH_USER_KEY;
 import static org.mockito.Mockito.when;
 
-public class JwtAuthInterceptorTest {
+@SpringBootTest
+public class JwtAuthInterceptorTest extends SoftAssertionTest {
     private JwtAuthInterceptor jwtAuthInterceptor;
     private TokenAuthenticationService tokenAuthenticationService;
 
@@ -21,13 +26,13 @@ public class JwtAuthInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        this.jwtAuthInterceptor = new JwtAuthInterceptor(tokenAuthenticationService, userDao);
         this.tokenAuthenticationService = new TokenAuthenticationService();
+        this.jwtAuthInterceptor = new JwtAuthInterceptor(tokenAuthenticationService, userDao);
     }
 
     @DisplayName("사용자 로그인 시 토큰 검증을 진행하는지")
     @Test
-    public void preHandle() throws Exception {
+    public void preHandle(SoftAssertions softly) throws Exception {
         //given
         when(userDao.findByEmail(KIM_EMAIL)).thenReturn(FIND_BY_EMAIL_RESPONSE_VIEW);
         MockHttpServletRequest request = jwtAuthHttpRequest(KIM_EMAIL);
@@ -36,7 +41,8 @@ public class JwtAuthInterceptorTest {
         boolean isAuthorization = jwtAuthInterceptor.preHandle(request, null, null);
 
         //then
-        assertThat(isAuthorization).isTrue();
+        softly.assertThat(isAuthorization).isTrue();
+        softly.assertThat(request.getAttribute(AUTH_USER_KEY)).isEqualTo(FIND_BY_EMAIL_RESPONSE_VIEW);
     }
 
     private MockHttpServletRequest jwtAuthHttpRequest(String email) {
