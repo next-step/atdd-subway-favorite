@@ -4,6 +4,7 @@ import atdd.path.application.dto.User.*;
 import atdd.path.application.exception.ExistUserException;
 import atdd.path.application.exception.NotExistUserException;
 import atdd.path.dao.UserDao;
+import atdd.path.domain.User;
 import atdd.path.security.TokenAuthenticationService;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,10 @@ public class UserService {
 
         String jwt = tokenAuthenticationService.toJwtByEmail(user.getEmail());
         return UserLoginResponseView.toDtoEntity(jwt, tokenAuthenticationService.getTokenTypeByJwt(jwt));
+    }
+
+    public void delete(User user) {
+        userDao.deleteById(user.getId());
     }
 
     private boolean isExistUser(FindByEmailResponseView user) {

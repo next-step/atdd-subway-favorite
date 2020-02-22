@@ -16,11 +16,9 @@ import java.net.URI;
 @RequestMapping("/users")
 public class UserController {
     private UserService userService;
-    private UserDao userDao;
 
-    public UserController(UserService userService, UserDao userDao) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userDao = userDao;
     }
 
     @PostMapping("/sigh-up")
@@ -36,7 +34,7 @@ public class UserController {
 
     @DeleteMapping("")
     public ResponseEntity delete(@LoginUser User user) {
-        userDao.deleteById(user.getId());
+        userService.delete(user);
         return ResponseEntity.ok().build();
     }
 
