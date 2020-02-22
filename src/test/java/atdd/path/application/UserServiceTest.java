@@ -1,9 +1,11 @@
 package atdd.path.application;
 
 import atdd.path.SoftAssertionTest;
-import atdd.path.application.dto.FindByEmailResponseView;
-import atdd.path.application.dto.UserLoginResponseView;
-import atdd.path.application.dto.UserSighUpResponseView;
+
+import atdd.path.application.dto.User.FindByEmailResponseView;
+import atdd.path.application.dto.User.UserDetailResponseView;
+import atdd.path.application.dto.User.UserLoginResponseView;
+import atdd.path.application.dto.User.UserSighUpResponseView;
 import atdd.path.application.exception.ExistUserException;
 import atdd.path.dao.UserDao;
 import atdd.path.security.TokenAuthenticationService;
@@ -14,9 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,6 +67,17 @@ public class UserServiceTest extends SoftAssertionTest {
 
         softly.assertThat(user.getAccessToken()).isEqualTo("accessToken");
         softly.assertThat(user.getTokenType()).isEqualTo("tokenType");
+    }
+
+    @DisplayName("회원의 ID 로 상세정보가 되는지")
+    @Test
+    public void findById(SoftAssertions softly) {
+        when(userDao.findById(any())).thenReturn(NEW_USER);
+
+        UserDetailResponseView user = userService.findById(KIM_ID);
+
+        softly.assertThat(user.getEmail()).isEqualTo(KIM_EMAIL);
+        softly.assertThat(user.getName()).isEqualTo(KIM_NAME);
     }
 
 }
