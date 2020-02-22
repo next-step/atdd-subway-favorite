@@ -93,5 +93,17 @@ public class TokenAuthenticationServiceTest extends SoftAssertionTest {
         assertThat(isVerify).isTrue();
     }
 
+    @DisplayName("jwt 로 email 을 가져오는지")
+    @Test
+    public void getEmailByJwt() {
+        String jwt = tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
+
+        //when
+        String email = tokenAuthenticationService.getEmailByJwt(jwt);
+
+        //then
+        assertThat(email).isEqualTo(KIM_EMAIL);
+    }
+
 }
 
