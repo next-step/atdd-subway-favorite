@@ -34,18 +34,20 @@ public class BookmarkController {
 
   @PostMapping("/bookmark/station")
   public ResponseEntity addStationBookmark(@LoginUser UserResponseView userResponseView, @RequestBody StationBookmarkRequestView stationBookmarkRequestView) {
-    Station sourceStation = stationRepository.findById(stationBookmarkRequestView.getStationId()).orElseThrow(NoDataException::new);
+    Station sourceStation = stationRepository
+      .findById(
+          stationBookmarkRequestView.getStationId())
+      .orElseThrow(NoDataException::new);
 
-    Bookmark entity = Bookmark.builder()
-      .userID(userResponseView.getId())
-      .sourceStation(sourceStation)
-      .build();
         
-    Bookmark created = bookmarkRepository.save(entity); 
-    System.out.println("@bookmark"+created.getSourceStation().toString());
+    Bookmark created = bookmarkRepository.save(
+      Bookmark.builder()
+        .userID(userResponseView.getId())
+        .sourceStation(sourceStation)
+        .build());
 
     return ResponseEntity
-      .created(URI.create("/bookmark/station/" + entity.getId()))
+      .created(URI.create("/bookmark/station/" + created.getId()))
       .body(
           new StationBookmarkSimpleResponseView(
             created.getId(),
