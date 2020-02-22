@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 @Component
 public class JwtUtils {
+    private final String EMAIL_KEY = "email";
+
     @Value("${authentication.jwt.secret}")
     private String secret;
 
@@ -19,7 +21,7 @@ public class JwtUtils {
     public String createToken(final String email) {
         long currentTimeMillis = System.currentTimeMillis() + expirationPeriod;
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put("email", email);
+        claims.put(EMAIL_KEY, email);
 
         return Jwts.builder()
                 .setExpiration(new Date(currentTimeMillis))
@@ -47,5 +49,11 @@ public class JwtUtils {
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             throw new InvalidTokenException();
         }
+    }
+
+    public String emailToken(final String token) {
+        Claims claims = tokenClaims(token);
+
+        return claims.get(EMAIL_KEY).toString();
     }
 }

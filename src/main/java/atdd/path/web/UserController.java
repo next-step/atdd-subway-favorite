@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/my-info")
-    public ResponseEntity myInfo(@RequestHeader(name = "Authorization") String token) {
-        return ResponseEntity.ok(userService.myInfo(token));
+    public ResponseEntity myInfo(@LoginUser String email) {
+        return ResponseEntity.ok(userService.myInfo(email));
     }
 }

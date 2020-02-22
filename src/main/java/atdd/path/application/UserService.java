@@ -42,10 +42,7 @@ public class UserService {
         return jwtUtils.createToken(findUser.getEmail());
     }
 
-    public User myInfo(final String accessToken) {
-        Claims claims = jwtUtils.tokenClaims(accessToken);
-        String email = claims.get("email").toString();
-
+    public User myInfo(final String email) {
         return userRepository.findByEmail(email);
     }
 }
