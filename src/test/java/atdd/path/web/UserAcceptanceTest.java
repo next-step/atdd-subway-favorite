@@ -56,7 +56,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userDeleteWithAuth() {
         //given
-        createUser();
+        restWebClientTest.createUser();
 
         //when
         EntityExchangeResult<Void> expectResponse
@@ -70,7 +70,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userLogin(SoftAssertions softly) {
         //given
-        createUser();
+        restWebClientTest.createUser();
 
         //when
         EntityExchangeResult<UserLoginResponseView> expectResponse
@@ -87,7 +87,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userDetailWithAuth(SoftAssertions softly) {
         //given
-        createUser();
+        restWebClientTest.createUser();
 
         //when
         EntityExchangeResult<User> expectResponse
@@ -98,19 +98,6 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         //then
         softly.assertThat(responseBody.getEmail()).isEqualTo(KIM_EMAIL);
         softly.assertThat(responseBody.getName()).isEqualTo(KIM_NAME);
-    }
-
-
-    public String createUser() {
-        return Objects.requireNonNull(webTestClient.post().uri(USER_BASE_URL + "/sigh-up")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(KIM_INPUT_JSON), String.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .returnResult(UserSighUpResponseView.class)
-                .getResponseHeaders()
-                .getLocation())
-                .getPath();
     }
 
     private String getJwt() {

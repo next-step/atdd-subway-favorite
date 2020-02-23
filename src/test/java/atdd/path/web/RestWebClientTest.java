@@ -1,10 +1,16 @@
 package atdd.path.web;
 
+import atdd.path.domain.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
+
+import static atdd.path.web.UserAcceptanceTest.KIM_INPUT_JSON;
+import static atdd.path.web.UserAcceptanceTest.USER_BASE_URL;
 
 public class RestWebClientTest {
     private static final String NO_AUTHORIZATION = "";
@@ -53,4 +59,13 @@ public class RestWebClientTest {
                 .expectBody(Void.class)
                 .returnResult();
     }
+
+    String createUser() {
+        return Objects.requireNonNull(
+                postMethodAcceptance(USER_BASE_URL + "/sigh-up", KIM_INPUT_JSON, User.class)
+                .getResponseHeaders()
+                .getLocation()
+                .getPath());
+    }
+
 }
