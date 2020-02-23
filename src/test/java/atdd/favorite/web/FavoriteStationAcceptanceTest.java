@@ -1,7 +1,5 @@
 package atdd.favorite.web;
 
-import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
-import atdd.favorite.application.dto.FavoriteStationResponseView;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
@@ -12,13 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import reactor.core.publisher.Mono;
-
-import java.util.stream.Collectors;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.path.TestConstant.STATION_NAME;
 import static atdd.path.TestConstant.STATION_NAME_2;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,14 +24,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
-    public static final String FAVORITE_STATION_BASE_URI = "/favorite-station";
-    public static final String NAME = "브라운";
+    public static final String FAVORITE_STATION_BASE_URI = "/favorite-stations";
     public static final String EMAIL = "boorwonie@email.com";
-    public static final String PASSWORD = "subway";
     private UserHttpTest userHttpTest;
     private StationHttpTest stationHttpTest;
-    private Long stationId;
-    private Long stationId2;
+    private FavoriteStationHttpTest favoriteStationHttpTest;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -47,55 +40,32 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     void setUp() {
         this.userHttpTest = new UserHttpTest(webTestClient);
         this.stationHttpTest = new StationHttpTest(webTestClient);
-        userHttpTest.createUser(EMAIL, NAME, PASSWORD);
+        this.favoriteStationHttpTest = new FavoriteStationHttpTest(webTestClient, jwtTokenProvider);
     }
 
     @Test
     public void createFavoriteStation() {
         //given
         String token = jwtTokenProvider.createToken(EMAIL);
-        this.stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
 
         //when
-        CreateFavoriteStationRequestView request = new CreateFavoriteStationRequestView(stationId);
+        Long favoriteStationId = favoriteStationHttpTest.createFavoriteStation(EMAIL, stationId, token);
 
         //then
-        webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
-                .header("Authorization", AUTH_SCHEME_BEARER + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), CreateFavoriteStationRequestView.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().exists("Location")
-                .expectBody().jsonPath("$.id").isEqualTo(1)
-                .jsonPath("$.userEmail").isEqualTo(EMAIL)
-                .jsonPath("$.favoriteStationId").isEqualTo(stationId);
+        assertThat(1L).isEqualTo(favoriteStationId);
     }
 
     @Test
     public void deleteFavoriteStation() throws Exception {
         //given
         String token = jwtTokenProvider.createToken(EMAIL);
-        this.stationId = stationHttpTest.createStation(STATION_NAME);
-        CreateFavoriteStationRequestView request = new CreateFavoriteStationRequestView(stationId);
-        Long id = webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
-                .header("Authorization", AUTH_SCHEME_BEARER + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), CreateFavoriteStationRequestView.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .returnResult(FavoriteStationResponseView.class)
-                .getResponseBody()
-                .toStream()
-                .map(FavoriteStationResponseView::getId)
-                .collect(Collectors.toList())
-                .get(0);
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long favoriteStationId = favoriteStationHttpTest.createFavoriteStation(EMAIL, stationId, token);
 
         //when, then
         mockMvc.perform(
-                delete(FAVORITE_STATION_BASE_URI + "/" + id)
+                delete(FAVORITE_STATION_BASE_URI + "/" + favoriteStationId)
                         .header("Authorization", AUTH_SCHEME_BEARER + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -107,36 +77,10 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     public void showFavoriteStations() throws Exception {
         //given
         String token = jwtTokenProvider.createToken(EMAIL);
-        this.stationId = stationHttpTest.createStation(STATION_NAME);
-        this.stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        CreateFavoriteStationRequestView request = new CreateFavoriteStationRequestView(stationId);
-        CreateFavoriteStationRequestView request2 = new CreateFavoriteStationRequestView(stationId2);
-        Long id = webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
-                .header("Authorization", AUTH_SCHEME_BEARER + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), CreateFavoriteStationRequestView.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .returnResult(FavoriteStationResponseView.class)
-                .getResponseBody()
-                .toStream()
-                .map(FavoriteStationResponseView::getId)
-                .collect(Collectors.toList())
-                .get(0);
-        Long id2 = webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
-                .header("Authorization", AUTH_SCHEME_BEARER + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request2), CreateFavoriteStationRequestView.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .returnResult(FavoriteStationResponseView.class)
-                .getResponseBody()
-                .toStream()
-                .map(FavoriteStationResponseView::getId)
-                .collect(Collectors.toList())
-                .get(0);
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
+        favoriteStationHttpTest.createFavoriteStation(EMAIL, stationId, token);
+        favoriteStationHttpTest.createFavoriteStation(EMAIL, stationId2, token);
 
         //when, then
         mockMvc.perform(

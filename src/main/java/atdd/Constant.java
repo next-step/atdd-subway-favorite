@@ -7,6 +7,6 @@ public class Constant {
     public static final String STATION_BASE_URI = "/stations";
     public static final String LOGIN_BASE_URI = "/login";
     public static final String AUTH_SCHEME_BEARER = "Bearer ";
-    public static final String FAVORITE_STATION_BASE_URI = "/favorite-station";
+    public static final String FAVORITE_STATION_BASE_URI = "/favorite-stations";
     public static final String FAVORITE_PATH_BASE_URI="/favorite-paths";
 }

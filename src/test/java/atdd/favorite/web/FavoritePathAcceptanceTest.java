@@ -65,7 +65,7 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
         Long pathId = favoritePathHttpTest.createFavoritePath(EMAIL, stationId, stationId4, token);
 
         //then
-        assertThat(pathId).isEqualTo(1L);
+        assertThat(1L).isEqualTo(pathId);
     }
 
     @Test
