@@ -1,12 +1,15 @@
-package atdd.path.web;
+package atdd.user.web;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.UserResponseView;
+import atdd.Constant;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.UserResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.util.stream.Collectors;
+
+import static atdd.Constant.USER_BASE_URI;
 
 public class UserHttpTest {
     public WebTestClient webTestClient;
@@ -17,7 +20,7 @@ public class UserHttpTest {
 
     public Long createUser(String EMAIL_IN_REQUEST, String NAME_IN_REQUEST, String PWD_IN_REQUEST) {
         CreateUserRequestView request = new CreateUserRequestView(EMAIL_IN_REQUEST, NAME_IN_REQUEST, PWD_IN_REQUEST);
-        return webTestClient.post().uri("/users")
+        return webTestClient.post().uri(USER_BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), CreateUserRequestView.class)

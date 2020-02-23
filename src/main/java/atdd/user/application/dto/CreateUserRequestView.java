@@ -1,6 +1,6 @@
-package atdd.path.application.dto;
+package atdd.user.application.dto;
 
-import atdd.path.domain.User;
+import atdd.user.domain.User;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

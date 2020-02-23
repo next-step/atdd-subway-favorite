@@ -1,18 +1,20 @@
-package atdd.path.web;
+package atdd.user.web;
 
-import atdd.path.application.UserService;
-import atdd.path.application.dto.LoginReponseView;
-import atdd.path.application.dto.LoginRequestView;
-import atdd.path.application.dto.UserResponseView;
-import atdd.path.domain.User;
-import atdd.path.jwt.JwtTokenProvider;
+import atdd.user.application.UserService;
+import atdd.user.application.dto.LoginReponseView;
+import atdd.user.application.dto.LoginRequestView;
+import atdd.user.domain.User;
+import atdd.user.jwt.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
-import static atdd.path.web.Constant.LOGIN_BASE_URI;
+import static atdd.Constant.LOGIN_BASE_URI;
 
 @RestController
 @RequestMapping(LOGIN_BASE_URI)
@@ -34,9 +36,8 @@ public class LoginController {
                     .status(HttpStatus.CONFLICT)
                     .build();
         }
-        String accessToken = jwtTokenProvider.createToken(user.getEmail());
-        String tokenType = "bearer";
-        LoginReponseView response=new LoginReponseView(accessToken, tokenType);
+
+        LoginReponseView response = new LoginReponseView(request.getAccessToken(), request.getTokenType());
         return ResponseEntity
                 .created(URI.create("/oauth/token"))
                 .body(response);

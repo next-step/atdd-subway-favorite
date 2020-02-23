@@ -1,6 +1,7 @@
-package atdd.path.jwt;
+package atdd.user.jwt;
 
-import atdd.path.application.exception.InvalidJwtAuthenticationException;
+import atdd.Constant;
+import atdd.user.application.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+
+import static atdd.Constant.AUTH_SCHEME_BEARER;
 
 @Component
 @EnableConfigurationProperties(ReadProperties.class)
@@ -55,7 +58,7 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+        if (bearerToken != null && bearerToken.startsWith(AUTH_SCHEME_BEARER)) {
             return bearerToken.substring(7, bearerToken.length());
         }
         return null;

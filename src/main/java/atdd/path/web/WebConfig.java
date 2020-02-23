@@ -1,7 +1,9 @@
 package atdd.path.web;
 
-import atdd.path.jwt.JwtTokenProvider;
-import atdd.path.jwt.ReadProperties;
+import atdd.Constant;
+import atdd.user.jwt.JwtTokenProvider;
+import atdd.user.jwt.ReadProperties;
+import atdd.user.web.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

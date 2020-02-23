@@ -1,4 +1,4 @@
-package atdd.path.jwt;
+package atdd.user.jwt;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;

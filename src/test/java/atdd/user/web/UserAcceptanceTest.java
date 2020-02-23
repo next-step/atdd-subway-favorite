@@ -1,4 +1,4 @@
-package atdd.path.web;
+package atdd.user.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;

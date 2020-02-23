@@ -1,6 +1,6 @@
-package atdd.path.application.dto;
+package atdd.user.application.dto;
 
-import atdd.path.domain.User;
+import atdd.user.domain.User;
 
 public class UserResponseView {
     private Long id;

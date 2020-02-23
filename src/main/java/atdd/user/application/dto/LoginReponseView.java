@@ -1,4 +1,4 @@
-package atdd.path.application.dto;
+package atdd.user.application.dto;
 
 public class LoginReponseView {
     private String accessToken;

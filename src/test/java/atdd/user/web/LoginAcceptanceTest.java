@@ -1,14 +1,17 @@
-package atdd.path.web;
+package atdd.user.web;
 
+import atdd.Constant;
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.LoginRequestView;
-import atdd.path.domain.UserRepository;
-import atdd.path.jwt.JwtTokenProvider;
+import atdd.user.application.dto.LoginRequestView;
+import atdd.user.domain.UserRepository;
+import atdd.user.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
+
+import static atdd.Constant.AUTH_SCHEME_BEARER;
 
 public class LoginAcceptanceTest extends AbstractAcceptanceTest {
     public static final String LOGIN_BASE_URI = "/login";
@@ -34,7 +37,7 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
         userHttpTest.createUser(EMAIL, NAME, PASSWORD);
 
         //when
-        LoginRequestView requestView = new LoginRequestView(EMAIL, PASSWORD);
+        LoginRequestView requestView = new LoginRequestView(EMAIL, PASSWORD, jwtTokenProvider);
 
         //then
         webTestClient.post().uri(LOGIN_BASE_URI)
@@ -54,7 +57,7 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
 
         //when, then
         webTestClient.get().uri(Constant.USER_BASE_URI + "/me")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", AUTH_SCHEME_BEARER + token)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()

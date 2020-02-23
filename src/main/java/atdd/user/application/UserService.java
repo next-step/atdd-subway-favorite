@@ -1,15 +1,13 @@
-package atdd.path.application;
+package atdd.user.application;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.UserResponseView;
-import atdd.path.domain.User;
-import atdd.path.domain.UserRepository;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.UserResponseView;
+import atdd.user.domain.User;
+import atdd.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

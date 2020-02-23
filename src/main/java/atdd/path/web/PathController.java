@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static atdd.path.web.Constant.PATH_BASE_URI;
+import static atdd.Constant.PATH_BASE_URI;
 
 @RestController
 @RequestMapping(PATH_BASE_URI)

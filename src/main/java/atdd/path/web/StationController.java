@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-import static atdd.path.web.Constant.STATION_BASE_URI;
+import static atdd.Constant.STATION_BASE_URI;
 
 @RestController
 @RequestMapping(STATION_BASE_URI)

@@ -1,7 +1,7 @@
-package atdd.path.dao;
+package atdd.user.dao;
 
-import atdd.path.domain.User;
-import atdd.path.domain.UserRepository;
+import atdd.user.domain.User;
+import atdd.user.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

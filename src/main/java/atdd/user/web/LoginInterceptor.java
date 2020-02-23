@@ -1,7 +1,7 @@
-package atdd.path.web;
+package atdd.user.web;
 
-import atdd.path.jwt.JwtTokenProvider;
-import atdd.path.jwt.ReadProperties;
+import atdd.user.jwt.JwtTokenProvider;
+import atdd.user.jwt.ReadProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

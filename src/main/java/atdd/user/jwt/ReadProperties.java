@@ -1,4 +1,4 @@
-package atdd.path.jwt;
+package atdd.user.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
