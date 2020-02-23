@@ -29,4 +29,11 @@ public class UserService {
         userDao.delete(id);
     }
 
+    @Transactional(readOnly = true)
+    public UserResponseDto findByEmail(String email) {
+        final User user = userDao.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 email 입니다. email : [" + email + "]"));
+        return UserResponseDto.of(user.getId(), user.getEmail(), user.getName(), user.getPassword());
+    }
+
 }

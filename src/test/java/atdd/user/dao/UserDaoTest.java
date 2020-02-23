@@ -3,11 +3,14 @@ package atdd.user.dao;
 import atdd.user.domain.Email;
 import atdd.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,6 +55,24 @@ class UserDaoTest {
 
         assertThatThrownBy(() -> userDao.findById(user.getId()))
                 .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+
+    @Test
+    void findByEmail() throws Exception {
+        final User user = createUser();
+
+        final Optional<User> foundUser = userDao.findByEmail(user.getEmail());
+
+        assertThat(foundUser.isPresent()).isTrue();
+        assertThat(foundUser.get()).isEqualTo(user);
+    }
+
+    @DisplayName("findByEmail - 값이 없으면 Optional.empty 반환")
+    @Test
+    void findByEmailEmptyResult() throws Exception {
+        final Optional<User> foundUser = userDao.findByEmail("email!!!!");
+
+        assertThat(foundUser.isPresent()).isFalse();
     }
 
     private User createUser() {

@@ -1,27 +1,30 @@
 package atdd.user.controller;
 
+import atdd.user.dto.AccessToken;
 import atdd.user.dto.UserCreateRequestDto;
 import atdd.user.dto.UserResponseDto;
+import atdd.user.service.AuthorizationService;
 import atdd.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 
-@Controller
+@RestController
 @RequestMapping(UserController.ROOT_URI)
 public class UserController {
 
     public static final String ROOT_URI = "/users";
 
     private final UserService userService;
+    private final AuthorizationService authorizationService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthorizationService authorizationService) {
         this.userService = userService;
+        this.authorizationService = authorizationService;
     }
 
     @PostMapping
@@ -35,6 +38,11 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable Long userId) {
         userService.delete(userId);
+    }
+
+    @PostMapping("/login")
+    public AccessToken login(@RequestParam String email, @RequestParam String password) {
+        return authorizationService.authorize(email, password);
     }
 
 }

@@ -8,3 +8,9 @@ spring:
 logging:
   level:
     org.springframework.jdbc.core: TRACE
+
+security:
+  jwt:
+    token:
+      secret-key: "secretKey!!!!!!"
+      expire-length: 600000
