@@ -61,9 +61,11 @@ public class BookmarkController {
     return null;
   }
 
-  @DeleteMapping("/bookmark/station/{id}")
-  public ResponseEntity removeStationBookmarks(@LoginUser UserResponseView userResponseView, @PathVariable Long id) {
-    return null;
+  @DeleteMapping("/bookmark/{id}")
+  public ResponseEntity removeStationBookmarks(@LoginUser UserResponseView userResponseView, @PathVariable(name = "id") Long bookmarkID) {
+    bookmarkService.deleteBookmark(
+        userResponseView.getId(),bookmarkID);
+    return ResponseEntity.noContent().build();
   }
 
 }

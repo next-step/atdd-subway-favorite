@@ -61,7 +61,7 @@ public class BookmarkHttpTest {
   }
 
   public void deleteBookmarks(Long id) {
-    webTestClient.delete().uri(STATION_BOOKMARK_URL + "/" + id.toString())
+    webTestClient.delete().uri("/bookmark/" + id.toString())
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .exchange()
       .expectStatus().isNoContent();
