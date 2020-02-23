@@ -13,6 +13,7 @@ import atdd.path.application.dto.StationResponseView;
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.Station;
 import atdd.path.repository.StationRepository;
+import atdd.user.application.exception.UnauthorizedException;
 
 @Service
 public class BookmarkService {
@@ -63,4 +64,16 @@ public class BookmarkService {
 
       return new BookmarkResponseView(bookmarks);
   }
+
+  public void deleteBookmark(Long userID, Long bookmarkID) {
+    Bookmark bookmark = bookmarkRepository.findById(bookmarkID)
+      .orElseThrow(NoDataException::new);
+
+    if (bookmark.getUserID() != userID){
+      throw new UnauthorizedException();
+    }
+
+    bookmarkRepository.deleteById(bookmarkID);
+  }
+
 }

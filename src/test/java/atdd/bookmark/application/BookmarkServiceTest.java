@@ -10,11 +10,15 @@ import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
 import atdd.bookmark.entity.Bookmark;
 import atdd.bookmark.repository.BookmarkRepository;
 import atdd.path.repository.StationRepository;
+import atdd.user.application.exception.UnauthorizedException;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 import java.util.Optional;
 
@@ -52,5 +56,36 @@ public class BookmarkServiceTest {
 
   @Test 
   void retrieveAllBookmarks() {
+  }
+
+  @Test
+  void deleteBookmark() {
+    Long testUserID = 1L;
+    Bookmark bookmark = new Bookmark(1L, testUserID, TEST_STATION, null);
+
+    given(bookmarkRepository.findById(1L))
+      .willReturn(Optional.of(bookmark));
+    
+    doNothing().when(bookmarkRepository).deleteById(isA(Long.class));
+
+    bookmarkService.deleteBookmark(testUserID, bookmark.getId());
+  }
+
+  @Test
+  void deleteBookmarkNotAuthorized() {
+    Long testUserID = 1L;
+    Long bookmarkOwnerID = 2L;
+    Bookmark bookmark = new Bookmark(1L, bookmarkOwnerID, TEST_STATION, null);
+
+    given(bookmarkRepository.findById(1L))
+      .willReturn(Optional.of(bookmark));
+    
+    try {
+      bookmarkService.deleteBookmark(testUserID, bookmark.getId());
+    } catch (UnauthorizedException e) {
+      return;
+    }
+
+    fail("bookmark delete 권한 검사 실패");
   }
 }
