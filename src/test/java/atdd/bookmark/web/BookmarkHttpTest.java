@@ -5,8 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import atdd.bookmark.application.dto.StationBookmarkResponseView;
-import atdd.bookmark.application.dto.StationBookmarkSimpleResponseView;
+import atdd.bookmark.application.dto.BookmarkResponseView;
+import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
 import reactor.core.publisher.Mono;
 
 import static atdd.bookmark.TestConstant.*;
@@ -20,27 +20,43 @@ public class BookmarkHttpTest {
     this.authToken = authToken;
   }
 
-  public EntityExchangeResult<StationBookmarkSimpleResponseView> addStationBookmark(Long stationId) {
+  public EntityExchangeResult<BookmarkSimpleResponseView> addBookmark(Long stationId) {
     String requestBody = "{" 
-      + "\"stationId\" : " + stationId.toString()
+      + "\"sourceStationID\" : " + stationId.toString()
       + "}";
 
-    return webTestClient.post().uri(STATION_BOOKMARK_URL)
+    return webTestClient.post().uri("/bookmark")
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .contentType(MediaType.APPLICATION_JSON)
       .body(Mono.just(requestBody), String.class)
       .exchange()
       .expectStatus().isCreated()
-      .expectBody(StationBookmarkSimpleResponseView.class)
+      .expectBody(BookmarkSimpleResponseView.class)
       .returnResult();
   }
 
-  public EntityExchangeResult<StationBookmarkResponseView> getBookmarks() {
+  public EntityExchangeResult<BookmarkSimpleResponseView> addBookmark(Long sourceStationID, Long targetStationID) {
+    String requestBody = "{" 
+      + "\"sourceStationID\" : " + sourceStationID.toString() + ","
+      + "\"targetStationID\" : " + targetStationID.toString()
+      + "}";
+
+    return webTestClient.post().uri("/bookmark")
+      .header(HttpHeaders.AUTHORIZATION, authToken)
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(Mono.just(requestBody), String.class)
+      .exchange()
+      .expectStatus().isCreated()
+      .expectBody(BookmarkSimpleResponseView.class)
+      .returnResult();
+  }
+
+  public EntityExchangeResult<BookmarkResponseView> getBookmarks() {
     return webTestClient.get().uri(STATION_BOOKMARK_URL)
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .exchange()
       .expectStatus().isOk()
-      .expectBody(StationBookmarkResponseView.class)
+      .expectBody(BookmarkResponseView.class)
       .returnResult();
   }
 
@@ -50,6 +66,4 @@ public class BookmarkHttpTest {
       .exchange()
       .expectStatus().isNoContent();
   }
-
-  
 }

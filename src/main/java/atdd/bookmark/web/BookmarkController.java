@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import atdd.auth.LoginUser;
-import atdd.bookmark.application.dto.StationBookmarkRequestView;
-import atdd.bookmark.application.dto.StationBookmarkSimpleResponseView;
+import atdd.bookmark.application.dto.BookmarkRequestView;
+import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
 import atdd.bookmark.entity.Bookmark;
 import atdd.bookmark.repository.BookmarkRepository;
 import atdd.path.application.dto.StationResponseView;
@@ -32,11 +32,11 @@ public class BookmarkController {
   }
 
 
-  @PostMapping("/bookmark/station")
-  public ResponseEntity addStationBookmark(@LoginUser UserResponseView userResponseView, @RequestBody StationBookmarkRequestView stationBookmarkRequestView) {
+  @PostMapping("/bookmark")
+  public ResponseEntity addBookmark(@LoginUser UserResponseView userResponseView, @RequestBody BookmarkRequestView bookmarkRequestView) {
     Station sourceStation = stationRepository
       .findById(
-          stationBookmarkRequestView.getStationId())
+          bookmarkRequestView.getSourceStationID())
       .orElseThrow(NoDataException::new);
 
         
@@ -47,9 +47,9 @@ public class BookmarkController {
         .build());
 
     return ResponseEntity
-      .created(URI.create("/bookmark/station/" + created.getId()))
+      .created(URI.create("/bookmark/" + created.getId()))
       .body(
-          new StationBookmarkSimpleResponseView(
+          new BookmarkSimpleResponseView(
             created.getId(),
             new StationResponseView(
               created.getSourceStation().getId(),

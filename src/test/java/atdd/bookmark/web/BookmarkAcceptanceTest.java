@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import atdd.AbstractAcceptanceTest;
-import atdd.bookmark.application.dto.StationBookmarkResponseView;
-import atdd.bookmark.application.dto.StationBookmarkSimpleResponseView;
+import atdd.bookmark.application.dto.BookmarkResponseView;
+import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
 import atdd.path.web.LineHttpTest;
 import atdd.path.web.StationHttpTest;
 import atdd.user.web.UserManageHttpTest;
@@ -60,42 +60,42 @@ public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
   }
 
   @Test
-  public void addStationBookmark() {
+  public void addBookmark() {
     //when
-    StationBookmarkSimpleResponseView stationBookmarkResponseView = bookmarkHttpTest.addStationBookmark(stations.get(0)).getResponseBody();
+    BookmarkSimpleResponseView stationBookmarkResponseView = bookmarkHttpTest.addBookmark(stations.get(0)).getResponseBody();
 
     //then
     assertThat(stationBookmarkResponseView.getId()).isNotNull();
-    assertThat(stationBookmarkResponseView.getStation().getName()).isNotNull();
+    assertThat(stationBookmarkResponseView.getSourceStation().getName()).isNotNull();
   }
 
   @Test
-  public void getAllStationBookmark() {
+  public void getAllBookmark() {
     //Given
-    StationBookmarkSimpleResponseView bookmark1 = bookmarkHttpTest.addStationBookmark(stations.get(0)).getResponseBody();
-    StationBookmarkSimpleResponseView bookmark2 = bookmarkHttpTest.addStationBookmark(stations.get(1)).getResponseBody();
+    BookmarkSimpleResponseView bookmark1 = bookmarkHttpTest.addBookmark(stations.get(0)).getResponseBody();
+    BookmarkSimpleResponseView bookmark2 = bookmarkHttpTest.addBookmark(stations.get(1)).getResponseBody();
 
     //when
-    StationBookmarkResponseView stations =  bookmarkHttpTest.getBookmarks().getResponseBody();
+    BookmarkResponseView stations =  bookmarkHttpTest.getBookmarks().getResponseBody();
 
     //then
-    assertThat(stations.getStations().size()).isEqualTo(2);
-    assertThat(stations.getStations().get(0)
+    assertThat(stations.getBookmarkSize()).isEqualTo(2);
+    assertThat(stations.getBookmarks().get(0)
         .getId()).isEqualTo(bookmark1.getId());
-    assertThat(stations.getStations().get(1)
+    assertThat(stations.getBookmarks().get(1)
         .getId()).isEqualTo(bookmark2.getId());
   }
 
   @Test
-  public void deleteStationBookmark() {
+  public void deleteBookmark() {
     //Given
-    StationBookmarkSimpleResponseView bookmark1 = bookmarkHttpTest.addStationBookmark(stations.get(0)).getResponseBody();
+    BookmarkSimpleResponseView bookmark1 = bookmarkHttpTest.addBookmark(stations.get(0)).getResponseBody();
 
     //when
     bookmarkHttpTest.deleteBookmarks(bookmark1.getId());
 
     //then
-    StationBookmarkResponseView stations =  bookmarkHttpTest.getBookmarks().getResponseBody();
-    assertThat(stations.getStations().size()).isEqualTo(0);
+    BookmarkResponseView stations =  bookmarkHttpTest.getBookmarks().getResponseBody();
+    assertThat(stations.getBookmarks().size()).isEqualTo(0);
   }
 }

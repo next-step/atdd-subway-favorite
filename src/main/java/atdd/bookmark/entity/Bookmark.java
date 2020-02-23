@@ -10,9 +10,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import atdd.path.domain.Station;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Entity
+@AllArgsConstructor
 @Builder
 public class Bookmark {
   @Id
@@ -30,6 +32,17 @@ public class Bookmark {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "target_station_id", nullable = true)
   private Station targetStation;
+
+  public Bookmark(Long userID, Station sourceStation) {
+    this.userID = userID;
+    this.sourceStation = sourceStation;
+  }
+
+  public Bookmark(Long userID, Station sourceStation, Station targetStation) {
+    this.userID = userID;
+    this.sourceStation = sourceStation;
+    this.targetStation = targetStation;
+  }
 
   public Long getId() {
     return id;
