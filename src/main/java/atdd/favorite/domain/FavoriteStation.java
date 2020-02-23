@@ -14,9 +14,12 @@ public class FavoriteStation {
     private String userEmail;
     private Long stationId;
 
+    public FavoriteStation() {
+    }
+
     public FavoriteStation(String userEmail, Long stationId) {
         this.userEmail = userEmail;
-        this.stationId=stationId;
+        this.stationId = stationId;
     }
 
     public FavoriteStation(Long id, String userEmail, Long stationId) {
@@ -37,7 +40,7 @@ public class FavoriteStation {
         return stationId;
     }
 
-    public void insertStationId(Long stationId){
-        this.stationId=stationId;
+    public void insertStationId(Long stationId) {
+        this.stationId = stationId;
     }
 }

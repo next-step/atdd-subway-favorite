@@ -5,10 +5,7 @@ import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
 import atdd.favorite.application.dto.FavoriteStationResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -16,7 +13,7 @@ import java.net.URI;
 import static atdd.Constant.FAVORITE_STATION_BASE_URI;
 
 @RestController
-@RequestMapping(value = FAVORITE_STATION_BASE_URI,  consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(FAVORITE_STATION_BASE_URI)
 public class FavoriteStationController {
     private FavoriteStationService service;
 
@@ -34,5 +31,14 @@ public class FavoriteStationController {
                 .created(URI.create(FAVORITE_STATION_BASE_URI + "/" + response.getId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
     }
 }
