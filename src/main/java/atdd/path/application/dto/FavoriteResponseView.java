@@ -12,11 +12,14 @@ public class FavoriteResponseView {
     private Long stationId;
 
     @Builder
-    public FavoriteResponseView(Long stationId) {
+    public FavoriteResponseView(Long id, Long stationId) {
+        this.id = id;
         this.stationId = stationId;
     }
 
     public static FavoriteResponseView of(FavoriteStation savedFavorite) {
-        return FavoriteResponseView.builder().stationId(savedFavorite.getStationId()).build();
+        return FavoriteResponseView.builder()
+                .id(savedFavorite.getId())
+                .stationId(savedFavorite.getStationId()).build();
     }
 }
