@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 
 import static atdd.path.TestConstant.*;
 
-@Order(2)
 public class GraphAcceptanceTest extends AbstractAcceptanceTest {
     private StationHttpTest stationHttpTest;
     private LineHttpTest lineHttpTest;

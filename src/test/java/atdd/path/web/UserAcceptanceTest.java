@@ -21,7 +21,6 @@ import java.util.Objects;
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Order(4)
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String KIM_INPUT_JSON = "{\"email\":\"" + KIM_EMAIL + "\",\"password\":\"" + KIM_PASSWORD + "\",\"name\":\"" + KIM_NAME + "\"}";;
     public static final String USER_BASE_URL = "/users";

@@ -14,7 +14,6 @@ import java.util.List;
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Order(1)
 public class LineAcceptanceTest extends AbstractAcceptanceTest {
     public static final String LINE_URL = "/lines";
     public static final String EDGE_URL = "/edges";
