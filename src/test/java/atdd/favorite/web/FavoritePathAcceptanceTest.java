@@ -1,6 +1,7 @@
 package atdd.favorite.web;
 
 import atdd.favorite.application.dto.CreateFavoritePathRequestView;
+import atdd.favorite.domain.FavoritePath;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.web.LineHttpTest;
 import atdd.path.web.StationHttpTest;
@@ -14,8 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Collectors;
+
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.path.TestConstant.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
@@ -73,5 +79,35 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
                 .expectHeader().exists("Location")
                 .expectBody().jsonPath("$.userEmail").isEqualTo(EMAIL)
                 .jsonPath("$.favoritePath").isNotEmpty();
+    }
+
+    @Test
+    public void deleteFavoritePath() throws Exception {
+        //given
+        this.token = jwtTokenProvider.createToken(EMAIL);
+        CreateFavoritePathRequestView requestView
+                = new CreateFavoritePathRequestView(EMAIL, stationId, stationId4);
+        Long id = webTestClient.post().uri(FAVORITE_PATH_BASE_URI)
+                .header("Authorization", AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(requestView), CreateFavoritePathRequestView.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .returnResult(FavoritePath.class)
+                .getResponseBody()
+                .toStream()
+                .map(FavoritePath::getId)
+                .collect(Collectors.toList())
+                .get(0);
+
+        //when, then
+        mockMvc.perform(
+                delete(FAVORITE_PATH_BASE_URI + "/" + id)
+                        .header("Authorization", AUTH_SCHEME_BEARER + token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }
