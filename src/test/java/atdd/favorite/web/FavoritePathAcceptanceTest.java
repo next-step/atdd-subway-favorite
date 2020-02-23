@@ -19,8 +19,11 @@ import java.util.stream.Collectors;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.path.TestConstant.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -108,6 +111,52 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void showFavoritePaths() throws Exception {
+        //given
+        this.token = jwtTokenProvider.createToken(EMAIL);
+        CreateFavoritePathRequestView requestView
+                = new CreateFavoritePathRequestView(EMAIL, stationId, stationId4);
+        CreateFavoritePathRequestView requestView2
+                = new CreateFavoritePathRequestView(EMAIL, stationId3, stationId4);
+
+        Long id = webTestClient.post().uri(FAVORITE_PATH_BASE_URI)
+                .header("Authorization", AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(requestView), CreateFavoritePathRequestView.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .returnResult(FavoritePath.class)
+                .getResponseBody()
+                .toStream()
+                .map(FavoritePath::getId)
+                .collect(Collectors.toList())
+                .get(0);
+        Long id2 = webTestClient.post().uri(FAVORITE_PATH_BASE_URI)
+                .header("Authorization", AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(requestView2), CreateFavoritePathRequestView.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .returnResult(FavoritePath.class)
+                .getResponseBody()
+                .toStream()
+                .map(FavoritePath::getId)
+                .collect(Collectors.toList())
+                .get(0);
+
+        //when, then
+        mockMvc.perform(
+                get(FAVORITE_PATH_BASE_URI)
+                        .header("Authorization", AUTH_SCHEME_BEARER + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.*", hasSize(2)))
                 .andDo(print());
     }
 }
