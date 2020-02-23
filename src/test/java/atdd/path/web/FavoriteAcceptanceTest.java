@@ -1,7 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.domain.Station;
+import atdd.path.application.dto.favorite.FavoriteCreateRequestView;
 import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,19 +28,21 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("지하철역 즐겨찾기 등록이 성공하는지")
     @Test
     public void createFavoriteToStation(SoftAssertions softly) {
+        restWebClientTest.createUser();
+
         //when
-        EntityExchangeResult<Favorite> expectResponse
+        EntityExchangeResult<FavoriteCreateRequestView> expectResponse
                 = restWebClientTest.postMethodWithAuthAcceptance
-                (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, Favorite.class, getJwt());
+                (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, FavoriteCreateRequestView.class, getJwt());
 
         //then
         HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
-        Favorite responseBody = expectResponse.getResponseBody();
-        Station station = responseBody.getStation();
+        FavoriteCreateRequestView responseBody = expectResponse.getResponseBody();
+        String stationName = responseBody.getName();
 
         //then
         softly.assertThat(responseHeaders.getLocation()).isNotNull();
-        softly.assertThat(station.getName()).isEqualTo("강남역");
+        softly.assertThat(stationName).isEqualTo("강남역");
     }
 
     private String getJwt() {
