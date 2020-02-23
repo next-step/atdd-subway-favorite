@@ -1,10 +1,9 @@
 package atdd.path.domain;
 
+import atdd.path.SoftAssertionTest;
 import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Map;
 
@@ -13,8 +12,7 @@ import static atdd.path.dao.UserDao.NAME_KEY;
 import static atdd.path.fixture.UserFixture.*;
 
 
-@ExtendWith(SoftAssertionsExtension.class)
-public class UserTest {
+public class UserTest extends SoftAssertionTest {
     @DisplayName("findById 로 검색된 Data 를 User 로 변환하는지")
     @Test
     public void getUserByFindData(SoftAssertions softly) {

@@ -1,5 +1,6 @@
-package atdd.path.application.dto;
+package atdd.path.application.dto.Path;
 
+import atdd.path.application.dto.Station.StationResponseView;
 import atdd.path.domain.Station;
 
 import java.util.List;

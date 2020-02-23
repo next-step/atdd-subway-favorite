@@ -1,4 +1,4 @@
-package atdd.path.application.dto;
+package atdd.path.application.dto.Edge;
 
 public class CreateEdgeRequestView {
     private Long sourceId;

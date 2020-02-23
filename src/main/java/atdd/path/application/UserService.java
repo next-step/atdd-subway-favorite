@@ -1,33 +1,53 @@
 package atdd.path.application;
 
-import atdd.path.application.dto.UserSighUpRequestView;
-import atdd.path.application.dto.UserSighUpResponseView;
+import atdd.path.application.dto.User.*;
 import atdd.path.application.exception.ExistUserException;
+import atdd.path.application.exception.NotExistUserException;
 import atdd.path.dao.UserDao;
+import atdd.path.domain.User;
+import atdd.path.security.TokenAuthenticationService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
     private UserDao userDao;
+    private TokenAuthenticationService tokenAuthenticationService;
 
-    public UserService(UserDao userDao) {
+    public UserService(TokenAuthenticationService tokenAuthenticationService, UserDao userDao) {
+        this.tokenAuthenticationService = tokenAuthenticationService;
         this.userDao = userDao;
     }
 
     public UserSighUpResponseView singUp(UserSighUpRequestView newUser) {
-        List<Map<String, Object>> user = userDao.findByEmail(newUser.getEmail());
+        FindByEmailResponseView user = userDao.findByEmail(newUser.getEmail());
 
-        if (isExistUser(user)) {
+        if (!isExistUser(user)) {
             throw new ExistUserException();
         }
 
         return UserSighUpResponseView.toDtoEntity(userDao.save(UserSighUpRequestView.toEntity(newUser)));
     }
 
-    private boolean isExistUser(List<Map<String, Object>> user) {
-        return user.size() != 0;
+    public UserLoginResponseView login(UserLoginRequestView newUser) {
+        FindByEmailResponseView user = userDao.findByEmail(newUser.getEmail());
+
+        if (isExistUser(user)) {
+            throw new NotExistUserException();
+        }
+
+        String jwt = tokenAuthenticationService.toJwtByEmail(user.getEmail());
+        return UserLoginResponseView.toDtoEntity(jwt, tokenAuthenticationService.getTokenTypeByJwt(jwt));
+    }
+
+    public void delete(User user) {
+        userDao.deleteById(user.getId());
+    }
+
+    private boolean isExistUser(FindByEmailResponseView user) {
+        return user.getId() == null;
+    }
+
+    public UserDetailResponseView findById(Long id) {
+        return UserDetailResponseView.toDtoEntity(userDao.findById(id));
     }
 }

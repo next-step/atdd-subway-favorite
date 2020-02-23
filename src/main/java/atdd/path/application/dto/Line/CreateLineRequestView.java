@@ -1,4 +1,4 @@
-package atdd.path.application.dto;
+package atdd.path.application.dto.Line;
 
 import atdd.path.domain.Line;
 

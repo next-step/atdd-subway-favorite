@@ -1,6 +1,6 @@
 package atdd.path.web;
 
-import atdd.path.application.dto.StationResponseView;
+import atdd.path.application.dto.Station.StationResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;

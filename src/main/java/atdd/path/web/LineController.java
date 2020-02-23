@@ -1,10 +1,10 @@
 package atdd.path.web;
 
-import atdd.path.application.dto.CreateEdgeRequestView;
+import atdd.path.application.dto.Edge.CreateEdgeRequestView;
 import atdd.path.dao.LineDao;
 import atdd.path.application.LineService;
-import atdd.path.application.dto.CreateLineRequestView;
-import atdd.path.application.dto.LineResponseView;
+import atdd.path.application.dto.Line.CreateLineRequestView;
+import atdd.path.application.dto.Line.LineResponseView;
 import atdd.path.domain.Line;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
