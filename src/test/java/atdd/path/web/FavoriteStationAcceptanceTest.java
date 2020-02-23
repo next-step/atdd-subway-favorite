@@ -33,7 +33,7 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         FavoriteStation favoriteStation = favoriteHttpTest.createFavoriteStation(stationId, token).getResponseBody();
 
         //then
-        assertThat(favoriteStation.getStationId()).isEqualTo(stationId);
+        assertThat(favoriteStation.getStationIds().size()).isEqualTo(1);
     }
 
     private String givenCreateAndLogin(CreateUserRequestView view) {
