@@ -157,4 +157,6 @@ public class TestConstant {
 
     public static User TEST_USER = new User(USER_EMAIL_1, USER_NAME_1, USER_PASSWORD_1);
 
+    public static String JWT_HEADER_AUTHORIZATION = "Authorization";
+    public static String JWT_TOKEN_TYPE = "Bearer ";
 }

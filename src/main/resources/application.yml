@@ -13,4 +13,4 @@ security:
   jwt:
     token:
       secret-key: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
-      expire-length: 3600000
+      expire-time-seconds: 360

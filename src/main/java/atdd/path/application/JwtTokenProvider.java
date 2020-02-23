@@ -2,21 +2,28 @@ package atdd.path.application;
 
 import atdd.path.application.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
+import jdk.internal.joptsimple.internal.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
 
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    @Value("${security.jwt.token.expire-time-seconds}")
+    private long validityInSeconds;
+
+    private static final String JWT_HEADER_AUTHORIZATION = "Authorization";
+    private static final String JWT_TOKEN_TYPE = "Bearer ";
 
     @PostConstruct
     protected void init() {
@@ -32,12 +39,11 @@ public class JwtTokenProvider {
 
         Claims claims = Jwts.claims().setSubject(email);
 
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = Date.from(LocalDateTime.now().plusSeconds(validityInSeconds).atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
+                .setIssuedAt(new Date())
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
@@ -53,11 +59,9 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
-        }
-        return null;
+        return Optional.ofNullable(req.getHeader(JWT_HEADER_AUTHORIZATION))
+                .orElse(Strings.EMPTY)
+                .replaceAll(JWT_TOKEN_TYPE, "");
     }
 
     /**

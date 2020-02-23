@@ -44,7 +44,9 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
         EntityExchangeResult<UserResponseView> user = userHttpTest.retrieveUser(userId);
 
         // when
-        EntityExchangeResult<TokenResponseView> response = loginHttpTest.login(user.getResponseBody().getEmail(), USER_PASSWORD_1);
+        EntityExchangeResult<TokenResponseView> response = loginHttpTest.login(
+                user.getResponseBody().getEmail(), USER_PASSWORD_1
+        );
 
         // then
         assertThat(response.getResponseBody().getAccessToken()).isNotEmpty();

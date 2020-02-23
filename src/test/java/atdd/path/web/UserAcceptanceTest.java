@@ -49,9 +49,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         // then
         webTestClient.get().uri(USER_BASE_URL + "/" + response.getResponseBody().getId())
                 .exchange()
-                .expectStatus().isOk()
-                .expectBody().jsonPath("$.status")
-                .isEqualTo(4040);
+                .expectStatus().isNotFound();
     }
 
     /**
@@ -73,7 +71,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         // when
         EntityExchangeResult<UserResponseView> response = webTestClient.get().uri(USER_BASE_URL + "/me")
-                .header("Authorization", "Bearer " + accessToken)
+                .header(JWT_HEADER_AUTHORIZATION, JWT_TOKEN_TYPE + accessToken)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
