@@ -1,7 +1,11 @@
 package atdd.bookmark.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
+import atdd.bookmark.application.dto.BookmarkResponseView;
 import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
 import atdd.bookmark.entity.Bookmark;
 import atdd.bookmark.repository.BookmarkRepository;
@@ -37,5 +41,26 @@ public class BookmarkService {
         );
   }
 
+  public BookmarkResponseView retrieveAllBookmarks(Long userID) {
+    List<BookmarkSimpleResponseView> bookmarks = bookmarkRepository.findByUserID(userID).stream().map(
+          bookmark-> {
+            Station sourceStation = bookmark.getSourceStation();
+            Station targetStation = bookmark.getTargetStation();
+            if (targetStation == null) {
+              return new BookmarkSimpleResponseView(
+                  bookmark.getId(),
+                  new StationResponseView(
+                    sourceStation.getId(), sourceStation.getName()));
+            }
+            return new BookmarkSimpleResponseView(
+                bookmark.getId(),
+                new StationResponseView(
+                  sourceStation.getId(), sourceStation.getName()),
+                new StationResponseView(
+                  targetStation.getId(), targetStation.getName())
+                );
+          }).collect(Collectors.toList());
 
+      return new BookmarkResponseView(bookmarks);
+  }
 }

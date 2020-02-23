@@ -49,9 +49,11 @@ public class BookmarkController {
     return null;
   }
 
-  @GetMapping("/bookmark/station")
-  public ResponseEntity retriveAllStationBookmarks(@LoginUser UserResponseView userResponseView) {
-    return null;
+  @GetMapping("/bookmark")
+  public ResponseEntity retriveAllBookmarks(@LoginUser UserResponseView userResponseView) {
+    return ResponseEntity.ok(
+      bookmarkService.retrieveAllBookmarks(userResponseView.getId())
+        );
   }
 
   @GetMapping("/bookmark/station/{id}")

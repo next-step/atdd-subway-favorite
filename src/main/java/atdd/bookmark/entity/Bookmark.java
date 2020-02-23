@@ -12,8 +12,10 @@ import javax.persistence.ManyToOne;
 import atdd.path.domain.Station;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Bookmark {

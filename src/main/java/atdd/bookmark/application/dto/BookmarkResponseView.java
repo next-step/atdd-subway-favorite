@@ -2,6 +2,9 @@ package atdd.bookmark.application.dto;
 
 import java.util.List;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class BookmarkResponseView {
   private int bookmarkSize;
   private List<BookmarkSimpleResponseView> bookmarks;

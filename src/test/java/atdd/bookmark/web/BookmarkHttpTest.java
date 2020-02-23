@@ -52,7 +52,7 @@ public class BookmarkHttpTest {
   }
 
   public EntityExchangeResult<BookmarkResponseView> getBookmarks() {
-    return webTestClient.get().uri(STATION_BOOKMARK_URL)
+    return webTestClient.get().uri("/bookmark")
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .exchange()
       .expectStatus().isOk()

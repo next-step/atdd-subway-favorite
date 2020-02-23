@@ -49,4 +49,8 @@ public class BookmarkServiceTest {
 
     assertThat(result.getSourceStation()).isNotNull();
   }
+
+  @Test 
+  void retrieveAllBookmarks() {
+  }
 }
