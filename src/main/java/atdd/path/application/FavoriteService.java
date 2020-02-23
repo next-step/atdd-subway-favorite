@@ -29,4 +29,8 @@ public class FavoriteService {
 
         return FavoriteResponseView.listOf(favorites);
     }
+
+    public void deleteFavoriteStation(User user, Long id) {
+        favoriteStationRepository.deleteByIdAndUserId(id, user.getId());
+    }
 }

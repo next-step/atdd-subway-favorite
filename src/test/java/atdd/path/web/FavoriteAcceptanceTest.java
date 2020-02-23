@@ -25,7 +25,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("지하철역 즐겨찾기 등록")
     @Test
-    void createStation() {
+    void createFavoriteStation() {
         userHttpTest.createUser(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
         LoginResponseView token = userHttpTest.loginUser(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
 
@@ -36,7 +36,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("지하철역 즐겨찾기 조회")
     @Test
-    void findStation() {
+    void findFavoriteStation() {
         // given
         userHttpTest.createUser(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
         LoginResponseView token = userHttpTest.loginUser(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
@@ -46,5 +46,20 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectStatus().isOk();
+    }
+
+    @DisplayName("지하철역 즐겨찾기 삭제")
+    @Test
+    void deleteFavoriteStation() {
+        // given
+        userHttpTest.createUser(TestConstant.EMAIL_BROWN, TestConstant.NAME_BROWN, TestConstant.PASSWORD_BROWN);
+        LoginResponseView token = userHttpTest.loginUser(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
+        FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(1L, token).getResponseBody();
+
+        webTestClient.delete().uri(FAVORITE_URI + "/station/" + response.getId())
+                .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
+                .exchange()
+                .expectStatus().isNoContent();
+
     }
 }

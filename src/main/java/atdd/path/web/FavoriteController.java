@@ -6,10 +6,7 @@ import atdd.path.application.dto.FavoriteResponseView;
 import atdd.user.domain.User;
 import atdd.user.web.LoginUser;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -24,7 +21,7 @@ public class FavoriteController {
     }
 
     @PostMapping("/station")
-    public ResponseEntity createStationFavorite(FavoriteRequestView favoriteRequestView, @LoginUser User user) {
+    public ResponseEntity createFavoriteStation(FavoriteRequestView favoriteRequestView, @LoginUser User user) {
         FavoriteResponseView response = favoriteService.createStationFavorite(favoriteRequestView.getStationId(), user);
 
         return ResponseEntity.created(URI.create("/favorite/" + 1))
@@ -32,7 +29,13 @@ public class FavoriteController {
     }
 
     @GetMapping("/station")
-    public ResponseEntity findStationFavorite(@LoginUser User user) {
+    public ResponseEntity findFavoriteStation(@LoginUser User user) {
         return ResponseEntity.ok().body(favoriteService.findFavoriteStation(user));
+    }
+
+    @DeleteMapping("/station/{id}")
+    public ResponseEntity deleteFavoriteStation(@LoginUser User user, @PathVariable Long id) {
+        favoriteService.deleteFavoriteStation(user, id);
+        return ResponseEntity.noContent().build();
     }
 }

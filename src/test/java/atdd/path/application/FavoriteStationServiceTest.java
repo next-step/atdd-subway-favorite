@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {FavoriteService.class, JwtTokenProvider.class})
 @TestPropertySource(properties = {
@@ -73,7 +74,20 @@ public class FavoriteStationServiceTest {
 
         // then
         assertThat(favorites.size()).isEqualTo(1);
-
     }
 
+    @DisplayName("지하철 역 즐겨찾기 삭제")
+    @Test
+    void deleteFavoriteStation() {
+        // give
+        given(userRepository.findUserByEmail(any(String.class)))
+                .willReturn(User.createBuilder().id(1L).email(TestConstant.EMAIL_BROWN).build());
+        User user = userRepository.findUserByEmail(TestConstant.EMAIL_BROWN);
+
+        // when
+        favoriteService.deleteFavoriteStation(user, 1L);
+
+        // then
+        verify(favoriteStationRepository).deleteByIdAndUserId(anyLong(), anyLong());
+    }
 }
