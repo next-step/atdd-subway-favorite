@@ -3,8 +3,8 @@ package atdd.path.application;
 import atdd.path.TestConstant;
 import atdd.path.application.dto.FavoriteResponseView;
 import atdd.path.domain.FavoriteStation;
-import atdd.user.domain.User;
 import atdd.path.repository.FavoriteStationRepository;
+import atdd.user.domain.User;
 import atdd.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest(classes = {FavoriteService.class, JwtTokenProvider.class})
@@ -52,6 +56,24 @@ public class FavoriteStationServiceTest {
 
         // then
         assertThat(response.getStationId()).isNotNull();
+    }
+
+    @DisplayName("지하철 역 즐겨찾기 조회")
+    @Test
+    void findAllFavoriteStation() {
+        // given
+        given(userRepository.findUserByEmail(any(String.class)))
+                .willReturn(User.createBuilder().id(1L).email(TestConstant.EMAIL_BROWN).build());
+        given(favoriteStationRepository.findAllByUserId(anyLong()))
+                .willReturn(Collections.singletonList(FavoriteStation.builder().id(1L).userId(1L).stationId(1L).build()));
+        User user = userRepository.findUserByEmail(TestConstant.EMAIL_BROWN);
+
+        // when
+        List<FavoriteResponseView> favorites = favoriteService.findFavoriteStation(user);
+
+        // then
+        assertThat(favorites.size()).isEqualTo(1);
+
     }
 
 }

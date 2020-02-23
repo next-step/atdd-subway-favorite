@@ -22,7 +22,8 @@ public class FavoriteStation {
     private Long stationId;
 
     @Builder
-    public FavoriteStation(Long userId, Long stationId) {
+    public FavoriteStation(Long id, Long userId, Long stationId) {
+        this.id = id;
         this.userId = userId;
         this.stationId = stationId;
     }

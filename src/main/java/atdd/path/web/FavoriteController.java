@@ -33,6 +33,6 @@ public class FavoriteController {
 
     @GetMapping("/station")
     public ResponseEntity findStationFavorite(@LoginUser User user) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(favoriteService.findFavoriteStation(user));
     }
 }

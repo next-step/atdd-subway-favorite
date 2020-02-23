@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @NoArgsConstructor
 @Getter
 public class FavoriteResponseView {
@@ -21,5 +24,14 @@ public class FavoriteResponseView {
         return FavoriteResponseView.builder()
                 .id(savedFavorite.getId())
                 .stationId(savedFavorite.getStationId()).build();
+    }
+
+    public static List<FavoriteResponseView> listOf(List<FavoriteStation> favorites) {
+        return favorites.stream()
+                .map(it -> FavoriteResponseView.builder()
+                        .id(it.getId())
+                        .stationId(it.getStationId())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
