@@ -1,6 +1,5 @@
 package atdd.favorite.domain;
 
-import atdd.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

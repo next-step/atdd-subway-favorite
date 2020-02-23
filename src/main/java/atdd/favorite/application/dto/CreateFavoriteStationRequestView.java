@@ -1,9 +1,8 @@
 package atdd.favorite.application.dto;
 
 import atdd.favorite.domain.FavoriteStation;
-import org.springframework.boot.jackson.JsonComponent;
 
-@JsonComponent
+
 public class CreateFavoriteStationRequestView {
     private Long id;
     private String userEmail;

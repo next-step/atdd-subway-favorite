@@ -36,4 +36,8 @@ public class FavoritePathService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 경로가 존재하지 않습니다."));
         repository.delete(favoritePath);
     }
+
+    public List<FavoritePath> findAllByEmail(String email){
+        return repository.findAllByEmail(email);
+    }
 }

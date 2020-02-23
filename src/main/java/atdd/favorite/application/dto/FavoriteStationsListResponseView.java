@@ -4,11 +4,11 @@ import atdd.favorite.domain.FavoriteStation;
 
 import java.util.List;
 
-public class FavoriteStationsListView {
+public class FavoriteStationsListResponseView {
     private String userEmail;
     private List<FavoriteStation> favoriteStations;
 
-    public FavoriteStationsListView(String userEmail, List<FavoriteStation> favoriteStations) {
+    public FavoriteStationsListResponseView(String userEmail, List<FavoriteStation> favoriteStations) {
         this.userEmail = userEmail;
         this.favoriteStations = favoriteStations;
     }
