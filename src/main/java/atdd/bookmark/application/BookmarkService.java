@@ -2,7 +2,6 @@ package atdd.bookmark.application;
 
 import org.springframework.stereotype.Service;
 
-import atdd.bookmark.application.dto.BookmarkRequestView;
 import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
 import atdd.bookmark.entity.Bookmark;
 import atdd.bookmark.repository.BookmarkRepository;
@@ -21,9 +20,9 @@ public class BookmarkService {
     this.stationRepository = stationRepository;
   }
 
-  public BookmarkSimpleResponseView addStationBookmark(Long userID, BookmarkRequestView bookmarkRequestView) {
+  public BookmarkSimpleResponseView addStationBookmark(Long userID, Long stationID) {
     Station sourceStation = stationRepository.findById(
-        bookmarkRequestView.getSourceStationID()
+        stationID
         ).orElseThrow(NoDataException::new);
 
     Bookmark created = bookmarkRepository.save(

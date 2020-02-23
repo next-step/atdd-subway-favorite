@@ -45,7 +45,7 @@ public class BookmarkServiceTest {
     
     BookmarkRequestView bookmarkRequestView = new BookmarkRequestView(TEST_STATION.getId());
 
-    BookmarkSimpleResponseView result = bookmarkService.addStationBookmark(1L, bookmarkRequestView);
+    BookmarkSimpleResponseView result = bookmarkService.addStationBookmark(1L, bookmarkRequestView.getSourceStationID());
 
     assertThat(result.getSourceStation()).isNotNull();
   }

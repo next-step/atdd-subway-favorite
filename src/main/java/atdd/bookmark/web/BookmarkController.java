@@ -2,6 +2,9 @@ package atdd.bookmark.web;
 
 import java.net.URI;
 
+import javax.activation.UnsupportedDataTypeException;
+
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import atdd.auth.LoginUser;
+import atdd.bookmark.application.BookmarkService;
 import atdd.bookmark.application.dto.BookmarkRequestView;
+import atdd.bookmark.application.dto.BookmarkResponseView;
 import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
 import atdd.bookmark.entity.Bookmark;
 import atdd.bookmark.repository.BookmarkRepository;
@@ -23,39 +28,25 @@ import atdd.user.application.dto.UserResponseView;
 
 @Controller
 public class BookmarkController {
-  private BookmarkRepository bookmarkRepository;
-  private StationRepository stationRepository;
+  private BookmarkService bookmarkService;
 
-  public BookmarkController(BookmarkRepository bookmarkRepository, StationRepository stationRepository) {
-    this.bookmarkRepository = bookmarkRepository;
-    this.stationRepository = stationRepository;
+  public BookmarkController(BookmarkService bookmarkService) {
+    this.bookmarkService = bookmarkService;
   }
-
 
   @PostMapping("/bookmark")
   public ResponseEntity addBookmark(@LoginUser UserResponseView userResponseView, @RequestBody BookmarkRequestView bookmarkRequestView) {
-    Station sourceStation = stationRepository
-      .findById(
-          bookmarkRequestView.getSourceStationID())
-      .orElseThrow(NoDataException::new);
+    if (bookmarkRequestView.isStationBookmark()) {
+      BookmarkSimpleResponseView result = bookmarkService.addStationBookmark(
+          userResponseView.getId(),
+          bookmarkRequestView.getSourceStationID());
 
-        
-    Bookmark created = bookmarkRepository.save(
-      Bookmark.builder()
-        .userID(userResponseView.getId())
-        .sourceStation(sourceStation)
-        .build());
+      return ResponseEntity
+        .created(URI.create("/bookmark/" + result.getId()))
+        .body(result);
+    }
 
-    return ResponseEntity
-      .created(URI.create("/bookmark/" + created.getId()))
-      .body(
-          new BookmarkSimpleResponseView(
-            created.getId(),
-            new StationResponseView(
-              created.getSourceStation().getId(),
-              created.getSourceStation().getName()
-              )
-            ));
+    return null;
   }
 
   @GetMapping("/bookmark/station")
