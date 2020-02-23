@@ -14,22 +14,22 @@ import static atdd.path.dao.UserDao.*;
 @Builder
 @NoArgsConstructor
 public class FindByEmailResponseView {
-    private UserDetailResponseView user;
+    private Long id;
+    private String email;
+    private String name;
 
     @Builder
     public FindByEmailResponseView(Long id, String email, String name) {
-        UserDetailResponseView.builder()
-                .id(id)
-                .name(name)
-                .email(email)
-                .build();
+        this.id = id;
+        this.email = email;
+        this.name = name;
     }
 
     public User toEntity() {
         return User.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
+                .id(id)
+                .name(name)
+                .email(email)
                 .build();
     }
     public static FindByEmailResponseView toDtoEntity(List<Map<String, Object>> users) {
