@@ -14,6 +14,9 @@ public class FavoritePath {
     private Long startStationId;
     private Long endStationId;
 
+    public FavoritePath() {
+    }
+
     public FavoritePath(String userEmail, Long startStationId, Long endStationId) {
         this.userEmail = userEmail;
         this.startStationId = startStationId;

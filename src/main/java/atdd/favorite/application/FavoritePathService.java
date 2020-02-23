@@ -8,6 +8,7 @@ import atdd.path.application.GraphService;
 import atdd.path.domain.Station;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -28,5 +29,11 @@ public class FavoritePathService {
                 favoritePath.getId(),
                 favoritePath.getUserEmail(),
                 favoritePathStations);
-        }
+    }
+
+    public void delete(Long id) {
+        FavoritePath favoritePath = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 경로가 존재하지 않습니다."));
+        repository.delete(favoritePath);
+    }
 }

@@ -4,10 +4,7 @@ import atdd.favorite.application.FavoritePathService;
 import atdd.favorite.application.dto.CreateFavoritePathRequestView;
 import atdd.favorite.application.dto.FavoritePathResponseView;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -34,4 +31,11 @@ public class FavoritePathController {
                 .body(response);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteFavoritePath(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity
+                .ok()
+                .build();
+    }
 }
