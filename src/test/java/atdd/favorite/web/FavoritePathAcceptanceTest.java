@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.net.URI;
+import reactor.core.publisher.Mono;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.path.TestConstant.*;
@@ -42,7 +41,7 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        this.token = jwtTokenProvider.createToken(EMAIL);
+        //given for all tests
         this.userHttpTest = new UserHttpTest(webTestClient);
         this.stationHttpTest = new StationHttpTest(webTestClient);
         this.lineHttpTest = new LineHttpTest(webTestClient);
@@ -58,17 +57,21 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
 
     @Test
     public void createFavoritePath() {
+        //given
+        this.token = jwtTokenProvider.createToken(EMAIL);
+
+        //when, then
         CreateFavoritePathRequestView requestView
                 = new CreateFavoritePathRequestView(EMAIL, stationId, stationId4);
-        webTestClient.post().uri(URI.create(FAVORITE_PATH_BASE_URI))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
+        webTestClient.post().uri(FAVORITE_PATH_BASE_URI)
                 .header("Authorization", AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(requestView), CreateFavoritePathRequestView.class)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().exists("Location")
                 .expectBody().jsonPath("$.userEmail").isEqualTo(EMAIL)
-                .jsonPath("$.startStationId").isEqualTo(stationId)
-                .jsonPath("$.endStationId").isEqualTo(stationId4);
+                .jsonPath("$.favoritePath").isNotEmpty();
     }
 }

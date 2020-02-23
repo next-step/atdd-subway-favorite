@@ -1,9 +1,7 @@
 package atdd.favorite.application.dto;
 
 import atdd.favorite.domain.FavoriteStation;
-import org.springframework.boot.jackson.JsonComponent;
 
-@JsonComponent
 public class FavoriteStationResponseView {
     private Long id;
     private String userEmail;
@@ -30,7 +28,7 @@ public class FavoriteStationResponseView {
         this.favoriteStationId = favoriteStationId;
     }
 
-    public static FavoriteStationResponseView of(FavoriteStation createdFavoriteStation){
+    public static FavoriteStationResponseView of(FavoriteStation createdFavoriteStation) {
         return new FavoriteStationResponseView(
                 createdFavoriteStation.getId(),
                 createdFavoriteStation.getUserEmail(),
