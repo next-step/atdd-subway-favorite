@@ -1,4 +1,4 @@
-package atdd.path.web;
+package atdd;
 
 import atdd.Constant;
 import atdd.user.jwt.JwtTokenProvider;
@@ -7,6 +7,9 @@ import atdd.user.web.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static atdd.Constant.FAVORITE_STATION_BASE_URI;
+import static atdd.Constant.USER_BASE_URI;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -21,6 +24,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor(jwtTokenProvider, readProperties))
-                .addPathPatterns(Constant.USER_BASE_URI + "/me");
+                .addPathPatterns(USER_BASE_URI + "/me",
+                        FAVORITE_STATION_BASE_URI+"/**"
+                        );
     }
 }

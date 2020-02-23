@@ -1,14 +1,18 @@
-package atdd.user.web;
+package atdd.favorite.web;
 
+import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.web.StationHttpTest;
-import atdd.user.application.dto.CreateFavoriteStationRequestView;
 import atdd.user.jwt.JwtTokenProvider;
+import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.path.TestConstant.STATION_NAME;
@@ -24,6 +28,9 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    HttpServletRequest httpServletRequest;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +57,8 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().exists("Location")
-                .expectBody().jsonPath("$.userEmail").isEqualTo(EMAIL)
-                .jsonPath("$.id").isEqualTo(1);
+                .expectBody().jsonPath("$.id").isEqualTo(1)
+                .jsonPath("$.userEmail").isEqualTo(EMAIL)
+                .jsonPath("$.favoriteStationId").isEqualTo(stationId);
     }
 }
