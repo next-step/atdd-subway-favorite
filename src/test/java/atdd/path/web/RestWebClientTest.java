@@ -7,9 +7,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 public class RestWebClientTest {
-    public static final String NO_AUTHORIZATION = "";
+    private static final String NO_AUTHORIZATION = "";
     private WebTestClient webTestClient;
-    public static final String JWT = "eyJ0b2tlblR5cGUiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJFTUFJTCI6InNna2ltOTRAZ2l0aHViLmNvbSIsInN1YiI6InNna2ltOTRAZ2l0aHViLmNvbSIsImlhdCI6MTU4MjM1ODQwM30.vpxJyLHVmqYDXprxi9IF6vrTYWlr7ppwHsh3aQZKMs";
 
     public RestWebClientTest(WebTestClient webTestClient) {
         this.webTestClient = webTestClient;
@@ -54,5 +53,4 @@ public class RestWebClientTest {
                 .expectBody(Void.class)
                 .returnResult();
     }
-
 }

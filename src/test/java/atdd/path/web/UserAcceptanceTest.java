@@ -1,14 +1,15 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.User.UserLoginResponseView;
-import atdd.path.application.dto.User.UserSighUpResponseView;
+import atdd.path.application.dto.user.UserLoginResponseView;
+import atdd.path.application.dto.user.UserSighUpResponseView;
 import atdd.path.domain.User;
 import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(4)
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String KIM_INPUT_JSON = "{\"email\":\"" + KIM_EMAIL + "\",\"password\":\"" + KIM_PASSWORD + "\",\"name\":\"" + KIM_NAME + "\"}";;
     public static final String USER_BASE_URL = "/users";

@@ -1,4 +1,4 @@
-package atdd.path.application.dto.User;
+package atdd.path.application.dto.user;
 
 import atdd.path.domain.User;
 import lombok.Builder;

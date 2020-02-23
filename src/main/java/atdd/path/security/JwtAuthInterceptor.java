@@ -1,6 +1,6 @@
 package atdd.path.security;
 
-import atdd.path.application.dto.User.FindByEmailResponseView;
+import atdd.path.application.dto.user.FindByEmailResponseView;
 import atdd.path.dao.UserDao;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;

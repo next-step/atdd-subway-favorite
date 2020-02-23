@@ -1,10 +1,10 @@
 package atdd.path.application;
 
 import atdd.path.SoftAssertionTest;
-import atdd.path.application.dto.User.FindByEmailResponseView;
-import atdd.path.application.dto.User.UserDetailResponseView;
-import atdd.path.application.dto.User.UserLoginResponseView;
-import atdd.path.application.dto.User.UserSighUpResponseView;
+import atdd.path.application.dto.user.FindByEmailResponseView;
+import atdd.path.application.dto.user.UserDetailResponseView;
+import atdd.path.application.dto.user.UserLoginResponseView;
+import atdd.path.application.dto.user.UserSighUpResponseView;
 import atdd.path.application.exception.ExistUserException;
 import atdd.path.dao.UserDao;
 import atdd.path.security.TokenAuthenticationService;

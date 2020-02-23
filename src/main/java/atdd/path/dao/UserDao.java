@@ -1,6 +1,6 @@
 package atdd.path.dao;
 
-import atdd.path.application.dto.User.FindByEmailResponseView;
+import atdd.path.application.dto.user.FindByEmailResponseView;
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;

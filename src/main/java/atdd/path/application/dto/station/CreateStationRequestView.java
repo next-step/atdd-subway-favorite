@@ -1,4 +1,4 @@
-package atdd.path.application.dto.Station;
+package atdd.path.application.dto.station;
 
 import atdd.path.domain.Station;
 

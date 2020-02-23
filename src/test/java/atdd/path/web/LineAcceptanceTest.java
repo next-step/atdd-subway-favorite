@@ -1,10 +1,11 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.Line.LineResponseView;
+import atdd.path.application.dto.line.LineResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.Order;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import java.time.LocalTime;
@@ -13,6 +14,7 @@ import java.util.List;
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(1)
 public class LineAcceptanceTest extends AbstractAcceptanceTest {
     public static final String LINE_URL = "/lines";
     public static final String EDGE_URL = "/edges";

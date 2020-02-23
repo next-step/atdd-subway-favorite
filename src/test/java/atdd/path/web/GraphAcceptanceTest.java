@@ -3,10 +3,12 @@ package atdd.path.web;
 import atdd.path.AbstractAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 
 import static atdd.path.TestConstant.*;
 
+@Order(2)
 public class GraphAcceptanceTest extends AbstractAcceptanceTest {
     private StationHttpTest stationHttpTest;
     private LineHttpTest lineHttpTest;

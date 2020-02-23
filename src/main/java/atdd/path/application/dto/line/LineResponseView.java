@@ -1,6 +1,6 @@
-package atdd.path.application.dto.Line;
+package atdd.path.application.dto.line;
 
-import atdd.path.application.dto.Station.StationResponseView;
+import atdd.path.application.dto.station.StationResponseView;
 import atdd.path.domain.Line;
 import atdd.path.domain.Station;
 

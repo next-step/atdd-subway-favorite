@@ -1,10 +1,11 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.Station.StationResponseView;
+import atdd.path.application.dto.station.StationResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.Order;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(3)
 public class StationAcceptanceTest extends AbstractAcceptanceTest {
     public static final String STATION_URL = "/stations";
 

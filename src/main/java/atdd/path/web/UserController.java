@@ -1,10 +1,9 @@
 package atdd.path.web;
 
 import atdd.path.application.UserService;
-import atdd.path.application.dto.User.UserLoginRequestView;
-import atdd.path.application.dto.User.UserSighUpRequestView;
-import atdd.path.application.dto.User.UserSighUpResponseView;
-import atdd.path.dao.UserDao;
+import atdd.path.application.dto.user.UserLoginRequestView;
+import atdd.path.application.dto.user.UserSighUpRequestView;
+import atdd.path.application.dto.user.UserSighUpResponseView;
 import atdd.path.domain.User;
 import atdd.path.security.LoginUser;
 import org.springframework.http.ResponseEntity;

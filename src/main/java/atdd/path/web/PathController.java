@@ -1,7 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.application.GraphService;
-import atdd.path.application.dto.Path.PathResponseView;
+import atdd.path.application.dto.path.PathResponseView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
