@@ -152,6 +152,8 @@ public class TestConstant {
     public static Line TEST_LINE_4 = new Line(LINE_ID_4, LINE_NAME_4, Lists.list(TEST_EDGE_16, TEST_EDGE_17, TEST_EDGE_18, TEST_EDGE_19, TEST_EDGE_20, TEST_EDGE_21, TEST_EDGE_22), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
 
     //회원 가입
+    public static String ACCESS_TOKEN_HEADER = "Authorization";
+
     public static String USER_NAME1 = "브라운";
     public static String USER_EMAIL1 = "boorwonie@email.com";
     public static String USER_PASSWORD1 = "subway";

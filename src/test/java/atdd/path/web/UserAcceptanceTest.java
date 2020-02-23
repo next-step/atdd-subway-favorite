@@ -12,8 +12,6 @@ import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
-    final String ACCESS_TOKEN_HEADER = "Authorization";
-
     private UserHttpTest userHttpTest;
 
 
@@ -38,7 +36,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public void deleteUser() {
         //given
         User givenUser = userHttpTest.createUserRequest(CREATE_USER_REQUEST1).getResponseBody();
-        String accessToken = givenAccessToken(givenUser);
+        String accessToken = userHttpTest.givenLogin(givenUser);
 
         CreateUserRequestView view = CREATE_USER_REQUEST2;
         User user = userHttpTest.createUserRequest(view)
@@ -67,7 +65,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public void myInfo() {
         //given
         User givenUser = userHttpTest.createUserRequest(CREATE_USER_REQUEST1).getResponseBody();
-        String accessToken = givenAccessToken(givenUser);
+        String accessToken = userHttpTest.givenLogin(givenUser);
 
         //when
         User user = userHttpTest.myInfoRequest(accessToken).getResponseBody();
@@ -75,13 +73,5 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         //then
         assertThat(user.getName()).isEqualTo(givenUser.getName());
         assertThat(user.getEmail()).isEqualTo(givenUser.getEmail());
-    }
-
-    private String givenAccessToken(final User user) {
-        HttpHeaders headers = userHttpTest.loginRequest(LoginRequestView.builder()
-                .email(user.getEmail())
-                .password(USER_PASSWORD1).build()).getResponseHeaders();
-
-        return headers.get(ACCESS_TOKEN_HEADER).get(0);
     }
 }
