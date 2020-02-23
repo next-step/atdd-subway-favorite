@@ -12,17 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import reactor.core.publisher.Mono;
 
 import java.util.stream.Collectors;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.path.TestConstant.STATION_NAME;
+import static atdd.path.TestConstant.STATION_NAME_2;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
@@ -102,11 +104,13 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     @Test
-    public void showFavoriteStations() throws Exception{
+    public void showFavoriteStations() throws Exception {
         //given
         String token = jwtTokenProvider.createToken(EMAIL);
         this.stationId = stationHttpTest.createStation(STATION_NAME);
+        this.stationId2 = stationHttpTest.createStation(STATION_NAME_2);
         CreateFavoriteStationRequestView request = new CreateFavoriteStationRequestView(stationId);
+        CreateFavoriteStationRequestView request2 = new CreateFavoriteStationRequestView(stationId2);
         Long id = webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
                 .header("Authorization", AUTH_SCHEME_BEARER + token)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -120,14 +124,27 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
                 .map(FavoriteStationResponseView::getId)
                 .collect(Collectors.toList())
                 .get(0);
+        Long id2 = webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
+                .header("Authorization", AUTH_SCHEME_BEARER + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request2), CreateFavoriteStationRequestView.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .returnResult(FavoriteStationResponseView.class)
+                .getResponseBody()
+                .toStream()
+                .map(FavoriteStationResponseView::getId)
+                .collect(Collectors.toList())
+                .get(0);
 
         mockMvc.perform(
-                        get(FAVORITE_STATION_BASE_URI+"/"+id)
+                get(FAVORITE_STATION_BASE_URI)
                         .header("Authorization", AUTH_SCHEME_BEARER + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.stationId").value(stationId))
+                .andExpect(jsonPath("$.*", hasSize(2)))
                 .andDo(print());
     }
 }

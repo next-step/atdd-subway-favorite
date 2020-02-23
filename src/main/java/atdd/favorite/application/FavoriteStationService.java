@@ -7,6 +7,7 @@ import atdd.favorite.domain.FavoriteStationRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,5 +27,10 @@ public class FavoriteStationService {
         FavoriteStation favoriteStation=repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 사용자가 존재하지 않습니다."));
         repository.delete(favoriteStation);
+    }
+
+    public List<FavoriteStation> findAllByEmail(String email){
+        List<FavoriteStation> favoriteStations=repository.findAllByEmail(email);
+        return favoriteStations;
     }
 }
