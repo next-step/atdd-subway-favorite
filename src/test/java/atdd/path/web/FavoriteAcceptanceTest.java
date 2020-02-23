@@ -4,6 +4,7 @@ import atdd.path.AbstractAcceptanceTest;
 import atdd.path.TestConstant;
 import atdd.path.application.dto.FavoriteResponseView;
 import atdd.path.application.dto.LoginResponseView;
+import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,8 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(1L, token).getResponseBody();
 
         webTestClient.get().uri(FAVORITE_URI + "/station")
+                .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
-                .expectStatus().isOk()
-                .expectBody(FavoriteResponseView.class);
+                .expectStatus().isOk();
     }
 }

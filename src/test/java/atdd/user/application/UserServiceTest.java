@@ -1,13 +1,14 @@
-package atdd.path.application;
+package atdd.user.application;
 
 import atdd.path.TestConstant;
+import atdd.path.application.JwtTokenProvider;
 import atdd.path.application.dto.LoginRequestView;
 import atdd.path.application.dto.LoginResponseView;
-import atdd.path.application.dto.UserRequestView;
-import atdd.path.application.dto.UserResponseView;
-import atdd.path.application.exception.InvalidJwtAuthenticationException;
-import atdd.path.domain.User;
-import atdd.path.repository.UserRepository;
+import atdd.user.application.dto.UserRequestView;
+import atdd.user.application.dto.UserResponseView;
+import atdd.user.application.exception.FailedLoginException;
+import atdd.user.domain.User;
+import atdd.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,7 @@ public class UserServiceTest {
 
     @DisplayName("회원 정보를 가져온다")
     @Test
-    void retrieveUser() throws InvalidJwtAuthenticationException {
+    void retrieveUser() throws FailedLoginException.InvalidJwtAuthenticationException {
         // given
         given(userRepository.findUserByEmail(TestConstant.EMAIL_BROWN))
                 .willReturn(User.createBuilder()

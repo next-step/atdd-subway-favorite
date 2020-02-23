@@ -3,12 +3,14 @@ package atdd.path.web;
 import atdd.path.application.FavoriteService;
 import atdd.path.application.dto.FavoriteRequestView;
 import atdd.path.application.dto.FavoriteResponseView;
+import atdd.user.domain.User;
+import atdd.user.web.LoginUser;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -22,11 +24,15 @@ public class FavoriteController {
     }
 
     @PostMapping("/station")
-    public ResponseEntity createStationFavorite(FavoriteRequestView favoriteRequestView, HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        FavoriteResponseView response = favoriteService.createStationFavorite(token, favoriteRequestView.getStationId());
+    public ResponseEntity createStationFavorite(FavoriteRequestView favoriteRequestView, @LoginUser User user) {
+        FavoriteResponseView response = favoriteService.createStationFavorite(favoriteRequestView.getStationId(), user);
 
         return ResponseEntity.created(URI.create("/favorite/" + 1))
                 .body(response);
+    }
+
+    @GetMapping("/station")
+    public ResponseEntity findStationFavorite(@LoginUser User user) {
+        return ResponseEntity.ok().build();
     }
 }

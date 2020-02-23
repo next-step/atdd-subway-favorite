@@ -1,14 +1,14 @@
-package atdd.path.web;
+package atdd.user.web;
 
 import atdd.path.application.dto.LoginRequestView;
 import atdd.path.application.dto.LoginResponseView;
-import atdd.path.application.dto.UserRequestView;
-import atdd.path.application.dto.UserResponseView;
+import atdd.user.application.dto.UserRequestView;
+import atdd.user.application.dto.UserResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static atdd.path.web.UserAcceptanceTest.USER_URL;
+import static atdd.user.web.UserAcceptanceTest.USER_URL;
 
 public class UserHttpTest {
 
