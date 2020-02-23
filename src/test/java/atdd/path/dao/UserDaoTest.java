@@ -1,7 +1,6 @@
 package atdd.path.dao;
 
 import atdd.path.domain.User;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,8 @@ import javax.sql.DataSource;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
 public class UserDaoTest {
@@ -72,7 +73,10 @@ public class UserDaoTest {
     public void deleteById() {
         userDao.deleteById(savedUser.getId());
 
-        Assertions.assertThrows(EmptyResultDataAccessException.class,
-                () -> userDao.findById(savedUser.getId()), "조회 결과가 없습니다.");
+        assertThrows(EmptyResultDataAccessException.class, () -> userDao.findById(savedUser.getId()));
+
+        assertThatThrownBy(() -> userDao.findById(savedUser.getId()))
+                .isInstanceOf(EmptyResultDataAccessException.class)
+                .hasMessageContaining("Incorrect");
     }
 }
