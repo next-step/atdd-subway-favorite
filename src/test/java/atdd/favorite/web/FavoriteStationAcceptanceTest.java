@@ -138,6 +138,7 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
                 .collect(Collectors.toList())
                 .get(0);
 
+        //when, then
         mockMvc.perform(
                 get(FAVORITE_STATION_BASE_URI)
                         .header("Authorization", AUTH_SCHEME_BEARER + token)
