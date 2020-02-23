@@ -7,6 +7,9 @@ public class CreateUserRequestView {
     private String name;
     private String password;
 
+    CreateUserRequestView() {
+    }
+
     public CreateUserRequestView(String email, String name, String password) {
         this.email = email;
         this.name = name;
