@@ -2,16 +2,18 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.TestConstant;
+import atdd.path.application.dto.FavoriteResponseView;
 import atdd.path.application.dto.LoginResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
 
-public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
+public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
 
     private UserHttpTest userHttpTest;
-    private final String FAVORITE_URI = "/favorite";
+    private final String FAVORITE_URI = "/favorites";
 
     @BeforeEach
     void setUp() {
@@ -26,10 +28,13 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         String request = "{\"stationId\": 1}";
 
         webTestClient.post().uri(FAVORITE_URI + "/station")
+                .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .body(Mono.just(request), String.class)
                 .exchange()
-                .expectStatus().isOk();
+                .expectHeader().exists("Location")
+                .expectStatus().isCreated()
+                .expectBody(FavoriteResponseView.class);
     }
 
 }
