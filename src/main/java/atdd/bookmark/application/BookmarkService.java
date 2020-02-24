@@ -42,6 +42,29 @@ public class BookmarkService {
         );
   }
 
+  public BookmarkSimpleResponseView addPathBookmark(Long userID, Long sourceStationID, Long targetStationID) {
+    Station sourceStation = stationRepository.findById(
+        sourceStationID
+        ).orElseThrow(NoDataException::new);
+    Station targetStation = stationRepository.findById(
+        targetStationID
+        ).orElseThrow(NoDataException::new);
+
+    Bookmark created = bookmarkRepository.save(
+        new Bookmark(userID, sourceStation, targetStation)
+        );
+
+    return new BookmarkSimpleResponseView(
+        created.getId(),
+        new StationResponseView(
+          sourceStationID, sourceStation.getName()
+          ),
+        new StationResponseView(
+          targetStationID, targetStation.getName()
+          )
+        );
+  }
+
   public BookmarkResponseView retrieveAllBookmarks(Long userID) {
     List<BookmarkSimpleResponseView> bookmarks = bookmarkRepository.findByUserID(userID).stream().map(
           bookmark-> {
@@ -75,5 +98,4 @@ public class BookmarkService {
 
     bookmarkRepository.deleteById(bookmarkID);
   }
-
 }

@@ -14,6 +14,7 @@ import atdd.auth.LoginUser;
 import atdd.bookmark.application.BookmarkService;
 import atdd.bookmark.application.dto.BookmarkRequestView;
 import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
+import atdd.path.application.exception.NoDataException;
 import atdd.user.application.dto.UserResponseView;
 
 @Controller
@@ -35,6 +36,23 @@ public class BookmarkController {
         .created(URI.create("/bookmark/" + result.getId()))
         .body(result);
     }
+
+    if(!bookmarkRequestView.isPathBookmark()) {
+      throw new NoDataException();
+    }
+
+    if (bookmarkRequestView.isPathBookmark()) {
+      BookmarkSimpleResponseView result = bookmarkService.addPathBookmark(
+          userResponseView.getId(),
+          bookmarkRequestView.getSourceStationID(),
+          bookmarkRequestView.getTargetStationID()
+          );
+
+      return ResponseEntity
+        .created(URI.create("/bookmark/" + result.getId()))
+        .body(result);
+    }
+
 
     return null;
   }

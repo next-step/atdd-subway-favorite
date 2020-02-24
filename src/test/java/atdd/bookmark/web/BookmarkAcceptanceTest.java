@@ -117,8 +117,8 @@ public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
         ).getResponseBody();
 
     assertThat(bookmarkResponseView.getId()).isNotNull();
-    assertThat(bookmarkResponseView.getSourceStation()).isEqualTo(stations.get(0));
-    assertThat(bookmarkResponseView.getTargetStation()).isEqualTo(stations.get(1));
+    assertThat(bookmarkResponseView.getSourceStation().getId()).isEqualTo(stations.get(0));
+    assertThat(bookmarkResponseView.getTargetStation().getId()).isEqualTo(stations.get(2));
   }
 
   @Test 

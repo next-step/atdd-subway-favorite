@@ -88,4 +88,25 @@ public class BookmarkServiceTest {
 
     fail("bookmark delete 권한 검사 실패");
   }
+
+  @Test
+  void addPathBookmark() {
+    Long sourceStationID = 1L;
+    Long targetStationID = 2L;
+    given(stationRepository.findById(sourceStationID))
+      .willReturn(Optional.of(TEST_STATION));
+    given(stationRepository.findById(targetStationID))
+      .willReturn(Optional.of(TEST_STATION_2));
+
+    Bookmark bookmark = new Bookmark(1L, TEST_STATION, TEST_STATION_2);
+    given(bookmarkRepository.save(any(Bookmark.class)))
+        .willReturn(bookmark);
+    
+    BookmarkRequestView bookmarkRequestView = new BookmarkRequestView(TEST_STATION.getId());
+
+    BookmarkSimpleResponseView result = bookmarkService.addPathBookmark(
+        1L, sourceStationID, targetStationID);
+
+    assertThat(result.getSourceStation()).isNotNull();
+  }
 }
