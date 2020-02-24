@@ -2,52 +2,37 @@ package atdd.path.dao;
 
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.context.annotation.FilterType.ANNOTATION;
 
-@JdbcTest
+@JdbcTest(includeFilters = @ComponentScan.Filter(type = ANNOTATION, classes = Repository.class))
 class FavoriteDaoTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private FavoriteDao favoriteDao;
 
     @Autowired
-    private DataSource dataSource;
-
-    private FavoriteDao favoriteDao;
     private StationDao stationDao;
+
+    @Autowired
     private LineDao lineDao;
+
+    @Autowired
     private EdgeDao edgeDao;
+
+    @Autowired
     private MemberDao memberDao;
-
-    @BeforeEach
-    void setUp() {
-        favoriteDao = new FavoriteDao(jdbcTemplate);
-        favoriteDao.setDataSource(dataSource);
-
-        stationDao = new StationDao(jdbcTemplate);
-        stationDao.setDataSource(dataSource);
-
-        lineDao = new LineDao(jdbcTemplate);
-        lineDao.setDataSource(dataSource);
-
-        edgeDao = new EdgeDao(jdbcTemplate);
-        edgeDao.setDataSource(dataSource);
-
-        memberDao = new MemberDao(jdbcTemplate);
-        memberDao.setDataSource(dataSource);
-    }
 
     @DisplayName("지하철역 즐겨찾기 등록해야 한다")
     @Test
