@@ -126,11 +126,11 @@ public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
     //Given
     BookmarkSimpleResponseView bookmarkResponseView =  bookmarkHttpTest.addBookmark(
         stations.get(0),
-        stations.get(2),
+        stations.get(2)
         ).getResponseBody();
     BookmarkSimpleResponseView bookmarkResponseView2 =  bookmarkHttpTest.addBookmark(
         stations.get(1),
-        stations.get(3),
+        stations.get(3)
         ).getResponseBody();
 
     //When

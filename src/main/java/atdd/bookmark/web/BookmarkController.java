@@ -2,9 +2,6 @@ package atdd.bookmark.web;
 
 import java.net.URI;
 
-import javax.activation.UnsupportedDataTypeException;
-
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,14 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import atdd.auth.LoginUser;
 import atdd.bookmark.application.BookmarkService;
 import atdd.bookmark.application.dto.BookmarkRequestView;
-import atdd.bookmark.application.dto.BookmarkResponseView;
 import atdd.bookmark.application.dto.BookmarkSimpleResponseView;
-import atdd.bookmark.entity.Bookmark;
-import atdd.bookmark.repository.BookmarkRepository;
-import atdd.path.application.dto.StationResponseView;
-import atdd.path.application.exception.NoDataException;
-import atdd.path.domain.Station;
-import atdd.path.repository.StationRepository;
 import atdd.user.application.dto.UserResponseView;
 
 @Controller
