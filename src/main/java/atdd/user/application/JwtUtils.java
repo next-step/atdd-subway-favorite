@@ -1,6 +1,6 @@
-package atdd.path.application;
+package atdd.user.application;
 
-import atdd.path.application.exception.InvalidTokenException;
+import atdd.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

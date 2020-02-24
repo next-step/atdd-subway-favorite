@@ -1,6 +1,6 @@
-package atdd.path.web;
+package atdd.user.web;
 
-import atdd.path.application.JwtUtils;
+import atdd.user.application.JwtUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

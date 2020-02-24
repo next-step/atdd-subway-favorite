@@ -1,10 +1,9 @@
-package atdd.path.application;
+package atdd.user.application;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.exception.InvalidUserException;
-import atdd.path.domain.entity.User;
-import atdd.path.repository.UserRepository;
-import io.jsonwebtoken.Claims;
+import atdd.exception.InvalidUserException;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.dao.UserDao;
+import atdd.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,24 +14,27 @@ public class UserService {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @Autowired
-    private UserRepository userRepository;
+    public UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public User createUser(CreateUserRequestView view) {
         User user = view.toUSer();
         user.encryptPassword();
 
-        return userRepository.save(user);
+        return userDao.save(user);
     }
 
     public void deleteUser(final long id) {
-        userRepository.deleteById(id);
+        userDao.deleteById(id);
     }
 
     public String login(final String email, final String password) {
         User findUser;
         try {
-            findUser = userRepository.findByEmail(email);
+            findUser = userDao.findByEmail(email);
         } catch (EntityNotFoundException e) {
             throw new InvalidUserException();
         }
@@ -43,6 +45,6 @@ public class UserService {
     }
 
     public User myInfo(final String email) {
-        return userRepository.findByEmail(email);
+        return userDao.findByEmail(email);
     }
 }

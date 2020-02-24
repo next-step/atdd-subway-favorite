@@ -1,8 +1,8 @@
-package atdd.path.application.config;
+package atdd.user.application.config;
 
-import atdd.path.application.JwtUtils;
-import atdd.path.interceptor.AuthenticationInterceptor;
-import atdd.path.web.LoginUserArgumentResolver;
+import atdd.user.application.JwtUtils;
+import atdd.user.interceptor.AuthenticationInterceptor;
+import atdd.user.web.LoginUserArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

@@ -1,6 +1,6 @@
-package atdd.path.application.dto;
+package atdd.user.application.dto;
 
-import atdd.path.domain.entity.User;
+import atdd.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Builder;
 
