@@ -1,9 +1,8 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.domain.entity.FavoriteStation;
-import atdd.path.domain.entity.User;
+import atdd.path.domain.FavoriteStation;
+import atdd.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,30 +14,29 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     private FavoriteHttpTest favoriteHttpTest;
     private UserHttpTest userHttpTest;
     private StationHttpTest stationHttpTest;
+    private HttpTestUtils httpTestUtils;
 
     @BeforeEach
     void setUp() {
-        this.favoriteHttpTest = new FavoriteHttpTest(webTestClient);
+        this.httpTestUtils = new HttpTestUtils(webTestClient);
         this.userHttpTest = new UserHttpTest(webTestClient);
-        this.stationHttpTest = new StationHttpTest(webTestClient);
+
+        this.stationHttpTest = new StationHttpTest(httpTestUtils);
+        this.favoriteHttpTest = new FavoriteHttpTest(httpTestUtils);
     }
 
     @Test
-    public void createFavoriteStation() {
+    public void addFavoriteStation() {
         //given
-        String token = givenCreateAndLogin(CREATE_USER_REQUEST1);
-        long stationId = stationHttpTest.createStation(STATION_NAME);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
 
         //when
-        FavoriteStation favoriteStation = favoriteHttpTest.createFavoriteStation(stationId, token).getResponseBody();
+        FavoriteStation favoriteStation = favoriteHttpTest.createFavoriteStation(stationId, accessToken).getResponseBody();
 
         //then
-        assertThat(favoriteStation.getStationIds().size()).isEqualTo(1);
-    }
-
-    private String givenCreateAndLogin(CreateUserRequestView view) {
-        User user = userHttpTest.createUserRequest(view).getResponseBody();
-
-        return userHttpTest.givenLogin(user);
+        assertThat(favoriteStation.getStationId()).isEqualTo(stationId);
     }
 }
