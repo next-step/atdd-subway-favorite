@@ -1,6 +1,7 @@
 package atdd.user.web;
 
 import atdd.path.AbstractAcceptanceTest;
+import atdd.user.application.JwtTokenProvider;
 import atdd.user.application.dto.LoginResponseView;
 import atdd.user.application.dto.LoginUserRequestView;
 import atdd.user.application.dto.UserResponseView;
@@ -8,6 +9,7 @@ import atdd.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import reactor.core.publisher.Mono;
@@ -79,4 +81,23 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     }
 
+    @DisplayName("토큰을 활용하여 내 정보 조회를 한다")
+    @Test
+    public void userDetail(){
+        EntityExchangeResult<UserResponseView> createUser = userHttpTest.createUserRequest(USER_NAME, USER_PASSWORD, USER_EMAIL);
+        LoginUserRequestView loginUserRequestView = new LoginUserRequestView(createUser.getResponseBody().getPassword(), createUser.getResponseBody().getEmail());
+        LoginResponseView loginResult = userHttpTest.login(loginUserRequestView);
+        String accessToken = loginResult.getAccessToken();
+        UserResponseView response = webTestClient.get().uri("/users/me")
+                .header("Authorization", "Bearer " + accessToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(UserResponseView.class)
+                .returnResult()
+                .getResponseBody();
+        assertThat(response.getEmail()).isEqualTo(createUser.getResponseBody().getEmail());
+
+
+    }
 }
