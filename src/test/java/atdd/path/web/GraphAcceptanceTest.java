@@ -14,6 +14,7 @@ public class GraphAcceptanceTest extends AbstractAcceptanceTest {
 
     @BeforeEach
     void setUp() {
+        cleanAllDatabases();
         this.stationHttpTest = new StationHttpTest(webTestClient);
         this.lineHttpTest = new LineHttpTest(webTestClient);
     }

@@ -23,6 +23,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
 
     @BeforeEach
     void setUp() {
+        cleanAllDatabases();
         this.stationHttpTest = new StationHttpTest(webTestClient);
         this.lineHttpTest = new LineHttpTest(webTestClient);
     }

@@ -21,6 +21,7 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
 
     @BeforeEach
     void setUp() {
+        cleanAllDatabases();
         this.lineHttpTest = new LineHttpTest(webTestClient);
         this.stationHttpTest = new StationHttpTest(webTestClient);
     }

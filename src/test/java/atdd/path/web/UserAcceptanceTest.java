@@ -31,6 +31,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
     @BeforeEach
     void setUp() {
+        cleanAllDatabases();
         this.restWebClientTest = new RestWebClientTest(this.webTestClient);
         this.tokenAuthenticationService = new TokenAuthenticationService();
     }
