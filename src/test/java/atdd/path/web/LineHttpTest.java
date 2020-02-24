@@ -1,5 +1,6 @@
 package atdd.path.web;
 
+import atdd.path.AbstractHttpTest;
 import atdd.path.application.dto.LineResponseView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
@@ -9,12 +10,12 @@ import reactor.core.publisher.Mono;
 import java.time.LocalTime;
 import java.util.List;
 
-public class LineHttpTest {
-    public static final String LINE_URL = "/lines";
-    public WebTestClient webTestClient;
+import static atdd.path.TestConstant.LINE_URL;
+
+public class LineHttpTest extends AbstractHttpTest {
 
     public LineHttpTest(WebTestClient webTestClient) {
-        this.webTestClient = webTestClient;
+        super(webTestClient);
     }
 
     public EntityExchangeResult<LineResponseView> createLineRequest(String lineName) {
@@ -23,32 +24,15 @@ public class LineHttpTest {
                 "\"endTime\":\"" + LocalTime.of(23, 30) + "\"," +
                 "\"interval\":\"" + 30 + "\"}";
 
-        return webTestClient.post().uri(LINE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(inputJson), String.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectHeader().exists("Location")
-                .expectBody(LineResponseView.class)
-                .returnResult();
+        return createRequest(LineResponseView.class, LINE_URL, inputJson);
     }
 
     public EntityExchangeResult<LineResponseView> retrieveLineRequest(String uri) {
-        return webTestClient.get().uri(uri)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(LineResponseView.class)
-                .returnResult();
+        return findRequest(LineResponseView.class, uri);
     }
 
     public EntityExchangeResult<List<LineResponseView>> showLinesRequest() {
-        return webTestClient.get().uri(LINE_URL)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBodyList(LineResponseView.class)
-                .returnResult();
+        return findRequestList(LineResponseView.class, LINE_URL);
     }
 
     public Long createLine(String lineName) {
@@ -66,7 +50,7 @@ public class LineHttpTest {
                 ",\"targetId\":" + stationId2 +
                 ",\"distance\":" + distance + "}";
 
-        return webTestClient.post().uri("/lines/" + lineId + "/edges")
+        return webTestClient.post().uri(LINE_URL + "/" + lineId + "/edges")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(inputJson), String.class)
                 .exchange()

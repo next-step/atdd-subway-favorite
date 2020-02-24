@@ -37,7 +37,7 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest {
     void beAbleToWithdrawal() {
         MemberResponseView view = memberHttpTest.createMember(TEST_MEMBER);
 
-        webTestClient.delete().uri("/members/" + view.getId())
+        webTestClient.delete().uri(MEMBER_URL + "/" + view.getId())
                 .exchange()
                 .expectStatus()
                 .isNoContent();
@@ -63,7 +63,7 @@ public class MemberAcceptanceTest extends AbstractAcceptanceTest {
 
         String token = memberHttpTest.loginMember(TEST_MEMBER);
 
-        webTestClient.get().uri("/members/me")
+        webTestClient.get().uri(MEMBER_URL + "/me")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isOk()

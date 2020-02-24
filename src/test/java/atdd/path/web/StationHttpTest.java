@@ -1,50 +1,32 @@
 package atdd.path.web;
 
+import atdd.path.AbstractHttpTest;
 import atdd.path.application.dto.StationResponseView;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public class StationHttpTest {
-    public WebTestClient webTestClient;
+import static atdd.path.TestConstant.STATION_URL;
+
+public class StationHttpTest extends AbstractHttpTest {
 
     public StationHttpTest(WebTestClient webTestClient) {
-        this.webTestClient = webTestClient;
+        super(webTestClient);
     }
 
     public EntityExchangeResult<StationResponseView> createStationRequest(String stationName) {
         String inputJson = "{\"name\":\"" + stationName + "\"}";
 
-        return webTestClient.post().uri("/stations")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(inputJson), String.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectHeader().exists("Location")
-                .expectBody(StationResponseView.class)
-                .returnResult();
+        return createRequest(StationResponseView.class, STATION_URL, inputJson);
     }
 
     public EntityExchangeResult<StationResponseView> retrieveStationRequest(String uri) {
-        return webTestClient.get().uri(uri)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(StationResponseView.class)
-                .returnResult();
+        return findRequest(StationResponseView.class, uri);
     }
 
     public EntityExchangeResult<List<StationResponseView>> showStationsRequest() {
-        return webTestClient.get().uri("/stations")
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBodyList(StationResponseView.class)
-                .returnResult();
+        return findRequestList(StationResponseView.class, STATION_URL);
     }
 
     public Long createStation(String stationName) {
@@ -53,6 +35,6 @@ public class StationHttpTest {
     }
 
     public EntityExchangeResult<StationResponseView> retrieveStation(Long stationId) {
-        return retrieveStationRequest("/stations/" + stationId);
+        return retrieveStationRequest(STATION_URL + "/" + stationId);
     }
 }

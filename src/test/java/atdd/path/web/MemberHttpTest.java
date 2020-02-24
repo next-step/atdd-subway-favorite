@@ -1,5 +1,6 @@
 package atdd.path.web;
 
+import atdd.path.AbstractHttpTest;
 import atdd.path.application.dto.LoginResponseView;
 import atdd.path.application.dto.MemberResponseView;
 import atdd.path.domain.Member;
@@ -10,14 +11,14 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
+import static atdd.path.TestConstant.LOGIN_URL;
+import static atdd.path.TestConstant.MEMBER_URL;
 import static atdd.path.TestUtils.jsonOf;
 
-public class MemberHttpTest {
-
-    private WebTestClient webTestClient;
+public class MemberHttpTest extends AbstractHttpTest {
 
     public MemberHttpTest(WebTestClient webTestClient) {
-        this.webTestClient = webTestClient;
+        super(webTestClient);
     }
 
     public MemberResponseView createMember(Member member) {
@@ -34,15 +35,7 @@ public class MemberHttpTest {
 
         String inputJson = jsonOf(member);
 
-        return webTestClient.post().uri("/members")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(inputJson), String.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectHeader().exists("Location")
-                .expectBody(MemberResponseView.class)
-                .returnResult();
+        return createRequest(MemberResponseView.class, MEMBER_URL, inputJson);
     }
 
     public String loginMember(Member member) {
@@ -58,8 +51,7 @@ public class MemberHttpTest {
         );
 
         String inputJson = jsonOf(map);
-
-        return webTestClient.post().uri("/login")
+        return webTestClient.post().uri(LOGIN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(inputJson), String.class)
                 .exchange()

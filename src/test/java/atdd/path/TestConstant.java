@@ -6,6 +6,17 @@ import org.assertj.core.util.Lists;
 import java.time.LocalTime;
 
 public class TestConstant {
+    public static final String STATION_URL = "/stations";
+    public static final String LINE_URL = "/lines";
+    public static final String EDGE_URL = "/edges";
+    public static final String PATH_URL = "/paths";
+
+    public static final String MEMBER_URL = "/members";
+    public static final String LOGIN_URL = "/login";
+
+    public static final String FAVORITES_STATIONS_URL = "/favorites/stations";
+    public static final String FAVORITES_PATH_URL = "/favorites/paths";
+
     public static final Long STATION_ID = 1L;
     public static final Long STATION_ID_2 = 2L;
     public static final Long STATION_ID_3 = 3L;

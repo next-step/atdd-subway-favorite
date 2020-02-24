@@ -4,20 +4,22 @@ import atdd.path.domain.FavoriteStation;
 
 public class FavoriteStationResponseView {
 
-    private FavoriteStation favoriteStation;
+    private Long id;
+    private StationResponseView station;
 
     private FavoriteStationResponseView() {}
 
     public FavoriteStationResponseView(FavoriteStation favoriteStation) {
-        this.favoriteStation = favoriteStation;
+        this.id = favoriteStation.getId();
+        this.station = StationResponseView.of(favoriteStation.getStation());
     }
 
     public Long getId() {
-        return favoriteStation.getId();
+        return id;
     }
 
     public StationResponseView getStation() {
-        return StationResponseView.of(favoriteStation.getStation());
+        return station;
     }
 
 }

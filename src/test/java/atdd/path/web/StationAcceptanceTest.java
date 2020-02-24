@@ -13,7 +13,6 @@ import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StationAcceptanceTest extends AbstractAcceptanceTest {
-    public static final String STATION_URL = "/stations";
 
     private LineHttpTest lineHttpTest;
     private StationHttpTest stationHttpTest;

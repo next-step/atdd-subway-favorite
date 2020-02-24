@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.path.TestConstant.*;
@@ -14,9 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
-    private final String FAVORITES_STATIONS_URL = "/favorites/stations";
-    private final String FAVORITES_PATH_URL = "/favorites/paths";
-
+    private FavoriteHttpTest favoriteHttpTest;
     private MemberHttpTest memberHttpTest;
     private StationHttpTest stationHttpTest;
     private LineHttpTest lineHttpTest;
@@ -24,6 +21,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     @BeforeEach
     void setUp() {
+        favoriteHttpTest = new FavoriteHttpTest(webTestClient);
         memberHttpTest = new MemberHttpTest(webTestClient);
         stationHttpTest = new StationHttpTest(webTestClient);
         lineHttpTest = new LineHttpTest(webTestClient);
@@ -38,7 +36,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         memberHttpTest.createMemberRequest(TEST_MEMBER);
         String token = memberHttpTest.loginMember(TEST_MEMBER);
 
-        FavoriteStationResponseView view = createForStation(stationId, token);
+        FavoriteStationResponseView view = favoriteHttpTest.createForStation(stationId, token);
 
         assertThat(view).isNotNull();
         assertThat(view.getId()).isEqualTo(FAVORITE_STATION_ID);
@@ -55,11 +53,11 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         memberHttpTest.createMemberRequest(TEST_MEMBER);
         String token = memberHttpTest.loginMember(TEST_MEMBER);
 
-        createForStationRequest(stationId, token);
-        createForStationRequest(stationId2, token);
-        createForStationRequest(stationId3, token);
+        favoriteHttpTest.createForStationRequest(stationId, token);
+        favoriteHttpTest.createForStationRequest(stationId2, token);
+        favoriteHttpTest.createForStationRequest(stationId3, token);
 
-        FavoriteStationsResponseView view = findForStations(token);
+        FavoriteStationsResponseView view = favoriteHttpTest.findForStations(token);
 
         assertThat(view).isNotNull();
         assertThat(view.getCount()).isEqualTo(3);
@@ -76,14 +74,14 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         memberHttpTest.createMemberRequest(TEST_MEMBER);
         String token = memberHttpTest.loginMember(TEST_MEMBER);
 
-        FavoriteStationResponseView createView = createForStation(stationId, token);
+        FavoriteStationResponseView createView = favoriteHttpTest.createForStation(stationId, token);
 
         webTestClient.delete().uri(FAVORITES_STATIONS_URL + "/" + createView.getId())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isNoContent();
 
-        FavoriteStationsResponseView findView = findForStations(token);
+        FavoriteStationsResponseView findView = favoriteHttpTest.findForStations(token);
 
         assertThat(findView).isNotNull();
         assertThat(findView.getCount()).isEqualTo(0);
@@ -96,7 +94,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
         PathResponseView findView = graphHttpTest.findPath(STATION_ID, STATION_ID_4);
 
-        EntityExchangeResult<FavoritePathResponseView> result = createForPathRequest(
+        EntityExchangeResult<FavoritePathResponseView> result = favoriteHttpTest.createForPathRequest(
                 findView.getStartStationId(),
                 findView.getEndStationId(),
                 token);
@@ -115,11 +113,11 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     void beAbleToFindForPath() {
         String token = setUpPath();
 
-        createForPathRequest(STATION_ID, STATION_ID_3, token);
-        createForPathRequest(STATION_ID_2, STATION_ID_4, token);
-        createForPathRequest(STATION_ID, STATION_ID_4, token);
+        favoriteHttpTest.createForPathRequest(STATION_ID, STATION_ID_3, token);
+        favoriteHttpTest.createForPathRequest(STATION_ID_2, STATION_ID_4, token);
+        favoriteHttpTest.createForPathRequest(STATION_ID, STATION_ID_4, token);
 
-        FavoritePathsResponseView view = findForPaths(token);
+        FavoritePathsResponseView view = favoriteHttpTest.findForPaths(token);
 
         assertThat(view).isNotNull();
         assertThat(view.getCount()).isEqualTo(3);
@@ -133,14 +131,14 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     void beAbleToDeleteForPath() {
         String token = setUpPath();
 
-        FavoritePathResponseView createView = createForPath(STATION_ID, STATION_ID_3, token);
+        FavoritePathResponseView createView = favoriteHttpTest.createForPath(STATION_ID, STATION_ID_3, token);
 
         webTestClient.delete().uri(FAVORITES_PATH_URL + "/" + createView.getId())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .exchange()
                 .expectStatus().isNoContent();
 
-        FavoritePathsResponseView findView = findForPaths(token);
+        FavoritePathsResponseView findView = favoriteHttpTest.findForPaths(token);
 
         assertThat(findView).isNotNull();
         assertThat(findView.getCount()).isEqualTo(0);
@@ -158,64 +156,6 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
         memberHttpTest.createMemberRequest(TEST_MEMBER);
         return memberHttpTest.loginMember(TEST_MEMBER);
-    }
-
-    private FavoriteStationResponseView createForStation(Long stationId, String token) {
-        EntityExchangeResult<FavoriteStationResponseView> result = createForStationRequest(stationId, token);
-        return result.getResponseBody();
-    }
-
-    public EntityExchangeResult<FavoriteStationResponseView> createForStationRequest(Long stationId, String token) {
-        return createRequest(FavoriteStationResponseView.class, FAVORITES_STATIONS_URL + "/" + stationId, token);
-    }
-
-    private FavoriteStationsResponseView findForStations(String token) {
-        EntityExchangeResult<FavoriteStationsResponseView> result = findForStationRequest(token);
-        return result.getResponseBody();
-    }
-
-    public EntityExchangeResult<FavoriteStationsResponseView> findForStationRequest(String token) {
-        return findRequest(FavoriteStationsResponseView.class, FAVORITES_STATIONS_URL, token);
-    }
-
-    private FavoritePathResponseView createForPath(Long startId, Long endId, String token) {
-        EntityExchangeResult<FavoritePathResponseView> result = createForPathRequest(startId, endId, token);
-        return result.getResponseBody();
-    }
-
-    public EntityExchangeResult<FavoritePathResponseView> createForPathRequest(Long startId, Long endId, String token) {
-        return createRequest(FavoritePathResponseView.class,
-                FAVORITES_PATH_URL + "?startId=" + startId + "&endId=" + endId, token);
-    }
-
-    private FavoritePathsResponseView findForPaths(String token) {
-        EntityExchangeResult<FavoritePathsResponseView> result = findForPathsRequest(token);
-        return result.getResponseBody();
-    }
-
-    public EntityExchangeResult<FavoritePathsResponseView> findForPathsRequest(String token) {
-        return findRequest(FavoritePathsResponseView.class, FAVORITES_PATH_URL, token);
-    }
-
-    private <T> EntityExchangeResult<T> createRequest(Class<T> classT, String uri, String token) {
-        return webTestClient.post().uri(uri)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectHeader().exists("Location")
-                .expectBody(classT)
-                .returnResult();
-    }
-
-    private <T> EntityExchangeResult<T> findRequest(Class<T> classT, String uri, String token) {
-        return webTestClient.get().uri(uri)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(classT)
-                .returnResult();
     }
 
 }
