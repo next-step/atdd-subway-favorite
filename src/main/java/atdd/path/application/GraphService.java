@@ -24,7 +24,7 @@ public class GraphService {
     }
 
     public List<Station> findPath(FavoritePath favoritePath) {
-        return findPath(favoritePath.getSourceStation().getId(), favoritePath.getTargetStation().getId());
+        return findPath(favoritePath.getSourceStationId(), favoritePath.getTargetStationId());
     }
 
 }

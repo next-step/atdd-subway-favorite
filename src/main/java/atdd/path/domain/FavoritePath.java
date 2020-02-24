@@ -30,8 +30,16 @@ public class FavoritePath {
         return sourceStation;
     }
 
+    public Long getSourceStationId() {
+        return sourceStation.getId();
+    }
+
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    public Long getTargetStationId() {
+        return targetStation.getId();
     }
 
 }

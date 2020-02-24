@@ -24,8 +24,16 @@ public class FavoriteStation {
         return member;
     }
 
+    public Long getMemberId() {
+        return member.getId();
+    }
+
     public Station getStation() {
         return station;
+    }
+
+    public Long getStationId() {
+        return station.getId();
     }
 
 }

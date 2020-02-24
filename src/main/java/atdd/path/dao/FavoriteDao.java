@@ -46,8 +46,8 @@ public class FavoriteDao {
 
     public FavoriteStation saveForStation(FavoriteStation favoriteStation) {
         final Map<String, Long> params = Map.ofEntries(
-                Map.entry("member_id", favoriteStation.getMember().getId()),
-                Map.entry("station_id", favoriteStation.getStation().getId())
+                Map.entry("member_id", favoriteStation.getMemberId()),
+                Map.entry("station_id", favoriteStation.getStationId())
         );
 
         final Long favoriteId = stationSimpleJdbcInsert.executeAndReturnKey(params).longValue();
@@ -103,8 +103,8 @@ public class FavoriteDao {
     public FavoritePath saveForPath(FavoritePath favoritePath) {
         final Map<String, Long> params = Map.ofEntries(
                 Map.entry("member_id", favoritePath.getMember().getId()),
-                Map.entry("source_station_id", favoritePath.getSourceStation().getId()),
-                Map.entry("target_station_id", favoritePath.getTargetStation().getId())
+                Map.entry("source_station_id", favoritePath.getSourceStationId()),
+                Map.entry("target_station_id", favoritePath.getTargetStationId())
         );
 
         final Long favoriteId = pathSimpleJdbcInsert.executeAndReturnKey(params).longValue();
