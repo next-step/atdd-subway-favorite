@@ -20,8 +20,6 @@ public class AuthService {
   private JwtConfig jwtConfig;
   private SecretKey jwtKey;
 
-  private static final String tokenType = "bearer";
-  private static final Long tokenDuration = 30 * 60 * 1000L;
 
   @Autowired
   public AuthService(JwtConfig jwtConfig) {
@@ -39,7 +37,7 @@ public class AuthService {
     Claims claims = Jwts.claims().setSubject(email);
 
     Date now = new Date();
-    Date validity = new Date(now.getTime() + tokenDuration);
+    Date validity = new Date(now.getTime() + AuthConstants.TokenDuration);
 
     String accessToken = Jwts.builder()
       .setClaims(claims)
@@ -47,7 +45,7 @@ public class AuthService {
       .setExpiration(validity)
       .signWith(jwtKey)
       .compact();
-    return new AuthInfoView(accessToken, tokenType);
+    return new AuthInfoView(accessToken, AuthConstants.TokenType);
   }
 
   public String authUser(AuthInfoView authInfoView) {
