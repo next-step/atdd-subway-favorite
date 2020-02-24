@@ -1,6 +1,6 @@
 package atdd.path.dao;
 
-import atdd.path.application.exception.NoDataException;
+import atdd.exception.NoDataException;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
 import atdd.path.domain.Station;
