@@ -8,6 +8,8 @@ import atdd.path.domain.Member;
 import atdd.path.domain.Station;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FavoriteService {
 
@@ -28,6 +30,22 @@ public class FavoriteService {
         final Station sourceStation = stationDao.findById(startId);
         final Station targetStation = stationDao.findById(endId);
         return favoriteDao.saveForPath(new FavoritePath(member, sourceStation, targetStation));
+    }
+
+    public List<FavoriteStation> findForStations(Member member) {
+        return favoriteDao.findForStations(member);
+    }
+
+    public void deleteForStationById(Long favoriteId) {
+        favoriteDao.deleteForStationById(favoriteId);
+    }
+
+    public List<FavoritePath> findForPaths(Member member) {
+        return favoriteDao.findForPaths(member);
+    }
+
+    public void deleteForPathById(Long favoriteId) {
+        favoriteDao.deleteForPathById(favoriteId);
     }
 
 }

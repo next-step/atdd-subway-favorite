@@ -7,7 +7,6 @@ import atdd.path.application.dto.FavoritePathsResponseView;
 import atdd.path.application.dto.FavoriteStationResponseView;
 import atdd.path.application.dto.FavoriteStationsResponseView;
 import atdd.path.application.resolver.LoginUser;
-import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.FavoritePath;
 import atdd.path.domain.FavoriteStation;
 import atdd.path.domain.Member;
@@ -25,13 +24,10 @@ import static java.util.stream.Collectors.toList;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
-    private final FavoriteDao favoriteDao;
-
     private final GraphService graphService;
 
-    public FavoriteController(FavoriteService favoriteService, FavoriteDao favoriteDao, GraphService graphService) {
+    public FavoriteController(FavoriteService favoriteService, GraphService graphService) {
         this.favoriteService = favoriteService;
-        this.favoriteDao = favoriteDao;
         this.graphService = graphService;
     }
 
@@ -47,13 +43,13 @@ public class FavoriteController {
 
     @GetMapping("/stations")
     public ResponseEntity<FavoriteStationsResponseView> findFavoriteStations(@LoginUser Member member) {
-        final List<FavoriteStation> favorites = favoriteDao.findForStations(member);
+        final List<FavoriteStation> favorites = favoriteService.findForStations(member);
         return ResponseEntity.ok(new FavoriteStationsResponseView(favorites));
     }
 
     @DeleteMapping("/stations/{id}")
     public ResponseEntity<Object> deleteFavoriteStation(@PathVariable("id") Long favoriteId) {
-        favoriteDao.deleteForStationById(favoriteId);
+        favoriteService.deleteForStationById(favoriteId);
         return ResponseEntity.noContent().build();
     }
 
@@ -71,7 +67,7 @@ public class FavoriteController {
 
     @GetMapping("/paths")
     public ResponseEntity<FavoritePathsResponseView> findFavoritePath(@LoginUser Member member) {
-        final List<FavoritePath> findFavoritePaths = favoriteDao.findForPaths(member);
+        final List<FavoritePath> findFavoritePaths = favoriteService.findForPaths(member);
 
         final List<FavoritePathResponseView> views = findFavoritePaths.stream()
                 .map(path -> new FavoritePathResponseView(path, graphService.findPath(path)))
@@ -82,7 +78,7 @@ public class FavoriteController {
 
     @DeleteMapping("/paths/{id}")
     public ResponseEntity<Object> deleteFavoritePaths(@PathVariable("id") Long favoriteId) {
-        favoriteDao.deleteForPathById(favoriteId);
+        favoriteService.deleteForPathById(favoriteId);
         return ResponseEntity.noContent().build();
     }
 
