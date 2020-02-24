@@ -1,6 +1,6 @@
-package atdd.path.dao;
+package atdd.user.dao;
 
-import atdd.path.domain.User;
+import atdd.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -31,6 +31,7 @@ public class UserDao {
         parameters.put("ID", user.getId());
         parameters.put("NAME", user.getName());
         parameters.put("PASSWORD", user.getPassword());
+        parameters.put("EMAIL", user.getEmail());
 
         Long userId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return findById(userId);
@@ -44,7 +45,20 @@ public class UserDao {
         return new User(
                 (Long)result.get("ID"),
                 (String) result.get("NAME"),
-                (String) result.get("PASSWORD")
+                (String) result.get("PASSWORD"),
+                (String) result.get("EMAIL")
+        );
+    }
+
+    public User findByEmail(String email){
+        Map<String, Object> result = jdbcTemplate.queryForMap(
+                "select * from USERS where EMAIL = ?", email
+        );
+        return new User(
+                (Long)result.get("ID"),
+                (String) result.get("NAME"),
+                (String) result.get("PASSWORD"),
+                (String) result.get("EMAIL")
         );
     }
 
