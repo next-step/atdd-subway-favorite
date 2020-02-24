@@ -1,8 +1,8 @@
 package atdd.path.web;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.LoginRequestView;
-import atdd.path.domain.entity.User;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.LoginRequestView;
+import atdd.user.domain.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpHeaders;
@@ -11,12 +11,14 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static atdd.path.TestConstant.*;
+import static atdd.path.TestConstant.ACCESS_TOKEN_HEADER;
+import static atdd.path.TestConstant.USER_PASSWORD1;
 
 public class UserHttpTest {
     final String USER_PATH = "/users";
 
     final ObjectMapper mapper = new ObjectMapper();
+
     public WebTestClient webTestClient;
 
     public UserHttpTest(WebTestClient webTestClient) {

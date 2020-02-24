@@ -1,6 +1,6 @@
 package atdd.path;
 
-import atdd.path.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.CreateUserRequestView;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
 import atdd.path.domain.Station;

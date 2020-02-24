@@ -1,9 +1,9 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.LoginRequestView;
-import atdd.path.domain.entity.User;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.LoginRequestView;
+import atdd.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     private UserHttpTest userHttpTest;
+    private HttpTestUtils httpTestUtils;
 
 
     @BeforeEach
