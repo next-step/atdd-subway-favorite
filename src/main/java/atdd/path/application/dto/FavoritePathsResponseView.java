@@ -4,18 +4,16 @@ import java.util.List;
 
 public class FavoritePathsResponseView {
 
-    private int count;
     private List<FavoritePathResponseView> favorites;
 
     private FavoritePathsResponseView() {}
 
     public FavoritePathsResponseView(List<FavoritePathResponseView> favorites) {
-        this.count = favorites.size();
         this.favorites = favorites;
     }
 
     public int getCount() {
-        return count;
+        return favorites.size();
     }
 
     public List<FavoritePathResponseView> getFavorites() {
