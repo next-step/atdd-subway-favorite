@@ -1,5 +1,7 @@
 package atdd.path.domain;
 
+import java.util.Objects;
+
 public class FavoritePath {
 
     private Long id;
@@ -40,6 +42,22 @@ public class FavoritePath {
 
     public Long getTargetStationId() {
         return targetStation.getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FavoritePath favoritePath = (FavoritePath) o;
+        return Objects.equals(id, favoritePath.id) &&
+                Objects.equals(member, favoritePath.member) &&
+                Objects.equals(sourceStation, favoritePath.sourceStation) &&
+                Objects.equals(targetStation, favoritePath.targetStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, member, sourceStation, targetStation);
     }
 
 }

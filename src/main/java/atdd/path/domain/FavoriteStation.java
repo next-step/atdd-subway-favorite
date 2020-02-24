@@ -1,5 +1,7 @@
 package atdd.path.domain;
 
+import java.util.Objects;
+
 public class FavoriteStation {
 
     private Long id;
@@ -34,6 +36,21 @@ public class FavoriteStation {
 
     public Long getStationId() {
         return station.getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FavoriteStation favoriteStation = (FavoriteStation) o;
+        return Objects.equals(id, favoriteStation.id) &&
+                Objects.equals(member, favoriteStation.member) &&
+                Objects.equals(station, favoriteStation.station);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, member, station);
     }
 
 }
