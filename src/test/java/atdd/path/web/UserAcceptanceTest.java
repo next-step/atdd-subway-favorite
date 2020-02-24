@@ -13,8 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAcceptanceTest extends AbstractAcceptanceTest {
     private UserHttpTest userHttpTest;
-    private HttpTestUtils httpTestUtils;
-
 
     @BeforeEach
     void setUp() {
