@@ -1,7 +1,6 @@
 package atdd.user.configs.interceptor;
 
 import atdd.user.application.JwtTokenProvider;
-import atdd.user.application.TokenExtractor;
 import atdd.user.application.exception.InvalidJwtAuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -12,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
-    JwtTokenProvider jwtTokenProvider;
-    TokenExtractor tokenExtractor;
+    private static final String HEADER_AUTH = "Authorization";
+    private JwtTokenProvider jwtTokenProvider;
 
     public LoginInterceptor(JwtTokenProvider jwtTokenProvider){
         this.jwtTokenProvider = jwtTokenProvider;
@@ -21,14 +20,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String token = tokenExtractor.extract(request);
+        String token = jwtTokenProvider.resolveToken(request);
 
         if (StringUtils.isEmpty(token) || !jwtTokenProvider.validateToken(token)) {
             throw new InvalidJwtAuthenticationException("invalid token");
         }
-
         String email = jwtTokenProvider.getUserEmail(token);
-        request.setAttribute("loginUserEmail", email);  // request에 로그인 유저의 email정보를 넣기
+        request.setAttribute("loginUserEmail", email);
         return true;
     }
 }
