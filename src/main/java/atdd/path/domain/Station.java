@@ -39,6 +39,10 @@ public class Station {
         return lines;
     }
 
+    public boolean isSameStation(Station anotherStation) {
+        return this.equals(anotherStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

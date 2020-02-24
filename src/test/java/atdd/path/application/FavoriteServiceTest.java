@@ -1,5 +1,6 @@
 package atdd.path.application;
 
+import atdd.path.application.exception.ConflictException;
 import atdd.path.dao.FavoriteDao;
 import atdd.path.dao.StationDao;
 import atdd.path.domain.FavoritePath;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -59,6 +61,19 @@ class FavoriteServiceTest {
         assertThat(sourceStation.getName()).isEqualTo(STATION_NAME);
         assertThat(targetStation).isNotNull();
         assertThat(targetStation.getName()).isEqualTo(STATION_NAME_4);
+    }
+
+    @DisplayName("경로 즐겨찾기 등록 시 같은 역인지 확인해야 한다")
+    @Test
+    void mustCheckSameStation() {
+        given(stationDao.findById(STATION_ID)).willReturn(TEST_STATION);
+        given(stationDao.findById(STATION_ID)).willReturn(TEST_STATION);
+
+        assertThrows(
+                ConflictException.class,
+                () ->  favoriteService.saveForPath(TEST_MEMBER, STATION_ID, STATION_ID),
+                "same station conflict"
+        );
     }
 
 }
