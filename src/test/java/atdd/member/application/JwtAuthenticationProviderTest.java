@@ -7,8 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(classes = JwtAuthenticationProvider.class)
+@TestPropertySource(properties = {"security.jwt.token.secret-validity=3"})
 class JwtAuthenticationProviderTest {
 
     private static final String TEST_EMAIL = "seok2@gmail.com";
@@ -29,9 +31,17 @@ class JwtAuthenticationProviderTest {
     }
 
     @Test
-    @DisplayName("토큰 기간 만료 체크")
-    void isExpired() {
+    @DisplayName("토큰 기간 만료 체크 - 정상")
+    void isNotExpired() {
         String token = provider.create(TEST_EMAIL);
         assertThat(provider.isExpired(token)).isFalse();
+    }
+
+    @Test
+    @DisplayName("토큰 기간 만료 체크 - 만료")
+    void isExpired() throws InterruptedException {
+        String token = provider.create(TEST_EMAIL);
+        Thread.sleep(4_000);
+        assertThat(provider.isExpired(token)).isTrue();
     }
 }

@@ -16,14 +16,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtAuthenticationProvider {
 
-    private static final long JWT_TOKEN_VALIDITY = 60 * 60 * 24;
 
     @Value("${security.jwt.token.secret-key}")
     private String secret;
+    @Value("${security.jwt.token.secret-validity}")
+    private long validity;
 
     public String create(String email) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime validity = now.plus(Duration.of(JWT_TOKEN_VALIDITY, ChronoUnit.SECONDS));
+        LocalDateTime validity = now.plus(Duration.of(this.validity, ChronoUnit.SECONDS));
         return Jwts.builder()
             .setClaims(Jwts.claims().setSubject(email))
             .setIssuedAt(asDate(now))
@@ -46,10 +47,11 @@ public class JwtAuthenticationProvider {
 
     public boolean isExpired(String token) {
         try {
-            return getExpirationDateFromToken(token).before(new Date());
+            getExpirationDateFromToken(token);
         } catch (ExpiredJwtException e) {
             return true;
         }
+        return false;
     }
 
     private Date getExpirationDateFromToken(String token) {

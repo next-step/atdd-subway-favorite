@@ -8,3 +8,4 @@ security:
   jwt:
     token:
       secret-key: tzAWaX4x7bJuCAbPrLKKz6r7Cmf3fL
+      validity: 60 * 60 * 24
