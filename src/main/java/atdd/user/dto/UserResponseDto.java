@@ -44,20 +44,22 @@ public class UserResponseDto {
         if (this == o) return true;
         if (!(o instanceof UserResponseDto)) return false;
         UserResponseDto that = (UserResponseDto) o;
-        return Objects.equals(email, that.email) &&
+        return Objects.equals(id, that.id) &&
+                Objects.equals(email, that.email) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, name, password);
+        return Objects.hash(id, email, name, password);
     }
 
     @Override
     public String toString() {
         return "UserResponseDto{" +
-                "email='" + email + '\'' +
+                "id=" + id +
+                ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 '}';

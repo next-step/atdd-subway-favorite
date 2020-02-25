@@ -12,4 +12,8 @@ public enum TokenType {
     public String getTypeName() {
         return typeName;
     }
+
+    public boolean isEqualTypeName(String typeName) {
+        return this.typeName.equalsIgnoreCase(typeName);
+    }
 }

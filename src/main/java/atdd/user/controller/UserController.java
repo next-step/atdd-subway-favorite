@@ -1,5 +1,6 @@
 package atdd.user.controller;
 
+import atdd.security.LoginUserInfo;
 import atdd.user.dto.AccessToken;
 import atdd.user.dto.UserCreateRequestDto;
 import atdd.user.dto.UserResponseDto;
@@ -43,6 +44,16 @@ public class UserController {
     @PostMapping("/login")
     public AccessToken login(@RequestParam String email, @RequestParam String password) {
         return authorizationService.authorize(email, password);
+    }
+
+    @GetMapping("/me")
+    public UserResponseDto getMyInfo(LoginUserInfo loginUserInfo) {
+        return UserResponseDto.of(
+                loginUserInfo.getId(),
+                loginUserInfo.getEmail(),
+                loginUserInfo.getName(),
+                loginUserInfo.getPassword()
+        );
     }
 
 }

@@ -1,5 +1,7 @@
 package atdd.user.controller;
 
+import atdd.security.LoginUserInfo;
+import atdd.security.LoginUserRegistry;
 import atdd.user.dto.AccessToken;
 import atdd.user.dto.TokenType;
 import atdd.user.dto.UserCreateRequestDto;
@@ -22,11 +24,12 @@ import java.nio.charset.StandardCharsets;
 
 import static atdd.user.controller.UserController.ROOT_URI;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,10 +44,14 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
+    private LoginUserRegistry loginUserRegistry;
+
+    @MockBean
     private UserService userService;
 
     @MockBean
     private AuthorizationService authorizationService;
+
 
     @Test
     void create() throws Exception {
@@ -105,6 +112,29 @@ class UserControllerTest {
 
 
         verify(authorizationService, times(1)).authorize(email, password);
+    }
+
+    @Test
+    void getMyInfo() throws Exception {
+        final Long userId = 14554L;
+        final String email = "email@email.com";
+        final String name = "name!!!";
+        final String password = "password!!!";
+        final String accessToken = "token!!!";
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(accessToken);
+
+        given(authorizationService.isAuthorized(any(), any())).willReturn(true);
+        given(loginUserRegistry.getCurrentLoginUser()).willReturn(LoginUserInfo.of(userId, email, name, password));
+
+        mockMvc.perform(get(ROOT_URI + "/me")
+                .headers(httpHeaders))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.이름").value(name))
+                .andExpect(jsonPath("$.email").value(email))
+                .andExpect(jsonPath("$.password").value(password));
     }
 
     private String toJson(UserCreateRequestDto requestDto) {

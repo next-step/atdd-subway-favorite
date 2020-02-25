@@ -9,6 +9,7 @@ import atdd.user.dto.UserResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
@@ -88,6 +89,26 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
 
         assertThat(accessToken.getAccessToken()).isNotBlank();
         assertThat(accessToken.getTokenType()).isEqualTo(TokenType.BEARER.getTypeName());
+    }
+
+    @DisplayName("내 정보 조회")
+    @Test
+    void getUserInfo() throws Exception {
+        final UserResponseDto createdUser = userHttpTestSupport.create(UserCreateRequestDto.of(email, name, password));
+        final AccessToken accessToken = userHttpTestSupport.login(email, password);
+
+
+        final UserResponseDto userResponseDto = webTestClient.get()
+                .uri(UserController.ROOT_URI + "/me")
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(accessToken.getAccessToken()))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseDto.class)
+                .returnResult()
+                .getResponseBody();
+
+
+        assertThat(userResponseDto).isEqualTo(createdUser);
     }
 
 }

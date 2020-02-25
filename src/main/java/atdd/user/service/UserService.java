@@ -1,5 +1,6 @@
 package atdd.user.service;
 
+import atdd.security.LoginUserInfo;
 import atdd.user.dao.UserDao;
 import atdd.user.domain.Email;
 import atdd.user.domain.User;
@@ -7,6 +8,8 @@ import atdd.user.dto.UserCreateRequestDto;
 import atdd.user.dto.UserResponseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -34,6 +37,11 @@ public class UserService {
         final User user = userDao.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 email 입니다. email : [" + email + "]"));
         return UserResponseDto.of(user.getId(), user.getEmail(), user.getName(), user.getPassword());
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<LoginUserInfo> findLoginUser(String tokenEmail) {
+        return userDao.findByEmail(tokenEmail).map(LoginUserInfo::from);
     }
 
 }
