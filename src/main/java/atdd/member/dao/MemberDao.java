@@ -15,6 +15,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MemberDao {
 
+    private static final String EMAIL = "EMAIL";
+    private static final String PASSWORD = "PASSWORD";
+    private static final String MEMBER = "MEMBER";
+    private static final String ID = "ID";
+    private static final String NAME = "NAME";
+
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -25,15 +31,15 @@ public class MemberDao {
     @Autowired
     public void setDataSource(final DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-            .withTableName("MEMBER")
-            .usingGeneratedKeyColumns("ID");
+            .withTableName(MEMBER)
+            .usingGeneratedKeyColumns(ID);
     }
 
     public Member save(Member member) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("EMAIL", member.getEmail());
-        parameters.put("NAME", member.getName());
-        parameters.put("PASSWORD", member.getPassword());
+        parameters.put(EMAIL, member.getEmail());
+        parameters.put(NAME, member.getName());
+        parameters.put(PASSWORD, member.getPassword());
 
         Long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return findById(id);
@@ -42,23 +48,23 @@ public class MemberDao {
     public Member findById(Long id) {
         Map<String, Object> result = jdbcTemplate.queryForMap(
             "select id , email, name from member where id = ?", id);
-        return new Member((long) result.get("ID"), (String) result.get("EMAIL"), (String) result.get("NAME"));
+        return new Member((long) result.get(ID), (String) result.get(EMAIL), (String) result.get(NAME));
     }
 
     public Member findByEmail(String email) {
         try {
             Map<String, Object> result = jdbcTemplate.queryForMap(
                 "select id, email, name, password from member where email = ?", email);
-            return new Member((long) result.get("ID"), (String) result.get("EMAIL"), (String) result.get("NAME"),
-                (String) result.get("PASSWORD"));
+            return new Member((long) result.get(ID), (String) result.get(EMAIL), (String) result.get(NAME),
+                (String) result.get(PASSWORD));
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     public void deleteById(Long id) {
-        Optional.ofNullable(findById(id)).orElseThrow(NoDataException::new);
-        jdbcTemplate.update("delete from member where id =?", id);
+        Member member = Optional.ofNullable(findById(id)).orElseThrow(NoDataException::new);
+        jdbcTemplate.update("delete from member where id =?", member.getId());
     }
 
 

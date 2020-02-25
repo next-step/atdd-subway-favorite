@@ -1,6 +1,7 @@
 package atdd.member.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.Duration;
@@ -22,7 +23,7 @@ public class JwtAuthenticationProvider {
 
     public String create(String email) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime validity = now.plus(Duration.of(JWT_TOKEN_VALIDITY, ChronoUnit.MINUTES));
+        LocalDateTime validity = now.plus(Duration.of(JWT_TOKEN_VALIDITY, ChronoUnit.SECONDS));
         return Jwts.builder()
             .setClaims(Jwts.claims().setSubject(email))
             .setIssuedAt(asDate(now))
@@ -44,7 +45,11 @@ public class JwtAuthenticationProvider {
     }
 
     public boolean isExpired(String token) {
-        return getExpirationDateFromToken(token).before(new Date());
+        try {
+            return getExpirationDateFromToken(token).before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
     }
 
     private Date getExpirationDateFromToken(String token) {

@@ -42,7 +42,6 @@ public class MemberController {
 
     @GetMapping("me")
     public ResponseEntity<MemberResponseView> me(@Login Member member) {
-        System.out.println(member);
         return ResponseEntity.ok(MemberResponseView.of(member));
     }
 
