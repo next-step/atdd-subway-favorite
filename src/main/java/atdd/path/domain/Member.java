@@ -9,6 +9,8 @@ public class Member {
     private String name;
     private String password;
 
+    protected Member() {}
+
     public Member(Long id, String email, String name, String password) {
         this.id = id;
         this.email = email;
@@ -38,6 +40,10 @@ public class Member {
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean isGuest() {
+        return false;
     }
 
     @Override
