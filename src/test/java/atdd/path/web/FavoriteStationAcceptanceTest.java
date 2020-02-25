@@ -58,4 +58,22 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(favoriteStationResponses.size()).isEqualTo(1);
         assertThat(favoriteStationResponses.get(0).getStation().getId()).isEqualTo(favoriteStationResponse.getId());
     }
+
+    @Test
+    public void deleteFavoriteStation() {
+        //given
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
+        FavoriteStationResponse favoriteStationResponse = favoriteHttpTest.createFavoriteStation(stationId, accessToken).getResponseBody();
+
+        //when
+        favoriteHttpTest.deleteFavoriteStationById(favoriteStationResponse.getId(), accessToken);
+
+        //then
+        List<FavoriteStationResponse> favoriteStationResponses = favoriteHttpTest.findFavoriteStations(accessToken).getResponseBody();
+
+        assertThat(favoriteStationResponses.size()).isEqualTo(0);
+    }
 }

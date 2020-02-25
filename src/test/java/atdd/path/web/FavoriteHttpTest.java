@@ -22,4 +22,8 @@ public class FavoriteHttpTest {
         return httpTestUtils.getRequest(FAVORITE_PATH, accessToken, new ParameterizedTypeReference<List<FavoriteStationResponse>>() {
         });
     }
+
+    public void deleteFavoriteStationById(long id, String accessToken) {
+        httpTestUtils.deleteRequest(FAVORITE_PATH + "/" + id, accessToken);
+    }
 }
