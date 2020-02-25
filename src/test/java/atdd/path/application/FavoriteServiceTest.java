@@ -1,7 +1,9 @@
 package atdd.path.application;
 
+import atdd.path.application.exception.BadRequestException;
 import atdd.path.application.exception.ConflictException;
 import atdd.path.dao.FavoriteDao;
+import atdd.path.dao.LineDao;
 import atdd.path.dao.StationDao;
 import atdd.path.domain.FavoritePath;
 import atdd.path.domain.FavoriteStation;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +36,9 @@ class FavoriteServiceTest {
     @Mock
     private StationDao stationDao;
 
+    @Mock
+    private LineDao lineDao;
+
     @DisplayName("지하철역 즐겨찾기 등록을 해야 한다")
     @Test
     void mustSaveForStation() {
@@ -51,6 +58,7 @@ class FavoriteServiceTest {
     void mustSaveForPath() {
         given(stationDao.findById(STATION_ID)).willReturn(TEST_STATION);
         given(stationDao.findById(STATION_ID_4)).willReturn(TEST_STATION_4);
+        given(lineDao.findAll()).willReturn(List.of(TEST_LINE));
         given(favoriteDao.saveForPath(any())).willReturn(TEST_FAVORITE_PATH);
 
         FavoritePath favoritePath = favoriteService.saveForPath(TEST_MEMBER, STATION_ID, STATION_ID_4);
@@ -73,6 +81,20 @@ class FavoriteServiceTest {
                 ConflictException.class,
                 () ->  favoriteService.saveForPath(TEST_MEMBER, STATION_ID, STATION_ID),
                 "same station conflict"
+        );
+    }
+
+    @DisplayName("경로 즐겨찾기 등록 시 연결할 수 있는 역인지 확인해야 한다")
+    @Test
+    void mustCheckConnectStation() {
+        given(stationDao.findById(STATION_ID)).willReturn(TEST_STATION);
+        given(stationDao.findById(STATION_ID_22)).willReturn(TEST_STATION_22);
+        given(lineDao.findAll()).willReturn(List.of(TEST_LINE));
+
+        assertThrows(
+                BadRequestException.class,
+                () ->  favoriteService.saveForPath(TEST_MEMBER, STATION_ID, STATION_ID_22),
+                "no exist path"
         );
     }
 

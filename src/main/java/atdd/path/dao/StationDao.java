@@ -13,7 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class StationDao {
@@ -84,13 +85,12 @@ public class StationDao {
             return Collections.EMPTY_LIST;
         }
 
-        return result.stream()
-                .map(it ->
-                        new Line(
-                                (Long) result.get(0).get("LINE_ID"),
-                                (String) result.get(0).get("LINE_NAME")
-                        ))
-                .collect(Collectors.toList());
+        return result.stream().map(
+                    mapObj -> new Line(
+                        (Long) mapObj.get("LINE_ID"),
+                        (String) mapObj.get("LINE_NAME"))
+                )
+                .collect(toList());
     }
 
     private boolean hasLine(List<Map<String, Object>> result) {
