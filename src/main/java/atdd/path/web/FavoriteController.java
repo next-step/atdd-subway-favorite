@@ -29,4 +29,11 @@ public class FavoriteController {
 
         return ResponseEntity.ok(responses);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteFavoriteStation(@LoginUser final String email, @PathVariable Long id) {
+        favoriteStationService.deleteByIdAndOwner(email, id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

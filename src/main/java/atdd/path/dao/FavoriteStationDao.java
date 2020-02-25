@@ -48,6 +48,10 @@ public class FavoriteStationDao {
         return mapFavoriteStationList(result);
     }
 
+    public void deleteByIdAndOwner(long id, long owner) {
+        jdbcTemplate.update("delete from FAVORITE_STATION where id = ? AND owner = ?", id, owner);
+    }
+
     private FavoriteStation findById(Long id) {
         String sql = "select id, owner, station_Id " +
                 "from FAVORITE_STATION  \n" +

@@ -59,10 +59,9 @@ public class FavoriteStationService {
         return responses;
     }
 
-    private List<Long> favoriteStationIds(final long owner) {
-        List<FavoriteStation> favoriteStations = favoriteStationDao.findAllByOwner(owner);
-        return favoriteStations.stream()
-                .map(FavoriteStation::getStationId)
-                .collect(Collectors.toList());
+    public void deleteByIdAndOwner(final String email, final long id) {
+        User user = userDao.findByEmail(email);
+
+        favoriteStationDao.deleteByIdAndOwner(id, user.getId());
     }
 }
