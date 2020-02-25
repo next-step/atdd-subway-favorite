@@ -1,6 +1,5 @@
 package atdd.path.application.dto;
 
-import atdd.path.domain.Station;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,13 +7,13 @@ import lombok.Getter;
 public class FavoriteStationResponse {
     private long id;
     private long owner;
-    private Station station;
+    private StationResponseView station;
 
     public FavoriteStationResponse() {
     }
 
     @Builder
-    private FavoriteStationResponse(long id, long owner, Station station) {
+    private FavoriteStationResponse(long id, long owner, StationResponseView station) {
         this.id = id;
         this.owner = owner;
         this.station = station;

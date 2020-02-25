@@ -1,6 +1,7 @@
 package atdd.path.application;
 
 import atdd.path.application.dto.FavoriteStationResponse;
+import atdd.path.application.dto.StationResponseView;
 import atdd.path.dao.FavoriteStationDao;
 import atdd.path.dao.StationDao;
 import atdd.path.domain.FavoriteStation;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FavoriteStationService {
@@ -37,7 +37,7 @@ public class FavoriteStationService {
         return FavoriteStationResponse.builder()
                 .id(favoriteStation.getId())
                 .owner(user.getId())
-                .station(station).build();
+                .station(StationResponseView.of(station)).build();
     }
 
     public List<FavoriteStationResponse> findAll(final String email) {
@@ -52,7 +52,7 @@ public class FavoriteStationService {
             responses.add(FavoriteStationResponse.builder()
                     .id(favoriteStation.getId())
                     .owner(favoriteStation.getOwner())
-                    .station(station).build()
+                    .station(StationResponseView.of(station)).build()
             );
         }
 
