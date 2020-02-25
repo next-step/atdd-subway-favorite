@@ -37,7 +37,6 @@ public class JwtAuthenticationAcceptanceTest {
     public void join() {
         // when
         memberHttpTest.join(MEMBER_VIEW);
-//        EntityExchangeResult<String> response = loginHttpTest.login(LOGIN_MEMBER_VIEW);
         EntityExchangeResult<JwtTokenResponse> response = loginHttpTest.login(LOGIN_MEMBER_VIEW);
         // then
         assertThat(response.getResponseBody()).isNotNull();
