@@ -1,5 +1,6 @@
 package atdd.path.domain;
 
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
@@ -14,6 +15,7 @@ public class Favorite {
     private Station station;
     private Line line;
 
+    @Builder
     public Favorite(Long id, Station station) {
         this.id = id;
         this.station = station;
