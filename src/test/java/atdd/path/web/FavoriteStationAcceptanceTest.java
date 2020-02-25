@@ -1,10 +1,12 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.domain.FavoriteStation;
+import atdd.path.application.dto.FavoriteStationResponse;
 import atdd.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static atdd.path.TestConstant.CREATE_USER_REQUEST1;
 import static atdd.path.TestConstant.STATION_NAME;
@@ -34,9 +36,26 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
 
         //when
-        FavoriteStation favoriteStation = favoriteHttpTest.createFavoriteStation(stationId, accessToken).getResponseBody();
+        FavoriteStationResponse favoriteStationResponse = favoriteHttpTest.createFavoriteStation(stationId, accessToken).getResponseBody();
 
         //then
-        assertThat(favoriteStation.getStationId()).isEqualTo(stationId);
+        assertThat(favoriteStationResponse.getStation().getId()).isEqualTo(stationId);
+    }
+
+    @Test
+    public void findFavoriteStations() {
+        //given
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
+        FavoriteStationResponse favoriteStationResponse = favoriteHttpTest.createFavoriteStation(stationId, accessToken).getResponseBody();
+
+        //when
+        List<FavoriteStationResponse> favoriteStationResponses = favoriteHttpTest.findFavoriteStations(accessToken).getResponseBody();
+
+        //then
+        assertThat(favoriteStationResponses.size()).isEqualTo(1);
+        assertThat(favoriteStationResponses.get(0).getStation().getId()).isEqualTo(favoriteStationResponse.getId());
     }
 }

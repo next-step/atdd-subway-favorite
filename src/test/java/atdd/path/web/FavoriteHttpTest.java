@@ -1,7 +1,10 @@
 package atdd.path.web;
 
-import atdd.path.domain.FavoriteStation;
+import atdd.path.application.dto.FavoriteStationResponse;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
+
+import java.util.List;
 
 public class FavoriteHttpTest {
     final String FAVORITE_PATH = "/favorites";
@@ -11,7 +14,12 @@ public class FavoriteHttpTest {
         this.httpTestUtils = httpTestUtils;
     }
 
-    public EntityExchangeResult<FavoriteStation> createFavoriteStation(long stationId, String accessToken) {
-        return httpTestUtils.postRequest(FAVORITE_PATH, String.valueOf(stationId), accessToken, FavoriteStation.class);
+    public EntityExchangeResult<FavoriteStationResponse> createFavoriteStation(long stationId, String accessToken) {
+        return httpTestUtils.postRequest(FAVORITE_PATH, String.valueOf(stationId), accessToken, FavoriteStationResponse.class);
+    }
+
+    public EntityExchangeResult<List<FavoriteStationResponse>> findFavoriteStations(String accessToken) {
+        return httpTestUtils.getRequest(FAVORITE_PATH, accessToken, new ParameterizedTypeReference<List<FavoriteStationResponse>>() {
+        });
     }
 }
