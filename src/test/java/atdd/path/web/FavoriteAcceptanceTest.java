@@ -1,7 +1,8 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.favorite.FavoriteCreateRequestView;
+import atdd.path.domain.Favorite;
+import atdd.path.domain.Station;
 import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,11 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
+import static atdd.path.TestConstant.STATION_NAME;
 import static atdd.path.fixture.UserFixture.KIM_EMAIL;
 
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
-    public static final String FAVORITE_INPUT_JSON = "{\"name\":\"강남역\"}";
-    public static final String FAVORITE_BASE_URL = "/favorite";
+    public static final String FAVORITE_INPUT_JSON = "{\"stationId\":\"1\", \"stationName\":\"강남역\"}";
+    public static final String FAVORITE_BASE_URL = "/favorites";
 
     private RestWebClientTest restWebClientTest;
     private TokenAuthenticationService tokenAuthenticationService;
@@ -30,20 +32,20 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void createFavoriteToStation(SoftAssertions softly) {
         restWebClientTest.createUser();
+        restWebClientTest.createStation(STATION_NAME);
 
         //when
-        EntityExchangeResult<FavoriteCreateRequestView> expectResponse
-                = restWebClientTest.postMethodWithAuthAcceptance
-                (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, FavoriteCreateRequestView.class, getJwt());
+        EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, Favorite.class, getJwt());
 
         //then
         HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
-        FavoriteCreateRequestView responseBody = expectResponse.getResponseBody();
-        String stationName = responseBody.getName();
+        Favorite responseBody = expectResponse.getResponseBody();
+        Station station = responseBody.getStation();
 
         //then
         softly.assertThat(responseHeaders.getLocation()).isNotNull();
-        softly.assertThat(stationName).isEqualTo("강남역");
+        softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
     }
 
     private String getJwt() {
