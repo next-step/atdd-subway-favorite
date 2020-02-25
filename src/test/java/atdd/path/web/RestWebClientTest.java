@@ -1,5 +1,6 @@
 package atdd.path.web;
 
+import atdd.path.application.dto.station.StationResponseView;
 import atdd.path.domain.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -66,6 +67,15 @@ public class RestWebClientTest {
                 .getResponseHeaders()
                 .getLocation()
                 .getPath());
+    }
+
+    String createStation(String stationName) {
+        String inputJson = "{\"name\":\"" + stationName + "\"}";
+        return Objects.requireNonNull(
+                postMethodAcceptance("/stations", inputJson, StationResponseView.class)
+                        .getResponseHeaders()
+                        .getLocation()
+                        .getPath());
     }
 
 }
