@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,20 +31,45 @@ public class FavoriteStationDao {
 
     public FavoriteStation save(FavoriteStation favoriteStation) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("OWNER", favoriteStation.getId());
+        parameters.put("OWNER", favoriteStation.getOwner());
         parameters.put("STATION_ID", favoriteStation.getStationId());
 
         Long favoriteStationId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return findById(favoriteStationId);
     }
 
-    public FavoriteStation findById(Long id) {
+    public List<FavoriteStation> findAllByOwner(long owner) {
+        String sql = "select id, owner, station_Id " +
+                "from FAVORITE_STATION  \n" +
+                "WHERE owner = ?";
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{owner});
+
+        return mapFavoriteStationList(result);
+    }
+
+    private FavoriteStation findById(Long id) {
         String sql = "select id, owner, station_Id " +
                 "from FAVORITE_STATION  \n" +
                 "WHERE id = ?";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{id});
         return mapFavoriteStation(result);
+    }
+
+    private List<FavoriteStation> mapFavoriteStationList(List<Map<String, Object>> result) {
+        List<FavoriteStation> favoriteStations = new ArrayList<>();
+
+        for (Map<String, Object> map : result) {
+            FavoriteStation favoriteStation = FavoriteStation.builder()
+                    .id((Long) map.get("ID"))
+                    .owner((Long) map.get("OWNER"))
+                    .stationId((Long) map.get("STATION_ID")).build();
+
+            favoriteStations.add(favoriteStation);
+        }
+
+        return favoriteStations;
     }
 
     private FavoriteStation mapFavoriteStation(List<Map<String, Object>> result) {

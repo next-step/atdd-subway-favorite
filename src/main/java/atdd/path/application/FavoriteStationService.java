@@ -1,5 +1,6 @@
 package atdd.path.application;
 
+import atdd.path.application.dto.FavoriteStationResponse;
 import atdd.path.dao.FavoriteStationDao;
 import atdd.path.dao.StationDao;
 import atdd.path.domain.FavoriteStation;
@@ -7,6 +8,10 @@ import atdd.path.domain.Station;
 import atdd.user.dao.UserDao;
 import atdd.user.domain.User;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteStationService {
@@ -20,13 +25,44 @@ public class FavoriteStationService {
         this.userDao = userDao;
     }
 
-    public FavoriteStation addFavoriteStation(final String email, final long stationId) {
+    public FavoriteStationResponse addFavoriteStation(final String email, final long stationId) {
         User user = userDao.findByEmail(email);
         Station station = stationDao.findById(stationId);
 
-        return favoriteStationDao.save(FavoriteStation.builder()
+        FavoriteStation favoriteStation = favoriteStationDao.save(FavoriteStation.builder()
                 .owner(user.getId())
                 .stationId(station.getId())
                 .build());
+
+        return FavoriteStationResponse.builder()
+                .id(favoriteStation.getId())
+                .owner(user.getId())
+                .station(station).build();
+    }
+
+    public List<FavoriteStationResponse> findAll(final String email) {
+        User user = userDao.findByEmail(email);
+
+        List<FavoriteStationResponse> responses = new ArrayList<>();
+        List<FavoriteStation> favoriteStations = favoriteStationDao.findAllByOwner(user.getId());
+
+        for (FavoriteStation favoriteStation : favoriteStations) {
+            Station station = stationDao.findById(favoriteStation.getStationId());
+
+            responses.add(FavoriteStationResponse.builder()
+                    .id(favoriteStation.getId())
+                    .owner(favoriteStation.getOwner())
+                    .station(station).build()
+            );
+        }
+
+        return responses;
+    }
+
+    private List<Long> favoriteStationIds(final long owner) {
+        List<FavoriteStation> favoriteStations = favoriteStationDao.findAllByOwner(owner);
+        return favoriteStations.stream()
+                .map(FavoriteStation::getStationId)
+                .collect(Collectors.toList());
     }
 }
