@@ -2,6 +2,7 @@ package atdd.path.dao;
 
 import atdd.path.application.exception.NoDataException;
 import atdd.path.domain.Favorite;
+import atdd.path.domain.Station;
 import atdd.path.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +18,9 @@ public class FavoriteDao {
     public static final String ID_KEY = "ID";
     public static final int FIRST_INDEX = 0;
     public static final String FAVORITE_TABLE_NAME = "FAVORITE";
-    public static final String STATION_ID_KEY = "station_id";
+    public static final String STATION_ID_KEY = "STATION_ID";
+    public static final String STATION_NAME_KEY = "STATION_NAME";
+    public static final String FAVORITE_ID_KEY = "FAVORITE_ID";
 
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
@@ -34,16 +37,16 @@ public class FavoriteDao {
     }
 
     public Favorite save(Favorite favorite) {
-        Long userId = simpleJdbcInsert
+        Long favoriteId = simpleJdbcInsert
                 .executeAndReturnKey(Favorite.getSaveParameterByFavorite(favorite))
                 .longValue();
 
-        return findById(userId);
+        return findById(favoriteId);
     }
 
     public Favorite findById(Long id) {
         String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name \n" +
-                "FROM favorite F \n" +
+                "FROM FAVORITE F \n" +
                 "JOIN STATION S ON F.station_id = S.id \n" +
                 "WHERE F.id  = ?";
 
@@ -53,8 +56,10 @@ public class FavoriteDao {
     Favorite mapFavorite(List<Map<String, Object>> result) {
         checkFindResultIsEmpty(result);
 
+        Map<String, Object> firstRow = result.get(FIRST_INDEX);
         return new Favorite(
-                (Long) result.get(0).get("")
+                (Long) firstRow.get(FAVORITE_ID_KEY),
+                new Station((Long) firstRow.get(STATION_ID_KEY), (String) firstRow.get(STATION_NAME_KEY))
         );
     }
 
