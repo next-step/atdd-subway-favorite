@@ -1,6 +1,8 @@
 package atdd.path.web;
 
 import atdd.path.application.dto.favorite.FavoriteCreateRequestView;
+import atdd.path.dao.FavoriteDao;
+import atdd.path.domain.Favorite;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,13 +14,16 @@ import java.net.URI;
 @RestController
 @RequestMapping("/favorites")
 public class FavoriteController {
-    public FavoriteController() {
+    private FavoriteDao favoriteDao;
+
+    public FavoriteController(FavoriteDao favoriteDao) {
+        this.favoriteDao = favoriteDao;
     }
 
     @PostMapping("")
     public ResponseEntity create(@RequestBody FavoriteCreateRequestView favorite) {
-        return ResponseEntity
-                .created(URI.create("/favorites/1"))
-                .body(favorite.getName());
+        Favorite savedFavorite = favoriteDao.save(favorite.toEntity());
+        return ResponseEntity.created(URI.create("/favorites/" + savedFavorite.getId())).body(savedFavorite);
     }
+
 }
