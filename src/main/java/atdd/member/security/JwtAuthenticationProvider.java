@@ -33,13 +33,7 @@ public class JwtAuthenticationProvider {
             .compact();
     }
 
-    private <T> T getClaimFromToken(String token, Function<Claims, T> resolver) {
-        Claims claims = Jwts.parser()
-            .setSigningKey(secret)
-            .parseClaimsJws(token)
-            .getBody();
-        return resolver.apply(claims);
-    }
+
 
     public String getEmailFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -47,15 +41,22 @@ public class JwtAuthenticationProvider {
 
     public boolean isExpired(String token) {
         try {
-            getExpirationDateFromToken(token);
+            getClaims(token);
         } catch (ExpiredJwtException e) {
             return true;
         }
         return false;
     }
 
-    private Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
+    private <T> T getClaimFromToken(String token, Function<Claims, T> resolver) {
+        return resolver.apply(getClaims(token));
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+            .setSigningKey(secret)
+            .parseClaimsJws(token)
+            .getBody();
     }
 
     private Date asDate(LocalDateTime time) {
