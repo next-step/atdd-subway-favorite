@@ -4,6 +4,7 @@ import atdd.member.application.dto.CreateMemberRequestView;
 import atdd.member.application.dto.MemberResponseView;
 import atdd.member.dao.MemberDao;
 import atdd.member.domain.Member;
+import atdd.member.security.Login;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +41,9 @@ public class MemberController {
     }
 
     @GetMapping("me")
-    public ResponseEntity<MemberResponseView> me() {
-        Member m = new Member(1,"seok2@naver.com", "이재석");
-        return ResponseEntity.ok(MemberResponseView.of(m));
+    public ResponseEntity<MemberResponseView> me(@Login Member member) {
+        System.out.println(member);
+        return ResponseEntity.ok(MemberResponseView.of(member));
     }
 
 }

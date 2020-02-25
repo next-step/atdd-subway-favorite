@@ -1,6 +1,7 @@
 package atdd.member.application;
 
 import atdd.member.dao.MemberDao;
+import atdd.member.exception.InvalidMemberInformationException;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,6 @@ public class MemberService {
     public void authenticate(String email, String password) {
         Optional.ofNullable(memberDao.findByEmail(email))
             .filter(m -> m.isMatchPassword(password))
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(InvalidMemberInformationException::new);
     }
 }

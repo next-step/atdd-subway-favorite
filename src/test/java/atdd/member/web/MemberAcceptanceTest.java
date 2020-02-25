@@ -60,13 +60,14 @@ public class MemberAcceptanceTest {
     @Test
     @DisplayName("회원 조회")
     public void me() {
-        //given
+        //given & when
         memberHttpTest.join(MEMBER_VIEW);
-        // when & than
-        webTestClient.get().uri(MEMBER_BASE_URL + "/me")
-            .header("Authorization", "Bearer " + loginHttpTest.getToken(LOGIN_MEMBER_VIEW))
-            .exchange()
-            .expectStatus().isNoContent();
+        EntityExchangeResult<MemberResponseView> response = memberHttpTest
+            .me(loginHttpTest.getToken(LOGIN_MEMBER_VIEW));
+        // then
+        assertThat(response.getResponseBody().getId()).isNotNull();
+        assertThat(response.getResponseBody().getEmail()).isNotNull().isEqualTo(MEMBER_VIEW.getEmail());
+        assertThat(response.getResponseBody().getName()).isNotNull().isEqualTo(MEMBER_VIEW.getName());
     }
 
 }

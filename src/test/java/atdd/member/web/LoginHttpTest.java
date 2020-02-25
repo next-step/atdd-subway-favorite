@@ -1,5 +1,6 @@
 package atdd.member.web;
 
+import atdd.member.application.dto.JwtTokenResponse;
 import atdd.member.application.dto.LoginMemberRequestView;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
@@ -14,18 +15,19 @@ public class LoginHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<String> login(LoginMemberRequestView view) {
+    public EntityExchangeResult<JwtTokenResponse> login(LoginMemberRequestView view) {
         return webTestClient.post().uri("/login")
             .contentType(MediaType.APPLICATION_JSON)
             .body(Mono.just(view), LoginMemberRequestView.class)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(String.class)
+            .expectBody(JwtTokenResponse.class)
             .returnResult();
     }
 
     public String getToken(LoginMemberRequestView view) {
         return login(view)
-            .getResponseBody();
+            .getResponseBody()
+            .getToken();
     }
 }

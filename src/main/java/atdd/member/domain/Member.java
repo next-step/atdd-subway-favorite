@@ -28,6 +28,13 @@ public class Member {
         this.name = name;
     }
 
+    public Member(long id, String email, String name, String password) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
     public boolean isMatchPassword(String password) {
         return !(this.password == null || password == null)
             && this.password.equals(password);

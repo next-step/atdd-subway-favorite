@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -45,9 +46,14 @@ public class MemberDao {
     }
 
     public Member findByEmail(String email) {
-        Map<String, Object> result = jdbcTemplate.queryForMap(
-            "select password from member where email = ?", email);
-        return new Member((String) result.get("EMAIL"), (String) result.get("PASSWORD"));
+        try {
+            Map<String, Object> result = jdbcTemplate.queryForMap(
+                "select id, email, name, password from member where email = ?", email);
+            return new Member((long) result.get("ID"), (String) result.get("EMAIL"), (String) result.get("NAME"),
+                (String) result.get("PASSWORD"));
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public void deleteById(Long id) {

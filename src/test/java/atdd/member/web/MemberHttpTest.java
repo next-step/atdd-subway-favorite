@@ -30,4 +30,13 @@ public class MemberHttpTest {
     }
 
 
+    public EntityExchangeResult<MemberResponseView> me(String token) {
+        // when & than
+        return webTestClient.get().uri(MEMBER_BASE_URL + "/me")
+            .header("Authorization", "Bearer " + token)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(MemberResponseView.class)
+            .returnResult();
+    }
 }

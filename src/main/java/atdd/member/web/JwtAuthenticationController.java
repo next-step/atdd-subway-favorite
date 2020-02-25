@@ -1,8 +1,9 @@
 package atdd.member.web;
 
-import atdd.member.application.JwtAuthenticationProvider;
 import atdd.member.application.MemberService;
+import atdd.member.application.dto.JwtTokenResponse;
 import atdd.member.application.dto.LoginMemberRequestView;
+import atdd.member.security.JwtAuthenticationProvider;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,8 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping
-    public ResponseEntity<String> login(@Valid @RequestBody LoginMemberRequestView view) {
+    public ResponseEntity<JwtTokenResponse> login(@Valid @RequestBody LoginMemberRequestView view) {
         memberService.authenticate(view.getEmail(), view.getPassword());
-        return ResponseEntity.ok(provider.create(view.getEmail()));
+        return ResponseEntity.ok(new JwtTokenResponse(provider.create(view.getEmail())));
     }
 }
