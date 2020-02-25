@@ -1,5 +1,6 @@
 package atdd.member.application.dto;
 
+import atdd.member.domain.Member;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
@@ -19,8 +20,8 @@ public class LoginMemberRequestView {
         this.password = password;
     }
 
-    public static LoginMemberRequestView of(String email, String password) {
-        return new LoginMemberRequestView(email,password);
+    public Member toMember() {
+        return new Member(this.email, this.password);
     }
 
     public String getEmail() {

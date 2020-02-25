@@ -1,11 +1,10 @@
 package atdd.member.web;
 
 import static atdd.member.MemberConstant.LOGIN_MEMBER_VIEW;
-import static atdd.member.MemberConstant.MEMBER_VIEW;
 import static atdd.member.MemberConstant.MEMBER_BASE_URL;
+import static atdd.member.MemberConstant.MEMBER_VIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import atdd.member.application.dto.JwtTokenResponseView;
 import atdd.member.application.dto.MemberResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

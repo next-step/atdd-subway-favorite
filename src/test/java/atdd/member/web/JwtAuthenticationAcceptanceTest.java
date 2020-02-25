@@ -1,12 +1,10 @@
 package atdd.member.web;
 
 
-import static atdd.member.MemberConstant.LOGIN_MEMBER_VIEW;
 import static atdd.member.MemberConstant.MEMBER_VIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import atdd.member.application.dto.JwtTokenResponseView;
-import atdd.member.application.dto.MemberResponseView;
+import atdd.member.application.dto.LoginMemberRequestView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,9 +35,11 @@ public class JwtAuthenticationAcceptanceTest {
     @DisplayName("로그인")
     public void join() {
         // when
-        EntityExchangeResult<JwtTokenResponseView> response = loginHttpTest.login(LOGIN_MEMBER_VIEW);
+        memberHttpTest.join(MEMBER_VIEW);
+//        EntityExchangeResult<String> response = loginHttpTest.login(LOGIN_MEMBER_VIEW);
+        EntityExchangeResult<String> response = loginHttpTest.login(new LoginMemberRequestView("soek3@kakao.com", "!"));
         // then
-        assertThat(response.getResponseBody().getToken()).isNotNull();
+        assertThat(response.getResponseBody()).isNotNull();
     }
 
 }

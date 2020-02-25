@@ -4,3 +4,7 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password: password
+security:
+  jwt:
+    token:
+      secret-key: tzAWaX4x7bJuCAbPrLKKz6r7Cmf3fL

@@ -44,6 +44,12 @@ public class MemberDao {
         return new Member((long) result.get("ID"), (String) result.get("EMAIL"), (String) result.get("NAME"));
     }
 
+    public Member findByEmail(String email) {
+        Map<String, Object> result = jdbcTemplate.queryForMap(
+            "select password from member where email = ?", email);
+        return new Member((String) result.get("EMAIL"), (String) result.get("PASSWORD"));
+    }
+
     public void deleteById(Long id) {
         Optional.ofNullable(findById(id)).orElseThrow(NoDataException::new);
         jdbcTemplate.update("delete from member where id =?", id);

@@ -10,6 +10,12 @@ public class Member {
     public Member() {
     }
 
+    public Member(String email, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
     public Member(String email, String name, String password) {
         this.email = email;
         this.name = name;
@@ -20,6 +26,11 @@ public class Member {
         this.id = id;
         this.email = email;
         this.name = name;
+    }
+
+    public boolean isMatchPassword(String password) {
+        return !(this.password == null || password == null)
+            && this.password.equals(password);
     }
 
     public long getId() {
