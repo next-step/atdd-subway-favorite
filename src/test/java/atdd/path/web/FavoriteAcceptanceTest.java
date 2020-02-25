@@ -12,7 +12,7 @@ import static atdd.path.TestConstant.CREATE_USER_REQUEST1;
 import static atdd.path.TestConstant.STATION_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
+public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     private FavoriteHttpTest favoriteHttpTest;
     private UserHttpTest userHttpTest;
     private StationHttpTest stationHttpTest;
