@@ -4,10 +4,12 @@ import atdd.member.application.dto.CreateMemberRequestView;
 import atdd.member.application.dto.MemberResponseView;
 import atdd.member.dao.MemberDao;
 import atdd.member.domain.Member;
+import atdd.member.security.Login;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +38,11 @@ public class MemberController {
     public ResponseEntity<Void> withdraw(@PathVariable long id) {
         memberDao.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("me")
+    public ResponseEntity<MemberResponseView> me(@Login Member member) {
+        return ResponseEntity.ok(MemberResponseView.of(member));
     }
 
 }

@@ -44,4 +44,14 @@ public class MemberDaoTest {
         Member member = memberDao.save(MEMBER);
         memberDao.deleteById(member.getId());
     }
+
+    @Test
+    @DisplayName("회원 조회 - 이메일")
+    void findBy() {
+        memberDao.save(MEMBER);
+        Member member = memberDao.findByEmail(MEMBER.getEmail());
+        assertThat(member.getId()).isNotNull();
+        assertThat(member.getEmail()).isEqualTo(MEMBER.getEmail());
+        assertThat(member.getName()).isEqualTo(MEMBER.getName());
+    }
 }
