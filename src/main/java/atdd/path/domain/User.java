@@ -3,7 +3,9 @@ package atdd.path.domain;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static atdd.path.dao.UserDao.*;
@@ -14,6 +16,16 @@ public class User {
     private String email;
     private String name;
     private String password;
+    private List<Favorite> favorites = new ArrayList<>();
+
+    @Builder
+    public User(Long id, String email, String name, String password, List<Favorite> favorites) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.favorites = favorites;
+    }
 
     @Builder
     public User(Long id, String email, String name, String password) {
@@ -21,10 +33,11 @@ public class User {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = new ArrayList<>();
     }
 
     public static User of(Long id, String email, String name, String password) {
-        return new User(null, email, name, password);
+        return new User(null, email, name, password, new ArrayList<>());
     }
 
 
