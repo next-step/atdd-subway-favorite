@@ -35,4 +35,9 @@ public class FavoriteHttpTest {
 
         return httpTestUtils.postRequest(FAVORITE_PATH + "/paths", input, accessToken, FavoritePathResponseView.class);
     }
+
+    public EntityExchangeResult findFavoritePath(String accessToken) {
+        return httpTestUtils.getRequest(FAVORITE_PATH + "/paths", accessToken, new ParameterizedTypeReference<List<FavoritePathResponseView>>() {
+        });
+    }
 }
