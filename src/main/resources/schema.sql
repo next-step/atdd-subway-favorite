@@ -38,7 +38,8 @@ create table if not exists USER
 create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
-    station_id varchar(255),
-    line_id varchar(255),
+    user_id bigint not null,
+    station_id bigint,
+    line_id bigint,
     primary key(id)
 );
