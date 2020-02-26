@@ -1,9 +1,8 @@
 package atdd.path.application;
 
 import atdd.path.SoftAssertionTest;
-import atdd.path.dao.UserDao;
+import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.Favorite;
-import atdd.path.security.TokenAuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,28 +19,19 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class FavoriteServiceTest extends SoftAssertionTest {
     private FavoriteService favoriteService;
-    private UserService userService;
-
     @MockBean
-    private UserDao userDao;
-
-    @MockBean
-    private FavoriteService favoriteService;
-
-    @MockBean
-    private TokenAuthenticationService tokenAuthenticationService;
+    private FavoriteDao favoriteDao;
 
     @BeforeEach
     void setUp() {
-        this.tokenAuthenticationService = new TokenAuthenticationService();
-        this.userService = new UserService(tokenAuthenticationService, userDao);
+        this.favoriteService = new FavoriteService(favoriteDao);
     }
 
     @DisplayName("사용자가 지하철 등록에 성공하는지")
     @Test
     public void save() {
         //given
-        when(favoriteService.save(any())).thenReturn(NEW_FAVORITE);
+        when(favoriteDao.save(any())).thenReturn(NEW_FAVORITE);
 
         //when
         Favorite favorite = favoriteService.save(TEST_STATION);
