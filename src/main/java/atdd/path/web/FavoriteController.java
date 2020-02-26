@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -51,5 +52,18 @@ public class FavoriteController {
                 .targetStationId(view.getTargetStationId()).build());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(FavoritePathResponseView.of(favoritePath));
+    }
+
+    @GetMapping("/paths")
+    public ResponseEntity findFavoritePaths(@LoginUser final String email) {
+        List<FavoritePath> favoritePaths = favoritePathService.findFavoritePath(email);
+
+        List<FavoritePathResponseView> result = new ArrayList<>();
+
+        for (FavoritePath favoritePath : favoritePaths) {
+            result.add(FavoritePathResponseView.of(favoritePath));
+        }
+        
+        return ResponseEntity.ok(result);
     }
 }

@@ -39,6 +39,18 @@ public class FavoritePathDao {
         return findById(favoritePathId);
     }
 
+    public List<FavoritePath> findAll(long owner) {
+        return jdbcTemplate.query(
+                "select * from FAVORITE_PATH WHERE owner = " + owner,
+                (rs, rowNum) ->
+                        FavoritePath.builder()
+                                .id(rs.getLong("id"))
+                                .owner(rs.getLong("owner"))
+                                .sourceStationId(rs.getLong("source_station_id"))
+                                .targetStationId(rs.getLong("target_station_id")).build()
+        );
+    }
+
     private FavoritePath findById(Long id) {
         String sql = "select id, owner, source_station_Id, target_station_Id " +
                 "from FAVORITE_PATH  \n" +

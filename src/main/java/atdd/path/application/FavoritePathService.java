@@ -10,6 +10,8 @@ import atdd.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FavoritePathService {
     @Autowired
@@ -36,5 +38,17 @@ public class FavoritePathService {
         favoritePath.setTargetStation(tartStation);
 
         return favoritePath;
+    }
+
+    public List<FavoritePath> findFavoritePath(final String email) {
+        User user = userDao.findByEmail(email);
+
+        List<FavoritePath> favoritePaths = favoritePathDao.findAll(user.getId());
+        for (FavoritePath favoritePath : favoritePaths) {
+            favoritePath.setSourceStation(stationDao.findById(favoritePath.getSourceStationId()));
+            favoritePath.setTargetStation(stationDao.findById(favoritePath.getTargetStationId()));
+        }
+
+        return favoritePaths;
     }
 }
