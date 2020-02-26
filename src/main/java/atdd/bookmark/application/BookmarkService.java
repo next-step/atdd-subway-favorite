@@ -66,24 +66,9 @@ public class BookmarkService {
   }
 
   public BookmarkResponseView retrieveAllBookmarks(Long userID) {
-    List<BookmarkSimpleResponseView> bookmarks = bookmarkRepository.findByUserID(userID).stream().map(
-          bookmark-> {
-            Station sourceStation = bookmark.getSourceStation();
-            Station targetStation = bookmark.getTargetStation();
-            if (targetStation == null) {
-              return new BookmarkSimpleResponseView(
-                  bookmark.getId(),
-                  new StationResponseView(
-                    sourceStation.getId(), sourceStation.getName()));
-            }
-            return new BookmarkSimpleResponseView(
-                bookmark.getId(),
-                new StationResponseView(
-                  sourceStation.getId(), sourceStation.getName()),
-                new StationResponseView(
-                  targetStation.getId(), targetStation.getName())
-                );
-          }).collect(Collectors.toList());
+    List<BookmarkSimpleResponseView> bookmarks = bookmarkRepository.findByUserID(userID)
+      .stream().map(bookmark -> BookmarkAssembler.EntityToDTO(bookmark))
+      .collect(Collectors.toList());
 
       return new BookmarkResponseView(bookmarks);
   }
