@@ -2,17 +2,17 @@ package atdd.user.dao;
 
 import atdd.user.domain.Email;
 import atdd.user.domain.User;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Repository
 public class UserDao {
@@ -25,7 +25,8 @@ public class UserDao {
         return User.of(id, new Email(email), name, password);
     };
 
-    private static final String FIND_USER = "select * from USERS where id = :id";
+    private static final String FIND_USER_BY_ID = "select * from USERS where id = :id";
+    private static final String FIND_USER_BY_EMAIL = "select * from users where email = :email";
     private static final String DELETE_USER = "delete from users where id = :id";
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -40,7 +41,7 @@ public class UserDao {
 
     public User findById(Long id) {
         final Map<String, Long> parameter = Collections.singletonMap("id", id);
-        return namedParameterJdbcTemplate.queryForObject(FIND_USER, parameter, USER_MAPPER);
+        return namedParameterJdbcTemplate.queryForObject(FIND_USER_BY_ID, parameter, USER_MAPPER);
     }
 
     public User create(User user) {
@@ -57,6 +58,19 @@ public class UserDao {
     private void checkResult(Long id, int result) {
         if (result < 1) {
             throw new IllegalArgumentException("존재하지 않는 User 입니다.id : [" + id + "]");
+        }
+    }
+
+    public Optional<User> findByEmail(String email) {
+        final Map<String, String> paramMap = Collections.singletonMap("email", email);
+        return makeOptional(() -> namedParameterJdbcTemplate.queryForObject(FIND_USER_BY_EMAIL, paramMap, USER_MAPPER));
+    }
+
+    private <T> Optional<T> makeOptional(Supplier<T> supplier) {
+        try {
+            return Optional.of(supplier.get());
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
     }
 
