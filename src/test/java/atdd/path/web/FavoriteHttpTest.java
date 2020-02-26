@@ -40,4 +40,8 @@ public class FavoriteHttpTest {
         return httpTestUtils.getRequest(FAVORITE_PATH + "/paths", accessToken, new ParameterizedTypeReference<List<FavoritePathResponseView>>() {
         });
     }
+
+    public void deleteFavoritePathById(long id, String accessToken) {
+        httpTestUtils.deleteRequest(FAVORITE_PATH + "/paths/" + id, accessToken);
+    }
 }

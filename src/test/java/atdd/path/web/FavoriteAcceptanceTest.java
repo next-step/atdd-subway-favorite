@@ -158,4 +158,43 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(favoritePathResponseViews.size()).isEqualTo(1);
         assertThat(favoritePathResponseViews.get(0).getId()).isEqualTo(createFavorite.getId());
     }
+
+    @Test
+    public void deleteFavoritePaths() {
+        //given
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        long stationId1 = stationHttpTest.createStation(STATION_NAME_11, accessToken); //고속버스 터미널역
+        long stationId2 = stationHttpTest.createStation(STATION_NAME_12, accessToken); //교대역
+        long stationId3 = stationHttpTest.createStation(STATION_NAME, accessToken);    // 강남
+        long stationId4 = stationHttpTest.createStation(STATION_NAME_2, accessToken);  // 역삼
+        long stationId5 = stationHttpTest.createStation(STATION_NAME_3, accessToken);  // 선릉
+        long stationId6 = stationHttpTest.createStation(STATION_NAME_4, accessToken);  // 삼성
+
+        long lineId1 = lineHttpTest.createLine(LINE_NAME, accessToken);
+        long lineId2 = lineHttpTest.createLine(LINE_NAME_3, accessToken);
+
+        lineHttpTest.createEdgeRequest(lineId1, stationId2, stationId3, accessToken);
+        lineHttpTest.createEdgeRequest(lineId1, stationId3, stationId4, accessToken);
+        lineHttpTest.createEdgeRequest(lineId1, stationId4, stationId5, accessToken);
+        lineHttpTest.createEdgeRequest(lineId1, stationId5, stationId6, accessToken);
+        lineHttpTest.createEdgeRequest(lineId2, stationId1, stationId2, accessToken);
+
+        PathResponseView pathResponseView = graphHttpTest.findPath(stationId1, stationId6, accessToken).getResponseBody();
+
+        FavoritePathRequestView request = FavoritePathRequestView.builder()
+                .sourceStationId(pathResponseView.getStartStationId())
+                .targetStationId(pathResponseView.getEndStationId()).build();
+
+        FavoritePathResponseView createFavorite = (FavoritePathResponseView) favoriteHttpTest.createFavoritePath(request, accessToken).getResponseBody();
+
+        //when
+        favoriteHttpTest.deleteFavoritePathById(createFavorite.getId(), accessToken);
+
+        //then
+        List<FavoritePathResponseView> favoritePathResponseViews = (List<FavoritePathResponseView>) favoriteHttpTest.findFavoritePath(accessToken).getResponseBody();
+
+        assertThat(favoritePathResponseViews.size()).isEqualTo(0);
+    }
 }
