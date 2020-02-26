@@ -41,3 +41,12 @@ create table if not exists FAVORITE_STATION
     station_Id bigint not null,
     primary key(id)
 );
+
+create table if not exists FAVORITE_PATH
+(
+    id bigint auto_increment not null,
+    owner bigint not null,
+    source_station_id bigint not null,
+    target_station_id bigint not null,
+    primary key(id)
+);
