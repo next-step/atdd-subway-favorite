@@ -35,5 +35,4 @@ public class UserFixture {
         savedUser.put(EMAIL_KEY, KIM_EMAIL);
         return savedUser;
     }
-
 }
