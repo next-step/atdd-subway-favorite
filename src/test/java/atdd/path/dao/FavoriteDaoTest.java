@@ -3,6 +3,7 @@ package atdd.path.dao;
 import atdd.path.SoftAssertionTest;
 import atdd.path.domain.Favorite;
 import atdd.path.domain.Station;
+import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import javax.sql.DataSource;
 import static atdd.path.TestConstant.TEST_STATION;
 import static atdd.path.fixture.FavoriteFixture.STATION_NAME;
 import static atdd.path.fixture.FavoriteFixture.getDaoFavorites;
+import static atdd.path.fixture.UserFixture.NEW_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
@@ -27,6 +29,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
     private FavoriteDao favoriteDao;
     private StationDao stationDao;
+    private UserDao userDao;
 
     @BeforeEach
     void setUp() {
@@ -34,16 +37,19 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         favoriteDao.setDataSource(dataSource);
         stationDao = new StationDao(jdbcTemplate);
         stationDao.setDataSource(dataSource);
+        userDao = new UserDao(jdbcTemplate);
+        userDao.setDataSource(dataSource);
     }
 
     @DisplayName("Favorite 에 Station 을 저장이 성공하는지")
     @Test
     public void save() {
         //given
+        User user = userDao.save(NEW_USER);
         Station station = stationDao.save(TEST_STATION);
 
         //when
-        Favorite favorite = favoriteDao.save(new Favorite(station));
+        Favorite favorite = favoriteDao.save(new Favorite(user, station));
 
         //then
         assertThat(favorite.getId()).isNotNull();
@@ -54,8 +60,9 @@ public class FavoriteDaoTest extends SoftAssertionTest {
     @Test
     public void findById() {
         //given
+        User user = userDao.save(NEW_USER);
         Station station = stationDao.save(TEST_STATION);
-        Favorite savedFavorite = favoriteDao.save(new Favorite(station));
+        Favorite savedFavorite = favoriteDao.save(new Favorite(user, station));
 
         //when
         Favorite favorite = favoriteDao.findById(savedFavorite.getId());
