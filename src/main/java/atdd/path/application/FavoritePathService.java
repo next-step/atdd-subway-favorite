@@ -51,4 +51,10 @@ public class FavoritePathService {
 
         return favoritePaths;
     }
+
+    public void deleteFavoritePath(final String email, final long id) {
+        User user = userDao.findByEmail(email);
+
+        favoritePathDao.deleteById(user.getId(), id);
+    }
 }

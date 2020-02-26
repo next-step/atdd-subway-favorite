@@ -51,6 +51,10 @@ public class FavoritePathDao {
         );
     }
 
+    public void deleteById(long owner, long id) {
+        jdbcTemplate.update("delete from FAVORITE_PATH where id = ? AND owner = ?", id, owner);
+    }
+
     private FavoritePath findById(Long id) {
         String sql = "select id, owner, source_station_Id, target_station_Id " +
                 "from FAVORITE_PATH  \n" +

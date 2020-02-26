@@ -66,4 +66,11 @@ public class FavoriteController {
         
         return ResponseEntity.ok(result);
     }
+
+    @DeleteMapping("/paths/{id}")
+    public ResponseEntity deleteFavoritePath(@LoginUser final String email, @PathVariable Long id) {
+        favoritePathService.deleteFavoritePath(email, id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
