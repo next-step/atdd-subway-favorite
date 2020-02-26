@@ -2,6 +2,7 @@ package atdd.path.application.interceptor;
 
 import atdd.path.application.exception.InvalidJwtAuthenticationException;
 import atdd.path.application.provider.JwtTokenProvider;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -9,7 +10,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static atdd.path.application.provider.JwtTokenProvider.AUTHORIZATION;
 import static atdd.path.application.provider.JwtTokenProvider.TOKEN_TYPE;
 
 @Component
@@ -35,7 +35,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     private String extractToken(HttpServletRequest request) {
-        final String header = request.getHeader(AUTHORIZATION);
+        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.isEmpty(header)) {
             return "";

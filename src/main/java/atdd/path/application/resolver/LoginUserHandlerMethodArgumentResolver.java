@@ -10,6 +10,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import static atdd.path.domain.Guest.GUEST_MEMBER;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 @Component
@@ -33,7 +34,7 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
         String email = (String) webRequest.getAttribute("loginUserEmail", SCOPE_REQUEST);
 
         if (Strings.isBlank(email)) {
-            return null;
+            return GUEST_MEMBER;
         }
 
         return memberDao.findByEmail(email).orElseThrow(InvalidJwtAuthenticationException::new);

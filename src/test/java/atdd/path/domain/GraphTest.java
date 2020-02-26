@@ -1,6 +1,7 @@
 package atdd.path.domain;
 
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,4 +28,14 @@ public class GraphTest {
         assertThat(result.get(0)).isEqualTo(TEST_STATION);
         assertThat(result.get(2)).isEqualTo(TEST_STATION_3);
     }
+
+    @DisplayName("시작점과 끝점이 연결된 선이 있는지 확인해야 한다")
+    @Test
+    void mustPathExists() {
+        Graph graph = new Graph(List.of(TEST_LINE));
+
+        boolean isConnect = graph.isPathExists(STATION_ID, STATION_ID_22);
+        assertThat(isConnect).isFalse();
+    }
+
 }

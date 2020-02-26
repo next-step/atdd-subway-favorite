@@ -1,14 +1,22 @@
 package atdd.path;
 
-import atdd.path.domain.Edge;
-import atdd.path.domain.Line;
-import atdd.path.domain.Member;
-import atdd.path.domain.Station;
+import atdd.path.domain.*;
 import org.assertj.core.util.Lists;
 
 import java.time.LocalTime;
 
 public class TestConstant {
+    public static final String STATION_URL = "/stations";
+    public static final String LINE_URL = "/lines";
+    public static final String EDGE_URL = "/edges";
+    public static final String PATH_URL = "/paths";
+
+    public static final String MEMBER_URL = "/members";
+    public static final String LOGIN_URL = "/login";
+
+    public static final String FAVORITES_STATIONS_URL = "/favorites/stations";
+    public static final String FAVORITES_PATH_URL = "/favorites/paths";
+
     public static final Long STATION_ID = 1L;
     public static final Long STATION_ID_2 = 2L;
     public static final Long STATION_ID_3 = 3L;
@@ -92,6 +100,12 @@ public class TestConstant {
     public static final Long EDGE_ID_22 = 22L;
     public static final Long EDGE_ID_23 = 23L;
 
+    public static final Long MEMBER_ID = 1L;
+
+    public static final Long FAVORITE_STATION_ID = 1L;
+
+    public static final Long FAVORITE_PATH_ID = 1L;
+
     public static Station TEST_STATION = new Station(STATION_ID, STATION_NAME);
     public static Station TEST_STATION_2 = new Station(STATION_ID_2, STATION_NAME_2);
     public static Station TEST_STATION_3 = new Station(STATION_ID_3, STATION_NAME_3);
@@ -156,5 +170,12 @@ public class TestConstant {
     public static final String TEST_MEMBER_NAME = "개발자";
     public static final String TEST_MEMBER_PASSWORD = "1234";
 
-    public static final Member TEST_MEMBER = new Member(TEST_MEMBER_EMAIL, TEST_MEMBER_NAME, TEST_MEMBER_PASSWORD);
+    public static final Member TEST_MEMBER = new Member(MEMBER_ID, TEST_MEMBER_EMAIL, TEST_MEMBER_NAME, TEST_MEMBER_PASSWORD);
+
+    // 지하철역 즐겨찾기
+    public static FavoriteStation TEST_FAVORITE_STATION = new FavoriteStation(FAVORITE_STATION_ID, TEST_MEMBER, TEST_STATION);
+
+    // 경로 즐겨찾기
+    public static FavoritePath TEST_FAVORITE_PATH = new FavoritePath(FAVORITE_PATH_ID, TEST_MEMBER, TEST_STATION, TEST_STATION_4);
+
 }

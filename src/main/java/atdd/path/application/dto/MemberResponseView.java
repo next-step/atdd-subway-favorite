@@ -2,8 +2,6 @@ package atdd.path.application.dto;
 
 import atdd.path.domain.Member;
 
-import java.util.StringJoiner;
-
 public class MemberResponseView {
 
     private Long id;
@@ -11,7 +9,7 @@ public class MemberResponseView {
     private String name;
     private String password;
 
-    protected MemberResponseView() {}
+    private MemberResponseView() {}
 
     public MemberResponseView(Member member) {
         this.id = member.getId();
@@ -34,15 +32,6 @@ public class MemberResponseView {
 
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", MemberResponseView.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("email='" + email + "'")
-                .add("name='" + name + "'")
-                .toString();
     }
 
 }

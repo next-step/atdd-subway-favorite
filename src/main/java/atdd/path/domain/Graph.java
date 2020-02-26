@@ -1,6 +1,7 @@
 package atdd.path.domain;
 
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -21,6 +22,11 @@ public class Graph {
 
     public List<Station> getShortestDistancePath(Long startId, Long endId) {
         return getPathStations(makeGraph(lines), startId, endId);
+    }
+
+    public boolean isPathExists(Long startId, Long endId) {
+        ConnectivityInspector<Long, DefaultWeightedEdge> inspector = new ConnectivityInspector<>(makeGraph(lines));
+        return inspector.pathExists(startId, endId);
     }
 
     private WeightedMultigraph<Long, DefaultWeightedEdge> makeGraph(List<Line> lines) {
@@ -50,4 +56,5 @@ public class Graph {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
+
 }

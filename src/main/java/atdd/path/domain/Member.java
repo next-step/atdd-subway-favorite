@@ -1,6 +1,6 @@
 package atdd.path.domain;
 
-import java.util.StringJoiner;
+import java.util.Objects;
 
 public class Member {
 
@@ -8,6 +8,8 @@ public class Member {
     private String email;
     private String name;
     private String password;
+
+    protected Member() {}
 
     public Member(Long id, String email, String name, String password) {
         this.id = id;
@@ -40,14 +42,22 @@ public class Member {
         return password;
     }
 
+    public boolean isGuest() {
+        return false;
+    }
+
     @Override
-    public String toString() {
-        return new StringJoiner(", ", Member.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("email='" + email + "'")
-                .add("name='" + name + "'")
-                .add("password='" + password + "'")
-                .toString();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id) &&
+                Objects.equals(email, member.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email);
     }
 
 }
