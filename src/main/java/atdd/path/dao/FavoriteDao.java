@@ -19,7 +19,11 @@ public class FavoriteDao {
     public static final int FIRST_INDEX = 0;
     public static final String FAVORITE_TABLE_NAME = "FAVORITE";
     public static final String STATION_ID_KEY = "STATION_ID";
+    public static final String USER_ID_KEY = "USER_ID";
     public static final String STATION_NAME_KEY = "STATION_NAME";
+    public static final String USER_NAME_KEY = "USER_NAME";
+    public static final String USER_PASSWORD_KEY = "USER_PASSWORD";
+    public static final String USER_EMAIL_KEY = "USER_EMAIL";
     public static final String FAVORITE_ID_KEY = "FAVORITE_ID";
 
     private final JdbcTemplate jdbcTemplate;
@@ -45,9 +49,11 @@ public class FavoriteDao {
     }
 
     public Favorite findById(Long id) {
-        String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name \n" +
+        String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name," +
+                "U.id as user_id, U.emial as user_email, U.name as user_name, U.password as user_password \n" +
                 "FROM FAVORITE F \n" +
                 "JOIN STATION S ON F.station_id = S.id \n" +
+                "JOIN USER U ON F.user_id = U.id \n" +
                 "WHERE F.id  = ?";
 
         return mapFavorite(jdbcTemplate.queryForList(sql, id));
@@ -59,6 +65,8 @@ public class FavoriteDao {
         Map<String, Object> firstRow = result.get(FIRST_INDEX);
         return new Favorite(
                 (Long) firstRow.get(FAVORITE_ID_KEY),
+                new User((Long) firstRow.get(USER_ID_KEY), (String) firstRow.get(USER_EMAIL_KEY),
+                        (String) firstRow.get(USER_PASSWORD_KEY), (String) firstRow.get(USER_NAME_KEY)),
                 new Station((Long) firstRow.get(STATION_ID_KEY), (String) firstRow.get(STATION_NAME_KEY))
         );
     }
