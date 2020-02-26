@@ -1,5 +1,6 @@
 package atdd.path;
 
+import atdd.path.application.dto.FavoritePathRequestView;
 import atdd.user.application.dto.CreateUserRequestView;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
@@ -164,4 +165,7 @@ public class TestConstant {
 
     public static CreateUserRequestView CREATE_USER_REQUEST1 = CreateUserRequestView.builder().email(USER_EMAIL1).name(USER_NAME1).password(USER_PASSWORD1).build();
     public static CreateUserRequestView CREATE_USER_REQUEST2 = CreateUserRequestView.builder().email(USER_EMAIL2).name(USER_NAME2).password(USER_PASSWORD2).build();
+
+    //경로 즐겨 찾기
+    public static FavoritePathRequestView FAVORITE_PATH_REQUEST1 = FavoritePathRequestView.builder().sourceStationId(TEST_STATION_11.getId()).targetStationId(TEST_STATION_4.getId()).build();
 }
