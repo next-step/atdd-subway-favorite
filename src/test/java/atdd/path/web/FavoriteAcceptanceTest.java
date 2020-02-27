@@ -48,6 +48,38 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
     }
 
+    @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 조호되는지")
+    @Test
+    public void detailFavoriteToStation(SoftAssertions softly) {
+        //given
+        restWebClientTest.createUser();
+        restWebClientTest.createStation(STATION_NAME);
+        createFavorite();
+
+        //when
+        EntityExchangeResult<Favorite> expectResponse
+                = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, Favorite.class, getJwt());
+
+        //then
+        Favorite responseBody = expectResponse.getResponseBody();
+        Station station = responseBody.getStation();
+
+        //then
+        softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
+    }
+
+
+    public String createFavorite() {
+        EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, Favorite.class, getJwt());
+
+        return expectResponse
+                .getResponseHeaders()
+                .getLocation()
+                .getPath();
+    }
+
+
     private String getJwt() {
         return tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
     }
