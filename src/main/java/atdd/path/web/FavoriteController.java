@@ -31,4 +31,10 @@ public class FavoriteController {
         FavoriteListResponseView favorites = favoriteService.findByUser(user);
         return ResponseEntity.ok(favorites);
     }
+
+    @DeleteMapping("")
+    public ResponseEntity deleteStation(@LoginUser User user) {
+        return ResponseEntity.ok().build();
+    }
+
 }
