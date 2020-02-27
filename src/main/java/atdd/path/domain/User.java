@@ -27,12 +27,18 @@ public class User {
         this.favorites = favorites;
     }
 
-    @Builder
     public User(Long id, String email, String name, String password) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
+        this.favorites = new ArrayList<>();
+    }
+
+    public User(Long id, String email, String name) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
         this.favorites = new ArrayList<>();
     }
 
