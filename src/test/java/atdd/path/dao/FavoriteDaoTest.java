@@ -75,7 +75,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
     @DisplayName("사용자 Id 로 등록된 Favorite 을 조회할 수 있는지")
     @Test
-    public void findByUserId() {
+    public void findByUser() {
         //given
         User user = userDao.save(NEW_USER);
         Station firstStation = stationDao.save(TEST_STATION);
@@ -84,7 +84,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         favoriteDao.save(new Favorite(user, secondStation));
 
         //when
-        List<Favorite> favorites = favoriteDao.findByUserId(user.getId());
+        List<Favorite> favorites = favoriteDao.findByUserId(user);
 
         //then
         assertThat(favorites).hasSizeGreaterThan(1);
