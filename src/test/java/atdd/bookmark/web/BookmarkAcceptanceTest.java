@@ -48,14 +48,10 @@ public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
       .toHeaderString();
     this.bookmarkHttpTest = new BookmarkHttpTest(webTestClient, authToken);
 
-    this.stations.add(
-        stationHttpTest.createStation(STATION_NAME));
-    this.stations.add(
-        stationHttpTest.createStation(STATION_NAME_2));
-    this.stations.add(
-        stationHttpTest.createStation(STATION_NAME_3));
-    this.stations.add(
-        stationHttpTest.createStation(STATION_NAME_4));
+    this.stations.add(stationHttpTest.createStation(STATION_NAME));
+    this.stations.add(stationHttpTest.createStation(STATION_NAME_2));
+    this.stations.add(stationHttpTest.createStation(STATION_NAME_3));
+    this.stations.add(stationHttpTest.createStation(STATION_NAME_4));
 
     Long lineId = lineHttpTest.createLine(LINE_NAME);
     lineHttpTest.createEdgeRequest(lineId, stations.get(0), stations.get(1));
@@ -122,7 +118,7 @@ public class BookmarkAcceptanceTest extends AbstractAcceptanceTest {
   }
 
   @Test 
-  public void retriveAllPathBookmarks() {
+  public void retrieveAllPathBookmarks() {
     //Given
     BookmarkSimpleResponseView bookmarkResponseView =  bookmarkHttpTest.addBookmark(
         stations.get(0),
