@@ -50,7 +50,7 @@ public class FavoriteDao {
 
     public Favorite findById(Long id) {
         String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name," +
-                "U.id as user_id, U.emial as user_email, U.name as user_name, U.password as user_password \n" +
+                "U.id as user_id, U.email as user_email, U.name as user_name, U.password as user_password \n" +
                 "FROM FAVORITE F \n" +
                 "JOIN STATION S ON F.station_id = S.id \n" +
                 "JOIN USER U ON F.user_id = U.id \n" +
@@ -66,7 +66,7 @@ public class FavoriteDao {
         return new Favorite(
                 (Long) firstRow.get(FAVORITE_ID_KEY),
                 new User((Long) firstRow.get(USER_ID_KEY), (String) firstRow.get(USER_EMAIL_KEY),
-                        (String) firstRow.get(USER_PASSWORD_KEY), (String) firstRow.get(USER_NAME_KEY)),
+                        (String) firstRow.get(USER_NAME_KEY), (String) firstRow.get(USER_PASSWORD_KEY)),
                 new Station((Long) firstRow.get(STATION_ID_KEY), (String) firstRow.get(STATION_NAME_KEY))
         );
     }
