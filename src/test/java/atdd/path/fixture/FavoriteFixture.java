@@ -3,10 +3,12 @@ package atdd.path.fixture;
 import atdd.path.application.dto.favorite.FavoriteCreateRequestView;
 import atdd.path.domain.Favorite;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static atdd.path.TestConstant.TEST_STATION;
-import static atdd.path.TestConstant.TEST_STATION_2;
+import static atdd.path.TestConstant.*;
 import static atdd.path.dao.FavoriteDao.*;
 import static atdd.path.fixture.UserFixture.*;
 
@@ -19,7 +21,7 @@ public class FavoriteFixture {
     public static final List<Favorite> NEW_FAVORITES = Arrays.asList(NEW_FAVORITE, NEW_SECOND_FAVORITE);
     public static final FavoriteCreateRequestView NEW_FAVORITE_CREATE_VIEW = new FavoriteCreateRequestView(KIM_ID, STATION_ID, STATION_NAME);
     public static List<Map<String, Object>> getDaoFavorites() {
-        return Collections.singletonList(getDaoFavorite());
+        return Arrays.asList(getDaoFavorite(), getDaoSecondFavorite());
     }
 
     public static Map<String, Object> getDaoFavorite() {
@@ -30,7 +32,18 @@ public class FavoriteFixture {
         savedFavorite.put(USER_ID_KEY, KIM_ID);
         savedFavorite.put(USER_NAME_KEY, KIM_NAME);
         savedFavorite.put(USER_EMAIL_KEY, KIM_EMAIL);
-        savedFavorite.put(USER_PASSWORD_KEY, KIM_PASSWORD);
         return savedFavorite;
     }
+
+    public static Map<String, Object> getDaoSecondFavorite() {
+        Map<String, Object> savedFavorite = new HashMap<>();
+        savedFavorite.put(FAVORITE_ID_KEY, FAVORITE_ID);
+        savedFavorite.put(STATION_ID_KEY, STATION_ID_2);
+        savedFavorite.put(STATION_NAME_KEY, STATION_NAME_2);
+        savedFavorite.put(USER_ID_KEY, KIM_ID);
+        savedFavorite.put(USER_NAME_KEY, KIM_NAME);
+        savedFavorite.put(USER_EMAIL_KEY, KIM_EMAIL);
+        return savedFavorite;
+    }
+
 }
