@@ -106,4 +106,16 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         softly.assertThat(user.getName()).isEqualTo(KIM_NAME);
         softly.assertThat(user.getEmail()).isEqualTo(KIM_EMAIL);
     }
+
+    @DisplayName("findByUser 로 나온 결과를 List<Favorite> 로 만들어주는지")
+    @Test
+    public void mapFavorites(SoftAssertions softly) {
+        //when
+        List<Favorite> favorites = favoriteDao.mapFavorites(getDaoFavorites(), NEW_USER);
+
+        Station station = favorites.get(0).getStation();
+        //then
+        softly.assertThat(station.getId()).isNotNull();
+        softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
+    }
 }
