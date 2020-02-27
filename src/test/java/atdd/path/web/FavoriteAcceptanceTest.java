@@ -10,10 +10,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.path.TestConstant.STATION_NAME;
 import static atdd.path.fixture.UserFixture.KIM_EMAIL;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     public static final String FAVORITE_INPUT_JSON = "{\"stationId\":\"1\", \"stationName\":\"강남역\"}";
@@ -39,7 +41,6 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
                 (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, Favorite.class, getJwt());
 
-        //then
         HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
         Favorite responseBody = expectResponse.getResponseBody();
         Station station = responseBody.getStation();
@@ -49,7 +50,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
     }
 
-    @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 조호되는지")
+    @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 조회되는지")
     @Test
     public void detailFavoriteToStation(SoftAssertions softly) {
         //given
@@ -61,13 +62,29 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         EntityExchangeResult<FavoriteListResponseView> expectResponse
                 = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
 
-        //then
         FavoriteListResponseView responseBody = expectResponse.getResponseBody();
         Station station = responseBody.getFirstFavoriteStation();
 
         //then
         softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
     }
+
+    @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
+    @Test
+    public void deleteFavoriteToStation(SoftAssertions softly) {
+        //given
+        restWebClientTest.createUser();
+        restWebClientTest.createStation(STATION_NAME);
+        createFavorite();
+
+        //when
+        EntityExchangeResult<Void> expectResponse
+                = restWebClientTest.deleteMethodWithAuthAcceptance(FAVORITE_BASE_URL, getJwt());
+
+        //then
+        assertThat(expectResponse.getStatus()).isEqualTo(HttpStatus.OK);
+    }
+
 
 
     String createFavorite() {
