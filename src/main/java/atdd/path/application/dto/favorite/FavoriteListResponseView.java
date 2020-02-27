@@ -1,6 +1,7 @@
 package atdd.path.application.dto.favorite;
 
 import atdd.path.domain.Favorite;
+import atdd.path.domain.Station;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +25,12 @@ public class FavoriteListResponseView {
                 .build();
     }
 
-    public Favorite getFirstIndex() {
-        return this.favorites.get(0);
+    public Station getFirstFavoriteStation() {
+        return getFirstIndex().getStation();
     }
 
-    public Favorite getSecondIndex() {
-        return this.favorites.get(1);
+    public Favorite getFirstIndex() {
+        return this.favorites.get(0);
     }
 
     public int getSize() {
