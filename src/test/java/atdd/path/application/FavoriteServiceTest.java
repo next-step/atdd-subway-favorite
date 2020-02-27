@@ -1,6 +1,7 @@
 package atdd.path.application;
 
 import atdd.path.SoftAssertionTest;
+import atdd.path.application.dto.favorite.FavoriteListResponseView;
 import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.Favorite;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.List;
-
 import static atdd.path.TestConstant.STATION_NAME;
-import static atdd.path.TestConstant.STATION_NAME_2;
 import static atdd.path.fixture.FavoriteFixture.*;
 import static atdd.path.fixture.UserFixture.KIM_NAME;
 import static atdd.path.fixture.UserFixture.NEW_USER;
@@ -51,14 +49,13 @@ public class FavoriteServiceTest extends SoftAssertionTest {
         when(favoriteDao.findByUser(any())).thenReturn(NEW_FAVORITES);
 
         //when
-        List<Favorite> favorites = favoriteService.findByUser(NEW_USER);
+        FavoriteListResponseView favorites = favoriteService.findByUser(NEW_USER);
 
-        Favorite firstFavorite = favorites.get(0);
+        Favorite firstFavorite = favorites.getFirstIndex();
         //then
-        assertThat(favorites).hasSizeGreaterThan(1);
+        assertThat(favorites.getSize()).isGreaterThan(1);
         assertThat(firstFavorite.getStation().getName()).isEqualTo(STATION_NAME);
         assertThat(firstFavorite.getUser().getName()).isEqualTo(KIM_NAME);
-        assertThat(favorites.get(1).getStation().getName()).isEqualTo(STATION_NAME_2);
     }
 
 }
