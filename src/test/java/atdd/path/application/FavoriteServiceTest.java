@@ -57,5 +57,4 @@ public class FavoriteServiceTest extends SoftAssertionTest {
         assertThat(firstFavorite.getStation().getName()).isEqualTo(STATION_NAME);
         assertThat(firstFavorite.getUser().getName()).isEqualTo(KIM_NAME);
     }
-
 }

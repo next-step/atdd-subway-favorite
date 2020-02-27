@@ -22,4 +22,8 @@ public class FavoriteService {
     public FavoriteListResponseView findByUser(User loginUser) {
         return FavoriteListResponseView.toDtoEntity(favoriteDao.findByUser(loginUser));
     }
+
+    public void deleteStation(User loginUser, Long stationId) {
+        favoriteDao.deleteStation(loginUser, stationId);
+    }
 }

@@ -106,7 +106,6 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         favoriteDao.deleteStation(user, STATION_ID);
         List<Favorite> favorites = favoriteDao.findByUser(user);
 
-
         //then
         assertThat(favorites).hasSize(1);
     }
