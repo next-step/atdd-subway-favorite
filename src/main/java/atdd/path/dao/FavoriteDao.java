@@ -96,4 +96,9 @@ public class FavoriteDao {
                         , new Station((Long) row.get(STATION_ID_KEY), (String) row.get(STATION_NAME_KEY))))
                 .collect(Collectors.toList());
     }
+
+    public void deleteStation(User user, Long stationId) {
+        String sql = "DELETE FROM FAVORITE WHERE id = ? AND user_id = ?";
+        jdbcTemplate.update(sql, stationId, user.getId());
+    }
 }
