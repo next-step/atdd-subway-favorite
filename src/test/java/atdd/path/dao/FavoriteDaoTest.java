@@ -73,6 +73,23 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         assertThat(favorite.getStation()).isEqualTo(savedFavorite.getStation());
     }
 
+    @DisplayName("사용자 Id 로 등록된 Favorite 을 조회할 수 있는지")
+    @Test
+    public void findByUserId() {
+        //given
+        User user = userDao.save(NEW_USER);
+        Station station = stationDao.save(TEST_STATION);
+        Favorite savedFavorite = favoriteDao.save(new Favorite(user, station));
+
+        //when
+        Favorite favorite = favoriteDao.findByUserid(user.getId());
+
+        //then
+        assertThat(favorite.getId()).isNotNull();
+        assertThat(favorite.getStation()).isEqualTo(savedFavorite.getStation());
+    }
+
+
     @DisplayName("findById 로 나온 결과를 Favorite 로 만들어주는지")
     @Test
     public void mapFavorite(SoftAssertions softly) {
