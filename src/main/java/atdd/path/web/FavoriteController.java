@@ -2,8 +2,8 @@ package atdd.path.web;
 
 import atdd.path.application.FavoriteService;
 import atdd.path.application.dto.favorite.FavoriteCreateRequestView;
+import atdd.path.application.dto.favorite.FavoriteListResponseView;
 import atdd.path.domain.Favorite;
-import atdd.path.domain.Station;
 import atdd.path.domain.User;
 import atdd.path.security.LoginUser;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,8 @@ public class FavoriteController {
     }
 
     @GetMapping("")
-    public ResponseEntity detail(@LoginUser User user) {
-        return ResponseEntity.ok(new Favorite(user, new Station("강남역")));
+    public ResponseEntity findByUser(@LoginUser User user) {
+        FavoriteListResponseView favorites = favoriteService.findByUser(user);
+        return ResponseEntity.ok(favorites);
     }
 }
