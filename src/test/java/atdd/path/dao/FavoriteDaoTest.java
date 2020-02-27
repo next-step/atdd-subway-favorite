@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 import static atdd.path.TestConstant.TEST_STATION;
 import static atdd.path.fixture.FavoriteFixture.STATION_NAME;
 import static atdd.path.fixture.FavoriteFixture.getDaoFavorites;
-import static atdd.path.fixture.UserFixture.NEW_USER;
+import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
@@ -54,6 +54,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         //then
         assertThat(favorite.getId()).isNotNull();
         assertThat(favorite.getStation().getName()).isEqualTo(STATION_NAME);
+        assertThat(favorite.getUser().getName()).isEqualTo(KIM_NAME);
     }
 
     @DisplayName("Id 로 Favorite 을 조회할 수 있는지")
@@ -78,8 +79,12 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         //when
         Favorite favorite = favoriteDao.mapFavorite(getDaoFavorites());
 
+        User user = favorite.getUser();
         //then
         softly.assertThat(favorite.getId()).isNotNull();
         softly.assertThat(favorite.getStation().getName()).isEqualTo(STATION_NAME);
+        softly.assertThat(user.getName()).isEqualTo(KIM_NAME);
+        softly.assertThat(user.getPassword()).isEqualTo(KIM_PASSWORD);
+        softly.assertThat(user.getEmail()).isEqualTo(KIM_EMAIL);
     }
 }
