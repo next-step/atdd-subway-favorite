@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static atdd.path.TestConstant.STATION_NAME;
 import static atdd.path.fixture.FavoriteFixture.NEW_FAVORITE;
 import static atdd.path.fixture.FavoriteFixture.NEW_FAVORITE_CREATE_VIEW;
+import static atdd.path.fixture.UserFixture.NEW_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,7 +35,7 @@ public class FavoriteServiceTest extends SoftAssertionTest {
         when(favoriteDao.save(any())).thenReturn(NEW_FAVORITE);
 
         //when
-        Favorite favorite = favoriteService.save(NEW_FAVORITE_CREATE_VIEW);
+        Favorite favorite = favoriteService.save(NEW_USER, NEW_FAVORITE_CREATE_VIEW);
 
         //then
         assertThat(favorite.getStation().getName()).isEqualTo(STATION_NAME);
