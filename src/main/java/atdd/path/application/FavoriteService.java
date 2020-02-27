@@ -3,6 +3,7 @@ package atdd.path.application;
 import atdd.path.application.dto.favorite.FavoriteCreateRequestView;
 import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.Favorite;
+import atdd.path.domain.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +14,7 @@ public class FavoriteService {
         this.favoriteDao = favoriteDao;
     }
 
-    public Favorite save(FavoriteCreateRequestView favorite) {
-        return favoriteDao.save(favorite.toEntity());
+    public Favorite save(User loginUser, FavoriteCreateRequestView favorite) {
+        return favoriteDao.save(favorite.toEntity(loginUser));
     }
 }
