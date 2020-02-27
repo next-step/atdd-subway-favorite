@@ -6,6 +6,8 @@ import atdd.path.domain.Favorite;
 import atdd.path.domain.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FavoriteService {
     private FavoriteDao favoriteDao;
@@ -16,5 +18,9 @@ public class FavoriteService {
 
     public Favorite save(User loginUser, FavoriteCreateRequestView favorite) {
         return favoriteDao.save(favorite.toEntity(loginUser));
+    }
+
+    public List<Favorite> findByUser(User loginUser) {
+        return favoriteDao.findByUser(loginUser);
     }
 }
