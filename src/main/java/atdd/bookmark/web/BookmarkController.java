@@ -25,7 +25,7 @@ public class BookmarkController {
     this.bookmarkService = bookmarkService;
   }
 
-  @PostMapping("/bookmark")
+  @PostMapping("/bookmarks")
   public ResponseEntity addBookmark(@LoginUser UserResponseView userResponseView, @RequestBody BookmarkRequestView bookmarkRequestView) {
     if (bookmarkRequestView.isStationBookmark()) {
       BookmarkSimpleResponseView result = bookmarkService.addStationBookmark(
@@ -33,7 +33,7 @@ public class BookmarkController {
           bookmarkRequestView.getSourceStationID());
 
       return ResponseEntity
-        .created(URI.create("/bookmark/" + result.getId()))
+        .created(URI.create("/bookmarks/" + result.getId()))
         .body(result);
     }
 
@@ -49,7 +49,7 @@ public class BookmarkController {
           );
 
       return ResponseEntity
-        .created(URI.create("/bookmark/" + result.getId()))
+        .created(URI.create("/bookmarks/" + result.getId()))
         .body(result);
     }
 
@@ -57,14 +57,14 @@ public class BookmarkController {
     return null;
   }
 
-  @GetMapping("/bookmark")
+  @GetMapping("/bookmarks")
   public ResponseEntity retriveAllBookmarks(@LoginUser UserResponseView userResponseView) {
     return ResponseEntity.ok(
       bookmarkService.retrieveAllBookmarks(userResponseView.getId())
         );
   }
 
-  @DeleteMapping("/bookmark/{id}")
+  @DeleteMapping("/bookmarks/{id}")
   public ResponseEntity removeStationBookmarks(@LoginUser UserResponseView userResponseView, @PathVariable(name = "id") Long bookmarkID) {
     bookmarkService.deleteBookmark(
         userResponseView.getId(),bookmarkID);

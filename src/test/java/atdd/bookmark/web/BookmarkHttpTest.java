@@ -25,7 +25,7 @@ public class BookmarkHttpTest {
       + "\"sourceStationID\" : " + stationId.toString()
       + "}";
 
-    return webTestClient.post().uri("/bookmark")
+    return webTestClient.post().uri("/bookmarks")
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .contentType(MediaType.APPLICATION_JSON)
       .body(Mono.just(requestBody), String.class)
@@ -41,7 +41,7 @@ public class BookmarkHttpTest {
       + "\"targetStationID\" : " + targetStationID.toString()
       + "}";
 
-    return webTestClient.post().uri("/bookmark")
+    return webTestClient.post().uri("/bookmarks")
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .contentType(MediaType.APPLICATION_JSON)
       .body(Mono.just(requestBody), String.class)
@@ -52,7 +52,7 @@ public class BookmarkHttpTest {
   }
 
   public EntityExchangeResult<BookmarkResponseView> getBookmarks() {
-    return webTestClient.get().uri("/bookmark")
+    return webTestClient.get().uri("/bookmarks")
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .exchange()
       .expectStatus().isOk()
@@ -61,7 +61,7 @@ public class BookmarkHttpTest {
   }
 
   public void deleteBookmarks(Long id) {
-    webTestClient.delete().uri("/bookmark/" + id.toString())
+    webTestClient.delete().uri("/bookmarks/" + id.toString())
       .header(HttpHeaders.AUTHORIZATION, authToken)
       .exchange()
       .expectStatus().isNoContent();

@@ -32,7 +32,7 @@ public class AuthConfig implements WebMvcConfigurer{
     registry
       .addInterceptor(authorizationInterceptor)
       .addPathPatterns("/user/me")
-      .addPathPatterns("/bookmark/**");
+      .addPathPatterns("/bookmarks/**");
     WebMvcConfigurer.super.addInterceptors(registry);
   }
   
