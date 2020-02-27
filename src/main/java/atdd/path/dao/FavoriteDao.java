@@ -85,7 +85,10 @@ public class FavoriteDao {
                 "JOIN USER U ON F.user_id = U.id \n" +
                 "WHERE U.id  = ?";
 
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, user.getId());
+        return mapFavorites(jdbcTemplate.queryForList(sql, user.getId()), user);
+    }
+
+    List<Favorite> mapFavorites(List<Map<String, Object>> rows, User user) {
         return rows.stream()
                 .map(row -> new Favorite(
                         (Long) row.get(FAVORITE_ID_KEY)
