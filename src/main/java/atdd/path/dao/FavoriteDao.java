@@ -78,7 +78,7 @@ public class FavoriteDao {
         }
     }
 
-    public List<Favorite> findByUserId(User user) {
+    public List<Favorite> findByUser(User user) {
         String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name \n" +
                 "FROM FAVORITE F \n" +
                 "JOIN STATION S ON F.station_id = S.id \n" +

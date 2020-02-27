@@ -84,7 +84,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         favoriteDao.save(new Favorite(user, secondStation));
 
         //when
-        List<Favorite> favorites = favoriteDao.findByUserId(user);
+        List<Favorite> favorites = favoriteDao.findByUser(user);
 
         //then
         assertThat(favorites).hasSizeGreaterThan(1);
