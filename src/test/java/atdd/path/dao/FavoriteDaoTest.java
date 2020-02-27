@@ -92,6 +92,25 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         assertThat(favorites.get(1).getStation().getName()).isEqualTo(STATION_NAME_15);
     }
 
+    @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
+    @Test
+    public void deleteStation() {
+        //given
+        User user = userDao.save(NEW_USER);
+        Station firstStation = stationDao.save(TEST_STATION);
+        Station secondStation = stationDao.save(TEST_STATION_15);
+        favoriteDao.save(new Favorite(user, firstStation));
+        favoriteDao.save(new Favorite(user, secondStation));
+
+        //when
+        favoriteDao.deleteStation(user, STATION_ID);
+        List<Favorite> favorites = favoriteDao.findByUser(user);
+
+
+        //then
+        assertThat(favorites).hasSize(1);
+    }
+
 
     @DisplayName("findById 로 나온 결과를 Favorite 로 만들어주는지")
     @Test
