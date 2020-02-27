@@ -10,14 +10,14 @@ import java.util.Map;
 
 import static atdd.path.TestConstant.TEST_STATION;
 import static atdd.path.dao.FavoriteDao.*;
-import static atdd.path.fixture.UserFixture.NEW_USER;
+import static atdd.path.fixture.UserFixture.*;
 
 public class FavoriteFixture {
     public static final Long FAVORITE_ID = 0L;
     public static final String STATION_NAME = "강남역";
     public static final Long STATION_ID = 0L;
     public static final Favorite NEW_FAVORITE = new Favorite(NEW_USER, TEST_STATION);
-    public static final FavoriteCreateRequestView NEW_FAVORITE_CREATE_VIEW = new FavoriteCreateRequestView(NEW_USER, TEST_STATION);
+    public static final FavoriteCreateRequestView NEW_FAVORITE_CREATE_VIEW = new FavoriteCreateRequestView(KIM_ID, STATION_ID, STATION_NAME);
     public static List<Map<String, Object>> getDaoFavorites() {
         return Collections.singletonList(getDaoFavorite());
     }
@@ -27,6 +27,10 @@ public class FavoriteFixture {
         savedFavorite.put(FAVORITE_ID_KEY, FAVORITE_ID);
         savedFavorite.put(STATION_ID_KEY, STATION_ID);
         savedFavorite.put(STATION_NAME_KEY, STATION_NAME);
+        savedFavorite.put(USER_ID_KEY, KIM_ID);
+        savedFavorite.put(USER_NAME_KEY, KIM_NAME);
+        savedFavorite.put(USER_EMAIL_KEY, KIM_EMAIL);
+        savedFavorite.put(USER_PASSWORD_KEY, KIM_PASSWORD);
         return savedFavorite;
     }
 }
