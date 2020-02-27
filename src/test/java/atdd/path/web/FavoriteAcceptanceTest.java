@@ -1,6 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
+import atdd.path.application.dto.favorite.FavoriteListResponseView;
 import atdd.path.domain.Favorite;
 import atdd.path.domain.Station;
 import atdd.path.security.TokenAuthenticationService;
@@ -57,19 +58,19 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         createFavorite();
 
         //when
-        EntityExchangeResult<Favorite> expectResponse
-                = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, Favorite.class, getJwt());
+        EntityExchangeResult<FavoriteListResponseView> expectResponse
+                = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
 
         //then
-        Favorite responseBody = expectResponse.getResponseBody();
-        Station station = responseBody.getStation();
+        FavoriteListResponseView responseBody = expectResponse.getResponseBody();
+        Station station = responseBody.getFirstFavoriteStation();
 
         //then
         softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
     }
 
 
-    public String createFavorite() {
+    String createFavorite() {
         EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
                 (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, Favorite.class, getJwt());
 
