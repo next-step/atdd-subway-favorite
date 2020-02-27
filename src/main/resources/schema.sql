@@ -33,3 +33,12 @@ create table if not exists USER
   password varchar(512) not null,
   primary key(id)
 );
+
+create table if not exists BOOKMARK
+(
+  id bigint auto_increment not null,
+  user_id bigint not null,
+  source_station_id bigint not null,
+  target_station_id bigint,
+  primary key(id)
+);
