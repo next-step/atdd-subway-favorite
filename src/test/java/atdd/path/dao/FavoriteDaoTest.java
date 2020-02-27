@@ -13,9 +13,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.List;
 
-import static atdd.path.TestConstant.TEST_STATION;
-import static atdd.path.fixture.FavoriteFixture.STATION_NAME;
+import static atdd.path.TestConstant.*;
 import static atdd.path.fixture.FavoriteFixture.getDaoFavorites;
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,15 +78,18 @@ public class FavoriteDaoTest extends SoftAssertionTest {
     public void findByUserId() {
         //given
         User user = userDao.save(NEW_USER);
-        Station station = stationDao.save(TEST_STATION);
-        Favorite savedFavorite = favoriteDao.save(new Favorite(user, station));
+        Station firstStation = stationDao.save(TEST_STATION);
+        Station secondStation = stationDao.save(TEST_STATION_15);
+        favoriteDao.save(new Favorite(user, firstStation));
+        favoriteDao.save(new Favorite(user, secondStation));
 
         //when
-        Favorite favorite = favoriteDao.findByUserid(user.getId());
+        List<Favorite> favorites = favoriteDao.findByUserId(user.getId());
 
         //then
-        assertThat(favorite.getId()).isNotNull();
-        assertThat(favorite.getStation()).isEqualTo(savedFavorite.getStation());
+        assertThat(favorites).hasSizeGreaterThan(1);
+        assertThat(favorites.get(0).getStation().getName()).isEqualTo(STATION_NAME);
+        assertThat(favorites.get(1).getStation().getName()).isEqualTo(STATION_NAME_15);
     }
 
 
@@ -101,7 +104,6 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         softly.assertThat(favorite.getId()).isNotNull();
         softly.assertThat(favorite.getStation().getName()).isEqualTo(STATION_NAME);
         softly.assertThat(user.getName()).isEqualTo(KIM_NAME);
-        softly.assertThat(user.getPassword()).isEqualTo(KIM_PASSWORD);
         softly.assertThat(user.getEmail()).isEqualTo(KIM_EMAIL);
     }
 }
