@@ -31,7 +31,6 @@ create table if not exists USER
     name varchar(255) not null,
     email varchar(255) not null,
     password varchar(255) not null,
-
     primary key(id)
 );
 
@@ -39,7 +38,7 @@ create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
     user_id bigint not null,
-    station_id bigint,
-    line_id bigint,
+    item_id bigint,
+    type varchar(20) not null,
     primary key(id)
 );
