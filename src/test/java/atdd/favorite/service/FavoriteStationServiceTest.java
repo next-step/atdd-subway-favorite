@@ -10,10 +10,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,8 +25,11 @@ import static org.mockito.Mockito.verify;
 public class FavoriteStationServiceTest {
     private static final String EMAIL = "abc@gmail.com";
     private static final Long stationId = 1L;
+    private static final Long stationId2 = 2L;
     private static final FavoriteStation favoriteStation
-            = new FavoriteStation(1L, EMAIL, 1L);
+            = new FavoriteStation(1L, EMAIL, stationId);
+    private static final FavoriteStation favoriteStation2
+            = new FavoriteStation(2L, EMAIL, stationId2);
 
     @InjectMocks
     private FavoriteStationService favoriteStationService;
@@ -78,6 +84,21 @@ public class FavoriteStationServiceTest {
         //then
         verify(favoriteStationRepository, times(1))
                 .delete(any(FavoriteStation.class));
+    }
+
+    @Test
+    void 지하철역_즐겨찾기_목록을_불러온다(){
+        //given
+        List<FavoriteStation> favoriteStations = Arrays.asList(favoriteStation, favoriteStation2);
+        given(favoriteStationRepository.findAll()).willReturn(favoriteStations);
+
+        //when
+        List<FavoriteStation> allByEmail = favoriteStationService.showAllFavoriteStations(String email)
+
+        //then
+        verify(favoriteStationRepository, times(1))
+                .findAllByEmail(anyString());
+        assertThat(allByEmail).isEqualTo(favoriteStations);
     }
 }
 
