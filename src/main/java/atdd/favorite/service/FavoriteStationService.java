@@ -6,7 +6,6 @@ import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
 import java.util.Optional;
 
 @Service
@@ -20,7 +19,7 @@ public class FavoriteStationService {
     public Optional<FavoriteStationResponseView> create(CreateFavoriteStationRequestView requestView) {
         Optional<FavoriteStation> existingFavoriteStation
                 = favoriteStationRepository.findByStationId(requestView.getStationId());
-        if(existingFavoriteStation.isPresent()){
+        if (existingFavoriteStation.isPresent()) {
             return null;
         }
         FavoriteStation savedFavoriteStation

@@ -65,5 +65,20 @@ public class FavoriteStationServiceTest {
         assertThat(responseView1).isNotEmpty();
         assertThat(responseView2).isNull();
     }
+
+    @Test
+    void 지하철역_즐겨찾기를_삭제한다() throws Exception {
+        //given
+        given(favoriteStationRepository.findById(favoriteStation.getId()))
+                .willReturn(Optional.of(favoriteStation));
+
+        //when
+        Long deletedId = favoriteStationService.delete(favoriteStation.getId());
+
+        //then
+        verify(favoriteStationRepository, times(1))
+                .delete(any(FavoriteStation.class));
+        assertThat(deletedId).isEqualTo(favoriteStation.getId());
+    }
 }
 
