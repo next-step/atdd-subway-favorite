@@ -1,64 +1,46 @@
 package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
-import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import reactor.core.publisher.Mono;
 
-import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.TestConstant.STATION_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
-    public static final String FAVORITE_STATION_BASE_URI = "/favorite-stations";
     public static final String NAME = "브라운";
-    public static final String EMAIL = "boorwonie@email.com";
+    public static final String EMAIL2 = "boorwonie2@email.com";
     public static final String PASSWORD = "subway";
-    private UserHttpTest userHttpTest;
-    private StationHttpTest stationHttpTest;
-    private Long stationId;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private static UserHttpTest userHttpTest;
+    private static StationHttpTest stationHttpTest;
+    private static FavoriteStationHttpTest favoriteStationHttpTest;
+    private String token;
 
     @BeforeEach
     void setUp() {
+        this.favoriteStationHttpTest = new FavoriteStationHttpTest(webTestClient);
         this.userHttpTest = new UserHttpTest(webTestClient);
         this.stationHttpTest = new StationHttpTest(webTestClient);
-        userHttpTest.createUser(EMAIL, NAME, PASSWORD);
+        userHttpTest.createUser(EMAIL2, NAME, PASSWORD);
     }
 
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @Test
-    public void 지하철역을_즐겨찾기에_등록한다() throws JsonProcessingException {
+    public void 지하철역을_즐겨찾기에_등록한다() throws Exception {
         //given
-        String token = jwtTokenProvider.createToken(EMAIL);
-        this.stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        token = jwtTokenProvider.createToken(EMAIL2);
 
         //when
-        FavoriteStationRequestView request
-                = new FavoriteStationRequestView(EMAIL, stationId);
-        String inputJson = objectMapper.writeValueAsString(request);
+        Long id = favoriteStationHttpTest.createFavoriteStationHttpTest(EMAIL2, stationId, token);
 
         //then
-        webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
-                .header("Authorization", AUTH_SCHEME_BEARER + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(inputJson), String.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().exists("Location")
-                .expectBody().jsonPath("$.email").isEqualTo(EMAIL)
-                .jsonPath("$.id").isEqualTo(1);
+        assertThat(id).isGreaterThan(0L);
     }
 }

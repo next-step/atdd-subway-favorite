@@ -25,7 +25,6 @@ public class UserHttpTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), CreateUserRequestView.class)
                 .exchange()
-                .expectStatus().isCreated()
                 .returnResult(UserResponseView.class)
                 .getResponseBody()
                 .toStream()
