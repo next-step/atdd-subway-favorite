@@ -12,11 +12,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class FavoriteStationServiceTest {
     private static final String EMAIL = "abc@gmail.com";
+    private static final Long stationId=1L;
+    private static final FavoriteStation favoriteStation
+            = new FavoriteStation(1L, EMAIL, 1L);
 
     @InjectMocks
     private FavoriteStationService favoriteStationService;
@@ -27,8 +31,6 @@ public class FavoriteStationServiceTest {
     @Test
     void 지하철역_즐겨찾기_등록이_된다() {
         //given
-        Long stationId = 1L;
-        FavoriteStation favoriteStation = new FavoriteStation(1L, EMAIL, 1L);
         CreateFavoriteStationRequestView requestView
                 = new CreateFavoriteStationRequestView(EMAIL, stationId);
         given(favoriteStationRepository.save(any(FavoriteStation.class))).willReturn(favoriteStation);
@@ -40,6 +42,22 @@ public class FavoriteStationServiceTest {
         verify(favoriteStationRepository).save(any());
         assertThat(favoriteStation1.getEmail()).isEqualTo(EMAIL);
         assertThat(favoriteStation1.getStationId()).isEqualTo(stationId);
+    }
+
+    @Test
+    void 같은_역을_여러_번_등록하면_안_된다(){
+        //given
+        CreateFavoriteStationRequestView requestView
+                = new CreateFavoriteStationRequestView(EMAIL, stationId);
+        given(favoriteStationRepository.save(any(FavoriteStation.class))).willReturn(favoriteStation);
+
+        //when
+        FavoriteStation favoriteStation1 = favoriteStationService.create(requestView);
+        FavoriteStation favoriteStation2 = favoriteStationService.create(requestView);
+
+        //then
+        verify(favoriteStationRepository, times(1)).save(any());
+        assertThat(favoriteStation1.getId()).isEqualTo(1L);
     }
 }
 
