@@ -67,7 +67,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         Favorite savedFavorite = favoriteDao.save(new Favorite(user, station), STATION_TYPE);
 
         //when
-        Favorite favorite = favoriteDao.findById(savedFavorite.getId());
+        Favorite favorite = favoriteDao.findStationById(savedFavorite.getId());
 
         //then
         assertThat(favorite.getId()).isNotNull();

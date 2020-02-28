@@ -20,6 +20,7 @@ public class FavoriteDao {
     public static final int FIRST_INDEX = 0;
     public static final String FAVORITE_TABLE_NAME = "FAVORITE";
     public static final String ITEM_ID_KEY = "ITEM_ID";
+    public static final String STATION_ID_KEY = "STATION_ID";
     public static final String USER_ID_KEY = "USER_ID";
     public static final String STATION_NAME_KEY = "STATION_NAME";
     public static final String USER_NAME_KEY = "USER_NAME";
@@ -46,10 +47,10 @@ public class FavoriteDao {
                 .executeAndReturnKey(Favorite.getSaveParameterByFavorite(favorite, type))
                 .longValue();
 
-        return findById(favoriteId);
+        return findStationById(favoriteId);
     }
 
-    public Favorite findById(Long id) {
+    public Favorite findStationById(Long id) {
         String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name," +
                 "U.id as user_id, U.email as user_email, U.name as user_name \n" +
                 "FROM FAVORITE F \n" +
@@ -68,7 +69,7 @@ public class FavoriteDao {
                 (Long) firstRow.get(FAVORITE_ID_KEY),
                 new User((Long) firstRow.get(USER_ID_KEY), (String) firstRow.get(USER_EMAIL_KEY),
                         (String) firstRow.get(USER_NAME_KEY)),
-                new Station((Long) firstRow.get(ITEM_ID_KEY), (String) firstRow.get(STATION_NAME_KEY))
+                new Station((Long) firstRow.get(STATION_ID_KEY), (String) firstRow.get(STATION_NAME_KEY))
         );
     }
 
@@ -93,7 +94,7 @@ public class FavoriteDao {
                 .map(row -> new Favorite(
                         (Long) row.get(FAVORITE_ID_KEY)
                         , user
-                        , new Station((Long) row.get(ITEM_ID_KEY), (String) row.get(STATION_NAME_KEY))))
+                        , new Station((Long) row.get(STATION_ID_KEY), (String) row.get(STATION_NAME_KEY))))
                 .collect(Collectors.toList());
     }
 

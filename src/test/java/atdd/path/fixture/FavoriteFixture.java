@@ -28,7 +28,7 @@ public class FavoriteFixture {
     public static Map<String, Object> getDaoFavorite() {
         Map<String, Object> savedFavorite = new HashMap<>();
         savedFavorite.put(FAVORITE_ID_KEY, FAVORITE_ID);
-        savedFavorite.put(ITEM_ID_KEY, STATION_ID);
+        savedFavorite.put(STATION_ID_KEY, STATION_ID);
         savedFavorite.put(STATION_NAME_KEY, STATION_NAME);
         savedFavorite.put(USER_ID_KEY, KIM_ID);
         savedFavorite.put(USER_NAME_KEY, KIM_NAME);
@@ -39,7 +39,7 @@ public class FavoriteFixture {
     public static Map<String, Object> getDaoSecondFavorite() {
         Map<String, Object> savedFavorite = new HashMap<>();
         savedFavorite.put(FAVORITE_ID_KEY, FAVORITE_ID);
-        savedFavorite.put(ITEM_ID_KEY, STATION_ID_2);
+        savedFavorite.put(STATION_ID_KEY, STATION_ID_2);
         savedFavorite.put(STATION_NAME_KEY, STATION_NAME_2);
         savedFavorite.put(USER_ID_KEY, KIM_ID);
         savedFavorite.put(USER_NAME_KEY, KIM_NAME);
