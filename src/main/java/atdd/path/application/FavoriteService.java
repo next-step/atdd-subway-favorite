@@ -16,7 +16,7 @@ public class FavoriteService {
     }
 
     public Favorite save(User loginUser, FavoriteCreateRequestView favorite) {
-        return favoriteDao.save(favorite.toEntity(loginUser));
+        return favoriteDao.save(favorite.toEntity(loginUser), favorite.getType());
     }
 
     public FavoriteListResponseView findByUser(User loginUser) {

@@ -33,7 +33,7 @@ public class FavoriteServiceTest extends SoftAssertionTest {
     @Test
     public void save() {
         //given
-        when(favoriteDao.save(any())).thenReturn(NEW_FAVORITE);
+        when(favoriteDao.save(any(), STATION_TYPE)).thenReturn(NEW_FAVORITE);
 
         //when
         Favorite favorite = favoriteService.save(NEW_USER, NEW_FAVORITE_CREATE_VIEW);
