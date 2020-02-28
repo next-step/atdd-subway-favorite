@@ -59,10 +59,10 @@ public class FavoriteStationServiceTest {
                 = new CreateFavoriteStationRequestView(EMAIL, stationId);
         given(favoriteStationRepository.save(any(FavoriteStation.class)))
                 .willReturn(favoriteStation);
-        given(favoriteStationRepository.findByStationId(stationId))
-                .willReturn(Optional.of(favoriteStation));
         Optional<FavoriteStationResponseView> responseView1
                 = favoriteStationService.create(requestView);
+        given(favoriteStationRepository.findByStationId(stationId))
+                .willReturn(Optional.of(favoriteStation));
 
         //when
         Optional<FavoriteStationResponseView> responseView2 = favoriteStationService.create(requestView);
