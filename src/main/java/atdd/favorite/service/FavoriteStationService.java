@@ -26,4 +26,12 @@ public class FavoriteStationService {
                 = favoriteStationRepository.save(FavoriteStation.of(requestView));
         return Optional.of(FavoriteStationResponseView.of(savedFavoriteStation));
     }
+
+    public Long delete(Long id) throws Exception {
+        Optional<FavoriteStation> findById = favoriteStationRepository.findById(id);
+        if (findById.isPresent()) {
+            favoriteStationRepository.delete(findById.get());
+        }
+        return id;
+    }
 }

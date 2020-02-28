@@ -78,7 +78,6 @@ public class FavoriteStationServiceTest {
         //then
         verify(favoriteStationRepository, times(1))
                 .delete(any(FavoriteStation.class));
-        assertThat(deletedId).isEqualTo(favoriteStation.getId());
     }
 }
 
