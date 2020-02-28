@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.List;
 
-import static atdd.path.TestConstant.*;
+import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest

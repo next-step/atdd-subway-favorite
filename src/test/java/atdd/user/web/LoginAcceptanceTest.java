@@ -1,7 +1,7 @@
 package atdd.user.web;
 
 import atdd.Constant;
-import atdd.path.AbstractAcceptanceTest;
+import atdd.AbstractAcceptanceTest;
 import atdd.user.application.dto.LoginRequestView;
 import atdd.user.domain.UserRepository;
 import atdd.user.jwt.JwtTokenProvider;

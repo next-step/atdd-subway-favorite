@@ -1,4 +1,4 @@
-package atdd.path.web;
+package atdd;
 
 import atdd.Constant;
 import atdd.user.jwt.JwtTokenProvider;

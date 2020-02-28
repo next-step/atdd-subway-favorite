@@ -1,4 +1,4 @@
-package atdd.path;
+package atdd;
 
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;

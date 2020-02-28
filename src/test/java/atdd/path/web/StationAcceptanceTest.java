@@ -1,6 +1,6 @@
 package atdd.path.web;
 
-import atdd.path.AbstractAcceptanceTest;
+import atdd.AbstractAcceptanceTest;
 import atdd.path.application.dto.StationResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +9,7 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import java.util.List;
 
-import static atdd.path.TestConstant.*;
+import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StationAcceptanceTest extends AbstractAcceptanceTest {

@@ -1,9 +1,10 @@
-package atdd.user.web;
+package atdd.favorite.web;
 
-import atdd.path.AbstractAcceptanceTest;
+import atdd.AbstractAcceptanceTest;
 import atdd.path.web.StationHttpTest;
-import atdd.user.application.dto.CreateFavoriteStationRequestView;
+import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
 import atdd.user.jwt.JwtTokenProvider;
+import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
-import static atdd.path.TestConstant.STATION_NAME;
+import static atdd.TestConstant.STATION_NAME;
 
 public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     public static final String FAVORITE_STATION_BASE_URI = "/favorite-station";
