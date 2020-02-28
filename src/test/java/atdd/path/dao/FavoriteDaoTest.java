@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static atdd.path.TestConstant.*;
+import static atdd.path.fixture.FavoriteFixture.STATION_TYPE;
 import static atdd.path.fixture.FavoriteFixture.getDaoFavorites;
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +50,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         Station station = stationDao.save(TEST_STATION);
 
         //when
-        Favorite favorite = favoriteDao.save(new Favorite(user, station));
+        Favorite favorite = favoriteDao.save(new Favorite(user, station), STATION_TYPE);
 
         //then
         assertThat(favorite.getId()).isNotNull();
@@ -63,7 +64,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         //given
         User user = userDao.save(NEW_USER);
         Station station = stationDao.save(TEST_STATION);
-        Favorite savedFavorite = favoriteDao.save(new Favorite(user, station));
+        Favorite savedFavorite = favoriteDao.save(new Favorite(user, station), STATION_TYPE);
 
         //when
         Favorite favorite = favoriteDao.findById(savedFavorite.getId());
@@ -80,8 +81,8 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         User user = userDao.save(NEW_USER);
         Station firstStation = stationDao.save(TEST_STATION);
         Station secondStation = stationDao.save(TEST_STATION_15);
-        favoriteDao.save(new Favorite(user, firstStation));
-        favoriteDao.save(new Favorite(user, secondStation));
+        favoriteDao.save(new Favorite(user, firstStation), STATION_TYPE);
+        favoriteDao.save(new Favorite(user, secondStation), STATION_TYPE);
 
         //when
         List<Favorite> favorites = favoriteDao.findByUser(user);
@@ -99,8 +100,8 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         User user = userDao.save(NEW_USER);
         Station firstStation = stationDao.save(TEST_STATION);
         Station secondStation = stationDao.save(TEST_STATION_15);
-        favoriteDao.save(new Favorite(user, firstStation));
-        favoriteDao.save(new Favorite(user, secondStation));
+        favoriteDao.save(new Favorite(user, firstStation), STATION_TYPE);
+        favoriteDao.save(new Favorite(user, secondStation), STATION_TYPE);
 
         //when
         favoriteDao.deleteStation(user, STATION_ID);
