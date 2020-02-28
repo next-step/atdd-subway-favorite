@@ -15,6 +15,6 @@ public class FavoriteStationService {
     }
 
     public FavoriteStation create(CreateFavoriteStationRequestView requestView) {
-        return new FavoriteStation();
+        return favoriteStationRepository.save(FavoriteStation.of(requestView));
     }
 }

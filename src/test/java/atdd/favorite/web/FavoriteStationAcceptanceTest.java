@@ -1,8 +1,8 @@
 package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
-import atdd.path.web.StationHttpTest;
 import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
+import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -45,8 +45,9 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         this.stationId = stationHttpTest.createStation(STATION_NAME);
 
         //when
-        CreateFavoriteStationRequestView request = new CreateFavoriteStationRequestView(stationId);
-        String inputJson=objectMapper.writeValueAsString(request);
+        CreateFavoriteStationRequestView request
+                = new CreateFavoriteStationRequestView(EMAIL, stationId);
+        String inputJson = objectMapper.writeValueAsString(request);
 
         //then
         webTestClient.post().uri(FAVORITE_STATION_BASE_URI)

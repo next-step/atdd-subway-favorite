@@ -23,7 +23,6 @@ public class User {
     public User() {
     }
 
-    @Builder
     public User(String email, String name, String password) {
         this.email = email;
         this.name = name;

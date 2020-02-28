@@ -3,7 +3,6 @@ package atdd.favorite.service;
 import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
 import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,22 +25,21 @@ public class FavoriteStationServiceTest {
     private FavoriteStationRepository favoriteStationRepository;
 
     @Test
-    void createFavoriteStation() {
+    void 지하철역_즐겨찾기_등록이_된다() {
         //given
         Long stationId = 1L;
         FavoriteStation favoriteStation = new FavoriteStation(1L, EMAIL, 1L);
         CreateFavoriteStationRequestView requestView
-                = CreateFavoriteStationRequestView.builder()
-                .email(EMAIL)
-                .stationId(stationId)
-                .build();
+                = new CreateFavoriteStationRequestView(EMAIL, stationId);
         given(favoriteStationRepository.save(any(FavoriteStation.class))).willReturn(favoriteStation);
 
         //when
-        FavoriteStation savedFavoriteStation = favoriteStationService.create(requestView);
+        FavoriteStation favoriteStation1 = favoriteStationService.create(requestView);
 
         //then
-        verify(favoriteStationRepository).save(favoriteStation);
-        assertThat(savedFavoriteStation.getStationId()).isEqualTo(stationId);
+        verify(favoriteStationRepository).save(any());
+        assertThat(favoriteStation1.getEmail()).isEqualTo(EMAIL);
+        assertThat(favoriteStation1.getStationId()).isEqualTo(stationId);
     }
 }
+

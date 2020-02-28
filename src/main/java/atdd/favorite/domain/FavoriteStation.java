@@ -1,5 +1,7 @@
 package atdd.favorite.domain;
 
+import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,9 +18,30 @@ public class FavoriteStation {
     public FavoriteStation() {
     }
 
+    public FavoriteStation(String email, Long stationId) {
+        this.email = email;
+        this.stationId = stationId;
+    }
+
     public FavoriteStation(Long id, String email, Long stationId) {
         this.id = id;
         this.email = email;
         this.stationId = stationId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Long getStationId() {
+        return stationId;
+    }
+
+    public static FavoriteStation of(CreateFavoriteStationRequestView requestView) {
+        return new FavoriteStation(requestView.getEmail(), requestView.getStationId());
     }
 }
