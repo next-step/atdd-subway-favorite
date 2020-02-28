@@ -3,7 +3,7 @@ package atdd.path.web;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.favorite.FavoriteListResponseView;
 import atdd.path.domain.Favorite;
-import atdd.path.domain.Station;
+import atdd.path.domain.Item;
 import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,8 @@ import static atdd.path.fixture.UserFixture.KIM_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
-    public static final String FAVORITE_INPUT_JSON = "{\"stationId\":\"1\", \"stationName\":\"강남역\"}";
+    public static final String FAVORITE_STATION_INPUT_JSON = "{\"itemId\":\"1\", \"itemName\":\"강남역\", \"type\":\"station\"}";
+    public static final String FAVORITE_LINE_INPUT_JSON = "{\"subwayId\":\"2\", \"lienName\":\"2호선\"}";
     public static final String FAVORITE_BASE_URL = "/favorites";
 
     private RestWebClientTest restWebClientTest;
@@ -39,11 +40,11 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
-                (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, Favorite.class, getJwt());
+                (FAVORITE_BASE_URL, FAVORITE_STATION_INPUT_JSON, Favorite.class, getJwt());
 
         HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
         Favorite responseBody = expectResponse.getResponseBody();
-        Station station = responseBody.getStation();
+        Item station = responseBody.getItem();
 
         //then
         softly.assertThat(responseHeaders.getLocation()).isNotNull();
@@ -63,7 +64,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
 
         FavoriteListResponseView responseBody = expectResponse.getResponseBody();
-        Station station = responseBody.getFirstFavoriteStation();
+        Item station = responseBody.getFirstFavoriteStation();
 
         //then
         softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
@@ -71,25 +72,44 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
     @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
     @Test
-    public void deleteFavoriteToStation(SoftAssertions softly) {
+    public void deleteFavoriteToStation() {
         //given
         restWebClientTest.createUser();
         restWebClientTest.createStation(STATION_NAME);
-        createFavorite();
+        String url = createFavorite();
 
         //when
         EntityExchangeResult<Void> expectResponse
-                = restWebClientTest.deleteMethodWithAuthAcceptance(FAVORITE_BASE_URL, getJwt());
+                = restWebClientTest.deleteMethodWithAuthAcceptance(url, getJwt());
 
         //then
         assertThat(expectResponse.getStatus()).isEqualTo(HttpStatus.OK);
     }
 
+    @DisplayName("경로 즐겨찾기를 등록 가능한지")
+    @Test
+    public void createFavoriteToGraph(SoftAssertions softly) {
+        restWebClientTest.createUser();
+        restWebClientTest.createStation(STATION_NAME);
+        restWebClientTest.createLine();
+
+        //when
+        EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL, FAVORITE_LINE_INPUT_JSON, Favorite.class, getJwt());
+
+        HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
+        Favorite responseBody = expectResponse.getResponseBody();
+        Item graph = responseBody.getItem();
+
+        //then
+        softly.assertThat(responseHeaders.getLocation()).isNotNull();
+        softly.assertThat(graph.getName()).isEqualTo(STATION_NAME);
+    }
 
 
     String createFavorite() {
         EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
-                (FAVORITE_BASE_URL, FAVORITE_INPUT_JSON, Favorite.class, getJwt());
+                (FAVORITE_BASE_URL, FAVORITE_STATION_INPUT_JSON, Favorite.class, getJwt());
 
         return expectResponse
                 .getResponseHeaders()
