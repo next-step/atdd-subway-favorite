@@ -79,7 +79,7 @@ public class FavoriteStationServiceTest {
                 .willReturn(Optional.of(favoriteStation));
 
         //when
-        Long deletedId = favoriteStationService.delete(FavoriteStationRequestView.of(favoriteStation));
+        favoriteStationService.delete(FavoriteStationRequestView.of(favoriteStation));
 
         //then
         verify(favoriteStationRepository, times(1))
@@ -94,7 +94,7 @@ public class FavoriteStationServiceTest {
         FavoriteStationRequestView requestView = new FavoriteStationRequestView(EMAIL2, stationId);
 
         //when
-        Long deletedId = favoriteStationService.delete(requestView);
+        favoriteStationService.delete(requestView);
 
         //then
         verify(favoriteStationRepository, times(0))

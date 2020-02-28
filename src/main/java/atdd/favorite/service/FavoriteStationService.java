@@ -7,6 +7,7 @@ import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +30,15 @@ public class FavoriteStationService {
         return FavoriteStationResponseView.of(savedFavoriteStation);
     }
 
-    public Long delete(FavoriteStationRequestView requestView) throws Exception {
+    public void delete(FavoriteStationRequestView requestView) throws Exception {
         Optional<FavoriteStation> stationFindById
                 = favoriteStationRepository.findById(requestView.getStationId());
         if (stationFindById.isPresent()) {
+            stationFindById.orElseThrow(IllegalArgumentException::new);
+        }
+        if(requestView.getEmail() == stationFindById.get().getEmail()){
             favoriteStationRepository.delete(stationFindById.get());
         }
-
-
-        return requestView.getStationId();
     }
 
     public FavoriteStationListResponseVIew showAllFavoriteStations(String email) {
