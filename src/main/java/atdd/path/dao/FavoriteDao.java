@@ -19,13 +19,13 @@ public class FavoriteDao {
     public static final String ID_KEY = "ID";
     public static final int FIRST_INDEX = 0;
     public static final String FAVORITE_TABLE_NAME = "FAVORITE";
-    public static final String STATION_ID_KEY = "STATION_ID";
+    public static final String ITEM_ID_KEY = "ITEM_ID";
     public static final String USER_ID_KEY = "USER_ID";
     public static final String STATION_NAME_KEY = "STATION_NAME";
     public static final String USER_NAME_KEY = "USER_NAME";
-    public static final String USER_PASSWORD_KEY = "USER_PASSWORD";
     public static final String USER_EMAIL_KEY = "USER_EMAIL";
     public static final String FAVORITE_ID_KEY = "FAVORITE_ID";
+    public static final String TYPE_KEY = "TYPE";
 
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
@@ -41,9 +41,9 @@ public class FavoriteDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Favorite save(Favorite favorite) {
+    public Favorite save(Favorite favorite, String type) {
         Long favoriteId = simpleJdbcInsert
-                .executeAndReturnKey(Favorite.getSaveParameterByFavorite(favorite))
+                .executeAndReturnKey(Favorite.getSaveParameterByFavorite(favorite, type))
                 .longValue();
 
         return findById(favoriteId);
@@ -53,7 +53,7 @@ public class FavoriteDao {
         String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name," +
                 "U.id as user_id, U.email as user_email, U.name as user_name \n" +
                 "FROM FAVORITE F \n" +
-                "JOIN STATION S ON F.station_id = S.id \n" +
+                "JOIN STATION S ON F.item_id = S.id \n" +
                 "JOIN USER U ON F.user_id = U.id \n" +
                 "WHERE F.id  = ?";
 
@@ -68,7 +68,7 @@ public class FavoriteDao {
                 (Long) firstRow.get(FAVORITE_ID_KEY),
                 new User((Long) firstRow.get(USER_ID_KEY), (String) firstRow.get(USER_EMAIL_KEY),
                         (String) firstRow.get(USER_NAME_KEY)),
-                new Station((Long) firstRow.get(STATION_ID_KEY), (String) firstRow.get(STATION_NAME_KEY))
+                new Station((Long) firstRow.get(ITEM_ID_KEY), (String) firstRow.get(STATION_NAME_KEY))
         );
     }
 
@@ -81,7 +81,7 @@ public class FavoriteDao {
     public List<Favorite> findByUser(User user) {
         String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name \n" +
                 "FROM FAVORITE F \n" +
-                "JOIN STATION S ON F.station_id = S.id \n" +
+                "JOIN STATION S ON F.item_id = S.id \n" +
                 "JOIN USER U ON F.user_id = U.id \n" +
                 "WHERE U.id  = ?";
 
@@ -93,7 +93,7 @@ public class FavoriteDao {
                 .map(row -> new Favorite(
                         (Long) row.get(FAVORITE_ID_KEY)
                         , user
-                        , new Station((Long) row.get(STATION_ID_KEY), (String) row.get(STATION_NAME_KEY))))
+                        , new Station((Long) row.get(ITEM_ID_KEY), (String) row.get(STATION_NAME_KEY))))
                 .collect(Collectors.toList());
     }
 
