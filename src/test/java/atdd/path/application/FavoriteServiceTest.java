@@ -1,6 +1,7 @@
 package atdd.path.application;
 
 import atdd.path.SoftAssertionTest;
+import atdd.path.application.dto.favorite.FavoriteCreateResponseView;
 import atdd.path.application.dto.favorite.FavoriteListResponseView;
 import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.Favorite;
@@ -36,10 +37,10 @@ public class FavoriteServiceTest extends SoftAssertionTest {
         when(favoriteDao.save(any(), STATION_TYPE)).thenReturn(NEW_FAVORITE);
 
         //when
-        Favorite favorite = favoriteService.save(NEW_USER, NEW_FAVORITE_CREATE_VIEW);
+        FavoriteCreateResponseView favorite = favoriteService.save(NEW_USER, NEW_FAVORITE_CREATE_VIEW);
 
         //then
-        assertThat(favorite.getStation().getName()).isEqualTo(STATION_NAME);
+        assertThat(favorite.getItem().getName()).isEqualTo(STATION_NAME);
     }
 
     @DisplayName("사용자가 등록되어 있는 즐겨찾기 목록을 조회가능한지")
@@ -54,7 +55,7 @@ public class FavoriteServiceTest extends SoftAssertionTest {
         Favorite firstFavorite = favorites.getFirstIndex();
         //then
         assertThat(favorites.getSize()).isGreaterThan(1);
-        assertThat(firstFavorite.getStation().getName()).isEqualTo(STATION_NAME);
+        assertThat(firstFavorite.getItem().getName()).isEqualTo(STATION_NAME);
         assertThat(firstFavorite.getUser().getName()).isEqualTo(KIM_NAME);
     }
 }

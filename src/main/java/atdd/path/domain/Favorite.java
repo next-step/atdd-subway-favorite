@@ -32,13 +32,13 @@ public class Favorite {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ID_KEY, favorite.getId());
         parameters.put(USER_ID_KEY, favorite.getUserId());
-        parameters.put(ITEM_ID_KEY, favorite.getStationId());
+        parameters.put(ITEM_ID_KEY, favorite.getItem().getId());
         parameters.put(TYPE_KEY, type);
         return parameters;
     }
 
-    private Long getStationId() {
-        return getStation().getId();
+    public Item getItem() {
+        return item;
     }
 
     private Long getUserId() {
@@ -51,13 +51,5 @@ public class Favorite {
 
     public Long getId() {
         return id;
-    }
-
-    public Station getStation() {
-        return (Station) item;
-    }
-
-    public Line getLine() {
-        return (Line) item;
     }
 }

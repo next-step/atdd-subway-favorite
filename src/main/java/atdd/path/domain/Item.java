@@ -1,13 +1,13 @@
 package atdd.path.domain;
 
+import lombok.NoArgsConstructor;
+
 import java.util.Objects;
 
+@NoArgsConstructor
 public class Item {
     private Long id;
     private String name;
-
-    public Item() {
-    }
 
     public Item(String name) {
         this.name = name;
@@ -19,7 +19,7 @@ public class Item {
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public String getName() {

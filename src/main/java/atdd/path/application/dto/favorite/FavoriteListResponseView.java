@@ -1,7 +1,7 @@
 package atdd.path.application.dto.favorite;
 
 import atdd.path.domain.Favorite;
-import atdd.path.domain.Station;
+import atdd.path.domain.Item;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +25,8 @@ public class FavoriteListResponseView {
                 .build();
     }
 
-    public Station getFirstFavoriteStation() {
-        return getFirstIndex().getStation();
+    public Item getFirstFavoriteStation() {
+        return getFirstIndex().getItem();
     }
 
     public Favorite getFirstIndex() {

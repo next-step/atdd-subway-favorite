@@ -2,6 +2,7 @@ package atdd.path.dao;
 
 import atdd.path.SoftAssertionTest;
 import atdd.path.domain.Favorite;
+import atdd.path.domain.Item;
 import atdd.path.domain.Station;
 import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
@@ -54,7 +55,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
         //then
         assertThat(favorite.getId()).isNotNull();
-        assertThat(favorite.getStation().getName()).isEqualTo(STATION_NAME);
+        assertThat(favorite.getItem().getName()).isEqualTo(STATION_NAME);
         assertThat(favorite.getUser().getName()).isEqualTo(KIM_NAME);
     }
 
@@ -71,7 +72,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
         //then
         assertThat(favorite.getId()).isNotNull();
-        assertThat(favorite.getStation()).isEqualTo(savedFavorite.getStation());
+        assertThat(favorite.getItem()).isEqualTo(savedFavorite.getItem());
     }
 
     @DisplayName("사용자 Id 로 등록된 Favorite 을 조회할 수 있는지")
@@ -89,8 +90,8 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
         //then
         assertThat(favorites).hasSizeGreaterThan(1);
-        assertThat(favorites.get(0).getStation().getName()).isEqualTo(STATION_NAME);
-        assertThat(favorites.get(1).getStation().getName()).isEqualTo(STATION_NAME_15);
+        assertThat(favorites.get(0).getItem().getName()).isEqualTo(STATION_NAME);
+        assertThat(favorites.get(1).getItem().getName()).isEqualTo(STATION_NAME_15);
     }
 
     @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
@@ -121,7 +122,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         User user = favorite.getUser();
         //then
         softly.assertThat(favorite.getId()).isNotNull();
-        softly.assertThat(favorite.getStation().getName()).isEqualTo(STATION_NAME);
+        softly.assertThat(favorite.getItem().getName()).isEqualTo(STATION_NAME);
         softly.assertThat(user.getName()).isEqualTo(KIM_NAME);
         softly.assertThat(user.getEmail()).isEqualTo(KIM_EMAIL);
     }
@@ -132,7 +133,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         //when
         List<Favorite> favorites = favoriteDao.mapFavorites(getDaoFavorites(), NEW_USER);
 
-        Station station = favorites.get(0).getStation();
+        Item station = favorites.get(0).getItem();
         //then
         softly.assertThat(station.getId()).isNotNull();
         softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
