@@ -4,7 +4,6 @@ import atdd.AbstractAcceptanceTest;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +54,22 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
                 .expectStatus().isOk()
                 .expectBody().isEmpty();
     }
+
+    @Test
+    public void 지하철역_즐겨찾기_목록을_불러온다() throws Exception {
+        //given
+        Long favoriteStationId1 = makeFavoriteStationForTest(EMAIL2, STATION_NAME_3);
+        Long favoriteStationId2 = makeFavoriteStationForTest(EMAIL2, STATION_NAME_4);
+
+        //when, then
+        webTestClient.get().uri(FAVORITE_STATION_BASE_URI)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody().jsonPath("favoriteStations[1]").exists()
+                .jsonPath("favoriteStations[2]").doesNotExist();
+    }
+
 
     private Long makeFavoriteStationForTest(String email, String stationName) throws Exception {
         Long stationId = stationHttpTest.createStation(stationName);
