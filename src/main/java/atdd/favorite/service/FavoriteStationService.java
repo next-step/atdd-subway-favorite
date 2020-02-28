@@ -1,13 +1,12 @@
 package atdd.favorite.service;
 
-import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
+import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
 import atdd.favorite.application.dto.FavoriteStationResponseView;
 import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ public class FavoriteStationService {
         this.favoriteStationRepository = favoriteStationRepository;
     }
 
-    public Optional<FavoriteStationResponseView> create(CreateFavoriteStationRequestView requestView) {
+    public FavoriteStationResponseView create(FavoriteStationRequestView requestView) {
         Optional<FavoriteStation> existingFavoriteStation
                 = favoriteStationRepository.findByStationId(requestView.getStationId());
         if (existingFavoriteStation.isPresent()) {
@@ -27,15 +26,18 @@ public class FavoriteStationService {
         }
         FavoriteStation savedFavoriteStation
                 = favoriteStationRepository.save(FavoriteStation.of(requestView));
-        return Optional.of(FavoriteStationResponseView.of(savedFavoriteStation));
+        return FavoriteStationResponseView.of(savedFavoriteStation);
     }
 
-    public Long delete(Long id) throws Exception {
-        Optional<FavoriteStation> findById = favoriteStationRepository.findById(id);
-        if (findById.isPresent()) {
-            favoriteStationRepository.delete(findById.get());
+    public Long delete(FavoriteStationRequestView requestView) throws Exception {
+        Optional<FavoriteStation> stationFindById
+                = favoriteStationRepository.findById(requestView.getStationId());
+        if (stationFindById.isPresent()) {
+            favoriteStationRepository.delete(stationFindById.get());
         }
-        return id;
+
+
+        return requestView.getStationId();
     }
 
     public FavoriteStationListResponseVIew showAllFavoriteStations(String email) {

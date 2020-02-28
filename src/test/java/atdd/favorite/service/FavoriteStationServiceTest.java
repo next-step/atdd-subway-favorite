@@ -1,7 +1,7 @@
 package atdd.favorite.service;
 
-import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
 import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
+import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.favorite.application.dto.FavoriteStationResponseView;
 import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
@@ -25,12 +25,14 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class FavoriteStationServiceTest {
     private static final String EMAIL = "abc@gmail.com";
+    private static final String EMAIL2 = "bbb@gmail.com";
     private static final Long stationId = 1L;
     private static final Long stationId2 = 2L;
     private static final FavoriteStation favoriteStation
             = new FavoriteStation(1L, EMAIL, stationId);
     private static final FavoriteStation favoriteStation2
             = new FavoriteStation(2L, EMAIL, stationId2);
+
 
     @InjectMocks
     private FavoriteStationService favoriteStationService;
@@ -41,12 +43,12 @@ public class FavoriteStationServiceTest {
     @Test
     void 지하철역_즐겨찾기_등록이_된다() {
         //given
-        CreateFavoriteStationRequestView requestView
-                = new CreateFavoriteStationRequestView(EMAIL, stationId);
+        FavoriteStationRequestView requestView
+                = new FavoriteStationRequestView(EMAIL, stationId);
         given(favoriteStationRepository.save(any(FavoriteStation.class))).willReturn(favoriteStation);
 
         //when
-        Optional<FavoriteStationResponseView> responseView = favoriteStationService.create(requestView);
+        favoriteStationService.create(requestView);
 
         //then
         verify(favoriteStationRepository).save(any());
@@ -55,21 +57,18 @@ public class FavoriteStationServiceTest {
     @Test
     void 같은_역을_여러_번_등록하면_안_된다() {
         //given
-        CreateFavoriteStationRequestView requestView
-                = new CreateFavoriteStationRequestView(EMAIL, stationId);
-        given(favoriteStationRepository.save(any(FavoriteStation.class)))
-                .willReturn(favoriteStation);
-        Optional<FavoriteStationResponseView> responseView1
-                = favoriteStationService.create(requestView);
-        given(favoriteStationRepository.findByStationId(stationId))
-                .willReturn(Optional.of(favoriteStation));
+        FavoriteStationRequestView requestView
+                = new FavoriteStationRequestView(EMAIL, stationId);
+        given(favoriteStationRepository.save(any(FavoriteStation.class))).willReturn(favoriteStation);
+        FavoriteStationResponseView responseView1 = favoriteStationService.create(requestView);
+        given(favoriteStationRepository.findByStationId(stationId)).willReturn(Optional.of(favoriteStation));
 
         //when
-        Optional<FavoriteStationResponseView> responseView2 = favoriteStationService.create(requestView);
+        FavoriteStationResponseView responseView2 = favoriteStationService.create(requestView);
 
         //then
         verify(favoriteStationRepository, times(1)).save(any());
-        assertThat(responseView1).isNotEmpty();
+        assertThat(responseView1).isNotNull();
         assertThat(responseView2).isNull();
     }
 
@@ -80,11 +79,27 @@ public class FavoriteStationServiceTest {
                 .willReturn(Optional.of(favoriteStation));
 
         //when
-        Long deletedId = favoriteStationService.delete(favoriteStation.getId());
+        Long deletedId = favoriteStationService.delete(FavoriteStationRequestView.of(favoriteStation));
 
         //then
         verify(favoriteStationRepository, times(1))
                 .delete(any(FavoriteStation.class));
+    }
+
+    @Test
+    void 즐겨찾기_삭제는_등록한_사람만_가능하다() throws Exception {
+        //given
+        given(favoriteStationRepository.findById(favoriteStation.getId()))
+                .willReturn(Optional.of(favoriteStation));
+        FavoriteStationRequestView requestView = new FavoriteStationRequestView(EMAIL2, stationId);
+
+        //when
+        Long deletedId = favoriteStationService.delete(requestView);
+
+        //then
+        verify(favoriteStationRepository, times(0))
+                .delete(any(FavoriteStation.class));
+
     }
 
     @Test

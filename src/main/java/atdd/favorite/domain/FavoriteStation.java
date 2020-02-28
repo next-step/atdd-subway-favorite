@@ -1,6 +1,6 @@
 package atdd.favorite.domain;
 
-import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
+import atdd.favorite.application.dto.FavoriteStationRequestView;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +41,7 @@ public class FavoriteStation {
         return stationId;
     }
 
-    public static FavoriteStation of(CreateFavoriteStationRequestView requestView) {
+    public static FavoriteStation of(FavoriteStationRequestView requestView) {
         return new FavoriteStation(requestView.getEmail(), requestView.getStationId());
     }
 }

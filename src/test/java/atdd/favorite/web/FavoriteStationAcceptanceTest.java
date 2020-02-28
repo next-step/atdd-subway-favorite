@@ -1,7 +1,7 @@
 package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
-import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
+import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
@@ -45,8 +45,8 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         this.stationId = stationHttpTest.createStation(STATION_NAME);
 
         //when
-        CreateFavoriteStationRequestView request
-                = new CreateFavoriteStationRequestView(EMAIL, stationId);
+        FavoriteStationRequestView request
+                = new FavoriteStationRequestView(EMAIL, stationId);
         String inputJson = objectMapper.writeValueAsString(request);
 
         //then
