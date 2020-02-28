@@ -6,35 +6,34 @@ import lombok.NoArgsConstructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import static atdd.path.dao.FavoriteDao.STATION_ID_KEY;
-import static atdd.path.dao.FavoriteDao.USER_ID_KEY;
+import static atdd.path.dao.FavoriteDao.*;
 import static atdd.path.dao.UserDao.ID_KEY;
 
 @NoArgsConstructor
 public class Favorite {
     private Long id;
     private User user;
-    private Station station;
-    private Line line;
+    private Item item;
 
     @Builder
-    public Favorite(Long id, User user, Station station) {
+    public Favorite(Long id, User user, Item item) {
         this.id = id;
         this.user = user;
-        this.station = station;
+        this.item = item;
     }
 
-    public Favorite(User user, Station station) {
+    public Favorite(User user, Item item) {
         this.id = 0L;
         this.user = user;
-        this.station = station;
+        this.item = item;
     }
 
-    public static Map<String, Object> getSaveParameterByFavorite(Favorite favorite) {
+    public static Map<String, Object> getSaveParameterByFavorite(Favorite favorite, String type) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(ID_KEY, favorite.getId());
         parameters.put(USER_ID_KEY, favorite.getUserId());
-        parameters.put(STATION_ID_KEY, favorite.getStationId());
+        parameters.put(ITEM_ID_KEY, favorite.getStationId());
+        parameters.put(TYPE_KEY, type);
         return parameters;
     }
 
@@ -55,10 +54,10 @@ public class Favorite {
     }
 
     public Station getStation() {
-        return station;
+        return (Station) item;
     }
 
     public Line getLine() {
-        return line;
+        return (Line) item;
     }
 }
