@@ -27,14 +27,14 @@ public class FavoriteStationRequestView {
     }
 
     public void insertEmail(String email) {
-        this.email=email;
+        this.email = email;
     }
 
-    public FavoriteStation toEntity(FavoriteStationRequestView requestView){
+    public FavoriteStation toEntity(FavoriteStationRequestView requestView) {
         return FavoriteStation.of(requestView);
     }
 
-    public static FavoriteStationRequestView of(FavoriteStation favoriteStation){
+    public static FavoriteStationRequestView of(FavoriteStation favoriteStation) {
         return new FavoriteStationRequestView(favoriteStation.getEmail(),
                 favoriteStation.getStationId());
     }

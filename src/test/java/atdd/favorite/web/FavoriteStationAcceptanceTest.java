@@ -39,7 +39,7 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     @Test
-    public void createFavoriteStation() throws JsonProcessingException {
+    public void 지하철역을_즐겨찾기에_등록한다() throws JsonProcessingException {
         //given
         String token = jwtTokenProvider.createToken(EMAIL);
         this.stationId = stationHttpTest.createStation(STATION_NAME);

@@ -1,13 +1,12 @@
 package atdd.favorite.service;
 
-import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
+import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.favorite.application.dto.FavoriteStationResponseView;
 import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +35,7 @@ public class FavoriteStationService {
         if (stationFindById.isPresent()) {
             stationFindById.orElseThrow(IllegalArgumentException::new);
         }
-        if(requestView.getEmail() == stationFindById.get().getEmail()){
+        if (requestView.getEmail() == stationFindById.get().getEmail()) {
             favoriteStationRepository.delete(stationFindById.get());
         }
     }
