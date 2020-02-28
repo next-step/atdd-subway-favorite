@@ -1,6 +1,7 @@
 package atdd.favorite.service;
 
 import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
+import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
 import atdd.favorite.application.dto.FavoriteStationResponseView;
 import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
@@ -87,18 +88,19 @@ public class FavoriteStationServiceTest {
     }
 
     @Test
-    void 지하철역_즐겨찾기_목록을_불러온다(){
+    void 지하철역_즐겨찾기_목록을_불러온다() {
         //given
         List<FavoriteStation> favoriteStations = Arrays.asList(favoriteStation, favoriteStation2);
-        given(favoriteStationRepository.findAll()).willReturn(favoriteStations);
+        given(favoriteStationRepository.findAllByEmail(EMAIL)).willReturn(favoriteStations);
 
         //when
-        List<FavoriteStation> allByEmail = favoriteStationService.showAllFavoriteStations(String email)
+        FavoriteStationListResponseVIew responseVIew
+                = favoriteStationService.showAllFavoriteStations(EMAIL);
 
         //then
         verify(favoriteStationRepository, times(1))
                 .findAllByEmail(anyString());
-        assertThat(allByEmail).isEqualTo(favoriteStations);
+        assertThat(responseVIew.getFavoriteStations().size()).isEqualTo(favoriteStations.size());
     }
 }
 

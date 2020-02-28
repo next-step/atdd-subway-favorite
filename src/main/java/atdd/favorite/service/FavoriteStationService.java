@@ -1,11 +1,14 @@
 package atdd.favorite.service;
 
 import atdd.favorite.application.dto.CreateFavoriteStationRequestView;
+import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
 import atdd.favorite.application.dto.FavoriteStationResponseView;
 import atdd.favorite.domain.FavoriteStation;
 import atdd.favorite.domain.FavoriteStationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,5 +36,10 @@ public class FavoriteStationService {
             favoriteStationRepository.delete(findById.get());
         }
         return id;
+    }
+
+    public FavoriteStationListResponseVIew showAllFavoriteStations(String email) {
+        List<FavoriteStation> allByEmail = favoriteStationRepository.findAllByEmail(email);
+        return FavoriteStationListResponseVIew.of(email, allByEmail);
     }
 }
