@@ -7,21 +7,21 @@ import atdd.path.domain.FavoritePath;
 import atdd.path.domain.Station;
 import atdd.user.dao.UserDao;
 import atdd.user.domain.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FavoritePathService {
-    @Autowired
     private FavoritePathDao favoritePathDao;
-
-    @Autowired
     private UserDao userDao;
-
-    @Autowired
     private StationDao stationDao;
+
+    public FavoritePathService(FavoritePathDao favoritePathDao, UserDao userDao, StationDao stationDao) {
+        this.favoritePathDao = favoritePathDao;
+        this.userDao = userDao;
+        this.stationDao = stationDao;
+    }
 
     public FavoritePath addFavoritePath(final String email, FavoritePath favoritePath) {
         User user = userDao.findByEmail(email);
