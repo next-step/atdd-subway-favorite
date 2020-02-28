@@ -31,7 +31,7 @@ public class FavoriteStationService {
 
     public void delete(FavoriteStationRequestView requestView) throws Exception {
         Optional<FavoriteStation> stationFindById
-                = favoriteStationRepository.findById(requestView.getStationId());
+                = favoriteStationRepository.findById(requestView.getId());
         if (stationFindById.isPresent()) {
             stationFindById.orElseThrow(IllegalArgumentException::new);
         }

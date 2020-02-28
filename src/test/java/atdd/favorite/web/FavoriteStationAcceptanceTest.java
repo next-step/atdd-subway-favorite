@@ -4,13 +4,13 @@ import atdd.AbstractAcceptanceTest;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
-import static atdd.TestConstant.STATION_NAME;
-import static atdd.TestConstant.STATION_NAME_2;
+import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
@@ -40,7 +40,7 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         Long favoriteStationId = makeFavoriteStationForTest(EMAIL2, STATION_NAME);
 
         //then
-        assertThat(favoriteStationId).isGreaterThan(0L);
+        assertThat(favoriteStationId).isEqualTo(1L);
     }
 
     @Test
@@ -48,8 +48,8 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         //given
         Long favoriteStationId = makeFavoriteStationForTest(EMAIL2, STATION_NAME_2);
 
-        //when
-        webTestClient.delete().uri(FAVORITE_STATION_BASE_URI)
+        //when, then
+        webTestClient.delete().uri(FAVORITE_STATION_BASE_URI + "/" + favoriteStationId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .exchange()
                 .expectStatus().isOk()

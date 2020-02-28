@@ -1,21 +1,30 @@
 package atdd.favorite.application.dto;
 
 import atdd.favorite.domain.FavoriteStation;
-import lombok.Builder;
 import org.springframework.boot.jackson.JsonComponent;
 
 @JsonComponent
 public class FavoriteStationRequestView {
+    private Long id;
     private String email;
     private Long stationId;
 
     public FavoriteStationRequestView() {
     }
 
-    @Builder
     public FavoriteStationRequestView(String email, Long stationId) {
         this.email = email;
         this.stationId = stationId;
+    }
+
+    public FavoriteStationRequestView(Long id, String email, Long stationId) {
+        this.id = id;
+        this.email = email;
+        this.stationId = stationId;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getStationId() {
@@ -28,6 +37,10 @@ public class FavoriteStationRequestView {
 
     public void insertEmail(String email) {
         this.email = email;
+    }
+
+    public void insertId(Long id) {
+        this.id = id;
     }
 
     public FavoriteStation toEntity(FavoriteStationRequestView requestView) {
