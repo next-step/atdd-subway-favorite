@@ -56,14 +56,14 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void detailFavoriteToStation(SoftAssertions softly) {
         //given
-        createFavorite();
+        createStationFavorite();
 
         //when
         EntityExchangeResult<FavoriteListResponseView> expectResponse
                 = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
 
         FavoriteListResponseView responseBody = expectResponse.getResponseBody();
-        Item station = responseBody.getFirstFavoriteStation();
+        Item station = responseBody.getFirstFavoriteItem();
 
         //then
         softly.assertThat(station.getId()).isNotNull();
@@ -73,7 +73,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void deleteFavoriteToStation() {
         //given
-        String url = createFavorite();
+        String url = createStationFavorite();
 
         //when
         EntityExchangeResult<Void> expectResponse
@@ -105,8 +105,58 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         softly.assertThat(edge.getId()).isNotNull();
     }
 
+    @DisplayName("사용자가 등록된 지하철노선의 즐겨찾기를 조회되는지")
+    @Test
+    public void detailFavoriteToEdge(SoftAssertions softly) {
+        //given
+        createEdgeFavorite();
 
-    String createFavorite() {
+        //when
+        EntityExchangeResult<FavoriteListResponseView> expectResponse
+                = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
+
+        FavoriteListResponseView responseBody = expectResponse.getResponseBody();
+        FavoriteListResponseView favorites = responseBody;
+
+        //then
+        softly.assertThat(favorites.getSize()).isGreaterThan(1);
+    }
+
+    @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
+    @Test
+    public void deleteFavoriteToEdge() {
+        //given
+        String url = createEdgeFavorite();
+
+        //when
+        EntityExchangeResult<Void> expectResponse
+                = restWebClientTest.deleteMethodWithAuthAcceptance(url, getJwt());
+
+        //then
+        assertThat(expectResponse.getStatus()).isEqualTo(HttpStatus.OK);
+    }
+
+
+
+    String createEdgeFavorite() {
+        //given
+        restWebClientTest.createUser();
+        Long sourceStationId = restWebClientTest.createStation(STATION_NAME, getJwt());
+        Long targetStationId = restWebClientTest.createStation(STATION_NAME_2, getJwt());
+        Long lineId = restWebClientTest.createLine(getJwt());
+        restWebClientTest.createEdge(lineId, sourceStationId, targetStationId, 10, getJwt());
+
+        //when
+        EntityExchangeResult<FavoriteCreateResponseView> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL, EDGE_FAVORITE_CREATE_REQUEST_VIEW, FavoriteCreateResponseView.class, getJwt());
+
+        return expectResponse
+                .getResponseHeaders()
+                .getLocation()
+                .getPath();
+    }
+
+    String createStationFavorite() {
         //given
         restWebClientTest.createUser();
         restWebClientTest.createStation(STATION_NAME, getJwt());
