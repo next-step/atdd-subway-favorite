@@ -15,17 +15,22 @@ import static atdd.path.fixture.UserFixture.*;
 public class FavoriteFixture {
     public static final Long FAVORITE_ID = 0L;
     public static final String STATION_NAME = "강남역";
-    public static final Long STATION_ID = 0L;
+    public static final Long STATION_FIRST_ID = 1L;
     public static final Long EDGE_FIRST_ID = 1L;
-    public static final Long LINE_FIRST_ID = 1L;
     public static final Long EDGE_SECOND_ID = 2L;
-    public static final Favorite NEW_FAVORITE = new Favorite(NEW_USER, TEST_STATION);
-    public static final Favorite NEW_SECOND_FAVORITE = new Favorite(NEW_USER, TEST_STATION_2);
-    public static final List<Favorite> NEW_FAVORITES = Arrays.asList(NEW_FAVORITE, NEW_SECOND_FAVORITE);
+    public static final Favorite NEW_STATION_FAVORITE = new Favorite(NEW_USER, TEST_STATION);
+    public static final Favorite NEW_SECOND_STATION_FAVORITE = new Favorite(NEW_USER, TEST_STATION_2);
+
+    public static final Favorite NEW_EDGE_FAVORITE = new Favorite(NEW_USER, TEST_EDGE);
+    public static final Favorite NEW_SECOND_EDGE_FAVORITE = new Favorite(NEW_USER, TEST_EDGE_2);
+
+    public static final List<Favorite> NEW_STATION_FAVORITES = Arrays.asList(NEW_STATION_FAVORITE, NEW_SECOND_STATION_FAVORITE);
+    public static final List<Favorite> NEW_EDGE_FAVORITES = Arrays.asList(NEW_EDGE_FAVORITE, NEW_SECOND_EDGE_FAVORITE);
+
     public static final FavoriteCreateRequestView STATION_FAVORITE_CREATE_REQUEST_VIEW
-            = new FavoriteCreateRequestView(STATION_ID, STATION_NAME, STATION_TYPE);
+            = new FavoriteCreateRequestView(STATION_FIRST_ID, STATION_TYPE);
     public static final FavoriteCreateRequestView EDGE_FAVORITE_CREATE_REQUEST_VIEW
-            = new FavoriteCreateRequestView(LINE_FIRST_ID, LINE_NAME, EDGE_TYPE);
+            = new FavoriteCreateRequestView(EDGE_FIRST_ID, EDGE_TYPE);
 
     public static List<Map<String, Object>> getDaoFavorites() {
         return Arrays.asList(getDaoStationFavorite(), getDaoStationSecondFavorite());
@@ -38,7 +43,7 @@ public class FavoriteFixture {
     public static Map<String, Object> getDaoStationFavorite() {
         Map<String, Object> savedFavorite = new HashMap<>();
         savedFavorite.put(FAVORITE_ID_KEY, FAVORITE_ID);
-        savedFavorite.put(STATION_ID_KEY, STATION_ID);
+        savedFavorite.put(STATION_ID_KEY, STATION_FIRST_ID);
         savedFavorite.put(STATION_NAME_KEY, STATION_NAME);
         savedFavorite.put(USER_ID_KEY, KIM_ID);
         savedFavorite.put(USER_NAME_KEY, KIM_NAME);
@@ -61,7 +66,7 @@ public class FavoriteFixture {
         Map<String, Object> savedFavorite = new HashMap<>();
         savedFavorite.put(FAVORITE_ID_KEY, FAVORITE_ID);
         savedFavorite.put(EDGE_ID_KEY, EDGE_FIRST_ID);
-        savedFavorite.put(SOURCE_STATION_ID_KEY, STATION_ID);
+        savedFavorite.put(SOURCE_STATION_ID_KEY, STATION_FIRST_ID);
         savedFavorite.put(SOURCE_STATION_NAME_KEY, STATION_NAME);
         savedFavorite.put(TARGET_STATION_ID_KEY, STATION_ID_2);
         savedFavorite.put(TARGET_STATION_NAME_KEY, STATION_NAME_2);
