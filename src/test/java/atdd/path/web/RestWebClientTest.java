@@ -1,5 +1,6 @@
 package atdd.path.web;
 
+import atdd.path.application.dto.line.LineResponseView;
 import atdd.path.application.dto.station.StationResponseView;
 import atdd.path.domain.User;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
+import static atdd.path.web.LineAcceptanceTest.LINE_INPUT_JSON;
+import static atdd.path.web.LineAcceptanceTest.LINE_URL;
+import static atdd.path.web.StationAcceptanceTest.STATION_URL;
 import static atdd.path.web.UserAcceptanceTest.KIM_INPUT_JSON;
 import static atdd.path.web.UserAcceptanceTest.USER_BASE_URL;
 
@@ -69,13 +73,25 @@ public class RestWebClientTest {
                 .getPath());
     }
 
-    String createStation(String stationName) {
+    Long createStation(String stationName, String jwt) {
         String inputJson = "{\"name\":\"" + stationName + "\"}";
         return Objects.requireNonNull(
-                postMethodAcceptance("/stations", inputJson, StationResponseView.class)
-                        .getResponseHeaders()
-                        .getLocation()
-                        .getPath());
+                postMethodWithAuthAcceptance(STATION_URL, inputJson, StationResponseView.class, jwt)
+                        .getResponseBody().getId());
     }
 
+    Long createLine(String jwt) {
+        return Objects.requireNonNull(
+                postMethodWithAuthAcceptance(LINE_URL, LINE_INPUT_JSON, LineResponseView.class, jwt)
+                        .getResponseBody().getId());
+    }
+
+    void createEdge(Long lineId, Long sourceStationId, Long targetStationId, int distance, String jwt) {
+        String inputJson = "{\"sourceId\":" + sourceStationId + ",\"targetId\":" + targetStationId
+                + ",\"distance\":" + distance + "}";
+
+        Objects.requireNonNull(
+                postMethodWithAuthAcceptance(LINE_URL + "/" + lineId + "/edges", inputJson, Void.class, jwt))
+                .getResponseBody();
+    }
 }

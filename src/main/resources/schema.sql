@@ -38,7 +38,7 @@ create table if not exists FAVORITE
 (
     id bigint auto_increment not null,
     user_id bigint not null,
-    item_id bigint,
+    item_id bigint not null,
     type varchar(20) not null,
     primary key(id)
 );
