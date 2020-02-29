@@ -11,6 +11,10 @@ public class FavoritePathRequestView {
     public FavoritePathRequestView() {
     }
 
+    public FavoritePathRequestView(String email) {
+        this.email = email;
+    }
+
     public FavoritePathRequestView(Long id, String email) {
         this.id = id;
         this.email = email;

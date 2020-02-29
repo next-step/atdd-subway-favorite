@@ -1,5 +1,6 @@
 package atdd.favorite.service;
 
+import atdd.favorite.application.dto.FavoritePathListResponseView;
 import atdd.favorite.application.dto.FavoritePathRequestView;
 import atdd.favorite.application.dto.FavoritePathResponseView;
 import atdd.favorite.domain.FavoritePath;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static atdd.TestConstant.*;
@@ -34,6 +36,8 @@ public class FavoritePathServiceTest {
     private static final Long stationId3 = 3L;
     private static final FavoritePath favoritePath
             = new FavoritePath(2L, EMAIL, stationId, stationId3);
+    private static final FavoritePath favoritePath2
+            = new FavoritePath(2L, EMAIL, stationId2, stationId3);
     private static Station station = new Station(stationId, STATION_NAME);
     private static Station station2 = new Station(stationId, STATION_NAME_2);
     private static Station station3 = new Station(stationId, STATION_NAME_3);
@@ -109,14 +113,14 @@ public class FavoritePathServiceTest {
     }
 
     @Test
-    void 즐겨찾기에_등록된_지하철경만_삭제할_수_있다(){
+    void 즐겨찾기에_등록된_지하철경로만_삭제할_수_있다(){
         //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(1L, EMAIL2);
-        given(favoritePathRepository.findById(1L)).willReturn(null);
+        given(favoritePathRepository.findById(1L)).willReturn(Optional.empty());
 
         //when, then
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             favoritePathService.delete(requestView);
         });
     }
