@@ -1,7 +1,5 @@
 package atdd.favorite.application.dto;
 
-import atdd.favorite.domain.FavoritePath;
-
 public class FavoritePathRequestView {
     private Long id;
     private String email;
@@ -47,5 +45,9 @@ public class FavoritePathRequestView {
 
     public Long getEndId() {
         return endId;
+    }
+
+    public void insertEmail(String email) {
+        this.email = email;
     }
 }

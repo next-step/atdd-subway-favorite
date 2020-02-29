@@ -1,4 +1,4 @@
-package atdd;
+package atdd.favorite.application.dto;
 
 import atdd.favorite.application.dto.LoginUserMethodArgumentResolver;
 import atdd.user.jwt.JwtTokenProvider;
@@ -17,7 +17,6 @@ public class WebConfig implements WebMvcConfigurer {
     private LoginUserMethodArgumentResolver loginUserMethodArgumentResolver;
     private ReadProperties readProperties;
     private JwtTokenProvider jwtTokenProvider;
-
     public WebConfig(LoginUserMethodArgumentResolver loginUserMethodArgumentResolver,
                      ReadProperties readProperties,
                      JwtTokenProvider jwtTokenProvider) {

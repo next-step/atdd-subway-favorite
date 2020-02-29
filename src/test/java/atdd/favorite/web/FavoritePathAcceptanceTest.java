@@ -1,8 +1,7 @@
 package atdd.favorite.web;
 
-import atdd.favorite.application.dto.FavoritePathRequestView;
-import atdd.favorite.application.dto.FavoriteStationRequestView;
-import atdd.favorite.application.dto.FavoriteStationResponseView;
+import atdd.AbstractAcceptanceTest;
+import atdd.favorite.application.dto.FavoritePathResponseView;
 import atdd.path.web.LineHttpTest;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
@@ -10,65 +9,63 @@ import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
-import java.util.stream.Collectors;
-
-import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.TestConstant.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class FavoritePathAcceptanceTest {
+public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
     public static final String FAVORITE_PATH_BASE_URI = "/favorite-paths";
     public static final String NAME = "브라운";
     public static final String EMAIL2 = "boorwonie2@email.com";
     public static final String EMAIL3 = "boorwonie3@email.com";
     public static final String PASSWORD = "subway";
-    private static String token;
-    public WebTestClient webTestClient;
-    private static UserHttpTest userHttpTest;
-    private static StationHttpTest stationHttpTest;
-    private static LineHttpTest lineHttpTest;
+    private String token;
+    private Long stationId;
+    private Long stationId2;
+    private Long stationId3;
+    private Long lineId;
+    public UserHttpTest userHttpTest;
+    public StationHttpTest stationHttpTest;
+    public LineHttpTest lineHttpTest;
+    public FavoritePathHttpTest favoritePathHttpTest;
 
-    public FavoritePathAcceptanceTest(WebTestClient webTestClient) {
-        this.webTestClient = webTestClient;
-    }
+    @Autowired
+    public WebTestClient webTestClient;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
-    void setUp(){
-        token=jwtTokenProvider.createToken(EMAIL3);
-        this.userHttpTest=new UserHttpTest(webTestClient);
-        this.lineHttpTest=new LineHttpTest(webTestClient);
-        this.stationHttpTest=new StationHttpTest(webTestClient);
+    void setUp() {
+        this.favoritePathHttpTest = new FavoritePathHttpTest(webTestClient);
+        this.lineHttpTest = new LineHttpTest(webTestClient);
+        this.stationHttpTest = new StationHttpTest(webTestClient);
+        this.userHttpTest = new UserHttpTest(webTestClient);
+        userHttpTest.createUser(EMAIL3, NAME, PASSWORD);
     }
 
     @Test
-    public void create() {
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
-        Long stationId4 = stationHttpTest.createStation(STATION_NAME_4);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
+    public void 지하철경로_즐겨찾기_등록_요청을_보낸다() throws Exception {
+        //given
+        int theNumberOfStations = 3;
+        setUpForTest(EMAIL3);
+        //when
+        FavoritePathResponseView favoritePath
+                = favoritePathHttpTest.createFavoritePath(EMAIL3, stationId, stationId3, token);
+
+        //then
+        assertThat(favoritePath.getFavoritePathStations().size()).isEqualTo(theNumberOfStations);
+        assertThat(favoritePath.getId()).isEqualTo(1L);
+    }
+
+    void setUpForTest(String email) {
+        token = jwtTokenProvider.createToken(email);
+        stationId = stationHttpTest.createStation(STATION_NAME);
+        stationId2 = stationHttpTest.createStation(STATION_NAME_2);
+        stationId3 = stationHttpTest.createStation(STATION_NAME_3);
+        lineId = lineHttpTest.createLine(LINE_NAME);
         lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
         lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
-        lineHttpTest.createEdgeRequest(lineId, stationId3, stationId4);
-
-        FavoritePathRequestView requestView
-                = new FavoritePathRequestView(EMAIL3, stationId, stationId3);
-
-        webTestClient.post().uri(FAVORITE_PATH_BASE_URI)
-                .header("Authorization", AUTH_SCHEME_BEARER + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(requestView), FavoritePathRequestView.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody().jsonPath("email").exists()
-                .jsonPath("startId").exists()
-                .jsonPath("endId").exists();
     }
 }

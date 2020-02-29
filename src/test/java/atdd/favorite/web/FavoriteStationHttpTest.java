@@ -2,8 +2,6 @@ package atdd.favorite.web;
 
 import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.favorite.application.dto.FavoriteStationResponseView;
-import atdd.path.web.StationHttpTest;
-import atdd.user.web.UserHttpTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
