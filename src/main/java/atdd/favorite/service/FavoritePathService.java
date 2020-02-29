@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FavoritePathService {
@@ -35,7 +36,12 @@ public class FavoritePathService {
         return FavoritePathResponseView.of(savedFavoritePath, favoritePathStations);
     }
 
-    public void delete(FavoritePathRequestView requestView) {
+    public void delete(FavoritePathRequestView requestView) throws Exception {
+        Optional<FavoritePath> favoritePathById
+                = favoritePathRepository.findById(requestView.getId());
+        if(favoritePathById.get().getEmail() != requestView.getEmail()){
+            throw new IllegalArgumentException("즐겨찾기를 등록한 사람만 삭제할 수 있습니다.");
+        }
         favoritePathRepository.delete(FavoritePath.of(requestView));
     }
 }

@@ -96,6 +96,7 @@ public class FavoritePathServiceTest {
 
     @Test
     void 즐겨찾기를_등록한_사람만_삭제할_수_있다(){
+        //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(1L, EMAIL2);
         FavoritePath favoritePath = new FavoritePath(1L, EMAIL, stationId, stationId3);
