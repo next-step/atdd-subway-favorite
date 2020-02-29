@@ -173,7 +173,6 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 .getPath();
     }
 
-
     private String getJwt() {
         return tokenAuthenticationService.toJwtByEmail(KIM_EMAIL);
     }
