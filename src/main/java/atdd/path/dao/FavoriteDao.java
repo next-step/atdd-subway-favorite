@@ -185,8 +185,8 @@ public class FavoriteDao {
     }
 
 
-    public void deleteStation(User user, Long stationId) {
+    public void deleteStation(User user, Long itemId) {
         String sql = "DELETE FROM FAVORITE WHERE id = ? AND user_id = ?";
-        jdbcTemplate.update(sql, stationId, user.getId());
+        jdbcTemplate.update(sql, itemId, user.getId());
     }
 }

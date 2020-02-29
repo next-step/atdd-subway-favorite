@@ -25,7 +25,7 @@ public class FavoriteListResponseView {
                 .build();
     }
 
-    public Item getFirstFavoriteStation() {
+    public Item getFirstFavoriteItem() {
         return getFirstIndex().getItem();
     }
 

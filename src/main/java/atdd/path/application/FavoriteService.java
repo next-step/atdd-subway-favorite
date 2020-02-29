@@ -29,7 +29,7 @@ public class FavoriteService {
         return FavoriteListResponseView.toDtoEntity(favoriteDao.findEdgeByUser(loginUser));
     }
 
-    public void deleteStation(User loginUser, Long stationId) {
-        favoriteDao.deleteStation(loginUser, stationId);
+    public void deleteFavoriteItem(User loginUser, Long itemId) {
+        favoriteDao.deleteStation(loginUser, itemId);
     }
 }

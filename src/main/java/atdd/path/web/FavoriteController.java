@@ -32,9 +32,9 @@ public class FavoriteController {
         return ResponseEntity.ok(favorites);
     }
 
-    @DeleteMapping("{stationId}")
-    public ResponseEntity deleteStation(@LoginUser User user, @PathVariable Long stationId) {
-        favoriteService.deleteStation(user, stationId);
+    @DeleteMapping("{itemId}")
+    public ResponseEntity deleteFavoriteItem(@LoginUser User user, @PathVariable Long itemId) {
+        favoriteService.deleteFavoriteItem(user, itemId);
         return ResponseEntity.ok().build();
     }
 }
