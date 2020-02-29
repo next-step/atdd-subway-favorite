@@ -27,8 +27,8 @@ public class FavoriteController {
     }
 
     @GetMapping("")
-    public ResponseEntity findByUser(@LoginUser User user) {
-        FavoriteListResponseView favorites = favoriteService.findByUser(user);
+    public ResponseEntity findByUser(@LoginUser User user, @RequestParam String type) {
+        FavoriteListResponseView favorites = favoriteService.findByUser(user, type);
         return ResponseEntity.ok(favorites);
     }
 
@@ -37,5 +37,4 @@ public class FavoriteController {
         favoriteService.deleteStation(user, stationId);
         return ResponseEntity.ok().build();
     }
-
 }
