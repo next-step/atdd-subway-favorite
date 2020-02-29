@@ -56,7 +56,11 @@ public class FavoriteDao {
                 .executeAndReturnKey(Favorite.getSaveParameterByFavorite(favorite, type))
                 .longValue();
 
-        if (STATION_TYPE.equals(type)) {
+        return findByIdAndType(favoriteId, type);
+    }
+
+    private Favorite findByIdAndType(Long favoriteId, String type) {
+        if (isStationType(type)) {
             return findStationById(favoriteId, type);
         }
 
@@ -96,13 +100,20 @@ public class FavoriteDao {
     Favorite mapFavorite(List<Map<String, Object>> result, String type) {
         checkFindResultIsEmpty(result);
 
-        if (STATION_TYPE.equals(type)) {
+        return mapFavoriteByType(result, type);
+    }
+
+    private Favorite mapFavoriteByType(List<Map<String, Object>> result, String type) {
+        if (isStationType(type)) {
             return mapStationFavorite(result);
         }
 
         return mapEdgeFavorite(result);
     }
 
+    private Boolean isStationType(String type) {
+        return STATION_TYPE.equals(type);
+    }
 
     Favorite mapStationFavorite(List<Map<String, Object>> result) {
         Map<String, Object> firstRow = result.get(FIRST_INDEX);
@@ -126,7 +137,6 @@ public class FavoriteDao {
                         , (int) firstRow.get(DISTANCE_ID_KEY))
         );
     }
-
 
     void checkFindResultIsEmpty(List<Map<String, Object>> result) {
         if (result.isEmpty()) {
@@ -162,7 +172,6 @@ public class FavoriteDao {
         return mapEdgeFavorites(jdbcTemplate.queryForList(sql, user.getId()), user);
     }
 
-
     List<Favorite> mapStationFavorites(List<Map<String, Object>> rows, User user) {
         return rows.stream()
                 .map(row -> new Favorite(
@@ -183,7 +192,6 @@ public class FavoriteDao {
                         , (int) row.get(DISTANCE_ID_KEY))))
                 .collect(Collectors.toList());
     }
-
 
     public void deleteStation(User user, Long itemId) {
         String sql = "DELETE FROM FAVORITE WHERE id = ? AND user_id = ?";
