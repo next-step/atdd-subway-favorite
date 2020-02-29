@@ -193,7 +193,7 @@ public class FavoriteDao {
                 .collect(Collectors.toList());
     }
 
-    public void deleteStation(User user, Long itemId) {
+    public void deleteItem(User user, Long itemId) {
         String sql = "DELETE FROM FAVORITE WHERE id = ? AND user_id = ?";
         jdbcTemplate.update(sql, itemId, user.getId());
     }

@@ -161,7 +161,7 @@ public class FavoriteDaoTest extends DatabaseConfigTest {
         favoriteDao.save(new Favorite(user, secondStation), STATION_TYPE);
 
         //when
-        favoriteDao.deleteStation(user, STATION_ID);
+        favoriteDao.deleteItem(user, STATION_ID);
         List<Favorite> favorites = favoriteDao.findStationByUser(user);
 
         //then
