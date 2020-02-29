@@ -11,12 +11,11 @@ public class FavoriteStationRequestView {
     }
 
     public FavoriteStationRequestView(Long stationId) {
-        this.stationId = stationId;
+        this(0L, "", stationId);
     }
 
     public FavoriteStationRequestView(String email, Long stationId) {
-        this.email = email;
-        this.stationId = stationId;
+        this(0L, "", stationId);
     }
 
     public FavoriteStationRequestView(Long id, String email, Long stationId) {
@@ -50,7 +49,7 @@ public class FavoriteStationRequestView {
     }
 
     public static FavoriteStationRequestView of(FavoriteStation favoriteStation) {
-        return new FavoriteStationRequestView(favoriteStation.getEmail(),
+        return new FavoriteStationRequestView(0L, favoriteStation.getEmail(),
                 favoriteStation.getStationId());
     }
 }

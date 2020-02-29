@@ -12,9 +12,7 @@ public class UserResponseView {
     }
 
     public UserResponseView(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
+        this(0L, email, name, password);
     }
 
     public UserResponseView(Long id, String email, String name, String password) {

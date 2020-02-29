@@ -19,8 +19,7 @@ public class FavoriteStation {
     }
 
     public FavoriteStation(String email, Long stationId) {
-        this.email = email;
-        this.stationId = stationId;
+        this(0L, email, stationId);
     }
 
     public FavoriteStation(Long id, String email, Long stationId) {

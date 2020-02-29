@@ -32,7 +32,7 @@ public class FavoriteStationService {
     public void delete(FavoriteStationRequestView requestView) throws Exception {
         Optional<FavoriteStation> stationFindById
                 = favoriteStationRepository.findById(requestView.getId());
-        if (stationFindById.isPresent()) {
+        if (!stationFindById.isPresent()) {
             stationFindById.orElseThrow(IllegalArgumentException::new);
         }
         if (requestView.getEmail() == stationFindById.get().getEmail()) {

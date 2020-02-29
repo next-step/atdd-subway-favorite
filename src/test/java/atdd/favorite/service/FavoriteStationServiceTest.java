@@ -19,8 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FavoriteStationServiceTest {
@@ -74,7 +73,7 @@ public class FavoriteStationServiceTest {
     @Test
     void 지하철역_즐겨찾기를_삭제한다() throws Exception {
         //given
-        given(favoriteStationRepository.findById(any()))
+        given(favoriteStationRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(favoriteStation));
 
         //when

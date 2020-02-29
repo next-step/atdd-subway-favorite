@@ -20,9 +20,7 @@ public class FavoritePath {
     }
 
     public FavoritePath(String email, Long startId, Long endId) {
-        this.email = email;
-        this.startId = startId;
-        this.endId = endId;
+        this(0L, email, startId, endId);
     }
 
     public FavoritePath(Long id, String email, Long startId, Long endId) {
