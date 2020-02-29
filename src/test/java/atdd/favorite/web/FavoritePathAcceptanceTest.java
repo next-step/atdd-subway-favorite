@@ -8,11 +8,13 @@ import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
     public static final String FAVORITE_PATH_BASE_URI = "/favorite-paths";
@@ -46,17 +48,35 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     @Test
-    public void 지하철경로_즐겨찾기_등록_요청을_보낸다() throws Exception {
+    void 지하철경로_즐겨찾기_등록_요청을_보낸다() throws Exception {
         //given
-        int theNumberOfStations = 3;
+        int theNumberOfStationsInPath = 3;
         setUpForTest(EMAIL3);
+
         //when
         FavoritePathResponseView favoritePath
                 = favoritePathHttpTest.createFavoritePath(EMAIL3, stationId, stationId3, token);
 
         //then
-        assertThat(favoritePath.getFavoritePathStations().size()).isEqualTo(theNumberOfStations);
+        assertThat(favoritePath.getFavoritePathStations().size()).isEqualTo(theNumberOfStationsInPath);
         assertThat(favoritePath.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void 지하철경로_즐겨찾기_삭제_요청을_보낸다() throws Exception{
+        //given
+        int theNumberOfStationsInPath = 3;
+        setUpForTest(EMAIL3);
+        FavoritePathResponseView favoritePath
+                = favoritePathHttpTest.createFavoritePath(EMAIL3, stationId, stationId3, token);
+
+        //when
+        FavoritePathResponseView responseView
+                = favoritePathHttpTest.deleteFavoritePath(favoritePath.getId(), EMAIL3, token);
+
+        //then
+        assertThat(responseView.getId()).isNull();
+        assertThat(responseView.getFavoritePathStations()).isNullOrEmpty();
     }
 
     void setUpForTest(String email) {
