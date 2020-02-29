@@ -33,7 +33,6 @@ public class FavoriteStationServiceTest {
     private static final FavoriteStation favoriteStation2
             = new FavoriteStation(2L, EMAIL, stationId2);
 
-
     @InjectMocks
     private FavoriteStationService favoriteStationService;
 
