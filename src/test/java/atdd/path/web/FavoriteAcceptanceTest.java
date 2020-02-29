@@ -3,9 +3,7 @@ package atdd.path.web;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.favorite.FavoriteCreateResponseView;
 import atdd.path.application.dto.favorite.FavoriteListResponseView;
-import atdd.path.domain.Favorite;
 import atdd.path.domain.Item;
-import atdd.path.domain.Station;
 import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     public static final String FAVORITE_BASE_URL = "/favorites";
 
-    private RestWebClientTest restWebClientTest;
+    private CreateWebClientTest restWebClientTest;
     private TokenAuthenticationService tokenAuthenticationService;
 
     @BeforeEach
     void setUp() {
         cleanAllDatabases();
-        this.restWebClientTest = new RestWebClientTest(this.webTestClient);
+        this.restWebClientTest = new CreateWebClientTest(this.webTestClient);
         this.tokenAuthenticationService = new TokenAuthenticationService();
     }
 
@@ -42,11 +40,11 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         restWebClientTest.createStation(STATION_NAME, getJwt());
 
         //when
-        EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
-                (FAVORITE_BASE_URL, STATION_FAVORITE_CREATE_REQUEST_VIEW, Favorite.class, getJwt());
+        EntityExchangeResult<FavoriteCreateResponseView> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL, STATION_FAVORITE_CREATE_REQUEST_VIEW, FavoriteCreateResponseView.class, getJwt());
 
         HttpHeaders responseHeaders = expectResponse.getResponseHeaders();
-        Favorite responseBody = expectResponse.getResponseBody();
+        FavoriteCreateResponseView responseBody = expectResponse.getResponseBody();
         Item station = responseBody.getItem();
 
         //then
@@ -58,8 +56,6 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void detailFavoriteToStation(SoftAssertions softly) {
         //given
-        restWebClientTest.createUser();
-        restWebClientTest.createStation(STATION_NAME, getJwt());
         createFavorite();
 
         //when
@@ -67,18 +63,16 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
 
         FavoriteListResponseView responseBody = expectResponse.getResponseBody();
-        Station station = (Station) responseBody.getFirstFavoriteStation();
+        Item station = responseBody.getFirstFavoriteStation();
 
         //then
-        softly.assertThat(station.getName()).isEqualTo(STATION_NAME);
+        softly.assertThat(station.getId()).isNotNull();
     }
 
     @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
     @Test
     public void deleteFavoriteToStation() {
         //given
-        restWebClientTest.createUser();
-        restWebClientTest.createStation(STATION_NAME, getJwt());
         String url = createFavorite();
 
         //when
@@ -89,7 +83,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         assertThat(expectResponse.getStatus()).isEqualTo(HttpStatus.OK);
     }
 
-    @DisplayName("경로 즐겨찾기를 등록 가능한지")
+    @DisplayName("지하철 경로 즐겨찾기를 등록 가능한지")
     @Test
     public void createFavoriteToEdge(SoftAssertions softly) {
         restWebClientTest.createUser();
@@ -113,8 +107,13 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
 
     String createFavorite() {
-        EntityExchangeResult<Favorite> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
-                (FAVORITE_BASE_URL, STATION_FAVORITE_CREATE_REQUEST_VIEW, Favorite.class, getJwt());
+        //given
+        restWebClientTest.createUser();
+        restWebClientTest.createStation(STATION_NAME, getJwt());
+
+        //when
+        EntityExchangeResult<FavoriteCreateResponseView> expectResponse = restWebClientTest.postMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL, STATION_FAVORITE_CREATE_REQUEST_VIEW, FavoriteCreateResponseView.class, getJwt());
 
         return expectResponse
                 .getResponseHeaders()
