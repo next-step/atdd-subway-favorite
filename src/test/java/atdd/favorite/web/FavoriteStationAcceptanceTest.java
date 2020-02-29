@@ -1,6 +1,9 @@
 package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
+import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
+import atdd.favorite.application.dto.FavoriteStationResponseView;
+import atdd.favorite.domain.FavoriteStation;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
@@ -8,7 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
 
+import java.util.stream.Collectors;
+
+import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,6 +25,7 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     public static final String FAVORITE_STATION_BASE_URI = "/favorite-stations";
     public static final String NAME = "브라운";
     public static final String EMAIL2 = "boorwonie2@email.com";
+    public static final String EMAIL3 = "boorwonie3@email.com";
     public static final String PASSWORD = "subway";
     private static UserHttpTest userHttpTest;
     private static StationHttpTest stationHttpTest;
@@ -56,18 +66,20 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     @Test
-    public void 지하철역_즐겨찾기_목록을_불러온다() throws Exception {
+    void 지하철역_즐겨찾기_목록을_불러온다() throws Exception {
         //given
-        Long favoriteStationId1 = makeFavoriteStationForTest(EMAIL2, STATION_NAME_3);
-        Long favoriteStationId2 = makeFavoriteStationForTest(EMAIL2, STATION_NAME_4);
+        Long favoriteStationId1 = makeFavoriteStationForTest(EMAIL3, STATION_NAME_3);
+        Long favoriteStationId2 = makeFavoriteStationForTest(EMAIL3, STATION_NAME_4);
 
-        //when, then
-        webTestClient.get().uri(FAVORITE_STATION_BASE_URI)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        //TODO
+        webTestClient.get()
+                .uri(FAVORITE_STATION_BASE_URI)
+                .header(HttpHeaders.AUTHORIZATION, AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
-                .expectBody().jsonPath("favoriteStations[1]").exists()
-                .jsonPath("favoriteStations[2]").doesNotExist();
+                .expectBodyList(FavoriteStationListResponseVIew.class)
+                .hasSize(2);
+
     }
 
 

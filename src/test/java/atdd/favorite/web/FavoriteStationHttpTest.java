@@ -15,8 +15,6 @@ import static atdd.Constant.AUTH_SCHEME_BEARER;
 public class FavoriteStationHttpTest {
     public static final String FAVORITE_STATION_BASE_URI = "/favorite-stations";
     public WebTestClient webTestClient;
-    private static UserHttpTest userHttpTest;
-    private static StationHttpTest stationHttpTest;
 
     public FavoriteStationHttpTest(WebTestClient webTestClient) {
         this.webTestClient = webTestClient;

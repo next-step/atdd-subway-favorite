@@ -75,7 +75,7 @@ public class FavoriteStationServiceTest {
     @Test
     void 지하철역_즐겨찾기를_삭제한다() throws Exception {
         //given
-        given(favoriteStationRepository.findById(favoriteStation.getId()))
+        given(favoriteStationRepository.findById(any()))
                 .willReturn(Optional.of(favoriteStation));
 
         //when
@@ -89,7 +89,7 @@ public class FavoriteStationServiceTest {
     @Test
     void 즐겨찾기_삭제는_등록한_사람만_가능하다() throws Exception {
         //given
-        given(favoriteStationRepository.findById(favoriteStation.getId()))
+        given(favoriteStationRepository.findById(any()))
                 .willReturn(Optional.of(favoriteStation));
         FavoriteStationRequestView requestView = new FavoriteStationRequestView(EMAIL2, stationId);
 

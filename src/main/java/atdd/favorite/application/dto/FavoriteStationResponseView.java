@@ -28,7 +28,7 @@ public class FavoriteStationResponseView {
         return stationId;
     }
 
-    public static FavoriteStationResponseView of(FavoriteStation favoriteStation){
+    public static FavoriteStationResponseView of(FavoriteStation favoriteStation) {
         return new FavoriteStationResponseView(
                 favoriteStation.getId(),
                 favoriteStation.getEmail(),

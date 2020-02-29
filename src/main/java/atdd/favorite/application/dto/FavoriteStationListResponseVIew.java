@@ -24,7 +24,7 @@ public class FavoriteStationListResponseVIew {
         return favoriteStations;
     }
 
-    public static FavoriteStationListResponseVIew of(String email, List<FavoriteStation> favoriteStations){
+    public static FavoriteStationListResponseVIew of(String email, List<FavoriteStation> favoriteStations) {
         return new FavoriteStationListResponseVIew(email, favoriteStations);
     }
 }
