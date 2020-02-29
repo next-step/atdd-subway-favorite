@@ -21,6 +21,7 @@ import static atdd.path.fixture.UserFixture.KIM_NAME;
 import static atdd.path.fixture.UserFixture.NEW_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -38,7 +39,7 @@ public class FavoriteServiceTest extends SoftAssertionTest {
     @Test
     public void save() {
         //given
-        when(favoriteDao.save(any(), STATION_TYPE)).thenReturn(NEW_STATION_FAVORITE);
+        when(favoriteDao.save(any(), eq(STATION_TYPE))).thenReturn(NEW_STATION_FAVORITE);
 
         //when
         FavoriteCreateResponseView favorite = favoriteService.save(NEW_USER, STATION_FAVORITE_CREATE_REQUEST_VIEW);
