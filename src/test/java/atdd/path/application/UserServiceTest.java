@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static atdd.path.TestConstant.*;
 
 @SpringBootTest(classes = UserService.class)
 public class UserServiceTest {
@@ -25,19 +26,16 @@ public class UserServiceTest {
 
     @Test
     public void login() {
-        final String email = "test@gmail.com";
-        final String encryptPassword = "$2a$10$QWeWyzF9vsyuVYQd.pHNtOj.Wshcu18yTeQ.5C7ti1lMJwgn788Qq";
-        final String password = "rhkwprkalffuTekdk";
-
         User user = User.builder()
                 .id(1l)
-                .email(email)
-                .name("ㅠㅠ")
-                .password(encryptPassword).build();
+                .name(USER_NAME2)
+                .email(USER_EMAIL2)
+                .password(USER_ENCRYPT_PASSWORD2)
+                .build();
 
         given(userDao.findByEmail(any())).willReturn(user);
-        given(jwtUtils.createToken(any())).willReturn("test");
+        given(jwtUtils.createToken(any())).willReturn(any());
 
-        String accessToken = userService.login(email, password);
+        String accessToken = userService.login(USER_EMAIL2, USER_PASSWORD2);
     }
 }
