@@ -124,4 +124,21 @@ public class FavoritePathServiceTest {
             favoritePathService.delete(requestView);
         });
     }
+
+    @Test
+    void 즐겨찾기에_등록된_경로_목록_불러오기(){
+        //given
+        FavoritePathRequestView requestView
+                =new FavoritePathRequestView(EMAIL2);
+        given(favoritePathRepository.findAllByEmail(EMAIL2))
+                .willReturn(Arrays.asList(favoritePath, favoritePath2));
+
+        //when
+        FavoritePathListResponseView responseView
+                = favoritePathService.showAllFavoritePath(requestView);
+
+        //then
+        verify(favoritePathRepository, times(1)).findAllByEmail(EMAIL2);
+        assertThat(responseView.getFavoritePaths()).hasSize(2);
+    }
 }
