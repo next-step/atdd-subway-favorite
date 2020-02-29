@@ -10,6 +10,10 @@ public class FavoriteStationRequestView {
     public FavoriteStationRequestView() {
     }
 
+    public FavoriteStationRequestView(Long stationId) {
+        this.stationId = stationId;
+    }
+
     public FavoriteStationRequestView(String email, Long stationId) {
         this.email = email;
         this.stationId = stationId;

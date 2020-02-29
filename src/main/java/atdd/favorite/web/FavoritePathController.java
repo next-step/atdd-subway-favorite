@@ -29,14 +29,14 @@ public class FavoritePathController {
         requestView.insertEmail(user.getEmail());
         FavoritePathResponseView responseView = favoritePathService.create(requestView);
         return ResponseEntity
-                .created(URI.create(FAVORITE_PATH_BASE_URI+"/"+responseView.getId()))
+                .created(URI.create(FAVORITE_PATH_BASE_URI + "/" + responseView.getId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(responseView);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@LoginUser User user,
-                                 @PathVariable Long id) throws Exception{
+                                 @PathVariable Long id) throws Exception {
         FavoritePathRequestView requestView = new FavoritePathRequestView();
         requestView.insertEmail(user.getEmail());
         requestView.insertId(id);
@@ -47,7 +47,7 @@ public class FavoritePathController {
     }
 
     @GetMapping
-    public ResponseEntity showAll(@LoginUser User user){
+    public ResponseEntity showAll(@LoginUser User user) {
         FavoritePathRequestView requestView = new FavoritePathRequestView();
         requestView.insertEmail(user.getEmail());
         FavoritePathListResponseView responseView

@@ -18,11 +18,10 @@ public class FavoriteStationHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public Long createFavoriteStationHttpTest(String email, Long stationId, String token)
+    public Long createFavoriteStationHttpTest(Long stationId, String token)
             throws Exception {
         FavoriteStationRequestView request
-                = new FavoriteStationRequestView(email, stationId);
-
+                = new FavoriteStationRequestView(stationId);
         return webTestClient.post().uri(FAVORITE_STATION_BASE_URI)
                 .header("Authorization", AUTH_SCHEME_BEARER + token)
                 .contentType(MediaType.APPLICATION_JSON)

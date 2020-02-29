@@ -6,14 +6,11 @@ import atdd.favorite.application.dto.FavoriteStationResponseView;
 import atdd.favorite.application.dto.LoginUser;
 import atdd.favorite.service.FavoriteStationService;
 import atdd.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Optional;
 
 import static atdd.favorite.FavoriteConstant.FAVORITE_STATION_BASE_URI;
 
@@ -28,7 +25,7 @@ public class FavoriteStationController {
 
     @PostMapping
     public ResponseEntity create(@LoginUser User user,
-                                 FavoriteStationRequestView requestView) {
+                                 @RequestBody FavoriteStationRequestView requestView) {
         requestView.insertEmail(user.getEmail());
         FavoriteStationResponseView responseView = favoriteStationService.create(requestView);
         return ResponseEntity
@@ -38,8 +35,9 @@ public class FavoriteStationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@LoginUser User user, @PathVariable Long id,
-                                 FavoriteStationRequestView requestView) throws Exception {
+    public ResponseEntity delete(@LoginUser User user,
+                                 @PathVariable Long id) throws Exception {
+        FavoriteStationRequestView requestView = new FavoriteStationRequestView();
         requestView.insertEmail(user.getEmail());
         requestView.insertId(id);
         favoriteStationService.delete(requestView);
@@ -49,11 +47,14 @@ public class FavoriteStationController {
     }
 
     @GetMapping
-    public ResponseEntity<FavoriteStationListResponseVIew> showAll(@LoginUser User user){
+    public ResponseEntity showAll(@LoginUser User user) {
+        //TODO
+        FavoriteStationRequestView requestView = new FavoriteStationRequestView();
+        requestView.insertEmail(user.getEmail());
         FavoriteStationListResponseVIew responseVIew
-                = favoriteStationService.showAllFavoriteStations(user.getEmail());
+                = favoriteStationService.showAllFavoriteStations(requestView.getEmail());
         return ResponseEntity
                 .ok()
-                .body(responseVIew);
+                .body(responseVIew.getFavoriteStations());
     }
 }

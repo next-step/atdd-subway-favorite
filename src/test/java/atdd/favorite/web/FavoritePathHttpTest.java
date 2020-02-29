@@ -21,9 +21,7 @@ public class FavoritePathHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public FavoritePathResponseView createFavoritePath(Long startId,
-                                                       Long endId,
-                                                       String token) throws Exception {
+    public FavoritePathResponseView createFavoritePath(Long startId, Long endId, String token){
         FavoritePathRequestView requestView = new FavoritePathRequestView(startId, endId);
         return webTestClient.post().uri(FAVORITE_PATH_BASE_URI)
                 .header("Authorization", AUTH_SCHEME_BEARER + token)

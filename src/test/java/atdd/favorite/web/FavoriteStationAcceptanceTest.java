@@ -2,8 +2,7 @@ package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
 import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
-import atdd.favorite.application.dto.FavoriteStationResponseView;
-import atdd.favorite.domain.FavoriteStation;
+import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
@@ -11,11 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.FluxExchangeResult;
-
-import java.util.stream.Collectors;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.TestConstant.*;
@@ -31,6 +27,7 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     private static StationHttpTest stationHttpTest;
     private static FavoriteStationHttpTest favoriteStationHttpTest;
     private String token;
+    private Long stationId;
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
@@ -59,7 +56,8 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
 
         //when, then
         webTestClient.delete().uri(FAVORITE_STATION_BASE_URI + "/" + favoriteStationId)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody().isEmpty();
@@ -68,24 +66,22 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 지하철역_즐겨찾기_목록을_불러온다() throws Exception {
         //given
-        Long favoriteStationId1 = makeFavoriteStationForTest(EMAIL3, STATION_NAME_3);
-        Long favoriteStationId2 = makeFavoriteStationForTest(EMAIL3, STATION_NAME_4);
+        int theNumberOfFavoriteStations = 2;
+        makeFavoriteStationForTest(EMAIL3, STATION_NAME_3);
+        makeFavoriteStationForTest(EMAIL3, STATION_NAME_4);
 
-        //TODO
-        webTestClient.get()
-                .uri(FAVORITE_STATION_BASE_URI)
+        //when, then
+        webTestClient.get().uri(FAVORITE_STATION_BASE_URI)
                 .header(HttpHeaders.AUTHORIZATION, AUTH_SCHEME_BEARER + token)
-                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
+                .expectStatus().isOk()
                 .expectBodyList(FavoriteStationListResponseVIew.class)
-                .hasSize(2);
-
+                .hasSize(theNumberOfFavoriteStations);
     }
 
-
     private Long makeFavoriteStationForTest(String email, String stationName) throws Exception {
-        Long stationId = stationHttpTest.createStation(stationName);
+        stationId = stationHttpTest.createStation(stationName);
         token = jwtTokenProvider.createToken(email);
-        return favoriteStationHttpTest.createFavoriteStationHttpTest(email, stationId, token);
+        return favoriteStationHttpTest.createFavoriteStationHttpTest(stationId, token);
     }
 }
