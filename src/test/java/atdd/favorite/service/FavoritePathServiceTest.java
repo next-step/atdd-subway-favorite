@@ -1,10 +1,12 @@
 package atdd.favorite.service;
 
 import atdd.favorite.application.dto.FavoritePathRequestView;
+import atdd.favorite.application.dto.FavoritePathResponseView;
 import atdd.favorite.domain.FavoritePath;
 import atdd.favorite.domain.FavoritePathRepository;
 import atdd.path.application.GraphService;
 import atdd.path.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,8 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static atdd.TestConstant.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -47,17 +52,19 @@ public class FavoritePathServiceTest {
         //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(EMAIL, stationId, stationId3);
+        int theNumberOfStations = 3;
         given(graphService.findPath(stationId, stationId3))
                 .willReturn(Arrays.asList(station, station2, station3));
         given(favoritePathRepository.save(any(FavoritePath.class)))
                 .willReturn(favoritePath);
 
         //when
-        favoritePathService.create(requestView);
+        FavoritePathResponseView responseView = favoritePathService.create(requestView);
 
         //then
         verify(favoritePathRepository, times(1))
                 .save(any(FavoritePath.class));
+        assertThat(responseView.getFavoritePathStations().size()).isEqualTo(theNumberOfStations);
     }
 
     @Test
@@ -70,5 +77,21 @@ public class FavoritePathServiceTest {
 
         //when, then
         assertThrows(IllegalArgumentException.class, () -> favoritePathService.create(requestView));
+    }
+
+    @Test
+    void 지하철경로를_즐겨찾기에서_삭제한다() throws Exception{
+        //given
+        FavoritePathRequestView requestView
+                = new FavoritePathRequestView(1L, EMAIL);
+        FavoritePath favoritePath = new FavoritePath(1L, EMAIL, stationId, stationId3);
+        given(favoritePathRepository.findById(1L)).willReturn(Optional.of(favoritePath));
+
+        //when
+        favoritePathService.delete(requestView);
+
+        //then
+        verify(favoritePathRepository, times(1))
+                .delete(any(FavoritePath.class));
     }
 }

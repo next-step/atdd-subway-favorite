@@ -32,4 +32,8 @@ public class FavoritePathService {
                 = graphService.findPath(requestView.getStartId(), requestView.getEndId());
         return FavoritePathResponseView.of(savedFavoritePath, favoritePathStations);
     }
+
+    public FavoritePathResponseView delete(FavoritePathRequestView requestView) {
+        return null;
+    }
 }
