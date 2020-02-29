@@ -1,5 +1,6 @@
 package atdd.favorite.web;
 
+import atdd.favorite.application.dto.FavoritePathListResponseView;
 import atdd.favorite.application.dto.FavoritePathRequestView;
 import atdd.favorite.application.dto.FavoritePathResponseView;
 import atdd.favorite.application.dto.LoginUser;
@@ -43,5 +44,16 @@ public class FavoritePathController {
         return ResponseEntity
                 .ok()
                 .build();
+    }
+
+    @GetMapping
+    public ResponseEntity showAll(@LoginUser User user){
+        FavoritePathRequestView requestView = new FavoritePathRequestView();
+        requestView.insertEmail(user.getEmail());
+        FavoritePathListResponseView responseView
+                = favoritePathService.showAllFavoritePath(requestView);
+        return ResponseEntity
+                .ok()
+                .body(responseView.getFavoritePaths());
     }
 }

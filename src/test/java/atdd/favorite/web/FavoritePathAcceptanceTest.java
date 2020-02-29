@@ -4,6 +4,7 @@ import atdd.AbstractAcceptanceTest;
 import atdd.favorite.application.dto.FavoritePathListResponseView;
 import atdd.favorite.application.dto.FavoritePathRequestView;
 import atdd.favorite.application.dto.FavoritePathResponseView;
+import atdd.favorite.domain.FavoritePath;
 import atdd.path.web.LineHttpTest;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.ArrayList;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.TestConstant.*;
@@ -85,12 +88,14 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 지하철경로_즐겨찾기_목록_불러오기_요청을_보낸다() throws Exception {
         //given
-        int theNumberOfFavoritePaths = 2;
+        int theNumberOfFavoritePaths = 3;
         setUpForTest(EMAIL3);
         FavoritePathResponseView favoritePath
                 = favoritePathHttpTest.createFavoritePath(stationId, stationId3, token);
         FavoritePathResponseView favoritePath2
                 = favoritePathHttpTest.createFavoritePath(stationId2, stationId3, token);
+        FavoritePathResponseView favoritePath3
+                = favoritePathHttpTest.createFavoritePath(stationId3, stationId, token);
 
         //when
         FavoritePathRequestView requestView = new FavoritePathRequestView(EMAIL3);
