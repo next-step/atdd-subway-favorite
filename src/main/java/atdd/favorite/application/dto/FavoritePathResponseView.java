@@ -1,5 +1,6 @@
 package atdd.favorite.application.dto;
 
+import atdd.favorite.domain.FavoritePath;
 import atdd.path.domain.Station;
 
 import java.util.List;
@@ -28,5 +29,14 @@ public class FavoritePathResponseView {
 
     public List<Station> getFavoritePathStations() {
         return favoritePathStations;
+    }
+
+    public static FavoritePathResponseView of(FavoritePath favoritePath,
+                                              List<Station> favoritePathStations){
+        return new FavoritePathResponseView(
+                favoritePath.getId(),
+                favoritePath.getEmail(),
+                favoritePathStations
+        );
     }
 }

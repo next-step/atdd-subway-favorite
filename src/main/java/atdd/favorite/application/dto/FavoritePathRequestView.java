@@ -1,5 +1,7 @@
 package atdd.favorite.application.dto;
 
+import atdd.favorite.domain.FavoritePath;
+
 public class FavoritePathRequestView {
     private Long id;
     private String email;

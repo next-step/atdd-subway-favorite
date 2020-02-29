@@ -1,5 +1,7 @@
 package atdd.favorite.domain;
 
+import atdd.favorite.application.dto.FavoritePathRequestView;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +17,12 @@ public class FavoritePath {
     private Long endId;
 
     public FavoritePath() {
+    }
+
+    public FavoritePath(String email, Long startId, Long endId) {
+        this.email = email;
+        this.startId = startId;
+        this.endId = endId;
     }
 
     public FavoritePath(Long id, String email, Long startId, Long endId) {
@@ -38,5 +46,12 @@ public class FavoritePath {
 
     public Long getEndId() {
         return endId;
+    }
+
+    public static FavoritePath of(FavoritePathRequestView requestView){
+        return new FavoritePath(
+                requestView.getEmail(),
+                requestView.getStartId(),
+                requestView.getEndId());
     }
 }
