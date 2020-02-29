@@ -2,21 +2,15 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.user.UserLoginResponseView;
-import atdd.path.application.dto.user.UserSighUpResponseView;
 import atdd.path.domain.User;
 import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
-import reactor.core.publisher.Mono;
-
-import java.util.Objects;
 
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,13 +20,13 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String USER_BASE_URL = "/users";
     public static final String LOGIN_API_URL = "/login";
 
-    private RestWebClientTest restWebClientTest;
+    private CreateWebClientTest restWebClientTest;
     private TokenAuthenticationService tokenAuthenticationService;
 
     @BeforeEach
     void setUp() {
         cleanAllDatabases();
-        this.restWebClientTest = new RestWebClientTest(this.webTestClient);
+        this.restWebClientTest = new CreateWebClientTest(this.webTestClient);
         this.tokenAuthenticationService = new TokenAuthenticationService();
     }
 
