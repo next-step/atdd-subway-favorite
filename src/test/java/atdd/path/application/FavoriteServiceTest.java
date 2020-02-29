@@ -38,7 +38,7 @@ public class FavoriteServiceTest extends SoftAssertionTest {
     @Test
     public void save() {
         //given
-        when(favoriteDao.save(any(), STATION_TYPE)).thenReturn(NEW_FAVORITE);
+        when(favoriteDao.save(any(), STATION_TYPE)).thenReturn(NEW_STATION_FAVORITE);
 
         //when
         FavoriteCreateResponseView favorite = favoriteService.save(NEW_USER, STATION_FAVORITE_CREATE_REQUEST_VIEW);
@@ -51,10 +51,10 @@ public class FavoriteServiceTest extends SoftAssertionTest {
     @Test
     public void findStationByUser() {
         //given
-        when(favoriteDao.findByUser(any(), STATION_TYPE)).thenReturn(NEW_FAVORITES);
+        when(favoriteDao.findStationByUser(any())).thenReturn(NEW_STATION_FAVORITES);
 
         //when
-        FavoriteListResponseView favorites = favoriteService.findByUser(NEW_USER);
+        FavoriteListResponseView favorites = favoriteService.findByUser(NEW_USER, STATION_TYPE);
 
         Favorite firstFavorite = favorites.getFirstIndex();
         Station station = (Station) firstFavorite.getItem();
@@ -68,10 +68,10 @@ public class FavoriteServiceTest extends SoftAssertionTest {
     @Test
     public void findEdgeByUser() {
         //given
-        when(favoriteDao.findByUser(any(), EDGE_TYPE)).thenReturn(NEW_FAVORITES);
+        when(favoriteDao.findEdgeByUser(any())).thenReturn(NEW_EDGE_FAVORITES);
 
         //when
-        FavoriteListResponseView favorites = favoriteService.findByUser(NEW_USER);
+        FavoriteListResponseView favorites = favoriteService.findByUser(NEW_USER, EDGE_TYPE);
 
         Favorite firstFavorite = favorites.getFirstIndex();
         Edge edge = (Edge) firstFavorite.getItem();

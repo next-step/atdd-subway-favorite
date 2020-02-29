@@ -7,6 +7,8 @@ import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.User;
 import org.springframework.stereotype.Service;
 
+import static atdd.path.dao.FavoriteDao.STATION_TYPE;
+
 @Service
 public class FavoriteService {
     private FavoriteDao favoriteDao;
@@ -19,8 +21,12 @@ public class FavoriteService {
         return FavoriteCreateResponseView.toDtoEntity(favoriteDao.save(favorite.toEntity(loginUser), favorite.getType()));
     }
 
-    public FavoriteListResponseView findByUser(User loginUser) {
-        return FavoriteListResponseView.toDtoEntity(favoriteDao.findByUser(loginUser));
+    public FavoriteListResponseView findByUser(User loginUser, String type) {
+        if (STATION_TYPE.equals(type)) {
+            return FavoriteListResponseView.toDtoEntity(favoriteDao.findStationByUser(loginUser));
+        }
+
+        return FavoriteListResponseView.toDtoEntity(favoriteDao.findEdgeByUser(loginUser));
     }
 
     public void deleteStation(User loginUser, Long stationId) {
