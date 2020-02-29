@@ -1,6 +1,6 @@
 package atdd.path.domain;
 
-public class Edge {
+public class Edge extends Item {
     private Long id;
     private Station sourceStation;
     private Station targetStation;
