@@ -15,6 +15,8 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.path.TestConstant.STATION_NAME;
 import static atdd.path.TestConstant.STATION_NAME_2;
+import static atdd.path.dao.FavoriteDao.EDGE_TYPE;
+import static atdd.path.dao.FavoriteDao.STATION_TYPE;
 import static atdd.path.fixture.FavoriteFixture.EDGE_FAVORITE_CREATE_REQUEST_VIEW;
 import static atdd.path.fixture.FavoriteFixture.STATION_FAVORITE_CREATE_REQUEST_VIEW;
 import static atdd.path.fixture.UserFixture.KIM_EMAIL;
@@ -60,7 +62,8 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         EntityExchangeResult<FavoriteListResponseView> expectResponse
-                = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
+                = restWebClientTest.getMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL + "?type=" + STATION_TYPE, FavoriteListResponseView.class, getJwt());
 
         FavoriteListResponseView responseBody = expectResponse.getResponseBody();
         Item station = responseBody.getFirstFavoriteItem();
@@ -113,16 +116,17 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         EntityExchangeResult<FavoriteListResponseView> expectResponse
-                = restWebClientTest.getMethodWithAuthAcceptance(FAVORITE_BASE_URL, FavoriteListResponseView.class, getJwt());
+                = restWebClientTest.getMethodWithAuthAcceptance
+                (FAVORITE_BASE_URL + "?type=" + EDGE_TYPE, FavoriteListResponseView.class, getJwt());
 
         FavoriteListResponseView responseBody = expectResponse.getResponseBody();
-        FavoriteListResponseView favorites = responseBody;
+        Item item = responseBody.getFirstFavoriteItem();
 
         //then
-        softly.assertThat(favorites.getSize()).isGreaterThan(1);
+        softly.assertThat(item.getId()).isNotNull();
     }
 
-    @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
+    @DisplayName("사용자가 등록된 지하철 구간 즐겨찾기를 삭제 가능한지")
     @Test
     public void deleteFavoriteToEdge() {
         //given
@@ -135,8 +139,6 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         //then
         assertThat(expectResponse.getStatus()).isEqualTo(HttpStatus.OK);
     }
-
-
 
     String createEdgeFavorite() {
         //given
