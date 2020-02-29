@@ -8,6 +8,8 @@ import atdd.path.application.GraphService;
 import atdd.path.domain.Station;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -33,7 +35,7 @@ public class FavoritePathService {
         return FavoritePathResponseView.of(savedFavoritePath, favoritePathStations);
     }
 
-    public FavoritePathResponseView delete(FavoritePathRequestView requestView) {
-        return null;
+    public void delete(FavoritePathRequestView requestView) {
+        favoritePathRepository.delete(FavoritePath.of(requestView));
     }
 }

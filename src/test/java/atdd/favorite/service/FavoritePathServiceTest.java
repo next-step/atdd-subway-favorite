@@ -85,7 +85,6 @@ public class FavoritePathServiceTest {
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(1L, EMAIL);
         FavoritePath favoritePath = new FavoritePath(1L, EMAIL, stationId, stationId3);
-        given(favoritePathRepository.findById(1L)).willReturn(Optional.of(favoritePath));
 
         //when
         favoritePathService.delete(requestView);
