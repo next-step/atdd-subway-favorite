@@ -1,6 +1,5 @@
 package atdd.favorite.service;
 
-import atdd.TestConstant;
 import atdd.favorite.application.dto.FavoritePathRequestView;
 import atdd.favorite.domain.FavoritePath;
 import atdd.favorite.domain.FavoritePathRepository;
@@ -8,7 +7,6 @@ import atdd.path.application.GraphService;
 import atdd.path.domain.Station;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,7 +15,6 @@ import java.util.Arrays;
 
 import static atdd.TestConstant.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -30,10 +27,10 @@ public class FavoritePathServiceTest {
     private static final Long stationId2 = 2L;
     private static final Long stationId3 = 3L;
     private static final FavoritePath favoritePath
-            =new FavoritePath(2L, EMAIL, stationId, stationId3);
-    private static Station station=new Station(stationId, STATION_NAME);
-    private static Station station2=new Station(stationId, STATION_NAME_2);
-    private static Station station3=new Station(stationId, STATION_NAME_3);
+            = new FavoritePath(2L, EMAIL, stationId, stationId3);
+    private static Station station = new Station(stationId, STATION_NAME);
+    private static Station station2 = new Station(stationId, STATION_NAME_2);
+    private static Station station3 = new Station(stationId, STATION_NAME_3);
 
     @InjectMocks
     FavoritePathService favoritePathService;
@@ -45,7 +42,7 @@ public class FavoritePathServiceTest {
     GraphService graphService;
 
     @Test
-    void 지하철경로를_즐겨찾기에_등록한다(){
+    void 지하철경로를_즐겨찾기에_등록한다() {
         //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(EMAIL, stationId, stationId3);
@@ -59,6 +56,26 @@ public class FavoritePathServiceTest {
 
         //then
         verify(favoritePathRepository, times(1))
+                .save(any(FavoritePath.class));
+    }
+
+    @Test
+    void 출발역과_도착역이_같으면_등록이_안_된다(){
+        //given
+        FavoritePathRequestView requestView
+                =new FavoritePathRequestView(EMAIL, stationId, stationId);
+        FavoritePath favoritePathSame
+                =new FavoritePath(EMAIL, stationId, stationId);
+        given(graphService.findPath(stationId, stationId))
+                .willReturn(Arrays.asList(station, station));
+        given(favoritePathRepository.save(any(FavoritePath.class)))
+                .willReturn(favoritePathSame);
+
+        //when
+        favoritePathService.create(requestView);
+
+        //then
+        verify(favoritePathRepository, times(0))
                 .save(any(FavoritePath.class));
     }
 }
