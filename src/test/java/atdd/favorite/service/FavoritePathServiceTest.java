@@ -93,4 +93,17 @@ public class FavoritePathServiceTest {
         verify(favoritePathRepository, times(1))
                 .delete(any(FavoritePath.class));
     }
+
+    @Test
+    void 즐겨찾기를_등록한_사람만_삭제할_수_있다(){
+        FavoritePathRequestView requestView
+                = new FavoritePathRequestView(1L, EMAIL2);
+        FavoritePath favoritePath = new FavoritePath(1L, EMAIL, stationId, stationId3);
+        given(favoritePathRepository.findById(1L)).willReturn(Optional.of(favoritePath));
+
+        //when, then
+        assertThrows(IllegalArgumentException.class, () -> {
+            favoritePathService.delete(requestView);
+        });
+    }
 }
