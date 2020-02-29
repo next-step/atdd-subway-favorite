@@ -141,4 +141,18 @@ public class FavoritePathServiceTest {
         verify(favoritePathRepository, times(1)).findAllByEmail(EMAIL2);
         assertThat(responseView.getFavoritePaths()).hasSize(2);
     }
+
+    @Test
+    void 즐겨찾기에_경로가_등록되어_있어야_불러올_수_있다(){
+        //given
+        FavoritePathRequestView requestView
+                =new FavoritePathRequestView(EMAIL2);
+        given(favoritePathRepository.findAllByEmail(EMAIL2))
+                .willReturn(Optional.empty());
+
+        //when, then
+        assertThrows(NoSuchElementException.class, () -> {
+            favoritePathService.showAllFavoritePath(requestView);
+        });
+    }
 }
