@@ -2,7 +2,6 @@ package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
 import atdd.favorite.application.dto.FavoriteStationListResponseVIew;
-import atdd.favorite.application.dto.FavoriteStationRequestView;
 import atdd.path.web.StationHttpTest;
 import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.TestConstant.*;
@@ -38,6 +36,7 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
         this.userHttpTest = new UserHttpTest(webTestClient);
         this.stationHttpTest = new StationHttpTest(webTestClient);
         userHttpTest.createUser(EMAIL2, NAME, PASSWORD);
+        userHttpTest.createUser(EMAIL3, NAME, PASSWORD);
     }
 
     @Test
@@ -66,9 +65,10 @@ public class FavoriteStationAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void 지하철역_즐겨찾기_목록을_불러온다() throws Exception {
         //given
-        int theNumberOfFavoriteStations = 2;
-        makeFavoriteStationForTest(EMAIL3, STATION_NAME_3);
-        makeFavoriteStationForTest(EMAIL3, STATION_NAME_4);
+        int theNumberOfFavoriteStations = 3;
+        makeFavoriteStationForTest(EMAIL2, STATION_NAME_3);
+        makeFavoriteStationForTest(EMAIL2, STATION_NAME_4);
+        makeFavoriteStationForTest(EMAIL2, STATION_NAME_5);
 
         //when, then
         webTestClient.get().uri(FAVORITE_STATION_BASE_URI)
