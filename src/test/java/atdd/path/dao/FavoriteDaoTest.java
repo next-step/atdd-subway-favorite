@@ -1,14 +1,12 @@
 package atdd.path.dao;
 
-import atdd.path.SoftAssertionTest;
+import atdd.path.DatabaseConfigTest;
 import atdd.path.domain.*;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -21,10 +19,7 @@ import static atdd.path.fixture.FavoriteFixture.getDaoFavorites;
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JdbcTest
-public class FavoriteDaoTest extends SoftAssertionTest {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+public class FavoriteDaoTest extends DatabaseConfigTest {
     @Autowired
     private DataSource dataSource;
 
@@ -36,6 +31,8 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
     @BeforeEach
     void setUp() {
+        cleanAllDatabases();
+
         favoriteDao = new FavoriteDao(jdbcTemplate);
         favoriteDao.setDataSource(dataSource);
         stationDao = new StationDao(jdbcTemplate);
@@ -127,7 +124,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         //then
         softly.assertThat(favorites).hasSizeGreaterThan(1);
         softly.assertThat(favoriteStation.getName()).isEqualTo(STATION_NAME);
-        softly.assertThat(secondFavoriteStation.getName()).isEqualTo(STATION_NAME_15);
+        softly.assertThat(secondFavoriteStation.getName()).isEqualTo(STATION_NAME_2);
     }
 
     @DisplayName("사용자 Id 로 등록된 지하철 경로 Favorite 을 조회할 수 있는지")
@@ -143,14 +140,13 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         favoriteDao.save(new Favorite(user, edge), EDGE_TYPE);
 
         //when
-        List<Favorite> favorites = favoriteDao.findStationByUser(user);
+        List<Favorite> favorites = favoriteDao.findEdgeByUser(user);
 
-        Edge edge = (Edge) favorites.get(0).getItem();
+        Edge savedEdge = (Edge) favorites.get(0).getItem();
 
         //then
-        softly.assertThat(favorites).hasSizeGreaterThan(1);
-        softly.assertThat(edge.getSourceStation().getName()).isEqualTo(sourceStation.getName());
-        softly.assertThat(edge.getTargetStation().getName()).isEqualTo(targetStation.getName());
+        softly.assertThat(savedEdge.getSourceStation().getName()).isEqualTo(sourceStation.getName());
+        softly.assertThat(savedEdge.getTargetStation().getName()).isEqualTo(targetStation.getName());
     }
 
 
