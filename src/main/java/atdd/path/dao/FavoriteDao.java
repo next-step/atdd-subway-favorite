@@ -95,6 +95,8 @@ public class FavoriteDao {
     }
 
     Favorite mapFavorite(List<Map<String, Object>> result, String type) {
+        checkFindResultIsEmpty(result);
+
         if (STATION_TYPE.equals(type)) {
             return mapStationFavorite(result);
         }
