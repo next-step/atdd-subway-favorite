@@ -108,18 +108,18 @@ public class FavoriteDaoTest extends SoftAssertionTest {
     }
 
 
-    @DisplayName("사용자 Id 로 등록된 Favorite 을 조회할 수 있는지")
+    @DisplayName("사용자 Id 로 등록된 지하철역 Favorite 을 조회할 수 있는지")
     @Test
-    public void findByUser(SoftAssertions softly) {
+    public void findStationByUser(SoftAssertions softly) {
         //given
         User user = userDao.save(NEW_USER);
         Station firstStation = stationDao.save(TEST_STATION);
-        Station secondStation = stationDao.save(TEST_STATION_15);
+        Station secondStation = stationDao.save(TEST_STATION_2);
         favoriteDao.save(new Favorite(user, firstStation), STATION_TYPE);
         favoriteDao.save(new Favorite(user, secondStation), STATION_TYPE);
 
         //when
-        List<Favorite> favorites = favoriteDao.findByUser(user);
+        List<Favorite> favorites = favoriteDao.findStationByUser(user);
 
         Station favoriteStation = (Station) favorites.get(0).getItem();
         Station secondFavoriteStation = (Station) favorites.get(1).getItem();
@@ -129,6 +129,30 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         softly.assertThat(favoriteStation.getName()).isEqualTo(STATION_NAME);
         softly.assertThat(secondFavoriteStation.getName()).isEqualTo(STATION_NAME_15);
     }
+
+    @DisplayName("사용자 Id 로 등록된 지하철 경로 Favorite 을 조회할 수 있는지")
+    @Test
+    public void findEdgeByUser(SoftAssertions softly) {
+        //given
+        User user = userDao.save(NEW_USER);
+        Station sourceStation = stationDao.save(TEST_STATION_10);
+        Station targetStation = stationDao.save(TEST_STATION_11);
+        Line line = lineDao.save(TEST_LINE);
+        Edge edge = edgeDao.save(line.getId(), TEST_EDGE);
+
+        favoriteDao.save(new Favorite(user, edge), EDGE_TYPE);
+
+        //when
+        List<Favorite> favorites = favoriteDao.findStationByUser(user);
+
+        Edge edge = (Edge) favorites.get(0).getItem();
+
+        //then
+        softly.assertThat(favorites).hasSizeGreaterThan(1);
+        softly.assertThat(edge.getSourceStation().getName()).isEqualTo(sourceStation.getName());
+        softly.assertThat(edge.getTargetStation().getName()).isEqualTo(targetStation.getName());
+    }
+
 
     @DisplayName("사용자가 등록된 지하철역 즐겨찾기를 삭제 가능한지")
     @Test
@@ -142,7 +166,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
         //when
         favoriteDao.deleteStation(user, STATION_ID);
-        List<Favorite> favorites = favoriteDao.findByUser(user);
+        List<Favorite> favorites = favoriteDao.findStationByUser(user);
 
         //then
         assertThat(favorites).hasSize(1);
@@ -185,7 +209,7 @@ public class FavoriteDaoTest extends SoftAssertionTest {
     @Test
     public void mapFavorites(SoftAssertions softly) {
         //when
-        List<Favorite> favorites = favoriteDao.mapFavorites(getDaoFavorites(), NEW_USER);
+        List<Favorite> favorites = favoriteDao.mapStationFavorites(getDaoFavorites(), NEW_USER);
 
         Station station = (Station) favorites.get(0).getItem();
 
