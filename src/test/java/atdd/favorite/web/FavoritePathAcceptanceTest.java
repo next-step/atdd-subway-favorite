@@ -1,6 +1,7 @@
 package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
+import atdd.favorite.application.dto.FavoritePathListResponseView;
 import atdd.favorite.application.dto.FavoritePathRequestView;
 import atdd.favorite.application.dto.FavoritePathResponseView;
 import atdd.path.web.LineHttpTest;
@@ -72,11 +73,35 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         FavoritePathRequestView requestView = new FavoritePathRequestView(favoritePath.getId());
+
+        //then
         webTestClient.delete().uri(FAVORITE_PATH_BASE_URI + "/" + favoritePath.getId())
                 .header("Authorization", AUTH_SCHEME_BEARER + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk();
+    }
+
+    @Test
+    void 지하철경로_즐겨찾기_목록_불러오기_요청을_보낸다() throws Exception {
+        //given
+        int theNumberOfFavoritePaths = 2;
+        setUpForTest(EMAIL3);
+        FavoritePathResponseView favoritePath
+                = favoritePathHttpTest.createFavoritePath(stationId, stationId3, token);
+        FavoritePathResponseView favoritePath2
+                = favoritePathHttpTest.createFavoritePath(stationId2, stationId3, token);
+
+        //when
+        FavoritePathRequestView requestView = new FavoritePathRequestView(EMAIL3);
+
+        //then
+        webTestClient.get().uri(FAVORITE_PATH_BASE_URI)
+                .header("Authorization", AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(FavoritePathListResponseView.class).hasSize(theNumberOfFavoritePaths);
     }
 
     void setUpForTest(String email) {
