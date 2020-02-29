@@ -49,6 +49,8 @@ public class FavoritePathService {
     }
 
     public FavoritePathListResponseView showAllFavoritePath(FavoritePathRequestView requestView) {
-        return null;
+        List<FavoritePath> allByEmail
+                = favoritePathRepository.findAllByEmail(requestView.getEmail());
+        return new FavoritePathListResponseView(requestView.getEmail(), allByEmail);
     }
 }
