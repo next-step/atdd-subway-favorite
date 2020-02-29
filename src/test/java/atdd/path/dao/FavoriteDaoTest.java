@@ -1,10 +1,7 @@
 package atdd.path.dao;
 
 import atdd.path.SoftAssertionTest;
-import atdd.path.domain.Favorite;
-import atdd.path.domain.Item;
-import atdd.path.domain.Station;
-import atdd.path.domain.User;
+import atdd.path.domain.*;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +14,8 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static atdd.path.TestConstant.*;
-import static atdd.path.fixture.FavoriteFixture.STATION_TYPE;
+import static atdd.path.dao.FavoriteDao.EDGE_TYPE;
+import static atdd.path.dao.FavoriteDao.STATION_TYPE;
 import static atdd.path.fixture.FavoriteFixture.getDaoFavorites;
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +29,8 @@ public class FavoriteDaoTest extends SoftAssertionTest {
 
     private FavoriteDao favoriteDao;
     private StationDao stationDao;
+    private LineDao lineDao;
+    private EdgeDao edgeDao;
     private UserDao userDao;
 
     @BeforeEach
@@ -39,6 +39,10 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         favoriteDao.setDataSource(dataSource);
         stationDao = new StationDao(jdbcTemplate);
         stationDao.setDataSource(dataSource);
+        lineDao = new LineDao(jdbcTemplate);
+        lineDao.setDataSource(dataSource);
+        edgeDao = new EdgeDao(jdbcTemplate);
+        edgeDao.setDataSource(dataSource);
         userDao = new UserDao(jdbcTemplate);
         userDao.setDataSource(dataSource);
     }
@@ -59,9 +63,9 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         assertThat(favorite.getUser().getName()).isEqualTo(KIM_NAME);
     }
 
-    @DisplayName("Id 로 Favorite 을 조회할 수 있는지")
+    @DisplayName("즐겨찾기를 지하철로 등록한 것의 Id 로 Favorite 을 조회할 수 있는지")
     @Test
-    public void findById() {
+    public void findStationById() {
         //given
         User user = userDao.save(NEW_USER);
         Station station = stationDao.save(TEST_STATION);
@@ -74,6 +78,30 @@ public class FavoriteDaoTest extends SoftAssertionTest {
         assertThat(favorite.getId()).isNotNull();
         assertThat(favorite.getItem()).isEqualTo(savedFavorite.getItem());
     }
+
+    @DisplayName("즐겨찾기를 지하철경로로 등록한 것의 Id 로 Favorite 을 조회할 수 있는지")
+    @Test
+    public void findEdgeById() {
+        //given
+        User user = userDao.save(NEW_USER);
+        Station sourceStation = stationDao.save(TEST_STATION);
+        Station targetStation = stationDao.save(TEST_STATION_2);
+        Line line = lineDao.save(TEST_LINE);
+        Edge edge = edgeDao.save(line.getId(), TEST_EDGE);
+
+        Favorite savedFavorite = favoriteDao.save(new Favorite(user, edge), EDGE_TYPE);
+
+        //when
+        Favorite favorite = favoriteDao.findStationById(savedFavorite.getId());
+
+        //then
+        assertThat(favorite.getId()).isNotNull();
+        assertThat(favorite.getItem().getId()).isEqualTo(savedFavorite.getItem());
+        assertThat(favorite.getItem().getSrouceStationName()).isEqualTo(sourceStation.getName());
+        assertThat(favorite.getItem().getTargetStationName()).isEqualTo(targetStation.getName());
+
+    }
+
 
     @DisplayName("사용자 Id 로 등록된 Favorite 을 조회할 수 있는지")
     @Test
