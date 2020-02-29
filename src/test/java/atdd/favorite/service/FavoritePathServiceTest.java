@@ -107,4 +107,17 @@ public class FavoritePathServiceTest {
             favoritePathService.delete(requestView);
         });
     }
+
+    @Test
+    void 즐겨찾기에_등록된_지하철경만_삭제할_수_있다(){
+        //given
+        FavoritePathRequestView requestView
+                = new FavoritePathRequestView(1L, EMAIL2);
+        given(favoritePathRepository.findById(1L)).willReturn(null);
+
+        //when, then
+        assertThrows(IllegalArgumentException.class, () -> {
+            favoritePathService.delete(requestView);
+        });
+    }
 }
