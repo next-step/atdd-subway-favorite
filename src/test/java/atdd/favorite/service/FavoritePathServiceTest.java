@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 
 import static atdd.TestConstant.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -42,7 +43,7 @@ public class FavoritePathServiceTest {
     GraphService graphService;
 
     @Test
-    void 지하철경로를_즐겨찾기에_등록한다() {
+    void 지하철경로를_즐겨찾기에_등록한다() throws Exception {
         //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(EMAIL, stationId, stationId3);
@@ -60,22 +61,14 @@ public class FavoritePathServiceTest {
     }
 
     @Test
-    void 출발역과_도착역이_같으면_등록이_안_된다(){
+    void 출발역과_도착역이_같으면_등록이_안_된다() throws Exception {
         //given
         FavoritePathRequestView requestView
-                =new FavoritePathRequestView(EMAIL, stationId, stationId);
+                = new FavoritePathRequestView(EMAIL, stationId, stationId);
         FavoritePath favoritePathSame
-                =new FavoritePath(EMAIL, stationId, stationId);
-        given(graphService.findPath(stationId, stationId))
-                .willReturn(Arrays.asList(station, station));
-        given(favoritePathRepository.save(any(FavoritePath.class)))
-                .willReturn(favoritePathSame);
+                = new FavoritePath(EMAIL, stationId, stationId);
 
-        //when
-        favoritePathService.create(requestView);
-
-        //then
-        verify(favoritePathRepository, times(0))
-                .save(any(FavoritePath.class));
+        //when, then
+        assertThrows(IllegalArgumentException.class, () -> favoritePathService.create(requestView));
     }
 }

@@ -21,7 +21,11 @@ public class FavoritePathService {
         this.graphService = graphService;
     }
 
-    public FavoritePathResponseView create(FavoritePathRequestView requestView) {
+    public FavoritePathResponseView create(FavoritePathRequestView requestView)
+        throws Exception {
+        if(requestView.getStartId() == requestView.getEndId()){
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
         FavoritePath savedFavoritePath
                 = favoritePathRepository.save(FavoritePath.of(requestView));
         List<Station> favoritePathStations
