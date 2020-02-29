@@ -43,14 +43,17 @@ public class FavoritePathService {
             throw new NoSuchElementException("즐겨찾기에 등록되지 않은 지하철경로입니다.");
         }
         if (favoritePathById.get().getEmail() != requestView.getEmail()) {
-            throw new IllegalArgumentException("즐겨찾기를 등록한 사람만 삭제할 수 있습니다.");
+            throw new NoSuchElementException("즐겨찾기를 등록한 사람만 삭제할 수 있습니다.");
         }
         favoritePathRepository.delete(FavoritePath.of(requestView));
     }
 
     public FavoritePathListResponseView showAllFavoritePath(FavoritePathRequestView requestView) {
-        List<FavoritePath> allByEmail
+        Optional<List<FavoritePath>> allByEmail
                 = favoritePathRepository.findAllByEmail(requestView.getEmail());
-        return new FavoritePathListResponseView(requestView.getEmail(), allByEmail);
+        if(Optional.empty().isPresent()){
+            throw new NoSuchElementException("등록된 지하철경로가 없습니다.");
+        }
+        return new FavoritePathListResponseView(requestView.getEmail(), allByEmail.get());
     }
 }

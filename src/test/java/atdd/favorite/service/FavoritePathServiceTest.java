@@ -7,7 +7,6 @@ import atdd.favorite.domain.FavoritePath;
 import atdd.favorite.domain.FavoritePathRepository;
 import atdd.path.application.GraphService;
 import atdd.path.domain.Station;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +19,6 @@ import java.util.Optional;
 
 import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -84,11 +82,13 @@ public class FavoritePathServiceTest {
     }
 
     @Test
-    void 지하철경로를_즐겨찾기에서_삭제한다() throws Exception{
+    void 지하철경로를_즐겨찾기에서_삭제한다() throws Exception {
         //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(1L, EMAIL);
         FavoritePath favoritePath = new FavoritePath(1L, EMAIL, stationId, stationId3);
+        given(favoritePathRepository.findById(requestView.getId()))
+                .willReturn(Optional.of(favoritePath));
 
         //when
         favoritePathService.delete(requestView);
@@ -99,7 +99,7 @@ public class FavoritePathServiceTest {
     }
 
     @Test
-    void 즐겨찾기를_등록한_사람만_삭제할_수_있다(){
+    void 즐겨찾기를_등록한_사람만_삭제할_수_있다() {
         //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(1L, EMAIL2);
@@ -107,13 +107,13 @@ public class FavoritePathServiceTest {
         given(favoritePathRepository.findById(1L)).willReturn(Optional.of(favoritePath));
 
         //when, then
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             favoritePathService.delete(requestView);
         });
     }
 
     @Test
-    void 즐겨찾기에_등록된_지하철경로만_삭제할_수_있다(){
+    void 즐겨찾기에_등록된_지하철경로만_삭제할_수_있다() {
         //given
         FavoritePathRequestView requestView
                 = new FavoritePathRequestView(1L, EMAIL2);
@@ -126,12 +126,12 @@ public class FavoritePathServiceTest {
     }
 
     @Test
-    void 즐겨찾기에_등록된_경로_목록_불러오기(){
+    void 즐겨찾기에_등록된_경로_목록_불러오기() {
         //given
         FavoritePathRequestView requestView
-                =new FavoritePathRequestView(EMAIL2);
+                = new FavoritePathRequestView(EMAIL2);
         given(favoritePathRepository.findAllByEmail(EMAIL2))
-                .willReturn(Arrays.asList(favoritePath, favoritePath2));
+                .willReturn(Optional.of(Arrays.asList(favoritePath, favoritePath2)));
 
         //when
         FavoritePathListResponseView responseView
@@ -143,10 +143,10 @@ public class FavoritePathServiceTest {
     }
 
     @Test
-    void 즐겨찾기에_경로가_등록되어_있어야_불러올_수_있다(){
+    void 즐겨찾기에_경로가_등록되어_있어야_불러올_수_있다() {
         //given
         FavoritePathRequestView requestView
-                =new FavoritePathRequestView(EMAIL2);
+                = new FavoritePathRequestView(EMAIL2);
         given(favoritePathRepository.findAllByEmail(EMAIL2))
                 .willReturn(Optional.empty());
 
