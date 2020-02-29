@@ -25,7 +25,6 @@ public class FavoriteDao {
     public static final String EDGE_ID_KEY = "EDGE_ID";
     public static final String USER_ID_KEY = "USER_ID";
     public static final String STATION_NAME_KEY = "STATION_NAME";
-    public static final String ITEM_NAME_KEY = "ITEM_NAME";
     public static final String USER_NAME_KEY = "USER_NAME";
     public static final String USER_EMAIL_KEY = "USER_EMAIL";
     public static final String FAVORITE_ID_KEY = "FAVORITE_ID";
@@ -135,17 +134,36 @@ public class FavoriteDao {
         }
     }
 
-    public List<Favorite> findByUser(User user) {
+    public List<Favorite> findStationByUser(User user) {
         String sql = "SELECT F.id as favorite_id, S.id as station_id, S.name as station_name \n" +
                 "FROM FAVORITE F \n" +
                 "JOIN STATION S ON F.item_id = S.id \n" +
                 "JOIN USER U ON F.user_id = U.id \n" +
-                "WHERE U.id  = ?";
+                "WHERE U.id  = ? \n" +
+                "AND F.type = 'station'";
 
-        return mapFavorites(jdbcTemplate.queryForList(sql, user.getId()), user);
+        return mapStationFavorites(jdbcTemplate.queryForList(sql, user.getId()), user);
     }
 
-    List<Favorite> mapFavorites(List<Map<String, Object>> rows, User user) {
+    public List<Favorite> findEdgeByUser(User user) {
+        String sql = "SELECT F.id as favorite_id, F.type as type," +
+                "E.id as edge_id, E.line_id as line_id," +
+                "SS.id as source_station_id, SS.name as source_station_name," +
+                "TS.id as target_station_id, TS.name as target_station_name," +
+                "E.distance as distance \n" +
+                "FROM FAVORITE F \n" +
+                "JOIN EDGE E ON F.item_id = E.id \n" +
+                "JOIN STATION SS ON SS.id = E.source_station_id \n" +
+                "JOIN STATION TS ON TS.id = E.target_station_id \n" +
+                "JOIN USER U ON F.user_id = U.id \n" +
+                "WHERE U.id  = ?" +
+                "AND F.type = 'edge'";
+
+        return mapEdgeFavorites(jdbcTemplate.queryForList(sql, user.getId()), user);
+    }
+
+
+    List<Favorite> mapStationFavorites(List<Map<String, Object>> rows, User user) {
         return rows.stream()
                 .map(row -> new Favorite(
                         (Long) row.get(FAVORITE_ID_KEY)
@@ -153,6 +171,19 @@ public class FavoriteDao {
                         , new Station((Long) row.get(STATION_ID_KEY), (String) row.get(STATION_NAME_KEY))))
                 .collect(Collectors.toList());
     }
+
+    List<Favorite> mapEdgeFavorites(List<Map<String, Object>> rows, User user) {
+        return rows.stream()
+                .map(row -> new Favorite(
+                        (Long) row.get(FAVORITE_ID_KEY)
+                        , user
+                        , new Edge((Long) row.get(EDGE_ID_KEY)
+                        , new Station((Long) row.get(SOURCE_STATION_ID_KEY), (String) row.get(SOURCE_STATION_NAME_KEY))
+                        , new Station((Long) row.get(TARGET_STATION_ID_KEY), (String) row.get(TARGET_STATION_NAME_KEY))
+                        , (int) row.get(DISTANCE_ID_KEY))))
+                .collect(Collectors.toList());
+    }
+
 
     public void deleteStation(User user, Long stationId) {
         String sql = "DELETE FROM FAVORITE WHERE id = ? AND user_id = ?";
