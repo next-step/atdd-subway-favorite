@@ -4,6 +4,7 @@ import atdd.path.SoftAssertionTest;
 import atdd.path.application.dto.favorite.FavoriteCreateResponseView;
 import atdd.path.application.dto.favorite.FavoriteListResponseView;
 import atdd.path.dao.FavoriteDao;
+import atdd.path.domain.Edge;
 import atdd.path.domain.Favorite;
 import atdd.path.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static atdd.path.TestConstant.STATION_NAME;
+import static atdd.path.dao.FavoriteDao.EDGE_TYPE;
 import static atdd.path.dao.FavoriteDao.STATION_TYPE;
 import static atdd.path.fixture.FavoriteFixture.*;
 import static atdd.path.fixture.UserFixture.KIM_NAME;
@@ -45,11 +47,11 @@ public class FavoriteServiceTest extends SoftAssertionTest {
         assertThat(station.getName()).isEqualTo(STATION_NAME);
     }
 
-    @DisplayName("사용자가 등록되어 있는 즐겨찾기 목록을 조회가능한지")
+    @DisplayName("사용자가 등록되어 있는 지하철역 즐겨찾기 목록을 조회가능한지")
     @Test
-    public void findByUser() {
+    public void findStationByUser() {
         //given
-        when(favoriteDao.findByUser(any())).thenReturn(NEW_FAVORITES);
+        when(favoriteDao.findByUser(any(), STATION_TYPE)).thenReturn(NEW_FAVORITES);
 
         //when
         FavoriteListResponseView favorites = favoriteService.findByUser(NEW_USER);
@@ -61,4 +63,22 @@ public class FavoriteServiceTest extends SoftAssertionTest {
         assertThat(station.getName()).isEqualTo(STATION_NAME);
         assertThat(firstFavorite.getUser().getName()).isEqualTo(KIM_NAME);
     }
+
+    @DisplayName("사용자가 등록되어 있는 지하철 경로 즐겨찾기 목록을 조회가능한지")
+    @Test
+    public void findEdgeByUser() {
+        //given
+        when(favoriteDao.findByUser(any(), EDGE_TYPE)).thenReturn(NEW_FAVORITES);
+
+        //when
+        FavoriteListResponseView favorites = favoriteService.findByUser(NEW_USER);
+
+        Favorite firstFavorite = favorites.getFirstIndex();
+        Edge edge = (Edge) firstFavorite.getItem();
+        //then
+        assertThat(favorites.getSize()).isGreaterThan(1);
+        assertThat(edge.getSourceStation().getName()).isEqualTo(STATION_NAME);
+        assertThat(firstFavorite.getUser().getName()).isEqualTo(KIM_NAME);
+    }
+
 }
