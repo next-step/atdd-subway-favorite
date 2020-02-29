@@ -5,6 +5,7 @@ import atdd.user.application.dto.CreateUserRequestView;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
 import atdd.path.domain.Station;
+import atdd.user.domain.User;
 import org.assertj.core.util.Lists;
 
 import java.time.LocalTime;
@@ -161,8 +162,12 @@ public class TestConstant {
 
     public static String USER_NAME2 = "과제가밀렸어요";
     public static String USER_EMAIL2 = "homework@email.com";
-    public static String USER_PASSWORD2 = "crycry";
+    public static String USER_PASSWORD2 = "rhkwprkalffuTekdk";
+    public static String USER_ENCRYPT_PASSWORD2 = "$2a$10$QWeWyzF9vsyuVYQd.pHNtOj.Wshcu18yTeQ.5C7ti1lMJwgn788Qq";
 
     public static CreateUserRequestView CREATE_USER_REQUEST1 = CreateUserRequestView.builder().email(USER_EMAIL1).name(USER_NAME1).password(USER_PASSWORD1).build();
     public static CreateUserRequestView CREATE_USER_REQUEST2 = CreateUserRequestView.builder().email(USER_EMAIL2).name(USER_NAME2).password(USER_PASSWORD2).build();
+
+    public static User TEST_USER_1 = User.builder().id(1l).email(USER_EMAIL2).password(USER_PASSWORD2).name(USER_NAME2).build();
+
 }
