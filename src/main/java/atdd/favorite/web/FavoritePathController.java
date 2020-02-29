@@ -7,10 +7,7 @@ import atdd.favorite.service.FavoritePathService;
 import atdd.user.domain.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -34,5 +31,17 @@ public class FavoritePathController {
                 .created(URI.create(FAVORITE_PATH_BASE_URI+"/"+responseView.getId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(responseView);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@LoginUser User user,
+                                 @PathVariable Long id) throws Exception{
+        FavoritePathRequestView requestView = new FavoritePathRequestView();
+        requestView.insertEmail(user.getEmail());
+        requestView.insertId(id);
+        favoritePathService.delete(requestView);
+        return ResponseEntity
+                .ok()
+                .build();
     }
 }

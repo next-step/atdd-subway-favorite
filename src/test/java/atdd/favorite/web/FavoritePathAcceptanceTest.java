@@ -1,6 +1,7 @@
 package atdd.favorite.web;
 
 import atdd.AbstractAcceptanceTest;
+import atdd.favorite.application.dto.FavoritePathRequestView;
 import atdd.favorite.application.dto.FavoritePathResponseView;
 import atdd.path.web.LineHttpTest;
 import atdd.path.web.StationHttpTest;
@@ -8,13 +9,13 @@ import atdd.user.jwt.JwtTokenProvider;
 import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import static atdd.Constant.AUTH_SCHEME_BEARER;
 import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 
 public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
     public static final String FAVORITE_PATH_BASE_URI = "/favorite-paths";
@@ -55,7 +56,7 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
 
         //when
         FavoritePathResponseView favoritePath
-                = favoritePathHttpTest.createFavoritePath(EMAIL3, stationId, stationId3, token);
+                = favoritePathHttpTest.createFavoritePath(stationId, stationId3, token);
 
         //then
         assertThat(favoritePath.getFavoritePathStations().size()).isEqualTo(theNumberOfStationsInPath);
@@ -63,20 +64,19 @@ public class FavoritePathAcceptanceTest extends AbstractAcceptanceTest {
     }
 
     @Test
-    void 지하철경로_즐겨찾기_삭제_요청을_보낸다() throws Exception{
+    void 지하철경로_즐겨찾기_삭제_요청을_보낸다() throws Exception {
         //given
-        int theNumberOfStationsInPath = 3;
         setUpForTest(EMAIL3);
         FavoritePathResponseView favoritePath
-                = favoritePathHttpTest.createFavoritePath(EMAIL3, stationId, stationId3, token);
+                = favoritePathHttpTest.createFavoritePath(stationId, stationId3, token);
 
         //when
-        FavoritePathResponseView responseView
-                = favoritePathHttpTest.deleteFavoritePath(favoritePath.getId(), EMAIL3, token);
-
-        //then
-        assertThat(responseView.getId()).isNull();
-        assertThat(responseView.getFavoritePathStations()).isNullOrEmpty();
+        FavoritePathRequestView requestView = new FavoritePathRequestView(favoritePath.getId());
+        webTestClient.delete().uri(FAVORITE_PATH_BASE_URI + "/" + favoritePath.getId())
+                .header("Authorization", AUTH_SCHEME_BEARER + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk();
     }
 
     void setUpForTest(String email) {
