@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static atdd.path.TestConstant.USER_EMAIL_1;
+import static atdd.path.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = JwtTokenProvider.class)
@@ -32,11 +32,15 @@ public class JwtTokenProviderTest {
     @Test
     public void preHandle() {
         String accessToken = jwtTokenProvider.createToken(USER_EMAIL_1);
-        request.addHeader("Authorization", "Bearer " + accessToken);
+        request.addHeader(JWT_HEADER_AUTHORIZATION, JWT_TOKEN_TYPE + accessToken);
 
         boolean result = loginInterceptor.preHandle(request, response, null);
 
         assertThat(result).isEqualTo(true);
+        assertThat(request.getHeader(JWT_HEADER_AUTHORIZATION)).isNotNull();
+        assertThat(request.getHeader(JWT_HEADER_AUTHORIZATION)).isEqualTo(JWT_TOKEN_TYPE + accessToken);
+        assertThat(request.getAttribute("loginUserEmail")).isNotNull();
+        assertThat(request.getAttribute("loginUserEmail")).isEqualTo(USER_EMAIL_1);
     }
 
     @Test
