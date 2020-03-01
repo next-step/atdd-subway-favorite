@@ -9,6 +9,12 @@ public class User {
     public User() {
     }
 
+    public User(Long id, String email, String name) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+    }
+
     public User(String email, String name, String password) {
         this.email = email;
         this.name = name;

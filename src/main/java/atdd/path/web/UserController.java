@@ -4,14 +4,12 @@ import atdd.path.application.JwtTokenProvider;
 import atdd.path.application.base.BaseUriConstants;
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.UserResponseView;
-import atdd.path.application.exception.InvalidJwtAuthenticationException;
 import atdd.path.dao.UserDao;
 import atdd.path.domain.User;
+import atdd.path.security.LoginUser;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -46,17 +44,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponseView> retrieveUser(HttpServletRequest request) {
-        String extractEmail = extractEmail(request);
-        User findUser = userDao.findByEmail(extractEmail);
+    public ResponseEntity<UserResponseView> retrieveUser(@LoginUser User user) {
+        User findUser = userDao.findByEmail(user.getEmail());
         return ResponseEntity.ok().body(UserResponseView.of(findUser));
-    }
-
-    private String extractEmail(HttpServletRequest request) {
-        String token = jwtTokenProvider.resolveToken(request);
-        if (StringUtils.isEmpty(token) || !jwtTokenProvider.validateToken(token)) {
-            throw new InvalidJwtAuthenticationException("invalid token");
-        }
-        return jwtTokenProvider.getUserEmail(token);
     }
 }

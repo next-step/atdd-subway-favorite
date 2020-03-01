@@ -8,6 +8,7 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import static atdd.path.TestConstant.JWT_TOKEN_TYPE;
 import static atdd.path.application.base.BaseUriConstants.USER_BASE_URL;
 
 public class UserHttpTest {
@@ -41,6 +42,16 @@ public class UserHttpTest {
 
     private EntityExchangeResult<UserResponseView> retrieveUserRequest(String uri) {
         return webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(UserResponseView.class)
+                .returnResult();
+    }
+
+    public EntityExchangeResult<UserResponseView> retrieveMe(String accessToken) {
+        return webTestClient.get().uri(USER_BASE_URL + "/me")
+                .header(HttpHeaders.AUTHORIZATION, JWT_TOKEN_TYPE + accessToken)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)

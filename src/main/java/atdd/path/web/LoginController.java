@@ -17,6 +17,7 @@ import static atdd.path.application.base.BaseUriConstants.LOGIN_SIGN_IN_URL;
 @RequestMapping(LOGIN_SIGN_IN_URL)
 public class LoginController {
 
+    private static final String JWT_TOKEN_TYPE = "Bearer";
     private final UserDao userDao;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -29,6 +30,6 @@ public class LoginController {
     public ResponseEntity<TokenResponseView> login(@RequestBody CreateUserRequestView view) {
         User findUser = userDao.findByEmailAndPassword(view.getEmail(), view.getPassword());
         String accessToken = jwtTokenProvider.createToken(findUser.getEmail());
-        return ResponseEntity.ok().body(TokenResponseView.of(accessToken));
+        return ResponseEntity.ok().body(TokenResponseView.of(accessToken, JWT_TOKEN_TYPE));
     }
 }

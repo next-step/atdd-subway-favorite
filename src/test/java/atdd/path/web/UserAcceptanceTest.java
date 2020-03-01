@@ -5,7 +5,6 @@ import atdd.path.application.dto.UserResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 import static atdd.path.TestConstant.*;
@@ -70,13 +69,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         String accessToken = getAccessToken(user.getResponseBody().getEmail(), USER_PASSWORD_1);
 
         // when
-        EntityExchangeResult<UserResponseView> response = webTestClient.get().uri(USER_BASE_URL + "/me")
-                .header(JWT_HEADER_AUTHORIZATION, JWT_TOKEN_TYPE + accessToken)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(UserResponseView.class)
-                .returnResult();
+        EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveMe(accessToken);
 
         // then
         assertThat(response.getResponseBody().getId()).isEqualTo(userId);
