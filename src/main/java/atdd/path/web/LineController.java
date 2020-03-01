@@ -1,5 +1,6 @@
 package atdd.path.web;
 
+import atdd.path.application.base.BaseUriConstants;
 import atdd.path.application.dto.CreateEdgeRequestView;
 import atdd.path.dao.LineDao;
 import atdd.path.application.LineService;
@@ -14,7 +15,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lines")
+@RequestMapping(BaseUriConstants.LINE_BASE_URL)
 public class LineController {
     private LineDao lineDao;
     private LineService lineService;
