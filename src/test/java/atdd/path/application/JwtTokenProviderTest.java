@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -32,13 +33,13 @@ public class JwtTokenProviderTest {
     @Test
     public void preHandle() {
         String accessToken = jwtTokenProvider.createToken(USER_EMAIL_1);
-        request.addHeader(JWT_HEADER_AUTHORIZATION, JWT_TOKEN_TYPE + accessToken);
+        request.addHeader(HttpHeaders.AUTHORIZATION, JWT_TOKEN_TYPE + accessToken);
 
         boolean result = loginInterceptor.preHandle(request, response, null);
 
         assertThat(result).isEqualTo(true);
-        assertThat(request.getHeader(JWT_HEADER_AUTHORIZATION)).isNotNull();
-        assertThat(request.getHeader(JWT_HEADER_AUTHORIZATION)).isEqualTo(JWT_TOKEN_TYPE + accessToken);
+        assertThat(request.getHeader(HttpHeaders.AUTHORIZATION)).isNotNull();
+        assertThat(request.getHeader(HttpHeaders.AUTHORIZATION)).isEqualTo(JWT_TOKEN_TYPE + accessToken);
         assertThat(request.getAttribute("loginUserEmail")).isNotNull();
         assertThat(request.getAttribute("loginUserEmail")).isEqualTo(USER_EMAIL_1);
     }

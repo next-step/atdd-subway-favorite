@@ -1,9 +1,6 @@
 package atdd.path;
 
-import atdd.path.domain.Edge;
-import atdd.path.domain.Line;
-import atdd.path.domain.Station;
-import atdd.path.domain.User;
+import atdd.path.domain.*;
 import org.assertj.core.util.Lists;
 
 import java.time.LocalTime;
@@ -151,12 +148,41 @@ public class TestConstant {
     public static Line TEST_LINE_3 = new Line(LINE_ID_3, LINE_NAME_3, Lists.list(TEST_EDGE_10, TEST_EDGE_11, TEST_EDGE_12, TEST_EDGE_13, TEST_EDGE_14, TEST_EDGE_15), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
     public static Line TEST_LINE_4 = new Line(LINE_ID_4, LINE_NAME_4, Lists.list(TEST_EDGE_16, TEST_EDGE_17, TEST_EDGE_18, TEST_EDGE_19, TEST_EDGE_20, TEST_EDGE_21, TEST_EDGE_22), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
 
+    // 사용자
     public static String USER_EMAIL_1 = "boorwonie@email.com";
+    public static String USER_EMAIL_2 = "cony@email.com";
+    public static String USER_EMAIL_3 = "sally@email.com";
+    public static String USER_EMAIL_4 = "penda@email.com";
+    public static String USER_EMAIL_5 = "angmond@email.com";
+    public static String USER_EMAIL_6 = "jordy@email.com";
+
     public static String USER_NAME_1 = "브라운";
+    public static String USER_NAME_2 = "코니";
+    public static String USER_NAME_3 = "샐리";
+    public static String USER_NAME_4 = "팬다";
+    public static String USER_NAME_5 = "앙몬드";
+    public static String USER_NAME_6 = "죠르디";
+
     public static String USER_PASSWORD_1 = "subway";
+    public static String USER_PASSWORD_2 = "conysubway";
+    public static String USER_PASSWORD_3 = "sallysubway";
+    public static String USER_PASSWORD_4 = "pendasubway";
+    public static String USER_PASSWORD_5 = "angmondsubway";
+    public static String USER_PASSWORD_6 = "jordysubway";
 
     public static User TEST_USER = new User(USER_EMAIL_1, USER_NAME_1, USER_PASSWORD_1);
+    public static User TEST_USER_2 = new User(USER_EMAIL_2, USER_NAME_2, USER_PASSWORD_2);
+    public static User TEST_USER_3 = new User(USER_EMAIL_3, USER_NAME_3, USER_PASSWORD_3);
+    public static User TEST_USER_4 = new User(USER_EMAIL_4, USER_NAME_4, USER_PASSWORD_4);
+    public static User TEST_USER_5 = new User(USER_EMAIL_5, USER_NAME_5, USER_PASSWORD_5);
+    public static User TEST_USER_6 = new User(USER_EMAIL_6, USER_NAME_6, USER_PASSWORD_6);
 
-    public static String JWT_HEADER_AUTHORIZATION = "Authorization";
+    // JWT
     public static String JWT_TOKEN_TYPE = "Bearer ";
+
+    public static FavoriteStation TEST_FAVORITE_STATION_1 = new FavoriteStation(TEST_USER, TEST_STATION);
+    public static FavoriteStation TEST_FAVORITE_STATION_2 = new FavoriteStation(TEST_USER_2, TEST_STATION_2);
+    public static FavoriteStation TEST_FAVORITE_STATION_3 = new FavoriteStation(TEST_USER_3, TEST_STATION_3);
+    public static FavoriteStation TEST_FAVORITE_STATION_4 = new FavoriteStation(TEST_USER_4, TEST_STATION_4);
+    public static FavoriteStation TEST_FAVORITE_STATION_5 = new FavoriteStation(TEST_USER_5, TEST_STATION_5);
 }

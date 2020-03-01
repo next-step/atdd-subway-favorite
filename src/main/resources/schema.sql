@@ -33,3 +33,20 @@ create table if not exists USER
     password varchar(255) not null,
     primary key(id)
 );
+
+create table if not exists FAVORITE_STATION
+(
+    id bigint auto_increment not null,
+    user_id bigint not null,
+    station_id bigint not null,
+    primary key(id)
+);
+
+create table if not exists FAVORITE_PATH
+(
+    id bigint auto_increment not null,
+    user_id bigint not null,
+    source_station_id bigint not null,
+    target_station_id bigint not null,
+    primary key(id)
+);
