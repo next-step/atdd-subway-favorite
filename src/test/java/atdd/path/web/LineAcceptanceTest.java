@@ -1,6 +1,6 @@
 package atdd.path.web;
 
-import atdd.path.AbstractAcceptanceTest;
+import atdd.AbstractAcceptanceTest;
 import atdd.path.application.dto.LineResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +10,7 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import java.time.LocalTime;
 import java.util.List;
 
-import static atdd.path.TestConstant.*;
+import static atdd.TestConstant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineAcceptanceTest extends AbstractAcceptanceTest {

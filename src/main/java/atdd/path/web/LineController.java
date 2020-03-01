@@ -6,7 +6,6 @@ import atdd.path.application.LineService;
 import atdd.path.application.dto.CreateLineRequestView;
 import atdd.path.application.dto.LineResponseView;
 import atdd.path.domain.Line;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-import static atdd.path.web.Constant.*;
+import static atdd.Constant.*;
 
 @RestController
 @RequestMapping(LINE_BASE_URI)
