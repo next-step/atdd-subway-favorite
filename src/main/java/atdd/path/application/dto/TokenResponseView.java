@@ -6,17 +6,18 @@ public class TokenResponseView implements Serializable {
     private static final long serialVersionUID = -4240148918375694588L;
 
     private String accessToken;
-    private String tokenType = "bearer";
+    private String tokenType;
 
     public TokenResponseView() {
     }
 
-    public TokenResponseView(String accessToken) {
+    public TokenResponseView(String accessToken, String tokenType) {
         this.accessToken = accessToken;
+        this.tokenType = tokenType;
     }
 
-    public static TokenResponseView of(String accessToken) {
-        return new TokenResponseView(accessToken);
+    public static TokenResponseView of(String accessToken, String tokenType) {
+        return new TokenResponseView(accessToken, tokenType);
     }
 
     public String getAccessToken() {

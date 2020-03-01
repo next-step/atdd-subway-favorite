@@ -4,6 +4,7 @@ import atdd.path.application.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
 import jdk.internal.joptsimple.internal.Strings;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +23,6 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-time-seconds}")
     private long validityInSeconds;
 
-    private static final String JWT_HEADER_AUTHORIZATION = "Authorization";
     private static final String JWT_TOKEN_TYPE = "Bearer ";
 
     @PostConstruct
@@ -59,7 +59,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        return Optional.ofNullable(req.getHeader(JWT_HEADER_AUTHORIZATION))
+        return Optional.ofNullable(req.getHeader(HttpHeaders.AUTHORIZATION))
                 .orElse(Strings.EMPTY)
                 .replaceAll(JWT_TOKEN_TYPE, "");
     }

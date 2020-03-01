@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
-    private static final String JWT_HEADER_AUTHORIZATION = "Authorization";
     private final UserDao userDao;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -32,7 +31,7 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String accessToken = request.getHeader(JWT_HEADER_AUTHORIZATION);
+        String accessToken = jwtTokenProvider.resolveToken(request);
         String email = jwtTokenProvider.getUserEmail(accessToken);
         return userDao.findByEmail(email);
     }
