@@ -1,8 +1,7 @@
 package atdd.path.security;
 
+import atdd.path.application.JwtTokenProvider;
 import atdd.path.dao.UserDao;
-import atdd.path.domain.User;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -10,14 +9,17 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
+import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+    private static final String JWT_HEADER_AUTHORIZATION = "Authorization";
     private final UserDao userDao;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public LoginUserHandlerMethodArgumentResolver(UserDao userDao) {
+    public LoginUserHandlerMethodArgumentResolver(UserDao userDao, JwtTokenProvider jwtTokenProvider) {
         this.userDao = userDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -28,11 +30,10 @@ public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgu
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String email = (String) webRequest.getAttribute("loginUserEmail", SCOPE_REQUEST);
-        if (Strings.isBlank(email)) {
-            return null;
-        }
-        User user = userDao.findByEmail(email);
+
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        String accessToken = request.getHeader(JWT_HEADER_AUTHORIZATION);
+        String email = jwtTokenProvider.getUserEmail(accessToken);
         return userDao.findByEmail(email);
     }
 }
