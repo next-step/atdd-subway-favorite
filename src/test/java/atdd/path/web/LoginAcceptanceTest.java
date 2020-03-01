@@ -40,7 +40,7 @@ public class LoginAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("로그인을 요청하여 토큰을 응답 받기")
     public void login() {
         // given
-        Long userId = userHttpTest.createUser(USER_EMAIL_1, USER_NAME_1, USER_PASSWORD_1);
+        Long userId = userHttpTest.createUser(TEST_USER);
         EntityExchangeResult<UserResponseView> user = userHttpTest.retrieveUser(userId);
 
         // when

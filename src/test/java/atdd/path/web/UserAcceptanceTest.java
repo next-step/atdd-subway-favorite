@@ -26,7 +26,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("회원 가입")
     public void signUpUser() {
         // when
-        Long userId = userHttpTest.createUser(USER_EMAIL_1, USER_NAME_1, USER_PASSWORD_1);
+        Long userId = userHttpTest.createUser(TEST_USER);
 
         // then
         EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
@@ -37,7 +37,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("회원 탈퇴")
     public void deleteUser() {
         // given
-        Long userId = userHttpTest.createUser(USER_EMAIL_1, USER_NAME_1, USER_PASSWORD_1);
+        Long userId = userHttpTest.createUser(TEST_USER);
         EntityExchangeResult<UserResponseView> response = userHttpTest.retrieveUser(userId);
 
         // when
@@ -64,7 +64,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("회원 정보 조회")
     public void retrieveMyInfo() {
         // given
-        Long userId = userHttpTest.createUser(USER_EMAIL_1, USER_NAME_1, USER_PASSWORD_1);
+        Long userId = userHttpTest.createUser(TEST_USER);
         EntityExchangeResult<UserResponseView> user = userHttpTest.retrieveUser(userId);
         String accessToken = getAccessToken(user.getResponseBody().getEmail(), USER_PASSWORD_1);
 

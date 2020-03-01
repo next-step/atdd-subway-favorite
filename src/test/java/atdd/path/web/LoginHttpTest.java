@@ -1,6 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.application.dto.TokenResponseView;
+import atdd.path.domain.User;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -28,5 +29,9 @@ public class LoginHttpTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(TokenResponseView.class)
                 .returnResult();
+    }
+
+    public String getAccessTokenFromLogin(User user) {
+        return login(user.getEmail(), user.getPassword()).getResponseBody().getAccessToken();
     }
 }

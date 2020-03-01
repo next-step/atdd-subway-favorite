@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.application.dto.CreateUserRequestView;
 import atdd.path.application.dto.UserResponseView;
+import atdd.path.domain.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
@@ -31,8 +32,9 @@ public class UserHttpTest {
                 .returnResult();
     }
 
-    public Long createUser(String email, String name, String password) {
-        EntityExchangeResult<UserResponseView> userResponse = createUserRequest(email, name, password);
+    public Long createUser(User user) {
+        EntityExchangeResult<UserResponseView> userResponse = createUserRequest(user.getEmail(),
+                user.getName(), user.getPassword());
         return userResponse.getResponseBody().getId();
     }
 
