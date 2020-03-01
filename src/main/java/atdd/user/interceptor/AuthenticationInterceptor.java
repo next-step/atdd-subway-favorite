@@ -1,7 +1,7 @@
-package atdd.path.interceptor;
+package atdd.user.interceptor;
 
-import atdd.path.application.JwtUtils;
-import atdd.path.application.exception.InvalidTokenException;
+import atdd.user.application.JwtUtils;
+import atdd.exception.InvalidTokenException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 

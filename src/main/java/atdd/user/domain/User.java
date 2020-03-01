@@ -1,38 +1,28 @@
-package atdd.path.domain.entity;
+package atdd.user.domain;
 
-import atdd.path.application.exception.InvalidUserException;
+import atdd.exception.InvalidUserException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 @Getter
-@Entity
-@Table
-public class User extends BaseEntity {
-    @Column
-    private String name;
-    @Column
+public class User {
+    private Long id;
     private String email;
-
-    @Setter
-    @Column
     @JsonIgnore
     private String password;
+    private String name;
 
     public User() {
     }
 
     @Builder
-    private User(String name, String email, String password) {
-        this.name = name;
+    private User(Long id, String email, String password, String name) {
+        this.id = id;
         this.email = email;
         this.password = password;
+        this.name = name;
     }
 
     public void encryptPassword() {

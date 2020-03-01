@@ -1,6 +1,6 @@
 package atdd.path.dao;
 
-import atdd.path.application.exception.NoDataException;
+import atdd.exception.NoDataException;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Line;
 import atdd.path.domain.Station;
@@ -38,7 +38,7 @@ public class LineDao {
         parameters.put("NAME", line.getName());
         parameters.put("START_TIME", line.getStartTime());
         parameters.put("END_TIME", line.getEndTime());
-        parameters.put("interval_time", line.getInterval());
+        parameters.put("INTERVAL_TIME", line.getInterval());
 
         Long lineId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return findById(lineId);

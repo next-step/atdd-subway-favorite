@@ -1,58 +1,41 @@
 package atdd.path.web;
 
 import atdd.path.application.dto.StationResponseView;
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 public class StationHttpTest {
-    public WebTestClient webTestClient;
+    final String STATION_PATH = "/stations";
+    public HttpTestUtils httpTestUtils;
 
-    public StationHttpTest(WebTestClient webTestClient) {
-        this.webTestClient = webTestClient;
+    public StationHttpTest(HttpTestUtils httpTestUtils) {
+        this.httpTestUtils = httpTestUtils;
     }
 
-    public EntityExchangeResult<StationResponseView> createStationRequest(String stationName) {
+    public EntityExchangeResult<StationResponseView> createStationRequest(String stationName, String accessToken) {
         String inputJson = "{\"name\":\"" + stationName + "\"}";
 
-        return webTestClient.post().uri("/stations")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(inputJson), String.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectHeader().exists("Location")
-                .expectBody(StationResponseView.class)
-                .returnResult();
+        return httpTestUtils.postRequest(STATION_PATH, inputJson, accessToken, StationResponseView.class);
     }
 
-    public EntityExchangeResult<StationResponseView> retrieveStationRequest(String uri) {
-        return webTestClient.get().uri(uri)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(StationResponseView.class)
-                .returnResult();
+    public EntityExchangeResult<StationResponseView> retrieveStationRequest(String uri, String accessToken) {
+        return httpTestUtils.getRequest(uri, accessToken, new ParameterizedTypeReference<StationResponseView>() {
+        });
     }
 
-    public EntityExchangeResult<List<StationResponseView>> showStationsRequest() {
-        return webTestClient.get().uri("/stations")
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBodyList(StationResponseView.class)
-                .returnResult();
+    public EntityExchangeResult<List<StationResponseView>> showStationsRequest(String accessToken) {
+        return httpTestUtils.getRequest(STATION_PATH, accessToken, new ParameterizedTypeReference<List<StationResponseView>>() {
+        });
     }
 
-    public Long createStation(String stationName) {
-        EntityExchangeResult<StationResponseView> stationResponse = createStationRequest(stationName);
+    public Long createStation(String stationName, String accessToken) {
+        EntityExchangeResult<StationResponseView> stationResponse = createStationRequest(stationName, accessToken);
         return stationResponse.getResponseBody().getId();
     }
 
-    public EntityExchangeResult<StationResponseView> retrieveStation(Long stationId) {
-        return retrieveStationRequest("/stations/" + stationId);
+    public EntityExchangeResult<StationResponseView> retrieveStation(Long stationId, String accessToken) {
+        return retrieveStationRequest(STATION_PATH + stationId, accessToken);
     }
 }

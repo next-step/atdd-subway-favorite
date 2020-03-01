@@ -1,32 +1,34 @@
 package atdd.path.web;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.LoginRequestView;
-import atdd.path.domain.entity.User;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.application.dto.LoginRequestView;
+import atdd.user.domain.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-public class UserHttpTest {
-    final String ACCESS_TOKEN_HEADER = "Authorization";
+import static atdd.path.TestConstant.ACCESS_TOKEN_HEADER;
+import static atdd.path.TestConstant.USER_PASSWORD1;
 
+public class UserHttpTest {
     final String USER_PATH = "/users";
 
     final ObjectMapper mapper = new ObjectMapper();
+
     public WebTestClient webTestClient;
 
     public UserHttpTest(WebTestClient webTestClient) {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<User> createUserRequest(CreateUserRequestView view, final String accessToken) {
+    public EntityExchangeResult<User> createUserRequest(CreateUserRequestView view) {
         String inputJson = writeValueAsString(view);
 
         return webTestClient.post().uri(USER_PATH)
-                .header(ACCESS_TOKEN_HEADER, accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(inputJson), String.class)
                 .exchange()
@@ -60,6 +62,14 @@ public class UserHttpTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(User.class).returnResult();
+    }
+
+    public String givenLogin(final User user) {
+        HttpHeaders headers = loginRequest(LoginRequestView.builder()
+                .email(user.getEmail())
+                .password(USER_PASSWORD1).build()).getResponseHeaders();
+
+        return headers.get(ACCESS_TOKEN_HEADER).get(0);
     }
 
     private String writeValueAsString(Object object) {

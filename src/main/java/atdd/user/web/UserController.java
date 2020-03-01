@@ -1,9 +1,9 @@
-package atdd.path.web;
+package atdd.user.web;
 
-import atdd.path.application.UserService;
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.application.dto.LoginRequestView;
-import atdd.path.domain.entity.User;
+import atdd.user.application.UserService;
+import atdd.user.application.dto.LoginRequestView;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/my-info")
-    public ResponseEntity myInfo(@RequestHeader(name = "Authorization") String token) {
-        return ResponseEntity.ok(userService.myInfo(token));
+    public ResponseEntity myInfo(@LoginUser String email) {
+        return ResponseEntity.ok(userService.myInfo(email));
     }
 }

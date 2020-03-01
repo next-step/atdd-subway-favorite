@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.LineResponseView;
+import atdd.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,23 +18,29 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
     public static final String LINE_URL = "/lines";
     public static final String EDGE_URL = "/edges";
 
+    private HttpTestUtils httpTestUtils;
     private StationHttpTest stationHttpTest;
     private LineHttpTest lineHttpTest;
 
     @BeforeEach
     void setUp() {
-        this.stationHttpTest = new StationHttpTest(webTestClient);
-        this.lineHttpTest = new LineHttpTest(webTestClient);
+        this.httpTestUtils = new HttpTestUtils(webTestClient);
+
+        this.stationHttpTest = new StationHttpTest(httpTestUtils);
+        this.lineHttpTest = new LineHttpTest(httpTestUtils);
     }
 
     @DisplayName("지하철 노선 등록")
     @Test
     public void createLine() {
         // when
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long lineId = lineHttpTest.createLine(LINE_NAME, accessToken);
 
         // then
-        EntityExchangeResult<LineResponseView> getResponse = lineHttpTest.retrieveLine(lineId);
+        EntityExchangeResult<LineResponseView> getResponse = lineHttpTest.retrieveLine(lineId, accessToken);
         assertThat(getResponse.getResponseBody().getName()).isEqualTo(LINE_NAME);
     }
 
@@ -41,10 +48,13 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void retrieveLine() {
         // given
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long lineId = lineHttpTest.createLine(LINE_NAME, accessToken);
 
         // when
-        EntityExchangeResult<LineResponseView> getResponse = lineHttpTest.retrieveLine(lineId);
+        EntityExchangeResult<LineResponseView> getResponse = lineHttpTest.retrieveLine(lineId, accessToken);
 
         // then
         assertThat(getResponse.getResponseBody().getName()).isEqualTo(LINE_NAME);
@@ -57,13 +67,16 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void retrieveLineWithStation() {
         // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
-        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2, accessToken);
+        Long lineId = lineHttpTest.createLine(LINE_NAME, accessToken);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2, accessToken);
 
         // when
-        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(LINE_URL + "/" + lineId);
+        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(lineId, accessToken);
 
         // then
         assertThat(lineResult.getResponseBody().getStations().size()).isEqualTo(2);
@@ -75,12 +88,15 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void showLines() {
         // given
-        lineHttpTest.createLineRequest(LINE_NAME);
-        lineHttpTest.createLineRequest(LINE_NAME_2);
-        lineHttpTest.createLineRequest(LINE_NAME_3);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        lineHttpTest.createLineRequest(LINE_NAME, accessToken);
+        lineHttpTest.createLineRequest(LINE_NAME_2, accessToken);
+        lineHttpTest.createLineRequest(LINE_NAME_3, accessToken);
 
         // when
-        EntityExchangeResult<List<LineResponseView>> response = lineHttpTest.showLinesRequest();
+        EntityExchangeResult<List<LineResponseView>> response = lineHttpTest.showLinesRequest(accessToken);
 
         // then
         assertThat(response.getResponseBody().size()).isEqualTo(3);
@@ -90,32 +106,34 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void deleteLine() {
         // given
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long lineId = lineHttpTest.createLine(LINE_NAME, accessToken);
 
         // when
-        webTestClient.delete().uri(LINE_URL + "/" + lineId)
-                .exchange()
-                .expectStatus().isNoContent();
+        lineHttpTest.deleteById(lineId, accessToken);
 
         // then
-        webTestClient.get().uri(LINE_URL + "/" + lineId)
-                .exchange()
-                .expectStatus().isNotFound();
+        httpTestUtils.getRequestNotFound(LINE_URL + "/" + lineId, accessToken);
     }
 
     @DisplayName("지하철노선에 지하철 구간을 등록")
     @Test
     public void createEdge() {
         // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2, accessToken);
+        Long lineId = lineHttpTest.createLine(LINE_NAME, accessToken);
 
         // when
-        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2, accessToken);
 
         // then
-        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(LINE_URL + "/" + lineId);
+        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(lineId, accessToken);
         assertThat(lineResult.getResponseBody().getStations().size()).isEqualTo(2);
         assertThat(lineResult.getResponseBody().getStations().get(0).getName()).isEqualTo(STATION_NAME);
         assertThat(lineResult.getResponseBody().getStations().get(1).getName()).isEqualTo(STATION_NAME_2);
@@ -125,12 +143,15 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void deleteEdge() {
         // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
-        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
-        lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2, accessToken);
+        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3, accessToken);
+        Long lineId = lineHttpTest.createLine(LINE_NAME, accessToken);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2, accessToken);
+        lineHttpTest.createEdgeRequest(lineId, stationId2, stationId3, accessToken);
 
         // when
         webTestClient.delete().uri(LINE_URL + "/" + lineId + EDGE_URL + "?stationId=" + stationId2)
@@ -138,7 +159,7 @@ public class LineAcceptanceTest extends AbstractAcceptanceTest {
                 .expectStatus().isOk();
 
         // then
-        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(LINE_URL + "/" + lineId);
+        EntityExchangeResult<LineResponseView> lineResult = lineHttpTest.retrieveLineRequest(lineId, accessToken);
         assertThat(lineResult.getResponseBody().getStations().size()).isEqualTo(2);
         assertThat(lineResult.getResponseBody().getStations().get(0).getName()).isEqualTo(STATION_NAME);
         assertThat(lineResult.getResponseBody().getStations().get(1).getName()).isEqualTo(STATION_NAME_3);

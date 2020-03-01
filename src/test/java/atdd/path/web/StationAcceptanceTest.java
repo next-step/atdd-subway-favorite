@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.application.dto.StationResponseView;
+import atdd.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,23 +16,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationAcceptanceTest extends AbstractAcceptanceTest {
     public static final String STATION_URL = "/stations";
 
-    private LineHttpTest lineHttpTest;
+    private HttpTestUtils httpTestUtils;
+
     private StationHttpTest stationHttpTest;
+    private LineHttpTest lineHttpTest;
+
 
     @BeforeEach
     void setUp() {
-        this.lineHttpTest = new LineHttpTest(webTestClient);
-        this.stationHttpTest = new StationHttpTest(webTestClient);
+        httpTestUtils = new HttpTestUtils(webTestClient);
+
+        this.stationHttpTest = new StationHttpTest(httpTestUtils);
+        this.lineHttpTest = new LineHttpTest(httpTestUtils);
+
     }
 
     @DisplayName("지하철역 등록")
     @Test
     public void createStation() {
+        //given
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
         // when
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
 
         // then
-        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId);
+        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId, accessToken);
         assertThat(response.getResponseBody().getName()).isEqualTo(STATION_NAME);
     }
 
@@ -39,10 +50,13 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void retrieveStation() {
         // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
 
         // when
-        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId);
+        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId, accessToken);
 
         // then
         assertThat(response.getResponseBody().getId()).isNotNull();
@@ -53,16 +67,19 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void retrieveStationWithLine() {
         // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
-        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
-        Long lineId = lineHttpTest.createLine(LINE_NAME);
-        Long lineId2 = lineHttpTest.createLine(LINE_NAME_2);
-        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2);
-        lineHttpTest.createEdgeRequest(lineId2, stationId, stationId3);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2, accessToken);
+        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3, accessToken);
+        Long lineId = lineHttpTest.createLine(LINE_NAME, accessToken);
+        Long lineId2 = lineHttpTest.createLine(LINE_NAME_2, accessToken);
+        lineHttpTest.createEdgeRequest(lineId, stationId, stationId2, accessToken);
+        lineHttpTest.createEdgeRequest(lineId2, stationId, stationId3, accessToken);
 
         // when
-        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId);
+        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId, accessToken);
 
         // then
         assertThat(response.getResponseBody().getId()).isEqualTo(stationId);
@@ -75,12 +92,15 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void showStations() {
         // given
-        stationHttpTest.createStationRequest(STATION_NAME);
-        stationHttpTest.createStationRequest(STATION_NAME_2);
-        stationHttpTest.createStationRequest(STATION_NAME_3);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        stationHttpTest.createStationRequest(STATION_NAME, accessToken);
+        stationHttpTest.createStationRequest(STATION_NAME_2, accessToken);
+        stationHttpTest.createStationRequest(STATION_NAME_3, accessToken);
 
         // when
-        EntityExchangeResult<List<StationResponseView>> response = stationHttpTest.showStationsRequest();
+        EntityExchangeResult<List<StationResponseView>> response = stationHttpTest.showStationsRequest(accessToken);
 
         // then
         assertThat(response.getResponseBody().size()).isEqualTo(3);
@@ -90,8 +110,11 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void deleteStation() {
         // given
-        Long stationId = stationHttpTest.createStation(STATION_NAME);
-        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId);
+        User givenUser = httpTestUtils.createGivenUser(CREATE_USER_REQUEST1);
+        String accessToken = httpTestUtils.createGivenAccessToken(givenUser);
+
+        Long stationId = stationHttpTest.createStation(STATION_NAME, accessToken);
+        EntityExchangeResult<StationResponseView> response = stationHttpTest.retrieveStation(stationId, accessToken);
 
         // when
         webTestClient.delete().uri(STATION_URL + "/" + stationId)

@@ -1,9 +1,8 @@
 package atdd.path;
 
-import atdd.path.application.dto.CreateUserRequestView;
-import atdd.path.domain.Edge;
-import atdd.path.domain.Line;
-import atdd.path.domain.Station;
+import atdd.path.domain.*;
+import atdd.user.application.dto.CreateUserRequestView;
+import atdd.user.domain.User;
 import org.assertj.core.util.Lists;
 
 import java.time.LocalTime;
@@ -152,14 +151,25 @@ public class TestConstant {
     public static Line TEST_LINE_4 = new Line(LINE_ID_4, LINE_NAME_4, Lists.list(TEST_EDGE_16, TEST_EDGE_17, TEST_EDGE_18, TEST_EDGE_19, TEST_EDGE_20, TEST_EDGE_21, TEST_EDGE_22), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
 
     //회원 가입
+    public static String ACCESS_TOKEN_HEADER = "Authorization";
+
     public static String USER_NAME1 = "브라운";
     public static String USER_EMAIL1 = "boorwonie@email.com";
     public static String USER_PASSWORD1 = "subway";
 
     public static String USER_NAME2 = "과제가밀렸어요";
     public static String USER_EMAIL2 = "homework@email.com";
-    public static String USER_PASSWORD2 = "crycry";
+    public static String USER_PASSWORD2 = "rhkwprkalffuTekdk";
+    public static String USER_ENCRYPT_PASSWORD2 = "$2a$10$QWeWyzF9vsyuVYQd.pHNtOj.Wshcu18yTeQ.5C7ti1lMJwgn788Qq";
 
     public static CreateUserRequestView CREATE_USER_REQUEST1 = CreateUserRequestView.builder().email(USER_EMAIL1).name(USER_NAME1).password(USER_PASSWORD1).build();
     public static CreateUserRequestView CREATE_USER_REQUEST2 = CreateUserRequestView.builder().email(USER_EMAIL2).name(USER_NAME2).password(USER_PASSWORD2).build();
+
+    public static User TEST_USER_1 = User.builder().id(1l).email(USER_EMAIL1).password(USER_PASSWORD1).name(USER_NAME1).build();
+    public static User TEST_USER_2 = User.builder().id(1l).email(USER_EMAIL2).password(USER_PASSWORD2).name(USER_NAME2).build();
+
+    public static FavoritePath FAVORITE_PATH_1 = FavoritePath.builder().id(1l).owner(TEST_USER_2.getId()).sourceStationId(TEST_STATION.getId()).targetStationId(TEST_STATION_4.getId()).build();
+
+    public static FavoriteStation FAVORITE_STATION_1 = FavoriteStation.builder().id(1l).owner(TEST_USER_2.getId()).stationId(TEST_STATION.getId()).build();
+
 }
