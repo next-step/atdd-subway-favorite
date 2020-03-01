@@ -28,18 +28,11 @@ public class User {
     }
 
     public User(Long id, String email, String name, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.favorites = new ArrayList<>();
+        this(id, email, name, password, new ArrayList<>());
     }
 
     public User(Long id, String email, String name) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.favorites = new ArrayList<>();
+        this(id, email, name, null, new ArrayList<>());
     }
 
     public static User of(Long id, String email, String name, String password) {
@@ -78,5 +71,9 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
     }
 }
