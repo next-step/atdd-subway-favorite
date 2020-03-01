@@ -38,6 +38,25 @@ public class RestWebClientTest {
                 .returnResult();
     }
 
+    <T> WebTestClient.BodyContentSpec getMethodWithAuthAcceptance(String uri, String jwt) {
+        return this.webTestClient.get().uri(uri)
+                .header(HttpHeaders.AUTHORIZATION, jwt)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody();
+    }
+
+
+    <T> WebTestClient.BodyContentSpec postMethodWithAuthAcceptance(String uri, Object requestBody, String jwt) {
+        return webTestClient.post().uri(uri)
+                .header(HttpHeaders.AUTHORIZATION, jwt)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(requestBody), requestBody.getClass())
+                .exchange()
+                .expectBody();
+    }
+
     <T> EntityExchangeResult<Void> deleteMethodWithAuthAcceptance(String uri, String jwt) {
         return this.webTestClient.delete().uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, jwt)
