@@ -2,6 +2,7 @@ package atdd.path.domain;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,12 @@ public class Favorite {
         parameters.put(ITEM_ID_KEY, favorite.getItem().getId());
         parameters.put(TYPE_KEY, type);
         return parameters;
+    }
+
+    public static void checkSourceAndTargetStationIsSame(Edge edge, String type) {
+        if (EDGE_TYPE.equals(type) && edge.isSameNameWithSourceAndTarget()) {
+            throw new DuplicateKeyException("시작역과 종착역이 같을 수 없습니다.");
+        }
     }
 
     public Item getItem() {
