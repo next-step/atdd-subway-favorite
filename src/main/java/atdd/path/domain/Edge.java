@@ -20,6 +20,18 @@ public class Edge extends Item {
         return new Edge(null, sourceStation, targetStation, distance);
     }
 
+    public boolean isSameNameWithSourceAndTarget() {
+        return getSourceStationName().equals(getTargetStationName());
+    }
+
+    private String getTargetStationName() {
+        return targetStation.getName();
+    }
+
+    private String getSourceStationName() {
+        return sourceStation.getName();
+    }
+
     public Long getId() {
         return id;
     }
