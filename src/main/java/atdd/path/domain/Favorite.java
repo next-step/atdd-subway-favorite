@@ -38,8 +38,12 @@ public class Favorite {
         return parameters;
     }
 
-    public static void checkSourceAndTargetStationIsSame(Edge edge, String type) {
-        if (EDGE_TYPE.equals(type) && edge.isSameNameWithSourceAndTarget()) {
+    public void checkSourceAndTargetStationIsSame(String type) {
+        if (!EDGE_TYPE.equals(type)) {
+            return;
+        }
+
+        if (((Edge) item).isSameNameWithSourceAndTarget()) {
             throw new DuplicateKeyException("시작역과 종착역이 같을 수 없습니다.");
         }
     }
