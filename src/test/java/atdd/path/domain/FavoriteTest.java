@@ -8,6 +8,7 @@ import org.springframework.dao.DuplicateKeyException;
 
 import static atdd.path.TestConstant.TEST_STATION;
 import static atdd.path.dao.FavoriteDao.EDGE_TYPE;
+import static atdd.path.fixture.UserFixture.NEW_USER;
 
 
 public class FavoriteTest extends SoftAssertionTest {
@@ -17,8 +18,9 @@ public class FavoriteTest extends SoftAssertionTest {
     public void cannotSourceStationSameWithTargetStation() {
         Edge edge = new Edge(0L, TEST_STATION, TEST_STATION, 10);
 
+        Favorite favorite = new Favorite(0L, NEW_USER, edge);
         Assertions.assertThrows(DuplicateKeyException.class,
-                () -> Favorite.checkSourceAndTargetStationIsSame(edge, EDGE_TYPE));
+                () -> favorite.checkSourceAndTargetStationIsSame(EDGE_TYPE));
     }
 }
 
