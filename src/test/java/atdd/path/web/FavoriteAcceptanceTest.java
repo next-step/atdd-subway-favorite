@@ -39,7 +39,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @DisplayName("지하철역 즐겨찾기 등록")
     @Test
     void createFavoriteStation() {
-        stationHttpTest.createStation("삼성역");
+        stationHttpTest.createStation(TestConstant.STATION_NAME);
 
         FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(1L, token).getResponseBody();
 
@@ -50,7 +50,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void findFavoriteStation() {
         // given
-        stationHttpTest.createStation("삼성역");
+        stationHttpTest.createStation(TestConstant.STATION_NAME);
         FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(1L, token).getResponseBody();
 
         webTestClient.get().uri(FAVORITE_URI + "/station")
@@ -63,7 +63,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void deleteFavoriteStation() {
         // given
-        stationHttpTest.createStation("삼성역");
+        stationHttpTest.createStation(TestConstant.STATION_NAME);
         FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(1L, token).getResponseBody();
 
         webTestClient.delete().uri(FAVORITE_URI + "/station/" + response.getId())
@@ -76,11 +76,14 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void createFavoriteRoute() {
         //given
-        stationHttpTest.createStation("삼성역");
-        lineHttpTest.createEdgeRequest(1L, 2L, 2L);
+        Long firstStationId = stationHttpTest.createStation(TestConstant.STATION_NAME);
+        Long secondStationId = stationHttpTest.createStation(TestConstant.STATION_NAME_2);
+        Long lineId = lineHttpTest.createLine(TestConstant.LINE_NAME);
+        lineHttpTest.createEdgeRequest(lineId, firstStationId, secondStationId);
+
         String request = "{" +
-                "\"sourceStationId\":" + 1 + ", " +
-                "\"targetStationId\":" + 2 + "}";
+                "\"sourceStationId\":" + firstStationId + ", " +
+                "\"targetStationId\":" + secondStationId + "}";
 
         webTestClient.post().uri(FAVORITE_URI + "/route")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -24,7 +24,7 @@ public class FavoriteController {
     public ResponseEntity createFavoriteStation(@RequestBody FavoriteRequestView favoriteRequestView, @LoginUser User user) {
         FavoriteResponseView response = favoriteService.createStationFavorite(favoriteRequestView.getStationId(), user);
 
-        return ResponseEntity.created(URI.create("/favorite/" + 1))
+        return ResponseEntity.created(URI.create("/favorite/" + response.getId()))
                 .body(response);
     }
 
@@ -37,5 +37,10 @@ public class FavoriteController {
     public ResponseEntity deleteFavoriteStation(@LoginUser User user, @PathVariable Long id) {
         favoriteService.deleteFavoriteStation(user, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/route")
+    public ResponseEntity createFavoriteRoute(@RequestBody FavoriteRequestView favoriteRequestView, @LoginUser User user) {
+        return ResponseEntity.created(URI.create("/route/" + 1)).build();
     }
 }
