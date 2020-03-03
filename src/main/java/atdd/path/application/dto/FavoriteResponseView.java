@@ -1,6 +1,7 @@
 package atdd.path.application.dto;
 
 import atdd.path.domain.FavoriteStation;
+import atdd.path.domain.Station;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,18 +13,18 @@ import java.util.stream.Collectors;
 @Getter
 public class FavoriteResponseView {
     private Long id;
-    private Long stationId;
+    private Item station;
 
     @Builder
-    public FavoriteResponseView(Long id, Long stationId) {
+    public FavoriteResponseView(Long id, Station station) {
         this.id = id;
-        this.stationId = stationId;
+        this.station = Item.builder().id(station.getId()).name(station.getName()).build();
     }
 
     public static FavoriteResponseView of(FavoriteStation savedFavorite) {
         return FavoriteResponseView.builder()
                 .id(savedFavorite.getId())
-                .stationId(savedFavorite.getStationId())
+                .station(savedFavorite.getStation())
                 .build();
     }
 
@@ -31,7 +32,7 @@ public class FavoriteResponseView {
         return favorites.stream()
                 .map(it -> FavoriteResponseView.builder()
                         .id(it.getId())
-                        .stationId(it.getStationId())
+                        .station(it.getStation())
                         .build())
                 .collect(Collectors.toList());
     }

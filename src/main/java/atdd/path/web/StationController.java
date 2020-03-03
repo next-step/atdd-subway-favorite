@@ -14,17 +14,15 @@ import java.util.List;
 
 @RestController
 public class StationController {
-    private StationDao stationDao;
     private StationRepository stationRepository;
 
-    public StationController(StationDao stationDao, StationRepository stationRepository) {
-        this.stationDao = stationDao;
+    public StationController(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
     @PostMapping("/stations")
     public ResponseEntity createStation(@RequestBody CreateStationRequestView view) {
-        Station persistStation = stationDao.save(view.toStation());
+        Station persistStation = stationRepository.save(view.toStation());
         return ResponseEntity
                 .created(URI.create("/stations/" + persistStation.getId()))
                 .body(StationResponseView.of(persistStation));
@@ -39,13 +37,13 @@ public class StationController {
 
     @GetMapping("/stations")
     public ResponseEntity showStation() {
-        List<Station> persistStations = stationDao.findAll();
+        List<Station> persistStations = stationRepository.findAll();
         return ResponseEntity.ok().body(StationResponseView.listOf(persistStations));
     }
 
     @DeleteMapping("/stations/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

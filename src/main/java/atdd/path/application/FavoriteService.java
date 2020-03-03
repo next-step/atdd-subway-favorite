@@ -1,6 +1,7 @@
 package atdd.path.application;
 
 import atdd.path.application.dto.FavoriteResponseView;
+import atdd.path.application.dto.FavoriteRouteResponseView;
 import atdd.path.domain.FavoriteStation;
 import atdd.path.repository.FavoriteStationRepository;
 import atdd.user.domain.User;
@@ -36,5 +37,9 @@ public class FavoriteService {
     @Transactional
     public void deleteFavoriteStation(User user, Long id) {
         favoriteStationRepository.deleteByIdAndUserId(id, user.getId());
+    }
+
+    public FavoriteRouteResponseView createRouteFavorite(Long sourceStationId, Long targetStationId, User user) {
+        return null;
     }
 }

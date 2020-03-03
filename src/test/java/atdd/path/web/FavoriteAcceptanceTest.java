@@ -50,8 +50,8 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     void findFavoriteStation() {
         // given
-        stationHttpTest.createStation(TestConstant.STATION_NAME);
-        FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(1L, token).getResponseBody();
+        Long stationId = stationHttpTest.createStation(TestConstant.STATION_NAME);
+        FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(stationId, token).getResponseBody();
 
         webTestClient.get().uri(FAVORITE_URI + "/station")
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))

@@ -2,7 +2,10 @@ package atdd.path.application;
 
 import atdd.path.TestConstant;
 import atdd.path.application.dto.FavoriteResponseView;
+import atdd.path.application.dto.FavoriteRouteResponseView;
+import atdd.path.domain.FavoriteRoute;
 import atdd.path.domain.FavoriteStation;
+import atdd.path.repository.FavoriteRouteRepository;
 import atdd.path.repository.FavoriteStationRepository;
 import atdd.user.domain.User;
 import atdd.user.repository.UserRepository;
@@ -37,6 +40,9 @@ public class FavoriteStationServiceTest {
     @MockBean
     private FavoriteStationRepository favoriteStationRepository;
 
+    @MockBean
+    private FavoriteRouteRepository favoriteRouteRepository;
+
     @BeforeEach
     void setUp() {
         this.favoriteService = new FavoriteService(favoriteStationRepository);
@@ -56,7 +62,7 @@ public class FavoriteStationServiceTest {
         FavoriteResponseView response = favoriteService.createStationFavorite(1L, user);
 
         // then
-        assertThat(response.getStationId()).isNotNull();
+        assertThat(response.getStation()).isNotNull();
     }
 
     @DisplayName("지하철 역 즐겨찾기 조회")
@@ -89,5 +95,23 @@ public class FavoriteStationServiceTest {
 
         // then
         verify(favoriteStationRepository).deleteByIdAndUserId(anyLong(), anyLong());
+    }
+
+    @DisplayName("경로 즐겨찾기 등록")
+    @Test
+    void createFavoriteRoute() {
+        // given
+        given(userRepository.findUserByEmail(any(String.class)))
+                .willReturn(User.createBuilder().id(1L).email(TestConstant.EMAIL_BROWN).build());
+        User user = userRepository.findUserByEmail(TestConstant.EMAIL_BROWN);
+        given(favoriteRouteRepository.save(any(FavoriteRoute.class)))
+                .willReturn(FavoriteRoute.builder().userId(user.getId()).sourceStationId(1L).targetStationId(2L).build());
+
+        // when
+        FavoriteRouteResponseView response = favoriteService.createRouteFavorite(1L, 2L, user);
+
+        // then
+        assertThat(response.getSourceStation()).isNotNull();
+        assertThat(response.getTargetStation()).isNotNull();
     }
 }

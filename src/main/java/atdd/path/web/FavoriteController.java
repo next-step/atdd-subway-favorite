@@ -1,7 +1,8 @@
 package atdd.path.web;
 
 import atdd.path.application.FavoriteService;
-import atdd.path.application.dto.FavoriteRequestView;
+import atdd.path.application.dto.FavoriteRouteRequestView;
+import atdd.path.application.dto.FavoriteStationRequestView;
 import atdd.path.application.dto.FavoriteResponseView;
 import atdd.user.domain.User;
 import atdd.user.web.LoginUser;
@@ -21,8 +22,8 @@ public class FavoriteController {
     }
 
     @PostMapping("/station")
-    public ResponseEntity createFavoriteStation(@RequestBody FavoriteRequestView favoriteRequestView, @LoginUser User user) {
-        FavoriteResponseView response = favoriteService.createStationFavorite(favoriteRequestView.getStationId(), user);
+    public ResponseEntity createFavoriteStation(@RequestBody FavoriteStationRequestView favoriteStationRequestView, @LoginUser User user) {
+        FavoriteResponseView response = favoriteService.createStationFavorite(favoriteStationRequestView.getStationId(), user);
 
         return ResponseEntity.created(URI.create("/favorite/" + response.getId()))
                 .body(response);
@@ -40,7 +41,7 @@ public class FavoriteController {
     }
 
     @PostMapping("/route")
-    public ResponseEntity createFavoriteRoute(@RequestBody FavoriteRequestView favoriteRequestView, @LoginUser User user) {
+    public ResponseEntity createFavoriteRoute(@RequestBody FavoriteRouteRequestView favoriteRouteRequestView, @LoginUser User user) {
         return ResponseEntity.created(URI.create("/route/" + 1)).build();
     }
 }

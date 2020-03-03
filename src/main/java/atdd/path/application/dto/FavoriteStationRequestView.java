@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class FavoriteRequestView {
+public class FavoriteStationRequestView {
     private Long id;
     private Long stationId;
 }
