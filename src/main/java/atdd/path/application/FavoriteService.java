@@ -7,6 +7,7 @@ import atdd.path.dao.FavoriteDao;
 import atdd.path.domain.Favorite;
 import atdd.path.domain.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,14 +21,19 @@ public class FavoriteService {
         this.favoriteDao = favoriteDao;
     }
 
+    @Transactional
     public FavoriteCreateResponseView save(User loginUser, FavoriteCreateRequestView favorite) {
+        favorite.getItem()
+                .validateFavoriteEdge(favorite.getType());
         return FavoriteCreateResponseView.toDtoEntity(favoriteDao.save(favorite.toEntity(loginUser), favorite.getType()));
     }
 
+    @Transactional(readOnly = true)
     public FavoriteListResponseView findByUser(User loginUser, String type) {
         return FavoriteListResponseView.toDtoEntity(findStationByUserAndType(loginUser, type));
     }
 
+    @Transactional
     public void deleteItem(User loginUser, Long itemId) {
         favoriteDao.deleteItem(loginUser, itemId);
     }
