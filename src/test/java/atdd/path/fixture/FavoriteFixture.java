@@ -28,9 +28,9 @@ public class FavoriteFixture {
     public static final List<Favorite> NEW_EDGE_FAVORITES = Arrays.asList(NEW_EDGE_FAVORITE, NEW_SECOND_EDGE_FAVORITE);
 
     public static final FavoriteCreateRequestView STATION_FAVORITE_CREATE_REQUEST_VIEW
-            = new FavoriteCreateRequestView(STATION_FIRST_ID, STATION_TYPE);
+            = new FavoriteCreateRequestView(TEST_STATION, STATION_TYPE);
     public static final FavoriteCreateRequestView EDGE_FAVORITE_CREATE_REQUEST_VIEW
-            = new FavoriteCreateRequestView(EDGE_FIRST_ID, EDGE_TYPE);
+            = new FavoriteCreateRequestView(TEST_EDGE, EDGE_TYPE);
 
     public static List<Map<String, Object>> getDaoFavorites() {
         return Arrays.asList(getDaoStationFavorite(), getDaoStationSecondFavorite());
