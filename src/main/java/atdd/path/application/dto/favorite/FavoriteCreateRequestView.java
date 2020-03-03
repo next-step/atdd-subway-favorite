@@ -11,19 +11,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class FavoriteCreateRequestView {
-    private Long itemId;
+    private Item item;
     private String type;
 
     @Builder
-    public FavoriteCreateRequestView(Long itemId, String type) {
-        this.itemId = itemId;
+    public FavoriteCreateRequestView(Item item, String type) {
+        this.item = item;
         this.type = type;
     }
 
     public Favorite toEntity(User user) {
         return Favorite.builder()
                 .user(user)
-                .item(new Item(itemId))
+                .item(item)
                 .build();
     }
 }
