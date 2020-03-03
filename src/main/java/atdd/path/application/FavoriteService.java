@@ -51,4 +51,9 @@ public class FavoriteService {
                 .build());
         return FavoriteRouteResponseView.of(savedFavorite);
     }
+
+    public List<FavoriteRouteResponseView> findFavoriteRoute(User user) {
+        List<FavoriteRoute> favorites = favoriteRouteRepository.findAllByUserId(user.getId());
+        return FavoriteRouteResponseView.listOf(favorites);
+    }
 }
