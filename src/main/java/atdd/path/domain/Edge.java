@@ -1,5 +1,9 @@
 package atdd.path.domain;
 
+import org.springframework.dao.DuplicateKeyException;
+
+import java.util.List;
+
 public class Edge extends Item {
     private Long id;
     private Station sourceStation;
@@ -18,6 +22,12 @@ public class Edge extends Item {
 
     public static Edge of(Station sourceStation, Station targetStation, int distance) {
         return new Edge(null, sourceStation, targetStation, distance);
+    }
+
+    public void checkSourceAndTargetStationIsSameWhenEdge() {
+        if (isSameNameWithSourceAndTarget()) {
+            throw new DuplicateKeyException("시작역과 종착역이 같을 수 없습니다.");
+        }
     }
 
     public boolean isSameNameWithSourceAndTarget() {
@@ -50,5 +60,19 @@ public class Edge extends Item {
 
     public boolean hasStation(Station station) {
         return sourceStation.equals(station) || targetStation.equals(station);
+    }
+
+    public void checkConnectSourceAndTarget() {
+        List<Line> linesInSourceStation = getSourceStation().getLines();
+        linesInSourceStation.stream()
+                .filter(line -> line.getStations().contains(getTargetStation()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+
+        List<Line> linesInTargetStation = getTargetStation().getLines();
+        linesInTargetStation.stream()
+                .filter(line -> line.getStations().contains(getSourceStation()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
