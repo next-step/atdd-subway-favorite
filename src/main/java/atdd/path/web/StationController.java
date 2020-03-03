@@ -4,6 +4,7 @@ import atdd.path.domain.Station;
 import atdd.path.application.dto.CreateStationRequestView;
 import atdd.path.application.dto.StationResponseView;
 import atdd.path.dao.StationDao;
+import atdd.path.repository.StationRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,11 @@ import java.util.List;
 @RestController
 public class StationController {
     private StationDao stationDao;
+    private StationRepository stationRepository;
 
-    public StationController(StationDao stationDao) {
+    public StationController(StationDao stationDao, StationRepository stationRepository) {
         this.stationDao = stationDao;
+        this.stationRepository = stationRepository;
     }
 
     @PostMapping("/stations")
@@ -29,12 +32,9 @@ public class StationController {
 
     @GetMapping("/stations/{id}")
     public ResponseEntity retrieveStation(@PathVariable Long id) {
-        try {
-            Station persistStation = stationDao.findById(id);
-            return ResponseEntity.ok().body(StationResponseView.of(persistStation));
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return stationRepository.findById(id)
+                .map(it -> ResponseEntity.ok().body(StationResponseView.of(it)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/stations")

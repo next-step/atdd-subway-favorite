@@ -36,11 +36,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
             throw new FailedLoginException.InvalidJwtAuthenticationException("Invalid Token");
         }
 
-        try {
-            return Optional.ofNullable(userRepository.findUserByEmail(email))
-                    .orElseThrow(() -> new FailedLoginException.InvalidJwtAuthenticationException("Invalid Token"));
-        } catch (Exception e) {
-            return new User();
-        }
+        return Optional.ofNullable(userRepository.findUserByEmail(email))
+                .orElseThrow(() -> new FailedLoginException.InvalidJwtAuthenticationException("Invalid Token"));
+
     }
 }

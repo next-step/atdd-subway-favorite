@@ -23,7 +23,8 @@ public class FavoriteResponseView {
     public static FavoriteResponseView of(FavoriteStation savedFavorite) {
         return FavoriteResponseView.builder()
                 .id(savedFavorite.getId())
-                .stationId(savedFavorite.getStationId()).build();
+                .stationId(savedFavorite.getStationId())
+                .build();
     }
 
     public static List<FavoriteResponseView> listOf(List<FavoriteStation> favorites) {

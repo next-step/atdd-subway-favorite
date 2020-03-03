@@ -21,7 +21,7 @@ public class FavoriteController {
     }
 
     @PostMapping("/station")
-    public ResponseEntity createFavoriteStation(FavoriteRequestView favoriteRequestView, @LoginUser User user) {
+    public ResponseEntity createFavoriteStation(@RequestBody FavoriteRequestView favoriteRequestView, @LoginUser User user) {
         FavoriteResponseView response = favoriteService.createStationFavorite(favoriteRequestView.getStationId(), user);
 
         return ResponseEntity.created(URI.create("/favorite/" + 1))

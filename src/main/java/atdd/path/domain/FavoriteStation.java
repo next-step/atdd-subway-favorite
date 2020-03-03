@@ -3,11 +3,9 @@ package atdd.path.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -19,12 +17,18 @@ public class FavoriteStation {
 
     private Long userId;
 
-    private Long stationId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "station_id", referencedColumnName = "id")
+    private Station station;
 
     @Builder
     public FavoriteStation(Long id, Long userId, Long stationId) {
         this.id = id;
         this.userId = userId;
-        this.stationId = stationId;
+        this.station = new Station(stationId, null);
+    }
+
+    public Long getStationId() {
+        return this.station.getId();
     }
 }

@@ -1,22 +1,24 @@
 package atdd.path.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@NoArgsConstructor
+@Embeddable
 public class Edges {
+    @OneToMany(mappedBy = "line")
     private List<Edge> edges = new ArrayList<>();
-
-    public Edges() {
-    }
 
     public Edges(List<Edge> edges) {
         checkValidEdges(edges);
         this.edges = edges;
-    }
-
-    public List<Edge> getEdges() {
-        return edges;
     }
 
     private void checkValidEdges(List<Edge> edges) {

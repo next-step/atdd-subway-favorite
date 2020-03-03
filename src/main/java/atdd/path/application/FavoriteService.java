@@ -6,6 +6,7 @@ import atdd.path.repository.FavoriteStationRepository;
 import atdd.user.domain.User;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -18,8 +19,10 @@ public class FavoriteService {
     }
 
     public FavoriteResponseView createStationFavorite(Long stationId, User user) {
-        FavoriteStation savedFavorite
-                = favoriteStationRepository.save(FavoriteStation.builder().userId(user.getId()).stationId(stationId).build());
+        FavoriteStation savedFavorite = favoriteStationRepository.save(FavoriteStation.builder()
+                .userId(user.getId())
+                .stationId(stationId)
+                .build());
 
         return FavoriteResponseView.of(savedFavorite);
     }
@@ -30,6 +33,7 @@ public class FavoriteService {
         return FavoriteResponseView.listOf(favorites);
     }
 
+    @Transactional
     public void deleteFavoriteStation(User user, Long id) {
         favoriteStationRepository.deleteByIdAndUserId(id, user.getId());
     }

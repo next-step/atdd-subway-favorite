@@ -38,7 +38,7 @@ public class LineDao {
         parameters.put("NAME", line.getName());
         parameters.put("START_TIME", line.getStartTime());
         parameters.put("END_TIME", line.getEndTime());
-        parameters.put("interval_time", line.getInterval());
+        parameters.put("interval_time", line.getIntervalTime());
 
         Long lineId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
         return findById(lineId);

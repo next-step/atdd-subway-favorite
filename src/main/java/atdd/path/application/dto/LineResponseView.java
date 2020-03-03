@@ -27,12 +27,12 @@ public class LineResponseView {
     }
 
     public static LineResponseView of(Line line) {
-        return new LineResponseView(line.getId(), line.getName(), line.getStartTime().toString(), line.getEndTime().toString(), line.getInterval(), line.getStations());
+        return new LineResponseView(line.getId(), line.getName(), line.getStartTime().toString(), line.getEndTime().toString(), line.getIntervalTime(), line.getStations());
     }
 
     public static List<LineResponseView> listOf(List<Line> lines) {
         return lines.stream()
-                .map(it -> new LineResponseView(it.getId(), it.getName(), it.getStartTime().toString(), it.getEndTime().toString(), it.getInterval(), it.getStations()))
+                .map(it -> new LineResponseView(it.getId(), it.getName(), it.getStartTime().toString(), it.getEndTime().toString(), it.getIntervalTime(), it.getStations()))
                 .collect(Collectors.toList());
     }
 
