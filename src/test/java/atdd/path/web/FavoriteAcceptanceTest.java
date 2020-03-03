@@ -99,7 +99,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         FavoriteRouteResponseView response = favoriteHttpTest.createFavoriteRoute(firstStationId, secondStationId, token)
                 .getResponseBody();
 
-        webTestClient.get().uri(FAVORITE_URI + "/route/" + response.getId())
+        webTestClient.get().uri(FAVORITE_URI + "/route")
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectStatus().isOk()
