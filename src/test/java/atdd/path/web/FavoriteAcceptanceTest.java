@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.TestConstant;
 import atdd.path.application.dto.FavoriteResponseView;
+import atdd.path.application.dto.FavoriteRouteResponseView;
 import atdd.path.application.dto.LoginResponseView;
 import atdd.path.domain.Station;
 import atdd.user.web.UserHttpTest;
@@ -81,16 +82,30 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         Long lineId = lineHttpTest.createLine(TestConstant.LINE_NAME);
         lineHttpTest.createEdgeRequest(lineId, firstStationId, secondStationId);
 
-        String request = "{" +
-                "\"sourceStationId\":" + firstStationId + ", " +
-                "\"targetStationId\":" + secondStationId + "}";
+        FavoriteRouteResponseView response = favoriteHttpTest.createFavoriteRoute(firstStationId, secondStationId, token)
+                .getResponseBody();
 
-        webTestClient.post().uri(FAVORITE_URI + "/route")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(request), String.class)
+        assertThat(response.getId()).isNotNull();
+    }
+
+    @DisplayName("경로 즐겨찾기 조회")
+    @Test
+    void findFavoriteRoute() {
+        //given
+        Long firstStationId = stationHttpTest.createStation(TestConstant.STATION_NAME);
+        Long secondStationId = stationHttpTest.createStation(TestConstant.STATION_NAME_2);
+        Long lineId = lineHttpTest.createLine(TestConstant.LINE_NAME);
+        lineHttpTest.createEdgeRequest(lineId, firstStationId, secondStationId);
+        FavoriteRouteResponseView response = favoriteHttpTest.createFavoriteRoute(firstStationId, secondStationId, token)
+                .getResponseBody();
+
+        webTestClient.get().uri(FAVORITE_URI + "/route/" + response.getId())
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
-                .expectHeader().exists("Location")
-                .expectStatus().isCreated();
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.size()").isEqualTo(1)
+                .jsonPath("$.sourceStation").isEqualTo(firstStationId)
+                .jsonPath("$.targetStation").isEqualTo(secondStationId);
     }
 }
