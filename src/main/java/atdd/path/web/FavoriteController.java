@@ -2,6 +2,7 @@ package atdd.path.web;
 
 import atdd.path.application.FavoriteService;
 import atdd.path.application.dto.FavoriteRouteRequestView;
+import atdd.path.application.dto.FavoriteRouteResponseView;
 import atdd.path.application.dto.FavoriteStationRequestView;
 import atdd.path.application.dto.FavoriteResponseView;
 import atdd.user.domain.User;
@@ -42,6 +43,7 @@ public class FavoriteController {
 
     @PostMapping("/route")
     public ResponseEntity createFavoriteRoute(@RequestBody FavoriteRouteRequestView favoriteRouteRequestView, @LoginUser User user) {
-        return ResponseEntity.created(URI.create("/route/" + 1)).build();
+        FavoriteRouteResponseView response = favoriteService.createRouteFavorite(favoriteRouteRequestView.getSourceStationId(), favoriteRouteRequestView.getTargetStationId(), user);
+        return ResponseEntity.created(URI.create("/route/" + response.getId())).body(response);
     }
 }
