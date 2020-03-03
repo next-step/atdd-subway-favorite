@@ -2,7 +2,9 @@ package atdd.path.application;
 
 import atdd.path.application.dto.FavoriteResponseView;
 import atdd.path.application.dto.FavoriteRouteResponseView;
+import atdd.path.domain.FavoriteRoute;
 import atdd.path.domain.FavoriteStation;
+import atdd.path.repository.FavoriteRouteRepository;
 import atdd.path.repository.FavoriteStationRepository;
 import atdd.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,11 @@ import java.util.List;
 public class FavoriteService {
 
     private final FavoriteStationRepository favoriteStationRepository;
+    private final FavoriteRouteRepository favoriteRouteRepository;
 
-    public FavoriteService(FavoriteStationRepository favoriteStationRepository) {
+    public FavoriteService(FavoriteStationRepository favoriteStationRepository, FavoriteRouteRepository favoriteRouteRepository) {
         this.favoriteStationRepository = favoriteStationRepository;
+        this.favoriteRouteRepository = favoriteRouteRepository;
     }
 
     public FavoriteResponseView createStationFavorite(Long stationId, User user) {
@@ -40,6 +44,11 @@ public class FavoriteService {
     }
 
     public FavoriteRouteResponseView createRouteFavorite(Long sourceStationId, Long targetStationId, User user) {
-        return null;
+        FavoriteRoute savedFavorite = favoriteRouteRepository.save(FavoriteRoute.builder()
+                .userId(user.getId())
+                .sourceStationId(sourceStationId)
+                .targetStationId(targetStationId)
+                .build());
+        return FavoriteRouteResponseView.of(savedFavorite);
     }
 }

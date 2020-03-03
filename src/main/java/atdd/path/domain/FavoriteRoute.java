@@ -1,13 +1,12 @@
 package atdd.path.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@Getter
 @NoArgsConstructor
 @Entity
 public class FavoriteRoute {
@@ -17,17 +16,19 @@ public class FavoriteRoute {
 
     private Long userId;
 
-    private Long sourceStationId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "source_station_id", referencedColumnName = "id")
+    private Station sourceStation;
 
-    private Long targetStationId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "target_station_id", referencedColumnName = "id")
+    private Station targetStation;
 
     @Builder
     public FavoriteRoute(Long id, Long userId, Long sourceStationId, Long targetStationId) {
         this.id = id;
         this.userId = userId;
-        this.sourceStationId = sourceStationId;
-        this.targetStationId = targetStationId;
+        this.sourceStation = new Station(sourceStationId, null);
+        this.targetStation = new Station(targetStationId, null);
     }
-
-
 }

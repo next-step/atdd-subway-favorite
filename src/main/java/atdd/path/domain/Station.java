@@ -33,10 +33,6 @@ public class Station {
     @OneToMany(mappedBy = "targetStation")
     private List<Edge> targetEdge = new ArrayList();
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="station")
-    @PrimaryKeyJoinColumn
-    private FavoriteStation favoriteStation;
-
     public Station(String name) {
         this.name = name;
     }

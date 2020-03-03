@@ -45,7 +45,7 @@ public class FavoriteStationServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.favoriteService = new FavoriteService(favoriteStationRepository);
+        this.favoriteService = new FavoriteService(favoriteStationRepository, favoriteRouteRepository);
     }
 
     @DisplayName("지하철 역 즐겨찾기 추가")
