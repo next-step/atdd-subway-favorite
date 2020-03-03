@@ -14,11 +14,11 @@ public class DatabaseConfigTest extends SoftAssertionTest {
 
     public void cleanAllDatabases() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "STATION", "LINE", "EDGE", "USER", "FAVORITE");
-        jdbcTemplate.update("ALTER TABLE STATION ALTER COLUMN id RESTART WITH 1");
-        jdbcTemplate.update("ALTER TABLE LINE ALTER COLUMN id RESTART WITH 1");
-        jdbcTemplate.update("ALTER TABLE EDGE ALTER COLUMN id RESTART WITH 1");
-        jdbcTemplate.update("ALTER TABLE USER ALTER COLUMN id RESTART WITH 1");
-        jdbcTemplate.update("ALTER TABLE FAVORITE ALTER COLUMN id RESTART WITH 1");
+        jdbcTemplate.update("ALTER TABLE STATION AUTO_INCREMENT = 1");
+        jdbcTemplate.update("ALTER TABLE LINE AUTO_INCREMENT = 1");
+        jdbcTemplate.update("ALTER TABLE EDGE AUTO_INCREMENT = 1");
+        jdbcTemplate.update("ALTER TABLE USER AUTO_INCREMENT = 1");
+        jdbcTemplate.update("ALTER TABLE FAVORITE AUTO_INCREMENT = 1");
     }
 }
 
