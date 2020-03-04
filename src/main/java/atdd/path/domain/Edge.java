@@ -62,16 +62,15 @@ public class Edge extends Item {
         return sourceStation.equals(station) || targetStation.equals(station);
     }
 
-    public void checkConnectSourceAndTarget() {
-        List<Line> linesInSourceStation = getSourceStation().getLines();
-        linesInSourceStation.stream()
-                .filter(line -> line.getStations().contains(getTargetStation()))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+    public void checkBidirectionalSourceAndTarget() {
+        checkLineInStationHasOppositeStation(getSourceStation(), getTargetStation());
+        checkLineInStationHasOppositeStation(getTargetStation(), getSourceStation());
+    }
 
-        List<Line> linesInTargetStation = getTargetStation().getLines();
-        linesInTargetStation.stream()
-                .filter(line -> line.getStations().contains(getSourceStation()))
+    private void checkLineInStationHasOppositeStation(Station station, Station oppositeStation) {
+        List<Line> linesInStation = station.getLines();
+        linesInStation.stream()
+                .filter(line -> line.getStations().contains(oppositeStation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
