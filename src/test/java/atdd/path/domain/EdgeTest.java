@@ -33,7 +33,7 @@ public class EdgeTest extends SoftAssertionTest {
     public void cannotFavoriteEdgeWhenNotConnectSourceWithTarget() {
         Edge favoriteEdge = new Edge(EDGE_ID_15, TEST_STATION_2, TEST_STATION_17, 10);
         Assertions.assertThrows(IllegalArgumentException.class,
-                favoriteEdge::checkConnectSourceAndTarget);
+                favoriteEdge::checkBidirectionalSourceAndTarget);
     }
 }
 

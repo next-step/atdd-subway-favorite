@@ -19,7 +19,7 @@ public class Item {
     public void validateFavoriteEdge(String type) {
         if (EDGE_TYPE.equals(type)) {
             Edge edge = (Edge) this;
-            edge.checkConnectSourceAndTarget();
+            edge.checkBidirectionalSourceAndTarget();
             edge.checkSourceAndTargetStationIsSameWhenEdge();
         }
     }
