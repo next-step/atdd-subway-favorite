@@ -49,6 +49,7 @@ public class FavoriteController {
 
     @GetMapping("/route")
     public ResponseEntity findFavoriteRoute(@LoginUser User user) {
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok().body(favoriteService.findFavoriteRoute(user));
     }
 }

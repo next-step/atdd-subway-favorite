@@ -5,13 +5,12 @@ import atdd.path.TestConstant;
 import atdd.path.application.dto.FavoriteResponseView;
 import atdd.path.application.dto.FavoriteRouteResponseView;
 import atdd.path.application.dto.LoginResponseView;
-import atdd.path.domain.Station;
 import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -96,16 +95,31 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         Long secondStationId = stationHttpTest.createStation(TestConstant.STATION_NAME_2);
         Long lineId = lineHttpTest.createLine(TestConstant.LINE_NAME);
         lineHttpTest.createEdgeRequest(lineId, firstStationId, secondStationId);
-        FavoriteRouteResponseView response = favoriteHttpTest.createFavoriteRoute(firstStationId, secondStationId, token)
+        favoriteHttpTest.createFavoriteRoute(firstStationId, secondStationId, token);
+
+        List<FavoriteRouteResponseView> response = favoriteHttpTest.findFavoriteRoute(token).getResponseBody();
+
+        assertThat(response.size()).isEqualTo(1);
+        assertThat(response.get(0).getSourceStation()).isEqualTo(TestConstant.STATION_NAME);
+        assertThat(response.get(0).getTargetStation()).isEqualTo(TestConstant.STATION_NAME_2);
+    }
+
+    @DisplayName("경로 즐겨찾기 삭제")
+    @Test
+    void deleteFavoriteRoute() {
+        //given
+        Long firstStationId = stationHttpTest.createStation(TestConstant.STATION_NAME);
+        Long secondStationId = stationHttpTest.createStation(TestConstant.STATION_NAME_2);
+        Long lineId = lineHttpTest.createLine(TestConstant.LINE_NAME);
+        lineHttpTest.createEdgeRequest(lineId, firstStationId, secondStationId);
+        favoriteHttpTest.createFavoriteRoute(firstStationId, secondStationId, token)
                 .getResponseBody();
 
-        webTestClient.get().uri(FAVORITE_URI + "/route")
+        List<FavoriteRouteResponseView> response = favoriteHttpTest.findFavoriteRoute(token).getResponseBody();
+
+        webTestClient.delete().uri(FAVORITE_URI + "/route/" + response.get(0).getId())
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.size()").isEqualTo(1)
-                .jsonPath("$.sourceStation").isEqualTo(firstStationId)
-                .jsonPath("$.targetStation").isEqualTo(secondStationId);
+                .expectStatus().isNoContent();
     }
 }

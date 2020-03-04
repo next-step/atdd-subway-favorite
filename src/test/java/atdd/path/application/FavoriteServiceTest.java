@@ -133,5 +133,7 @@ public class FavoriteServiceTest {
 
         // then
         assertThat(response.size()).isEqualTo(1);
+        assertThat(response.get(0).getTargetStation()).isNotNull();
+        assertThat(response.get(0).getSourceStation()).isNotNull();
     }
 }
