@@ -56,4 +56,8 @@ public class FavoriteService {
         List<FavoriteRoute> favorites = favoriteRouteRepository.findAllByUserId(user.getId());
         return FavoriteRouteResponseView.listOf(favorites);
     }
+
+    public void deleteFavoriteRoute(Long id, User user) {
+        favoriteRouteRepository.deleteByIdAndUserId(id, user.getId());
+    }
 }

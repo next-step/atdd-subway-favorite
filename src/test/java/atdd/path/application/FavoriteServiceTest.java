@@ -136,4 +136,19 @@ public class FavoriteServiceTest {
         assertThat(response.get(0).getTargetStation()).isNotNull();
         assertThat(response.get(0).getSourceStation()).isNotNull();
     }
+
+    @DisplayName("경로 즐겨찾기 삭제")
+    @Test
+    void deleteFavoriteRoute() {
+        // given
+        given(userRepository.findUserByEmail(any(String.class)))
+                .willReturn(User.createBuilder().id(1L).email(TestConstant.EMAIL_BROWN).build());
+        User user = userRepository.findUserByEmail(TestConstant.EMAIL_BROWN);
+
+        // when
+        favoriteService.deleteFavoriteRoute(1L, user);
+
+        // then
+        verify(favoriteRouteRepository).deleteByIdAndUserId(anyLong(), anyLong());
+    }
 }
