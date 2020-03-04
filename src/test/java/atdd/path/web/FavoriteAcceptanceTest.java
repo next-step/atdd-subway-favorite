@@ -51,12 +51,17 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     void findFavoriteStation() {
         // given
         Long stationId = stationHttpTest.createStation(TestConstant.STATION_NAME);
-        FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(stationId, token).getResponseBody();
+        favoriteHttpTest.createFavoriteStation(stationId, token).getResponseBody();
 
-        webTestClient.get().uri(FAVORITE_URI + "/station")
+        List<FavoriteResponseView> response = webTestClient.get().uri(FAVORITE_URI + "/station")
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isOk()
+                .expectBodyList(FavoriteResponseView.class)
+                .returnResult().getResponseBody();
+
+        assertThat(response.size()).isEqualTo(1);
+        assertThat(response.get(0).getStation().getName()).isEqualTo(TestConstant.STATION_NAME);
     }
 
     @DisplayName("지하철역 즐겨찾기 삭제")
@@ -100,8 +105,8 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         List<FavoriteRouteResponseView> response = favoriteHttpTest.findFavoriteRoute(token).getResponseBody();
 
         assertThat(response.size()).isEqualTo(1);
-        assertThat(response.get(0).getSourceStation()).isEqualTo(TestConstant.STATION_NAME);
-        assertThat(response.get(0).getTargetStation()).isEqualTo(TestConstant.STATION_NAME_2);
+        assertThat(response.get(0).getSourceStation().getName()).isEqualTo(TestConstant.STATION_NAME);
+        assertThat(response.get(0).getTargetStation().getName()).isEqualTo(TestConstant.STATION_NAME_2);
     }
 
     @DisplayName("경로 즐겨찾기 삭제")
