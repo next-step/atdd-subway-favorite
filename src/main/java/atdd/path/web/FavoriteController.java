@@ -49,7 +49,11 @@ public class FavoriteController {
 
     @GetMapping("/route")
     public ResponseEntity findFavoriteRoute(@LoginUser User user) {
-
         return ResponseEntity.ok().body(favoriteService.findFavoriteRoute(user));
+    }
+
+    @DeleteMapping("/route/{id}")
+    public ResponseEntity deleteFavoriteRoute(@PathVariable Long id, @LoginUser User user) {
+        return ResponseEntity.noContent().build();
     }
 }
