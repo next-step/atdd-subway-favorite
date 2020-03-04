@@ -14,7 +14,6 @@ import static atdd.path.fixture.UserFixture.*;
 
 public class FavoriteFixture {
     public static final Long FAVORITE_ID = 0L;
-    public static final String STATION_NAME = "강남역";
     public static final Long STATION_FIRST_ID = 1L;
     public static final Long EDGE_FIRST_ID = 1L;
     public static final Long EDGE_SECOND_ID = 2L;
