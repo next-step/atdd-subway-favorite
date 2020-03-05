@@ -1,8 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.User.UserLoginResponseView;
-import atdd.path.application.dto.User.UserSighUpResponseView;
+import atdd.path.application.dto.user.UserLoginResponseView;
 import atdd.path.domain.User;
 import atdd.path.security.TokenAuthenticationService;
 import org.assertj.core.api.SoftAssertions;
@@ -11,11 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
-import reactor.core.publisher.Mono;
-
-import java.util.Objects;
 
 import static atdd.path.fixture.UserFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,12 +20,13 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     public static final String USER_BASE_URL = "/users";
     public static final String LOGIN_API_URL = "/login";
 
-    private RestWebClientTest restWebClientTest;
+    private CreateWebClientTest restWebClientTest;
     private TokenAuthenticationService tokenAuthenticationService;
 
     @BeforeEach
     void setUp() {
-        this.restWebClientTest = new RestWebClientTest(this.webTestClient);
+        cleanAllDatabases();
+        this.restWebClientTest = new CreateWebClientTest(this.webTestClient);
         this.tokenAuthenticationService = new TokenAuthenticationService();
     }
 
@@ -55,7 +51,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userDeleteWithAuth() {
         //given
-        createUser();
+        restWebClientTest.createUser();
 
         //when
         EntityExchangeResult<Void> expectResponse
@@ -69,7 +65,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userLogin(SoftAssertions softly) {
         //given
-        createUser();
+        restWebClientTest.createUser();
 
         //when
         EntityExchangeResult<UserLoginResponseView> expectResponse
@@ -86,7 +82,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
     @Test
     public void userDetailWithAuth(SoftAssertions softly) {
         //given
-        createUser();
+        restWebClientTest.createUser();
 
         //when
         EntityExchangeResult<User> expectResponse
@@ -97,19 +93,6 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
         //then
         softly.assertThat(responseBody.getEmail()).isEqualTo(KIM_EMAIL);
         softly.assertThat(responseBody.getName()).isEqualTo(KIM_NAME);
-    }
-
-
-    public String createUser() {
-        return Objects.requireNonNull(webTestClient.post().uri(USER_BASE_URL + "/sigh-up")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(KIM_INPUT_JSON), String.class)
-                .exchange()
-                .expectStatus().isCreated()
-                .returnResult(UserSighUpResponseView.class)
-                .getResponseHeaders()
-                .getLocation())
-                .getPath();
     }
 
     private String getJwt() {

@@ -2,6 +2,7 @@ package atdd.path.security;
 
 import atdd.path.SoftAssertionTest;
 import atdd.path.dao.UserDao;
+import atdd.path.domain.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,7 @@ public class JwtAuthInterceptorTest extends SoftAssertionTest {
 
         //then
         softly.assertThat(isAuthorization).isTrue();
-        softly.assertThat(request.getAttribute(AUTH_USER_KEY)).isEqualTo(NEW_USER);
+        softly.assertThat(request.getAttribute(AUTH_USER_KEY).getClass()).isEqualTo(User.class);
     }
 
     private MockHttpServletRequest jwtAuthHttpRequest(String email) {

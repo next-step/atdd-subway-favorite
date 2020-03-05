@@ -1,6 +1,6 @@
-package atdd.path.application.dto.Edge;
+package atdd.path.application.dto.edge;
 
-import atdd.path.application.dto.Station.StationResponseView;
+import atdd.path.application.dto.station.StationResponseView;
 import atdd.path.domain.Edge;
 import atdd.path.domain.Edges;
 

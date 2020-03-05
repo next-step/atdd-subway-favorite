@@ -1,9 +1,12 @@
 package atdd.path.domain;
 
+import lombok.NoArgsConstructor;
+
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor
 public class Line {
     private Long id;
     private String name;

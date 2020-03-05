@@ -1,7 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.Line.LineResponseView;
+import atdd.path.application.dto.line.LineResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +16,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LineAcceptanceTest extends AbstractAcceptanceTest {
     public static final String LINE_URL = "/lines";
     public static final String EDGE_URL = "/edges";
+    public static final String LINE_INPUT_JSON = "{\"name\":\"2호선\"," +
+            "\"startTime\":\"" + LocalTime.of(0, 0) + "\"," +
+            "\"endTime\":\"" + LocalTime.of(23, 30) + "\"," +
+            "\"interval\":\"" + 30 + "\"}";
 
     private StationHttpTest stationHttpTest;
     private LineHttpTest lineHttpTest;
 
     @BeforeEach
     void setUp() {
+        cleanAllDatabases();
         this.stationHttpTest = new StationHttpTest(webTestClient);
         this.lineHttpTest = new LineHttpTest(webTestClient);
     }

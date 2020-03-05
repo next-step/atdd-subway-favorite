@@ -1,7 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
-import atdd.path.application.dto.Station.StationResponseView;
+import atdd.path.application.dto.station.StationResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,7 @@ public class StationAcceptanceTest extends AbstractAcceptanceTest {
 
     @BeforeEach
     void setUp() {
+        cleanAllDatabases();
         this.lineHttpTest = new LineHttpTest(webTestClient);
         this.stationHttpTest = new StationHttpTest(webTestClient);
     }

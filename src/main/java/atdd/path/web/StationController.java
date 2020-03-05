@@ -1,8 +1,8 @@
 package atdd.path.web;
 
 import atdd.path.domain.Station;
-import atdd.path.application.dto.Station.CreateStationRequestView;
-import atdd.path.application.dto.Station.StationResponseView;
+import atdd.path.application.dto.station.CreateStationRequestView;
+import atdd.path.application.dto.station.StationResponseView;
 import atdd.path.dao.StationDao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;

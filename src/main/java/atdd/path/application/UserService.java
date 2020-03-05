@@ -1,6 +1,6 @@
 package atdd.path.application;
 
-import atdd.path.application.dto.User.*;
+import atdd.path.application.dto.user.*;
 import atdd.path.application.exception.ExistUserException;
 import atdd.path.application.exception.NotExistUserException;
 import atdd.path.dao.UserDao;

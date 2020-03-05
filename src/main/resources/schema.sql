@@ -28,8 +28,17 @@ create table if not exists EDGE
 create table if not exists USER
 (
     id bigint auto_increment not null,
-    name varchar(255) not null unique,
+    name varchar(255) not null,
     email varchar(255) not null,
     password varchar(255) not null,
+    primary key(id)
+);
+
+create table if not exists FAVORITE
+(
+    id bigint auto_increment not null,
+    user_id bigint not null,
+    item_id bigint not null,
+    type varchar(20) not null,
     primary key(id)
 );
