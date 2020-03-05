@@ -62,6 +62,11 @@ public class Edge extends Item {
         return sourceStation.equals(station) || targetStation.equals(station);
     }
 
+    public void validateFavoriteEdge() {
+        checkBidirectionalSourceAndTarget();
+        checkSourceAndTargetStationIsSameWhenEdge();
+    }
+
     public void checkBidirectionalSourceAndTarget() {
         checkLineInStationHasOppositeStation(getSourceStation(), getTargetStation());
         checkLineInStationHasOppositeStation(getTargetStation(), getSourceStation());
@@ -69,6 +74,11 @@ public class Edge extends Item {
 
     private void checkLineInStationHasOppositeStation(Station station, Station oppositeStation) {
         List<Line> linesInStation = station.getLines();
+
+        if (linesInStation.isEmpty()) {
+            return;
+        }
+
         linesInStation.stream()
                 .filter(line -> line.getStations().contains(oppositeStation))
                 .findFirst()
