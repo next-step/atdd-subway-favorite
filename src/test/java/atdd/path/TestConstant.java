@@ -6,6 +6,7 @@ import atdd.path.domain.Station;
 import org.assertj.core.util.Lists;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public class TestConstant {
     public static final Long STATION_ID = 1L;
@@ -149,4 +150,12 @@ public class TestConstant {
     public static Line TEST_LINE_2 = new Line(LINE_ID_2, LINE_NAME_2, Lists.list(TEST_EDGE_5, TEST_EDGE_6, TEST_EDGE_7, TEST_EDGE_8, TEST_EDGE_9), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
     public static Line TEST_LINE_3 = new Line(LINE_ID_3, LINE_NAME_3, Lists.list(TEST_EDGE_10, TEST_EDGE_11, TEST_EDGE_12, TEST_EDGE_13, TEST_EDGE_14, TEST_EDGE_15), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
     public static Line TEST_LINE_4 = new Line(LINE_ID_4, LINE_NAME_4, Lists.list(TEST_EDGE_16, TEST_EDGE_17, TEST_EDGE_18, TEST_EDGE_19, TEST_EDGE_20, TEST_EDGE_21, TEST_EDGE_22), LocalTime.of(0, 0), LocalTime.of(23, 30), 30);
+
+    public static Station TEST_STATION_WITH_LINE = new Station(STATION_ID, STATION_NAME, Arrays.asList(TEST_LINE, TEST_LINE_2));
+    public static Station TEST_STATION_2_WITH_LINE = new Station(STATION_ID_2, STATION_NAME_2, Arrays.asList(TEST_LINE_2, TEST_LINE_3));
+    public static Station TEST_STATION_17_WITH_LINE = new Station(STATION_ID_17, STATION_NAME_17, Arrays.asList(TEST_LINE_4, TEST_LINE_3));
+
+
+    public static Edge TEST_EDGE_WITH_LINE = new Edge(EDGE_ID, TEST_STATION_WITH_LINE, TEST_STATION_2_WITH_LINE, 10);
+
 }
