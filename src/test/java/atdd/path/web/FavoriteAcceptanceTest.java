@@ -1,6 +1,7 @@
 package atdd.path.web;
 
 import atdd.path.AbstractAcceptanceTest;
+import atdd.path.application.dto.FavoritePathResponseView;
 import atdd.path.application.dto.FavoriteStationResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,14 +18,18 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
     private LoginHttpTest loginHttpTest;
     private UserHttpTest userHttpTest;
     private StationHttpTest stationHttpTest;
+    private LineHttpTest lineHttpTest;
     private FavoriteHttpTest favoriteHttpTest;
+    private GraphHttpTest graphHttpTest;
 
     @BeforeEach
     void setUp() {
         this.loginHttpTest = new LoginHttpTest(webTestClient);
         this.userHttpTest = new UserHttpTest(webTestClient);
         this.stationHttpTest = new StationHttpTest(webTestClient);
+        this.lineHttpTest = new LineHttpTest(webTestClient);
         this.favoriteHttpTest = new FavoriteHttpTest(webTestClient);
+        this.graphHttpTest = new GraphHttpTest(webTestClient);
 
         userHttpTest.createUser(TEST_USER);
         loginHttpTest.getAccessTokenFromLogin(TEST_USER);
@@ -62,7 +67,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
      * Then 사용자는 지하철역 즐겨찾기 목록을 응답받는다.
      */
     @Test
-    @DisplayName("지하철역 즐겨찾기 조회")
+    @DisplayName("지하철역 즐겨찾기 목록 조회")
     void showUserFavoriteStations() {
         // given
         String accessToken = loginHttpTest.getAccessTokenFromLogin(TEST_USER);
@@ -107,9 +112,6 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         Long favoriteId2 = favoriteHttpTest.createUserFavoriteStation(stationId2, accessToken);
         Long favoriteId3 = favoriteHttpTest.createUserFavoriteStation(stationId3, accessToken);
 
-        System.out.println(stationId1 + " " +  stationId2 + " " + stationId3);
-        System.out.println(favoriteId1 + " " +  favoriteId2 + " " + favoriteId3);
-
         // when
         favoriteHttpTest.deleteFavoriteStation(favoriteId1, accessToken);
         favoriteHttpTest.deleteFavoriteStation(favoriteId2, accessToken);
@@ -119,5 +121,109 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
                 favoriteHttpTest.showUserFavoriteStations(accessToken);
 
         assertThat(result.getResponseBody().size()).isEqualTo(1);
+    }
+
+    /**
+     * Background:
+     * Given 사용자는 로그인을 했다.
+     * <p>
+     * Background:
+     * Given 지하철역이 등록되어 있다.
+     * And 지하철노선이 등록되어 있다.
+     * And 지하철노선에 지하철역이 등록되어 있다.
+     */
+    String setUpFavoritePath() {
+        userHttpTest.createUser(TEST_USER_3);
+
+        Long stationId = stationHttpTest.createStation(STATION_NAME);
+        Long stationId2 = stationHttpTest.createStation(STATION_NAME_2);
+        Long stationId3 = stationHttpTest.createStation(STATION_NAME_3);
+
+        Long line2 = lineHttpTest.createLine(LINE_NAME);
+
+        lineHttpTest.createEdgeRequest(line2, stationId, stationId2);
+        lineHttpTest.createEdgeRequest(line2, stationId2, stationId3);
+
+        return loginHttpTest.getAccessTokenFromLogin(TEST_USER_3);
+    }
+
+    /**
+     * Scenario: 경로 즐겨찾기 등록
+     * When 지하철경로를 조회한다.
+     * When 지하철경로를 응답받는다.
+     * When 응답받은 지하철경로를 대상으로 즐겨찾기 등록을 요청한다.
+     * Then 지하철 경로 즐겨찾기가 등록되었다.
+     */
+    @Test
+    @DisplayName("경로 즐겨찾기 등록")
+    void createFavoritePath() {
+        //given
+        String accessToken = setUpFavoritePath();
+
+        // when
+        EntityExchangeResult<FavoritePathResponseView> response = favoriteHttpTest.createFavoritePathRequest(
+                STATION_ID, STATION_ID_3, accessToken);
+
+        // then
+        assertThat(response.getResponseBody()).isNotNull();
+        assertThat(response.getResponseBody().getPath().getStartStationId()).isEqualTo(STATION_ID);
+        assertThat(response.getResponseBody().getPath().getEndStationId()).isEqualTo(STATION_ID_3);
+    }
+
+    /**
+     * Scenario: 경로 즐겨찾기 조회
+     * Given 지하철경로 즐겨찾기가 등록되어 있다.
+     * When 사용자는 자신이 등록한 경로 즐겨찾기 목록을 요청한다.
+     * Then 사용자는 경로 즐겨찾기 목록을 응답받는다.
+     */
+    @Test
+    @DisplayName("경로 즐겨찾기 목록 조회")
+    void showFavoritePaths() {
+        //given
+        String accessToken = setUpFavoritePath();
+
+        favoriteHttpTest.createFavoritePath(STATION_ID, STATION_ID_3, accessToken);
+        favoriteHttpTest.createFavoritePath(STATION_ID_2, STATION_ID_3, accessToken);
+        favoriteHttpTest.createFavoritePath(STATION_ID_3, STATION_ID, accessToken);
+
+        //when
+        EntityExchangeResult<List<FavoritePathResponseView>> responses =
+                favoriteHttpTest.showUserFavoritePaths(accessToken);
+
+        //then
+        assertThat(responses.getResponseBody()).isNotEmpty();
+        assertThat(responses.getResponseBody().size()).isEqualTo(3);
+    }
+
+    /**
+     * Scenario: 사용자는 경로 즐겨찾기를 삭제한다.
+     * Given 지하철경로 즐겨찾기가 등록되어 있다.
+     * When 지하철경로 즐겨찾기 목록을 조회한다.
+     * Then 지하철경로를 즐겨찾기 목록을 응답받는다.
+     * When 사용자는 지하철경로 즐겨찾기 삭제를 요청한다.
+     * Then 경로가 즐겨찾기가 삭제되었다.
+     */
+    @Test
+    @DisplayName("경로 즐겨찾기 삭제")
+    void deleteFavoritePath() {
+        // given
+        String accessToken = setUpFavoritePath();
+        Long favoriteId = favoriteHttpTest.createFavoritePath(STATION_ID, STATION_ID_3, accessToken);
+        Long favoriteId2 = favoriteHttpTest.createFavoritePath(STATION_ID_2, STATION_ID_3, accessToken);
+        Long favoriteId3 = favoriteHttpTest.createFavoritePath(STATION_ID_3, STATION_ID, accessToken);
+
+        //when
+        EntityExchangeResult<List<FavoritePathResponseView>> favoritePaths =
+                favoriteHttpTest.showUserFavoritePaths(accessToken);
+
+        //then
+        assertThat(favoritePaths.getResponseBody()).isNotEmpty();
+        assertThat(favoritePaths.getResponseBody().size()).isEqualTo(3);
+
+        // when, then
+        favoriteHttpTest.deleteFavoritePath(favoriteId, accessToken);
+        favoriteHttpTest.deleteFavoritePath(favoriteId2, accessToken);
+        favoriteHttpTest.deleteFavoritePath(favoriteId3, accessToken);
+
     }
 }

@@ -1,5 +1,6 @@
 package atdd.path.web;
 
+import atdd.path.application.dto.FavoritePathResponseView;
 import atdd.path.application.dto.FavoriteStationResponseView;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,8 +10,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.List;
 
 import static atdd.path.TestConstant.JWT_TOKEN_TYPE;
-import static atdd.path.application.base.BaseUriConstants.FAVORITE_BASE_URL;
-import static atdd.path.application.base.BaseUriConstants.STATION_BASE_URL;
+import static atdd.path.application.base.BaseUriConstants.*;
 
 public class FavoriteHttpTest {
 
@@ -20,9 +20,10 @@ public class FavoriteHttpTest {
         this.webTestClient = webTestClient;
     }
 
-    public EntityExchangeResult<FavoriteStationResponseView> createUserFavoriteStationRequest(Long stationId, String accessToken) {
+    public EntityExchangeResult<FavoriteStationResponseView> createUserFavoriteStationRequest(Long stationId,
+                                                                                              String accessToken) {
         return webTestClient.post().uri(FAVORITE_BASE_URL + STATION_BASE_URL + "/" + stationId)
-                .header(HttpHeaders.AUTHORIZATION, JWT_TOKEN_TYPE +  accessToken)
+                .header(HttpHeaders.AUTHORIZATION, JWT_TOKEN_TYPE + accessToken)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -62,5 +63,45 @@ public class FavoriteHttpTest {
                 createUserFavoriteStationRequest(stationId, accessToken);
 
         return favoriteStationResponse.getResponseBody().getId();
+    }
+
+    public Long createFavoritePath(Long startStationId, Long endStationId, String accessToken) {
+        EntityExchangeResult<FavoritePathResponseView> favoritePathResponse =
+                createFavoritePathRequest(startStationId, endStationId, accessToken);
+        return favoritePathResponse.getResponseBody().getId();
+    }
+
+    public EntityExchangeResult<FavoritePathResponseView> createFavoritePathRequest(Long startStationId,
+                                                                                    Long endStationId,
+                                                                                    String accessToken) {
+        return webTestClient.post().uri(uriBuilder ->
+                uriBuilder.path(FAVORITE_BASE_URL + PATH_BASE_URL)
+                        .queryParam("startId", startStationId)
+                        .queryParam("endId", endStationId)
+                        .build())
+                .header(HttpHeaders.AUTHORIZATION, JWT_TOKEN_TYPE + accessToken)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists(HttpHeaders.LOCATION)
+                .expectBody(FavoritePathResponseView.class)
+                .returnResult();
+    }
+
+    public EntityExchangeResult<List<FavoritePathResponseView>> showUserFavoritePaths(String accessToken) {
+        return webTestClient.get().uri(FAVORITE_BASE_URL + PATH_BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, JWT_TOKEN_TYPE + accessToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(FavoritePathResponseView.class)
+                .returnResult();
+    }
+
+    public void deleteFavoritePath(Long id, String accessToken) {
+        webTestClient.delete().uri(FAVORITE_BASE_URL + PATH_BASE_URL + "/" + id)
+                .header(HttpHeaders.AUTHORIZATION, JWT_TOKEN_TYPE + accessToken)
+                .exchange()
+                .expectStatus().isNoContent();
     }
 }

@@ -17,11 +17,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-public class FavoriteDao {
+public class FavoriteStationDao {
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
-    public FavoriteDao(JdbcTemplate jdbcTemplate) {
+    public FavoriteStationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -39,7 +39,7 @@ public class FavoriteDao {
         parameters.put("STATION_ID", stationId);
 
         Long favoriteId = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-        return findFavoriteStationById(favoriteId);
+        return findFavoriteStationById(favoriteId, user.getId());
     }
 
     public List<FavoriteStation> findFavoriteStationsByUserId(Long userId) {
@@ -56,20 +56,20 @@ public class FavoriteDao {
     }
 
     private List<FavoriteStation> mapFavoriteStations(List<Map<String, Object>> result) {
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
 
         return result.stream().map(r ->
                 new FavoriteStation(
-                        (Long) result.get(0).get("ID"),
-                        new User((Long) result.get(0).get("USER_ID"), (String) result.get(0).get("email"),
-                                (String) result.get(0).get("name")),
-                        new Station((Long) result.get(0).get("STATION_ID"), (String) result.get(0).get("STATION_NAME")))
-                ).collect(Collectors.toList());
+                        (Long) r.get("ID"),
+                        new User((Long) r.get("USER_ID"), (String) r.get("email"),
+                                (String) r.get("name")),
+                        new Station((Long) r.get("STATION_ID"), (String) r.get("STATION_NAME")))
+        ).collect(Collectors.toList());
     }
 
-    public FavoriteStation findFavoriteStationById(Long id) {
+    public FavoriteStation findFavoriteStationById(Long id, Long userId) {
         Map<String, Object> result = jdbcTemplate.queryForMap(
                 "select fs.id, u.id as user_id, " +
                         "u.email, u.name, " +
@@ -78,8 +78,26 @@ public class FavoriteDao {
                         "from FAVORITE_STATION fs " +
                         "inner join USER u on fs.user_id = u.id " +
                         "inner join STATION s on fs.station_id = s.id " +
-                        "where fs.id = ?",
-                new Object[]{id}
+                        "where fs.id = ? " +
+                        "and fs.user_id = ?",
+                new Object[]{id, userId}
+        );
+
+        return mapFavoriteStation(result);
+    }
+
+    public FavoriteStation findFavoriteStationByIdAndUserId(Long id, Long userId) {
+        Map<String, Object> result = jdbcTemplate.queryForMap(
+                "select fs.id, u.id as user_id, " +
+                        "u.email, u.name, " +
+                        "s.id as station_id, " +
+                        "s.name as station_name " +
+                        "from FAVORITE_STATION fs " +
+                        "inner join USER u on fs.user_id = u.id " +
+                        "inner join STATION s on fs.station_id = s.id " +
+                        "where fs.id = ?" +
+                        "and fs.user_id = ?",
+                new Object[]{id, userId}
         );
 
         return mapFavoriteStation(result);
