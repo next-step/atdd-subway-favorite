@@ -180,9 +180,13 @@ public class TestConstant {
     // JWT
     public static String JWT_TOKEN_TYPE = "Bearer ";
 
-    public static FavoriteStation TEST_FAVORITE_STATION_1 = new FavoriteStation(TEST_USER, TEST_STATION);
-    public static FavoriteStation TEST_FAVORITE_STATION_2 = new FavoriteStation(TEST_USER_2, TEST_STATION_2);
-    public static FavoriteStation TEST_FAVORITE_STATION_3 = new FavoriteStation(TEST_USER_3, TEST_STATION_3);
-    public static FavoriteStation TEST_FAVORITE_STATION_4 = new FavoriteStation(TEST_USER_4, TEST_STATION_4);
-    public static FavoriteStation TEST_FAVORITE_STATION_5 = new FavoriteStation(TEST_USER_5, TEST_STATION_5);
+    public static FavoriteStation TEST_FAVORITE_STATION_1 = new FavoriteStation(1L, TEST_USER, TEST_STATION);
+    public static FavoriteStation TEST_FAVORITE_STATION_2 = new FavoriteStation(2L, TEST_USER, TEST_STATION_2);
+    public static FavoriteStation TEST_FAVORITE_STATION_3 = new FavoriteStation(3L, TEST_USER, TEST_STATION_3);
+    public static FavoriteStation TEST_FAVORITE_STATION_4 = new FavoriteStation(4L, TEST_USER_4, TEST_STATION_4);
+    public static FavoriteStation TEST_FAVORITE_STATION_5 = new FavoriteStation(5L, TEST_USER_5, TEST_STATION_5);
+
+    public static FavoritePath TEST_FAVORITE_PATH_1 = new FavoritePath(1L, TEST_STATION, TEST_STATION_2);
+    public static FavoritePath TEST_FAVORITE_PATH_2 = new FavoritePath(2L, TEST_STATION_2, TEST_STATION_3);
+    public static FavoritePath TEST_FAVORITE_PATH_3 = new FavoritePath(3L, TEST_STATION_3, TEST_STATION_4);
 }
