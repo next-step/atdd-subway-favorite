@@ -2,7 +2,6 @@ package atdd.path.application;
 
 import atdd.path.application.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
-import jdk.internal.joptsimple.internal.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -32,6 +31,7 @@ public class JwtTokenProvider {
 
     /**
      * 토큰 생성
+     *
      * @param email
      * @return
      */
@@ -51,6 +51,7 @@ public class JwtTokenProvider {
 
     /**
      * 토큰에서 값(email) 추출
+     *
      * @param token
      * @return
      */
@@ -60,12 +61,13 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         return Optional.ofNullable(req.getHeader(HttpHeaders.AUTHORIZATION))
-                .orElse(Strings.EMPTY)
+                .orElse("")
                 .replaceAll(JWT_TOKEN_TYPE, "");
     }
 
     /**
      * 토큰 유효성 검사
+     *
      * @param token
      * @return
      */
