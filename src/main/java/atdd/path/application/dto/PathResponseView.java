@@ -9,6 +9,14 @@ public class PathResponseView {
     private Long endStationId;
     private List<StationResponseView> stations;
 
+    public PathResponseView() {
+    }
+
+    public PathResponseView(Long startStationId, Long endStationId) {
+        this.startStationId = startStationId;
+        this.endStationId = endStationId;
+    }
+
     public PathResponseView(Long startStationId, Long endStationId, List<Station> stations) {
         this.startStationId = startStationId;
         this.endStationId = endStationId;

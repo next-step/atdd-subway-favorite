@@ -7,5 +7,5 @@ public class BaseUriConstants {
     public static final String FAVORITE_BASE_URL = "/favorites";
     public static final String STATION_BASE_URL = "/stations";
     public static final String LINE_BASE_URL = "/lines";
-
+    public static final String PATH_BASE_URL = "/paths";
 }
