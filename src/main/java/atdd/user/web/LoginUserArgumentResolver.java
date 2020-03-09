@@ -39,6 +39,5 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
         return Optional.ofNullable(userRepository.findUserByEmail(email))
                 .orElseThrow(() -> new FailedLoginException.InvalidJwtAuthenticationException("Invalid Token"));
-
     }
 }

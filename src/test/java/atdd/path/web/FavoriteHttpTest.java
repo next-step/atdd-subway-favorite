@@ -3,6 +3,7 @@ package atdd.path.web;
 import atdd.path.application.dto.FavoriteResponseView;
 import atdd.path.application.dto.FavoriteRouteResponseView;
 import atdd.path.application.dto.LoginResponseView;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -23,7 +24,7 @@ public class FavoriteHttpTest {
 
         return webTestClient.post().uri(FAVORITE_URL + "/stations")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .body(Mono.just(request), String.class)
                 .exchange()
                 .expectHeader().exists("Location")
@@ -40,7 +41,7 @@ public class FavoriteHttpTest {
         return webTestClient.post().uri(FAVORITE_URL + "/routes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), String.class)
-                .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectHeader().exists("Location")
                 .expectStatus().isCreated()
@@ -50,7 +51,7 @@ public class FavoriteHttpTest {
 
     public EntityExchangeResult<List<FavoriteRouteResponseView>> findFavoriteRoute(LoginResponseView token) {
         return webTestClient.get().uri(FAVORITE_URL + "/routes")
-                .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(FavoriteRouteResponseView.class)
