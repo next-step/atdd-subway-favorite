@@ -1,6 +1,7 @@
 package atdd.path.application;
 
 import atdd.path.application.dto.FavoriteResponseView;
+import atdd.path.application.dto.FavoriteRouteRequestView;
 import atdd.path.application.dto.FavoriteRouteResponseView;
 import atdd.path.domain.FavoriteRoute;
 import atdd.path.domain.FavoriteStation;
@@ -43,11 +44,13 @@ public class FavoriteService {
         favoriteStationRepository.deleteByIdAndUserId(id, user.getId());
     }
 
-    public FavoriteRouteResponseView createRouteFavorite(Long sourceStationId, Long targetStationId, User user) {
+    public FavoriteRouteResponseView createRouteFavorite(FavoriteRouteRequestView view, User user) {
+        view.validate();
+
         FavoriteRoute savedFavorite = favoriteRouteRepository.save(FavoriteRoute.builder()
                 .userId(user.getId())
-                .sourceStationId(sourceStationId)
-                .targetStationId(targetStationId)
+                .sourceStationId(view.getSourceStationId())
+                .targetStationId(view.getTargetStationId())
                 .build());
         return FavoriteRouteResponseView.of(savedFavorite);
     }

@@ -2,6 +2,7 @@ package atdd.path.application;
 
 import atdd.path.TestConstant;
 import atdd.path.application.dto.FavoriteResponseView;
+import atdd.path.application.dto.FavoriteRouteRequestView;
 import atdd.path.application.dto.FavoriteRouteResponseView;
 import atdd.path.domain.FavoriteRoute;
 import atdd.path.domain.FavoriteStation;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -108,7 +110,10 @@ public class FavoriteServiceTest {
                 .willReturn(FavoriteRoute.builder().userId(user.getId()).sourceStationId(1L).targetStationId(2L).build());
 
         // when
-        FavoriteRouteResponseView response = favoriteService.createRouteFavorite(1L, 2L, user);
+        FavoriteRouteResponseView response = favoriteService.createRouteFavorite(FavoriteRouteRequestView.builder()
+                .sourceStationId(1L)
+                .targetStationId(1L)
+                .build(), user);
 
         // then
         assertThat(response.getSourceStation()).isNotNull();
@@ -125,8 +130,13 @@ public class FavoriteServiceTest {
         given(favoriteRouteRepository.save(any(FavoriteRoute.class)))
                 .willReturn(FavoriteRoute.builder().userId(user.getId()).sourceStationId(1L).targetStationId(2L).build());
         given(favoriteRouteRepository.findAllByUserId(user.getId()))
-                .willReturn(Collections.singletonList(FavoriteRoute.builder().id(1L).userId(user.getId()).sourceStationId(1L).targetStationId(2L).build()));
-        favoriteService.createRouteFavorite(1L, 2L, user);
+                .willReturn(Collections.singletonList(FavoriteRoute.builder()
+                        .id(1L)
+                        .userId(user.getId())
+                        .sourceStationId(1L)
+                        .targetStationId(2L)
+                        .build()));
+        favoriteService.createRouteFavorite(FavoriteRouteRequestView.builder().sourceStationId(1L).targetStationId(1L).build(), user);
 
         // when
         List<FavoriteRouteResponseView> response = favoriteService.findFavoriteRoute(user);
@@ -150,5 +160,21 @@ public class FavoriteServiceTest {
 
         // then
         verify(favoriteRouteRepository).deleteByIdAndUserId(anyLong(), anyLong());
+    }
+
+    @DisplayName("경로 즐겨찾기 등록 - 출발역, 도착역 같을 때")
+    @Test
+    void createFavoriteRoute_sourceStationEqualsTargetStation() {
+        // given
+        given(userRepository.findUserByEmail(any(String.class)))
+                .willReturn(User.createBuilder().id(1L).email(TestConstant.EMAIL_BROWN).build());
+        User user = userRepository.findUserByEmail(TestConstant.EMAIL_BROWN);
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> favoriteService.createRouteFavorite(FavoriteRouteRequestView.builder()
+                .sourceStationId(1L)
+                .targetStationId(1L)
+                .build(), user));
+        assertThat(thrown.getMessage()).isEqualTo("Source station must not be equal to Target Station");
+
     }
 }

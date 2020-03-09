@@ -43,7 +43,7 @@ public class FavoriteController {
 
     @PostMapping("/route")
     public ResponseEntity createFavoriteRoute(@RequestBody FavoriteRouteRequestView favoriteRouteRequestView, @LoginUser User user) {
-        FavoriteRouteResponseView response = favoriteService.createRouteFavorite(favoriteRouteRequestView.getSourceStationId(), favoriteRouteRequestView.getTargetStationId(), user);
+        FavoriteRouteResponseView response = favoriteService.createRouteFavorite(favoriteRouteRequestView, user);
         return ResponseEntity.created(URI.create("/route/" + response.getId())).body(response);
     }
 
