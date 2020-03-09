@@ -26,7 +26,7 @@ public class StationResponseView {
     }
 
     public static StationResponseView of(Station station) {
-        return new StationResponseView(station.getId(), station.getName(), station.getLines());
+        return new StationResponseView(station.getId(), station.getName(), station.getLinesByEdge());
     }
 
     public static List<StationResponseView> listOf(List<Station> stations) {

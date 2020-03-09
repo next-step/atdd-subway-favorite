@@ -92,7 +92,7 @@ public class UserServiceTest {
                 .password(TestConstant.PASSWORD_BROWN).build());
 
         // when
-        UserResponseView info = userService.retrieveUser(String.format("%s %s", token.getTokenType(), token.getAccessToken()));
+        UserResponseView info = userService.retrieveUser(TestConstant.EMAIL_BROWN);
 
         // then
         assertThat(info.getEmail()).isEqualTo(TestConstant.EMAIL_BROWN);

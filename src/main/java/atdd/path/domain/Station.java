@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,7 +62,7 @@ public class Station {
     }
 
 
-    public List<Line> getLines() {
+    public List<Line> getLinesByEdge() {
         return Stream.concat(sourceEdges.stream(), targetEdge.stream())
                 .map(it -> it.getLine())
                 .collect(Collectors.toList());

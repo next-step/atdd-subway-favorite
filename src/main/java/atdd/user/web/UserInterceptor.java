@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 public class UserInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private static final String LOGIN_USER_EMAIL = "loginUserEmail";
+    private static final String HEADER_AUTHORIZATION = "Authorization";
 
     public UserInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -19,14 +21,14 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(HEADER_AUTHORIZATION);
 
         if (!jwtTokenProvider.validateToken(token)) {
             throw new FailedLoginException.InvalidJwtAuthenticationException("Invalid token");
         }
 
         String email = jwtTokenProvider.getUserEmail(token);
-        request.setAttribute("loginUserEmail", email);
+        request.setAttribute(LOGIN_USER_EMAIL, email);
         return true;
     }
 }

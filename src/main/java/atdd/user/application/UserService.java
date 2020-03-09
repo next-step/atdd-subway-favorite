@@ -33,10 +33,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserResponseView retrieveUser(String requestToken) {
-        String email = this.extractEmail(requestToken);
-
-        User persistUser = userRepository.findUserByEmail(email);
+    public UserResponseView retrieveUser(String userEmail) {
+        User persistUser = userRepository.findUserByEmail(userEmail);
         return UserResponseView.of(persistUser);
     }
 

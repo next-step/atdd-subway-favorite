@@ -1,7 +1,6 @@
 package atdd.user.web;
 
 import atdd.user.application.exception.FailedLoginException;
-import atdd.user.domain.User;
 import atdd.user.repository.UserRepository;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.MethodParameter;
@@ -20,6 +19,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     private final UserRepository userRepository;
 
+    private static final String LOGIN_USER_EMAIL = "loginUserEmail";
+
     public LoginUserArgumentResolver(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -31,7 +32,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String email = (String) webRequest.getAttribute("loginUserEmail", SCOPE_REQUEST);
+        String email = (String) webRequest.getAttribute(LOGIN_USER_EMAIL, SCOPE_REQUEST);
         if (Strings.isBlank(email)) {
             throw new FailedLoginException.InvalidJwtAuthenticationException("Invalid Token");
         }

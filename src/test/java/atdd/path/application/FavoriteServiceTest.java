@@ -112,7 +112,7 @@ public class FavoriteServiceTest {
         // when
         FavoriteRouteResponseView response = favoriteService.createRouteFavorite(FavoriteRouteRequestView.builder()
                 .sourceStationId(1L)
-                .targetStationId(1L)
+                .targetStationId(2L)
                 .build(), user);
 
         // then
@@ -136,7 +136,7 @@ public class FavoriteServiceTest {
                         .sourceStationId(1L)
                         .targetStationId(2L)
                         .build()));
-        favoriteService.createRouteFavorite(FavoriteRouteRequestView.builder().sourceStationId(1L).targetStationId(1L).build(), user);
+        favoriteService.createRouteFavorite(FavoriteRouteRequestView.builder().sourceStationId(1L).targetStationId(2L).build(), user);
 
         // when
         List<FavoriteRouteResponseView> response = favoriteService.findFavoriteRoute(user);
