@@ -53,7 +53,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         Long stationId = stationHttpTest.createStation(TestConstant.STATION_NAME);
         favoriteHttpTest.createFavoriteStation(stationId, token).getResponseBody();
 
-        List<FavoriteResponseView> response = webTestClient.get().uri(FAVORITE_URI + "/station")
+        List<FavoriteResponseView> response = webTestClient.get().uri(FAVORITE_URI + "/stations")
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectStatus().isOk()
@@ -71,7 +71,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
         stationHttpTest.createStation(TestConstant.STATION_NAME);
         FavoriteResponseView response = favoriteHttpTest.createFavoriteStation(1L, token).getResponseBody();
 
-        webTestClient.delete().uri(FAVORITE_URI + "/station/" + response.getId())
+        webTestClient.delete().uri(FAVORITE_URI + "/stations/" + response.getId())
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectStatus().isNoContent();
@@ -122,7 +122,7 @@ public class FavoriteAcceptanceTest extends AbstractAcceptanceTest {
 
         List<FavoriteRouteResponseView> response = favoriteHttpTest.findFavoriteRoute(token).getResponseBody();
 
-        webTestClient.delete().uri(FAVORITE_URI + "/route/" + response.get(0).getId())
+        webTestClient.delete().uri(FAVORITE_URI + "/routes/" + response.get(0).getId())
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectStatus().isNoContent();

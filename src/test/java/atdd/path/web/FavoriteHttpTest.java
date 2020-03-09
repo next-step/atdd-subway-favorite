@@ -21,7 +21,7 @@ public class FavoriteHttpTest {
     public EntityExchangeResult<FavoriteResponseView> createFavoriteStation(Long stationId, LoginResponseView token) {
         String request = "{\"stationId\": " + stationId + "}";
 
-        return webTestClient.post().uri(FAVORITE_URL + "/station")
+        return webTestClient.post().uri(FAVORITE_URL + "/stations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .body(Mono.just(request), String.class)
@@ -37,7 +37,7 @@ public class FavoriteHttpTest {
                 "\"sourceStationId\":" + sourceStationId + ", " +
                 "\"targetStationId\":" + targetStationId + "}";
 
-        return webTestClient.post().uri(FAVORITE_URL + "/route")
+        return webTestClient.post().uri(FAVORITE_URL + "/routes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), String.class)
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
@@ -49,7 +49,7 @@ public class FavoriteHttpTest {
     }
 
     public EntityExchangeResult<List<FavoriteRouteResponseView>> findFavoriteRoute(LoginResponseView token) {
-        return webTestClient.get().uri(FAVORITE_URL + "/route")
+        return webTestClient.get().uri(FAVORITE_URL + "/routes")
                 .header("Authorization", String.format("%s %s", token.getTokenType(), token.getAccessToken()))
                 .exchange()
                 .expectStatus().isOk()
