@@ -1,13 +1,13 @@
-package atdd.path.application;
+package atdd.user.application;
 
+import atdd.path.application.JwtTokenProvider;
 import atdd.path.application.dto.LoginRequestView;
 import atdd.path.application.dto.LoginResponseView;
-import atdd.path.application.dto.UserRequestView;
-import atdd.path.application.dto.UserResponseView;
-import atdd.path.application.exception.FailedLoginException;
-import atdd.path.application.exception.InvalidJwtAuthenticationException;
-import atdd.path.domain.User;
-import atdd.path.repository.UserRepository;
+import atdd.user.application.dto.UserRequestView;
+import atdd.user.application.dto.UserResponseView;
+import atdd.user.application.exception.FailedLoginException;
+import atdd.user.domain.User;
+import atdd.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -33,16 +33,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserResponseView retrieveUser(String requestToken) {
-        String email = this.extractEmail(requestToken);
-
-        User persistUser = userRepository.findUserByEmail(email);
+    public UserResponseView retrieveUser(String userEmail) {
+        User persistUser = userRepository.findUserByEmail(userEmail);
         return UserResponseView.of(persistUser);
     }
 
     private String extractEmail(String requestToken) {
         if (StringUtils.isEmpty(requestToken) || !jwtTokenProvider.validateToken(requestToken)) {
-            throw new InvalidJwtAuthenticationException("invalid token");
+            throw new FailedLoginException.InvalidJwtAuthenticationException("invalid token");
         }
         return jwtTokenProvider.getUserEmail(requestToken);
     }

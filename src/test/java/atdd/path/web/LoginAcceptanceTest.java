@@ -4,6 +4,7 @@ import atdd.path.AbstractAcceptanceTest;
 import atdd.path.TestConstant;
 import atdd.path.application.dto.LoginRequestView;
 import atdd.path.application.dto.LoginResponseView;
+import atdd.user.web.UserHttpTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

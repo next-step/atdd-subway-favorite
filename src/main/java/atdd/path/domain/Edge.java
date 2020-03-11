@@ -1,13 +1,37 @@
 package atdd.path.domain;
 
-public class Edge {
-    private Long id;
-    private Station sourceStation;
-    private Station targetStation;
-    private int distance;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-    public Edge() {
-    }
+import javax.persistence.*;
+
+@Getter
+@Entity
+@ToString(exclude = {"line", "sourceStation", "targetStation"})
+@NoArgsConstructor
+public class Edge {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "line_id")
+    private Line line;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "source_station_id")
+    private Station sourceStation;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "target_station_id")
+    private Station targetStation;
+
+    private int distance;
 
     public Edge(Long id, Station sourceStation, Station targetStation, int distance) {
         this.id = id;
@@ -18,22 +42,6 @@ public class Edge {
 
     public static Edge of(Station sourceStation, Station targetStation, int distance) {
         return new Edge(null, sourceStation, targetStation, distance);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public Station getSourceStation() {
-        return sourceStation;
-    }
-
-    public Station getTargetStation() {
-        return targetStation;
     }
 
     public boolean hasStation(Station station) {

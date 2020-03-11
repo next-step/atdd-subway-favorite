@@ -1,12 +1,13 @@
-package atdd.path.web;
+package atdd.user.web;
 
 import atdd.path.AbstractAcceptanceTest;
 import atdd.path.TestConstant;
 import atdd.path.application.dto.LoginResponseView;
-import atdd.path.application.dto.UserResponseView;
+import atdd.user.application.dto.UserResponseView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,7 +53,7 @@ public class UserAcceptanceTest extends AbstractAcceptanceTest {
                 .loginUser(TestConstant.EMAIL_BROWN, TestConstant.PASSWORD_BROWN).getResponseBody();
 
         webTestClient.post().uri(USER_URL + "/me")
-                .header("Authorization",
+                .header(HttpHeaders.AUTHORIZATION,
                         String.format("%s %s", responseView.getTokenType(), responseView.getAccessToken()))
                 .exchange()
                 .expectStatus().isOk()

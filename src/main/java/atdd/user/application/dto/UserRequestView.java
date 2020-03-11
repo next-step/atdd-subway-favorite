@@ -1,7 +1,6 @@
-package atdd.path.application.dto;
+package atdd.user.application.dto;
 
-import atdd.path.domain.User;
-import lombok.AllArgsConstructor;
+import atdd.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

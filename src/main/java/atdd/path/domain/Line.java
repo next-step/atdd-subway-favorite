@@ -1,31 +1,52 @@
 package atdd.path.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
+@Getter
+@Entity
+@NoArgsConstructor
 public class Line {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "start_time")
     private LocalTime startTime;
+
+    @Column(name = "end_time")
     private LocalTime endTime;
-    private int interval;
+
+    @Column(name = "interval_time")
+    private int intervalTime;
+
+    @JsonIgnore
+    @Embedded
     private Edges edges;
 
     public Line(Long id, String name) {
         this(id, name, Collections.EMPTY_LIST, null, null, 0);
     }
 
-    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int interval) {
-        this(id, name, Collections.EMPTY_LIST, startTime, endTime, interval);
+    public Line(Long id, String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this(id, name, Collections.EMPTY_LIST, startTime, endTime, intervalTime);
     }
 
-    public Line(Long id, String name, List<Edge> edges, LocalTime startTime, LocalTime endTime, int interval) {
+    public Line(Long id, String name, List<Edge> edges, LocalTime startTime, LocalTime endTime, int intervalTime) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.interval = interval;
+        this.intervalTime = intervalTime;
         this.edges = new Edges(edges);
     }
 
@@ -33,32 +54,12 @@ public class Line {
         return new Line(name, startTime, endTime, interval);
     }
 
-    private Line(String name, LocalTime startTime, LocalTime endTime, int interval) {
-        this(null, name, Collections.EMPTY_LIST, startTime, endTime, interval);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+    private Line(String name, LocalTime startTime, LocalTime endTime, int intervalTime) {
+        this(null, name, Collections.EMPTY_LIST, startTime, endTime, intervalTime);
     }
 
     public List<Edge> getEdges() {
         return edges.getEdges();
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public int getInterval() {
-        return interval;
     }
 
     public List<Station> getStations() {

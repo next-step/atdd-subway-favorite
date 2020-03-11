@@ -1,6 +1,6 @@
 package atdd.path.web;
 
-import atdd.path.application.UserService;
+import atdd.user.application.UserService;
 import atdd.path.application.dto.LoginRequestView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

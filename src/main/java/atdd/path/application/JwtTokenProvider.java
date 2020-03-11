@@ -1,6 +1,6 @@
 package atdd.path.application;
 
-import atdd.path.application.exception.InvalidJwtAuthenticationException;
+import atdd.user.application.exception.FailedLoginException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -62,7 +62,7 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(resolvedToken);
             return claims.getBody().getExpiration().after(new Date());
         } catch (JwtException e) {
-            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
+            throw new FailedLoginException.InvalidJwtAuthenticationException("Expired or invalid JWT token");
         }
     }
 }
