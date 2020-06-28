@@ -1,0 +1,7 @@
+.station-list-container {
+  max-height: calc(100% - 100px);
+}
+
+#station-name {
+  width: calc(100% - 61px);
+}
