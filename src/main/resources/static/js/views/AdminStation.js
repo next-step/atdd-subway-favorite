@@ -44,6 +44,19 @@ function AdminStation() {
     }
   }
 
+  const initStations = async () => {
+    try {
+      const stations = await api.station.getAll()
+      render(stations)
+    } catch (e) {
+      alert(ERROR_MESSAGE.COMMON_FAIL)
+    }
+  }
+
+  const render = (stations) => {
+    $stationList.innerHTML = stations.map(listItemTemplate).join('')
+  }
+
   const initEventListeners = () => {
     $stationInput.addEventListener(EVENT_TYPE.KEY_PRESS, onAddStationHandler)
     $stationList.addEventListener(EVENT_TYPE.CLICK, onRemoveStationHandler)
@@ -52,6 +65,7 @@ function AdminStation() {
 
   const init = () => {
     initEventListeners()
+    initStations()
   }
 
   return {

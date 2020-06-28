@@ -153,6 +153,15 @@ function AdminLine() {
     }
   }
 
+  const initSubwayLines = async () => {
+    try {
+      const lines = await api.line.getAll()
+      render(lines)
+    } catch (e) {
+      alert(ERROR_MESSAGE.COMMON_FAIL)
+    }
+  }
+
   const render = (lines) => {
     $subwayLineList.innerHTML = lines.map(subwayLinesTemplate).join('')
   }
@@ -166,6 +175,7 @@ function AdminLine() {
   const init = () => {
     initEventListeners()
     initCreateSubwayLineForm()
+    initSubwayLines()
   }
 
   return {

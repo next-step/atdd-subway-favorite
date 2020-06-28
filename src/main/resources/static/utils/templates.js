@@ -45,7 +45,10 @@ const navTemplate = `<nav class="flex items-center justify-between flex-wrap bg-
   </div>
 </nav>`
 
-export const subwayLineStationsTemplate = (line, name) => {
+export const subwayLineStationsTemplate = (line) => {
+  if (!line.stations) {
+    return ''
+  }
   const stationsTemplate = line.stations.map((edge) => listItemTemplate(edge.station)).join('')
 
   return `<div class="inline-block w-full mt-4">
