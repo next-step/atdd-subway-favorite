@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RunningMap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="/css/admin-app.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-200 h-screen">
+    <div class="flex justify-center items-center app-container">
+      <div class="text-center">
+        <img src="/images/main_logo.png" class="main-logo mx-auto" />
+        <p class="mt-2 text-gray-700">
+          RunningMap Admin 페이지입니다. <br />
+          제공되는 템플릿을 활용해 프로젝트를 완성해 보세요!
+        </p>
+        <ul class="text-blue-700">
+          <li class="inline-block p-1">
+            <a href="/stations" class="underline">역 관리</a>
+          </li>
+          <li class="inline-block p-1">
+            <a href="/lines" class="underline">노선 관리</a>
+          </li>
+          <li class="inline-block p-1">
+            <a href="/maps" class="underline">구간 관리</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script type="module" src="/js/AdminApp.js"></script>
+  </body>
+</html>
