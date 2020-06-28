@@ -61,6 +61,16 @@ public class LineAcceptanceStep {
                 extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(Long lineId) {
+        return RestAssured.given().log().all().
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/lines/{lineId}", lineId).
+                then().
+                log().all().
+                extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, String name, String color) {
         String uri = response.header("Location");
 
