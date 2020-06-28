@@ -6,6 +6,16 @@ public class LineStationCreateRequest {
     private Integer distance;
     private Integer duration;
 
+    public LineStationCreateRequest() {
+    }
+
+    public LineStationCreateRequest(Long stationId, Long preStationId, Integer distance, Integer duration) {
+        this.stationId = stationId;
+        this.preStationId = preStationId;
+        this.distance = distance;
+        this.duration = duration;
+    }
+
     public Long getStationId() {
         return stationId;
     }
