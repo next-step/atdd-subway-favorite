@@ -1,0 +1,7 @@
+.subway-lines-container {
+  max-height: calc(100vh - 450px);
+}
+
+.subway-line-item {
+  cursor: pointer;
+}
