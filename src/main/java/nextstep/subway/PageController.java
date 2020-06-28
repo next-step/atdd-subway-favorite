@@ -21,8 +21,8 @@ public class PageController {
         return "line";
     }
 
-    @GetMapping(value = "/maps", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
     public String lineStations() {
-        return "map";
+        return "edge";
     }
 }
