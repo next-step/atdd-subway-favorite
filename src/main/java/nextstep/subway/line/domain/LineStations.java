@@ -59,10 +59,6 @@ public class LineStations {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
-        if (lineStation.getPreStationId() == null) {
-            throw new RuntimeException();
-        }
-
         lineStations.stream()
                 .filter(it -> it.getPreStationId() == stationId)
                 .findFirst()
