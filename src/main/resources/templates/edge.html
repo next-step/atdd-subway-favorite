@@ -1,160 +1,33 @@
 <!DOCTYPE html>
-<html lang="kr">
+<html lang="ko">
   <head>
-    <meta charset="UTF-8" />
-    <title>subway admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
-    <link href="/css/admin-app.css" rel="stylesheet" />
-    <link href="/css/admin-edge.css" rel="stylesheet" />
+    <title>Running Map</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+    />
+    <meta
+      name="keyword"
+      content="NEXTSTEP, 프로그래밍, 개발자, 백엔드, 프론트엔드, Backend, Frontend, IOS, Android"
+    />
+    <meta
+      name="description"
+      id="metaDesc"
+      content="NEXTSTEP은 자기주도적인 프로그래머를 양성하기 위한 교육입니다."
+    />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link
+      rel="stylesheet"
+      href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/@mdi/font@5.0.45/css/materialdesignicons.min.css"
+    />
   </head>
-  <body class="bg-gray-200 h-screen">
-    <div class="flex justify-center md:py-10 lg:py-10 app-container">
-      <div class="max-w-md w-full lg:width-450px rounded bg-white shadow-lg p-6">
-        <div class="mb-4 relative w-full flex items-stretch">
-          <div class="flex-1"></div>
-          <div class="flex-1 text-center font-bold text-xl">
-            구간 관리
-          </div>
-          <div class="flex-1 flex justify-end">
-            <button
-              id="subway-line-add-btn"
-              class="modal-open bg-transparent bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 text-sm px-3 py-1 rounded"
-            >
-              구간 추가
-            </button>
-          </div>
-        </div>
-        <div class="relative">
-          <select
-            id="line-select-options-view"
-            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-          >
-          </select>
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
-          </div>
-        </div>
-        <div class="flex relative">
-          <div class="w-full h-full">
-            <div id="subway-line-detail"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center">
-      <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-      <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-        <div class="modal-content text-left px-8 py-4">
-          <div class="flex justify-center items-center pb-3 pt-3">
-            <p class="text-2xl font-bold">구간 추가</p>
-          </div>
-          <form class="mb-4">
-            <div class="relative w-full mt-3 mb-6">
-              <label class="block text-gray-700 text-sm font-bold mb-2">
-                노선 선택
-              </label>
-              <div class="relative">
-                <select
-                  id="line-select-options"
-                  class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                >
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-wrap mb-10 w-full">
-              <div class="w-5/12 h-12 text-gray-800">
-                <label class="block text-gray-700 text-sm font-bold mb-2">
-                  이전역
-                </label>
-                <div class="relative">
-                  <select
-                    id="previous-station-select-options"
-                    class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div class="w-2/12 h-12 text-center text-gray-800 flex justify-center items-center relative top-28px">
-                <span class="mdi mdi-arrow-left-right-bold relative bottom-6px text-lg"></span>
-              </div>
-              <div class="w-5/12 h-12 text-gray-800">
-                <label class="block text-gray-700 text-sm font-bold mb-2">
-                  추가역
-                </label>
-                <div class="relative">
-                  <select
-                    id="next-station-select-options"
-                    class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap mb-10 w-full">
-              <div class="w-5/12 h-12 text-gray-800">
-                <label class="block text-gray-700 text-sm font-bold mb-2">
-                  거리
-                </label>
-                <input
-                  class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
-                  id="distance"
-                  type="number"
-                  value="0"
-                />
-              </div>
-              <div class="w-2/12 h-12 text-gray-800"></div>
-              <div class="w-5/12 h-12 text-gray-800">
-                <label class="block text-gray-700 text-sm font-bold mb-2">
-                  연결 시간
-                </label>
-                <input
-                  class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
-                  id="duration"
-                  type="number"
-                  value="0"
-                />
-              </div>
-            </div>
-
-            <div class="flex justify-end pt-4">
-              <button class="modal-close px-4 bg-transparent p-3 rounded text-gray-600 hover:bg-gray-100 hover:text-gray-700 mr-2 text-sm">
-                취소
-              </button>
-              <button
-                type="submit"
-                id="create-edge-button"
-                class="px-4 bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 rounded text-white text-sm"
-              >
-                확인
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <script type="module" src="/js/AdminApp.js"></script>
-    <script type="module" src="/js/views/AdminEdge.js"></script>
+  <body>
+    <div id="app"></div>
+    <script src="/js/vendors.js"></script>
+    <script src="/js/main.js"></script>
   </body>
 </html>

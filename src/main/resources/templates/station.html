@@ -1,43 +1,33 @@
 <!DOCTYPE html>
-<html lang="kr">
+<html lang="ko">
   <head>
-    <meta charset="UTF-8" />
-    <title>subway admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
-    <link href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css" rel="stylesheet" />
-    <link href="/css/admin-app.css" rel="stylesheet" />
-    <link href="/css/admin-station.css" rel="stylesheet" />
+    <title>Running Map</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
+    />
+    <meta
+      name="keyword"
+      content="NEXTSTEP, 프로그래밍, 개발자, 백엔드, 프론트엔드, Backend, Frontend, IOS, Android"
+    />
+    <meta
+      name="description"
+      id="metaDesc"
+      content="NEXTSTEP은 자기주도적인 프로그래머를 양성하기 위한 교육입니다."
+    />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link
+      rel="stylesheet"
+      href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/@mdi/font@5.0.45/css/materialdesignicons.min.css"
+    />
   </head>
-  <body class="bg-gray-200 h-screen">
-    <div class="flex justify-center md:py-10 lg:py-10 app-container">
-      <div class="max-w-md width-450px rounded bg-white shadow-lg p-6">
-        <div class="font-bold text-xl mb-3 text-center">
-          지하철역 관리
-        </div>
-        <form>
-          <div class="mb-4">
-            <input
-              class="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
-              id="station-name"
-              type="text"
-              autocomplete="off"
-              placeholder="역 이름을 추가해주세요."
-            />
-            <button
-              id="station-add-btn"
-              class="inline-block text-sm bg-yellow-500 hover:bg-yellow-400 hover:text-gray-700 text-gray-800 font-bold py-2 px-4 rounded"
-            >
-              추가
-            </button>
-          </div>
-        </form>
-        <div class="mt-5 flex station-list-container relative overflow-y-auto">
-          <div id="station-list" class="w-full"></div>
-        </div>
-      </div>
-    </div>
-    <script type="module" src="/js/AdminApp.js"></script>
-    <script type="module" src="/js/views/AdminStation.js"></script>
+  <body>
+    <div id="app"></div>
+    <script src="/js/vendors.js"></script>
+    <script src="/js/main.js"></script>
   </body>
 </html>
