@@ -126,10 +126,10 @@ public class LineStationAddAcceptanceTest extends AcceptanceTest {
         // 지하철_노선에_지하철역_등록_요청
         Long stationId2 = createdStationResponse2.as(StationResponse.class).getId();
         Map<String, String> params2 = new HashMap<>();
-        params.put("preStationId", stationId1 + "");
-        params.put("stationId", stationId2 + "");
-        params.put("distance", "4");
-        params.put("duration", "2");
+        params2.put("preStationId", stationId1 + "");
+        params2.put("stationId", stationId2 + "");
+        params2.put("distance", "4");
+        params2.put("duration", "2");
 
         RestAssured.given().log().all().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -143,10 +143,10 @@ public class LineStationAddAcceptanceTest extends AcceptanceTest {
         // 지하철_노선에_지하철역_등록_요청
         Long stationId3 = createdStationResponse3.as(StationResponse.class).getId();
         Map<String, String> params3 = new HashMap<>();
-        params.put("preStationId", stationId2 + "");
-        params.put("stationId", stationId3 + "");
-        params.put("distance", "4");
-        params.put("duration", "2");
+        params3.put("preStationId", stationId2 + "");
+        params3.put("stationId", stationId3 + "");
+        params3.put("distance", "4");
+        params3.put("duration", "2");
 
         RestAssured.given().log().all().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
