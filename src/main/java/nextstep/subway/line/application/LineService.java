@@ -11,6 +11,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -72,6 +73,8 @@ public class LineService {
     }
 
     public List<LineResponse> findAllLinesWithStations() {
-        return null;
+        List<LineResponse> lineResponses = new ArrayList<>();
+        lineResponses.add(new LineResponse());
+        return lineResponses;
     }
 }
