@@ -22,6 +22,16 @@
             <v-btn text>구간 관리</v-btn>
           </router-link>
         </li>
+        <li class="inline-block p-1">
+          <router-link to="/maps">
+            <v-btn text>노선도 페이지</v-btn>
+          </router-link>
+        </li>
+        <li class="inline-block p-1">
+          <router-link to="/path">
+            <v-btn text>경로 검색 페이지</v-btn>
+          </router-link>
+        </li>
       </ul>
     </div>
   </div>

@@ -12,6 +12,8 @@
     <v-btn to="/stations" text>역 관리</v-btn>
     <v-btn to="/lines" text>노선 관리</v-btn>
     <v-btn to="/edges" text>구간 관리</v-btn>
+    <v-btn to="/maps" text>노선도</v-btn>
+    <v-btn to="/path" text>경로 검색</v-btn>
   </v-app-bar>
 </template>
 

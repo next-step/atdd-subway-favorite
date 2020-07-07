@@ -21,8 +21,7 @@ export default {
   methods: {
     ...mapActions([DELETE_LINE, FETCH_LINES]),
     ...mapMutations([SHOW_SNACKBAR]),
-    async onDeleteLine(e) {
-      e.preventDefault()
+    async onDeleteLine() {
       try {
         await this.deleteLine(this.line.id)
         await this.fetchLines()
