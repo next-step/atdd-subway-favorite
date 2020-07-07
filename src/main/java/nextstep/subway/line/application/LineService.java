@@ -70,4 +70,8 @@ public class LineService {
                 .map(it -> LineStationResponse.of(it, StationResponse.of(stations.get(it.getStationId()))))
                 .collect(Collectors.toList());
     }
+
+    public List<LineResponse> findAllLinesWithStations() {
+        return null;
+    }
 }
