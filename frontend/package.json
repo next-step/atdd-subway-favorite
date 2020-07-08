@@ -33,13 +33,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://EastjunDev@github.com/next-step/atdd-subway-map.git"
+    "url": "https://github.com/next-step/atdd-subway-map.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/next-step/atdd-subway-map/issues"
+  },
+  "engines": {
+    "npm": ">=5.5.0",
+    "node": ">=9.3.0"
   },
   "homepage": "https://github.com/next-step/atdd-subway-map#readme",
   "devDependencies": {
