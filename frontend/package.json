@@ -1,5 +1,5 @@
 {
-  "name": "atdd-subway-map",
+  "name": "atdd-subway-path",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -33,19 +33,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/next-step/atdd-subway-map.git"
+    "url": "https://github.com/next-step/atdd-subway-path.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/next-step/atdd-subway-map/issues"
+    "url": "https://github.com/next-step/atdd-subway-path/issues"
   },
   "engines": {
     "npm": ">=5.5.0",
     "node": ">=9.3.0"
   },
-  "homepage": "https://github.com/next-step/atdd-subway-map#readme",
+  "homepage": "https://github.com/next-step/atdd-subway-path#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.9.0",
     "@vue/test-utils": "^1.0.0-beta.32",
