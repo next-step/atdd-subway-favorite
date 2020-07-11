@@ -58,4 +58,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_삭제됨(response);
     }
+
+    @DisplayName("회원 정보를 관리한다.")
+    @Test
+    void manageMember() {
+    }
 }
