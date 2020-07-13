@@ -7,6 +7,9 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
+    public MemberResponse() {
+    }
+
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;

@@ -23,13 +23,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void getMember() {
         // given
-        회원_등록되어_있음("email@email.com", "password", 20);
+        ExtractableResponse<Response> createResponse = 회원_등록되어_있음("email@email.com", "password", 20);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청();
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
 
         // then
-        회원_정보_조회됨(response);
+        회원_정보_조회됨(response, "email@email.com", 20);
 
     }
 
@@ -37,10 +37,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMember() {
         // given
-        회원_등록되어_있음("email@email.com", "password", 20);
+        ExtractableResponse<Response> createResponse = 회원_등록되어_있음("email@email.com", "password", 20);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청("newemail@email.com", "newpassword", 20);
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "newemail@email.com", "newpassword", 20);
 
         // then
         회원_정보_수정됨(response);
@@ -50,10 +50,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMember() {
         // given
-        회원_등록되어_있음("email@email.com", "password", 20);
+        ExtractableResponse<Response> createResponse = 회원_등록되어_있음("email@email.com", "password", 20);
 
         // when
-        ExtractableResponse<Response> response = 회원_삭제_요청();
+        ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
 
         // then
         회원_삭제됨(response);
