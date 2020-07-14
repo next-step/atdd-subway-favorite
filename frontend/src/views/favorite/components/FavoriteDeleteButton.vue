@@ -6,7 +6,7 @@
 
 <script>
 import { mapActions, mapMutations } from 'vuex'
-import { DELETE_FAVORITE } from '@/store/shared/actionTypes'
+import { DELETE_FAVORITE, FETCH_FAVORITES } from '@/store/shared/actionTypes'
 import { SHOW_SNACKBAR } from '@/store/shared/mutationTypes'
 import { SNACKBAR_MESSAGES } from '@/utils/constants'
 
@@ -19,15 +19,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions([DELETE_FAVORITE]),
+    ...mapActions([DELETE_FAVORITE, FETCH_FAVORITES]),
     ...mapMutations([SHOW_SNACKBAR]),
     async onDeleteFavorite() {
       try {
         await this.deleteFavorite(this.favorite.id)
         await this.fetchFavorites()
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS)
+        this.showSnackbar(SNACKBAR_MESSAGES.FAVORITE.DELETE.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        this.showSnackbar(SNACKBAR_MESSAGES.FAVORITE.DELETE.FAIL)
       }
     }
   }

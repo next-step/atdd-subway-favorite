@@ -14,28 +14,23 @@
     <v-btn to="/edges" text>구간 관리</v-btn>
     <v-btn to="/maps" text>노선도</v-btn>
     <v-btn to="/path" text>경로 검색</v-btn>
-    <v-btn to="/favorites" text>즐겨 찾기</v-btn>
-    <v-btn to="/login" text>로그인</v-btn>
-    <!--    <v-avatar dark width="35" height="35">-->
-    <!--      <img src="https://avatars3.githubusercontent.com/u/4353846?v&amp;#x3D;4" />-->
-    <!--    </v-avatar>-->
-
-    <ButtonMenu>
+    <v-btn v-if="!member" to="/login" text>로그인</v-btn>
+    <ButtonMenu v-else>
       <template slot="button">
         <div class="text-normal cursor-pointer mx-2 my-thumbnail-button">
           <v-avatar dark width="35" height="35">
             <img src="https://avatars3.githubusercontent.com/u/4353846?v&amp;#x3D;4" />
           </v-avatar>
           <div class="desktop-view d-inline-block">
-            <!--            <span>{{ loginUser.name }}</span>-->
-            <span>name</span>
+            <span>{{ member.email.split('@')[0] }}</span>
             <v-icon class="font-size-10" right>ti-angle-down</v-icon>
           </div>
         </div>
       </template>
       <template slot="items">
         <v-list class="py-0">
-          <!--          <MyProfileButton :userId="loginUser.userId" />-->
+          <MyPageButton />
+          <FavoritesButton />
           <v-divider class="ma-0" />
           <LogoutButton />
         </v-list>
@@ -47,10 +42,16 @@
 <script>
 import ButtonMenu from '@/components/menus/ButtonMenu'
 import LogoutButton from '@/views/base/header/components/LogoutButton'
+import { mapGetters } from 'vuex'
+import MyPageButton from '@/views/base/header/components/MyPageButton'
+import FavoritesButton from '@/views/base/header/components/FavoritesButton'
 
 export default {
   name: 'Header',
-  components: { LogoutButton, ButtonMenu }
+  components: { FavoritesButton, MyPageButton, LogoutButton, ButtonMenu },
+  computed: {
+    ...mapGetters(['member'])
+  }
 }
 </script>
 <style lang="scss" scoped>

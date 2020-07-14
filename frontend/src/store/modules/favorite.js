@@ -14,13 +14,13 @@ const getters = {
 
 const mutations = {
   [SET_FAVORITES](state, favorites) {
-    state.line = favorites
+    state.favorites = favorites
   }
 }
 
 const actions = {
   async [FETCH_FAVORITES]({ commit }) {
-    return FavoriteService.getAll().then(({ data }) => {
+    return FavoriteService.get().then(({ data }) => {
       commit(SET_FAVORITES, data)
     })
   },

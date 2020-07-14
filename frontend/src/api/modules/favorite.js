@@ -3,7 +3,7 @@ import ApiService from '@/api'
 const BASE_URL = '/favorites'
 
 const FavoriteService = {
-  getAll() {
+  get() {
     return ApiService.get(`${BASE_URL}`)
   },
   create(newFavorite) {
