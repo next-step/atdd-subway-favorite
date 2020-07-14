@@ -13,24 +13,49 @@ public class PageController {
 
     @GetMapping(value = "/stations", produces = MediaType.TEXT_HTML_VALUE)
     public String stations() {
-        return "station";
+        return "index";
     }
 
     @GetMapping(value = "/lines", produces = MediaType.TEXT_HTML_VALUE)
     public String lines() {
-        return "line";
+        return "index";
     }
 
     @GetMapping(value = "/edges", produces = MediaType.TEXT_HTML_VALUE)
-    public String lineStations() { return "edge"; }
+    public String lineStations() { return "index"; }
 
     @GetMapping(value = "/maps", produces = MediaType.TEXT_HTML_VALUE)
     public String maps() {
-        return "map";
+        return "index";
     }
 
     @GetMapping(value = "/path", produces = MediaType.TEXT_HTML_VALUE)
     public String path() {
-        return "path";
+        return "index";
+    }
+
+    @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
+    public String login() {
+        return "index";
+    }
+
+    @GetMapping(value = "/join", produces = MediaType.TEXT_HTML_VALUE)
+    public String join() {
+        return "index";
+    }
+
+    @GetMapping(value = "/mypage", produces = MediaType.TEXT_HTML_VALUE)
+    public String mypage() {
+        return "index";
+    }
+
+    @GetMapping(value = "/mypage/edit", produces = MediaType.TEXT_HTML_VALUE)
+    public String mypageEdit() {
+        return "index";
+    }
+
+    @GetMapping(value = "/favorites", produces = MediaType.TEXT_HTML_VALUE)
+    public String favorites() {
+        return "index";
     }
 }
