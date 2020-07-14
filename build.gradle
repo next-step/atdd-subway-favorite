@@ -28,6 +28,9 @@ dependencies {
 	// jgraph
 	implementation 'org.jgrapht:jgrapht-core:1.0.1'
 
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

@@ -87,7 +87,7 @@ public class LineStationsTest {
     @Test
     void removeLineStation3() {
         // when
-        assertThatThrownBy(() -> lineStations.removeByStationId(1L))
+        assertThatThrownBy(() -> lineStations.removeByStationId(null))
                 .isInstanceOf(RuntimeException.class);
     }
 
