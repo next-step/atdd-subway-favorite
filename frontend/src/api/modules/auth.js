@@ -4,7 +4,7 @@ const AuthService = {
   login(userInfo) {
     const { email, password } = userInfo
     const username = email
-    return ApiService.post(`/login/token`, {
+    return ApiService.login(`/login/token`, {
       auth: {
         username,
         password

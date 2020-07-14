@@ -11,6 +11,8 @@
 <script>
 import Header from '@/views/base/header/Header'
 import Snackbar from '@/components/snackbars/Snackbar'
+import { FETCH_MEMBER } from '@/store/shared/actionTypes'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -18,8 +20,15 @@ export default {
     Header,
     Snackbar
   },
-  data() {
-    return {}
+  created() {
+    const accessToken = localStorage.getItem('token')
+    if (!accessToken) {
+      return
+    }
+    this.fetchMember()
+  },
+  methods: {
+    ...mapActions([FETCH_MEMBER])
   }
 }
 </script>

@@ -49,12 +49,15 @@
 <script>
 import validator from '@/utils/validator'
 import { SNACKBAR_MESSAGES } from '@/utils/constants'
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { SHOW_SNACKBAR } from '@/store/shared/mutationTypes'
 import { LOGIN } from '@/store/shared/actionTypes'
-// junniejobs@gmail.com
+
 export default {
   name: 'LoginPage',
+  computed: {
+    ...mapGetters(['accessToken'])
+  },
   methods: {
     ...mapMutations([SHOW_SNACKBAR]),
     ...mapActions([LOGIN]),
@@ -68,10 +71,10 @@ export default {
       try {
         const { email, password } = this.user
         await this.login({ email, password })
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS)
         await this.$router.replace(`/`)
+        this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS)
       } catch (e) {
-        this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
+        this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.FAIL)
       }
     }
   },
@@ -87,5 +90,3 @@ export default {
   }
 }
 </script>
-
-<style scoped></style>
