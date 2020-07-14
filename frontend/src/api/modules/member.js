@@ -3,20 +3,17 @@ import ApiService from '@/api'
 const BASE_URL = '/members'
 
 const MemberService = {
-  get(stationId) {
-    return ApiService.get(`${BASE_URL}/${stationId}`)
-  },
-  getAll() {
-    return ApiService.get(`${BASE_URL}`)
+  get() {
+    return ApiService.get(`${BASE_URL}/me`)
   },
   create(newMember) {
     return ApiService.post(`${BASE_URL}`, newMember)
   },
-  update(station) {
-    return ApiService.put(`${BASE_URL}/${station.id}`, station)
+  update(updateMemberView) {
+    return ApiService.update(`${BASE_URL}/me`, updateMemberView)
   },
-  delete(stationId) {
-    return ApiService.delete(`${BASE_URL}/${stationId}`)
+  delete() {
+    return ApiService.delete(`${BASE_URL}/me`)
   }
 }
 

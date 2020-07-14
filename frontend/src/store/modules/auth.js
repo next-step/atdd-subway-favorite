@@ -1,28 +1,29 @@
-import { SET_MEMBER } from '@/store/shared/mutationTypes'
-import { LOGIN } from '@/store/shared/actionTypes'
+import { SET_ACCESS_TOKEN, SET_MEMBER } from '@/store/shared/mutationTypes'
+import { FETCH_MEMBER, LOGIN } from '@/store/shared/actionTypes'
 import AuthService from '@/api/modules/auth'
 
 const state = {
-  member: {}
+  accessToken: null
 }
 
 const getters = {
-  member(state) {
-    return state.member
+  accessToken(state) {
+    return state.accessToken
   }
 }
 
 const mutations = {
-  [SET_MEMBER](state, member) {
-    state.member = member
+  [SET_ACCESS_TOKEN](state, accessToken) {
+    state.accessToken = accessToken
   }
 }
 
 const actions = {
-  async [LOGIN]({ commit }, loginInfo) {
+  async [LOGIN]({ commit, dispatch }, loginInfo) {
     return AuthService.login(loginInfo).then(({ data }) => {
-      console.log(data)
-      commit(SET_MEMBER, data)
+      commit(SET_ACCESS_TOKEN, data.accessToken)
+      localStorage.setItem('token', data.accessToken)
+      dispatch(FETCH_MEMBER)
     })
   }
 }
