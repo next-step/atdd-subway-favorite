@@ -11,23 +11,23 @@
               <v-text-field
                 color="grey darken-1"
                 label="이메일을 입력해주세요."
-                v-model="user.email"
+                v-model="member.email"
                 prepend-inner-icon="mdi-email"
                 dense
                 outlined
-                :rules="rules.user.email"
+                :rules="rules.member.email"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
               <v-text-field
                 color="grey darken-1"
                 label="비밀번호를 입력해주세요."
-                v-model="user.password"
+                v-model="member.password"
                 prepend-inner-icon="mdi-lock"
                 dense
                 outlined
                 type="password"
-                :rules="rules.user.password"
+                :rules="rules.member.password"
               ></v-text-field>
             </div>
           </v-card-text>
@@ -69,7 +69,7 @@ export default {
         return
       }
       try {
-        const { email, password } = this.user
+        const { email, password } = this.member
         await this.login({ email, password })
         await this.$router.replace(`/`)
         this.showSnackbar(SNACKBAR_MESSAGES.LOGIN.SUCCESS)
@@ -82,9 +82,9 @@ export default {
     return {
       valid: false,
       rules: { ...validator },
-      user: {
-        email: 'junniejobs@gmail.com',
-        password: '1234'
+      member: {
+        email: '',
+        password: ''
       }
     }
   }

@@ -15,7 +15,7 @@
                 prepend-inner-icon="mdi-email"
                 dense
                 outlined
-                :rules="rules.user.email"
+                :rules="rules.member.email"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
@@ -26,7 +26,7 @@
                 prepend-inner-icon="mdi-account"
                 dense
                 outlined
-                :rules="rules.user.age"
+                :rules="rules.member.age"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
@@ -38,7 +38,7 @@
                 type="password"
                 dense
                 outlined
-                :rules="rules.user.password"
+                :rules="rules.member.password"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">

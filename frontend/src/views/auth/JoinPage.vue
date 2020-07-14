@@ -11,34 +11,34 @@
               <v-text-field
                 color="grey darken-1"
                 label="이메일을 입력해주세요."
-                v-model="user.email"
+                v-model="member.email"
                 prepend-inner-icon="mdi-email"
                 dense
                 outlined
-                :rules="rules.user.email"
+                :rules="rules.member.email"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
               <v-text-field
                 color="grey darken-1"
                 label="나이를 입력해주세요."
-                v-model="user.age"
+                v-model="member.age"
                 prepend-inner-icon="mdi-account"
                 dense
                 outlined
-                :rules="rules.user.age"
+                :rules="rules.member.age"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
               <v-text-field
                 color="grey darken-1"
                 label="비밀번호를 입력해주세요."
-                v-model="user.password"
+                v-model="member.password"
                 prepend-inner-icon="mdi-lock"
                 type="password"
                 dense
                 outlined
-                :rules="rules.user.password"
+                :rules="rules.member.password"
               ></v-text-field>
             </div>
             <div class="d-flex mt-2">
@@ -49,8 +49,8 @@
                 prepend-inner-icon="mdi-lock"
                 dense
                 outlined
-                v-model="user.confirmPassword"
-                :rules="[(user.password && user.password === user.confirmPassword) || '비밀번호가 일치하지 않습니다.']"
+                v-model="member.confirmPassword"
+                :rules="[(member.password && member.password === member.confirmPassword) || '비밀번호가 일치하지 않습니다.']"
               ></v-text-field>
             </div>
           </v-card-text>
@@ -86,7 +86,7 @@ export default {
         return
       }
       try {
-        const { email, age, password } = this.user
+        const { email, age, password } = this.member
         await this.createMember({ email, age, password })
         this.showSnackbar(SNACKBAR_MESSAGES.COMMON.SUCCESS)
         await this.$router.replace(`/login`)
@@ -99,7 +99,7 @@ export default {
     return {
       valid: false,
       rules: { ...validator },
-      user: {
+      member: {
         email: '',
         age: '',
         password: '',
