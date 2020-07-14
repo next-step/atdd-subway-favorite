@@ -5,6 +5,8 @@ import line from '@/store/modules/line'
 import snackbar from '@/store/modules/snackbar'
 import map from '@/store/modules/map'
 import path from '@/store/modules/path'
+import member from '@/store/modules/member'
+import auth from '@/store/modules/auth'
 
 Vue.use(Vuex)
 
@@ -14,6 +16,8 @@ export default new Vuex.Store({
     line,
     snackbar,
     map,
-    path
+    path,
+    member,
+    auth
   }
 })
