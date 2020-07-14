@@ -36,13 +36,12 @@
               <v-btn @click="onSearchResult" color="amber" class="width-100" depressed>검색</v-btn>
             </div>
             <v-divider v-if="pathResult" />
-            <div v-if="pathResult" class="d-flex justify-center my-4">
+            <div v-if="pathResult" class="d-flex justify-center mt-4">
               <v-card width="400" flat>
                 <v-tabs v-model="tab" background-color="transparent" color="amber" grow>
                   <v-tab @click="onChangePathType(PATH_TYPE.DISTANCE)">최단 거리</v-tab>
                   <v-tab @click="onChangePathType(PATH_TYPE.DURATION)">최소 시간</v-tab>
                 </v-tabs>
-
                 <v-tabs-items v-model="tab">
                   <v-tab-item>
                     <v-simple-table>
@@ -96,6 +95,7 @@
                   <v-icon v-if="index < pathResult.stations.length - 1">mdi-arrow-right-bold</v-icon>
                 </template>
               </v-card>
+              <AddFavoriteButton :path="path" />
             </div>
           </div>
         </v-card-text>
@@ -110,9 +110,11 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { SHOW_SNACKBAR } from '@/store/shared/mutationTypes'
 import { SNACKBAR_MESSAGES } from '@/utils/constants'
 import { FETCH_STATIONS, SEARCH_PATH } from '@/store/shared/actionTypes'
+import AddFavoriteButton from '@/views/path/components/AddFavoriteButton'
 
 export default {
   name: 'PathPage',
+  components: { AddFavoriteButton },
   computed: {
     ...mapGetters(['stations', 'pathResult'])
   },
