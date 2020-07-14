@@ -7,6 +7,7 @@ import map from '@/store/modules/map'
 import path from '@/store/modules/path'
 import member from '@/store/modules/member'
 import auth from '@/store/modules/auth'
+import favorite from '@/store/modules/favorite'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     map,
     path,
     member,
+    favorite,
     auth
   }
 })
