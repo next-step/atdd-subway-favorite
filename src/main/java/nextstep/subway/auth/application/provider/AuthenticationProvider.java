@@ -1,33 +1,33 @@
 package nextstep.subway.auth.application.provider;
 
+import nextstep.subway.auth.application.UserDetails;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.interceptor.authentication.AuthenticationException;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 
 public class AuthenticationProvider implements AuthenticationManager {
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
 
-    public AuthenticationProvider(CustomUserDetailsService customUserDetailsService) {
-        this.customUserDetailsService = customUserDetailsService;
+    public AuthenticationProvider(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!userDetails.checkPassword(token.getCredentials())) {
+        if (!userDetails.checkCredentials(token.getCredentials())) {
             throw new AuthenticationException();
         }
     }

@@ -1,12 +1,12 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.application.handler.SaveSessionSuccessHandler;
 import nextstep.subway.auth.application.handler.SimpleUrlAuthenticationFailureHandler;
 import nextstep.subway.auth.application.provider.AuthenticationManager;
 import nextstep.subway.auth.application.provider.AuthenticationProvider;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.member.application.CustomUserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,9 +17,9 @@ public class UsernamePasswordAuthenticationInterceptor extends AbstractAuthentic
     public static final String PASSWORD_FIELD = "password";
     private AuthenticationManager authenticationManager;
 
-    public UsernamePasswordAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService) {
+    public UsernamePasswordAuthenticationInterceptor(UserDetailsService userDetailsService) {
         super(new SaveSessionSuccessHandler(), new SimpleUrlAuthenticationFailureHandler());
-        this.authenticationManager = new AuthenticationProvider(customUserDetailsService);
+        this.authenticationManager = new AuthenticationProvider(userDetailsService);
     }
 
     @Override

@@ -1,12 +1,12 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetails;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -31,12 +31,28 @@ class TokenAuthenticationInterceptorTest {
     private TokenAuthenticationInterceptor interceptor;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
+    private UserDetails userDetails = new UserDetails() {
+        @Override
+        public Object getPrincipal() {
+            return EMAIL;
+        }
+
+        @Override
+        public Object getCredentials() {
+            return PASSWORD;
+        }
+
+        @Override
+        public boolean checkCredentials(Object credentials) {
+            return true;
+        }
+    };
 
     @BeforeEach
     void setUp() {
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(userDetails);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
         interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
@@ -71,8 +87,8 @@ class TokenAuthenticationInterceptorTest {
         Authentication authentication = interceptor.attemptAuthentication(request, response);
 
         // then
-        assertThat(((LoginMember) authentication.getPrincipal()).getEmail()).isEqualTo(EMAIL);
-        assertThat(((LoginMember) authentication.getPrincipal()).getPassword()).isEqualTo(PASSWORD);
+        assertThat(((UserDetails) authentication.getPrincipal()).getPrincipal()).isEqualTo(EMAIL);
+        assertThat(((UserDetails) authentication.getPrincipal()).getCredentials()).isEqualTo(PASSWORD);
     }
 
     private MockHttpServletRequest createMockRequest() {
