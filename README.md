@@ -7,7 +7,7 @@
   <a href="https://edu.nextstep.camp/c/R89PYi5H" alt="nextstep atdd">
     <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
   </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/next-step/atdd-subway-path">
+  <img alt="GitHub" src="https://img.shields.io/github/license/next-step/atdd-subway-favorite">
 </p>
 
 <br>
@@ -45,10 +45,10 @@ npm run dev
 
 ## 🐞 Bug Report
 
-버그를 발견한다면, [Issues](https://github.com/next-step/atdd-subway-path/issues) 에 등록해주세요 :)
+버그를 발견한다면, [Issues](https://github.com/next-step/atdd-subway-favorite/issues) 에 등록해주세요 :)
 
 <br>
 
 ## 📝 License
 
-This project is [MIT](https://github.com/next-step/atdd-subway-path/blob/master/LICENSE.md) licensed.
+This project is [MIT](https://github.com/next-step/atdd-subway-favorite/blob/master/LICENSE.md) licensed.
