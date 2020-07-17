@@ -91,7 +91,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_삭제됨(response4);
-
     }
 
 
