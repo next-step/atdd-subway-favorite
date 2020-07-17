@@ -13,58 +13,47 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
-    @DisplayName("회원가입을 한다.")
-    @Test
-    void createMember() {
-        // when
-        ExtractableResponse<Response> response = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-
-        // then
-        회원_생성됨(response);
-    }
-
-    @DisplayName("회원 정보를 조회한다.")
-    @Test
-    void getMember() {
-        // given
-        ExtractableResponse<Response> createResponse = 회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-
-        // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
-
-        // then
-        회원_정보_조회됨(response, EMAIL, AGE);
-
-    }
-
-    @DisplayName("회원 정보를 수정한다.")
-    @Test
-    void updateMember() {
-        // given
-        ExtractableResponse<Response> createResponse = 회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-
-        // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
-
-        // then
-        회원_정보_수정됨(response);
-    }
-
-    @DisplayName("회원 정보를 삭제한다.")
-    @Test
-    void deleteMember() {
-        // given
-        ExtractableResponse<Response> createResponse = 회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-
-        // when
-        ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
-
-        // then
-        회원_삭제됨(response);
-    }
-
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        // 회원 가입을 테스트
+        ExtractableResponse<Response> createResponse = 회원_가입_테스트();
+
+        // 가입된 회원 조회 테스트
+        회원_조회_테스트(createResponse);
+
+        // 가입된 회원 정보 수정 테스
+        회원_정보_수정_테스트(createResponse);
+
+        // 가입된 회원정보삭제 테스트
+        회원_정보_삭제_테스트(createResponse);
+    }
+
+    private ExtractableResponse<Response> 회원_가입_테스트() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        회원_생성됨(createResponse);
+        return createResponse;
+    }
+
+    private void 회원_조회_테스트(ExtractableResponse<Response> createResponse) {
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+    }
+
+    private void 회원_정보_수정_테스트(ExtractableResponse<Response> createResponse) {
+        ExtractableResponse<Response> deleteResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+
+        // then
+        회원_정보_수정됨(deleteResponse);
+    }
+
+    private void 회원_정보_삭제_테스트(ExtractableResponse<Response> createResponse) {
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+
+        // then
+        회원_삭제됨(deleteResponse);
     }
 }
