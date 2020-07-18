@@ -35,7 +35,6 @@ public class MemberAcceptanceStep {
                 post("/login/token").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 
@@ -122,7 +121,7 @@ public class MemberAcceptanceStep {
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
