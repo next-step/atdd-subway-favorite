@@ -1,7 +1,6 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.AuthenticationException;
@@ -10,16 +9,19 @@ import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Objects;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    public static final String REGEX = ":";
+    private static final String REGEX = ":";
+
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
@@ -34,24 +36,28 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         AuthenticationToken authenticationToken = convert(request);
 
-        Authentication authenticate = authenticate(authenticationToken);
+        authenticate(authenticationToken);
 
         String token = getToken(authenticationToken);
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().write(objectMapper.writeValueAsString(tokenResponse));
-        response.flushBuffer();
-
+        setSuccessfulResponse(response, tokenResponse);
 
         return false;
+    }
+
+    private void setSuccessfulResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(objectMapper.writeValueAsString(tokenResponse));
+        response.flushBuffer();
     }
 
     private String getToken(AuthenticationToken authenticationToken) {
         return jwtTokenProvider.createToken(authenticationToken.getPrincipal());
     }
 
-    private Authentication authenticate(AuthenticationToken authenticationToken) {
+    private void authenticate(AuthenticationToken authenticationToken) {
         LoginMember loginMember = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
         if (Objects.isNull(loginMember)) {
@@ -60,8 +66,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
-
-        return new Authentication(loginMember);
     }
 
     private AuthenticationToken convert(HttpServletRequest request) {

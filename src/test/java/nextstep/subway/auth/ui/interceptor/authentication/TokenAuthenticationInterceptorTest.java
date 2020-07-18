@@ -42,9 +42,14 @@ class TokenAuthenticationInterceptorTest {
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper = new ObjectMapper();
     private TokenAuthenticationInterceptor interceptor;
+    private MockHttpServletRequest request;
+    private MockHttpServletResponse response;
 
     @BeforeEach
     void setUp() {
+        //given
+        request = new MockHttpServletRequest();
+        response = new MockHttpServletResponse();
         interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
     }
 
@@ -52,15 +57,10 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void loginFailed() {
         //given
+        addAuthorizationHeader(EMAIL, "123");
+
         given(customUserDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        byte[] targetBytes = (EMAIL + REGEX + "123").getBytes();
-        byte[] encodedBytes = Base64.getEncoder().encode(targetBytes);
-        String credentials = new String(encodedBytes);
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Basic " + credentials);
-
-        MockHttpServletResponse response = new MockHttpServletResponse();
 
         //when
         assertThatThrownBy(() -> interceptor.preHandle(request, response, mock(Object.class)))
@@ -73,14 +73,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void login() throws Exception {
         //given
-        MockHttpServletRequest request = new MockHttpServletRequest();
-
-        MockHttpServletResponse response = new MockHttpServletResponse();
-
-        byte[] targetBytes = (EMAIL + REGEX + PASSWORD).getBytes();
-        byte[] encodedBytes = Base64.getEncoder().encode(targetBytes);
-        String credentials = new String(encodedBytes);
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Basic " + credentials);
+        addAuthorizationHeader(EMAIL, PASSWORD);
 
         given(customUserDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
@@ -93,5 +86,12 @@ class TokenAuthenticationInterceptorTest {
         assertThat(result).isFalse();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.SC_OK);
         assertThat(response.getContentAsByteArray()).isEqualTo(objectMapper.writeValueAsBytes(new TokenResponse(TOKEN)));
+    }
+
+    private void addAuthorizationHeader(String email, String password) {
+        byte[] targetBytes = (email + REGEX + password).getBytes();
+        byte[] encodedBytes = Base64.getEncoder().encode(targetBytes);
+        String credentials = new String(encodedBytes);
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Basic " + credentials);
     }
 }
