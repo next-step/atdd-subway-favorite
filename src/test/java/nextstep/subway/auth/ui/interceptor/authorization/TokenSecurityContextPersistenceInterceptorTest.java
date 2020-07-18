@@ -7,7 +7,6 @@ import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -26,9 +25,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
         interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
     }
 
-    @DisplayName("JwtToken이 유효하면 SecurityContext를 SecurityContextHolder에 담는다")
+    @DisplayName("preHandle은 JwtToken이 유효하면 SecurityContext를 SecurityContextHolder에 담는다")
     @Test
-    void whenJwtTokenIsValid() throws Exception {
+    void preHandleWhenJwtTokenIsValid() throws Exception {
         // given
         LoginMember loginMember = new LoginMember(1L, "email@email.com", "password", 20);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
@@ -44,9 +43,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
         assertThat(principal.getId()).isEqualTo(loginMember.getId());
     }
 
-    @DisplayName("JwtToken이 유효하지 않으면 SecurityContext를 SecurityContextHolder에 담지 않는다")
+    @DisplayName("preHandle은 JwtToken이 유효하지 않으면 SecurityContext를 SecurityContextHolder에 담지 않는다")
     @Test
-    void whenJwtTokenIsNotValidSecurityContext() throws Exception {
+    void preHandleWhenJwtTokenIsNotValidSecurityContext() throws Exception {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
 
@@ -54,6 +53,26 @@ class TokenSecurityContextPersistenceInterceptorTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         interceptor.preHandle(request, response, new Object());
+
+        // then
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+    }
+
+    @DisplayName("afterCompletion은 SecurityContextHolder의 SecurityContext를 제거한다")
+    @Test
+    void afterCompletionClearsSecurityContext() throws Exception {
+        // given
+        LoginMember loginMember = new LoginMember(1L, "email@email.com", "password", 20);
+        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(new ObjectMapper().writeValueAsString(loginMember));
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        interceptor.preHandle(request, response, new Object());
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
+
+        // when
+        interceptor.afterCompletion(request, response, new Object(), null);
 
         // then
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
