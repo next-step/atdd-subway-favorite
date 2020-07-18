@@ -22,13 +22,11 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
         String jwtToken = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         boolean validated = jwtTokenProvider.validateToken(jwtToken);
 
-        if (!validated) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return false;
+        if (validated) {
+            LoginMember loginMember = new ObjectMapper().readValue(jwtTokenProvider.getPayload(jwtToken), LoginMember.class);
+            SecurityContextHolder.setContext(new SecurityContext(new Authentication(loginMember)));
         }
 
-        LoginMember loginMember = new ObjectMapper().readValue(jwtTokenProvider.getPayload(jwtToken), LoginMember.class);
-        SecurityContextHolder.setContext(new SecurityContext(new Authentication(loginMember)));
         return true;
     }
 

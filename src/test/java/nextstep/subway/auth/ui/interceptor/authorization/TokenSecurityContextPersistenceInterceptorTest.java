@@ -37,28 +37,11 @@ class TokenSecurityContextPersistenceInterceptorTest {
         // when
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        boolean authenticated = interceptor.preHandle(request, response, new Object());
+        interceptor.preHandle(request, response, new Object());
 
         // then
-        assertThat(authenticated).isTrue();
         LoginMember principal = (LoginMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         assertThat(principal.getId()).isEqualTo(loginMember.getId());
-    }
-
-    @DisplayName("JwtToken이 유효하지 않으면 FORBIDDEN 응답을 한다")
-    @Test
-    void whenJwtTokenIsNotValidForbidden() throws Exception {
-        // given
-        when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
-
-        // when
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        boolean authenticated = interceptor.preHandle(request, response, new Object());
-
-        // then
-        assertThat(authenticated).isFalse();
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("JwtToken이 유효하지 않으면 SecurityContext를 SecurityContextHolder에 담지 않는다")
@@ -70,10 +53,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
         // when
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        boolean authenticated = interceptor.preHandle(request, response, new Object());
+        interceptor.preHandle(request, response, new Object());
 
         // then
-        assertThat(authenticated).isFalse();
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 }
