@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.apache.commons.codec.binary.Base64;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ class TokenAuthenticationInterceptorTest {
     private MockHttpServletResponse response;
     private TokenAuthenticationInterceptor interceptor;
 
+    @BeforeEach
     public void setUp() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();

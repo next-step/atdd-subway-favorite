@@ -20,6 +20,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convertToken(String token) {
-        return null;
+        String decodedToken = new String(Base64.decodeBase64(token.getBytes()));
+        int delimiterIndex = decodedToken.indexOf(CREDENTIAL_DELIMITER);
+
+        if (delimiterIndex < 0) {
+            throw new IllegalArgumentException("invalid token string");
+        }
+
+        String principal = decodedToken.substring(0, delimiterIndex);
+        String credentials = decodedToken.substring(delimiterIndex + 1);
+
+        return new AuthenticationToken(principal, credentials);
     }
 }
