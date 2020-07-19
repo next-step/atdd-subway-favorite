@@ -94,6 +94,40 @@ public class MemberAcceptanceStep {
                 extract();
     }
 
+    public static ExtractableResponse<Response> 회원_정보_수정_요청_Token(ExtractableResponse<Response> createResponse,
+                                                                  TokenResponse tokenResponse,
+                                                                  String email, String password, int age) {
+        String uri = createResponse.header("Location") + "/token"; // FIXME remove /token
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                body(params).
+                when().
+                put(uri).
+                then().
+                log().all().
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_삭제_요청_Token(ExtractableResponse<Response> createResponse,
+                                                               TokenResponse tokenResponse) {
+        String uri = createResponse.header("Location") + "/token"; // FIXME remove /token
+
+        return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                when().
+                delete(uri).
+                then().
+                log().all().
+                extract();
+    }
+
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
         return RestAssured.given().log().all().
                 auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD)).
