@@ -30,7 +30,6 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
         AuthenticationToken authenticationToken = convertToken(request);
 
         Authentication authentication = authenticate(authenticationToken);
-        SecurityContextHolder.setContext(new SecurityContext(authentication));
 
         TokenResponse tokenResponse = obtainAuthenticationTokenResponse(authentication);
 
