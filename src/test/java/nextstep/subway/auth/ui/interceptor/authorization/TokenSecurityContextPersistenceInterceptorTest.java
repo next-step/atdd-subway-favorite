@@ -61,4 +61,22 @@ class TokenSecurityContextPersistenceInterceptorTest {
         assertThat(authentication).isNotNull();
         assertThat(authentication.getPrincipal()).isEqualTo(mockMember);
     }
+    @Test
+    @DisplayName("들어온 토큰이 유효하지 않으면 SecurityContext에 추가하지 않는다")
+    void notValidToken() {
+        //given
+        MockHttpServletRequest request = setBearerAuthorizationHeader(new MockHttpServletRequest(), ACCESS_TOKEN);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        LoginMember mockMember = new LoginMember(1L, EMAIL, PASSWORD, AGE);
+
+        given(tokenProvider.validateToken(anyString())).willReturn(false);
+
+        //when
+        boolean preHandle = interceptor.preHandle(request, response, mock(Object.class));
+
+        //then
+        assertThat(preHandle).isTrue();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        assertThat(authentication).isNull();
+    }
 }
