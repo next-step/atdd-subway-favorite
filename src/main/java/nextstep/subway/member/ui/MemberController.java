@@ -1,7 +1,6 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
@@ -34,10 +33,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
-        return ResponseEntity.ok().body(memberService.findMember(loginMember.getId()));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember principal) {
+        return ResponseEntity.ok().body(memberService.findMember(principal.getId()));
     }
 
     @Deprecated
@@ -55,28 +52,23 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}/token")
-    public ResponseEntity<MemberResponse> updateMemberWithToken(@PathVariable Long id, @RequestBody MemberRequest param) {
-        // TODO parameter로 변경
-        LoginMember loginMember = (LoginMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!Objects.equals(id, loginMember.getId())) {
+    public ResponseEntity<MemberResponse> updateMemberWithToken(@PathVariable Long id, @RequestBody MemberRequest param,
+                                                                @AuthenticationPrincipal LoginMember principal) {
+        if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        memberService.updateMember(loginMember.getId(), param);
+        memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}/token")
-    public ResponseEntity<MemberResponse> deleteMemberWithToken(@PathVariable Long id) {
-        // TODO parameter로 변경
-        LoginMember loginMember = (LoginMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!Objects.equals(id, loginMember.getId())) {
+    public ResponseEntity<MemberResponse> deleteMemberWithToken(@PathVariable Long id, @AuthenticationPrincipal LoginMember principal) {
+        if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        memberService.deleteMember(loginMember.getId());
+        memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 }
