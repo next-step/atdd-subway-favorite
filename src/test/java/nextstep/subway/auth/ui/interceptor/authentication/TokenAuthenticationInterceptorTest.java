@@ -1,9 +1,15 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -11,20 +17,25 @@ import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 @DisplayName("토큰 인증 기능 테스트")
+@ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password1234";
 
+    private TokenAuthenticationInterceptor interceptor;
+
+    @Mock
+    private CustomUserDetailsService userDetailsService;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() {
-        interceptor = new TokenAuthenticationInterceptor();
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
@@ -49,6 +60,45 @@ class TokenAuthenticationInterceptorTest {
         // then
         assertThat(token.getPrincipal()).isEqualTo(EMAIL);
         assertThat(token.getCredentials()).isEqualTo(PASSWORD);
+    }
+
+    @DisplayName("유저 정보가 없으면 RuntimeException")
+    @Test
+    void authenticate_noUserDetails() {
+        // given
+        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(null);
+
+        // when
+        assertThatThrownBy(() -> interceptor.authenticate(token))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("패스워드가 일치하지 않으면 RuntimeException")
+    @Test
+    void authenticate_notEqualPassword() {
+        // given
+        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, "notequalpassword", 10));
+
+        // when
+        assertThatThrownBy(() -> interceptor.authenticate(token))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("AuthenticationToken을 통해 인증을 시도하면 인증 객체 Authentication 생성")
+    @Test
+    void authenticate() {
+        // given
+        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
+        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 10);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+
+        // when
+        Authentication authentication = interceptor.authenticate(token);
+
+        // then
+        assertThat(authentication.getPrincipal()).isEqualTo(loginMember);
     }
 
     private void addAuthorizationHeader(MockHttpServletRequest request, String email, String password) {
