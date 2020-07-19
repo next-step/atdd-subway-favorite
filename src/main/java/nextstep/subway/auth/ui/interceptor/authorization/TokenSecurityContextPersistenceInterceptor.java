@@ -30,13 +30,13 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
         return true;
     }
 
-    private LoginMember loadUser(String token) {
-        String principal = tokenProvider.getPayload(token);
-        return userDetailsService.loadUserByUsername(principal);
-    }
-
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         SecurityContextHolder.clearContext();
+    }
+
+    private LoginMember loadUser(String token) {
+        String principal = tokenProvider.getPayload(token);
+        return userDetailsService.loadUserByUsername(principal);
     }
 }
