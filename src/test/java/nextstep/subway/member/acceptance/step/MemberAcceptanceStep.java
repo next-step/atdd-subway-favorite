@@ -35,7 +35,7 @@ public class MemberAcceptanceStep {
                 post("/login/token").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
+                statusCode(HttpStatus.CREATED.value()).
                 extract();
     }
 
