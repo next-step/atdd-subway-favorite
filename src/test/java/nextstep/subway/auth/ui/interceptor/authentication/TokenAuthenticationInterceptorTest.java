@@ -1,7 +1,10 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +20,7 @@ import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @DisplayName("토큰 인증 기능 테스트")
@@ -30,14 +34,20 @@ class TokenAuthenticationInterceptorTest {
 
     @Mock
     private CustomUserDetailsService userDetailsService;
+
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
+
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService);
+        interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, userDetailsService);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
+        objectMapper = new ObjectMapper();
     }
 
     @DisplayName("BASIC 인증 스킴이 없을시 RuntimeException")
@@ -99,6 +109,23 @@ class TokenAuthenticationInterceptorTest {
 
         // then
         assertThat(authentication.getPrincipal()).isEqualTo(loginMember);
+    }
+
+    @DisplayName("TokenResponse를 응답한다")
+    @Test
+    void response() throws Exception {
+        // given
+        String expectedToken = "token";
+        addAuthorizationHeader(request, EMAIL, PASSWORD);
+        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 10);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(expectedToken);
+
+        // when
+        interceptor.preHandle(request, response, new Object());
+
+        // then
+        assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(new TokenResponse(expectedToken)));
     }
 
     private void addAuthorizationHeader(MockHttpServletRequest request, String email, String password) {
