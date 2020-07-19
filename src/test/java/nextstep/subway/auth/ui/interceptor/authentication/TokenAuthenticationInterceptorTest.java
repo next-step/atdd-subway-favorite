@@ -49,7 +49,7 @@ class TokenAuthenticationInterceptorTest {
         userDetailsService = mock(CustomUserDetailsService.class);
         when(userDetailsService.loadUserByUsername(anyString())).thenReturn(loginMember);
 
-        interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, userDetailsService);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
     }
 
     @Test

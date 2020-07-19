@@ -14,29 +14,21 @@ import java.util.Map;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor {
+public class SessionAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
-
     public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+        super(userDetailsService);
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public void applyAuthentication(HttpServletRequest request, HttpServletResponse response) {
         AuthenticationToken token = convert(request);
         Authentication authentication = authenticate(token);
 
-        if (authentication == null) {
-            throw new RuntimeException();
-        }
-
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
-        response.setStatus(HttpServletResponse.SC_OK);
-        return false;
     }
 
     public AuthenticationToken convert(HttpServletRequest request) {
@@ -45,23 +37,5 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         String credentials = paramMap.get(PASSWORD_FIELD)[0];
 
         return new AuthenticationToken(principal, credentials);
-    }
-
-    public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
-
-        return new Authentication(userDetails);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new RuntimeException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
-        }
     }
 }

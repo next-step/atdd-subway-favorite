@@ -2,6 +2,7 @@ package nextstep.subway.member.acceptance.step;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -122,7 +123,7 @@ public class MemberAcceptanceStep {
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 

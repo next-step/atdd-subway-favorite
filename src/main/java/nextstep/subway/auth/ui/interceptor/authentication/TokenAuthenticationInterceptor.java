@@ -1,45 +1,51 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
-import nextstep.subway.auth.infrastructure.AuthorizationType;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
 
     private static final String CREDENTIAL_DELIMITER = ":";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailsService userDetailsService;
 
-    public TokenAuthenticationInterceptor(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public void applyAuthentication(HttpServletRequest request, HttpServletResponse response) throws Exception {
         AuthenticationToken authenticationToken = convertToken(request);
 
         Authentication authentication = authenticate(authenticationToken);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        SecurityContextHolder.setContext(new SecurityContext(authentication));
+
+        TokenResponse tokenResponse = obtainAuthenticationTokenResponse(authentication);
+
+        writeTokenResponse(response, tokenResponse);
+    }
+
+    private void writeTokenResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        OBJECT_MAPPER.writeValue(response.getOutputStream(), tokenResponse);
+    }
+
+    private TokenResponse obtainAuthenticationTokenResponse(Authentication authentication) throws JsonProcessingException {
+        String payload = OBJECT_MAPPER.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
 
-        TokenResponse tokenResponse = new TokenResponse(token);
-        objectMapper.writeValue(response.getOutputStream(), tokenResponse);
-
-        return false;
+        return new TokenResponse(token);
     }
 
     public AuthenticationToken convertToken(HttpServletRequest request) {
@@ -55,23 +61,5 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String credentials = decodedToken.substring(delimiterIndex + 1);
 
         return new AuthenticationToken(principal, credentials);
-    }
-
-    public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
-
-        return new Authentication(userDetails);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new RuntimeException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
-        }
     }
 }
