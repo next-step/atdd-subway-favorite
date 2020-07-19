@@ -91,6 +91,7 @@ class AuthenticationPrincipalMethodArgumentResolverTest {
     @Test
     void resolveArgumentResponsesUNAUTHORIZED() throws Exception {
         // given
+        SecurityContextHolder.setContext(new SecurityContext(null));
         NativeWebRequest request = mock(NativeWebRequest.class);
         MockHttpServletResponse response = new MockHttpServletResponse();
         when(request.getNativeResponse(HttpServletResponse.class)).thenReturn(response);
