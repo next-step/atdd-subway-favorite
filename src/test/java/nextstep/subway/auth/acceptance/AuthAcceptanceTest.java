@@ -20,31 +20,40 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
+        // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
+        // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
 
+        // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
     @DisplayName("Basic Auth를 통한 로그인 시도")
     @Test
     void loginWithBasicAuth() {
+        // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
+        // when
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
+        // then
         로그인_됨(response);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+        // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
 
+        // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
 
+        // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 }
