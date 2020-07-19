@@ -17,19 +17,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Session 로그인 후 내 정보 조회")
-    @Test
-    void myInfoWithSession() {
-        // given
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-
-        // when
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
-
-        // then
-        회원_정보_조회됨(response, EMAIL, AGE);
-    }
-
     @DisplayName("Basic Auth를 통한 로그인 시도")
     @Test
     void loginWithBasicAuth() {

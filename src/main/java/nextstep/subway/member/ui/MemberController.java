@@ -37,21 +37,7 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.findMember(principal.getId()));
     }
 
-    @Deprecated
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
-    }
-
-    @Deprecated
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/members/{id}/token")
     public ResponseEntity<MemberResponse> updateMemberWithToken(@PathVariable Long id, @RequestBody MemberRequest param,
                                                                 @AuthenticationPrincipal LoginMember principal) {
         if (!Objects.equals(id, principal.getId())) {
@@ -62,7 +48,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}/token")
+    @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMemberWithToken(@PathVariable Long id, @AuthenticationPrincipal LoginMember principal) {
         if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
