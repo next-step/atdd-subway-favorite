@@ -11,9 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
+    private static final String CREDENTIAL_DELIMITER = ":";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
+        String token = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         return false;
+    }
+
+    public AuthenticationToken convertToken(String token) {
+        return null;
     }
 }
