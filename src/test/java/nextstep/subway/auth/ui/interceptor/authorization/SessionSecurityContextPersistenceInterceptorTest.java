@@ -1,60 +1,43 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 
-import static nextstep.subway.auth.utils.AuthorizationTestUtils.setBearerAuthorizationHeader;
+import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-@DisplayName("토큰 SecurityContext에 persist하는 인터셉터 테스트")
-@ExtendWith(MockitoExtension.class)
-class TokenSecurityContextPersistenceInterceptorTest {
+@DisplayName("세션 이용한 SecurityContext persist 테스트")
+class SessionSecurityContextPersistenceInterceptorTest {
 
-    private static final String ACCESS_TOKEN = "accessToken";
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final int AGE = 20;
-
-    @Mock
-    private CustomUserDetailsService userDetailsService;
-    @Mock
-    private JwtTokenProvider tokenProvider;
-    private TokenSecurityContextPersistenceInterceptor interceptor;
+    private SessionSecurityContextPersistenceInterceptor interceptor;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
     @BeforeEach
     void setUp() {
         SecurityContextHolder.clearContext();
-        interceptor = new TokenSecurityContextPersistenceInterceptor(userDetailsService, tokenProvider);
-        request = setBearerAuthorizationHeader(new MockHttpServletRequest(), ACCESS_TOKEN);
+        interceptor = new SessionSecurityContextPersistenceInterceptor();
+        request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
     @Test
-    @DisplayName("들어온 토큰이 유효하면 토큰 안에 payload를 SecurityContextHolder에 추가한다")
-    void persistLoginMember() {
+    @DisplayName("세션에서 LoginMember를 불러와서 SecurityContextHolder에 저장한다")
+    void setSessionLoginMemberToSecurityContext() {
         //given
-        LoginMember mockMember = new LoginMember(1L, EMAIL, PASSWORD, AGE);
-
-        given(tokenProvider.validateToken(anyString())).willReturn(true);
-        given(tokenProvider.getPayload(anyString())).willReturn(EMAIL);
-        given(userDetailsService.loadUserByUsername(anyString())).willReturn(mockMember);
+        MockHttpSession session = new MockHttpSession();
+        LoginMember loginMember = new LoginMember(1L, "email@email.com", "password", 20);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(new Authentication(loginMember)));
+        request.setSession(session);
 
         //when
         boolean preHandle = interceptor.preHandle(request, response, mock(Object.class));
@@ -63,14 +46,16 @@ class TokenSecurityContextPersistenceInterceptorTest {
         assertThat(preHandle).isTrue();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         assertThat(authentication).isNotNull();
-        assertThat(authentication.getPrincipal()).isEqualTo(mockMember);
+        assertThat(authentication.getPrincipal()).isEqualTo(loginMember);
     }
 
     @Test
-    @DisplayName("들어온 토큰이 유효하지 않으면 SecurityContext에 추가하지 않는다")
-    void notValidToken() {
+    @DisplayName("세션에 값이 존재하지 않으면 SecurityContextHolder에 저장하지 않는다")
+    void noSessionAttribute() {
         //given
-        given(tokenProvider.validateToken(anyString())).willReturn(false);
+        MockHttpSession session = new MockHttpSession();
+        request.setSession(session);
+
 
         //when
         boolean preHandle = interceptor.preHandle(request, response, mock(Object.class));
