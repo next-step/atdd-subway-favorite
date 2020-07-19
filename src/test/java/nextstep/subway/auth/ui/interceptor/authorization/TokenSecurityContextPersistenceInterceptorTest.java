@@ -2,6 +2,7 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -34,18 +35,21 @@ class TokenSecurityContextPersistenceInterceptorTest {
     @Mock
     private JwtTokenProvider tokenProvider;
     private TokenSecurityContextPersistenceInterceptor interceptor;
+    private MockHttpServletRequest request;
+    private MockHttpServletResponse response;
 
     @BeforeEach
     void setUp() {
+        SecurityContextHolder.clearContext();
         interceptor = new TokenSecurityContextPersistenceInterceptor(userDetailsService, tokenProvider);
+        request = setBearerAuthorizationHeader(new MockHttpServletRequest(), ACCESS_TOKEN);
+        response = new MockHttpServletResponse();
     }
 
     @Test
     @DisplayName("들어온 토큰이 유효하면 토큰 안에 payload를 SecurityContextHolder에 추가한다")
     void persistLoginMember() {
         //given
-        MockHttpServletRequest request = setBearerAuthorizationHeader(new MockHttpServletRequest(), ACCESS_TOKEN);
-        MockHttpServletResponse response = new MockHttpServletResponse();
         LoginMember mockMember = new LoginMember(1L, EMAIL, PASSWORD, AGE);
 
         given(tokenProvider.validateToken(anyString())).willReturn(true);
@@ -61,14 +65,11 @@ class TokenSecurityContextPersistenceInterceptorTest {
         assertThat(authentication).isNotNull();
         assertThat(authentication.getPrincipal()).isEqualTo(mockMember);
     }
+
     @Test
     @DisplayName("들어온 토큰이 유효하지 않으면 SecurityContext에 추가하지 않는다")
     void notValidToken() {
         //given
-        MockHttpServletRequest request = setBearerAuthorizationHeader(new MockHttpServletRequest(), ACCESS_TOKEN);
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        LoginMember mockMember = new LoginMember(1L, EMAIL, PASSWORD, AGE);
-
         given(tokenProvider.validateToken(anyString())).willReturn(false);
 
         //when
