@@ -10,6 +10,7 @@ import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +43,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String token = jwtTokenProvider.createToken(authenticationToken.getPrincipal());
 
         response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(objectMapper.writeValueAsString(new TokenResponse(token)));
         return false;
     }
