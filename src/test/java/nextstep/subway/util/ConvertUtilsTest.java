@@ -42,8 +42,27 @@ class ConvertUtilsTest {
         assertThat(jsonString).contains("name");
     }
 
+    @DisplayName("JSON string을 오브젝트로 변환!")
+    @Test
+    void convertJson2Object() {
+
+        // given
+        final String name = "ChihoWon";
+        final Dummy dummy = new Dummy(name);
+        final String jsonString = ConvertUtils.stringify(dummy);
+
+        // when
+        final Dummy result = ConvertUtils.convertJson2Object(jsonString, Dummy.class);
+
+        // then
+        assertThat(result.getName()).isEqualTo(name);
+    }
+
     public static class Dummy {
-        private final String name;
+        private String name;
+
+        public Dummy() {
+        }
 
         public Dummy(String name) {
             this.name = name;
