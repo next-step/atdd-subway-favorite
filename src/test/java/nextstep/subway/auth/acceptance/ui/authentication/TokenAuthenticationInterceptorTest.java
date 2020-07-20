@@ -2,16 +2,20 @@ package nextstep.subway.auth.acceptance.ui.authentication;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,16 +24,22 @@ public class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "test@test.com";
     private static final String REGEX = ":";
     private static final String PASSWORD = "test";
-    MockHttpServletRequest request;
-    private CustomUserDetailsService userDetailsService;
 
+    private MockHttpServletRequest request;
+    private MockHttpServletResponse response;
+    private CustomUserDetailsService userDetailsService;
+    private TokenAuthenticationInterceptor interceptor;
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
         request = new MockHttpServletRequest();
+        response = new MockHttpServletResponse();
         setBasicAuthHeadner();
 
         userDetailsService = mock(CustomUserDetailsService.class);
+        jwtTokenProvider = mock(JwtTokenProvider.class);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
     }
 
     private void setBasicAuthHeadner() {
@@ -42,8 +52,6 @@ public class TokenAuthenticationInterceptorTest {
     @DisplayName("Basic Auth 로그인 정보 추출")
     @Test
     void extractAuth() {
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService);
-
         // when
         AuthenticationToken token = interceptor.convert(request);
 
@@ -56,7 +64,6 @@ public class TokenAuthenticationInterceptorTest {
     @Test
     void auth() {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService);
         AuthenticationToken token = interceptor.convert(request);
 
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
@@ -69,4 +76,19 @@ public class TokenAuthenticationInterceptorTest {
         assertThat(authentication.getPrincipal()).isNotNull();
     }
 
+    @DisplayName("TokenResponse 응답")
+    @Test
+    void returnTokenResponse() throws Exception {
+        // given
+        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(jwtTokenProvider.createToken(anyString())).thenReturn("jwtToken");
+
+        // when
+        interceptor.preHandle(request, response, new Object());
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString().contains("jwtToken")).isTrue();
+    }
 }
