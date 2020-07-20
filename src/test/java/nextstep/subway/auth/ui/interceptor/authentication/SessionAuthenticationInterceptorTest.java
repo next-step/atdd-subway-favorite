@@ -37,7 +37,7 @@ class SessionAuthenticationInterceptorTest {
     private CustomUserDetailsService userDetailsService;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private NewSessionAuthenticationInterceptor interceptor;
+    private AbstractAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() {

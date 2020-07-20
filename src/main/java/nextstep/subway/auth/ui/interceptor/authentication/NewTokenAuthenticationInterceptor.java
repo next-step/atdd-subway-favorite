@@ -1,28 +1,45 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.subway.member.domain.LoginMember;
+import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-public class NewTokenAuthenticationInterceptor implements HandlerInterceptor {
-    private final CustomUserDetailsService customUserDetailsService;
+public class NewTokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
-    private final AuthenticationConverter converter;
 
     public NewTokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper, AuthenticationConverter converter) {
-        this.customUserDetailsService = customUserDetailsService;
+        super(converter, customUserDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
-        this.converter = converter;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        return false;
+    protected void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        String token = getToken(authentication);
+        TokenResponse tokenResponse = new TokenResponse(token);
+
+        setSuccessfulResponse(response, tokenResponse);
     }
+
+    private void setSuccessfulResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(objectMapper.writeValueAsString(tokenResponse));
+        response.flushBuffer();
+    }
+
+    private String getToken(Authentication authentication) {
+        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
+        return jwtTokenProvider.createToken(loginMember.getEmail());
+    }
+
 }
