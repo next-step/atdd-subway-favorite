@@ -51,7 +51,7 @@ class NewTokenAuthenticationInterceptorTest {
         //given
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        interceptor = new NewTokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper,converter);
+        interceptor = new NewTokenAuthenticationInterceptor(converter, customUserDetailsService, jwtTokenProvider, objectMapper);
     }
 
     @DisplayName("Basic방식으로 인증 실패시 에러를 던진다.")
