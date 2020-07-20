@@ -74,7 +74,7 @@ class MemberServiceTest {
         given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(reflectionMember(1L)));
 
         //when
-        MemberResponse memberResponse = memberService.findMemberByEmail(1L);
+        MemberResponse memberResponse = memberService.findMemberByEmail(EMAIL);
 
         //then
         assertThat(memberResponse).isNotNull()

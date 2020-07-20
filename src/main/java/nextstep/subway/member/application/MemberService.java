@@ -21,6 +21,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -35,7 +36,9 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMemberByEmail(Long id) {
-        return null;
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
     }
 }
