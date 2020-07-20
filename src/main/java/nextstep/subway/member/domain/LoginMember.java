@@ -25,6 +25,7 @@ public class LoginMember implements User {
         return this.password.equals(password);
     }
 
+    @Override
     public Long getId() {
         return id;
     }
