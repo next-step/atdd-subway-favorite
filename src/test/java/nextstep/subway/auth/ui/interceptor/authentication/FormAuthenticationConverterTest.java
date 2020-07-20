@@ -3,8 +3,6 @@ package nextstep.subway.auth.ui.interceptor.authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import static nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor.PASSWORD_FIELD;
@@ -32,4 +30,6 @@ class FormAuthenticationConverterTest {
         assertThat(token).isNotNull()
                 .isEqualToComparingFieldByField(new AuthenticationToken(EMAIL, PASSWORD));
     }
+
+
 }
