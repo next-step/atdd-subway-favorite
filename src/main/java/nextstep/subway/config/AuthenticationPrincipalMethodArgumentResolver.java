@@ -3,7 +3,7 @@ package nextstep.subway.config;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.support.WebDataBinderFactory;

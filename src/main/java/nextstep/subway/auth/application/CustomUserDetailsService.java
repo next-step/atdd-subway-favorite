@@ -1,13 +1,13 @@
-package nextstep.subway.member.application;
+package nextstep.subway.auth.application;
 
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public CustomUserDetailsService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
