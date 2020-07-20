@@ -1,19 +1,25 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.application.AuthenticationService;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final AuthenticationService authenticationService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, AuthenticationService authenticationService) {
         this.memberService = memberService;
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/members")
@@ -30,7 +36,14 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+        Optional<LoginMember> loginMemberOptional = authenticationService.getLoginMember();
+        if (!loginMemberOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        MemberResponse member = memberService.findMember(loginMemberOptional.get().getId());
+        return ResponseEntity.ok(member);
+
     }
 
     @PutMapping("/members/{id}")
