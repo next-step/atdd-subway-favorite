@@ -1,6 +1,7 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
 import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,6 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-
+        SecurityContextHolder.clearContext();
     }
 }
