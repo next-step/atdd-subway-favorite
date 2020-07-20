@@ -1,11 +1,11 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +16,8 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(AuthenticationConverter converter, CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        super(converter, customUserDetailsService);
+    public TokenAuthenticationInterceptor(AuthenticationConverter converter, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        super(converter, userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
@@ -38,8 +38,8 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
     }
 
     private String getToken(Authentication authentication) {
-        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
-        return jwtTokenProvider.createToken(loginMember.getEmail());
+        User userDetails = (User) authentication.getPrincipal();
+        return jwtTokenProvider.createToken(userDetails.getUsername());
     }
 
 }
