@@ -1,26 +1,21 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 
 @DisplayName("토큰 유효성 검사를 수행하고 토큰의 정보를 이용해 사용자를 인증한다 ")
 class TokenSecurityContextPersistenceInterceptorTest {
-    private static final String TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkaGxlZUB0ZXN0LmNvbSIsImFnZSI6MTAsImlhdCI6MTUxNjIzOTAyMn0.7mzHE7xlGhUU_FXS9gn7AhrNyFsmpb9zZhNCX3D4F9k";
-    private static final String PAYLOAD = "{\"id\":1,\"email\":\"dhlee@email.com\",\"age\":10}";
-    private static final String EMAIL = "dhlee@email.com";
+
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private TokenSecurityContextPersistenceInterceptor tokenSecurityContextPersistenceInterceptor;
@@ -29,18 +24,16 @@ class TokenSecurityContextPersistenceInterceptorTest {
     void setUp() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + TOKEN);
-
-        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
-        when(jwtTokenProvider.getPayload(anyString())).thenReturn(PAYLOAD);
-        tokenSecurityContextPersistenceInterceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
+        tokenSecurityContextPersistenceInterceptor = new TokenSecurityContextPersistenceInterceptor();
     }
 
     @Test
     @DisplayName("토큰이 포함된 요청의 경우 token 정보를 바탕으로 SecurityContext에 인증정보를 저장한다")
-    public void preHandleTest() throws Exception {
+    public void preHandleTest() {
+        // given
+        String email = "dhlee@email.com";
+        String password = "test1234";
+
         // when
         tokenSecurityContextPersistenceInterceptor.preHandle(request, response, new Object());
 
@@ -58,7 +51,8 @@ class TokenSecurityContextPersistenceInterceptorTest {
 
         // 계정 정보가 매칭되는지 확인
         LoginMember loginMember = (LoginMember) principal;
-        assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
+        assertThat(loginMember.getEmail()).isEqualTo(email);
+        assertThat(loginMember.getPassword()).isEqualTo(password);
     }
 
     @Test
