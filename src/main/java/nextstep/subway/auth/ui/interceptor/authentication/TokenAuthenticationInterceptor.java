@@ -42,7 +42,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) {
+    private AuthenticationToken convert(HttpServletRequest request) {
         String authorization = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
 
         byte[] decodedBytes = Base64.getDecoder().decode(authorization.getBytes());
@@ -55,7 +55,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return new AuthenticationToken(principal, credential);
     }
 
-    public Authentication authenticate(AuthenticationToken token) {
+    private Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
         LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);

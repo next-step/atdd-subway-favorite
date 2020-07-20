@@ -1,8 +1,6 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -53,34 +51,19 @@ class TokenAuthenticationInterceptorTest {
     @DisplayName("BASIC 인증 스킴이 없을시 RuntimeException")
     @Test
     void convert_withoutHeader() {
-       assertThatThrownBy(() -> interceptor.convert(request))
+        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
                .isInstanceOf(RuntimeException.class);
     }
 
-
-    @DisplayName("HttpServletRequest에서 로그인 정보 추출하여 검증 객체 AuthenticationToken 생성")
-    @Test
-    void convert() {
-        // given
-        addAuthorizationHeader(request, EMAIL, PASSWORD);
-
-        // when
-        AuthenticationToken token = interceptor.convert(request);
-
-        // then
-        assertThat(token.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(token.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    @DisplayName("유저 정보가 없으면 RuntimeException")
+    @DisplayName("유저 정보가 존재하지 않으면 RuntimeException")
     @Test
     void authenticate_noUserDetails() {
         // given
-        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
+        addAuthorizationHeader(request, EMAIL, PASSWORD);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(null);
 
         // when
-        assertThatThrownBy(() -> interceptor.authenticate(token))
+        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -88,27 +71,12 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate_notEqualPassword() {
         // given
-        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
+        addAuthorizationHeader(request, EMAIL, PASSWORD);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, "notequalpassword", 10));
 
         // when
-        assertThatThrownBy(() -> interceptor.authenticate(token))
+        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
                 .isInstanceOf(RuntimeException.class);
-    }
-
-    @DisplayName("AuthenticationToken을 통해 인증을 시도하면 인증 객체 Authentication 생성")
-    @Test
-    void authenticate() {
-        // given
-        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 10);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
-
-        // when
-        Authentication authentication = interceptor.authenticate(token);
-
-        // then
-        assertThat(authentication.getPrincipal()).isEqualTo(loginMember);
     }
 
     @DisplayName("TokenResponse를 응답한다")
