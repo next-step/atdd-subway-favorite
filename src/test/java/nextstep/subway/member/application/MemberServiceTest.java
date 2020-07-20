@@ -108,8 +108,6 @@ class MemberServiceTest {
     void updateMemberNoPermission() {
         //given
         setUpSecurityContext();
-        Member member = mock(Member.class);
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         assertThatThrownBy(() ->
                 //when
