@@ -1,6 +1,7 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.AuthenticationException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -16,9 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static nextstep.subway.auth.utils.AuthorizationTestUtils.addBasicAuthorizationHeader;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -31,13 +32,14 @@ class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final int AGE = 20;
     private static final String PASSWORD = "password";
-    private static final String REGEX = ":";
     private static final String TOKEN = "accessToken";
 
     @Mock
     private CustomUserDetailsService customUserDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private BasicAuthenticationConverter converter;
     private ObjectMapper objectMapper = new ObjectMapper();
     private TokenAuthenticationInterceptor interceptor;
     private MockHttpServletRequest request;
@@ -48,37 +50,34 @@ class TokenAuthenticationInterceptorTest {
         //given
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
+        interceptor = new TokenAuthenticationInterceptor(converter, customUserDetailsService, jwtTokenProvider, objectMapper);
     }
 
     @DisplayName("Basic방식으로 인증 실패시 에러를 던진다.")
     @Test
     void loginFailed() {
         //given
-        MockHttpServletRequest mockRequest = addBasicAuthorizationHeader(request, EMAIL, "123");
-
+        given(converter.convert(any())).willReturn(new AuthenticationToken(EMAIL, "123"));
         given(customUserDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         //when
-        assertThatThrownBy(() -> interceptor.preHandle(mockRequest, response, mock(Object.class)))
+        assertThatThrownBy(() -> interceptor.preHandle(request, response, mock(Object.class)))
                 //then
                 .isInstanceOf(AuthenticationException.class);
-
     }
 
     @DisplayName("Basic방식으로 인증 성공 시에 액세스 토큰을 응답한다.")
     @Test
     void login() throws Exception {
         //given
-        MockHttpServletRequest mockRequest = addBasicAuthorizationHeader(this.request, EMAIL, PASSWORD);
-
+        given(converter.convert(any())).willReturn(new AuthenticationToken(EMAIL, PASSWORD));
         given(customUserDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
         given(jwtTokenProvider.createToken(anyString())).willReturn(TOKEN);
 
         //when
-        boolean result = interceptor.preHandle(mockRequest, response, mock(Object.class));
+        boolean result = interceptor.preHandle(request, response, mock(Object.class));
 
         //then
         assertThat(result).isFalse();

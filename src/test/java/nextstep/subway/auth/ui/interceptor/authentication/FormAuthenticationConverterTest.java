@@ -5,14 +5,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor.PASSWORD_FIELD;
-import static nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor.USERNAME_FIELD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FormAuthenticationConverterTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
+    public static final String USERNAME_FIELD = "username";
+    public static final String PASSWORD_FIELD = "password";
 
     @DisplayName("Form Login 정보를 request에서 AuthenticationToken으로 변환한다")
     @Test

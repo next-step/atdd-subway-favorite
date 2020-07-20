@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.BasicAuthenticationConverter;
 import nextstep.subway.auth.ui.interceptor.authentication.FormAuthenticationConverter;
-import nextstep.subway.auth.ui.interceptor.authentication.NewSessionAuthenticationInterceptor;
-import nextstep.subway.auth.ui.interceptor.authentication.NewTokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor;
+import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.subway.auth.ui.interceptor.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -26,8 +26,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new NewTokenAuthenticationInterceptor(new BasicAuthenticationConverter(), userDetailsService, jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
-        registry.addInterceptor(new NewSessionAuthenticationInterceptor(new FormAuthenticationConverter(), userDetailsService)).addPathPatterns("/login/session");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(new BasicAuthenticationConverter(), userDetailsService, jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
+        registry.addInterceptor(new SessionAuthenticationInterceptor(new FormAuthenticationConverter(), userDetailsService)).addPathPatterns("/login/session");
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider));
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
     }
