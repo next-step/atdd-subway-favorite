@@ -11,6 +11,8 @@ public class LoginMember {
         return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 
+    private LoginMember() {}
+
     public LoginMember(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
