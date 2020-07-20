@@ -13,12 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.util.Base64;
-
+import static nextstep.subway.auth.utils.AuthorizationTestUtils.addBasicAuthorizationHeader;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -57,13 +55,13 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void loginFailed() {
         //given
-        addAuthorizationHeader(EMAIL, "123");
+        MockHttpServletRequest mockRequest = addBasicAuthorizationHeader(request, EMAIL, "123");
 
         given(customUserDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         //when
-        assertThatThrownBy(() -> interceptor.preHandle(request, response, mock(Object.class)))
+        assertThatThrownBy(() -> interceptor.preHandle(mockRequest, response, mock(Object.class)))
                 //then
                 .isInstanceOf(AuthenticationException.class);
 
@@ -73,14 +71,14 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void login() throws Exception {
         //given
-        addAuthorizationHeader(EMAIL, PASSWORD);
+        MockHttpServletRequest mockRequest = addBasicAuthorizationHeader(this.request, EMAIL, PASSWORD);
 
         given(customUserDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
         given(jwtTokenProvider.createToken(anyString())).willReturn(TOKEN);
 
         //when
-        boolean result = interceptor.preHandle(request, response, mock(Object.class));
+        boolean result = interceptor.preHandle(mockRequest, response, mock(Object.class));
 
         //then
         assertThat(result).isFalse();
@@ -88,10 +86,5 @@ class TokenAuthenticationInterceptorTest {
         assertThat(response.getContentAsByteArray()).isEqualTo(objectMapper.writeValueAsBytes(new TokenResponse(TOKEN)));
     }
 
-    private void addAuthorizationHeader(String email, String password) {
-        byte[] targetBytes = (email + REGEX + password).getBytes();
-        byte[] encodedBytes = Base64.getEncoder().encode(targetBytes);
-        String credentials = new String(encodedBytes);
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Basic " + credentials);
-    }
+
 }
