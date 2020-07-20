@@ -48,7 +48,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws JsonProcessingException {
+    private AuthenticationToken convert(HttpServletRequest request) throws JsonProcessingException {
         String result = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
 
         byte[] decodedBytes = Base64.getDecoder().decode(result);
