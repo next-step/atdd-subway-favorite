@@ -1,16 +1,14 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurityContextPersistenceInterceptor {
     private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider tokenProvider;
 
@@ -28,11 +26,6 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             SecurityContextHolder.setContext(new SecurityContext(authentication));
         }
         return true;
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        SecurityContextHolder.clearContext();
     }
 
     private LoginMember loadUser(String token) {

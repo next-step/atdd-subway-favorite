@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 @DisplayName("세션 이용한 SecurityContext persist 테스트")
 class SessionSecurityContextPersistenceInterceptorTest {
 
-    private SessionSecurityContextPersistenceInterceptor interceptor;
+    private AbstractSecurityContextPersistenceInterceptor interceptor;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
