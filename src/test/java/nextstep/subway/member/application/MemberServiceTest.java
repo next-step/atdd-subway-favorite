@@ -15,8 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -62,6 +61,20 @@ class MemberServiceTest {
 
         //when
         MemberResponse memberResponse = memberService.findMember(1L);
+
+        //then
+        assertThat(memberResponse).isNotNull()
+                .isEqualToComparingFieldByField(new MemberResponse(1L, EMAIL, AGE));
+    }
+
+    @Test
+    @DisplayName("멤버를 email로 찾아 응답한다.")
+    void findMemberByEmail() {
+        //given
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(reflectionMember(1L)));
+
+        //when
+        MemberResponse memberResponse = memberService.findMemberByEmail(1L);
 
         //then
         assertThat(memberResponse).isNotNull()
