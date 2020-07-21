@@ -25,12 +25,8 @@ class TokenSecurityContextPersistenceInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
-    private static final String REGEX = ":";
-    private static final String JWT = "accessToken";
     private static final long ID = 1L;
 
-    @Mock
-    private CustomUserDetailsService customUserDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
