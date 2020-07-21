@@ -2,25 +2,25 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class TokenSecurityContextPersistenceInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -41,8 +41,6 @@ class TokenSecurityContextPersistenceInterceptorTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
-
-        request.addHeader("Authorization", "Bearer NEXTSTEP");
         expected = new LoginMember(ID, EMAIL, PASSWORD, AGE);
         interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
     }
@@ -59,9 +57,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
         // then
         LoginMember actual = getLoginMember();
 
+        assertThat(actual).isNotNull();
         assertAll(
                 () -> assertThat(actual).isNotNull(),
-                () -> assertThat(actual).isEqualTo(true),
                 () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
                 () -> assertThat(actual.getEmail()).isEqualTo(expected.getEmail()),
                 () -> assertThat(actual.getAge()).isEqualTo(expected.getAge())

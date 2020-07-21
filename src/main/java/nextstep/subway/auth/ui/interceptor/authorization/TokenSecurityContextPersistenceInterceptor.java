@@ -25,6 +25,11 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws JsonProcessingException {
         String token = extractToken(request);
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            return false;
+        }
+
         LoginMember loginMember = getLoginMemberFromToken(token);
 
         SecurityContext securityContext = new SecurityContext(new Authentication(loginMember));
