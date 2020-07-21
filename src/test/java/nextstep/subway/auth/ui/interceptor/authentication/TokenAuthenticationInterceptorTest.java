@@ -1,8 +1,10 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.interceptor.authentication.converter.AuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,35 +38,19 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    private AuthenticationConverter authenticationConverter;
+
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, userDetailsService);
+        interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, userDetailsService, authenticationConverter);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
-    }
-
-    @DisplayName("BASIC 인증 스킴이 없을시 RuntimeException")
-    @Test
-    void convert_withoutHeader() {
-        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
-               .isInstanceOf(RuntimeException.class);
-    }
-
-    @DisplayName("유저 정보가 존재하지 않으면 RuntimeException")
-    @Test
-    void authenticate_noUserDetails() {
-        // given
-        addAuthorizationHeader(request, EMAIL, PASSWORD);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(null);
-
-        // when
-        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
-                .isInstanceOf(RuntimeException.class);
     }
 
     @DisplayName("패스워드가 일치하지 않으면 RuntimeException")
@@ -72,6 +58,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate_notEqualPassword() {
         // given
         addAuthorizationHeader(request, EMAIL, PASSWORD);
+        when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, "notequalpassword", 10));
 
         // when
@@ -86,6 +73,7 @@ class TokenAuthenticationInterceptorTest {
         String expectedToken = "token";
         addAuthorizationHeader(request, EMAIL, PASSWORD);
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 10);
+        when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(expectedToken);
 

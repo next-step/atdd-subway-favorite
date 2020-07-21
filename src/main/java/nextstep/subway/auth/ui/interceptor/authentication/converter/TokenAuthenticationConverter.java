@@ -3,10 +3,12 @@ package nextstep.subway.auth.ui.interceptor.authentication.converter;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.AuthorizationType;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 
+@Component
 public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     private static final String AUTHORIZATION_DELIMITER = ":";
