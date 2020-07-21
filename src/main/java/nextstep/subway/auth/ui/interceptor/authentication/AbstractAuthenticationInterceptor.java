@@ -1,22 +1,20 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public AbstractAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public AbstractAuthenticationInterceptor(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
