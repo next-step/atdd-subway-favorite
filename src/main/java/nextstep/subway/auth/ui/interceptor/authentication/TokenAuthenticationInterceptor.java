@@ -7,6 +7,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.utils.ObjectMapperUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,11 +38,11 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
     }
 
     private void writeTokenResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
-        OBJECT_MAPPER.writeValue(response.getOutputStream(), tokenResponse);
+        ObjectMapperUtils.writeStream(response.getOutputStream(), tokenResponse);
     }
 
     private TokenResponse obtainAuthenticationTokenResponse(Authentication authentication) throws JsonProcessingException {
-        String payload = OBJECT_MAPPER.writeValueAsString(authentication.getPrincipal());
+        String payload = ObjectMapperUtils.convertAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
 
         return new TokenResponse(token);
