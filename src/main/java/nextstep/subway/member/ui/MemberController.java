@@ -38,13 +38,15 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMember(@AuthUser User user, @PathVariable Long id, @RequestBody MemberRequest param) {
+        memberService.checkPermission(user, id);
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<MemberResponse> deleteMember(@AuthUser User user, @PathVariable Long id) {
+        memberService.checkPermission(user, id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }

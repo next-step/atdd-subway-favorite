@@ -1,8 +1,6 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.exception.AuthorizationException;
-import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
@@ -92,7 +90,6 @@ class MemberServiceTest {
     @DisplayName("멤버의 필드값은 업데이트 한다.")
     void updateMember() {
         //given
-        setUpSecurityContext();
         Member member = mock(Member.class);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
@@ -104,14 +101,11 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("현재 로그인된 멤버와 다른 멤버는 수정 요청 시 권한 에러가 발생한다.")
+    @DisplayName("요청한 권한과 실제 로그인된 권한 체크시 문제가 있으면 에러가 발생한다.")
     void updateMemberNoPermission() {
-        //given
-        setUpSecurityContext();
-
         assertThatThrownBy(() ->
                 //when
-                memberService.updateMember(4L, new MemberRequest(EMAIL, "123", AGE)))
+                memberService.checkPermission(new LoginMember(1L, EMAIL, PASSWORD, AGE), 4L))
                 //then
                 .isInstanceOf(AuthorizationException.class);
     }
@@ -119,9 +113,6 @@ class MemberServiceTest {
     @DisplayName("멤버의 id로 멤버를 삭제한다.")
     @Test
     void deleteMember() {
-        //given
-        setUpSecurityContext();
-
         //when
         memberService.deleteMember(1L);
 
@@ -129,18 +120,6 @@ class MemberServiceTest {
         verify(memberRepository).deleteById(1L);
     }
 
-    @DisplayName("현재 로그인된 멤버와 다른 멤버는 수정 요청 시 권한 에러가 발생한다.")
-    @Test
-    void deleteMemberNoPermission() {
-        //given
-        setUpSecurityContext();
-
-        assertThatThrownBy(() ->
-                //when
-                memberService.deleteMember(3L))
-                //then
-                .isInstanceOf(AuthorizationException.class);
-    }
 
     private Member reflectionMember(long id) {
         Member member = new Member(EMAIL, PASSWORD, AGE);
@@ -148,7 +127,4 @@ class MemberServiceTest {
         return member;
     }
 
-    private void setUpSecurityContext() {
-        SecurityContextHolder.setContext(new SecurityContext(new Authentication(new LoginMember(1L, EMAIL, PASSWORD, AGE))));
-    }
 }
