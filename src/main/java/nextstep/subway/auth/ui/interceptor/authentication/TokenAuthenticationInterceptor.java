@@ -3,12 +3,10 @@ package nextstep.subway.auth.ui.interceptor.authentication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.converter.AuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,42 +18,13 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     
     private ObjectMapper objectMapper;
     private JwtTokenProvider jwtTokenProvider;
-    private CustomUserDetailsService userDetailsService;
-    private AuthenticationConverter authenticationConverter;
 
     public TokenAuthenticationInterceptor(JwtTokenProvider jwtTokenProvider,
                                           CustomUserDetailsService userDetailsService,
                                           AuthenticationConverter authenticationConverter) {
-        this.authenticationConverter = authenticationConverter;
+        super(userDetailsService, authenticationConverter);
         this.objectMapper = new ObjectMapper();
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailsService = userDetailsService;
-    }
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        AuthenticationToken token = authenticationConverter.convert(request);
-        Authentication authentication = authenticate(token);
-        afterAuthentication(request, response, authentication);
-        return false;
-    }
-
-    private Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
-
-        return new Authentication(userDetails);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new RuntimeException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
-        }
     }
 
     @Override
