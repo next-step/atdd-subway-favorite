@@ -67,7 +67,7 @@ public class MemberAcceptanceStep {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, TokenResponse tokenResponse, String email, String password, Integer age) {
         String uri = response.header("Location");
 
         Map<String, String> params = new HashMap<>();
@@ -76,6 +76,7 @@ public class MemberAcceptanceStep {
         params.put("age", age + "");
 
         return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 body(params).
                 when().
@@ -85,9 +86,10 @@ public class MemberAcceptanceStep {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
         String uri = response.header("Location");
         return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 when().
                 delete(uri).
                 then().

@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 
 @DisplayName("Basic 방식 로그인 인터셉터 테스트 ")
@@ -55,7 +54,7 @@ class SessionAuthenticationInterceptorTest {
         given(userDetailsService.loadUserByUsername(anyString())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         //when
-        assertThatThrownBy(() -> interceptor.preHandle(request, response, mock(Object.class)))
+        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
                 //then
                 .isInstanceOf(AuthenticationException.class);
 
@@ -69,7 +68,7 @@ class SessionAuthenticationInterceptorTest {
         given(userDetailsService.loadUserByUsername(anyString())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         //when
-        boolean result = interceptor.preHandle(request, response, mock(Object.class));
+        boolean result = interceptor.preHandle(request, response, new Object());
 
         //then
         assertThat(result).isFalse();

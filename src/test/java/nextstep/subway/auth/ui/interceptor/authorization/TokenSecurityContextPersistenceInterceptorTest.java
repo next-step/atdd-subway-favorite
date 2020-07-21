@@ -57,7 +57,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
         given(userDetailsService.loadUserByUsername(anyString())).willReturn(mockMember);
 
         //when
-        boolean preHandle = interceptor.preHandle(request, response, mock(Object.class));
+        boolean preHandle = interceptor.preHandle(request, response, new Object());
 
         //then
         assertThat(preHandle).isTrue();
@@ -73,7 +73,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
         given(tokenProvider.validateToken(anyString())).willReturn(false);
 
         //when
-        boolean preHandle = interceptor.preHandle(request, response, mock(Object.class));
+        boolean preHandle = interceptor.preHandle(request, response, new Object());
 
         //then
         assertThat(preHandle).isTrue();
@@ -89,7 +89,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
         SecurityContextHolder.setContext(new SecurityContext(new Authentication(mockMember)));
 
         //when
-        interceptor.afterCompletion(request, response, mock(Object.class), null);
+        interceptor.afterCompletion(request, response, new Object(), null);
 
         //then
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
