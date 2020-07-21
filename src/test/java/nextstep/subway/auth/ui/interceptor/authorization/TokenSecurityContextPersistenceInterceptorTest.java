@@ -1,7 +1,5 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
@@ -20,11 +18,9 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("토큰 유효성 검사를 수행하고 토큰의 정보를 이용해 사용자를 인증한다 ")
 class TokenSecurityContextPersistenceInterceptorTest {
-    private static final String CREDENTIALS = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTk1MzM3MzEzfQ.wDN4IDXZluCbjthr2i9qrYUcsJXCcMuK_0ivAL4U44I";
-    private static final String PAYLOAD = "{\"sub\":\"subway.com\",\"name\":\"DaHyeon Lee\",\"iat\":1595337313}";
+    private static final String TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkaGxlZUB0ZXN0LmNvbSIsImFnZSI6MTAsImlhdCI6MTUxNjIzOTAyMn0.7mzHE7xlGhUU_FXS9gn7AhrNyFsmpb9zZhNCX3D4F9k";
+    private static final String PAYLOAD = "{\"id\":1,\"email\":\"dhlee@email.com\",\"age\":10}";
     private static final String EMAIL = "dhlee@email.com";
-    private static final String PASSWORD = "test1234";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private TokenSecurityContextPersistenceInterceptor tokenSecurityContextPersistenceInterceptor;
@@ -34,7 +30,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
 
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + CREDENTIALS);
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + TOKEN);
 
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
@@ -44,7 +40,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
 
     @Test
     @DisplayName("토큰이 포함된 요청의 경우 token 정보를 바탕으로 SecurityContext에 인증정보를 저장한다")
-    public void preHandleTest() throws JsonProcessingException {
+    public void preHandleTest() throws Exception {
         // when
         tokenSecurityContextPersistenceInterceptor.preHandle(request, response, new Object());
 
@@ -63,7 +59,6 @@ class TokenSecurityContextPersistenceInterceptorTest {
         // 계정 정보가 매칭되는지 확인
         LoginMember loginMember = (LoginMember) principal;
         assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
-        assertThat(loginMember.getPassword()).isEqualTo(PASSWORD);
     }
 
     @Test
