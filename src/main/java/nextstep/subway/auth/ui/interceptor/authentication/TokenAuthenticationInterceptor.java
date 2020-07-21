@@ -28,6 +28,7 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
 
     @Override
     public void applyAuthentication(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // TODO 이 메소드를 추상화 할 수는 없을까 with session auth interceptor
         AuthenticationToken authenticationToken = convertToken(request);
 
         Authentication authentication = authenticate(authenticationToken);
