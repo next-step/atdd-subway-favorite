@@ -1,6 +1,7 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -32,7 +33,7 @@ class TokenAuthenticationInterceptorTest {
     private MockHttpServletResponse response;
     private TokenAuthenticationInterceptor interceptor;
     private JwtTokenProvider jwtTokenProvider;
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @BeforeEach
     public void setUp() {
