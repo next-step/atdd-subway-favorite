@@ -1,9 +1,8 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -13,15 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService userDetailsService;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = new ObjectMapper();
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws JsonProcessingException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = extractToken(request);
 
         if (jwtTokenProvider.validateToken(token)) {
@@ -42,8 +41,9 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
         return AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
     }
 
-    private LoginMember getLoginMemberFromToken(String token) throws JsonProcessingException {
-        return objectMapper.readValue(jwtTokenProvider.getPayload(token), LoginMember.class);
+    private LoginMember getLoginMemberFromToken(String token) {
+        String payload = jwtTokenProvider.getPayload(token);
+        return userDetailsService.loadUserByUsername(payload);
     }
 
 }

@@ -5,6 +5,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
     private static final long ID = 1L;
 
     @Mock
+    private CustomUserDetailsService userDetailsService;
+
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     private TokenSecurityContextPersistenceInterceptor interceptor;
@@ -40,17 +44,19 @@ class TokenSecurityContextPersistenceInterceptorTest {
     @BeforeEach
     void setUp() {
         request = new MockHttpServletRequest();
+        setRequestHeader();
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
         expected = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
+        interceptor = new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider);
     }
 
     @Test
     void preHandler() throws Exception {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
-        when(jwtTokenProvider.getPayload(anyString())).thenReturn(objectMapper.writeValueAsString(expected));
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(EMAIL);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(expected);
 
         // when
         interceptor.preHandle(request, response, mock(Object.class));
@@ -89,4 +95,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
         SecurityContext context = SecurityContextHolder.getContext();
         return context.getAuthentication();
     }
+
+    private void setRequestHeader() {
+        request.addHeader("AUTHORIZATION", "Bearer ATDD");
+    }
+
 }
