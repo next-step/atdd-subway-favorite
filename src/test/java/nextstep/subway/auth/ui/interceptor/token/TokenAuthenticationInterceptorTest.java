@@ -51,7 +51,7 @@ class TokenAuthenticationInterceptorTest {
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
         loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
     }
 
     @DisplayName("토큰 인터셉터 테스트")
