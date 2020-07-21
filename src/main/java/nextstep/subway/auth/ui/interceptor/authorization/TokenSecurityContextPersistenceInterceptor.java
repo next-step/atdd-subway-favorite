@@ -1,10 +1,9 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
+import nextstep.subway.auth.application.UserDetail;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.domain.LoginMember;
-import nextstep.subway.member.dto.MemberResponse;
-import nextstep.subway.util.ConvertUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,9 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
+    private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -23,7 +24,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
         final String accessToken = extractToken(request);
         if (jwtTokenProvider.validateToken(accessToken)) {
             final String payload = jwtTokenProvider.getPayload(accessToken);
-            final LoginMember loginMember = convertPayloadToLoginMember(payload);
+            final UserDetail loginMember = userDetailsService.convertJsonToUserDetail(payload);
             final SecurityContext securityContext = buildSecurityContext(loginMember);
             SecurityContextHolder.setContext(securityContext);
         }
@@ -39,12 +40,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
         return AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
     }
 
-    private LoginMember convertPayloadToLoginMember(String payload) {
-        final MemberResponse memberResponse = ConvertUtils.convertJson2Object(payload, MemberResponse.class);
-        return new LoginMember(memberResponse.getId(), memberResponse.getEmail(), null, memberResponse.getAge());
-    }
-
-    private SecurityContext buildSecurityContext(LoginMember loginMember) {
+    private SecurityContext buildSecurityContext(UserDetail loginMember) {
         final Authentication authentication = new Authentication(loginMember);
         return new SecurityContext(authentication);
     }
