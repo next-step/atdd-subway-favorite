@@ -1,10 +1,7 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.AuthenticationException;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.apache.http.HttpStatus;
@@ -17,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,30 +25,26 @@ import static org.mockito.Mockito.mock;
 
 @DisplayName("Basic 방식 로그인 인터셉터 테스트 ")
 @ExtendWith(MockitoExtension.class)
-class TokenAuthenticationInterceptorTest {
+class SessionAuthenticationInterceptorTest {
 
     private static final String EMAIL = "email@email.com";
-    private static final int AGE = 20;
     private static final String PASSWORD = "password";
-    private static final String TOKEN = "accessToken";
+    private static final int AGE = 20;
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
-    @Mock
-    private JwtTokenProvider jwtTokenProvider;
-    @Mock
     private BasicAuthenticationConverter converter;
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private TokenAuthenticationInterceptor interceptor;
+    @Mock
+    private CustomUserDetailsService userDetailsService;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
+    private AbstractAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() {
         //given
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        interceptor = new TokenAuthenticationInterceptor(converter, customUserDetailsService, jwtTokenProvider, objectMapper);
+        interceptor = new SessionAuthenticationInterceptor(converter, userDetailsService);
     }
 
     @DisplayName("Basic방식으로 인증 실패시 에러를 던진다.")
@@ -58,13 +52,13 @@ class TokenAuthenticationInterceptorTest {
     void loginFailed() {
         //given
         given(converter.convert(any())).willReturn(new AuthenticationToken(EMAIL, "123"));
-        given(customUserDetailsService.loadUserByUsername(EMAIL))
-                .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
+        given(userDetailsService.loadUserByUsername(anyString())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         //when
         assertThatThrownBy(() -> interceptor.preHandle(request, response, mock(Object.class)))
                 //then
                 .isInstanceOf(AuthenticationException.class);
+
     }
 
     @DisplayName("Basic방식으로 인증 성공 시에 액세스 토큰을 응답한다.")
@@ -72,9 +66,7 @@ class TokenAuthenticationInterceptorTest {
     void login() throws Exception {
         //given
         given(converter.convert(any())).willReturn(new AuthenticationToken(EMAIL, PASSWORD));
-        given(customUserDetailsService.loadUserByUsername(EMAIL))
-                .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
-        given(jwtTokenProvider.createToken(anyString())).willReturn(TOKEN);
+        given(userDetailsService.loadUserByUsername(anyString())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         //when
         boolean result = interceptor.preHandle(request, response, mock(Object.class));
@@ -82,7 +74,7 @@ class TokenAuthenticationInterceptorTest {
         //then
         assertThat(result).isFalse();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.SC_OK);
-        assertThat(response.getContentAsByteArray()).isEqualTo(objectMapper.writeValueAsBytes(new TokenResponse(TOKEN)));
+        assertThat(request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY)).isNotNull();
     }
 
 

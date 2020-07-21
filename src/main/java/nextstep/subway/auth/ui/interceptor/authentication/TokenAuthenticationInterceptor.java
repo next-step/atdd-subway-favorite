@@ -1,49 +1,33 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.application.UserDetailsService;
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.exception.AuthenticationException;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
-import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Objects;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-
-    private static final String REGEX = ":";
-
-    private final CustomUserDetailsService customUserDetailsService;
+public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor(AuthenticationConverter converter, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        super(converter, userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        AuthenticationToken authenticationToken = convert(request);
-
-        authenticate(authenticationToken);
-
-        String token = getToken(authenticationToken);
+    protected void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        String token = getToken(authentication);
         TokenResponse tokenResponse = new TokenResponse(token);
 
         setSuccessfulResponse(response, tokenResponse);
-
-        return false;
     }
 
     private void setSuccessfulResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
@@ -53,30 +37,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.flushBuffer();
     }
 
-    private String getToken(AuthenticationToken authenticationToken) {
-        return jwtTokenProvider.createToken(authenticationToken.getPrincipal());
+    private String getToken(Authentication authentication) {
+        User userDetails = (User) authentication.getPrincipal();
+        return jwtTokenProvider.createToken(userDetails.getUsername());
     }
 
-    private void authenticate(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
-
-        if (Objects.isNull(loginMember)) {
-            throw new AuthenticationException();
-        }
-        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
-            throw new AuthenticationException();
-        }
-    }
-
-    private AuthenticationToken convert(HttpServletRequest request) {
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-
-        byte[] decodeBytes = Base64.getDecoder().decode(credentials);
-        String decodedCredentials = new String(decodeBytes);
-        String[] split = decodedCredentials.split(REGEX);
-        String username = split[0];
-        String password = split[1];
-
-        return new AuthenticationToken(username, password);
-    }
 }
