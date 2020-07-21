@@ -26,7 +26,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws JsonProcessingException {
         String token = extractToken(request);
 
-        if (!jwtTokenProvider.validateToken(token)) {
+        if (jwtTokenProvider.validateToken(token)) {
             return false;
         }
 

@@ -7,6 +7,7 @@ import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -64,12 +65,28 @@ class TokenSecurityContextPersistenceInterceptorTest {
                 () -> assertThat(actual.getEmail()).isEqualTo(expected.getEmail()),
                 () -> assertThat(actual.getAge()).isEqualTo(expected.getAge())
         );
+    }
 
+    @DisplayName("유효하지 못한 토큰 테스트")
+    @Test
+    void invalidToken() throws Exception {
+        // given
+        when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
+
+        // when
+        interceptor.preHandle(request, response, mock(Object.class));
+
+        // then
+        assertThat(getAuthentication()).isNull();
     }
 
     private LoginMember getLoginMember() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
+        Authentication authentication = getAuthentication();
         return (LoginMember) authentication.getPrincipal();
+    }
+
+    private Authentication getAuthentication() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        return context.getAuthentication();
     }
 }
