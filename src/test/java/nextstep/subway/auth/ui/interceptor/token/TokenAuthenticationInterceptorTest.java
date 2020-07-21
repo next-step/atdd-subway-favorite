@@ -56,7 +56,7 @@ class TokenAuthenticationInterceptorTest {
 
     @DisplayName("토큰 인터셉터 테스트")
     @Test
-    void testPreHandle() throws Exception {
+    void preHandle() throws Exception {
         // given
         addBasicAuthHeader(EMAIL, PASSWORD);
         when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
