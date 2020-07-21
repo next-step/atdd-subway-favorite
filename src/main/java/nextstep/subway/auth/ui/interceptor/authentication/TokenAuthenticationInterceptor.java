@@ -10,14 +10,13 @@ import nextstep.subway.auth.ui.interceptor.authentication.converter.Authenticati
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     
     private ObjectMapper objectMapper;
     private JwtTokenProvider jwtTokenProvider;
@@ -37,8 +36,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         AuthenticationToken token = authenticationConverter.convert(request);
         Authentication authentication = authenticate(token);
-        TokenResponse tokenResponse = createTokenResponse(authentication);
-        respond(response, tokenResponse);
+        afterAuthentication(request, response, authentication);
         return false;
     }
 
@@ -58,6 +56,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        TokenResponse tokenResponse = createTokenResponse(authentication);
+        respond(response, tokenResponse);
     }
 
     private TokenResponse createTokenResponse(Authentication authentication) throws JsonProcessingException {

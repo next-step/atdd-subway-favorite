@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.io.IOException;
+
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -59,7 +61,7 @@ class SessionAuthenticationInterceptorTest {
 
     @DisplayName("Session에 유저 정보를 저장한다")
     @Test
-    void response() {
+    void response() throws IOException {
         // given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 10);
         when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
