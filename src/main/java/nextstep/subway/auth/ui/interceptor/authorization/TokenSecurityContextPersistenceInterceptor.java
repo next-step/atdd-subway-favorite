@@ -10,8 +10,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
-
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -27,15 +25,11 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
         String token = extractToken(request);
 
         if (jwtTokenProvider.validateToken(token)) {
-            return false;
-        }
-
-        LoginMember loginMember = getLoginMemberFromToken(token);
-
-        SecurityContext securityContext = new SecurityContext(new Authentication(loginMember));
-        if (securityContext != null) {
+            LoginMember loginMember = getLoginMemberFromToken(token);
+            SecurityContext securityContext = new SecurityContext(new Authentication(loginMember));
             SecurityContextHolder.setContext(securityContext);
         }
+
         return true;
     }
 
