@@ -2,6 +2,7 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class TokenSecurityContextPersistenceInterceptor  implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
@@ -26,7 +27,7 @@ public class TokenSecurityContextPersistenceInterceptor  implements HandlerInter
         String token = extractToken(request);
         LoginMember loginMember = getLoginMemberFromToken(token);
 
-        SecurityContext securityContext = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        SecurityContext securityContext = new SecurityContext(new Authentication(loginMember));
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }
