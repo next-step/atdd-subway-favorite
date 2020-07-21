@@ -1,5 +1,7 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.application.converter.AuthenticationConverter;
+import nextstep.subway.auth.application.converter.TokenAuthenticationConverter;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -31,6 +33,8 @@ class TokenAuthenticationInterceptorTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
+    private AuthenticationConverter converter = new TokenAuthenticationConverter();
+
     @Mock
     private CustomUserDetailsService userDetailsService;
 
@@ -42,7 +46,7 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        interceptor = new TokenAuthenticationInterceptor(converter, userDetailsService, jwtTokenProvider);
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
