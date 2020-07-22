@@ -28,11 +28,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
         //when
-        ExtractableResponse<Response> modifyResponse = 회원_정보_수정_요청(createResponse, tokenResponse, EMAIL, "new" + PASSWORD, AGE);
+        ExtractableResponse<Response> modifyResponse = 회원_정보_수정_요청(tokenResponse, EMAIL, "new" + PASSWORD, AGE);
         // then
         회원_정보_수정됨(modifyResponse);
         // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse, tokenResponse);
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(tokenResponse);
         // then
         회원_삭제됨(deleteResponse);
     }
