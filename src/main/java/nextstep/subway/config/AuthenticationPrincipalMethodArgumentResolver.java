@@ -2,8 +2,8 @@ package nextstep.subway.config;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.auth.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -19,7 +19,7 @@ public class AuthenticationPrincipalMethodArgumentResolver implements HandlerMet
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class) &&
-                Objects.equals(parameter.getParameterType(), LoginMember.class);
+                Objects.equals(parameter.getParameterType(), UserDetails.class);
     }
 
     @Override

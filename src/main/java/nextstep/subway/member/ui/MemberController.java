@@ -1,8 +1,8 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.member.application.MemberService;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
@@ -33,13 +33,13 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember principal) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserDetails principal) {
         return ResponseEntity.ok().body(memberService.findMember(principal.getId()));
     }
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMemberWithToken(@PathVariable Long id, @RequestBody MemberRequest param,
-                                                                @AuthenticationPrincipal LoginMember principal) {
+                                                                @AuthenticationPrincipal UserDetails principal) {
         if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -49,7 +49,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMemberWithToken(@PathVariable Long id, @AuthenticationPrincipal LoginMember principal) {
+    public ResponseEntity<MemberResponse> deleteMemberWithToken(@PathVariable Long id, @AuthenticationPrincipal UserDetails principal) {
         if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

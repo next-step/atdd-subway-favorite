@@ -1,16 +1,16 @@
 package nextstep.subway.auth.domain;
 
 public class Authentication {
-    private Object principal;
+    private UserDetails principal;
 
     public Authentication() {
     }
 
-    public Authentication(Object principal) {
+    public Authentication(UserDetails principal) {
         this.principal = principal;
     }
 
-    public Object getPrincipal() {
+    public UserDetails getPrincipal() {
         return principal;
     }
 }

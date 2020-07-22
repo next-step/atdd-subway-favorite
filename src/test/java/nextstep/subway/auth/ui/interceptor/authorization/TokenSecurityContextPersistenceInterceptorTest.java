@@ -1,9 +1,9 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.auth.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +29,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
     @Test
     void preHandleWhenJwtTokenIsValid() throws Exception {
         // given
-        LoginMember loginMember = new LoginMember(1L, "email@email.com", "password", 20);
+        UserDetails userDetails = new UserDetails(1L, "email@email.com", "password", 20);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
-        when(jwtTokenProvider.getPayload(anyString())).thenReturn(new ObjectMapper().writeValueAsString(loginMember));
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(new ObjectMapper().writeValueAsString(userDetails));
 
         // when
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -39,8 +39,8 @@ class TokenSecurityContextPersistenceInterceptorTest {
         interceptor.preHandle(request, response, new Object());
 
         // then
-        LoginMember principal = (LoginMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        assertThat(principal.getId()).isEqualTo(loginMember.getId());
+        UserDetails principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        assertThat(principal.getId()).isEqualTo(userDetails.getId());
     }
 
     @DisplayName("preHandle은 JwtToken이 유효하지 않으면 SecurityContext를 SecurityContextHolder에 담지 않는다")
@@ -62,9 +62,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
     @Test
     void afterCompletionClearsSecurityContext() throws Exception {
         // given
-        LoginMember loginMember = new LoginMember(1L, "email@email.com", "password", 20);
+        UserDetails userDetails = new UserDetails(1L, "email@email.com", "password", 20);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
-        when(jwtTokenProvider.getPayload(anyString())).thenReturn(new ObjectMapper().writeValueAsString(loginMember));
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(new ObjectMapper().writeValueAsString(userDetails));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

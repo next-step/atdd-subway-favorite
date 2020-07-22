@@ -3,7 +3,7 @@ package nextstep.subway.config;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authorization.TokenSecurityContextPersistenceInterceptor;
-import nextstep.subway.auth.application.CustomUserDetailsService;
+import nextstep.subway.member.application.CustomUserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

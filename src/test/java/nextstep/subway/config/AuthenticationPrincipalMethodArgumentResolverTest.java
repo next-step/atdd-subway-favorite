@@ -2,9 +2,10 @@ package nextstep.subway.config;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +29,11 @@ class AuthenticationPrincipalMethodArgumentResolverTest {
 
     @DisplayName("supportsParameter는 parameter의 annotation이 AuthenticationPrincipal이고 타입이 LoginMember이면 true를 리턴한다")
     @Test
-    void supportsParameterReturnsTrue() throws Exception {
+    void supportsParameterReturnsTrue() {
         // given
         MethodParameter methodParameter = mock(MethodParameter.class);
         when(methodParameter.hasParameterAnnotation(AuthenticationPrincipal.class)).thenReturn(true);
-        doReturn(LoginMember.class).when(methodParameter).getParameterType();
+        doReturn(UserDetails.class).when(methodParameter).getParameterType();
 
         // when
         boolean supports = resolver.supportsParameter(methodParameter);
@@ -43,10 +44,10 @@ class AuthenticationPrincipalMethodArgumentResolverTest {
 
     @DisplayName("supportsParameter는 parameter의 annotation이 AuthenticationPrincipal이 아니면 false를 리턴한다")
     @Test
-    void supportsParameterReturnsFalse1() throws Exception {
+    void supportsParameterReturnsFalse1() {
         // given
         MethodParameter methodParameter = mock(MethodParameter.class);
-        doReturn(LoginMember.class).when(methodParameter).getParameterType();
+        doReturn(UserDetails.class).when(methodParameter).getParameterType();
 
         when(methodParameter.hasParameterAnnotation(AuthenticationPrincipal.class)).thenReturn(false);
 
@@ -59,7 +60,7 @@ class AuthenticationPrincipalMethodArgumentResolverTest {
 
     @DisplayName("supportsParameter는 parameter의 타입이 LoginMember가 아니면 false를 리턴한다")
     @Test
-    void supportsParameterReturnsFalse2() throws Exception {
+    void supportsParameterReturnsFalse2() {
         // given
         MethodParameter methodParameter = mock(MethodParameter.class);
         when(methodParameter.hasParameterAnnotation(AuthenticationPrincipal.class)).thenReturn(false);
