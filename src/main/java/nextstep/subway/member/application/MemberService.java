@@ -1,9 +1,7 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.exception.AuthorizationException;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -48,12 +46,4 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void checkPermission(User user, Long id) {
-        if (Objects.isNull(user)) {
-            throw new AuthorizationException();
-        }
-        if (!Objects.equals(id, user.getId())) {
-            throw new AuthorizationException();
-        }
-    }
 }

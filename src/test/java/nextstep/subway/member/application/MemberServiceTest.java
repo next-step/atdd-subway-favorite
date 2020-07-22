@@ -1,6 +1,5 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.auth.exception.AuthorizationException;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
@@ -18,7 +17,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -98,16 +96,6 @@ class MemberServiceTest {
 
         //then
         verify(member).update(any());
-    }
-
-    @Test
-    @DisplayName("요청한 권한과 실제 로그인된 권한 체크시 문제가 있으면 에러가 발생한다.")
-    void updateMemberNoPermission() {
-        assertThatThrownBy(() ->
-                //when
-                memberService.checkPermission(new LoginMember(1L, EMAIL, PASSWORD, AGE), 4L))
-                //then
-                .isInstanceOf(AuthorizationException.class);
     }
 
     @DisplayName("멤버의 id로 멤버를 삭제한다.")

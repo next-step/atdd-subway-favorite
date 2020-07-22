@@ -2,6 +2,7 @@ package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.infrastructure.AuthUser;
+import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
@@ -37,17 +38,15 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findMemberByEmail(user.getUsername()));
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@AuthUser User user, @PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.checkPermission(user, id);
-        memberService.updateMember(id, param);
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> updateMember(@AuthUser User user, @RequestBody MemberRequest param) {
+        memberService.updateMember(user.getId(), param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@AuthUser User user, @PathVariable Long id) {
-        memberService.checkPermission(user, id);
-        memberService.deleteMember(id);
+    @DeleteMapping("/members/me")
+    public ResponseEntity<MemberResponse> deleteMember(@AuthUser User user) {
+        memberService.deleteMember(user.getId());
         return ResponseEntity.noContent().build();
     }
 }
