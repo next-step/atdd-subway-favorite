@@ -3,13 +3,18 @@ package nextstep.subway.auth.ui.interceptor.authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public interface AuthenticationTokenExtractor {
-    String USERNAME_PARAMETER_NAME = "username";
-    String PASSWORD_PARAMTER_NAME = "password";
+    String USERNAME_FIELD = "username";
+    String PASSWORD_FIELD = "password";
 
     static AuthenticationTokenExtractor of(Type type) {
-        return null;
+        try {
+            return type.clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("", e);
+        }
     }
 
     AuthenticationToken extract(HttpServletRequest request);
@@ -29,7 +34,10 @@ public interface AuthenticationTokenExtractor {
 
         @Override
         public AuthenticationToken extract(HttpServletRequest request) {
-            return null;
+            String principal = request.getParameter(USERNAME_FIELD);
+            String credentials = request.getParameter(PASSWORD_FIELD);
+
+            return new AuthenticationToken(principal, credentials);
         }
     }
 }
