@@ -128,6 +128,11 @@ public class MemberAcceptanceStep {
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
+    public static TokenResponse 로그인_되어있음(String email, String password) {
+        ExtractableResponse<Response> loginResponse = 로그인_요청(email, password);
+        로그인_됨(loginResponse);
+        return loginResponse.as(TokenResponse.class);
+    }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

@@ -3,7 +3,9 @@ package nextstep.subway.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.acceptance.MemberAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
 import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
 
@@ -27,6 +29,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long stationId2;
     private Long stationId3;
     private Long stationId4;
+    private TokenResponse tokenResponse;
 
     /**
      * 교대역      -      강남역
@@ -63,10 +66,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(lineId3, stationId1, stationId4, 1, 2);
         지하철_노선에_지하철역_등록되어_있음(lineId3, stationId4, stationId3, 2, 2);
 
-        회원_등록되어_있음(EMAIL, PASSWORD, 20);
-
-        // 로그인_되어있음
+        tokenResponse = 로그인_되어있음(EMAIL, PASSWORD);
     }
+
 
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
