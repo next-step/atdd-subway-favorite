@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
     public SessionAuthenticationInterceptor(AuthenticationProvider authenticationProvider) {
         super(authenticationProvider, AuthenticationTokenExtractor.of(AuthenticationTokenExtractor.Type.FORM_LOGIN));

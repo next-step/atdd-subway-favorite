@@ -7,11 +7,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AbstractSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class SecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
     protected final SecurityContextPersistenceHandler persistenceHandler;
 
-    public AbstractSecurityContextPersistenceInterceptor(SecurityContextPersistenceHandler persistenceHandler) {
+    public SecurityContextPersistenceInterceptor(SecurityContextPersistenceHandler persistenceHandler) {
         this.persistenceHandler = persistenceHandler;
     }
 
