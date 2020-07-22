@@ -21,7 +21,7 @@ public interface AuthenticationTokenExtractor {
 
     enum Type {
         FORM_LOGIN(FormLoginExtractor.class),
-        ;
+        BASIC(BasicAuthorizationExtractor.class);
 
         private final Class<? extends AuthenticationTokenExtractor> clazz;
 
@@ -38,6 +38,13 @@ public interface AuthenticationTokenExtractor {
             String credentials = request.getParameter(PASSWORD_FIELD);
 
             return new AuthenticationToken(principal, credentials);
+        }
+    }
+
+    class BasicAuthorizationExtractor implements AuthenticationTokenExtractor {
+        @Override
+        public AuthenticationToken extract(HttpServletRequest request) {
+            return null;
         }
     }
 }
