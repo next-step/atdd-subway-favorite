@@ -71,13 +71,4 @@ class TokenAuthenticationInterceptorTest {
         assertThat(tokenResponse).isNotNull();
         assertThat(tokenResponse.getAccessToken()).isNotEmpty();
     }
-
-    @Test
-    @DisplayName("token stirng으로부터 AuthenticationToken으로 변환한다")
-    void convertToken() {
-        AuthenticationToken authenticationToken = interceptor.convertToken(request);
-
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
 }
