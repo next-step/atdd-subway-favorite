@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.application.AuthenticationProvider;
 import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
@@ -12,10 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final UserDetailsService userDetailsService;
+    protected final AuthenticationProvider authenticationProvider;
 
-    public AbstractAuthenticationInterceptor(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public AbstractAuthenticationInterceptor(AuthenticationProvider authenticationProvider) {
+
+        this.authenticationProvider = authenticationProvider;
     }
 
     @Override
@@ -34,23 +36,4 @@ abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
      * @throws Exception
      */
     protected abstract void applyAuthentication(HttpServletRequest request, HttpServletResponse response) throws Exception;
-
-    protected Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        // TODO UserDesignService를 직접 참고하기보다는 Auth Provider같은걸로 리팩토링을 끼얹나
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
-
-        return new Authentication(userDetails);
-    }
-
-    protected void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new RuntimeException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
-        }
-    }
 }

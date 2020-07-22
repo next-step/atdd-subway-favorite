@@ -1,7 +1,9 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.AuthenticationProvider;
 import nextstep.subway.auth.application.UserDetailsService;
+import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -16,7 +18,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +35,7 @@ class TokenAuthenticationInterceptorTest {
     private MockHttpServletResponse response;
     private TokenAuthenticationInterceptor interceptor;
     private JwtTokenProvider jwtTokenProvider;
-    private UserDetailsService userDetailsService;
+    private AuthenticationProvider authenticationProvider;
 
     @BeforeEach
     public void setUp() {
@@ -47,10 +49,10 @@ class TokenAuthenticationInterceptorTest {
 
         jwtTokenProvider = mock(JwtTokenProvider.class);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(TEMP_TOKEN);
-        userDetailsService = mock(CustomUserDetailsService.class);
-        when(userDetailsService.loadUserByUsername(anyString())).thenReturn(loginMember);
+        authenticationProvider = mock(AuthenticationProvider.class);
+        when(authenticationProvider.authenticate(any())).thenReturn(new Authentication(loginMember));
 
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        interceptor = new TokenAuthenticationInterceptor(authenticationProvider, jwtTokenProvider);
     }
 
     @Test
