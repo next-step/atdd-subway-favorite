@@ -1,18 +1,17 @@
-package nextstep.subway.auth.ui.interceptor.token;
+package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -51,12 +50,12 @@ class TokenAuthenticationInterceptorTest {
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
         loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
     }
 
     @DisplayName("토큰 인터셉터 테스트")
     @Test
-    void testPreHandle() throws Exception {
+    void preHandle() throws Exception {
         // given
         addBasicAuthHeader(EMAIL, PASSWORD);
         when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);

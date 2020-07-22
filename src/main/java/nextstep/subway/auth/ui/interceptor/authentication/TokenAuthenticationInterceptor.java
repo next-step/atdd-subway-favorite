@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui.interceptor.token;
+package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +25,10 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return new AuthenticationToken(principal, credentials);
     }
 
-    public Authentication authenticate(AuthenticationToken token) {
+    private Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
         LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
