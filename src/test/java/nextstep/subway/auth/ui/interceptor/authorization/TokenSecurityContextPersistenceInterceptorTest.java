@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
+import nextstep.subway.auth.application.SecurityContextPersistenceHandler;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
@@ -24,6 +25,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private TokenSecurityContextPersistenceInterceptor tokenSecurityContextPersistenceInterceptor;
+    private SecurityContextPersistenceHandler persistenceHandler;
 
     @BeforeEach
     void setUp() {
@@ -35,30 +37,35 @@ class TokenSecurityContextPersistenceInterceptorTest {
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(PAYLOAD);
-        tokenSecurityContextPersistenceInterceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
+        persistenceHandler = mock(SecurityContextPersistenceHandler.class);
+        tokenSecurityContextPersistenceInterceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider, persistenceHandler);
     }
 
     @Test
     @DisplayName("토큰이 포함된 요청의 경우 token 정보를 바탕으로 SecurityContext에 인증정보를 저장한다")
     public void preHandleTest() throws Exception {
+        doAnswer(invocation -> {
+            SecurityContext securityContext = invocation.getArgument(0);
+            Authentication authentication = securityContext.getAuthentication();
+            assertThat(authentication).isNotNull();
+
+            // principal 저장 여부 확
+            Object principal = authentication.getPrincipal();
+            assertThat(principal).isNotNull();
+            assertThat(principal).isInstanceOf(LoginMember.class);
+
+            // 계정 정보가 매칭되는지 확인
+            LoginMember loginMember = (LoginMember) principal;
+            assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
+            return null;
+        }).when(persistenceHandler).persist(any(SecurityContext.class));
+
         // when
         tokenSecurityContextPersistenceInterceptor.preHandle(request, response, new Object());
 
         // then
         // 인증 정보 저장 확인
-        // 여기에 하나 궁금해지는게 외부의 동작을 알고 검증하는게 과연 좋은 테스트 일가
-        // 차라리 setContext를 powermock으로 검증하는게 맞을까....
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        assertThat(authentication).isNotNull();
-
-        // principal 저장 여부 확
-        Object principal = authentication.getPrincipal();
-        assertThat(principal).isNotNull();
-        assertThat(principal).isInstanceOf(LoginMember.class);
-
-        // 계정 정보가 매칭되는지 확인
-        LoginMember loginMember = (LoginMember) principal;
-        assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
+        verify(persistenceHandler).persist(any(SecurityContext.class));
     }
 
     @Test
