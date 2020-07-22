@@ -6,7 +6,6 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.converter.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationInterceptor(JwtTokenProvider jwtTokenProvider,
-                                          CustomUserDetailsService userDetailsService,
+                                          UserDetailsService userDetailsService,
                                           AuthenticationConverter authenticationConverter) {
         super(userDetailsService, authenticationConverter);
         this.objectMapper = new ObjectMapper();
