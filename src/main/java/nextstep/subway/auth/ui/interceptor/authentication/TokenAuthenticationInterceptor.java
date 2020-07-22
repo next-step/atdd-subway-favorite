@@ -2,14 +2,14 @@ package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,10 +20,10 @@ import java.io.PrintWriter;
 import java.util.Base64;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private CustomUserDetailsService userDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -63,13 +63,13 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new RuntimeException();
         }
