@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.ui.interceptor.authentication.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

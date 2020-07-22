@@ -3,7 +3,7 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.ui.interceptor.authentication.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

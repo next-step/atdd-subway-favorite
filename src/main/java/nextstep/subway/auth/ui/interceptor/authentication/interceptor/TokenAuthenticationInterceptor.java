@@ -1,10 +1,11 @@
-package nextstep.subway.auth.ui.interceptor.authentication;
+package nextstep.subway.auth.ui.interceptor.authentication.interceptor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.interceptor.authentication.UserDetailsService;
 import nextstep.subway.auth.ui.interceptor.authentication.converter.AuthenticationConverter;
 import org.springframework.http.MediaType;
 

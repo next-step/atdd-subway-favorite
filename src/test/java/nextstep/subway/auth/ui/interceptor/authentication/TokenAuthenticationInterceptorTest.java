@@ -5,7 +5,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.converter.AuthenticationConverter;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.ui.interceptor.authentication.interceptor.TokenAuthenticationInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,10 @@
-package nextstep.subway.auth.ui.interceptor.authentication;
+package nextstep.subway.auth.ui.interceptor.authentication.interceptor;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.ui.interceptor.authentication.LoginMember;
+import nextstep.subway.auth.ui.interceptor.authentication.UserDetailsService;
 import nextstep.subway.auth.ui.interceptor.authentication.converter.AuthenticationConverter;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
