@@ -15,6 +15,7 @@ import java.util.Optional;
 @RestController
 public class MemberController {
     private final MemberService memberService;
+    // TODO 마음에 들지 않는다............ ArgumentResolver로 해결하자
     private final AuthenticationService authenticationService;
 
     public MemberController(MemberService memberService, AuthenticationService authenticationService) {

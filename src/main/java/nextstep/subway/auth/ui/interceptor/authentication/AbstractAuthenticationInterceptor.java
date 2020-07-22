@@ -39,6 +39,7 @@ abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
 
     protected Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
+        // TODO UserDesignService를 직접 참고하기보다는 Auth Provider같은걸로 리팩토링을 끼얹나
         LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
