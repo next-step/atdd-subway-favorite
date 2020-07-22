@@ -5,6 +5,8 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -15,7 +17,7 @@ public class AuthenticatedUserDetailsMethodArgumentResolver implements HandlerMe
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasMethodAnnotation(AuthenticationPrincipal.class) &&
+        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class) &&
                 parameter.getParameterType().equals(UserDetail.class);
     }
 
@@ -23,6 +25,7 @@ public class AuthenticatedUserDetailsMethodArgumentResolver implements HandlerMe
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         final SecurityContext context = SecurityContextHolder.getContext();
         final Authentication authentication = context.getAuthentication();
-        return authentication.getPrincipal();
+        final MemberResponse memberResponse = (MemberResponse) authentication.getPrincipal();
+        return new LoginMember(memberResponse.getId(), memberResponse.getEmail(), null, memberResponse.getAge());
     }
 }

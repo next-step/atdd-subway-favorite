@@ -4,6 +4,7 @@ import nextstep.subway.auth.application.UserDetail;
 import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,8 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     }
 
     private SecurityContext buildSecurityContext(UserDetail loginMember) {
-        final Authentication authentication = new Authentication(loginMember);
+        final MemberResponse memberResponse = new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
+        final Authentication authentication = new Authentication(memberResponse);
         return new SecurityContext(authentication);
     }
 }

@@ -1,8 +1,8 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import nextstep.subway.auth.application.UserDetail;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +31,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        final LoginMember loginMember = (LoginMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge()));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserDetail userDetail) {
+        return ResponseEntity.ok(new MemberResponse(userDetail.getId(), userDetail.getEmail(), userDetail.getAge()));
     }
 
     @PutMapping("/members/{id}")
