@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.application.AuthenticationProvider;
 import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
@@ -16,14 +17,14 @@ public class SessionAuthenticationInterceptor extends AbstractAuthenticationInte
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService) {
-        super(userDetailsService);
+    public SessionAuthenticationInterceptor(AuthenticationProvider authenticationProvider) {
+        super(authenticationProvider);
     }
 
     @Override
     public void applyAuthentication(HttpServletRequest request, HttpServletResponse response) {
         AuthenticationToken token = convert(request);
-        Authentication authentication = authenticate(token);
+        Authentication authentication = authenticationProvider.authenticate(token);
 
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));

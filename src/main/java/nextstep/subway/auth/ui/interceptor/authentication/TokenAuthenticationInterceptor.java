@@ -2,6 +2,7 @@ package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.AuthenticationProvider;
 import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
@@ -19,12 +20,11 @@ import java.io.IOException;
 public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
 
     private static final String CREDENTIAL_DELIMITER = ":";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
-        super(userDetailsService);
+    public TokenAuthenticationInterceptor(AuthenticationProvider authenticationProvider, JwtTokenProvider jwtTokenProvider) {
+        super(authenticationProvider);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -33,7 +33,7 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
         // TODO 이 메소드를 추상화 할 수는 없을까 with session auth interceptor
         AuthenticationToken authenticationToken = convertToken(request);
 
-        Authentication authentication = authenticate(authenticationToken);
+        Authentication authentication = authenticationProvider.authenticate(authenticationToken);
 
         TokenResponse tokenResponse = obtainAuthenticationTokenResponse(authentication);
 
