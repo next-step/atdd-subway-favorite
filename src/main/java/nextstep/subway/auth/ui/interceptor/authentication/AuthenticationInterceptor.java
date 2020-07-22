@@ -8,12 +8,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
+abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     protected final AuthenticationProvider authenticationProvider;
     private final AuthenticationTokenExtractor authenticationTokenExtractor;
 
-    public AbstractAuthenticationInterceptor(AuthenticationProvider authenticationProvider, AuthenticationTokenExtractor authenticationTokenExtractor) {
+    public AuthenticationInterceptor(AuthenticationProvider authenticationProvider, AuthenticationTokenExtractor authenticationTokenExtractor) {
 
         this.authenticationProvider = authenticationProvider;
         this.authenticationTokenExtractor = authenticationTokenExtractor;

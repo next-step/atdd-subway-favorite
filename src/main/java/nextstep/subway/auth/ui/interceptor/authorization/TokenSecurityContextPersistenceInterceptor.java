@@ -13,7 +13,7 @@ import nextstep.subway.utils.ObjectMapperUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurityContextPersistenceInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextPersistenceInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
 

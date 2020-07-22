@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionSecurityContextPersistenceInterceptor extends AbstractSecurityContextPersistenceInterceptor {
+public class SessionSecurityContextPersistenceInterceptor extends SecurityContextPersistenceInterceptor {
     public SessionSecurityContextPersistenceInterceptor(SecurityContextPersistenceHandler persistenceHandler) {
         super(persistenceHandler);
     }

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private static final String CREDENTIAL_DELIMITER = ":";
 
