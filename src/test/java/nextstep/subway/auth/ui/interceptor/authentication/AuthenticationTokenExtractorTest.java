@@ -17,8 +17,8 @@ class AuthenticationTokenExtractorTest {
         // given
         AuthenticationTokenExtractor authenticationTokenExtractor = AuthenticationTokenExtractor.of(AuthenticationTokenExtractor.Type.FORM_LOGIN);
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setParameter(AuthenticationTokenExtractor.USERNAME_PARAMETER_NAME, EMAIL);
-        request.setParameter(AuthenticationTokenExtractor.PASSWORD_PARAMTER_NAME, PASSWORD);
+        request.setParameter(AuthenticationTokenExtractor.USERNAME_FIELD, EMAIL);
+        request.setParameter(AuthenticationTokenExtractor.PASSWORD_FIELD, PASSWORD);
 
         // when
         AuthenticationToken authenticationToken = authenticationTokenExtractor.extract(request);
