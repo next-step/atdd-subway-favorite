@@ -38,7 +38,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMemberWithToken(@PathVariable Long id, @RequestBody MemberRequest param,
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param,
                                                                 @AuthenticationPrincipal UserDetails principal) {
         if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -49,7 +49,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMemberWithToken(@PathVariable Long id, @AuthenticationPrincipal UserDetails principal) {
+    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id, @AuthenticationPrincipal UserDetails principal) {
         if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
