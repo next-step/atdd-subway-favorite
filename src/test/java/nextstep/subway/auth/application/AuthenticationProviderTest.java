@@ -50,10 +50,21 @@ class AuthenticationProviderTest {
     }
 
     @Test
-    @DisplayName("인증정보가 틀린 사용자 검증")
+    @DisplayName("인증정보가 틀린 사용자인 경우 오류를 던진다.")
     public void authenticateFailTest() {
         // given
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, "invalid password");
+
+        // when
+        assertThatThrownBy(() -> authenticationProvider.authenticate(authenticationToken))
+                .isInstanceOf(InvalidAuthenticationTokenException.class);
+    }
+
+    @Test
+    @DisplayName("잘못된 principal로 인증하는 경우 오류를 던진다.")
+    public void authenticateFailTest2() {
+        // given
+        AuthenticationToken authenticationToken = new AuthenticationToken("unknown user", "invalid password");
 
         // when
         assertThatThrownBy(() -> authenticationProvider.authenticate(authenticationToken))
