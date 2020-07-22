@@ -2,11 +2,14 @@ package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.exception.InvalidAuthenticationTokenException;
 import nextstep.subway.member.domain.LoginMember;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -17,15 +20,19 @@ class AuthenticationProviderTest {
     private static final String EMAIL = "dhlee@test.com";
     private static final String PASSWORD = "Pas5W0rb12$%";
     private static final Integer AGE = 10;
+    private AuthenticationProvider authenticationProvider;
 
-
-    @Test
-    @DisplayName("인증정보를 제공하기 위한 클래스")
-    public void authenticateTest() {
+    @BeforeEach
+    void setUp() {
         UserDetailsService userDetailService = mock(UserDetailsService.class);
         when(userDetailService.loadUserByUsername(anyString())).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
+        authenticationProvider = new AuthenticationProvider(userDetailService);
+    }
+
+    @Test
+    @DisplayName("정상적으로 인증된 사용자의 인증정보를 받아온다.")
+    public void authenticateTest() {
         // given
-        AuthenticationProvider authenticationProvider = new AuthenticationProvider(userDetailService);
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when
@@ -40,6 +47,16 @@ class AuthenticationProviderTest {
         assertThat(loginMember.getId()).isEqualTo(ID);
         assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
         assertThat(loginMember.getAge()).isEqualTo(AGE);
+    }
 
+    @Test
+    @DisplayName("인증정보가 틀린 사용자 검증")
+    public void authenticateFailTest() {
+        // given
+        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, "invalid password");
+
+        // when
+        assertThatThrownBy(() -> authenticationProvider.authenticate(authenticationToken))
+                .isInstanceOf(InvalidAuthenticationTokenException.class);
     }
 }
