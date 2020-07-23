@@ -71,7 +71,6 @@ class TokenAuthenticationInterceptorTest {
         );
     }
 
-
     private void addBasicAuthHeader(String email, String password) {
         byte[] targetBytes = (email + REGEX + password).getBytes();
         byte[] encodedBytes = Base64.getEncoder().encode(targetBytes);

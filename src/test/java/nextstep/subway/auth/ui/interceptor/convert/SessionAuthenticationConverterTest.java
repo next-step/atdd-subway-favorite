@@ -10,11 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SessionAuthenticationConverterTest {
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     private SessionAuthenticationConverter converter;
     private MockHttpServletRequest request;
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class SessionAuthenticationConverterTest {
 
     @DisplayName("username이 없을시 에러 발생")
     @Test
-    void withOutUsername() {
+    void convertWithOutUsername() {
         request.addParameter("password", PASSWORD);
 
         assertThatThrownBy(() -> converter.convert(request))
@@ -48,7 +48,7 @@ class SessionAuthenticationConverterTest {
 
     @DisplayName("password가 없을시 에러 발생")
     @Test
-    void withOutPassword() {
+    void convertWithOutPassword() {
         request.addParameter("username", USERNAME);
 
         assertThatThrownBy(() -> converter.convert(request))
