@@ -1,19 +1,22 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.config.BaseEntity;
+import nextstep.subway.member.domain.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Favorite extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long sourceStationId;
     private Long targetStationId;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     public Favorite() {
     }
@@ -21,6 +24,12 @@ public class Favorite extends BaseEntity {
     public Favorite(Long sourceStationId, Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+    }
+
+    public Favorite(Long sourceStationId, Long targetStationId, Member member) {
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
+        this.member = member;
     }
 
     public Long getId() {
@@ -33,5 +42,9 @@ public class Favorite extends BaseEntity {
 
     public Long getTargetStationId() {
         return targetStationId;
+    }
+
+    public boolean isOwnedBy(Member member) {
+        return this.member.equals(member);
     }
 }
