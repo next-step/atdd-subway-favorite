@@ -1,7 +1,5 @@
 package nextstep.subway.auth.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -10,7 +8,6 @@ import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Map;
@@ -71,14 +68,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, newAge);
     }
 
-    private ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, Map<String, String> newMyInfo) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .contentType(ContentType.JSON)
-                .body(newMyInfo)
-                .put("/members/me")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+    @DisplayName("회원 정보 삭제")
+    @Test
+    void deleteMyInfo() {
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        내_회원_정보_삭제_요청(tokenResponse);
+
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+
+        회원_삭제됨(response);
     }
 }

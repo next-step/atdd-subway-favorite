@@ -2,6 +2,7 @@ package nextstep.subway.member.acceptance.step;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -119,6 +120,27 @@ public class MemberAcceptanceStep {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, Map<String, String> newMyInfo) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(ContentType.JSON)
+                .body(newMyInfo)
+                .put("/members/me")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(ContentType.JSON)
+                .delete("/members/me")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {
