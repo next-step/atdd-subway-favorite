@@ -17,7 +17,6 @@ import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그
 import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
 import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
-
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
