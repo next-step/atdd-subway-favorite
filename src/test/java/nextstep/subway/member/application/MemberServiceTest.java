@@ -1,8 +1,5 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.exception.AuthorizationException;
-import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
@@ -20,7 +17,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -92,7 +88,6 @@ class MemberServiceTest {
     @DisplayName("멤버의 필드값은 업데이트 한다.")
     void updateMember() {
         //given
-        setUpSecurityContext();
         Member member = mock(Member.class);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
@@ -103,25 +98,9 @@ class MemberServiceTest {
         verify(member).update(any());
     }
 
-    @Test
-    @DisplayName("현재 로그인된 멤버와 다른 멤버는 수정 요청 시 권한 에러가 발생한다.")
-    void updateMemberNoPermission() {
-        //given
-        setUpSecurityContext();
-
-        assertThatThrownBy(() ->
-                //when
-                memberService.updateMember(4L, new MemberRequest(EMAIL, "123", AGE)))
-                //then
-                .isInstanceOf(AuthorizationException.class);
-    }
-
     @DisplayName("멤버의 id로 멤버를 삭제한다.")
     @Test
     void deleteMember() {
-        //given
-        setUpSecurityContext();
-
         //when
         memberService.deleteMember(1L);
 
@@ -129,18 +108,6 @@ class MemberServiceTest {
         verify(memberRepository).deleteById(1L);
     }
 
-    @DisplayName("현재 로그인된 멤버와 다른 멤버는 수정 요청 시 권한 에러가 발생한다.")
-    @Test
-    void deleteMemberNoPermission() {
-        //given
-        setUpSecurityContext();
-
-        assertThatThrownBy(() ->
-                //when
-                memberService.deleteMember(3L))
-                //then
-                .isInstanceOf(AuthorizationException.class);
-    }
 
     private Member reflectionMember(long id) {
         Member member = new Member(EMAIL, PASSWORD, AGE);
@@ -148,7 +115,4 @@ class MemberServiceTest {
         return member;
     }
 
-    private void setUpSecurityContext() {
-        SecurityContextHolder.setContext(new SecurityContext(new Authentication(new LoginMember(1L, EMAIL, PASSWORD, AGE))));
-    }
 }

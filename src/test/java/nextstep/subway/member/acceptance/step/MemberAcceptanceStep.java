@@ -67,29 +67,28 @@ public class MemberAcceptanceStep {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
-
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
         params.put("age", age + "");
 
         return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 body(params).
                 when().
-                put(uri).
+                put("/members/me").
                 then().
                 log().all().
                 extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 when().
-                delete(uri).
+                delete("/members/me").
                 then().
                 log().all().
                 extract();
@@ -126,6 +125,11 @@ public class MemberAcceptanceStep {
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
+    public static TokenResponse 로그인_되어있음(String email, String password) {
+        ExtractableResponse<Response> loginResponse = 로그인_요청(email, password);
+        로그인_됨(loginResponse);
+        return loginResponse.as(TokenResponse.class);
+    }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

@@ -62,7 +62,7 @@ class TokenAuthenticationInterceptorTest {
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         //when
-        assertThatThrownBy(() -> interceptor.preHandle(request, response, mock(Object.class)))
+        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
                 //then
                 .isInstanceOf(AuthenticationException.class);
     }
@@ -77,7 +77,7 @@ class TokenAuthenticationInterceptorTest {
         given(jwtTokenProvider.createToken(anyString())).willReturn(TOKEN);
 
         //when
-        boolean result = interceptor.preHandle(request, response, mock(Object.class));
+        boolean result = interceptor.preHandle(request, response, new Object());
 
         //then
         assertThat(result).isFalse();

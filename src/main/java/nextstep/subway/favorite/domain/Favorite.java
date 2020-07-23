@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -14,6 +15,7 @@ public class Favorite extends BaseEntity {
     private Long id;
     private Long sourceStationId;
     private Long targetStationId;
+    private Long memberId;
 
     public Favorite() {
     }
@@ -21,6 +23,12 @@ public class Favorite extends BaseEntity {
     public Favorite(Long sourceStationId, Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+    }
+
+    public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
+        this.memberId = memberId;
     }
 
     public Long getId() {
@@ -33,5 +41,13 @@ public class Favorite extends BaseEntity {
 
     public Long getTargetStationId() {
         return targetStationId;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public boolean isCreatedBy(Long loginMemberId) {
+        return Objects.equals(this.memberId, loginMemberId);
     }
 }

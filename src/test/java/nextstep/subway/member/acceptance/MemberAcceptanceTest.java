@@ -3,6 +3,7 @@ package nextstep.subway.member.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,15 +22,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_생성됨(createResponse);
         // when
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        // when
         ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
         //when
-        ExtractableResponse<Response> modifyResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        ExtractableResponse<Response> modifyResponse = 회원_정보_수정_요청(tokenResponse, EMAIL, "new" + PASSWORD, AGE);
         // then
         회원_정보_수정됨(modifyResponse);
         // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(tokenResponse);
         // then
         회원_삭제됨(deleteResponse);
     }

@@ -1,13 +1,16 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.exception.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.NotExistException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,34 +20,47 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
-    private StationRepository stationRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final StationRepository stationRepository;
 
     public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository) {
         this.favoriteRepository = favoriteRepository;
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite(request.getSource(), request.getTarget());
-        favoriteRepository.save(favorite);
+    public Long createFavorite(Long memberId, FavoriteRequest request) {
+        Favorite favorite = request.toEntity(memberId);
+        Favorite savedFavorite = favoriteRepository.save(favorite);
+        return savedFavorite.getId();
     }
 
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(NotExistException::new);
+
+        if (!favorite.isCreatedBy(memberId)) {
+            throw new AuthorizationException();
+        }
+
+        favoriteRepository.delete(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
-                .map(it -> FavoriteResponse.of(
-                        it,
-                        StationResponse.of(stations.get(it.getSourceStationId())),
-                        StationResponse.of(stations.get(it.getTargetStationId()))))
+                .map(it -> toFavoriteResponse(stations, it))
                 .collect(Collectors.toList());
+    }
+
+    private FavoriteResponse toFavoriteResponse(Map<Long, Station> stations, Favorite favorite) {
+        return FavoriteResponse.of(
+                favorite,
+                StationResponse.of(stations.get(favorite.getSourceStationId())),
+                StationResponse.of(stations.get(favorite.getTargetStationId())));
     }
 
     private Map<Long, Station> extractStations(List<Favorite> favorites) {
@@ -61,4 +77,5 @@ public class FavoriteService {
         }
         return stationIds;
     }
+
 }
