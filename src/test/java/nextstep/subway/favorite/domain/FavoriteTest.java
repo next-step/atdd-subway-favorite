@@ -15,7 +15,7 @@ class FavoriteTest {
         long sourceStationId = 1L;
         long targetStationId = 2L;
         long memberId = 1L;
-        Favorite favorite = new Favorite(sourceStationId, targetStationId, memberId);
+        Favorite favorite = new Favorite(memberId, sourceStationId, targetStationId);
 
         //when
         assertThat(favorite).isNotNull()

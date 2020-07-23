@@ -24,7 +24,7 @@ public class Favorite extends BaseEntity {
         this.targetStationId = targetStationId;
     }
 
-    public Favorite(Long sourceStationId, Long targetStationId, Long memberId) {
+    public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
         this.memberId = memberId;
