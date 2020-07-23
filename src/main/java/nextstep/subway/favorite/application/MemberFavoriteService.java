@@ -30,9 +30,10 @@ public class MemberFavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(Long memberId, FavoriteRequest request) {
+    public Long createFavorite(Long memberId, FavoriteRequest request) {
         Favorite favorite = request.toEntity(memberId);
-        favoriteRepository.save(favorite);
+        Favorite savedFavorite = favoriteRepository.save(favorite);
+        return savedFavorite.getId();
     }
 
     public void deleteFavorite(Long memberId, Long favoriteId) {

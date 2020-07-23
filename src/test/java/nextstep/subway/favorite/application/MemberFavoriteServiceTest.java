@@ -21,9 +21,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("회원별 즐겨찾기 서비스 테스트")
@@ -44,11 +44,15 @@ class MemberFavoriteServiceTest {
     @Test
     @DisplayName("즐겨찾기 생성")
     void createFavorite() {
+        //given
+        Favorite mockFavorite = mock(Favorite.class);
+        given(mockFavorite.getId()).willReturn(1L);
+        given(favoriteRepository.save(any(Favorite.class))).willReturn(mockFavorite);
         //when
-        favoriteService.createFavorite(1L, new FavoriteRequest(1L, 2L));
+        Long savedId = favoriteService.createFavorite(1L, new FavoriteRequest(1L, 2L));
 
         //then
-        verify(favoriteRepository).save(any(Favorite.class));
+        assertThat(savedId).isEqualTo(mockFavorite.getId());
     }
 
     @Test
