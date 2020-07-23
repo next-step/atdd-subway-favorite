@@ -28,6 +28,7 @@ public class TokenAuthenticationInterceptorTest {
 
     private static final String EMAIL = "javajigi@gmail.com";
     private static final String PASSWORD = "nextstep";
+    private static final String WRONG_PASSWORD = "codesquad";
     private static final Integer AGE = 20;
     private static final String REGEX = ":";
     private static final String JWT = "pobiconan";
@@ -46,7 +47,7 @@ public class TokenAuthenticationInterceptorTest {
     private LoginMember loginMember;
 
     @BeforeEach
-    private void setUp() {
+    void setUp() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
@@ -72,6 +73,36 @@ public class TokenAuthenticationInterceptorTest {
             () -> assertThat(response.getContentAsByteArray()).isEqualTo(
                 objectMapper.writeValueAsBytes(new TokenResponse(JWT)))
         );
+    }
+
+    @DisplayName("사용자가 없을 때 로그인을 실패한다.")
+    @Test
+    void 사용자가_등록되지_않으면_로그인을_실패한다() {
+        // given: 사용자가 등록되어 있지 않음
+        loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
+
+        // when: 로그인 요청
+        addBasicAuthHeader(EMAIL, PASSWORD);
+
+        // then: 로그인 처리
+        assertThatThrownBy(
+            () -> tokenAuthenticationInterceptor.preHandle(request, response, mock(Object.class))
+        ).isInstanceOf(RuntimeException.class).hasMessage("there is no user.");
+    }
+
+    @DisplayName("비밀번호가 틀리면 로그인을 실패한다.")
+    @Test
+    void 비밀번호가_틀리면_로그인을_실패한다() {
+        // given: 회원 등록되어 있음
+        loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
+
+        // when: 로그인 요청
+        addBasicAuthHeader(EMAIL, WRONG_PASSWORD);
+
+        // then: 로그인 처리
+        assertThatThrownBy(
+            () -> tokenAuthenticationInterceptor.preHandle(request, response, mock(Object.class))
+        ).isInstanceOf(RuntimeException.class).hasMessage("there is no user.");
     }
 
     private void addBasicAuthHeader(String email, String password) {
