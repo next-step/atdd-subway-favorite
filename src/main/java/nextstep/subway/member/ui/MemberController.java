@@ -19,14 +19,6 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, MemberRequest memberRequest) {
-        return null;
-    }
-
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        return null;
-    }
-
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
@@ -50,6 +42,20 @@ public class MemberController {
 
     }
 
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, MemberRequest memberRequest) {
+        checkValidationLoginMember(loginMember);
+        memberService.updateMember(loginMember.getId(), memberRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/members/me")
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        checkValidationLoginMember(loginMember);
+        memberService.deleteMember(loginMember.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
@@ -60,5 +66,11 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private void checkValidationLoginMember(@AuthenticationPrincipal LoginMember loginMember) {
+        if (loginMember == null) {
+            throw new RuntimeException("invalid authorization");
+        }
     }
 }
