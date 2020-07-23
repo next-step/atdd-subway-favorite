@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.*;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
@@ -71,5 +72,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageMember() {
+
+        // when
+        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(stationId1, stationId3);
+        // then
+        즐겨찾기_생성됨(createResponse);
+
+        // when
+        final ExtractableResponse<Response> favoriteListResponse = 즐겨찾기_목록_조회_요청();
+        // then
+        즐겨찾기_목록_조회됨(favoriteListResponse);
+
+        // when
+        final ExtractableResponse<Response> favoriteDeleteResponse = 즐겨찾기_삭제_요청(createResponse);
+        // then
+        즐겨찾기_삭제됨(favoriteDeleteResponse);
     }
 }
