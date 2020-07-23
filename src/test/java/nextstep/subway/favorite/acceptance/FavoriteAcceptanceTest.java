@@ -31,7 +31,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long stationId2;
     private Long stationId3;
     private Long stationId4;
-    private TokenResponse tokenResponse;
+    private String accessToken;
 
     /**
      * 교대역      -      강남역
@@ -69,7 +69,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(lineId3, stationId4, stationId3, 2, 2);
 
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        tokenResponse = 로그인_되어있음(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = 로그인_되어있음(EMAIL, PASSWORD);
+        accessToken = tokenResponse.getAccessToken();
     }
 
 
@@ -77,15 +78,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         //when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(stationId1, stationId3);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(stationId1, stationId3, accessToken);
         //then
         즐겨찾기_생성됨(createResponse);
         //when
-        ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청();
+        ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(accessToken);
         //then
         즐겨찾기_목록_조회됨(listResponse);
         //when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, accessToken);
         //then
         즐겨찾기_삭제됨(deleteResponse);
     }
