@@ -48,4 +48,11 @@ public class MemberController {
         MemberResponse member = new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
         return ResponseEntity.ok().body(member);
     }
+
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> updateMember(Authentication authentication, @RequestBody MemberRequest param) {
+        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
+        memberService.updateMember(loginMember.getId(), param);
+        return ResponseEntity.ok().build();
+    }
 }
