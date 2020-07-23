@@ -35,14 +35,14 @@ public class TokenAuthenticationInterceptorTest {
     void setUp() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        setBasicAuthHeadner();
+        setBasicAuthHeader();
 
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
         interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
     }
 
-    private void setBasicAuthHeadner() {
+    private void setBasicAuthHeader() {
         byte[] targetBytes = (EMAIL + REGEX + PASSWORD).getBytes();
         byte[] encodedBytes = Base64.getEncoder().encode(targetBytes);
         String credentials = new String(encodedBytes);
