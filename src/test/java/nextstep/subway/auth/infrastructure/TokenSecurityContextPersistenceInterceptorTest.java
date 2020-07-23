@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -33,7 +32,6 @@ public class TokenSecurityContextPersistenceInterceptorTest {
     private JwtTokenProvider jwtTokenProvider;
 
     private TokenSecurityContextPersistenceInterceptor interceptor;
-    private ObjectMapper objectMapper;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private LoginMember expectedMember;
@@ -43,14 +41,13 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer");
         response = new MockHttpServletResponse();
-        objectMapper = new ObjectMapper();
         expectedMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
         interceptor = new TokenSecurityContextPersistenceInterceptor(customUserDetailsService, jwtTokenProvider);
     }
 
-    @DisplayName("성공하는 토큰 테스트")
+    @DisplayName("올바른 토큰일 때 인터셉터가 정상적으로 회원정보를 반환하는 지 확인한다.")
     @Test
-    void preHandlerTest() {
+    void 올바른_토큰이_들어오는_경우_회원정보가_조회된다() {
         // given: 회원이 등록되어 있다.
         // and: 로그인되어있음
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
@@ -71,9 +68,27 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         );
     }
 
+    @DisplayName("올바르지 못한 토큰일 때 인터셉터가 예외를 확인한다.")
+    @Test
+    void 잘못된_토큰이_들어오는_경우_예외처리를_진행한다() {
+        // given: 로그인되지않음
+        when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(null);
+
+        // when: 내 회원 정보 요청
+        interceptor.preHandle(request, response, mock(Object.class));
+
+        // then: 인증값이 null로 반환된다.
+        assertThat(getAuthentication()).isNull();
+    }
+
     private LoginMember getLoginMember() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
+        Authentication authentication = getAuthentication();
         return (LoginMember)authentication.getPrincipal();
+    }
+
+    private Authentication getAuthentication() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        return context.getAuthentication();
     }
 }
