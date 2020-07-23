@@ -1,8 +1,10 @@
 package nextstep.subway.favorite.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import static nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.*;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
 import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
 
@@ -20,6 +22,7 @@ import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지�
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
 
     private Long lineId1;
     private Long lineId2;
@@ -28,6 +31,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long stationId2;
     private Long stationId3;
     private Long stationId4;
+    private String accessToken;
 
     /**
      * 교대역      -      강남역
@@ -39,6 +43,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+        로그인_됨(response);
+        final TokenResponse token = response.as(TokenResponse.class);
+        accessToken = token.getAccessToken();
 
         ExtractableResponse<Response> createdStationResponse1 = 지하철역_등록되어_있음("교대역");
         ExtractableResponse<Response> createdStationResponse2 = 지하철역_등록되어_있음("강남역");
@@ -73,18 +83,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
 
+        RestAssured.given().auth().oauth2(accessToken);
+
         // when
-        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(stationId1, stationId3);
+        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(stationId1, stationId3, accessToken);
         // then
         즐겨찾기_생성됨(createResponse);
 
         // when
-        final ExtractableResponse<Response> favoriteListResponse = 즐겨찾기_목록_조회_요청();
+        final ExtractableResponse<Response> favoriteListResponse = 즐겨찾기_목록_조회_요청(accessToken);
         // then
         즐겨찾기_목록_조회됨(favoriteListResponse);
 
         // when
-        final ExtractableResponse<Response> favoriteDeleteResponse = 즐겨찾기_삭제_요청(createResponse);
+        final ExtractableResponse<Response> favoriteDeleteResponse = 즐겨찾기_삭제_요청(createResponse, accessToken);
         // then
         즐겨찾기_삭제됨(favoriteDeleteResponse);
     }
