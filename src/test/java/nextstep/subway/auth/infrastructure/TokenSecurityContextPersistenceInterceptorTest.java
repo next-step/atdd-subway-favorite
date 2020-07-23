@@ -73,7 +73,6 @@ public class TokenSecurityContextPersistenceInterceptorTest {
     void 잘못된_토큰이_들어오는_경우_예외처리를_진행한다() {
         // given: 로그인되지않음
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
-        when(jwtTokenProvider.getPayload(anyString())).thenReturn(null);
 
         // when: 내 회원 정보 요청
         interceptor.preHandle(request, response, mock(Object.class));
