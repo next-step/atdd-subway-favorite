@@ -3,8 +3,9 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 import nextstep.subway.auth.application.UserDetail;
 import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.dto.UserDetailDto;
 import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.util.ConvertUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +26,8 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
         final String accessToken = extractToken(request);
         if (jwtTokenProvider.validateToken(accessToken)) {
             final String payload = jwtTokenProvider.getPayload(accessToken);
-            final UserDetail loginMember = userDetailsService.convertJsonToUserDetail(payload);
-            final SecurityContext securityContext = buildSecurityContext(loginMember);
+            final UserDetailDto userDetailDto = ConvertUtils.convertJson2Object(payload, UserDetailDto.class);
+            final SecurityContext securityContext = buildSecurityContext(userDetailDto);
             SecurityContextHolder.setContext(securityContext);
         }
         return true;
@@ -42,8 +43,8 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     }
 
     private SecurityContext buildSecurityContext(UserDetail loginMember) {
-        final MemberResponse memberResponse = new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
-        final Authentication authentication = new Authentication(memberResponse);
+        final UserDetailDto userDetailDto = new UserDetailDto(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
+        final Authentication authentication = new Authentication(userDetailDto);
         return new SecurityContext(authentication);
     }
 }

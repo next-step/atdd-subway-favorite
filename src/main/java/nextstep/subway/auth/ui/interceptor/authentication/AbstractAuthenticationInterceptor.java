@@ -5,7 +5,7 @@ import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.application.converter.AuthenticationConverter;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.auth.dto.UserDetailDto;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,8 +36,8 @@ public abstract class AbstractAuthenticationInterceptor implements HandlerInterc
         final String principal = token.getPrincipal();
         final UserDetail loginMember = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(loginMember, token);
-        final MemberResponse memberResponse = new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
-        
+        final UserDetailDto memberResponse = new UserDetailDto(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
+
         return new Authentication(memberResponse);
     }
 
