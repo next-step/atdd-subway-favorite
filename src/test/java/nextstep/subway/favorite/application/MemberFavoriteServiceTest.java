@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.exception.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.BDDMockito.given;
@@ -72,17 +74,17 @@ class MemberFavoriteServiceTest {
         given(favoriteRepository.findById(1L))
                 .willReturn(Optional.of(favorite));
         //when
-        favoriteService.deleteFavorite(1L, 1L);
-
-        //then
-        verify(favoriteRepository).delete(favorite);
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(1L, 1L))
+                //then
+                .isInstanceOf(AuthorizationException.class);
     }
 
     @Test
     @DisplayName("즐겨찾기 목록 찾기")
     void findFavorite() {
         //given
-        given(favoriteRepository.findAllByMemberId()).willReturn(Lists.list(reflectionFavorite(1L, 1L, 1L, 2L), reflectionFavorite(2L, 1L, 2L, 3L)));
+        long memberId = 1L;
+        given(favoriteRepository.findAllByMemberId(memberId)).willReturn(Lists.list(reflectionFavorite(1L, memberId, 1L, 2L), reflectionFavorite(2L, memberId, 2L, 3L)));
         given(stationRepository.findAllById(anyIterable())).willReturn(
                 Lists.list(
                         reflectionStation(1L, "강남역"),

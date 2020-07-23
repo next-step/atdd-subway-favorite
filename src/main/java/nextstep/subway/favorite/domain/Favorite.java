@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -44,5 +45,9 @@ public class Favorite extends BaseEntity {
 
     public Long getMemberId() {
         return memberId;
+    }
+
+    public boolean isCreatedBy(Long loginMemberId) {
+        return Objects.equals(this.memberId, loginMemberId);
     }
 }
