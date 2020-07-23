@@ -8,7 +8,9 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,27 +18,33 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
-    private StationRepository stationRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final StationRepository stationRepository;
 
     public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository) {
         this.favoriteRepository = favoriteRepository;
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite(request.getSource(), request.getTarget());
-        favoriteRepository.save(favorite);
+    public Favorite createFavorite(Long memberId, FavoriteRequest request) {
+        Favorite favorite = new Favorite(memberId, request.getSource(), request.getTarget());
+        return favoriteRepository.save(favorite);
     }
 
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        if (!favoriteRepository.existsByIdAndMemberId(favoriteId, memberId)) {
+            throw new EntityNotFoundException("Favorite not found");
+        }
+
+        favoriteRepository.deleteByIdAndMemberId(favoriteId, memberId);
     }
 
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
