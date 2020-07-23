@@ -3,14 +3,13 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.subway.auth.ui.interceptor.authentication.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
 
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
@@ -38,10 +37,5 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     private LoginMember getMemberFrom(String token) throws IOException {
         String payload = jwtTokenProvider.getPayload(token);
         return objectMapper.readValue(payload, LoginMember.class);
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        SecurityContextHolder.clearContext();
     }
 }

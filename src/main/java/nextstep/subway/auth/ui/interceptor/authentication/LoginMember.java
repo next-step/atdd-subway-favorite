@@ -1,5 +1,6 @@
-package nextstep.subway.member.domain;
+package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.member.domain.Member;
 
 public class LoginMember {
     private Long id;
