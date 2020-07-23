@@ -68,5 +68,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             // then
             회원_정보_수정됨(response);
         }
+
+        @DisplayName("내 회원 정보를 삭제한다")
+        @Test
+        void deleteMemberMe() {
+            // when
+            ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(tokenResponse);
+
+            // then
+            회원_삭제됨(response);
+        }
     }
 }
