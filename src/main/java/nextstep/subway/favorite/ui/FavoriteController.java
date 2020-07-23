@@ -6,9 +6,11 @@ import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 import java.util.List;
 
@@ -37,7 +39,12 @@ public class FavoriteController {
 
     @DeleteMapping("/favorites/{favoriteId}")
     public ResponseEntity deleteFavorite(@AuthenticationPrincipal UserDetails principal, @PathVariable Long favoriteId) {
-        favoriteService.deleteFavorite(principal.getId(), favoriteId);
+        try {
+            favoriteService.deleteFavorite(principal.getId(), favoriteId);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
         return ResponseEntity.noContent().build();
     }
 }
