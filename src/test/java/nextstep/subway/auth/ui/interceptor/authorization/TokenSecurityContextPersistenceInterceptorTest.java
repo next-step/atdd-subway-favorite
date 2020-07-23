@@ -52,19 +52,18 @@ class TokenSecurityContextPersistenceInterceptorTest {
     }
 
     @Test
-    void preHandler() throws Exception {
+    void preHandler() {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(EMAIL);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(expected);
 
         // when
-        interceptor.preHandle(request, response, mock(Object.class));
+        interceptor.preHandle(request, response, new Object());
 
         // then
         LoginMember actual = getLoginMember();
 
-        assertThat(actual).isNotNull();
         assertAll(
                 () -> assertThat(actual).isNotNull(),
                 () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
@@ -75,12 +74,12 @@ class TokenSecurityContextPersistenceInterceptorTest {
 
     @DisplayName("유효하지 못한 토큰 테스트")
     @Test
-    void invalidToken() throws Exception {
+    void invalidToken() {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
 
         // when
-        interceptor.preHandle(request, response, mock(Object.class));
+        interceptor.preHandle(request, response, new Object());
 
         // then
         assertThat(getAuthentication()).isNull();
