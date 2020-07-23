@@ -3,6 +3,7 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.util.ConvertUtils;
@@ -28,6 +29,9 @@ class TokenSecurityContextPersistenceInterceptorTest {
     private static final int AGE = 1;
 
     @Mock
+    private CustomUserDetailsService customUserDetailsService;
+
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     private TokenSecurityContextPersistenceInterceptor interceptor;
@@ -37,7 +41,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
+        interceptor = new TokenSecurityContextPersistenceInterceptor(customUserDetailsService, jwtTokenProvider);
         request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer abcdefg");
         response = new MockHttpServletResponse();
@@ -49,8 +53,10 @@ class TokenSecurityContextPersistenceInterceptorTest {
         // stubbing
         final MemberResponse memberResponse = new MemberResponse(1L, EMAIL, AGE);
         final String json = ConvertUtils.stringify(memberResponse);
+        final LoginMember mock = new LoginMember(memberResponse.getId(), memberResponse.getEmail(), null, memberResponse.getAge());
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(json);
+        when(customUserDetailsService.convertJsonToUserDetail(anyString())).thenReturn(mock);
 
         // when
         interceptor.preHandle(request, response, null);
