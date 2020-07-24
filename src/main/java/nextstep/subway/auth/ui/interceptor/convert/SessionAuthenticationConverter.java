@@ -1,11 +1,13 @@
 package nextstep.subway.auth.ui.interceptor.convert;
 
 import nextstep.subway.auth.domain.AuthenticationToken;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public class SessionAuthenticationConverter implements AuthenticationConverter{
+@Component
+public class SessionAuthenticationConverter implements AuthenticationConverter {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 

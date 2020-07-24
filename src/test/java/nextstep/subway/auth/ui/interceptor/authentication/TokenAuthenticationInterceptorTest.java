@@ -1,9 +1,10 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,8 @@ class TokenAuthenticationInterceptorTest {
     private CustomUserDetailsService customUserDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private AuthenticationConverter converter;
 
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
     private ObjectMapper objectMapper;
@@ -50,7 +53,7 @@ class TokenAuthenticationInterceptorTest {
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
         loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, converter);
     }
 
     @DisplayName("토큰 인터셉터 테스트")
@@ -58,6 +61,7 @@ class TokenAuthenticationInterceptorTest {
     void preHandle() throws Exception {
         // given
         addBasicAuthHeader(EMAIL, PASSWORD);
+        when(converter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT);
 
