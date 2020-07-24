@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.io.IOException;
+
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,7 +52,7 @@ class SessionAuthenticationInterceptorTest {
 
     @DisplayName("세션 인터셉터 테스트")
     @Test
-    void preHandle() {
+    void preHandle() throws IOException {
         // given
         when(converter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
