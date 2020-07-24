@@ -1,5 +1,6 @@
 package nextstep.subway.config;
 
+import nextstep.subway.auth.application.AuthenticationResolver;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
@@ -9,8 +10,11 @@ import nextstep.subway.auth.ui.interceptor.convert.SessionAuthenticationConverte
 import nextstep.subway.auth.ui.interceptor.convert.TokenAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -31,5 +35,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, tokenAuthenticationConverter)).addPathPatterns("/login/token");
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider));
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new AuthenticationResolver());
     }
 }

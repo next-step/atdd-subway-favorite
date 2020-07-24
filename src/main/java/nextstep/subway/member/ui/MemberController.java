@@ -33,11 +33,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        Object principal = authentication.getPrincipal();
-        LoginMember loginMember = (LoginMember) principal;
+    public ResponseEntity<MemberResponse> findMemberOfMine(Authentication authentication) {
+        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
 
         return ResponseEntity.ok(new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge()));
     }
