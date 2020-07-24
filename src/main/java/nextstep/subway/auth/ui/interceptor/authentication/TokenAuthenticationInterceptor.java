@@ -40,7 +40,6 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
         return false;
     }
 
-    @Override
     public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
