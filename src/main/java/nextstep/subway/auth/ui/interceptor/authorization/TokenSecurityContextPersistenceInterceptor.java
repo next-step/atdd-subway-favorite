@@ -3,6 +3,7 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -12,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public TokenSecurityContextPersistenceInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
     }

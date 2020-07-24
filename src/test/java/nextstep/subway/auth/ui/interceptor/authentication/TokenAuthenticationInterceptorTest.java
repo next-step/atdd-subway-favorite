@@ -5,7 +5,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class TokenAuthenticationInterceptorTest {
     private static final long ID = 1L;
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
     @Mock
@@ -53,7 +53,7 @@ class TokenAuthenticationInterceptorTest {
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
         loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, converter);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, converter);
     }
 
     @DisplayName("토큰 인터셉터 테스트")
@@ -62,7 +62,7 @@ class TokenAuthenticationInterceptorTest {
         // given
         addBasicAuthHeader(EMAIL, PASSWORD);
         when(converter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT);
 
         // when

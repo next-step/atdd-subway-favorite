@@ -4,7 +4,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class SessionAuthenticationInterceptorTest {
     private static final long ID = 1L;
 
     @Mock
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
     @Mock
     private AuthenticationConverter converter;
 
