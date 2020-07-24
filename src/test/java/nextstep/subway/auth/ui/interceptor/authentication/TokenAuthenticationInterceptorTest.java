@@ -66,7 +66,7 @@ class TokenAuthenticationInterceptorTest {
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT);
 
         // when
-        boolean result = tokenAuthenticationInterceptor.preHandle(request, response, mock(Object.class));
+        boolean result = tokenAuthenticationInterceptor.preHandle(request, response, new Object());
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
