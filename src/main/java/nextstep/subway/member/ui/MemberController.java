@@ -39,7 +39,7 @@ public class MemberController {
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param,
-                                                                @AuthenticationPrincipal UserDetails principal) {
+                                                       @AuthenticationPrincipal UserDetails principal) {
         if (!Objects.equals(id, principal.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
