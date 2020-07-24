@@ -1,44 +1,36 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.AuthenticationProvider;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.utils.ObjectMapperUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private static final String CREDENTIAL_DELIMITER = ":";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
-        super(userDetailsService);
+    public TokenAuthenticationInterceptor(AuthenticationProvider authenticationProvider, JwtTokenProvider jwtTokenProvider) {
+        super(authenticationProvider, AuthenticationTokenExtractor.of(AuthenticationTokenExtractor.Type.BASIC));
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public void applyAuthentication(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // TODO 이 메소드를 추상화 할 수는 없을까 with session auth interceptor
-        AuthenticationToken authenticationToken = convertToken(request);
-
-        Authentication authentication = authenticate(authenticationToken);
-
+    public void applyAuthentication(Authentication authentication, HttpServletRequest request, HttpServletResponse response) throws Exception {
         TokenResponse tokenResponse = obtainAuthenticationTokenResponse(authentication);
-
         writeTokenResponse(response, tokenResponse);
     }
 
     private void writeTokenResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ObjectMapperUtils.writeStream(response.getOutputStream(), tokenResponse);
     }
 
@@ -47,20 +39,5 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
         String token = jwtTokenProvider.createToken(payload);
 
         return new TokenResponse(token);
-    }
-
-    public AuthenticationToken convertToken(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-        String decodedToken = new String(Base64.decodeBase64(token.getBytes()));
-        int delimiterIndex = decodedToken.indexOf(CREDENTIAL_DELIMITER);
-
-        if (delimiterIndex < 0) {
-            throw new IllegalArgumentException("invalid token string");
-        }
-
-        String principal = decodedToken.substring(0, delimiterIndex);
-        String credentials = decodedToken.substring(delimiterIndex + 1);
-
-        return new AuthenticationToken(principal, credentials);
     }
 }

@@ -41,10 +41,7 @@ public class MemberAcceptanceStep {
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        Map<String, String> params = 회원정보_파라미터_생성(email, password, age);
 
         return RestAssured.given().log().all().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -71,10 +68,7 @@ public class MemberAcceptanceStep {
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        Map<String, String> params = 회원정보_파라미터_생성(email, password, age);
 
         return RestAssured.given().log().all().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -84,6 +78,14 @@ public class MemberAcceptanceStep {
                 then().
                 log().all().
                 extract();
+    }
+
+    public static Map<String, String> 회원정보_파라미터_생성(String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+        return params;
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
@@ -118,6 +120,27 @@ public class MemberAcceptanceStep {
                 log().all().
                 statusCode(HttpStatus.OK.value()).
                 extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, Map<String, String> newMyInfo) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(ContentType.JSON)
+                .body(newMyInfo)
+                .put("/members/me")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(ContentType.JSON)
+                .delete("/members/me")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {

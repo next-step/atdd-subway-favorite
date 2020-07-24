@@ -1,6 +1,6 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.application.AuthenticationService;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
@@ -10,17 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Optional;
 
 @RestController
 public class MemberController {
     private final MemberService memberService;
-    // TODO 마음에 들지 않는다............ ArgumentResolver로 해결하자
-    private final AuthenticationService authenticationService;
 
-    public MemberController(MemberService memberService, AuthenticationService authenticationService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/members")
@@ -36,15 +32,28 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        Optional<LoginMember> loginMemberOptional = authenticationService.getLoginMember();
-        if (!loginMemberOptional.isPresent()) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMemwber) {
+        if (loginMemwber == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        MemberResponse member = memberService.findMember(loginMemberOptional.get().getId());
+        MemberResponse member = memberService.findMember(loginMemwber.getId());
         return ResponseEntity.ok(member);
 
+    }
+
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, MemberRequest memberRequest) {
+        checkValidationLoginMember(loginMember);
+        memberService.updateMember(loginMember.getId(), memberRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/members/me")
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        checkValidationLoginMember(loginMember);
+        memberService.deleteMember(loginMember.getId());
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/members/{id}")
@@ -57,5 +66,11 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private void checkValidationLoginMember(@AuthenticationPrincipal LoginMember loginMember) {
+        if (loginMember == null) {
+            throw new RuntimeException("invalid authorization");
+        }
     }
 }

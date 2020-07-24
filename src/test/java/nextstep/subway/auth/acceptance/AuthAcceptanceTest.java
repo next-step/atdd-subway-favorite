@@ -10,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.Map;
+
 import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
 
 @ContextConfiguration(classes = SubwayApplication.class)
@@ -49,5 +51,32 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
 
         회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("회원 정보 수정")
+    @Test
+    void updateMyInfo() {
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        int newAge = 111;
+        Map<String, String> newMyInfo = 회원정보_파라미터_생성(EMAIL, PASSWORD, newAge);
+
+        내_회원_정보_수정_요청(tokenResponse, newMyInfo);
+
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+
+        회원_정보_조회됨(response, EMAIL, newAge);
+    }
+
+    @DisplayName("회원 정보 삭제")
+    @Test
+    void deleteMyInfo() {
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        내_회원_정보_삭제_요청(tokenResponse);
+
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+
+        회원_삭제됨(response);
     }
 }

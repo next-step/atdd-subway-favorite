@@ -1,7 +1,11 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
+import nextstep.subway.auth.application.SecurityContextPersistenceHandler;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import nextstep.subway.auth.infrastructure.AuthorizationType;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.utils.ObjectMapperUtils;
@@ -9,11 +13,12 @@ import nextstep.subway.utils.ObjectMapperUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurityContextPersistenceInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextPersistenceInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, SecurityContextPersistenceHandler persistenceHandler) {
+        super(persistenceHandler);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -31,7 +36,7 @@ public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurity
         LoginMember principal = extractPrincipal(payload);
 
         // TODO 직접 참조하지 말고 인증 성공 실패에 대한 핸들러를 제공해보자
-        SecurityContextHolder.setContext(new SecurityContext(new Authentication(principal)));
+        persistenceHandler.persist(new SecurityContext(new Authentication(principal)));
 
         return true;
     }
