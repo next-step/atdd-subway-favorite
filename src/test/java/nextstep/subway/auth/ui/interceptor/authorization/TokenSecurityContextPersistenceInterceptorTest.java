@@ -29,9 +29,6 @@ class TokenSecurityContextPersistenceInterceptorTest {
     private static final long ID = 1L;
 
     @Mock
-    private CustomUserDetailsService userDetailsService;
-
-    @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     private TokenSecurityContextPersistenceInterceptor interceptor;
@@ -47,15 +44,15 @@ class TokenSecurityContextPersistenceInterceptorTest {
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
         expected = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        interceptor = new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider);
+        interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
     }
 
     @Test
-    void preHandler() {
+    void preHandler() throws Exception {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(EMAIL);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(expected);
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(objectMapper.writeValueAsString(expected));
 
         // when
         interceptor.preHandle(request, response, new Object());
@@ -73,7 +70,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
 
     @DisplayName("유효하지 못한 토큰 테스트")
     @Test
-    void invalidToken() {
+    void invalidToken() throws Exception {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
 
