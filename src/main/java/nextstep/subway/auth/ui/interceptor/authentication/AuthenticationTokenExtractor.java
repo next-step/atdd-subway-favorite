@@ -6,7 +6,6 @@ import nextstep.subway.auth.infrastructure.AuthorizationType;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 public interface AuthenticationTokenExtractor {
     String USERNAME_FIELD = "username";

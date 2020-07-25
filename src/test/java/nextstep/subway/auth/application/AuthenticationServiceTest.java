@@ -1,16 +1,15 @@
 package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.domain.LoginMember;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class AuthenticationServiceTest {
 
@@ -23,7 +22,7 @@ class AuthenticationServiceTest {
         SecurityContextHolder.setContext(new SecurityContext(authentication));
 
         // when
-        Optional<LoginMember> loginMemberOptional = authenticationService.getLoginMember();
+        Optional<UserDetails> loginMemberOptional = authenticationService.getLoginMember();
 
         // then
         assertThat(loginMemberOptional).isNotEmpty();
