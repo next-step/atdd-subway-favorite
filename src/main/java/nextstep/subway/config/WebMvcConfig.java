@@ -1,6 +1,7 @@
 package nextstep.subway.config;
 
 import nextstep.subway.auth.application.AuthenticationResolver;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private final SessionAuthenticationConverter sessionAuthenticationConverter;
     private final TokenAuthenticationConverter tokenAuthenticationConverter;
