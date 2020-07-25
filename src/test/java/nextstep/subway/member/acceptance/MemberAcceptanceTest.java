@@ -54,12 +54,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         로그인_요청(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(tokenResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        회원_정보_수정됨(response);
+    }
 
-        회원_정보_조회됨(response, EMAIL, AGE);
+    @DisplayName("회원 정보를 삭제한다.")
+    @Test
+    void deleteMember() {
+        // when
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
-        ExtractableResponse<Response> response3 = 내_회원_정보_수정_요청(tokenResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
-        회원_정보_수정됨(response3);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        로그인_요청(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(tokenResponse);
+        // then
+        회원_삭제됨(response);
     }
 
 
