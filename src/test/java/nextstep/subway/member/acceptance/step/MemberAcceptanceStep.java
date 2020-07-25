@@ -139,7 +139,6 @@ public class MemberAcceptanceStep {
                 .contentType(ContentType.JSON)
                 .delete("/members/me")
                 .then()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 

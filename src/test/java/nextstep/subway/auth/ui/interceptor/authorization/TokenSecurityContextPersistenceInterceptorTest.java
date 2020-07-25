@@ -1,6 +1,7 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
 import nextstep.subway.auth.application.SecurityContextPersistenceHandler;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
@@ -22,13 +23,14 @@ class TokenSecurityContextPersistenceInterceptorTest {
     private static final String TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkaGxlZUB0ZXN0LmNvbSIsImFnZSI6MTAsImlhdCI6MTUxNjIzOTAyMn0.7mzHE7xlGhUU_FXS9gn7AhrNyFsmpb9zZhNCX3D4F9k";
     private static final String PAYLOAD = "{\"id\":1,\"email\":\"dhlee@email.com\",\"age\":10}";
     private static final String EMAIL = "dhlee@email.com";
+    private static final int AGE = 10;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private TokenSecurityContextPersistenceInterceptor tokenSecurityContextPersistenceInterceptor;
     private SecurityContextPersistenceHandler persistenceHandler;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
 
@@ -38,7 +40,10 @@ class TokenSecurityContextPersistenceInterceptorTest {
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(PAYLOAD);
         persistenceHandler = mock(SecurityContextPersistenceHandler.class);
-        tokenSecurityContextPersistenceInterceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider, persistenceHandler);
+
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
+        when(userDetailsService.convertJsonToUserDetail(anyString())).thenReturn(new LoginMember(1L, EMAIL, null, AGE));
+        tokenSecurityContextPersistenceInterceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider, userDetailsService, persistenceHandler);
     }
 
     @Test

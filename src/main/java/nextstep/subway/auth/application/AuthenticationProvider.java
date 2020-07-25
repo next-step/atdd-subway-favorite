@@ -2,8 +2,8 @@ package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.domain.exception.InvalidAuthenticationTokenException;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,13 +17,13 @@ public class AuthenticationProvider {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
     }
 
-    public void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    public void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new InvalidAuthenticationTokenException("unknown user");
         }

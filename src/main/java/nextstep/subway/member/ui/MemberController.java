@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, MemberRequest memberRequest) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest memberRequest) {
         checkValidationLoginMember(loginMember);
         memberService.updateMember(loginMember.getId(), memberRequest);
         return ResponseEntity.ok().build();

@@ -3,8 +3,11 @@ package nextstep.subway.member.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
 
@@ -55,5 +58,32 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("로그인 된 사용자가 나의 회원 정보 수정")
+    @Test
+    void updateMyInfo() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        int newAge = 111;
+        Map<String, String> newMyInfo = 회원정보_파라미터_생성(EMAIL, PASSWORD, newAge);
+
+        내_회원_정보_수정_요청(tokenResponse, newMyInfo);
+
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+
+        회원_정보_조회됨(response, EMAIL, newAge);
+    }
+
+    @DisplayName("로그인 된 사용자가 나의 회원 정보 삭제")
+    @Test
+    void deleteMyInfo() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(tokenResponse);
+
+        회원_삭제됨(response);
     }
 }

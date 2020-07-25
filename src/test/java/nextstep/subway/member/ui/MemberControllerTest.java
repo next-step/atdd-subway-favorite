@@ -13,24 +13,21 @@ import org.springframework.http.ResponseEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class MemberControllerTest {
 
-    private String email;
-    private String password;
-    private Integer age;
+    private static final String EMAIL = "dhlee@Test.com";
+    private String PASSWORD = "password";
+    private Integer AGE = 20;
     private LoginMember loginMember;
     private MemberService memberService;
     private MemberController memberController;
 
     @BeforeEach
     void setUp() {
-        email = "dhlee@Test.com";
-        password = "password";
-        age = 20;
-
-        loginMember = new LoginMember(1L, email, password, age);
+        loginMember = new LoginMember(1L, EMAIL, PASSWORD, AGE);
         memberService = mock(MemberService.class);
         memberController = new MemberController(memberService);
     }
@@ -39,7 +36,7 @@ class MemberControllerTest {
     @DisplayName("내 정보를 수정한다.")
     public void updateMemberOfMineTest() {
         // when
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
         ResponseEntity<MemberResponse> responseEntity = memberController.updateMemberOfMine(loginMember, memberRequest);
 
         // then

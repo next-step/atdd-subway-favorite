@@ -14,8 +14,6 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private static final String CREDENTIAL_DELIMITER = ":";
-
     private final JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationInterceptor(AuthenticationProvider authenticationProvider, JwtTokenProvider jwtTokenProvider) {
