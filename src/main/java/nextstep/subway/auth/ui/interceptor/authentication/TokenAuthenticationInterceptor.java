@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
@@ -19,9 +18,7 @@ import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-
-    private static final String REGEX = ":";
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -43,10 +40,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         Authentication authentication = Optional.of(authenticate(authenticationToken))
             .orElseThrow(() -> new RuntimeException("authentication is null"));
-        String jwtToken = jwtTokenProvider.createToken(authenticationToken.getPrincipal());
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(objectMapper.writeValueAsString(new TokenResponse(jwtToken)));
+        afterAuthentication(request, response, authentication);
         return false;
     }
 
@@ -59,5 +53,15 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
             throw new RuntimeException("password is wrong.");
         }
         return new Authentication(loginMember);
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) throws IOException {
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        String jwtToken = jwtTokenProvider.createToken(payload);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(objectMapper.writeValueAsString(new TokenResponse(jwtToken)));
     }
 }
