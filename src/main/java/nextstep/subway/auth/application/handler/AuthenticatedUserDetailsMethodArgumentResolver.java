@@ -22,6 +22,9 @@ public class AuthenticatedUserDetailsMethodArgumentResolver implements HandlerMe
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         final SecurityContext context = SecurityContextHolder.getContext();
+        if (SecurityContext.EMPTY_CONTEXT.equals(context)) {
+            return null;
+        }
         final Authentication authentication = context.getAuthentication();
         return authentication.getPrincipal();
     }
