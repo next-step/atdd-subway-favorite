@@ -1,8 +1,6 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,48 +9,22 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
 import nextstep.subway.member.application.UserDetailService;
-import nextstep.subway.member.domain.LoginMember;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private final UserDetailService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
-    private final AuthenticationConverter authenticationConverter;
 
-    public TokenAuthenticationInterceptor(UserDetailService customUserDetailsService,
+    public TokenAuthenticationInterceptor(UserDetailService userDetailService,
         JwtTokenProvider jwtTokenProvider,
         AuthenticationConverter authenticationConverter) {
-        this.customUserDetailsService = customUserDetailsService;
+        super(authenticationConverter, userDetailService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = new ObjectMapper();
-        this.authenticationConverter = authenticationConverter;
-    }
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
-        IOException {
-        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
-        Authentication authentication = Optional.of(authenticate(authenticationToken))
-            .orElseThrow(() -> new RuntimeException("authentication is null"));
-        afterAuthentication(request, response, authentication);
-        return false;
-    }
-
-    private Authentication authenticate(AuthenticationToken token) {
-        LoginMember loginMember = customUserDetailsService.loadUserByUserName(token.getPrincipal());
-        if (Objects.isNull(loginMember)) {
-            throw new RuntimeException("there is no user.");
-        }
-        if (!loginMember.checkPassword(token.getCredentials())) {
-            throw new RuntimeException("password is wrong.");
-        }
-        return new Authentication(loginMember);
     }
 
     @Override
