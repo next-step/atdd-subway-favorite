@@ -50,7 +50,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
 
     @DisplayName("올바른 토큰일 때 인터셉터가 정상적으로 회원정보를 반환하는 지 확인한다.")
     @Test
-    void 올바른_토큰이_들어오는_경우_회원정보가_조회된다() {
+    void 올바른_토큰이_들어오는_경우_회원정보가_조회된다() throws JsonProcessingException {
         // given: 회원이 등록되어 있다.
         // and: 로그인되어있음
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
@@ -93,7 +93,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
 
     @DisplayName("올바르지 못한 토큰일 때 인터셉터가 예외를 확인한다.")
     @Test
-    void 잘못된_토큰이_들어오는_경우_예외처리를_진행한다() {
+    void 잘못된_토큰이_들어오는_경우_예외처리를_진행한다() throws JsonProcessingException {
         // given: 로그인되지않음
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
 
