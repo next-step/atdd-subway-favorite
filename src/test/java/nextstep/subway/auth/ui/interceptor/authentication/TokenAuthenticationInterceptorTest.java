@@ -89,6 +89,7 @@ public class TokenAuthenticationInterceptorTest {
 
         // when: 로그인 요청
         addBasicAuthHeader(EMAIL, PASSWORD);
+        when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
 
         // then: 로그인 처리
         assertThatThrownBy(
@@ -104,6 +105,7 @@ public class TokenAuthenticationInterceptorTest {
 
         // when: 로그인 요청
         addBasicAuthHeader(EMAIL, WRONG_PASSWORD);
+        when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
 
         // then: 로그인 처리
         assertThatThrownBy(
