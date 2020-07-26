@@ -89,16 +89,33 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(회원삭제_요청);
     }
 
-    @DisplayName("회원 정보를 수정한다.")
+    @DisplayName("내 회원 정보를 수정한다.")
     @Test
-    void editMember() {
+    void editMyMemberInformation() {
         // given: 회원 정보가 등록되어 있으며, 로그인이 되어 있다.
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
         로그인_요청(EMAIL, PASSWORD);
 
         // when: 회원 정보 수정을 요청한다.
-        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(tokenResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(tokenResponse, EMAIL, PASSWORD, AGE);
+
+        // then: 회원 정보 수정이 되었는지 확인한다.
         회원_정보_수정됨(response);
+    }
+
+    @DisplayName("내 회원 정보를 삭제한다.")
+    @Test
+    void deleteMyMemberInformation() {
+        // given: 회원 정보가 등록되어 있으며, 로그인이 되어 있다.
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        로그인_요청(EMAIL, PASSWORD);
+
+        // when: 회원 정보 삭제를 요청한다.
+        ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(tokenResponse);
+
+        // then: 회원 정보 삭제가 되었는지 확인한다.
+        회원_삭제됨(response);
     }
 }
