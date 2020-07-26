@@ -122,14 +122,15 @@ public class MemberAcceptanceStep {
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email,
         String password, int age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        Map<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("email", email);
+        paramsMap.put("password", password);
+        paramsMap.put("age", age + "");
 
         return RestAssured.given().log().all().
             auth().oauth2(tokenResponse.getAccessToken()).
-            accept(MediaType.APPLICATION_JSON_VALUE).
+            contentType(MediaType.APPLICATION_JSON_VALUE).
+            body(paramsMap).
             when().
             put("/members/me").
             then().
