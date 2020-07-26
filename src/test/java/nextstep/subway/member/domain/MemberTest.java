@@ -13,17 +13,16 @@ class MemberTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 11;
     private Member member;
+    private Favorite favorite;
 
     @BeforeEach
     void setUp() {
         member = new Member(EMAIL, PASSWORD, AGE);
+        favorite = new Favorite(1L, 2L);
     }
 
     @Test
     public void addFavoriteTest() {
-        // given
-        Favorite favorite = new Favorite(1L, 2L);
-
         // when
         member.addFavorite(favorite);
 
@@ -35,12 +34,13 @@ class MemberTest {
 
     @Test
     public void deleteFavorite() {
-        // given
-
         // when
+        member.deleteFavorite(favorite);
 
         // then
+        List<Favorite> favorites = member.findAllFavorite();
 
+        assertThat(favorites).doesNotContain(favorite);
     }
 
 }
