@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.web.servlet.HandlerInterceptor;
-
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.SecurityContext;
@@ -15,9 +13,7 @@ import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private final CustomUserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
@@ -36,10 +32,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         if (authentication == null) {
             throw new RuntimeException();
         }
-
-        HttpSession httpSession = request.getSession();
-        httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
-        response.setStatus(HttpServletResponse.SC_OK);
+        afterAuthentication(request, response, authentication);
         return false;
     }
 
@@ -59,5 +52,13 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) {
+        HttpSession httpSession = request.getSession();
+        httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
