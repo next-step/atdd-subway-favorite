@@ -30,9 +30,9 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
 
             SecurityContext context = new SecurityContext(new Authentication(userDetails));
             SecurityContextHolder.setContext(context);
-            return true;
         }
-        throw new RuntimeException();
+
+        return true;
     }
 
     @Override
