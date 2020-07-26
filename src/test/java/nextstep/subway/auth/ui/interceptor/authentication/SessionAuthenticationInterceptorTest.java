@@ -56,7 +56,7 @@ public class SessionAuthenticationInterceptorTest {
     void 세션이_정상적으로_인터셉팅_하는지_확인한다() {
         // given
         when(converter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(customUserDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
 
         // when
         boolean result = interceptor.preHandle(request, response, new Object());

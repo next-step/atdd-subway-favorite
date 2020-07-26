@@ -45,7 +45,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     }
 
     private Authentication authenticate(AuthenticationToken token) {
-        LoginMember loginMember = customUserDetailsService.loadUserByUsername(token.getPrincipal());
+        LoginMember loginMember = customUserDetailsService.loadUserByUserName(token.getPrincipal());
         if (Objects.isNull(loginMember)) {
             throw new RuntimeException("there is no user.");
         }
