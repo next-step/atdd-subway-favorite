@@ -5,6 +5,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,10 +23,12 @@ class FavoriteServiceTest {
     private FavoriteService favoriteService;
     private MemberRepository memberRepository;
     private StationRepository stationRepository;
+    private Station station;
 
     @BeforeEach
     void setUp() {
         member = mock(Member.class);
+        station = new Station("test");
 
         memberRepository = mock(MemberRepository.class);
         stationRepository = mock(StationRepository.class);
@@ -40,6 +43,7 @@ class FavoriteServiceTest {
         Long memberId = 1L;
         FavoriteRequest favorite = new FavoriteRequest(1L, 2L);
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+        when(stationRepository.findById(anyLong())).thenReturn(Optional.of(station));
 
         // when
         favoriteService.createFavorite(memberId, favorite);
@@ -53,6 +57,7 @@ class FavoriteServiceTest {
         Long memberId = 1L;
         FavoriteRequest favorite = new FavoriteRequest(1L, 2L);
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(stationRepository.findById(anyLong())).thenReturn(Optional.of(station));
 
         // when & then
         Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(memberId, favorite))

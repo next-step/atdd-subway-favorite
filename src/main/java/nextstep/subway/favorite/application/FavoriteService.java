@@ -39,8 +39,14 @@ public class FavoriteService {
     @Transactional
     public void createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        checkRequest(favoriteRequest);
         Favorite favorite = favoriteRequest.toFavorite();
         member.addFavorite(favorite);
+    }
+
+    private void checkRequest(FavoriteRequest favoriteRequest) {
+        stationRepository.findById(favoriteRequest.getSource()).orElseThrow(RuntimeException::new);
+        stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(RuntimeException::new);
     }
 
     @Transactional
