@@ -89,4 +89,8 @@ public class FavoriteService {
         }
         return stationIds;
     }
+
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        return Collections.emptyList();
+    }
 }

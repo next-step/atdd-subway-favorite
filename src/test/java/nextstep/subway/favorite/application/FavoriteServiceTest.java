@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -11,8 +12,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -94,9 +97,25 @@ class FavoriteServiceTest {
 
     @Test
     void findFavorites() {
+        // given
+        Long sourceStationId = 1L;
+        Long targetStationId = 2L;
+        Long memberId = 1L;
+        Member member = new Member();
+        Favorite favorite = new Favorite(sourceStationId, targetStationId);
+        member.addFavorite(favorite);
+
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+        when(favoriteRepository.findById(anyLong())).thenReturn(Optional.of(favorite));
+        member.addFavorite(favorite);
 
         // when
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(memberId);
 
         // then
+        assertThat(favorites).isNotEmpty();
+        FavoriteResponse favoriteResponse = favorites.get(0);
+        assertThat(favoriteResponse.getSource()).isEqualTo(sourceStationId);
+        assertThat(favoriteResponse.getTarget()).isEqualTo(targetStationId);
     }
 }
