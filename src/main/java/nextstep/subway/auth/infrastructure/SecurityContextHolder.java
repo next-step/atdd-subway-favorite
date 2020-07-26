@@ -1,7 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
 public class SecurityContextHolder {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SECURITY_CONTEXT";
+
     private static final ThreadLocal<SecurityContext> contextHolder;
 
     static {
@@ -16,7 +16,7 @@ public class SecurityContextHolder {
         SecurityContext ctx = contextHolder.get();
 
         if (ctx == null) {
-            ctx = createEmptyContext();
+            ctx = SecurityContext.EMPTY_CONTEXT;
             contextHolder.set(ctx);
         }
 
@@ -27,9 +27,5 @@ public class SecurityContextHolder {
         if (context != null) {
             contextHolder.set(context);
         }
-    }
-
-    public static SecurityContext createEmptyContext() {
-        return new SecurityContext();
     }
 }

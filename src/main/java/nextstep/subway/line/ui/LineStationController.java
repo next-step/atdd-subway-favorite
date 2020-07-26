@@ -16,13 +16,13 @@ public class LineStationController {
     }
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity createLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest edgeCreateRequest) {
+    public ResponseEntity<Void> createLineStation(@PathVariable Long lineId, @RequestBody LineStationCreateRequest edgeCreateRequest) {
         lineStationService.addLineStation(lineId, edgeCreateRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity deleteLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public ResponseEntity<Void> deleteLineStation(@PathVariable Long lineId, @PathVariable Long stationId) {
         lineStationService.removeLineStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
