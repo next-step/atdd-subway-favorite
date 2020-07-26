@@ -3,10 +3,8 @@ package nextstep.subway.member.domain;
 import nextstep.subway.config.BaseEntity;
 import nextstep.subway.favorite.domain.Favorite;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +16,9 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private Integer age;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -51,10 +52,11 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-
+        this.favorites.add(favorite);
+        favorite.setMember(this);
     }
 
     public List<Favorite> findAllFavorite() {
-        return Collections.emptyList();
+        return favorites;
     }
 }
