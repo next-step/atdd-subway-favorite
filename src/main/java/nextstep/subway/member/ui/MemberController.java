@@ -43,6 +43,14 @@ public class MemberController {
         return ResponseEntity.ok(new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge()));
     }
 
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> findMemberOfMine(Authentication authentication,
+        @RequestBody MemberRequest paramsMap) {
+        LoginMember loginMember = (LoginMember)authentication.getPrincipal();
+        memberService.updateMember(loginMember.getId(), paramsMap);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
