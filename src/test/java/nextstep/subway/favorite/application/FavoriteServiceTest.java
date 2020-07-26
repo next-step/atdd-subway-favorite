@@ -1,8 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -24,6 +23,7 @@ class FavoriteServiceTest {
     private MemberRepository memberRepository;
     private StationRepository stationRepository;
     private Station station;
+    private FavoriteRepository favoriteRepository;
 
     @BeforeEach
     void setUp() {
@@ -33,7 +33,7 @@ class FavoriteServiceTest {
         memberRepository = mock(MemberRepository.class);
         stationRepository = mock(StationRepository.class);
 
-        FavoriteRepository favoriteRepository = mock(FavoriteRepository.class);
+        favoriteRepository = mock(FavoriteRepository.class);
 
         favoriteService = new FavoriteService(favoriteRepository, memberRepository, stationRepository);
     }
@@ -78,10 +78,18 @@ class FavoriteServiceTest {
 
     @Test
     void deleteFavorite() {
+        // given
+        Long favoriteId = 1L;
+        Favorite favorite = new Favorite();
+
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+        when(favoriteRepository.findById(anyLong())).thenReturn(Optional.of(favorite));
 
         // when
+        favoriteService.deleteFavorite(member.getId(), favoriteId);
 
         // then
+        verify(member).deleteFavorite(any());
     }
 
     @Test
