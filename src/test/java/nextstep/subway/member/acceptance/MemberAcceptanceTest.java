@@ -1,12 +1,14 @@
 package nextstep.subway.member.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -85,5 +87,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 회원삭제_요청 = 회원_삭제_요청(회원생성_요청);
         // then: 회원 정보가 삭제된다.
         회원_삭제됨(회원삭제_요청);
+    }
+
+    @DisplayName("회원 정보를 수정한다.")
+    @Test
+    void editMember() {
+        // given: 회원 정보가 등록되어 있으며, 로그인이 되어 있다.
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        로그인_요청(EMAIL, PASSWORD);
+
+        // when: 회원 정보 수정을 요청한다.
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(tokenResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        회원_정보_수정됨(response);
     }
 }

@@ -110,14 +110,31 @@ public class MemberAcceptanceStep {
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all().
-                auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                get("/members/me").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract();
+            auth().oauth2(tokenResponse.getAccessToken()).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            get("/members/me").
+            then().
+            log().all().
+            statusCode(HttpStatus.OK.value()).
+            extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email,
+        String password, int age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured.given().log().all().
+            auth().oauth2(tokenResponse.getAccessToken()).
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            put("/members/me").
+            then().
+            log().all().
+            extract();
     }
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {
@@ -126,7 +143,6 @@ public class MemberAcceptanceStep {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
-
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
