@@ -5,8 +5,11 @@ import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Component;
+
 import nextstep.subway.auth.domain.AuthenticationToken;
 
+@Component
 public class SessionAuthenticationConverter implements AuthenticationConverter {
 
     public static final String PRINCIPAL = "username";
