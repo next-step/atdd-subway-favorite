@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
@@ -38,15 +38,14 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(Authentication authentication) {
-        LoginMember loginMember = (LoginMember)authentication.getPrincipal();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok(new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge()));
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(Authentication authentication,
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
         @RequestBody MemberRequest paramsMap) {
-        LoginMember loginMember = (LoginMember)authentication.getPrincipal();
+        checkValidationLoginMember(loginMember);
         memberService.updateMember(loginMember.getId(), paramsMap);
         return ResponseEntity.ok().build();
     }
@@ -58,15 +57,21 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMember(Authentication authentication) {
-        LoginMember loginMember = (LoginMember)authentication.getPrincipal();
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        checkValidationLoginMember(loginMember);
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private void checkValidationLoginMember(@AuthenticationPrincipal LoginMember loginMember) {
+        if (loginMember == null) {
+            throw new RuntimeException("invalid authorization");
+        }
     }
 }
