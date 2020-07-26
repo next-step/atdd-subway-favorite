@@ -4,20 +4,20 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
@@ -29,16 +29,21 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public void createFavorite(FavoriteRequest request) {
         Favorite favorite = new Favorite(request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
     }
 
 
-    public void createFavorite(Long memberId, FavoriteRequest favorite) {
-
+    @Transactional
+    public void createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRequest.toFavorite();
+        member.addFavorite(favorite);
     }
 
+    @Transactional
     public void deleteFavorite(Long id) {
         favoriteRepository.deleteById(id);
     }
