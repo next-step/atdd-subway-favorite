@@ -18,7 +18,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -90,7 +89,6 @@ public class TokenSecurityContextPersistenceInterceptorTest {
     @Test
     void validateSecurityContextHolder() throws JsonProcessingException {
         // given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
         String payload = objectMapper.writeValueAsString(loginMember);
 
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
@@ -98,7 +96,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
 
         // when
         interceptor.preHandle(request, response, new Object());
-        LoginMember logged = (LoginMember)getAuthentication().getPrincipal();
+        LoginMember logged = (LoginMember)getAuthenticationFromSecurityContextHolder().getPrincipal();
 
         // then
         assertAll(
@@ -109,7 +107,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         );
     }
 
-    private Authentication getAuthentication() {
+    private Authentication getAuthenticationFromSecurityContextHolder() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 }
