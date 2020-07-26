@@ -17,8 +17,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 
@@ -39,6 +41,9 @@ public class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    private AuthenticationConverter authenticationConverter;
+
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
     private ObjectMapper objectMapper;
     private MockHttpServletRequest request;
@@ -50,7 +55,8 @@ public class TokenAuthenticationInterceptorTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
+            authenticationConverter);
     }
 
     @DisplayName("Basic Auth 로그인을 시도할 때, 토큰 인터셉터의 작동을 테스트한다.")
@@ -61,6 +67,7 @@ public class TokenAuthenticationInterceptorTest {
 
         // when: 로그인 요청
         addBasicAuthHeader(EMAIL, PASSWORD);
+        when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT);
         boolean loginResult = tokenAuthenticationInterceptor.preHandle(request, response, mock(Object.class));

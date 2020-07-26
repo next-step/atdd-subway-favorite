@@ -1,32 +1,38 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
+import static nextstep.subway.auth.infrastructure.SecurityContextHolder.*;
+
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
+import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 
 public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
+    private final AuthenticationConverter authenticationConverter;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService,
+        AuthenticationConverter authenticationConverter) {
         this.userDetailsService = userDetailsService;
+        this.authenticationConverter = authenticationConverter;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        AuthenticationToken token = convert(request);
+        AuthenticationToken token = authenticationConverter.convert(request);
         Authentication authentication = authenticate(token);
 
         if (authentication == null) {
