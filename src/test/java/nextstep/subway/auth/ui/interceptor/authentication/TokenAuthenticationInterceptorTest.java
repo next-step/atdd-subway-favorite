@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui.interceptor.jwt;
+package nextstep.subway.auth.ui.interceptor.authentication;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
