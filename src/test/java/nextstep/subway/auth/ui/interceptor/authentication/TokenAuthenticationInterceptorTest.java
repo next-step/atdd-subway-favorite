@@ -68,7 +68,7 @@ public class TokenAuthenticationInterceptorTest {
         // when: 로그인 요청
         addBasicAuthHeader(EMAIL, PASSWORD);
         when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(customUserDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT);
         boolean loginResult = tokenAuthenticationInterceptor.preHandle(request, response, mock(Object.class));
 

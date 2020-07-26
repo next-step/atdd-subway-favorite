@@ -38,7 +38,7 @@ public class SessionAuthenticationInterceptor extends AuthenticationInterceptor 
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        LoginMember userDetails = userDetailsService.loadUserByUserName(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);

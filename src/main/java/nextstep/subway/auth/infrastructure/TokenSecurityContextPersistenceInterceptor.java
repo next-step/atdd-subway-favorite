@@ -39,6 +39,6 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
 
     private LoginMember extractLoginMemberFromToken(String jwtToken) {
         String payload = jwtTokenProvider.getPayload(jwtToken);
-        return customUserDetailsService.loadUserByUsername(payload);
+        return customUserDetailsService.loadUserByUserName(payload);
     }
 }
