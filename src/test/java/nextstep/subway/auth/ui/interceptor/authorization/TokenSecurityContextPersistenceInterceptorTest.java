@@ -19,7 +19,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,9 +27,6 @@ class TokenSecurityContextPersistenceInterceptorTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
     private static final long ID = 1L;
-
-    @Mock
-    private CustomUserDetailsService userDetailsService;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -48,7 +44,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
         expected = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        interceptor = new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider);
+        interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
     }
 
     @Test
@@ -56,15 +52,14 @@ class TokenSecurityContextPersistenceInterceptorTest {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(EMAIL);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(expected);
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(objectMapper.writeValueAsString(expected));
 
         // when
-        interceptor.preHandle(request, response, mock(Object.class));
+        interceptor.preHandle(request, response, new Object());
 
         // then
         LoginMember actual = getLoginMember();
 
-        assertThat(actual).isNotNull();
         assertAll(
                 () -> assertThat(actual).isNotNull(),
                 () -> assertThat(actual.getId()).isEqualTo(expected.getId()),
@@ -80,10 +75,30 @@ class TokenSecurityContextPersistenceInterceptorTest {
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
 
         // when
-        interceptor.preHandle(request, response, mock(Object.class));
+        interceptor.preHandle(request, response, new Object());
 
         // then
         assertThat(getAuthentication()).isNull();
+    }
+
+    @DisplayName("afterCompletion은 SecurityContextHolder의 SecurityContext를 제거한다")
+    @Test
+    void afterCompletionClearsSecurityContext() throws Exception {
+        // given
+        LoginMember loginMember = new LoginMember(1L, "email@email.com", "password", 20);
+        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(new ObjectMapper().writeValueAsString(loginMember));
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        interceptor.preHandle(request, response, new Object());
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
+
+        // when
+        interceptor.afterCompletion(request, response, new Object(), null);
+
+        // then
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 
     private LoginMember getLoginMember() {

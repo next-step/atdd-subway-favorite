@@ -1,10 +1,9 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.application.UserDetailsService;
+import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,35 +12,31 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.util.Base64;
+import java.io.IOException;
 
+import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TokenAuthenticationInterceptorTest {
+class SessionAuthenticationInterceptorTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
-    private static final String REGEX = ":";
-    private static final String JWT = "accessToken";
     private static final long ID = 1L;
 
     @Mock
     private UserDetailsService userDetailsService;
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
-    @Mock
     private AuthenticationConverter converter;
 
-    private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
-    private ObjectMapper objectMapper;
+    private SessionAuthenticationInterceptor interceptor;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private LoginMember loginMember;
@@ -50,34 +45,38 @@ class TokenAuthenticationInterceptorTest {
     void setUp() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        objectMapper = new ObjectMapper();
+
         loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, converter);
+        interceptor = new SessionAuthenticationInterceptor(userDetailsService, converter);
     }
 
-    @DisplayName("토큰 인터셉터 테스트")
+    @DisplayName("세션 인터셉터 테스트")
     @Test
-    void preHandle() throws Exception {
+    void preHandle() throws IOException {
         // given
-        addBasicAuthHeader(EMAIL, PASSWORD);
         when(converter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
-        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT);
 
         // when
-        boolean result = tokenAuthenticationInterceptor.preHandle(request, response, new Object());
+        boolean result = interceptor.preHandle(request, response, new Object());
+        LoginMember loginMember = getLoginMember();
 
         assertAll(
-                () -> assertThat(result).isNotNull(),
+                () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(result).isFalse(),
-                () -> assertThat(response.getContentAsByteArray()).isEqualTo(objectMapper.writeValueAsBytes(new TokenResponse(JWT)))
+                () -> assertThat(loginMember.getEmail()).isEqualTo(EMAIL),
+                () -> assertThat(loginMember.getPassword()).isEqualTo(PASSWORD)
         );
     }
 
-    private void addBasicAuthHeader(String email, String password) {
-        byte[] targetBytes = (email + REGEX + password).getBytes();
-        byte[] encodedBytes = Base64.getEncoder().encode(targetBytes);
-        String credentials = new String(encodedBytes);
-        request.addHeader("Authorization", "Basic " + credentials);
+    private LoginMember getLoginMember() {
+        Authentication authentication = getAuthentication();
+        return (LoginMember) authentication.getPrincipal();
     }
+
+    private Authentication getAuthentication() {
+        SecurityContext context = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        return context.getAuthentication();
+    }
+
 }
