@@ -41,7 +41,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(
             new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, tokenAuthenticationConverter))
             .addPathPatterns("/login/token");
-        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider));
+        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }
 
     @Override

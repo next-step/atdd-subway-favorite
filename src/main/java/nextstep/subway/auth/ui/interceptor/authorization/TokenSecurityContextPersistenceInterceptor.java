@@ -11,17 +11,13 @@ import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
 
-    private final UserDetailService userDetailService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenSecurityContextPersistenceInterceptor(UserDetailService userDetailService,
-        JwtTokenProvider jwtTokenProvider) {
-        this.userDetailService = userDetailService;
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
