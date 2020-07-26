@@ -74,40 +74,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // 로그인_되어있음
     }
 
-    /**
-     * Scenario: 즐겨찾기를 관리
-     * When 즐겨찾기 생성을 요청
-     * Then 즐겨찾기 생성됨
-     * When 즐겨찾기 목록 조회 요청
-     * Then 즐겨찾기 목록 조회됨
-     * When 즐겨찾기 삭제 요청
-     * Then 즐겨찾기 삭제됨
-     */
-    @DisplayName("즐겨찾기를 관리한다.")
-    @Test
-    void manageFavorite() {
-        // 즐겨찾기 생성을 요청
-        // when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(stationId1, stationId2);
-
-        // then
-        즐겨찾기_생성됨(createResponse);
-
-        // 즐겨찾기 목록 조회 요청
-        // when
-        ExtractableResponse<Response> findFavoritesResponse = 즐겨찾기_목록_조회_요청();
-
-        // then
-        즐겨찾기_목록_조회됨(findFavoritesResponse);
-
-        // 즐겨찾기 삭제 요청
-        // when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse);
-
-        // then
-        즐겨찾기_삭제됨(deleteResponse);
-    }
-
     @DisplayName("내 즐겨찾기를 관리한다.")
     @Test
     void manageMyFavorite() {

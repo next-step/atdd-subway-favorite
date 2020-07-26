@@ -45,9 +45,14 @@ class FavoriteServiceTest {
     @Test
     void createFavorite() {
         Long memberId = 1L;
-        FavoriteRequest favorite = new FavoriteRequest(1L, 2L);
+        Long sourceStationId = 1L;
+        Long targetStationId = 2L;
+        Station sourceStation = new Station(sourceStationId, "검암역");
+        Station targetStation = new Station(targetStationId, "운서역");
+        FavoriteRequest favorite = new FavoriteRequest(sourceStationId, targetStationId);
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(stationRepository.findById(anyLong())).thenReturn(Optional.of(station));
+        when(stationRepository.findAllById(anyCollection())).thenReturn(Arrays.asList(sourceStation, targetStation));
 
         // when
         favoriteService.createFavorite(memberId, favorite);
