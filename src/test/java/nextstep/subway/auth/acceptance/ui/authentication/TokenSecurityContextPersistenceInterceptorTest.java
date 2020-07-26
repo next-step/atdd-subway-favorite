@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 
 public class TokenSecurityContextPersistenceInterceptorTest {
     private static final String EMAIL = "test@test.com";
-    private static final String REGEX = ":";
     private static final String PASSWORD = "test";
 
     private MockHttpServletRequest request;
@@ -43,10 +42,10 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
 
-        interceptor = new TokenSecurityContextPersistenceInterceptor();
+        interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
         objectMapper = new ObjectMapper();
 
-        request.addHeader("authorization", "Bearer jwtToken");
+        request.addHeader("Authorization", "Bearer jwtToken");
     }
 
     @DisplayName("토큰 헤더 값 검증")
