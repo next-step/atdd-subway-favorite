@@ -3,6 +3,8 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.AuthorizationType;
@@ -14,17 +16,18 @@ import nextstep.subway.member.domain.LoginMember;
 
 public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
 
-    private final UserDetailService customUserDetailsService;
+    private final UserDetailService userDetailService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenSecurityContextPersistenceInterceptor(UserDetailService customUserDetailsService,
+    public TokenSecurityContextPersistenceInterceptor(UserDetailService userDetailService,
         JwtTokenProvider jwtTokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+        this.userDetailService = userDetailService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
+        JsonProcessingException {
         String jwtToken = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (jwtTokenProvider.validateToken(jwtToken)) {
             LoginMember loginMember = extractLoginMemberFromToken(jwtToken);
@@ -34,8 +37,8 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
         return true;
     }
 
-    private LoginMember extractLoginMemberFromToken(String jwtToken) {
+    private LoginMember extractLoginMemberFromToken(String jwtToken) throws JsonProcessingException {
         String payload = jwtTokenProvider.getPayload(jwtToken);
-        return customUserDetailsService.loadUserByUserName(payload);
+        return new ObjectMapper().readValue(payload, LoginMember.class);
     }
 }
