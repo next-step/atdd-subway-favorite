@@ -1,13 +1,18 @@
 package nextstep.subway.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import nextstep.subway.auth.application.AuthenticationResolver;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authorization.SessionSecurityContextPersistenceInterceptor;
+import nextstep.subway.auth.ui.interceptor.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.subway.auth.ui.interceptor.convert.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.interceptor.convert.TokenAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -36,5 +41,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(
             new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, tokenAuthenticationConverter))
             .addPathPatterns("/login/token");
+        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider));
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new AuthenticationResolver());
     }
 }
