@@ -1,20 +1,26 @@
 package nextstep.subway.auth.ui.interceptor.authorization;
 
+import nextstep.subway.auth.application.SecurityContextPersistenceHandler;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.domain.LoginMember;
-import nextstep.subway.member.dto.MemberResponse;
-import nextstep.subway.utils.ObjectMapperUtils;
+import nextstep.subway.auth.domain.UserDetails;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import nextstep.subway.auth.infrastructure.AuthorizationType;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurityContextPersistenceInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextPersistenceInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService, SecurityContextPersistenceHandler persistenceHandler) {
+        super(persistenceHandler);
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -28,19 +34,16 @@ public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurity
 
         String payload = jwtTokenProvider.getPayload(token);
 
-        LoginMember principal = extractPrincipal(payload);
+        UserDetails principal = extractPrincipal(payload);
 
         // TODO 직접 참조하지 말고 인증 성공 실패에 대한 핸들러를 제공해보자
-        SecurityContextHolder.setContext(new SecurityContext(new Authentication(principal)));
+        persistenceHandler.persist(new SecurityContext(new Authentication(principal)));
 
         return true;
     }
 
-    private LoginMember extractPrincipal(String payload) throws Exception {
-        MemberResponse memberResponse = ObjectMapperUtils.convert(payload, MemberResponse.class);
-
-        // TODO LoginMember로 들어온다고 가정하다보니까 payload가 유연하지 않음. Session Interceptor에서도 무조건 LoginMember를 넣고 있는데 일괄적으로 변경 필요
-        return new LoginMember(memberResponse.getId(), memberResponse.getEmail(), null, memberResponse.getAge());
+    private UserDetails extractPrincipal(String payload) throws Exception {
+        return userDetailsService.convertJsonToUserDetail(payload);
     }
 
     private boolean isValidToken(String token) {
