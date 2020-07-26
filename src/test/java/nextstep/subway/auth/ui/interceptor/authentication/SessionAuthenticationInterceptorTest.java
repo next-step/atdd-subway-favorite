@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +54,7 @@ public class SessionAuthenticationInterceptorTest {
 
     @DisplayName("세션이 정상적으로 인터셉터 과정에서 prehandle이 실행 되는 지 확인한다.")
     @Test
-    void 세션이_정상적으로_인터셉팅_하는지_확인한다() {
+    void 세션이_정상적으로_인터셉팅_하는지_확인한다() throws IOException {
         // given
         when(converter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
