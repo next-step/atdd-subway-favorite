@@ -12,10 +12,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,7 +56,11 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
 
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+
+        member.deleteFavorite(favorite);
     }
 
     public List<FavoriteResponse> findFavorites() {
