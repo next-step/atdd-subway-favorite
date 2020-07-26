@@ -29,7 +29,6 @@ public class TokenSecurityContextPersistenceInterceptorTest {
 
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
     private TokenSecurityContextPersistenceInterceptor interceptor;
@@ -40,8 +39,6 @@ public class TokenSecurityContextPersistenceInterceptorTest {
     void setUp() {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-
-        userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
 
         interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
@@ -73,16 +70,12 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         String extractedPayload = jwtTokenProvider.getPayload("jwtToken");
         LoginMember userDetails = objectMapper.readValue(extractedPayload, LoginMember.class);
 
+        // when
         SecurityContext context = new SecurityContext(new Authentication(userDetails));
         LoginMember member = (LoginMember)context.getAuthentication().getPrincipal();
 
         // then
-        assertAll(
-                () -> assertThat(member).isNotNull(),
-                () -> assertThat(member.getId()).isEqualTo(1L),
-                () -> assertThat(member.getEmail()).isEqualTo(EMAIL),
-                () -> assertThat(member.getAge()).isEqualTo(AGE)
-        );
+        회원정보_검증(member);
     }
 
     @DisplayName("SecurityContextHolder 값 검증")
@@ -99,15 +92,19 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         LoginMember logged = (LoginMember)getAuthenticationFromSecurityContextHolder().getPrincipal();
 
         // then
-        assertAll(
-            () -> assertThat(logged).isNotNull(),
-            () -> assertThat(logged.getId()).isEqualTo(1L),
-            () -> assertThat(logged.getEmail()).isEqualTo(EMAIL),
-            () -> assertThat(logged.getAge()).isEqualTo(AGE)
-        );
+        회원정보_검증(logged);
     }
 
     private Authentication getAuthenticationFromSecurityContextHolder() {
         return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    private void 회원정보_검증(LoginMember member) {
+        assertAll(
+                () -> assertThat(member).isNotNull(),
+                () -> assertThat(member.getId()).isEqualTo(1L),
+                () -> assertThat(member.getEmail()).isEqualTo(EMAIL),
+                () -> assertThat(member.getAge()).isEqualTo(AGE)
+        );
     }
 }
