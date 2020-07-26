@@ -1,7 +1,6 @@
-package nextstep.subway.auth.ui.interceptor.jwt;
+package nextstep.subway.auth.ui.interceptor.authentication;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -15,8 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
-import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -51,17 +48,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(objectMapper.writeValueAsString(new TokenResponse(jwtToken)));
         return false;
-    }
-
-    private AuthenticationToken convert(HttpServletRequest request) {
-        String result = Optional.ofNullable(AuthorizationExtractor.extract(request, AuthorizationType.BASIC))
-            .orElse("");
-        byte[] decodedBytes = Base64.getDecoder().decode(result);
-        String encodedString = new String(decodedBytes);
-        String[] split = encodedString.split(REGEX);
-        String principal = Optional.ofNullable(split[0]).orElse("");
-        String credentials = Optional.ofNullable(split[1]).orElse("");
-        return new AuthenticationToken(principal, credentials);
     }
 
     private Authentication authenticate(AuthenticationToken token) {

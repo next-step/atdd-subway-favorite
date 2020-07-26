@@ -6,10 +6,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor;
+import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.subway.auth.ui.interceptor.convert.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.interceptor.convert.TokenAuthenticationConverter;
-import nextstep.subway.auth.ui.interceptor.jwt.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 
 @Configuration
