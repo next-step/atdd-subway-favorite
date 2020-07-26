@@ -15,17 +15,17 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
     private final AuthenticationConverter authenticationConverter;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
+    public TokenAuthenticationInterceptor(UserDetailService customUserDetailsService,
         JwtTokenProvider jwtTokenProvider,
         AuthenticationConverter authenticationConverter) {
         this.customUserDetailsService = customUserDetailsService;

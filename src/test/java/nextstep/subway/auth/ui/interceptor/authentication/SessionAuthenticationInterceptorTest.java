@@ -21,7 +21,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +33,7 @@ public class SessionAuthenticationInterceptorTest {
     private static final Long ID = 1L;
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailService userDetailsService;
 
     @Mock
     private AuthenticationConverter converter;
@@ -48,7 +48,7 @@ public class SessionAuthenticationInterceptorTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         loginMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        interceptor = new SessionAuthenticationInterceptor(customUserDetailsService, converter);
+        interceptor = new SessionAuthenticationInterceptor(userDetailsService, converter);
     }
 
     @DisplayName("세션이 정상적으로 인터셉터 과정에서 prehandle이 실행 되는 지 확인한다.")
@@ -56,7 +56,7 @@ public class SessionAuthenticationInterceptorTest {
     void 세션이_정상적으로_인터셉팅_하는지_확인한다() {
         // given
         when(converter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
-        when(customUserDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
+        when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
 
         // when
         boolean result = interceptor.preHandle(request, response, new Object());

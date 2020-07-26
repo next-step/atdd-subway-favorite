@@ -21,7 +21,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +36,7 @@ public class TokenAuthenticationInterceptorTest {
     private static final Long ID = 1L;
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailService userDetailsService;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -55,7 +55,7 @@ public class TokenAuthenticationInterceptorTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         objectMapper = new ObjectMapper();
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider,
             authenticationConverter);
     }
 
@@ -68,7 +68,7 @@ public class TokenAuthenticationInterceptorTest {
         // when: 로그인 요청
         addBasicAuthHeader(EMAIL, PASSWORD);
         when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
-        when(customUserDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
+        when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT);
         boolean loginResult = tokenAuthenticationInterceptor.preHandle(request, response, mock(Object.class));
 
