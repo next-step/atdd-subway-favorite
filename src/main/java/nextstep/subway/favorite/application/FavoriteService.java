@@ -75,6 +75,19 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        List<Favorite> favorites = member.findAllFavorite();
+        Map<Long, Station> stations = extractStations(favorites);
+
+        return favorites.stream()
+                .map(it -> FavoriteResponse.of(
+                        it,
+                        StationResponse.of(stations.get(it.getSourceStationId())),
+                        StationResponse.of(stations.get(it.getTargetStationId()))))
+                .collect(Collectors.toList());
+    }
+
     private Map<Long, Station> extractStations(List<Favorite> favorites) {
         Set<Long> stationIds = extractStationIds(favorites);
         return stationRepository.findAllById(stationIds).stream()
@@ -88,9 +101,5 @@ public class FavoriteService {
             stationIds.add(favorite.getTargetStationId());
         }
         return stationIds;
-    }
-
-    public List<FavoriteResponse> findFavorites(Long memberId) {
-        return Collections.emptyList();
     }
 }

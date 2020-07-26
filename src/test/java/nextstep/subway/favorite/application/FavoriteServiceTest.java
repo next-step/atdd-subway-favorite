@@ -12,6 +12,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,6 +102,8 @@ class FavoriteServiceTest {
         // given
         Long sourceStationId = 1L;
         Long targetStationId = 2L;
+        Station sourceStation = new Station(sourceStationId, "검암역");
+        Station targetStation = new Station(targetStationId, "운서역");
         Long memberId = 1L;
         Member member = new Member();
         Favorite favorite = new Favorite(sourceStationId, targetStationId);
@@ -107,6 +111,7 @@ class FavoriteServiceTest {
 
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(favoriteRepository.findById(anyLong())).thenReturn(Optional.of(favorite));
+        when(stationRepository.findAllById(anyCollection())).thenReturn(Arrays.asList(sourceStation, targetStation));
         member.addFavorite(favorite);
 
         // when
@@ -115,7 +120,7 @@ class FavoriteServiceTest {
         // then
         assertThat(favorites).isNotEmpty();
         FavoriteResponse favoriteResponse = favorites.get(0);
-        assertThat(favoriteResponse.getSource()).isEqualTo(sourceStationId);
-        assertThat(favoriteResponse.getTarget()).isEqualTo(targetStationId);
+        assertThat(favoriteResponse.getSource().getId()).isEqualTo(sourceStation.getId());
+        assertThat(favoriteResponse.getTarget().getId()).isEqualTo(targetStation.getId());
     }
 }
