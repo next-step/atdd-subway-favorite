@@ -138,6 +138,16 @@ public class MemberAcceptanceStep {
             extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all().
+            auth().oauth2(tokenResponse.getAccessToken()).
+            when().
+            delete("/members/me").
+            then().
+            log().all().
+            extract();
+    }
+
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
 
