@@ -51,13 +51,14 @@ public class TokenSecurityContextPersistenceInterceptorTest {
 
     @DisplayName("토큰 헤더 값 검증")
     @Test
-    void validateToken() {
+    void validateToken() throws JsonProcessingException {
         // given
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
 
         // when
-        assertThatThrownBy(() -> interceptor.preHandle(request, response, new Object()))
-                .isInstanceOf(RuntimeException.class);
+        interceptor.preHandle(request, response, new Object());
+
+        assertThat(getAuthenticationFromSecurityContextHolder()).isNull();
     }
 
     @DisplayName("토큰 SecurityContext 추출")
