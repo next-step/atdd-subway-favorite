@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
         this.favoriteRepository = favoriteRepository;
@@ -30,28 +30,25 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite(request.getSource(), request.getTarget());
-        favoriteRepository.save(favorite);
-    }
-
-
-    @Transactional
-    public void createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
         checkRequest(favoriteRequest);
         Favorite favorite = favoriteRequest.toFavorite();
         member.addFavorite(favorite);
+
+        Map<Long, Station> stations = stationRepository.findAllById(Arrays.asList(favorite.getSourceStationId(), favorite.getTargetStationId()))
+                .stream().collect(Collectors.toMap(Station::getId, Function.identity()));
+
+        memberRepository.saveAndFlush(member);
+        return FavoriteResponse.of(
+                favorite,
+                StationResponse.of(stations.get(favorite.getSourceStationId())),
+                StationResponse.of(stations.get(favorite.getTargetStationId())));
     }
 
     private void checkRequest(FavoriteRequest favoriteRequest) {
         stationRepository.findById(favoriteRequest.getSource()).orElseThrow(RuntimeException::new);
         stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(RuntimeException::new);
-    }
-
-    @Transactional
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
     }
 
     @Transactional
@@ -61,18 +58,6 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
 
         member.deleteFavorite(favorite);
-    }
-
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        Map<Long, Station> stations = extractStations(favorites);
-
-        return favorites.stream()
-                .map(it -> FavoriteResponse.of(
-                        it,
-                        StationResponse.of(stations.get(it.getSourceStationId())),
-                        StationResponse.of(stations.get(it.getTargetStationId()))))
-                .collect(Collectors.toList());
     }
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
