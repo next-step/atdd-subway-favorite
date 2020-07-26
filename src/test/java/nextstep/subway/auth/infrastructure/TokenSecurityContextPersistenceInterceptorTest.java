@@ -45,7 +45,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         request.addHeader("Authorization", "Bearer");
         response = new MockHttpServletResponse();
         expectedMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        interceptor = new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider);
+        interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
     }
 
     @DisplayName("올바른 토큰일 때 인터셉터가 정상적으로 회원정보를 반환하는 지 확인한다.")
