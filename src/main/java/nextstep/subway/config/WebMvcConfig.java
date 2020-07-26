@@ -1,6 +1,6 @@
 package nextstep.subway.config;
 
-import nextstep.subway.auth.acceptance.ui.authentication.TokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.interceptor.authorization.SessionSecurityContextPersistenceInterceptor;
