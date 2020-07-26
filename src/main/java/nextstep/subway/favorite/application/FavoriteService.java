@@ -12,6 +12,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -39,17 +40,16 @@ public class FavoriteService {
         }
     }
 
+    @Transactional
     public void deleteFavorite(Long id, Long requestUserId) {
         final Favorite favorite = favoriteRepository
                 .findById(id)
                 .orElseThrow(() -> new FavoriteNotFoundException("No such data on database!"));
 
-        final Optional<Member> maybeMember = memberRepository.findById(requestUserId);
-        if (maybeMember.isEmpty() || !favorite.isOwnedBy(maybeMember.get())) {
-            throw new AccessViolationException("You have no right to remove favorite.");
-        }
+        final Member member = memberRepository.findById(requestUserId)
+                .orElseThrow(() -> new AccessViolationException("You have no right to remove favorite."));
 
-        favoriteRepository.deleteById(id);
+        member.removeFavorite(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(Long id) {

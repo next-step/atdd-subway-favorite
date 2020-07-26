@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,7 +17,8 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
     private final List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
@@ -52,5 +54,11 @@ public class Member extends BaseEntity {
 
     public List<Favorite> getFavorites() {
         return favorites;
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        if (favorite.isOwnedBy(this)) {
+            favorites.remove(favorite);
+        }
     }
 }
