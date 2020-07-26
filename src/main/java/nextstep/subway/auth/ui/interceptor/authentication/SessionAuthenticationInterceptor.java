@@ -10,15 +10,15 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService,
+    public SessionAuthenticationInterceptor(UserDetailService userDetailsService,
         AuthenticationConverter authenticationConverter) {
         this.userDetailsService = userDetailsService;
         this.authenticationConverter = authenticationConverter;

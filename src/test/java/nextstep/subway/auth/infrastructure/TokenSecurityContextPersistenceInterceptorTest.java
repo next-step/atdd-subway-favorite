@@ -16,7 +16,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +28,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
     private static final Long ID = 1L;
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailService userDetailsService;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -44,7 +44,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         request.addHeader("Authorization", "Bearer");
         response = new MockHttpServletResponse();
         expectedMember = new LoginMember(ID, EMAIL, PASSWORD, AGE);
-        interceptor = new TokenSecurityContextPersistenceInterceptor(customUserDetailsService, jwtTokenProvider);
+        interceptor = new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider);
     }
 
     @DisplayName("올바른 토큰일 때 인터셉터가 정상적으로 회원정보를 반환하는 지 확인한다.")
@@ -54,7 +54,7 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         // and: 로그인되어있음
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(EMAIL);
-        when(customUserDetailsService.loadUserByUserName(EMAIL)).thenReturn(expectedMember);
+        when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(expectedMember);
 
         // when: 내 회원 정보 요청
         interceptor.preHandle(request, response, mock(Object.class));
