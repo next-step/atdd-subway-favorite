@@ -3,14 +3,17 @@ package nextstep.subway.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.*;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_되어_있음;
 import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
 import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
@@ -66,7 +69,48 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_등록되어_있음(EMAIL, PASSWORD, 20);
 
         // 로그인_되어있음
+        로그인_되어_있음(EMAIL, PASSWORD);
     }
+
+    @DisplayName("즐겨찾기 생성을 요청한다.")
+    @Test
+    void createLine() {
+        // when
+        ExtractableResponse<Response> response =  즐겨찾기_생성을_요청(stationId1, stationId4);
+
+        // then
+        즐겨찾기_생성됨(response);
+    }
+
+
+    @DisplayName("즐겨찾기 목록 조회 조회한다.")
+    @Test
+    void getLines() {
+        // given
+        ExtractableResponse<Response> createResponse1 = 즐겨찾기_등록되어_있음(stationId1, stationId2);
+        ExtractableResponse<Response> createResponse2 = 즐겨찾기_등록되어_있음(stationId3, stationId4);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+
+        // then
+        즐겨찾기_목록_조회됨(response);
+    }
+
+
+    @DisplayName("지하철 노선을 제거한다.")
+    @Test
+    void deleteLine() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(stationId1, stationId2);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createResponse);
+
+        // then
+        즐겨찾기_삭제됨(response);
+    }
+
 
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
