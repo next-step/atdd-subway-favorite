@@ -1,8 +1,5 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
