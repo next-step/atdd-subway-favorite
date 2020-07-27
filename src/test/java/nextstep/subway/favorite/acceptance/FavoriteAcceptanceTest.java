@@ -22,6 +22,7 @@ import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지�
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
+    private TokenResponse tokenResponse;
 
     private Long lineId1;
     private Long lineId2;
@@ -69,14 +70,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_등록되어_있음(EMAIL, PASSWORD, 20);
 
         // 로그인_되어있음
-        로그인_되어_있음(EMAIL, PASSWORD);
+        tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
     @DisplayName("즐겨찾기 생성을 요청한다.")
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response =  즐겨찾기_생성을_요청(stationId1, stationId4);
+        ExtractableResponse<Response> response =  즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId4);
 
         // then
         즐겨찾기_생성됨(response);
@@ -87,11 +88,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = 즐겨찾기_등록되어_있음(stationId1, stationId2);
-        ExtractableResponse<Response> createResponse2 = 즐겨찾기_등록되어_있음(stationId3, stationId4);
+        ExtractableResponse<Response> createResponse1 = 즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId2);
+        ExtractableResponse<Response> createResponse2 = 즐겨찾기_등록되어_있음(tokenResponse, stationId3, stationId4);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(tokenResponse);
 
         // then
         즐겨찾기_목록_조회됨(response);
@@ -102,10 +103,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(stationId1, stationId2);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId2);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createResponse);
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(tokenResponse, createResponse);
 
         // then
         즐겨찾기_삭제됨(response);
