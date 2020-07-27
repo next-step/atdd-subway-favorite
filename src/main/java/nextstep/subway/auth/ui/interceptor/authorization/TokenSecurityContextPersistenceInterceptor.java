@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
-    JwtTokenProvider jwtTokenProvider;
-    ObjectMapper objectMapper;
+    private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
     public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
