@@ -23,6 +23,7 @@ public class FavoriteAcceptanceStep {
         params.put("target", target + "");
 
         return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 body(params).
                 when().
@@ -34,6 +35,7 @@ public class FavoriteAcceptanceStep {
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
                 get("/favorites").
@@ -46,6 +48,7 @@ public class FavoriteAcceptanceStep {
         String uri = response.header("Location");
 
         return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
                 when().
                 delete(uri).
                 then().

@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 import static nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.*;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_되어_있음;
-import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
 import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
 
@@ -71,6 +70,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // 로그인_되어있음
         tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        로그인_요청(EMAIL, PASSWORD);
     }
 
     @DisplayName("즐겨찾기 생성을 요청한다.")
