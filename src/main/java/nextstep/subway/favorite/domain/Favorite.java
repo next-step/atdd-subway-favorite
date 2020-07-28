@@ -12,13 +12,25 @@ public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long loginId;
     private Long sourceStationId;
     private Long targetStationId;
 
     public Favorite() {
+        this(null, null, null, null);
     }
 
     public Favorite(Long sourceStationId, Long targetStationId) {
+        this(null, null, sourceStationId, targetStationId);
+    }
+
+    public Favorite(Long id, Long sourceStationId, Long targetStationId) {
+        this(null, null, sourceStationId, targetStationId);
+    }
+
+    public Favorite(Long id, Long loginId, Long sourceStationId, Long targetStationId) {
+        this.id = id;
+        this.loginId = loginId;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
     }
