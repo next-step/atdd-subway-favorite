@@ -33,13 +33,12 @@ public class FavoriteService {
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
         checkRequest(favoriteRequest);
-        Favorite favorite = favoriteRequest.toFavorite();
-        member.addFavorite(favorite);
+        Favorite favorite = new Favorite(favoriteRequest.getSource(), favoriteRequest.getTarget(), member);
 
         Map<Long, Station> stations = stationRepository.findAllById(Arrays.asList(favorite.getSourceStationId(), favorite.getTargetStationId()))
                 .stream().collect(Collectors.toMap(Station::getId, Function.identity()));
 
-        memberRepository.saveAndFlush(member);
+        favoriteRepository.save(favorite);
         return FavoriteResponse.of(
                 favorite,
                 StationResponse.of(stations.get(favorite.getSourceStationId())),
@@ -55,14 +54,16 @@ public class FavoriteService {
     public void deleteFavorite(Long memberId, Long favoriteId) {
         Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
 
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findByIdAndMember(favoriteId, member).orElseGet(() -> {
+            throw new RuntimeException("don't have permission to delete");
+        });
 
-        member.deleteFavorite(favorite);
+        favoriteRepository.delete(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
-        List<Favorite> favorites = member.findAllFavorite();
+        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()

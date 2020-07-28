@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,7 @@ class FavoriteServiceTest {
         favoriteService.createFavorite(memberId, favorite);
 
         // then
-        verify(member).addFavorite(any());
+        verify(favoriteRepository).save(any());
     }
 
     @Test
@@ -92,13 +93,13 @@ class FavoriteServiceTest {
         Favorite favorite = new Favorite();
 
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
-        when(favoriteRepository.findById(anyLong())).thenReturn(Optional.of(favorite));
+        when(favoriteRepository.findByIdAndMember(any(), any())).thenReturn(Optional.of(favorite));
 
         // when
         favoriteService.deleteFavorite(member.getId(), favoriteId);
 
         // then
-        verify(member).deleteFavorite(any());
+        verify(favoriteRepository).delete(any());
     }
 
     @Test
@@ -110,13 +111,11 @@ class FavoriteServiceTest {
         Station targetStation = new Station(targetStationId, "운서역");
         Long memberId = 1L;
         Member member = new Member();
-        Favorite favorite = new Favorite(sourceStationId, targetStationId);
-        member.addFavorite(favorite);
+        Favorite favorite = new Favorite(sourceStationId, targetStationId, member);
 
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
-        when(favoriteRepository.findById(anyLong())).thenReturn(Optional.of(favorite));
+        when(favoriteRepository.findAllByMember(any())).thenReturn(Collections.singletonList(favorite));
         when(stationRepository.findAllById(anyCollection())).thenReturn(Arrays.asList(sourceStation, targetStation));
-        member.addFavorite(favorite);
 
         // when
         List<FavoriteResponse> favorites = favoriteService.findFavorites(memberId);
