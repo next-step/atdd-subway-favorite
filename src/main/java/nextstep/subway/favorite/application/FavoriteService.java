@@ -28,13 +28,13 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public Favorite createFavorite(Long loginId, FavoriteRequest request) {
-        Favorite favorite = new Favorite(loginId, request.getSource(), request.getTarget());
+    public Favorite createFavorite(Long memberId, FavoriteRequest request) {
+        Favorite favorite = new Favorite(memberId, request.getSource(), request.getTarget());
         return favoriteRepository.save(favorite);
     }
 
     public void deleteFavorite(Long memberId, Long id) {
-        Favorite findFavorite = favoriteRepository.findByIdAndMemberID(memberId, id)
+        Favorite findFavorite = favoriteRepository.findByIdAndMemberId(id, memberId)
                 .orElseThrow(FavoriteNotFoundException::new);
         favoriteRepository.deleteById(findFavorite.getId());
     }

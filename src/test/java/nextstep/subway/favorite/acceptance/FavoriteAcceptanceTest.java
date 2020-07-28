@@ -70,51 +70,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // 로그인_되어있음
         tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
-        로그인_요청(EMAIL, PASSWORD);
     }
 
-    @DisplayName("즐겨찾기 생성을 요청한다.")
+    @DisplayName("즐겨찾기를 관리한다.")
     @Test
-    void createLine() {
+    void manageMember() {
         // when
         ExtractableResponse<Response> response =  즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId4);
 
         // then
         즐겨찾기_생성됨(response);
-    }
-
-
-    @DisplayName("즐겨찾기 목록 조회 조회한다.")
-    @Test
-    void getLines() {
-        // given
-        ExtractableResponse<Response> createResponse1 = 즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId2);
-        ExtractableResponse<Response> createResponse2 = 즐겨찾기_등록되어_있음(tokenResponse, stationId3, stationId4);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(tokenResponse);
-
-        // then
-        즐겨찾기_목록_조회됨(response);
-    }
-
-
-    @DisplayName("지하철 노선을 제거한다.")
-    @Test
-    void deleteLine() {
-        // given
         ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId2);
-
-        // when
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(tokenResponse, createResponse);
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(tokenResponse);
 
         // then
-        즐겨찾기_삭제됨(response);
-    }
+        즐겨찾기_목록_조회됨(findResponse);
 
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(tokenResponse, createResponse);
 
-    @DisplayName("즐겨찾기를 관리한다.")
-    @Test
-    void manageMember() {
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
     }
 }

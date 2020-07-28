@@ -100,20 +100,20 @@ class FavoriteServiceTest {
     @Test
     void delete() {
         // given
-        when(favoriteRepository.findByIdAndMemberID(MEMBER_ID, ID))
+        when(favoriteRepository.findByIdAndMemberId(ID, MEMBER_ID))
                 .thenReturn(Optional.ofNullable(expected));
 
         // when
         favoriteService.deleteFavorite(MEMBER_ID, SOURCE);
 
         // then
-        verify(favoriteRepository).findByIdAndMemberID(MEMBER_ID, SOURCE);
+        verify(favoriteRepository).findByIdAndMemberId(SOURCE, MEMBER_ID);
     }
 
     @Test
     void deleteWhenNotFound() {
         // given
-        when(favoriteRepository.findByIdAndMemberID(MEMBER_ID, ID))
+        when(favoriteRepository.findByIdAndMemberId(ID, MEMBER_ID))
                 .thenThrow(FavoriteNotFoundException.class);
 
         // when
