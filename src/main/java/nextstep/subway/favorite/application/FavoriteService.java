@@ -31,8 +31,10 @@ public class FavoriteService {
         return favoriteRepository.save(favorite);
     }
 
-    public void deleteFavorite(Long loginMemberId, Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long memberId, Long id) {
+        Favorite findFavorite = favoriteRepository.findByIdAndMemberID(memberId, id)
+                .orElseThrow(FavoriteNotFoundException::new);
+        favoriteRepository.deleteById(findFavorite.getId());
     }
 
     public List<FavoriteResponse> findFavorites(Long loginMember) {

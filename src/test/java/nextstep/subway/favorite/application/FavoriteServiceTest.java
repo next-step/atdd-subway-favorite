@@ -11,8 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DisplayName("지하철 즐겨찾기 서비스 테스트")
@@ -20,7 +24,7 @@ import static org.mockito.Mockito.when;
 class FavoriteServiceTest {
     private static final long SOURCE = 1L;
     private static final long TARGET = 2L;
-    public static final long LOGIN_ID = 1L;
+    public static final long MEMBER_ID = 1L;
     public static final long ID = 1L;
 
     @Mock
@@ -35,7 +39,7 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(favoriteRepository, stationRepository);
-        expected = new Favorite(ID, LOGIN_ID, SOURCE, TARGET);
+        expected = new Favorite(ID, MEMBER_ID, SOURCE, TARGET);
         request = new FavoriteRequest(SOURCE, TARGET);
     }
 
@@ -45,10 +49,34 @@ class FavoriteServiceTest {
         when(favoriteRepository.save(any())).thenReturn(expected);
 
         // when
-        Favorite actual = favoriteService.createFavorite(LOGIN_ID, request);
+        Favorite actual = favoriteService.createFavorite(MEMBER_ID, request);
 
         // then
         assertThat(actual).isSameAs(expected);
+    }
+
+    @Test
+    void delete() {
+        // given
+        when(favoriteRepository.findByIdAndMemberID(MEMBER_ID, ID))
+                .thenReturn(Optional.ofNullable(expected));
+
+        // when
+        favoriteService.deleteFavorite(MEMBER_ID, SOURCE);
+
+        // then
+        verify(favoriteRepository).findByIdAndMemberID(MEMBER_ID, SOURCE);
+    }
+
+    @Test
+    void deleteWhenNotFound() {
+        // given
+        when(favoriteRepository.findByIdAndMemberID(MEMBER_ID, ID))
+                .thenThrow(FavoriteNotFoundException.class);
+
+        // when
+        assertThatExceptionOfType(FavoriteNotFoundException.class)
+                .isThrownBy(() -> favoriteService.deleteFavorite(MEMBER_ID, SOURCE));
     }
 
 }
