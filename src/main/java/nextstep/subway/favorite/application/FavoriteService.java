@@ -27,9 +27,9 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(Long loginMemberId, FavoriteRequest request) {
-        Favorite favorite = new Favorite(request.getSource(), request.getTarget());
-        favoriteRepository.save(favorite);
+    public Favorite createFavorite(Long loginMemberId, FavoriteRequest request) {
+        Favorite favorite = new Favorite(loginMemberId, request.getSource(), request.getTarget());
+        return favoriteRepository.save(favorite);
     }
 
     public void deleteFavorite(Long loginMemberId, Long id) {
