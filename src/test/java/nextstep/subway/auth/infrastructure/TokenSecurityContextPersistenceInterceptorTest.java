@@ -55,7 +55,8 @@ public class TokenSecurityContextPersistenceInterceptorTest {
         // and: 로그인되어있음
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(EMAIL);
-        when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(expectedMember);
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn(
+            new ObjectMapper().writeValueAsString(expectedMember));
 
         // when: 내 회원 정보 요청
         interceptor.preHandle(request, response, mock(Object.class));
