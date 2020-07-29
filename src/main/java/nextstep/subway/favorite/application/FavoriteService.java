@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -18,6 +19,7 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 
 @Service
+@Transactional
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationRepository stationRepository;
@@ -38,8 +40,9 @@ public class FavoriteService {
         favoriteRepository.deleteById(favorite.getId());
     }
 
-    public List<FavoriteResponse> findFavorites(Long loginMemberId) {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId)
+            .orElseThrow(FavoriteNotFoundException::new);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
