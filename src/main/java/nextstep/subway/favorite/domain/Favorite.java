@@ -1,11 +1,9 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.config.BaseEntity;
+import nextstep.subway.member.domain.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -15,12 +13,17 @@ public class Favorite extends BaseEntity {
     private Long sourceStationId;
     private Long targetStationId;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     public Favorite() {
     }
 
-    public Favorite(Long sourceStationId, Long targetStationId) {
+    public Favorite(Long sourceStationId, Long targetStationId, Member member) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+        this.member = member;
     }
 
     public Long getId() {
@@ -33,5 +36,9 @@ public class Favorite extends BaseEntity {
 
     public Long getTargetStationId() {
         return targetStationId;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

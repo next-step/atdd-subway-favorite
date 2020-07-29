@@ -3,14 +3,20 @@ package nextstep.subway.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.*;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_되어_있음;
 import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
 import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
@@ -68,8 +74,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // 로그인_되어있음
     }
 
-    @DisplayName("즐겨찾기를 관리한다.")
+    @DisplayName("내 즐겨찾기를 관리한다.")
     @Test
-    void manageMember() {
+    void manageMyFavorite() {
+        // given
+        TokenResponse loginToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        Map<String, String> createFavoriteMap = new HashMap<>();
+        createFavoriteMap.put("source", stationId1 + "");
+        createFavoriteMap.put("target", stationId2 + "");
+
+        // when
+        ExtractableResponse<Response> createResponse = 내_즐겨찾기_생성_요청(loginToken, createFavoriteMap);
+
+        // then
+        즐겨찾기_생성됨(createResponse);
+
+        // 즐겨찾기 목록 조회 요청
+        // when
+        ExtractableResponse<Response> findMyFavoritesResponse = 내_즐겨찾기_목록_조회_요청(loginToken);
+
+        // then
+        즐겨찾기_목록_조회됨(findMyFavoritesResponse);
+
+        // 즐겨찾기 삭제 요청
+        // when
+        ExtractableResponse<Response> deleteResponse = 내_즐겨찾기_삭제_요청(loginToken, createResponse);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
     }
 }
