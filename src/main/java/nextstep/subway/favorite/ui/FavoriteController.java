@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.LoginMember;
@@ -27,9 +28,9 @@ public class FavoriteController {
 
     @PostMapping("/favorites")
     public ResponseEntity<Void> createFavorite(LoginMember loginMember, @RequestBody FavoriteRequest request) {
-        favoriteService.createFavorite(loginMember.getId(), request);
+        Favorite favorite = favoriteService.createFavorite(loginMember.getId(), request);
         return ResponseEntity
-            .created(URI.create("/favorites/" + loginMember.getId()))
+            .created(URI.create("/favorites/" + favorite.getId()))
             .build();
     }
 
