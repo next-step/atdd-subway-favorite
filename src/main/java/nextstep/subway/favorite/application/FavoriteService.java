@@ -32,8 +32,10 @@ public class FavoriteService {
         return favoriteRepository.save(favorite);
     }
 
-    public void deleteFavorite(Long loginMemberId, Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long loginMemberId, Long Id) {
+        Favorite favorite = favoriteRepository.findByMemberIdAndId(loginMemberId, Id)
+            .orElseThrow(() -> new RuntimeException("nothing favorite found."));
+        favoriteRepository.deleteById(favorite.getId());
     }
 
     public List<FavoriteResponse> findFavorites(Long loginMemberId) {

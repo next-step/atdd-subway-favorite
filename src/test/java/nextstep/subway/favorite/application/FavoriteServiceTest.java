@@ -3,6 +3,8 @@ package nextstep.subway.favorite.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,5 +54,20 @@ public class FavoriteServiceTest {
 
         // then: 즐겨찾기의 기댓값과 비교한다.
         assertThat(actualFavorite).isEqualTo(expectedFavorite);
+    }
+
+    @DisplayName("하나의 멤버에 존재하는 즐겨찾기를 삭제한다.")
+    @Test
+    void 즐겨찾기를_삭제한다() {
+        // given: Repository에서 해당하는 즐겨찾기와 이에 해당하는 로그인 멤버를 꺼낸다고 가정한다.
+        when(favoriteRepository.findByMemberIdAndId(LOGINED_MEMBER_ID, FAVORITE_ID))
+            .thenReturn(Optional.ofNullable(expectedFavorite));
+
+        // when: 가져온 즐겨찾기를 삭제한다.
+        favoriteService.deleteFavorite(LOGINED_MEMBER_ID, FAVORITE_ID);
+
+        // then: 삭제 메소드가 실행되었는 지 확인한다.
+        verify(favoriteRepository).findByMemberIdAndId(LOGINED_MEMBER_ID, FAVORITE_ID);
+        verify(favoriteRepository).deleteById(FAVORITE_ID);
     }
 }
