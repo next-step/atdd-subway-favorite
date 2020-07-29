@@ -70,6 +70,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // 로그인_되어있음
         tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        로그인_요청(EMAIL, PASSWORD);
     }
 
     @DisplayName("즐겨찾기 목록에서 역 하나를 추가한다.")
