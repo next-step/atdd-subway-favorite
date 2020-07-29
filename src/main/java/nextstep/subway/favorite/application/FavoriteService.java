@@ -13,7 +13,6 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -28,7 +27,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(FavoriteRequest request) {
+    public void createFavorite(Long loginMemberId, FavoriteRequest request) {
         Favorite favorite = new Favorite(request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
     }
@@ -37,7 +36,7 @@ public class FavoriteService {
         favoriteRepository.deleteById(id);
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+    public List<FavoriteResponse> findFavorites(Long loginMemberId) {
         List<Favorite> favorites = favoriteRepository.findAll();
         Map<Long, Station> stations = extractStations(favorites);
 

@@ -18,15 +18,16 @@ import nextstep.subway.member.domain.LoginMember;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+
+    private final FavoriteService favoriteService;
 
     public FavoriteController(FavoriteService favoriteService) {
         this.favoriteService = favoriteService;
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity createFavorite(LoginMember loginMember, @RequestBody FavoriteRequest request) {
-        favoriteService.createFavorite(request);
+    public ResponseEntity<Void> createFavorite(LoginMember loginMember, @RequestBody FavoriteRequest request) {
+        favoriteService.createFavorite(loginMember.getId(), request);
         return ResponseEntity
             .created(URI.create("/favorites/" + loginMember.getId()))
             .build();
@@ -34,12 +35,12 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember.getId());
         return ResponseEntity.ok().body(favorites);
     }
 
     @DeleteMapping("/favorites/{id}")
-    public ResponseEntity deleteFavorite(LoginMember loginMember, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteFavorite(LoginMember loginMember, @PathVariable Long id) {
         favoriteService.deleteFavorite(loginMember.getId(), id);
         return ResponseEntity.noContent().build();
     }
