@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -20,6 +21,7 @@ import nextstep.subway.station.dto.StationResponse;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "javajigi@email.com";
     public static final String PASSWORD = "nextstep";
+    private TokenResponse tokenResponse;
 
     private Long lineId1;
     private Long lineId2;
@@ -67,14 +69,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_등록되어_있음(EMAIL, PASSWORD, 20);
 
         // 로그인_되어있음
-        로그인_되어_있음(EMAIL, PASSWORD);
+        tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
     @DisplayName("즐겨찾기 목록에서 역 하나를 추가한다.")
     @Test
     void 개인별_즐겨찾기를_추가한다() {
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(stationId1, stationId4);
+        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId4);
 
         // then
         즐겨찾기_생성됨(response);
@@ -84,11 +86,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 개인별_즐겨찾기_목록을_조회한다() {
         // given
-        즐겨찾기_생성을_요청(stationId1, stationId2);
-        즐겨찾기_생성을_요청(stationId3, stationId4);
+        즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId2);
+        즐겨찾기_생성을_요청(tokenResponse, stationId3, stationId4);
 
         // when
-        ExtractableResponse<Response> favoriteListResponse = 즐겨찾기_목록_조회_요청();
+        ExtractableResponse<Response> favoriteListResponse = 즐겨찾기_목록_조회_요청(tokenResponse);
 
         // then
         즐겨찾기_목록_조회됨(favoriteListResponse);
@@ -98,10 +100,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 개인별_즐겨찾기를_삭제한다() {
         // given
-        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(stationId1, stationId3);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId3);
 
         // when
-        ExtractableResponse<Response> removeResponse = 즐겨찾기_삭제_요청(createResponse);
+        ExtractableResponse<Response> removeResponse = 즐겨찾기_삭제_요청(tokenResponse, createResponse);
 
         // then
         즐겨찾기_삭제됨(removeResponse);
