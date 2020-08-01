@@ -1,4 +1,4 @@
-package nextstep.subway.auth.acceptance.ui.authentication;
+package nextstep.subway.auth.ui.interceptor.authorization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
