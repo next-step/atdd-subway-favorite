@@ -5,6 +5,9 @@ import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.*;
 import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.*;
 import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
 import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,7 +73,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // 로그인_되어있음
         tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
-        로그인_요청(EMAIL, PASSWORD);
+    }
+
+    @DisplayName("즐겨찾기를 개인별로 생성하고, 조회하고, 삭제한다.")
+    @Test
+    void 즐겨찾기를_괸라한다() {
+        // 즐겨찾기 생성 테스트
+        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId4);
+        즐겨찾기_생성됨(response);
+
+        // 즐겨찾기 조회 테스트
+        AtomicReference<ExtractableResponse<Response>> createResponse = new AtomicReference<>();
+        AtomicReference<ExtractableResponse<Response>> findResponse = new AtomicReference<>();
+        assertAll(
+            () -> createResponse.set(즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId2)),
+            () -> findResponse.set(즐겨찾기_목록_조회_요청(tokenResponse)),
+            () -> 즐겨찾기_목록_조회됨(findResponse.get())
+        );
+
+        // 즐겨찾기 삭제 테스트
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(tokenResponse, createResponse.get());
+        즐겨찾기_삭제됨(deleteResponse);
     }
 
     @DisplayName("즐겨찾기 목록에서 역 하나를 추가한다.")
