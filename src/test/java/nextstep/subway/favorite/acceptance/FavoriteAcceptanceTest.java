@@ -1,24 +1,30 @@
 package nextstep.subway.favorite.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.dto.StationResponse;
+import static nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.*;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.*;
+import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.*;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.*;
+import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.step.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
-import static nextstep.subway.station.acceptance.step.StationAcceptanceStep.지하철역_등록되어_있음;
-
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
+    public static final String EMAIL = "javajigi@email.com";
+    public static final String PASSWORD = "nextstep";
+    private TokenResponse tokenResponse;
 
     private Long lineId1;
     private Long lineId2;
@@ -66,10 +72,64 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_등록되어_있음(EMAIL, PASSWORD, 20);
 
         // 로그인_되어있음
+        tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
-    @DisplayName("즐겨찾기를 관리한다.")
+    @DisplayName("즐겨찾기를 개인별로 생성하고, 조회하고, 삭제한다.")
     @Test
-    void manageMember() {
+    void 즐겨찾기를_괸라한다() {
+        // 즐겨찾기 생성 테스트
+        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId4);
+        즐겨찾기_생성됨(response);
+
+        // 즐겨찾기 조회 테스트
+        AtomicReference<ExtractableResponse<Response>> createResponse = new AtomicReference<>();
+        AtomicReference<ExtractableResponse<Response>> findResponse = new AtomicReference<>();
+        assertAll(
+            () -> createResponse.set(즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId2)),
+            () -> findResponse.set(즐겨찾기_목록_조회_요청(tokenResponse)),
+            () -> 즐겨찾기_목록_조회됨(findResponse.get())
+        );
+
+        // 즐겨찾기 삭제 테스트
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(tokenResponse, createResponse.get());
+        즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("즐겨찾기 목록에서 역 하나를 추가한다.")
+    @Test
+    void 개인별_즐겨찾기를_추가한다() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId4);
+
+        // then
+        즐겨찾기_생성됨(response);
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void 개인별_즐겨찾기_목록을_조회한다() {
+        // given
+        즐겨찾기_생성을_요청(tokenResponse, stationId1, stationId2);
+        즐겨찾기_생성을_요청(tokenResponse, stationId3, stationId4);
+
+        // when
+        ExtractableResponse<Response> favoriteListResponse = 즐겨찾기_목록_조회_요청(tokenResponse);
+
+        // then
+        즐겨찾기_목록_조회됨(favoriteListResponse);
+    }
+
+    @DisplayName("즐겨찾기 목록에서 역 하나를 삭제한다.")
+    @Test
+    void 개인별_즐겨찾기를_삭제한다() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(tokenResponse, stationId1, stationId3);
+
+        // when
+        ExtractableResponse<Response> removeResponse = 즐겨찾기_삭제_요청(tokenResponse, createResponse);
+
+        // then
+        즐겨찾기_삭제됨(removeResponse);
     }
 }

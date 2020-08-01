@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import nextstep.subway.auth.application.UserDetail;
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.UserDetailService;
-import nextstep.subway.member.domain.LoginMember;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -39,7 +39,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailService.loadUserByUserName(principal);
+        UserDetail userDetails = userDetailService.loadUserByUserName(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
@@ -48,13 +48,13 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException;
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetail userDetails, AuthenticationToken token) {
         if (userDetails == null) {
-            throw new RuntimeException();
+            throw new RuntimeException("there is no user.");
         }
 
         if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
+            throw new RuntimeException("you put wrong password.");
         }
     }
 }

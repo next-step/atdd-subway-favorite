@@ -17,11 +17,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.convert.AuthenticationConverter;
-import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 @ExtendWith(MockitoExtension.class)
@@ -105,12 +105,13 @@ public class TokenAuthenticationInterceptorTest {
 
         // when: 로그인 요청
         addBasicAuthHeader(EMAIL, WRONG_PASSWORD);
-        when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
+        when(authenticationConverter.convert(request)).thenReturn(new AuthenticationToken(EMAIL, WRONG_PASSWORD));
+        when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(loginMember);
 
         // then: 로그인 처리
         assertThatThrownBy(
             () -> tokenAuthenticationInterceptor.preHandle(request, response, mock(Object.class))
-        ).isInstanceOf(RuntimeException.class).hasMessage("there is no user.");
+        ).isInstanceOf(RuntimeException.class).hasMessage("you put wrong password.");
     }
 
     private void addBasicAuthHeader(String email, String password) {
