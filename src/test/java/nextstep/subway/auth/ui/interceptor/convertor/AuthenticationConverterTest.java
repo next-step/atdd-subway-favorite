@@ -36,7 +36,7 @@ public class AuthenticationConverterTest {
 
     void setSessionRequestHeader() {
         Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
+        params.put("username", EMAIL);
         params.put("password", PASSWORD);
 
         sessionRequest.addParameters(params);
