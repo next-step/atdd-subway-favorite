@@ -22,8 +22,6 @@ import java.io.PrintWriter;
 import java.util.Base64;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private static final String BASIC_AUTH_REGEX = ":";
-
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;

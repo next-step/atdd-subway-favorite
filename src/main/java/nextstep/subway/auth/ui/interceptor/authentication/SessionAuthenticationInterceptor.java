@@ -17,16 +17,12 @@ import java.util.Map;
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor implements HandlerInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
-
     private CustomUserDetailsService userDetailsService;
     private AuthenticationConverter converter;
 
     public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
         this.converter = new SessionAuthenticationConverter();
-
     }
 
     @Override
