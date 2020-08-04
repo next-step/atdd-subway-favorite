@@ -29,6 +29,7 @@ public class AuthenticationConverterTest {
     @BeforeEach
     void setUp() {
         sessionRequest = new MockHttpServletRequest();
+        tokenRequest = new MockHttpServletRequest();
         sessionConverter = new SessionAuthenticationConverter();
         tokenConverter = new TokenAuthenticationConverter();
 
@@ -73,7 +74,7 @@ public class AuthenticationConverterTest {
     @Test
     void convertTokenToAuthenticationToken() {
         // when
-        AuthenticationToken token = tokenConverter.convert(sessionRequest);
+        AuthenticationToken token = tokenConverter.convert(tokenRequest);
 
         // then
         assertThat(token.getPrincipal()).isEqualTo(EMAIL);
