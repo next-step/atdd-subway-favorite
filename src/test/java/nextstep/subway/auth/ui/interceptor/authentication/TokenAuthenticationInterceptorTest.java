@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.interceptor.converter.TokenAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,22 +51,11 @@ public class TokenAuthenticationInterceptorTest {
         request.addHeader("Authorization", "Basic " + credentials);
     }
 
-    @DisplayName("Basic Auth 로그인 정보 추출")
-    @Test
-    void extractAuth() {
-        // when
-        AuthenticationToken token = interceptor.convert(request);
-
-        // then
-        assertThat(token.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(token.getCredentials()).isEqualTo(PASSWORD);
-    }
-
     @DisplayName("Basic Auth 인증")
     @Test
     void auth() {
         // given
-        AuthenticationToken token = interceptor.convert(request);
+        AuthenticationToken token = new TokenAuthenticationConverter().convert(request);
 
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
         when(userDetailsService.loadUserByUsername(token.getPrincipal())).thenReturn(loginMember);

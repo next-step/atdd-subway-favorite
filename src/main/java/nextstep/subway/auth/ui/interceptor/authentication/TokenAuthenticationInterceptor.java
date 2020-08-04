@@ -8,6 +8,8 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.interceptor.converter.AuthenticationConverter;
+import nextstep.subway.auth.ui.interceptor.converter.TokenAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
@@ -25,16 +27,18 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
+    private AuthenticationConverter converter;
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = new ObjectMapper();
+        this.converter = new TokenAuthenticationConverter();
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken token = convert(request);
+        AuthenticationToken token = converter.convert(request);
         Authentication authentication = authenticate(token);
 
         if (authentication == null) {
@@ -59,18 +63,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return new TokenResponse(token);
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) {
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-        byte[] decodedBytes= Base64.getDecoder().decode(credentials.getBytes());
-        String decodedCredentials = new String(decodedBytes);
-
-        String[] split = decodedCredentials.split(BASIC_AUTH_REGEX);
-
-        String principle = split[0];
-        String credential = split[1];
-
-        return new AuthenticationToken(principle, credential);
-    }
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
         LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
