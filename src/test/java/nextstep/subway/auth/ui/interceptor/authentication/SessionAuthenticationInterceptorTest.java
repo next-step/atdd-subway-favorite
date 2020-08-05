@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,6 @@ public class SessionAuthenticationInterceptorTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private CustomUserDetailsService userDetailsService;
-    private AuthenticationConverter sessionConverter;
     private SessionAuthenticationInterceptor interceptor;
 
     @BeforeEach
@@ -38,7 +38,6 @@ public class SessionAuthenticationInterceptorTest {
         setSessionRequestHeader();
 
         userDetailsService = mock(CustomUserDetailsService.class);
-        sessionConverter = new SessionAuthenticationConverter();
         interceptor = new SessionAuthenticationInterceptor(userDetailsService);
 
     }
@@ -53,7 +52,7 @@ public class SessionAuthenticationInterceptorTest {
 
     @DisplayName("Session 응답 테스트")
     @Test
-    void returnSessionResponse() {
+    void returnSessionResponse() throws IOException {
         // given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);

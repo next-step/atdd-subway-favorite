@@ -7,16 +7,15 @@ import nextstep.subway.auth.ui.interceptor.converter.AuthenticationConverter;
 import nextstep.subway.auth.ui.interceptor.converter.SessionAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
+import java.io.IOException;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor {
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
     private CustomUserDetailsService userDetailsService;
     private AuthenticationConverter converter;
 
@@ -26,7 +25,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken token = converter.convert(request);
         Authentication authentication = authenticate(token);
 
@@ -34,9 +33,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
             throw new RuntimeException();
         }
 
-        HttpSession httpSession = request.getSession();
-        httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
-        response.setStatus(HttpServletResponse.SC_OK);
+        afterAuthentication(request, response, authentication);
         return false;
     }
 
@@ -56,5 +53,12 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        HttpSession httpSession = request.getSession();
+        httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

@@ -5,23 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
-import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.interceptor.converter.AuthenticationConverter;
 import nextstep.subway.auth.ui.interceptor.converter.TokenAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Base64;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
@@ -43,13 +39,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
             throw new RuntimeException();
         }
 
-        TokenResponse tokenResponse = getTokenResponse(authentication);
-
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        PrintWriter out = response.getWriter();
-        out.print(objectMapper.writeValueAsString(tokenResponse));
-        out.flush();
-        response.setStatus(HttpServletResponse.SC_OK);
+        afterAuthentication(request, response, authentication);
 
         return false;
     }
@@ -77,5 +67,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        TokenResponse tokenResponse = getTokenResponse(authentication);
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        PrintWriter out = response.getWriter();
+        out.print(objectMapper.writeValueAsString(tokenResponse));
+        out.flush();
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
