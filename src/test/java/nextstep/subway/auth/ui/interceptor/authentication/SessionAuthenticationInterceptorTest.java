@@ -1,9 +1,9 @@
 package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.application.UserDetails;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.interceptor.converter.AuthenticationConverter;
-import nextstep.subway.auth.ui.interceptor.converter.SessionAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ public class SessionAuthenticationInterceptorTest {
 
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
     private SessionAuthenticationInterceptor interceptor;
 
     @BeforeEach
@@ -54,13 +54,13 @@ public class SessionAuthenticationInterceptorTest {
     @Test
     void returnSessionResponse() throws IOException {
         // given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
+        UserDetails loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
 
         // when
         interceptor.preHandle(request, response, new Object());
 
-        LoginMember sessionMember = getLoginMemberInSession();
+        UserDetails sessionMember = getLoginMemberInSession();
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(sessionMember.getEmail()).isEqualTo(EMAIL);
