@@ -43,6 +43,12 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/members/me")
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(UserDetails member) {
+        memberService.deleteMember(member.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
