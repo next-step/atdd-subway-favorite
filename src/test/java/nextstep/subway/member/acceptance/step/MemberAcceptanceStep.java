@@ -127,12 +127,12 @@ public class MemberAcceptanceStep {
 
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
-                accept(MediaType.APPLICATION_JSON_VALUE).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                body(params).
                 when().
                 put("/members/me").
                 then().
                 log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 

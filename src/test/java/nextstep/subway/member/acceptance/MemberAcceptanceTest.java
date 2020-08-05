@@ -53,7 +53,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
         회원_정보_조회됨(response, EMAIL, AGE);
 
-        ExtractableResponse<Response> updated = 내_회원_정보_수정_요청(tokenResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        ExtractableResponse<Response> updated = 내_회원_정보_수정_요청(tokenResponse, "new" + EMAIL, "new" + PASSWORD, AGE + 3);
 
         회원_정보_수정됨(updated);
     }

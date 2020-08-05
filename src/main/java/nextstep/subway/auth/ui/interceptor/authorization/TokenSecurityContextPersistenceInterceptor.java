@@ -2,6 +2,7 @@ package nextstep.subway.auth.ui.interceptor.authorization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetails;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.member.domain.LoginMember;
@@ -25,7 +26,7 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
         if (jwtTokenProvider.validateToken(token)) {
             String payload = jwtTokenProvider.getPayload(token);
 
-            LoginMember userDetails = objectMapper.readValue(payload, LoginMember.class);
+            UserDetails userDetails = objectMapper.readValue(payload, LoginMember.class);
 
             SecurityContext context = new SecurityContext(new Authentication(userDetails));
             SecurityContextHolder.setContext(context);
