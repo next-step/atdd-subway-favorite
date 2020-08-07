@@ -2,52 +2,44 @@ package nextstep.subway.auth.ui.interceptor.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetails;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
-import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.ui.interceptor.converter.AuthenticationConverter;
+import nextstep.subway.auth.ui.interceptor.converter.TokenAuthenticationConverter;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Base64;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private static final String BASIC_AUTH_REGEX = ":";
-
-    private CustomUserDetailsService userDetailsService;
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
+    private AuthenticationConverter converter;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = new ObjectMapper();
+        this.converter = new TokenAuthenticationConverter();
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken token = convert(request);
+        AuthenticationToken token = converter.convert(request);
         Authentication authentication = authenticate(token);
 
         if (authentication == null) {
             throw new RuntimeException();
         }
 
-        TokenResponse tokenResponse = getTokenResponse(authentication);
-
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        PrintWriter out = response.getWriter();
-        out.print(objectMapper.writeValueAsString(tokenResponse));
-        out.flush();
-        response.setStatus(HttpServletResponse.SC_OK);
+        afterAuthentication(request, response, authentication);
 
         return false;
     }
@@ -59,27 +51,15 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return new TokenResponse(token);
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) {
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-        byte[] decodedBytes= Base64.getDecoder().decode(credentials.getBytes());
-        String decodedCredentials = new String(decodedBytes);
-
-        String[] split = decodedCredentials.split(BASIC_AUTH_REGEX);
-
-        String principle = split[0];
-        String credential = split[1];
-
-        return new AuthenticationToken(principle, credential);
-    }
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new RuntimeException();
         }
@@ -87,5 +67,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        TokenResponse tokenResponse = getTokenResponse(authentication);
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        PrintWriter out = response.getWriter();
+        out.print(objectMapper.writeValueAsString(tokenResponse));
+        out.flush();
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

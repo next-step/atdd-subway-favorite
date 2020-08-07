@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.application.UserDetails;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.application.MemberService;
@@ -32,12 +33,20 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        LoginMember member = (LoginMember)authentication.getPrincipal();
-
+    public ResponseEntity<MemberResponse> findMemberOfMine(UserDetails member) {
         return ResponseEntity.ok(new MemberResponse(member.getId(), member.getEmail(), member.getAge()));
+    }
+
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> updateMemberOfMine(UserDetails member, @RequestBody MemberRequest param) {
+        memberService.updateMember(member.getId(), param);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/members/me")
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(UserDetails member) {
+        memberService.deleteMember(member.getId());
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/members/{id}")

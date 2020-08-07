@@ -1,10 +1,11 @@
-package nextstep.subway.auth.acceptance.ui.authentication;
+package nextstep.subway.auth.ui.interceptor.authentication;
 
+import nextstep.subway.auth.application.UserDetails;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.auth.ui.interceptor.converter.TokenAuthenticationConverter;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +29,7 @@ public class TokenAuthenticationInterceptorTest {
 
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
     private TokenAuthenticationInterceptor interceptor;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -38,7 +39,7 @@ public class TokenAuthenticationInterceptorTest {
         response = new MockHttpServletResponse();
         setBasicAuthHeader();
 
-        userDetailsService = mock(CustomUserDetailsService.class);
+        userDetailsService = mock(UserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
         interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
     }
@@ -50,24 +51,13 @@ public class TokenAuthenticationInterceptorTest {
         request.addHeader("Authorization", "Basic " + credentials);
     }
 
-    @DisplayName("Basic Auth 로그인 정보 추출")
-    @Test
-    void extractAuth() {
-        // when
-        AuthenticationToken token = interceptor.convert(request);
-
-        // then
-        assertThat(token.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(token.getCredentials()).isEqualTo(PASSWORD);
-    }
-
     @DisplayName("Basic Auth 인증")
     @Test
     void auth() {
         // given
-        AuthenticationToken token = interceptor.convert(request);
+        AuthenticationToken token = new TokenAuthenticationConverter().convert(request);
 
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
+        UserDetails loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
         when(userDetailsService.loadUserByUsername(token.getPrincipal())).thenReturn(loginMember);
 
         // when
@@ -81,7 +71,7 @@ public class TokenAuthenticationInterceptorTest {
     @Test
     void returnTokenResponse() throws Exception {
         // given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
+        UserDetails loginMember = new LoginMember(1L, EMAIL, PASSWORD, 1);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(anyString())).thenReturn("jwtToken");
 
