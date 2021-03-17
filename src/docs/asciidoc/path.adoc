@@ -1,0 +1,12 @@
+[[path]]
+== 지하철 경로
+
+=== 경로 조회
+
+==== Request
+
+include::{snippets}/path/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/path/http-response.adoc[]

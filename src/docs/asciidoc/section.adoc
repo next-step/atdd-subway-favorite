@@ -1,0 +1,22 @@
+[[section]]
+== 지하철 구간
+
+=== 구간 생성
+
+==== Request
+
+include::{snippets}/section/add/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/section/add/http-response.adoc[]
+
+=== 구간 제거
+
+==== Request
+
+include::{snippets}/section/delete/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/section/delete/http-response.adoc[]

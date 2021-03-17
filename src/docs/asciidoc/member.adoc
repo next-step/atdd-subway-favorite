@@ -1,0 +1,22 @@
+[[member]]
+== 회원
+
+=== 생성
+
+==== Request
+
+include::{snippets}/member/create/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/member/create/http-response.adoc[]
+
+=== 로그인
+
+==== Request
+
+include::{snippets}/member/login/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/member/login/http-response.adoc[]

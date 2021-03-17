@@ -30,3 +30,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+frontend/node_modules
+fronted/.prttierrc.js
+fronted/.eslintrc.js
+frontend/node_modules

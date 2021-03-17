@@ -1,0 +1,32 @@
+[[station]]
+== 지하철역
+
+=== 생성
+
+==== Request
+
+include::{snippets}/station/create/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/station/create/http-response.adoc[]
+
+=== 목록 조회
+
+==== Request
+
+include::{snippets}/station/read/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/station/read/http-response.adoc[]
+
+=== 삭제
+
+==== Request
+
+include::{snippets}/station/delete/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/station/delete/http-response.adoc[]
