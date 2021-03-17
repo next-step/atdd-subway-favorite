@@ -68,7 +68,3 @@ task copyDocument(type: Copy) {
 	from file("build/asciidoc/html5/index.html")
 	into file("src/main/resources/static/docs")
 }
-
-bootRun {
-	dependsOn copyDocument
-}
