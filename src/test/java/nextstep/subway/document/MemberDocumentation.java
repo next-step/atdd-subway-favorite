@@ -15,7 +15,7 @@ import static org.springframework.restdocs.restassured3.RestAssuredRestDocumenta
 public class MemberDocumentation extends Documentation {
     @Test
     void member() {
-        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, NAME);
+        MemberRequest memberRequest = new MemberRequest(OTHER_EMAIL, OTHER_PASSWORD, NAME);
 
         RestAssured
                 .given(spec).log().all()
@@ -27,7 +27,7 @@ public class MemberDocumentation extends Documentation {
                 .when().post("/members")
                 .then().log().all().extract();
 
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(OTHER_EMAIL, OTHER_PASSWORD);
 
         RestAssured
                 .given(spec).log().all()
