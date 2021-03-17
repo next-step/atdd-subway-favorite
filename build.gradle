@@ -72,4 +72,3 @@ task copyDocument(type: Copy) {
 bootRun {
 	dependsOn copyDocument
 }
-g
