@@ -8,14 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.TestConstants.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class MemberDocumentation extends Documentation {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final String NAME = "사용자";
-
     @Test
     void member() {
         MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, NAME);

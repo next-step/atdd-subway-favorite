@@ -485,13 +485,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /members HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:54088
-Content-Length: 74
+Host: localhost:50406
+Content-Length: 84
 
 {
   "email" : "email@email.com",
   "password" : "password",
-  "age" : 20
+  "name" : "사용자"
 }</code></pre>
 </div>
 </div>
@@ -500,11 +500,21 @@ Content-Length: 74
 <h4 id="_response"><a class="link" href="#_response">Response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: /members/2
-Date: Wed, 17 Mar 2021 07:46:20 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 500 Internal Server Error
+Set-Cookie: JSESSIONID=023B9228D4184C68ADF470B44C5D678A; Path=/; HttpOnly
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 17 Mar 2021 11:33:45 GMT
+Connection: close
+Content-Length: 147
+
+{
+  "timestamp" : "2021-03-17T11:33:46.510+00:00",
+  "status" : 500,
+  "error" : "Internal Server Error",
+  "message" : "",
+  "path" : "/members"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -517,7 +527,7 @@ Connection: keep-alive</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /login/token HTTP/1.1
 Content-Type: application/json; charset=UTF-8
-Host: localhost:54088
+Host: localhost:50406
 Content-Length: 60
 
 {
@@ -536,13 +546,13 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 335
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Content-Length: 351
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 
 {
-  "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjIsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.P5ObY14VLYqguWlIsysnm1yhGgt5fZCrD8EWoXtlSmo"
+  "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik"
 }</code></pre>
 </div>
 </div>
@@ -560,9 +570,9 @@ Connection: keep-alive
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /stations HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
 Content-Type: application/json; charset=UTF-8
-Host: localhost:54088
+Host: localhost:50406
 Content-Length: 29
 
 {
@@ -576,11 +586,11 @@ Content-Length: 29
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Set-Cookie: JSESSIONID=4971187F391F61A25A436AF8F73D4547; Path=/; HttpOnly
+Set-Cookie: JSESSIONID=C1FD9116E1B803773D6B5F2B9D4F55A5; Path=/; HttpOnly
 Location: /stations/1
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 132
@@ -588,8 +598,8 @@ Content-Length: 132
 {
   "id" : 1,
   "name" : "지하철역",
-  "createdDate" : "2021-03-17T16:46:21.374",
-  "modifiedDate" : "2021-03-17T16:46:21.374"
+  "createdDate" : "2021-03-17T20:33:46.748",
+  "modifiedDate" : "2021-03-17T20:33:46.748"
 }</code></pre>
 </div>
 </div>
@@ -602,8 +612,8 @@ Content-Length: 132
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /stations HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
-Host: localhost:54088</code></pre>
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
+Host: localhost:50406</code></pre>
 </div>
 </div>
 </div>
@@ -612,10 +622,10 @@ Host: localhost:54088</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: JSESSIONID=90B270B636CBC68345AF181195F0EFCF; Path=/; HttpOnly
+Set-Cookie: JSESSIONID=EC8D8DEDCD1DEDD22AC6037DC3250868; Path=/; HttpOnly
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 136
@@ -623,8 +633,8 @@ Content-Length: 136
 [ {
   "id" : 1,
   "name" : "지하철역",
-  "createdDate" : "2021-03-17T16:46:21.374",
-  "modifiedDate" : "2021-03-17T16:46:21.374"
+  "createdDate" : "2021-03-17T20:33:46.748",
+  "modifiedDate" : "2021-03-17T20:33:46.748"
 } ]</code></pre>
 </div>
 </div>
@@ -637,8 +647,8 @@ Content-Length: 136
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /stations/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
-Host: localhost:54088</code></pre>
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
+Host: localhost:50406</code></pre>
 </div>
 </div>
 </div>
@@ -647,8 +657,8 @@ Host: localhost:54088</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Set-Cookie: JSESSIONID=CAA627EEAAD2117DA837EABDB0C20461; Path=/; HttpOnly
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Set-Cookie: JSESSIONID=0A62BD7370CFA6860BEE7B908FAB3B7F; Path=/; HttpOnly
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -667,9 +677,9 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
 Content-Type: application/json; charset=UTF-8
-Host: localhost:54088
+Host: localhost:50406
 Content-Length: 137
 
 {
@@ -688,11 +698,11 @@ Content-Length: 137
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Set-Cookie: JSESSIONID=869E180E0857CBF1C8D180D3E1FEB5F9; Path=/; HttpOnly
+Set-Cookie: JSESSIONID=5F1FE575879A74DDDFAF4E6CD8B479AC; Path=/; HttpOnly
 Location: /lines/1
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 459
@@ -704,16 +714,16 @@ Content-Length: 459
   "stations" : [ {
     "id" : 1,
     "name" : "강남역",
-    "createdDate" : "2021-03-17T16:46:21.467",
-    "modifiedDate" : "2021-03-17T16:46:21.467"
+    "createdDate" : "2021-03-17T20:33:46.869",
+    "modifiedDate" : "2021-03-17T20:33:46.869"
   }, {
     "id" : 2,
     "name" : "광교역",
-    "createdDate" : "2021-03-17T16:46:21.481",
-    "modifiedDate" : "2021-03-17T16:46:21.481"
+    "createdDate" : "2021-03-17T20:33:46.883",
+    "modifiedDate" : "2021-03-17T20:33:46.883"
   } ],
-  "createdDate" : "2021-03-17T16:46:21.502",
-  "modifiedDate" : "2021-03-17T16:46:21.502"
+  "createdDate" : "2021-03-17T20:33:46.902",
+  "modifiedDate" : "2021-03-17T20:33:46.902"
 }</code></pre>
 </div>
 </div>
@@ -726,9 +736,9 @@ Content-Length: 459
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /lines HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
 Accept: application/json
-Host: localhost:54088</code></pre>
+Host: localhost:50406</code></pre>
 </div>
 </div>
 </div>
@@ -737,10 +747,9 @@ Host: localhost:54088</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: JSESSIONID=A1E1DD4865A84D827460E38BB9C850C7; Path=/; HttpOnly
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 463
@@ -752,16 +761,16 @@ Content-Length: 463
   "stations" : [ {
     "id" : 1,
     "name" : "강남역",
-    "createdDate" : "2021-03-17T16:46:21.467",
-    "modifiedDate" : "2021-03-17T16:46:21.467"
+    "createdDate" : "2021-03-17T20:33:46.869",
+    "modifiedDate" : "2021-03-17T20:33:46.869"
   }, {
     "id" : 2,
     "name" : "광교역",
-    "createdDate" : "2021-03-17T16:46:21.481",
-    "modifiedDate" : "2021-03-17T16:46:21.481"
+    "createdDate" : "2021-03-17T20:33:46.883",
+    "modifiedDate" : "2021-03-17T20:33:46.883"
   } ],
-  "createdDate" : "2021-03-17T16:46:21.502",
-  "modifiedDate" : "2021-03-17T16:46:21.502"
+  "createdDate" : "2021-03-17T20:33:46.902",
+  "modifiedDate" : "2021-03-17T20:33:46.902"
 } ]</code></pre>
 </div>
 </div>
@@ -774,9 +783,9 @@ Content-Length: 463
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /lines/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
 Accept: application/json
-Host: localhost:54088</code></pre>
+Host: localhost:50406</code></pre>
 </div>
 </div>
 </div>
@@ -785,9 +794,10 @@ Host: localhost:54088</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Set-Cookie: JSESSIONID=BB5736712944F14A5397561AA9FFA9DE; Path=/; HttpOnly
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
 Content-Length: 459
@@ -799,16 +809,16 @@ Content-Length: 459
   "stations" : [ {
     "id" : 1,
     "name" : "강남역",
-    "createdDate" : "2021-03-17T16:46:21.467",
-    "modifiedDate" : "2021-03-17T16:46:21.467"
+    "createdDate" : "2021-03-17T20:33:46.869",
+    "modifiedDate" : "2021-03-17T20:33:46.869"
   }, {
     "id" : 2,
     "name" : "광교역",
-    "createdDate" : "2021-03-17T16:46:21.481",
-    "modifiedDate" : "2021-03-17T16:46:21.481"
+    "createdDate" : "2021-03-17T20:33:46.883",
+    "modifiedDate" : "2021-03-17T20:33:46.883"
   } ],
-  "createdDate" : "2021-03-17T16:46:21.502",
-  "modifiedDate" : "2021-03-17T16:46:21.502"
+  "createdDate" : "2021-03-17T20:33:46.902",
+  "modifiedDate" : "2021-03-17T20:33:46.902"
 }</code></pre>
 </div>
 </div>
@@ -821,9 +831,9 @@ Content-Length: 459
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /lines/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
 Content-Type: application/json; charset=UTF-8
-Host: localhost:54088
+Host: localhost:50406
 Content-Length: 137
 
 {
@@ -842,8 +852,8 @@ Content-Length: 137
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: JSESSIONID=A7287C56737D99C352D830DCD6C518A0; Path=/; HttpOnly
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Set-Cookie: JSESSIONID=C19451BAA3CA3CA31CA73F1A4282C5CA; Path=/; HttpOnly
+Date: Wed, 17 Mar 2021 11:33:46 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -857,8 +867,8 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
-Host: localhost:54088</code></pre>
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
+Host: localhost:50406</code></pre>
 </div>
 </div>
 </div>
@@ -867,8 +877,8 @@ Host: localhost:54088</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
-Set-Cookie: JSESSIONID=5AEF5AEE001F2CD609D051473C3C7B6F; Path=/; HttpOnly
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Set-Cookie: JSESSIONID=A60F32D2E069443FF87573F17903D3F5; Path=/; HttpOnly
+Date: Wed, 17 Mar 2021 11:33:46 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -887,9 +897,9 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /lines/1/sections HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MCwiZXhwIjoxNjE1OTcwNzgwfQ.0zBj_9SCHsH3L7N-yxItt71Gyo-UmMyhFDlbhEY3I_E
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
 Content-Type: application/json; charset=UTF-8
-Host: localhost:54088
+Host: localhost:50406
 Content-Length: 83
 
 {
@@ -906,8 +916,8 @@ Content-Length: 83
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: JSESSIONID=323DE4AA656B53800101EF54F162CBC1; Path=/; HttpOnly
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Set-Cookie: JSESSIONID=E489533EAB918FEDF79CF869CF82267F; Path=/; HttpOnly
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -921,8 +931,8 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /lines/1/sections?stationId=2 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MCwiZXhwIjoxNjE1OTcwNzgwfQ.0zBj_9SCHsH3L7N-yxItt71Gyo-UmMyhFDlbhEY3I_E
-Host: localhost:54088</code></pre>
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
+Host: localhost:50406</code></pre>
 </div>
 </div>
 </div>
@@ -931,7 +941,7 @@ Host: localhost:54088</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive</code></pre>
 </div>
@@ -950,9 +960,9 @@ Connection: keep-alive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /paths?source=1&amp;target=3&amp;type=DISTANCE HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwibG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjMwLFwicHJpbmNpcGFsXCI6XCJsb2dpbkBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk2NzE4MSwiZXhwIjoxNjE1OTcwNzgxfQ.Ce4PzmErJ6GfeyQrTmLgR1YrPqJZX_ULuG1To897o0A
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNTk4MDgyNiwiZXhwIjoxNjE1OTg0NDI2fQ.SPxs8z4pXiZyx_6FtSrwu3PEC0wVkGaZrv5wCF-Uyik
 Accept: application/json
-Host: localhost:54088</code></pre>
+Host: localhost:50406</code></pre>
 </div>
 </div>
 </div>
@@ -961,32 +971,33 @@ Host: localhost:54088</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Set-Cookie: JSESSIONID=EB29D3DECC0F211BD4C5C76794A822D2; Path=/; HttpOnly
+Set-Cookie: JSESSIONID=4E81A92338BB23CA01DBEB48D3B29FF9; Path=/; HttpOnly
 Content-Type: application/json
 Transfer-Encoding: chunked
-Date: Wed, 17 Mar 2021 07:46:20 GMT
+Date: Wed, 17 Mar 2021 11:33:45 GMT
 Keep-Alive: timeout=60
 Connection: keep-alive
-Content-Length: 463
+Content-Length: 490
 
 {
   "stations" : [ {
     "id" : 1,
     "name" : "교대역",
-    "createdDate" : "2021-03-17T16:46:21.203",
-    "modifiedDate" : "2021-03-17T16:46:21.203"
+    "createdDate" : "2021-03-17T20:33:46.582",
+    "modifiedDate" : "2021-03-17T20:33:46.582"
   }, {
-    "id" : 2,
-    "name" : "강남역",
-    "createdDate" : "2021-03-17T16:46:21.215",
-    "modifiedDate" : "2021-03-17T16:46:21.215"
+    "id" : 4,
+    "name" : "남부터미널역",
+    "createdDate" : "2021-03-17T20:33:46.616",
+    "modifiedDate" : "2021-03-17T20:33:46.616"
   }, {
     "id" : 3,
     "name" : "양재역",
-    "createdDate" : "2021-03-17T16:46:21.229",
-    "modifiedDate" : "2021-03-17T16:46:21.229"
+    "createdDate" : "2021-03-17T20:33:46.606",
+    "modifiedDate" : "2021-03-17T20:33:46.606"
   } ],
-  "distance" : 20
+  "duration" : 20,
+  "distance" : 5
 }</code></pre>
 </div>
 </div>
@@ -997,7 +1008,7 @@ Content-Length: 463
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-03-17 16:21:16 +0900
+Last updated 2021-03-17 16:58:12 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

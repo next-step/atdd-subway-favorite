@@ -1,10 +1,12 @@
 package nextstep.subway.station.application;
 
 import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StationService {
+    @Autowired
+    private MemberRepository memberRepository;
+
     private StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {

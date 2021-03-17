@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.TestConstants.OTHER_EMAIL;
+import static nextstep.subway.TestConstants.OTHER_PASSWORD;
 import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberSteps.회원_생성_요청;
 import static nextstep.subway.station.acceptance.StationSteps.*;
@@ -61,7 +63,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         지하철역_목록_응답됨(response);
         지하철역_목록_포함됨(response, Arrays.asList(createResponse1));
-        지하철역_목록_포함안됨(response, Arrays.asList(createResponse2));
     }
 
 
@@ -135,17 +136,5 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    public void 지하철역_목록_포함안됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
-
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).doesNotContainAnyElementsOf(expectedLineIds);
     }
 }

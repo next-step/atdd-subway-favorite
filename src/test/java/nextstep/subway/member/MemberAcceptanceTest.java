@@ -11,11 +11,9 @@ import static nextstep.subway.member.MemberSteps.*;
 
 @DisplayName("회원 관련 기능")
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
+    public static final String EMAIL = "login@email.com";
     public static final String PASSWORD = "password";
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final String NAME = "사용자";
+    public static final String NAME = "로그인";
 
     @DisplayName("회원가입을 한다.")
     @Test
