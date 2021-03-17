@@ -15,15 +15,15 @@ public class Member extends BaseEntity {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
+    private String name;
 
     public Member() {
     }
 
-    public Member(String email, String password, Integer age) {
+    public Member(String email, String password, String name) {
         this.email = email;
         this.password = password;
-        this.age = age;
+        this.name = name;
     }
 
     public Long getId() {
@@ -38,14 +38,14 @@ public class Member extends BaseEntity {
         return password;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getName() {
+        return name;
     }
 
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
-        this.age = member.age;
+        this.name = member.name;
     }
 
     public void checkPassword(String password) {

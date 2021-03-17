@@ -3,7 +3,6 @@ package nextstep.subway.station.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.station.dto.StationRequest;
 import org.springframework.http.HttpStatus;
@@ -37,6 +36,17 @@ public class StationSteps {
                 .auth().oauth2(user.getAccessToken())
                 .when()
                 .get("/stations")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_수정_요청(TokenResponse user, ExtractableResponse<Response> response, StationRequest stationRequest) {
+        String uri = response.header("Location");
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(user.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest)
+                .when().put(uri)
                 .then().log().all().extract();
     }
 

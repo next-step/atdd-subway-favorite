@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStationsOnlyMine() {
         // given
-        회원_생성_요청(OTHER_EMAIL, OTHER_PASSWORD, 12);
+        회원_생성_요청(OTHER_EMAIL, OTHER_PASSWORD, "사용자");
         TokenResponse 다른_로그인_사용자 = 로그인_되어_있음(OTHER_EMAIL, OTHER_PASSWORD);
         ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(로그인_사용자, 강남역);
         ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(다른_로그인_사용자, 역삼역);
@@ -61,6 +62,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_응답됨(response);
         지하철역_목록_포함됨(response, Arrays.asList(createResponse1));
         지하철역_목록_포함안됨(response, Arrays.asList(createResponse2));
+    }
+
+
+    @DisplayName("지하철 노선을 수정한다.")
+    @Test
+    void updateLine() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철역_등록되어_있음(로그인_사용자, 강남역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_수정_요청(로그인_사용자, createResponse, new StationRequest("역삼역"));
+
+        // then
+        지하철역_수정됨(response);
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -99,6 +114,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public void 지하철역_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 

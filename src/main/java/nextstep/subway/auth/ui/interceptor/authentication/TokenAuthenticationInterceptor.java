@@ -9,14 +9,11 @@ import nextstep.subway.auth.application.provider.AuthenticationProvider;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
-import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {

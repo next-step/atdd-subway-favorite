@@ -12,17 +12,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberSteps.회원_생성_요청;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(RestDocumentationExtension.class)
 public class Documentation {
     public static final String EMAIL = "login@email.com";
     public static final String PASSWORD = "password";
-    private static final Integer AGE = 30;
+    private static final String NAME = "사용자";
 
     @LocalServerPort
     int port;
@@ -44,7 +46,7 @@ public class Documentation {
                 .addFilter(documentationConfiguration(restDocumentation))
                 .build();
 
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(EMAIL, PASSWORD, NAME);
         로그인_사용자 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         사용자 = RestAssured.given(spec).log().all()

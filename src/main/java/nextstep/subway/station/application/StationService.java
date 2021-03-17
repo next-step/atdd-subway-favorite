@@ -35,6 +35,11 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    public void updateStation(LoginMember loginMember, Long id, StationRequest stationRequest) {
+        Station persistStation = stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        persistStation.update(new Station(loginMember.getId(), stationRequest.getName()));
+    }
+
     public void deleteStationById(LoginMember loginMember, Long id) {
         Station persistStation = stationRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!persistStation.isOwner(loginMember.getId())) {

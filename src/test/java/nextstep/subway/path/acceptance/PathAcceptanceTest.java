@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,8 +43,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음(로그인_사용자, "양재역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음(로그인_사용자, "남부터미널역").as(StationResponse.class);
 
-        이호선 = 지하철_노선_등록되어_있음(로그인_사용자, "2호선", "green", 교대역, 강남역, 10, 10);
-        신분당선 = 지하철_노선_등록되어_있음(로그인_사용자, "신분당선", "green", 강남역, 양재역, 10, 10);
+        이호선 = 지하철_노선_등록되어_있음(로그인_사용자, "2호선", "green", 교대역, 강남역, 10, 2);
+        신분당선 = 지하철_노선_등록되어_있음(로그인_사용자, "신분당선", "green", 강남역, 양재역, 10, 3);
         삼호선 = 지하철_노선_등록되어_있음(로그인_사용자, "3호선", "green", 교대역, 남부터미널역, 2, 10);
 
         지하철_노선에_지하철역_등록_요청(로그인_사용자, 삼호선, 남부터미널역, 양재역, 3, 10);
@@ -101,7 +99,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최소_시간_경로_응답됨(ExtractableResponse<Response> response) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(20);
+        assertThat(pathResponse.getDuration()).isEqualTo(5);
 
         List<Long> stationIds = pathResponse.getStations().stream()
                 .map(StationResponse::getId)

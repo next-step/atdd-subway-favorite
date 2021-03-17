@@ -37,8 +37,8 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, String name) {
+        MemberRequest memberRequest = new MemberRequest(email, password, name);
 
         return RestAssured
                 .given().log().all()
@@ -58,13 +58,13 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, String name) {
         String uri = response.header("Location");
 
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
-        params.put("age", age + "");
+        params.put("name", name);
 
         return RestAssured
                 .given().log().all()
@@ -103,11 +103,11 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, String name) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
-        params.put("age", age + "");
+        params.put("name", name + "");
 
         return RestAssured
                 .given().log().all()
@@ -130,11 +130,11 @@ public class MemberSteps {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, String name) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
+        assertThat(memberResponse.getName()).isEqualTo(name);
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {

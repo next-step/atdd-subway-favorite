@@ -2,23 +2,22 @@ package nextstep.subway.member.domain;
 
 
 import nextstep.subway.auth.application.UserDetails;
-import org.apache.commons.lang3.StringUtils;
 
 public class LoginMember implements UserDetails {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
+    private String name;
 
     public static LoginMember of(Member member) {
-        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getName());
     }
 
-    public LoginMember(Long id, String email, String password, Integer age) {
+    public LoginMember(Long id, String email, String password, String name) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.age = age;
+        this.name = name;
     }
 
     public boolean checkPassword(String password) {
@@ -33,8 +32,8 @@ public class LoginMember implements UserDetails {
         return email;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getName() {
+        return name;
     }
 
     public String getPassword() {
@@ -53,6 +52,6 @@ public class LoginMember implements UserDetails {
 
     @Override
     public boolean checkCredentials(Object credentials) {
-        return StringUtils.equals(credentials.toString(), password);
+        return checkPassword(credentials.toString());
     }
 }

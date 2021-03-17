@@ -1,22 +1,23 @@
 package nextstep.subway.member.dto;
+
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
     private Long id;
     private String email;
-    private Integer age;
+    private String name;
 
     public MemberResponse() {
     }
 
-    public MemberResponse(Long id, String email, Integer age) {
+    public MemberResponse(Long id, String email, String name) {
         this.id = id;
         this.email = email;
-        this.age = age;
+        this.name = name;
     }
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+        return new MemberResponse(member.getId(), member.getEmail(), member.getName());
     }
 
     public Long getId() {
@@ -27,7 +28,7 @@ public class MemberResponse {
         return email;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getName() {
+        return name;
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.station.acceptance.StationSteps.지하철역_등록되어_있음;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document;
 
 public class SectionDocumentation extends Documentation {
