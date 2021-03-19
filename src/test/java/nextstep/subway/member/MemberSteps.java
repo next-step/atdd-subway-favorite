@@ -104,6 +104,26 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse,String email, String password, int age) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().put("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value())
+            .extract();
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
