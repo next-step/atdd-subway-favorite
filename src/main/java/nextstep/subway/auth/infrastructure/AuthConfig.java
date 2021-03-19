@@ -1,6 +1,6 @@
 package nextstep.subway.auth.infrastructure;
 
-import nextstep.subway.auth.ui.*;
+import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.session.SessionSecurityContextPersistenceInterceptor;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
@@ -26,7 +26,7 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
         registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
-        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
+        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider, userDetailsService));
     }
 
     @Override

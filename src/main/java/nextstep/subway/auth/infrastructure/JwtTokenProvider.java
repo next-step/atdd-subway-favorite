@@ -45,10 +45,5 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
-    public String createToken(Object principal) throws JsonProcessingException {
-        String payload = new ObjectMapper().writeValueAsString(principal);
-        return createToken(payload);
-    }
 }
 
