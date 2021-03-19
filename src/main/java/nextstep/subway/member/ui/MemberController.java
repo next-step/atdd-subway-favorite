@@ -1,14 +1,14 @@
 package nextstep.subway.member.ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import nextstep.subway.utils.Utilities;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -44,9 +44,10 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        LoginMember loginMember = Utilities.getLoginMember(request);
-        MemberResponse memberResponse = MemberResponse.of(loginMember);
+    public ResponseEntity<MemberResponse> findMemberOfMine() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = new ObjectMapper().convertValue(principal, Member.class);
+        MemberResponse memberResponse = MemberResponse.of(member);
 
         return ResponseEntity.ok().body(memberResponse);
     }

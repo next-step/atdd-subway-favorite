@@ -1,5 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,6 +44,11 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public String createToken(Object principal) throws JsonProcessingException {
+        String payload = new ObjectMapper().writeValueAsString(principal);
+        return createToken(payload);
     }
 }
 

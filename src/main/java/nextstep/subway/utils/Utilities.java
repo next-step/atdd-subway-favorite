@@ -1,17 +1,24 @@
 package nextstep.subway.utils;
 
-import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.member.domain.LoginMember;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
-
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Utilities {
 
-    public static LoginMember getLoginMember(HttpServletRequest request) {
-        SecurityContext ctx = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        LoginMember loginMember = (LoginMember) ctx.getAuthentication().getPrincipal();
-        return loginMember;
+    public static <T> T readBody(HttpServletRequest request, Class<T> type) throws IOException {
+        BufferedReader input = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        StringBuilder builder = new StringBuilder();
+        String buffer;
+        while ((buffer = input.readLine()) != null) {
+            if (builder.length() > 0) {
+                builder.append("\n");
+            }
+            builder.append(buffer);
+        }
+        return new ObjectMapper().readValue(builder.toString(), type);
     }
 }
