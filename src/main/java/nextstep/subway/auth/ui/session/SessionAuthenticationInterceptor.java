@@ -39,7 +39,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) {
+    private AuthenticationToken convert(HttpServletRequest request) {
         Map<String, String[]> paramMap = request.getParameterMap();
         String principal = paramMap.get(USERNAME_FIELD)[0];
         String credentials = paramMap.get(PASSWORD_FIELD)[0];
@@ -47,15 +47,15 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return new AuthenticationToken(principal, credentials);
     }
 
-    public Authentication authenticate(AuthenticationToken token) {
+    private Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
         LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
+        validateAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void validateAuthentication(LoginMember userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new RuntimeException();
         }
