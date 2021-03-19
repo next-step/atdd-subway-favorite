@@ -3,6 +3,7 @@ package nextstep.subway.member.ui;
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 import javax.servlet.http.HttpServletRequest;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
@@ -46,11 +47,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        SecurityContext securityContext = (SecurityContext) request.getSession()
-            .getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        LoginMember loginMember = (LoginMember) securityContext.getAuthentication()
-            .getPrincipal();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok().body(MemberResponse.of(loginMember));
     }
 
