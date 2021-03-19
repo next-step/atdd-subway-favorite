@@ -31,15 +31,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
-        String jwtPayLoad = mapper.writeValueAsString(authentication.getPrincipal());
-        String accessToken = jwtTokenProvider.createToken(jwtPayLoad);
-        TokenResponse tokenResponse = new TokenResponse(accessToken);
-
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().print(responseToClient);
-
+        setResponse(response,createTokenResponse(authentication));
         return false;
     }
 
@@ -64,5 +56,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
+    }
+    private TokenResponse createTokenResponse(Authentication authentication) throws IOException{
+        String jwtPayLoad = mapper.writeValueAsString(authentication.getPrincipal());
+        String accessToken = jwtTokenProvider.createToken(jwtPayLoad);
+        return new TokenResponse(accessToken);
+    }
+    private void setResponse(HttpServletResponse response,TokenResponse tokenResponse) throws IOException{
+        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getOutputStream().print(responseToClient);
     }
 }
