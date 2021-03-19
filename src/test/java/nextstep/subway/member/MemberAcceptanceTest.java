@@ -69,6 +69,28 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        //when
+        ExtractableResponse<Response> createdMemberResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        //then
+        회원_생성됨(createdMemberResponse);
+
+        //when
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createdMemberResponse);
+
+        //then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        //when
+        ExtractableResponse<Response> updatedResponse = 회원_정보_수정_요청(createdMemberResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        //then
+        회원_정보_수정됨(updatedResponse);
+
+        //when
+        ExtractableResponse<Response> deletedResponse = 회원_삭제_요청(createdMemberResponse);
+
+        //then
+        회원_삭제됨(deletedResponse);
     }
 
     @DisplayName("나의 정보를 관리한다.")
