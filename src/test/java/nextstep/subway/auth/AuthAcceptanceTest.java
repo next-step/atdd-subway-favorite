@@ -11,12 +11,13 @@ import static nextstep.subway.member.MemberRequestSteps.*;
 import static nextstep.subway.member.MemberVerificationSteps.회원_정보_조회됨;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
+    @DisplayName("Session 로그인 후 내 정보 조회")
     void myInfoWithSession() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
@@ -25,8 +26,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth")
     @Test
+    @DisplayName("Bearer Auth")
     void myInfoWithBearerAuth() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
