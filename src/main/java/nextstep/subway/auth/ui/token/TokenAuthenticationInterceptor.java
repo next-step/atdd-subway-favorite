@@ -7,6 +7,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -51,8 +52,21 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return new AuthenticationToken(principal, credentials);
     }
 
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+    public Authentication authenticate(AuthenticationToken token) {
+        String principal = token.getPrincipal();
+        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        checkAuthentication(userDetails, token);
+
+        return new Authentication(userDetails);
+    }
+
+    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+        if (userDetails == null) {
+            throw new RuntimeException();
+        }
+
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new RuntimeException();
+        }
     }
 }
