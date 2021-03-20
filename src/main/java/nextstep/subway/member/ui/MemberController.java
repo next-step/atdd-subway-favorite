@@ -1,6 +1,6 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
@@ -10,10 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 @RequestMapping("/members")
@@ -58,8 +55,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest httpServletRequest) {
-        LoginMember loginMember = getLoginMemberPrincipal(httpServletRequest);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse memberResponse = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok()
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -74,11 +70,6 @@ public class MemberController {
     @DeleteMapping("/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine() {
         return ResponseEntity.noContent().build();
-    }
-
-    private LoginMember getLoginMemberPrincipal(HttpServletRequest httpServletRequest) {
-        SecurityContext context = (SecurityContext) httpServletRequest.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        return (LoginMember) context.getAuthentication().getPrincipal();
     }
 }
 
