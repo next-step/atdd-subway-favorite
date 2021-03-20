@@ -7,7 +7,8 @@ import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.member.MemberSteps.*;
+import static nextstep.subway.member.MemberRequestSteps.*;
+import static nextstep.subway.member.MemberVerificationSteps.회원_정보_조회됨;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";

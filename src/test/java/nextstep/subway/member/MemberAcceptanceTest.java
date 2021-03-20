@@ -7,7 +7,8 @@ import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.member.MemberSteps.*;
+import static nextstep.subway.member.MemberRequestSteps.*;
+import static nextstep.subway.member.MemberVerificationSteps.*;
 
 @DisplayName("회원 정보 관리 관련 기능 인수 테스트")
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -117,10 +118,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
-        ExtractableResponse<Response> findMemberOfMineResponse = 내_회원_정보_조회_요청(tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(findMemberOfMineResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         // then
         회원_정보_수정됨(response);
@@ -133,10 +133,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
-        ExtractableResponse<Response> findMemberOfMineResponse = 내_회원_정보_조회_요청(tokenResponse);
 
         // when
-        ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(findMemberOfMineResponse);
+        ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(tokenResponse);
 
         // then
         회원_삭제됨(response);

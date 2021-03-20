@@ -5,16 +5,15 @@ import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+public class MemberRequestSteps {
 
-public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -91,11 +90,13 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all()
+        return RestAssured
+                .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
@@ -104,22 +105,26 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String newEmail, String newPassword, Integer newAge) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberRequest(newEmail, newPassword, newAge))
+                .when().put("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
-    }
-
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
     }
 }
