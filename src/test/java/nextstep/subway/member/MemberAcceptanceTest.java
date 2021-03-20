@@ -144,5 +144,29 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createdMemberResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // then
+        회원_생성됨(createdMemberResponse);
+
+        // when
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> foundMemberResponse = 내_회원_정보_조회_요청(tokenResponse);
+
+        // then
+        회원_정보_조회됨(foundMemberResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updatedMemberResponse = 내_회원_정보_수정_요청(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        회원_정보_수정됨(updatedMemberResponse);
+
+        // when
+        ExtractableResponse<Response> deletedMemberResponse = 내_회원_정보_삭제_요청(tokenResponse);
+
+        // then
+        회원_삭제됨(deletedMemberResponse);
     }
 }
