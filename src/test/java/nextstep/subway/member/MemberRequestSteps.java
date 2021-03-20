@@ -10,9 +10,6 @@ import nextstep.subway.member.dto.MemberRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MemberRequestSteps {
 
     public static final String USERNAME_FIELD = "username";
