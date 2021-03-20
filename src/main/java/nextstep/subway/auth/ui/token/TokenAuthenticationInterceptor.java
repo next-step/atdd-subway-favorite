@@ -30,6 +30,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
         String principal = tokenRequest.getEmail();
         String credentials= tokenRequest.getPassword();
 
+
         return new AuthenticationToken(principal, credentials);
     }
 

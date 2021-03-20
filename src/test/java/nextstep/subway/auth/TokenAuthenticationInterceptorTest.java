@@ -10,6 +10,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -67,6 +68,7 @@ class TokenAuthenticationInterceptorTest {
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails.Builder().id(1L).email(EMAIL).password(PASSWORD).age(20).build());
+
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         // when
