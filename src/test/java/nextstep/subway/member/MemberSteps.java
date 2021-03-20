@@ -5,6 +5,7 @@ import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -101,6 +102,29 @@ public class MemberSteps {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberRequest(email, password, age))
+                .when().patch("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
 
