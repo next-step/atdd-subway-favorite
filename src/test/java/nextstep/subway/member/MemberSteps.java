@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
+
+    public static final String MY_PAGE_URI = "/members/me";
 
     public static TokenResponse 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
@@ -89,7 +92,7 @@ public class MemberSteps {
                 .given().log().all()
                 .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get(MY_PAGE_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
@@ -98,10 +101,34 @@ public class MemberSteps {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .when().get(MY_PAGE_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put(MY_PAGE_URI)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete(MY_PAGE_URI)
+            .then().log().all().extract();
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
