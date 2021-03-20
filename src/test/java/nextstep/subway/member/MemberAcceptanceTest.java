@@ -3,6 +3,7 @@ package nextstep.subway.member;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -94,6 +95,51 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_삭제됨(deletedMemberResponse);
+    }
+
+    @DisplayName("나의 정보를 조회한다.")
+    @Test
+    void findMemberOfMine() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("나의 정보를 수정한다.")
+    @Test
+    void updateMemberOfMine() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> findMemberOfMineResponse = 내_회원_정보_조회_요청(tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(findMemberOfMineResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        회원_정보_수정됨(response);
+        회원_정보_조회됨(response, NEW_EMAIL, NEW_AGE);
+    }
+
+    @DisplayName("나의 정보를 삭제한다.")
+    @Test
+    void deleteMemberOfMine() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> findMemberOfMineResponse = 내_회원_정보_조회_요청(tokenResponse);
+
+        // when
+        ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(findMemberOfMineResponse);
+
+        // then
+        회원_삭제됨(response);
     }
 
     @DisplayName("나의 정보를 관리한다.")
