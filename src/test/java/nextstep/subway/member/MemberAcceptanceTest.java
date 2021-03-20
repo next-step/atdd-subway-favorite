@@ -119,7 +119,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(updateResponse);
 
         // when: 내 회원 삭제 요청
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(tokenResponse);
 
         // then: 회원 삭제됨
         회원_삭제됨(deleteResponse);

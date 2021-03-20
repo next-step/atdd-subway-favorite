@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -108,17 +109,11 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
-
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new MemberRequest(email, password, age))
             .when().put(MY_PAGE_URI)
             .then().log().all().extract();
     }

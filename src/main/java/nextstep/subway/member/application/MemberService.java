@@ -44,8 +44,4 @@ public class MemberService {
         LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
         return MemberResponse.of(loginMember);
     }
-
-    public MemberResponse findMemberOfMine(Object principal) {
-        return null;
-    }
 }
