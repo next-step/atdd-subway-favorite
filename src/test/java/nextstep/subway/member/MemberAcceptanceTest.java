@@ -3,6 +3,7 @@ package nextstep.subway.member;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,5 +48,29 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        //When
+        ExtractableResponse<Response> 회원_생성_응답  = 회원_생성_요청(EMAIL,PASSWORD,AGE);
+
+        //Then
+        회원_생성됨(회원_생성_응답);
+
+        //When
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        //When
+        ExtractableResponse<Response> 내_회원_조회_응답 = 내_회원_정보_조회_요청(tokenResponse);
+
+        //Then
+        회원_정보_조회됨(내_회원_조회_응답,EMAIL,AGE);
+
+        //When
+        ExtractableResponse<Response> 내_회원_수정_응답 = 내_정보_수정_요청(tokenResponse,NEW_EMAIL,NEW_PASSWORD,NEW_AGE);
+        회원_정보_수정됨(내_회원_수정_응답);
+
+        //When
+        ExtractableResponse<Response>  내_회원_삭제_응답 = 내_정보_삭제_요청(tokenResponse);
+
+        //Then
+        회원_삭제됨(내_회원_삭제_응답);
     }
 }
