@@ -25,9 +25,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
+    public MemberResponse updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
         member.update(param.toMember());
+        return MemberResponse.of(memberRepository.save(member));
     }
 
     public void deleteMember(Long id) {
