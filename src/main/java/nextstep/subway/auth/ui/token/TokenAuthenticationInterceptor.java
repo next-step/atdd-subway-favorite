@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.token;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
@@ -32,14 +33,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
-        String token = jwtTokenProvider.createToken(payload);
-        TokenResponse tokenResponse = new TokenResponse(token);
+        TokenResponse tokenResponse = getTokenResponse(authentication);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().print(responseToClient);
+        updateResponse(response, tokenResponse);
 
         return false;
     }
@@ -68,5 +64,18 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
+    }
+
+    private TokenResponse getTokenResponse(Authentication authentication) throws JsonProcessingException {
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        return new TokenResponse(token);
+    }
+
+    private void updateResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getOutputStream().print(responseToClient);
     }
 }
