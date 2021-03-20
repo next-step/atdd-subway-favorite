@@ -10,6 +10,7 @@ import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -27,12 +28,14 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     void convert() throws IOException {
         // given
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
         MockHttpServletRequest request = createMockRequest();
 
         // when
@@ -47,7 +50,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() {
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
@@ -61,7 +64,7 @@ class TokenAuthenticationInterceptorTest {
     void preHandle() throws IOException {
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
@@ -72,13 +75,13 @@ class TokenAuthenticationInterceptorTest {
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
+        assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        request.setContent(objectMapper.writeValueAsString(tokenRequest).getBytes());
         return request;
     }
 

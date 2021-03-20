@@ -19,11 +19,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override

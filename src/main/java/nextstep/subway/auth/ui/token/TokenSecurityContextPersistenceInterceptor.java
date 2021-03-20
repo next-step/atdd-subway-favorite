@@ -17,11 +17,12 @@ import java.util.Map;
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService, ObjectMapper objectMapper) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.customUserDetailsService = customUserDetailsService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
