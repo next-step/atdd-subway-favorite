@@ -6,6 +6,7 @@ import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.member.MemberSteps.내_회원_정보_조회_요청;
 import static nextstep.subway.member.MemberSteps.회원_삭제_요청;
 import static nextstep.subway.member.MemberSteps.회원_삭제됨;
 import static nextstep.subway.member.MemberSteps.회원_생성_요청;
@@ -106,5 +107,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // then
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
+
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
     }
 }
