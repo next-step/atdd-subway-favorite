@@ -3,9 +3,13 @@ package nextstep.subway.member;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static nextstep.subway.member.MemberSteps.*;
 
@@ -87,8 +91,56 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("내 회원 정보를 조회한다.")
+    @Test
+    void getMemberOfMine() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+
+        // then
+        내_회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("내 회원 정보를 수정한다.")
+    @Test
+    void updateMemberOfMine() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("email", "new" + EMAIL);
+        params.put("password", "new" + PASSWORD);
+        params.put("age", String.valueOf(AGE));
+
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청(tokenResponse, params);
+
+        // then
+        내_회원_정보_수정됨(response);
+    }
+
+    @DisplayName("내 회원 정보를 삭제한다.")
+    @Test
+    void deleteMemberOfMine() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 내_회원_삭제_요청(tokenResponse);
+
+        // then
+        내_회원_삭제됨(response);
+    }
+
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+
     }
 }
