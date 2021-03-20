@@ -3,6 +3,7 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.InvalidCredentialsException;
 import nextstep.subway.auth.exception.NotFoundUserException;
@@ -12,14 +13,15 @@ import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -48,18 +50,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        Map<String, String[]> paramMap = request.getParameterMap();
-        String principal = paramMap.get(USERNAME_FIELD)[0];
-        String credentials = paramMap.get(PASSWORD_FIELD)[0];
+        TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(),TokenRequest.class);
 
-        return new AuthenticationToken(principal, credentials);
+        return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
         LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
-        return new Authentication(authenticationToken);
+        return new Authentication(userDetails);
     }
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {

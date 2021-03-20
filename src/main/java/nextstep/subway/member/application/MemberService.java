@@ -14,7 +14,7 @@ import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_S
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -43,5 +43,9 @@ public class MemberService {
         SecurityContext context = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
         LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
         return MemberResponse.of(loginMember);
+    }
+
+    public MemberResponse findMemberOfMine(Object principal) {
+        return null;
     }
 }
