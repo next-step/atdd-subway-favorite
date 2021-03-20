@@ -1,6 +1,7 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
@@ -48,8 +49,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        final SecurityContext context = (SecurityContext) request.getSession().getAttribute("SECURITY_CONTEXT");
+    public ResponseEntity<MemberResponse> findMemberOfMine() {
+        final SecurityContext context = SecurityContextHolder.getContext();
         final LoginMember member = (LoginMember) context.getAuthentication().getPrincipal();
         return ResponseEntity.ok(new MemberResponse(member.getId(), member.getEmail(), member.getAge()));
     }
