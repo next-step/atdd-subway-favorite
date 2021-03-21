@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.token;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,7 @@ class TokenAuthenticationConverterTest {
     @DisplayName("Converter 추상화")
     void convert() throws IOException {
         // given
-        authenticationConverter = new TokenAuthenticationConverter();
+        authenticationConverter = new TokenAuthenticationConverter(new ObjectMapper());
         MockHttpServletRequest request = createMockTokenRequest();
 
         // when

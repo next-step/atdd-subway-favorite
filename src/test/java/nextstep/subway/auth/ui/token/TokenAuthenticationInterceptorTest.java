@@ -37,13 +37,15 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    private ObjectMapper objectMapper;
     private TokenAuthenticationConverter authenticationConverter;
     private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() {
-        authenticationConverter = new TokenAuthenticationConverter();
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, authenticationConverter);
+        objectMapper = new ObjectMapper();
+        authenticationConverter = new TokenAuthenticationConverter(objectMapper);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, authenticationConverter, jwtTokenProvider, objectMapper);
     }
 
     @Test
@@ -62,7 +64,7 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    void preHandle() throws IOException {
+    void preHandle() throws Exception {
         // given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
         given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
@@ -76,6 +78,6 @@ class TokenAuthenticationInterceptorTest {
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
+        assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 }

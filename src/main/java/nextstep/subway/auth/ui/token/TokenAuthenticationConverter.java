@@ -11,6 +11,12 @@ import java.io.InputStream;
 
 public class TokenAuthenticationConverter implements AuthenticationConverter {
 
+    private final ObjectMapper objectMapper;
+
+    public TokenAuthenticationConverter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
         InputStream requestBody = getRequestBody(request);
@@ -24,7 +30,7 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
     private TokenRequest getTokenRequest(InputStream requestBody) {
         TokenRequest tokenRequest;
         try {
-            tokenRequest = new ObjectMapper().readValue(requestBody, TokenRequest.class);
+            tokenRequest = objectMapper.readValue(requestBody, TokenRequest.class);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
