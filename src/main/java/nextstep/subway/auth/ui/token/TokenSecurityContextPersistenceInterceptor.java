@@ -4,33 +4,28 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.auth.ui.SecurityContextPersistenceInterceptor;
 import nextstep.subway.exceptions.UnMatchedPasswordException;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextPersistenceInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailService customUserDetailsService;
     private final ObjectMapper objectMapper;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService, ObjectMapper objectMapper) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, UserDetailService customUserDetailsService, ObjectMapper objectMapper) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.customUserDetailsService = customUserDetailsService;
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
-
+    protected boolean proceedAfter(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (!jwtTokenProvider.validateToken(credentials)) {
             return true;
@@ -41,6 +36,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             checkSecurityContextValidation(securityContext);
             SecurityContextHolder.setContext(securityContext);
         }
+
         return true;
     }
 
