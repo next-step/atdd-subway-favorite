@@ -5,6 +5,7 @@ import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -126,6 +127,7 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
+                .contentType(APPLICATION_JSON_VALUE)
                 .accept(APPLICATION_JSON_VALUE)
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .when()
@@ -134,8 +136,12 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
         return RestAssured.given().log().all()
+                .body(memberRequest)
+                .contentType(APPLICATION_JSON_VALUE)
                 .accept(APPLICATION_JSON_VALUE)
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .when()

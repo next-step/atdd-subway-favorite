@@ -1,6 +1,5 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -9,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.member.MemberSteps.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -66,7 +65,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(readResponse, EMAIL, AGE);
 
         // when
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(tokenResponse);
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         회원_정보_수정됨(updateResponse);
 
@@ -74,6 +73,4 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         회원_삭제됨(deleteResponse);
     }
-
-
 }

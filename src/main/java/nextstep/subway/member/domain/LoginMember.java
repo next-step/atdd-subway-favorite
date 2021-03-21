@@ -37,14 +37,4 @@ public class LoginMember {
     public String getPassword() {
         return password;
     }
-
-    @Override
-    public String toString() {
-        return "LoginMember{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", age=" + age +
-                '}';
-    }
 }
