@@ -2,14 +2,11 @@ package nextstep.subway.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
 import org.json.JSONException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -38,8 +35,8 @@ public class SessionAuthenticationConverterTest {
 
   private MockHttpServletRequest createMockRequest() throws IOException {
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.addParameter("username",EMAIL);
-    request.addParameter("password",PASSWORD);
+    request.addParameter("username", EMAIL);
+    request.addParameter("password", PASSWORD);
     return request;
   }
 

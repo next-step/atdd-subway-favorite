@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 
 public class SessionAuthenticationConverter implements AuthenticationConverter {
+
   public static final String USERNAME_FIELD = "username";
   public static final String PASSWORD_FIELD = "password";
 
