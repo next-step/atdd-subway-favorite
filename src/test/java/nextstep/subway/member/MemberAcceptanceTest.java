@@ -67,6 +67,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(내_회원_조회_응답,EMAIL,AGE);
 
         //When
+        ExtractableResponse<Response> 잘못된_토큰으로_정보_조회_응답 = 잘못된_토큰으로_정보_조회_요청();
+
+        //Then
+        응답_실패됨(잘못된_토큰으로_정보_조회_응답);
+
+        //When
+        ExtractableResponse<Response> 토큰없이_정보_조회_응답 = 토큰없이_정보_조회_요청();
+
+        //Then
+        응답_실패됨(토큰없이_정보_조회_응답);
+
+        //When
         ExtractableResponse<Response> 내_회원_수정_응답 = 내_정보_수정_요청(tokenResponse,NEW_EMAIL,NEW_PASSWORD,NEW_AGE);
 
         //Then

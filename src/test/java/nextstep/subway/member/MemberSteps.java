@@ -109,6 +109,23 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 잘못된_토큰으로_정보_조회_요청() {
+        return RestAssured.given().log().all()
+                .auth().oauth2("wrong token")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰없이_정보_조회_요청() {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
 
         return RestAssured.given().log().all()
@@ -147,5 +164,9 @@ public class MemberSteps {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 응답_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
