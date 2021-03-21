@@ -4,17 +4,14 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
+public class MemberRequestSteps {
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -24,28 +21,19 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(createTokenRequest(email, password))
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
-
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(createMemberRequest(email, password, age))
                 .when().post("/members")
                 .then().log().all().extract();
     }
@@ -63,21 +51,17 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
-
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(createMemberRequest(email, password, age))
                 .when().put(uri)
                 .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
+
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
@@ -91,11 +75,13 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all()
+        return RestAssured
+                .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
@@ -104,22 +90,34 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String newEmail, String newPassword, Integer newAge) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(createMemberRequest(newEmail, newPassword, newAge))
+                .when().put("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    private static TokenRequest createTokenRequest(String email, String password) {
+        return new TokenRequest(email, password);
     }
 
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    private static MemberRequest createMemberRequest(String email, String password, Integer age) {
+        return new MemberRequest(email, password, age);
     }
 }
