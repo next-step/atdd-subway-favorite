@@ -14,6 +14,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+
+    //TODO :: 성공시키기
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {

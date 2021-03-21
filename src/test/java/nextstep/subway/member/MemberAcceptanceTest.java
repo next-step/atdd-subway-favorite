@@ -66,11 +66,32 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(response);
     }
 
+     /*
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        //when
+        //회원생성 요청
+        //Then
+        //회원생성 됨
+
+        //when
+        //회원 정보 조회 요청
+        //then
+        //회원 정보 조회 됨
+
+        //when
+        //회원 정보 수정 요청
+        //then
+        //회원 정보 수정 됨
+
+        //when
+        //회원 정보 삭제 요청
+        //then
+        //회원 정보 삭제 됨
     }
 
+      */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
