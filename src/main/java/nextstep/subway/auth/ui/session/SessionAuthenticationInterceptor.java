@@ -39,7 +39,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    private Authentication authenticate(AuthenticationToken token) {
+    public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
         LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
         validateAuthentication(userDetails, token);
