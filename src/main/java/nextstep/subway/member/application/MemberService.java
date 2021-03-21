@@ -1,5 +1,7 @@
 package nextstep.subway.member.application;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
