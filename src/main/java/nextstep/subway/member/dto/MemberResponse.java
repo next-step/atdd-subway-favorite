@@ -1,4 +1,5 @@
 package nextstep.subway.member.dto;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
@@ -13,6 +14,10 @@ public class MemberResponse {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public static MemberResponse of(LoginMember loginMember){
+        return new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
     }
 
     public static MemberResponse of(Member member) {

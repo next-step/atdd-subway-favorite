@@ -6,6 +6,7 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -41,8 +42,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
+        MemberResponse response = memberService.findMemberOfMine(request);
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/members/me")
