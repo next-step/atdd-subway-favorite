@@ -2,7 +2,6 @@ package nextstep.subway.path.application;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.PathResult;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
