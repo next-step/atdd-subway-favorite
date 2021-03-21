@@ -15,6 +15,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
+
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
