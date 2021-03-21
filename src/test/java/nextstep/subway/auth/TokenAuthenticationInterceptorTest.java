@@ -40,8 +40,6 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void convert() throws IOException {
         // given
-        UserDetailService userDetailsService = mock(CustomUserDetailsService.class);
-        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         MockHttpServletRequest request = createMockRequest();
 
         // when
