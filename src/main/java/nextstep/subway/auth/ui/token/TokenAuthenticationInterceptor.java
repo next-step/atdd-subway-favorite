@@ -55,11 +55,20 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         // TODO: AuthenticationToken에서 Authentication 객체 생성하기
         String principal = authenticationToken.getPrincipal();
-        LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
+        LoginMember loginUserDetail = customUserDetailsService.loadUserByUsername(principal);
 
-        if(loginMember==null)
+        checkAuthentication(loginUserDetail, authenticationToken);
+
+        return new Authentication(loginUserDetail);
+    }
+
+    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+        if (userDetails == null) {
             throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
 
-        return new Authentication(loginMember);
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new RuntimeException("pw가 일치하지 않습니다.");
+        }
     }
 }
