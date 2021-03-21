@@ -1,15 +1,11 @@
 package nextstep.subway.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import sttic org.mockito.Mockito.mock;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import org.json.JSONException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +21,7 @@ public class TokenAuthenticaionConverterTest {
   @Test
   void convert() throws IOException, JSONException {
     // given
-    TokenAuthenticaionConverter tokenAuthenticaionConverter = new TokenAuthenticaionConverter(new ObjectMapper());
+    TokenAuthenticationConverter tokenAuthenticaionConverter = new TokenAuthenticationConverter(new ObjectMapper());
     MockHttpServletRequest request = createMockRequest();
     // when
     AuthenticationToken authenticationToken = tokenAuthenticaionConverter.convert(request);
