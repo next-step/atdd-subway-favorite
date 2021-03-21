@@ -15,12 +15,21 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
-    public static final String USERNAME_FIELD = "username";
+    public static final String USERNAME_FIELD = "email";
     public static final String PASSWORD_FIELD = "password";
 
     public static TokenResponse 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         return response.as(TokenResponse.class);
+    }
+
+    private static Map<String, String> createMemberRequestParam(String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", String.valueOf(age));
+
+        return params;
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -37,10 +46,7 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        Map<String, String> params = createMemberRequestParam(email, password, age);
 
         return RestAssured
                 .given().log().all()
@@ -63,10 +69,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        Map<String, String> params = createMemberRequestParam(email, password, age);
 
         return RestAssured
                 .given().log().all()
@@ -102,6 +105,36 @@ public class MemberSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
+        Map<String, String> params = createMemberRequestParam(email, password, age);
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured
+                .given().log().all()
+                .when().delete(uri)
+                .then().log().all().extract();
+    }
+
+    public static void 내_회원_정보_수정됨(ExtractableResponse<Response> response) {
+        회원_정보_수정됨(response);
+    }
+
+    public static void 내_회원_정보_삭제됨(ExtractableResponse<Response> response) {
+        회원_삭제됨(response);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {

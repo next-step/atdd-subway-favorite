@@ -14,16 +14,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
-    @DisplayName("Session 로그인 후 내 정보 조회")
-    @Test
-    void myInfoWithSession() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
-
-        회원_정보_조회됨(response, EMAIL, AGE);
-    }
-
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
