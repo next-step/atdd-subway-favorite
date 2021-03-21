@@ -7,6 +7,7 @@ import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.domain.UserDetail;
+import nextstep.subway.auth.exception.AuthenticationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
@@ -42,11 +43,11 @@ public abstract class AbstractAuthenticationInterceptor implements HandlerInterc
 
   private void checkAuthentication(UserDetail userDetail, AuthenticationToken token) {
     if (userDetail == null) {
-      throw new RuntimeException();
+      throw new AuthenticationException("등록되지 않은 사용자 입니다.");
     }
 
     if (!userDetail.checkPassword(token.getCredentials())) {
-      throw new RuntimeException();
+      throw new AuthenticationException("비밀번호가 일치하지 않습니다.");
     }
   }
 }
