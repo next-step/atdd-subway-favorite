@@ -1,15 +1,14 @@
 package nextstep.subway.auth.ui.session;
 
-import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
-import org.springframework.web.servlet.HandlerInterceptor;
+import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import nextstep.subway.auth.ui.AbstractSecurityContextPersistenceInterceptor;
 
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
-
-public class SessionSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class SessionSecurityContextPersistenceInterceptor extends AbstractSecurityContextPersistenceInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -23,8 +22,4 @@ public class SessionSecurityContextPersistenceInterceptor implements HandlerInte
         return true;
     }
 
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        SecurityContextHolder.clearContext();
-    }
 }

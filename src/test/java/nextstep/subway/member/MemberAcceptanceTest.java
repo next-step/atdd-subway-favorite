@@ -22,7 +22,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("Feature : 회원 정보를 관리한다.")
     @Nested
-    class Feature_ManageMbmer{
+    class Feature_ManageMember{
         @DisplayName("Scenario : 회원 정보를 관리한다.")
         @Test
         void manageMember() {
