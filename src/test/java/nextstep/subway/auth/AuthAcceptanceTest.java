@@ -22,21 +22,27 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
+        // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
 
+        //then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+        // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
 
+        // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
 
+        // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 }

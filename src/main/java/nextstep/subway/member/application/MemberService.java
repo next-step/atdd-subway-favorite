@@ -16,19 +16,21 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
+    public MemberResponse createMember(MemberRequest memberRequest) {
+        Member member = memberRepository.save(memberRequest.toMember());
         return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.toMember());
+    public void updateMember(Long id, MemberRequest memberRequest) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
+        member.update(memberRequest.toMember());
     }
 
     public void deleteMember(Long id) {
@@ -37,5 +39,15 @@ public class MemberService {
 
     public MemberResponse findMemberOfMine(LoginMember loginMember) {
         return findMember(loginMember.getId());
+    }
+
+    public void updateMemberOfMine(LoginMember loginMember, MemberRequest memberRequest) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(RuntimeException::new);
+        member.update(memberRequest.toMember());
+    }
+
+    public void deleteMemberOfMine(LoginMember loginMember) {
+        memberRepository.deleteById(loginMember.getId());
     }
 }
