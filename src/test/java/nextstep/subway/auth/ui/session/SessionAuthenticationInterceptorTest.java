@@ -51,7 +51,7 @@ class SessionAuthenticationInterceptorTest {
     }
 
     @Test
-    void preHandle() {
+    void preHandle() throws Exception {
         // given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
         given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
