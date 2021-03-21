@@ -29,14 +29,52 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void convert() throws IOException {
+        // given
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        MockHttpServletRequest request = createMockRequest();
+
+        // when
+        AuthenticationToken authenticationToken = interceptor.convert(request);
+
+        // then
+        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
     }
 
     @Test
     void authenticate() {
+
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+
+        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
+        Authentication authentication = interceptor.authenticate(authenticationToken);
+
+        assertThat(authentication.getPrincipal()).isNotNull();
     }
 
     @Test
     void preHandle() throws IOException {
+
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+
+        MockHttpServletRequest request = createMockRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        interceptor.preHandle(request, response, new Object());
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
