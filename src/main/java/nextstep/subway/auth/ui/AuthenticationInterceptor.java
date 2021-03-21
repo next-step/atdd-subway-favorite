@@ -3,8 +3,8 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.infrastructure.UserDetailService;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,18 +37,18 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
+        User user = userDetailsService.loadUserByUsername(principal);
+        checkAuthentication(user, token);
 
-        return new Authentication(userDetails);
+        return new Authentication(user);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
+    private void checkAuthentication(User user, AuthenticationToken token) {
+        if (user == null) {
             throw new RuntimeException();
         }
 
-        if (!userDetails.checkPassword(token.getCredentials())) {
+        if (!user.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
     }

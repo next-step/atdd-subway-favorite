@@ -1,7 +1,6 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.exceptions.NotFoundUserException;
 import nextstep.subway.exceptions.UnMatchedPasswordException;
 import nextstep.subway.member.application.MemberService;
@@ -47,22 +46,22 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = MemberResponse.of(loginMember);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember member) {
+        MemberResponse memberResponse = MemberResponse.of(member);
 
         return ResponseEntity.ok().body(memberResponse);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember member,
                                                              @RequestBody MemberRequest request) {
-        memberService.updateMember(loginMember.getId(), request);
+        memberService.updateMember(member.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember member) {
+        memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }
 

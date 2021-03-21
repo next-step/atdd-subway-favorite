@@ -2,12 +2,11 @@ package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.auth.ui.SecurityContextPersistenceInterceptor;
 import nextstep.subway.exceptions.UnMatchedPasswordException;
-import nextstep.subway.member.domain.LoginMember;
-import nextstep.subway.member.domain.Member;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,10 +40,10 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextP
     }
 
     private void checkSecurityContextValidation(SecurityContext securityContext) {
-        Member member = objectMapper.convertValue(securityContext.getAuthentication().getPrincipal(), Member.class);
-        LoginMember loginMember = customUserDetailsService.loadUserByUsername(member.getEmail());
+        User user = objectMapper.convertValue(securityContext.getAuthentication().getPrincipal(), User.class);
+        User foundMember = customUserDetailsService.loadUserByUsername(user.getUsername());
 
-        if (!loginMember.checkPassword(member.getPassword())) {
+        if (!foundMember.checkPassword(user.getPassword())) {
             throw new UnMatchedPasswordException();
         }
 
@@ -53,7 +52,7 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextP
     private SecurityContext extractSecurityContext(String credentials) {
         try {
             String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+            TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {
             };
 
             Map principal = objectMapper.readValue(payload, typeRef);

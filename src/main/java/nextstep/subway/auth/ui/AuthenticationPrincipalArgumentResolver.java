@@ -33,7 +33,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             Map<String, String> principal = (Map) authentication.getPrincipal();
 
             Object[] params = Arrays.stream(parameter.getParameterType().getDeclaredFields())
-                    .map(it -> toObject(it.getType(), principal.get(it.getName())))
+                    .map(it -> toObject(it.getType(), String.valueOf(principal.get(it.getName()))))
                     .toArray();
 
             return parameter.getParameterType().getConstructors()[0].newInstance(params);

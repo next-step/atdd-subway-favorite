@@ -1,8 +1,8 @@
 package nextstep.subway.auth.infrastructure;
 
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.domain.User;
 
 @FunctionalInterface
 public interface UserDetailService {
-    LoginMember loadUserByUsername(String username);
+    User loadUserByUsername(String username);
 }
