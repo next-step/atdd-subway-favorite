@@ -42,7 +42,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
         TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
@@ -50,7 +49,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        return new Authentication(authenticationToken.getPrincipal());
     }
 }

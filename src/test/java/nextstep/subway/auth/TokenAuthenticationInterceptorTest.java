@@ -54,6 +54,15 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
+        // given
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
+
+        // when
+        Authentication authentication = interceptor.authenticate(token);
+
+        // then
+        assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
     }
 
     @Test
