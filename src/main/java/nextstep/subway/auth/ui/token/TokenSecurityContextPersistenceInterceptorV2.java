@@ -3,12 +3,13 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import nextstep.subway.auth.infrastructure.AuthorizationType;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.base.SecurityContextInterceptor;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public class TokenSecurityContextPersistenceInterceptorV2 extends SecurityContextInterceptor {

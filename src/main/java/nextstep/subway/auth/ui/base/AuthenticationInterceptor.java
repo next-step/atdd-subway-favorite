@@ -1,10 +1,10 @@
 package nextstep.subway.auth.ui.base;
 
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.exception.InvalidCredentialsException;
 import nextstep.subway.auth.exception.NotFoundUserException;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,9 +14,9 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailService userDetailsService;
 
-    public AuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public AuthenticationInterceptor(UserDetailService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

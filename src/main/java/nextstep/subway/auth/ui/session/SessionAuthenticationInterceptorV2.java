@@ -1,13 +1,11 @@
 package nextstep.subway.auth.ui.session;
 
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.exception.InvalidAuthenticationException;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.base.AuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +19,7 @@ public class SessionAuthenticationInterceptorV2 extends AuthenticationIntercepto
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    public SessionAuthenticationInterceptorV2(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptorV2(UserDetailService userDetailsService) {
         super(userDetailsService);
     }
 
