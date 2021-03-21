@@ -7,8 +7,7 @@ public class LoginMember {
     private String password;
     private Integer age;
 
-    public static LoginMember of(Member member) {
-        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+    public LoginMember() {
     }
 
     public LoginMember(Long id, String email, String password, Integer age) {
@@ -18,7 +17,11 @@ public class LoginMember {
         this.age = age;
     }
 
-    public boolean checkPassword(String password) {
+    public static LoginMember of(Member member) {
+        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+    }
+
+    public boolean validatePassword(String password) {
         return this.password.equals(password);
     }
 

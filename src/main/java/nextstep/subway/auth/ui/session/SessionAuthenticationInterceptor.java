@@ -60,7 +60,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
             throw new RuntimeException();
         }
 
-        if (!userDetails.checkPassword(token.getCredentials())) {
+        if (!userDetails.validatePassword(token.getCredentials())) {
             throw new RuntimeException();
         }
     }
