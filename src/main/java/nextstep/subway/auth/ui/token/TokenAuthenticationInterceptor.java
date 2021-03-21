@@ -41,7 +41,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
 
-        return true;
+        return false;
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
