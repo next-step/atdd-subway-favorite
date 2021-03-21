@@ -5,12 +5,13 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,15 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
-    @InjectMocks
+    private TokenAuthenticationConverter authenticationConverter;
+
     private TokenAuthenticationInterceptor interceptor;
+
+    @BeforeEach
+    void setUp() {
+        authenticationConverter = new TokenAuthenticationConverter();
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, authenticationConverter);
+    }
 
     @Test
     void authenticate() {
@@ -49,6 +57,20 @@ class TokenAuthenticationInterceptorTest {
 
         // when
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
+        Authentication authentication = interceptor.authenticate(authenticationToken);
+
+        assertThat(authentication.getPrincipal()).isNotNull();
+    }
+
+    @Test
+    void newAuthenticate() throws IOException {
+        // given
+        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
+        given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
+
+        // when
+        MockHttpServletRequest request = createMockTokenRequest();
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         Authentication authentication = interceptor.authenticate(authenticationToken);
 
         assertThat(authentication.getPrincipal()).isNotNull();
