@@ -3,9 +3,11 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -29,7 +31,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         Authentication authentication = authenticate(authenticationToken);
 
         // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -41,14 +45,21 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
         // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
+        TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
+        String principal = tokenRequest.getEmail();
+        String credentials = tokenRequest.getPassword();
 
         return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        // TODO: AuthenticationToken에서 Authentication 객체 생성하기
+        String principal = authenticationToken.getPrincipal();
+        LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
+
+        if(loginMember==null)
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+
+        return new Authentication(loginMember);
     }
 }
