@@ -40,7 +40,6 @@ class TokenAuthenticationInterceptorTest {
     private JwtTokenProvider jwtTokenProvider;
 
     private TokenAuthenticationConverter authenticationConverter;
-
     private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
@@ -50,20 +49,7 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    void authenticate() {
-        // given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
-        given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
-
-        // when
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        Authentication authentication = interceptor.authenticate(authenticationToken);
-
-        assertThat(authentication.getPrincipal()).isNotNull();
-    }
-
-    @Test
-    void newAuthenticate() throws IOException {
+    void authenticate() throws IOException {
         // given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
         given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
