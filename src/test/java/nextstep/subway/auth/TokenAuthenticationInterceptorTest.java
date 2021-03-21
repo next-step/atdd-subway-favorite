@@ -1,11 +1,13 @@
 package nextstep.subway.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -13,6 +15,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
@@ -37,6 +40,20 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
+        // given
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+
+        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
+
+        // when
+        Authentication authentication = interceptor.authenticate(authenticationToken);
+
+        // then
+        assertThat(authentication.getPrincipal()).isNotNull();
     }
 
     @Test
