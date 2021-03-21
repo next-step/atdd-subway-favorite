@@ -20,7 +20,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
-import static nextstep.subway.auth.AuthRequestSteps.createMockRequest;
+import static nextstep.subway.auth.AuthRequestSteps.createMockTokenRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -40,19 +40,6 @@ class TokenAuthenticationInterceptorTest {
 
     @InjectMocks
     private TokenAuthenticationInterceptor interceptor;
-
-    @Test
-    void convert() throws IOException {
-        // given
-        MockHttpServletRequest request = createMockRequest();
-
-        // when
-        AuthenticationToken authenticationToken = interceptor.convert(request);
-
-        // then
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
 
     @Test
     void authenticate() {
@@ -75,7 +62,7 @@ class TokenAuthenticationInterceptorTest {
         given(jwtTokenProvider.createToken(anyString())).willReturn(JWT_TOKEN);
 
         // when
-        MockHttpServletRequest request = createMockRequest();
+        MockHttpServletRequest request = createMockTokenRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         interceptor.preHandle(request, response, new Object());
 
