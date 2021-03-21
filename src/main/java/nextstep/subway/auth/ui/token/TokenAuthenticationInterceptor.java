@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AbstractAuthenticationInterceptor;
 import nextstep.subway.auth.ui.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import org.springframework.http.MediaType;
 
 public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
@@ -17,7 +17,7 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
   private JwtTokenProvider jwtTokenProvider;
   private ObjectMapper objectMapper;
 
-  public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService,
+  public TokenAuthenticationInterceptor(UserDetailService userDetailsService,
       AuthenticationConverter authenticationConverter,
       JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
     super(userDetailsService, authenticationConverter);

@@ -6,15 +6,15 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.AbstractAuthenticationInterceptor;
 import nextstep.subway.auth.ui.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
 
 public class SessionAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
 
-  public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
+  public SessionAuthenticationInterceptor(UserDetailService userDetailsService, AuthenticationConverter authenticationConverter) {
     super(userDetailsService, authenticationConverter);
   }
 

@@ -3,18 +3,18 @@ package nextstep.subway.auth.ui;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.domain.UserDetail;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
 
-  private final CustomUserDetailsService userDetailsService;
+  private final UserDetailService userDetailsService;
   private final AuthenticationConverter converter;
 
-  public AbstractAuthenticationInterceptor(CustomUserDetailsService userDetailsService,
+  public AbstractAuthenticationInterceptor(UserDetailService userDetailsService,
       AuthenticationConverter authenticationConverter) {
     this.userDetailsService = userDetailsService;
     this.converter = authenticationConverter;
@@ -35,17 +35,17 @@ public abstract class AbstractAuthenticationInterceptor implements HandlerInterc
 
   private Authentication authenticate(AuthenticationToken authenticationToken) {
     String principal = authenticationToken.getPrincipal();
-    LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-    checkAuthentication(userDetails, authenticationToken);
-    return new Authentication(userDetails);
+    UserDetail userDetail = userDetailsService.loadUserByUsername(principal);
+    checkAuthentication(userDetail, authenticationToken);
+    return new Authentication(userDetail);
   }
 
-  private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-    if (userDetails == null) {
+  private void checkAuthentication(UserDetail userDetail, AuthenticationToken token) {
+    if (userDetail == null) {
       throw new RuntimeException();
     }
 
-    if (!userDetails.checkPassword(token.getCredentials())) {
+    if (!userDetail.checkPassword(token.getCredentials())) {
       throw new RuntimeException();
     }
   }
