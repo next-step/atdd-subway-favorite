@@ -43,7 +43,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         // TODO: request에서 AuthenticationToken 객체 생성하기
         String principal = "";
         String credentials = "";
-
         return new AuthenticationToken(principal, credentials);
     }
 

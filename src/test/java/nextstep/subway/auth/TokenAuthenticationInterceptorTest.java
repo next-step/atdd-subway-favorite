@@ -9,6 +9,7 @@ import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,8 +28,28 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
+    private CustomUserDetailsService customUserDetailsService;
+    private JwtTokenProvider jwtTokenProvider;
+    private TokenAuthenticationInterceptor interceptor;
+
+    @BeforeEach
+    void setUp() {
+        customUserDetailsService = mock(CustomUserDetailsService.class);
+        jwtTokenProvider = mock(JwtTokenProvider.class);
+        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+    }
+
     @Test
     void convert() throws IOException {
+        // given
+        MockHttpServletRequest request = createMockRequest();
+
+        // when
+        AuthenticationToken token = interceptor.convert(request);
+
+        // then
+        assertThat(token.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(token.getCredentials()).isEqualTo(PASSWORD);
     }
 
     @Test
