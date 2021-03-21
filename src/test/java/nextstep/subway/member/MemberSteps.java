@@ -24,6 +24,11 @@ public class MemberSteps {
         return response.as(TokenResponse.class);
     }
 
+    public static TokenResponse 로그인_성공함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        return response.as(TokenResponse.class);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -92,7 +97,7 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
@@ -101,7 +106,6 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -114,7 +118,6 @@ public class MemberSteps {
                 .body(new MemberRequest(email, password, age))
                 .when().patch("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -124,7 +127,6 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
 

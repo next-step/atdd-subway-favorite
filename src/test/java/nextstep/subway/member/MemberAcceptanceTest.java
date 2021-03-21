@@ -55,7 +55,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성됨(회원_생성_응답);
 
         //When
-        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
+
+        //Then
+        TokenResponse tokenResponse = 로그인_성공함(로그인_응답);
 
         //When
         ExtractableResponse<Response> 내_회원_조회_응답 = 내_회원_정보_조회_요청(tokenResponse);
@@ -65,6 +68,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         //When
         ExtractableResponse<Response> 내_회원_수정_응답 = 내_정보_수정_요청(tokenResponse,NEW_EMAIL,NEW_PASSWORD,NEW_AGE);
+
+        //Then
         회원_정보_수정됨(내_회원_수정_응답);
 
         //When
