@@ -2,18 +2,15 @@ package nextstep.subway.auth;
 
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.AuthenticationConverter;
+import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.io.IOException;
-
-import static nextstep.subway.auth.AuthRequestSteps.createMockRequest;
+import static nextstep.subway.auth.AuthRequestSteps.createMockSessionRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
+@DisplayName("Session Authentication Converter 단위 테스트")
 public class SessionAuthenticationConverterTest {
 
     private static final String EMAIL = "email@email.com";
@@ -22,11 +19,11 @@ public class SessionAuthenticationConverterTest {
     private AuthenticationConverter authenticationConverter;
 
     @Test
-    @DisplayName("Convert 추상화 테스트")
-    void convertSessionAuthentication() throws IOException {
+    @DisplayName("Convert 추상화")
+    void convertSessionAuthentication() {
         // given
         authenticationConverter = new SessionAuthenticationConverter();
-        MockHttpServletRequest request = createMockRequest();
+        MockHttpServletRequest request = createMockSessionRequest();
 
         // when
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
