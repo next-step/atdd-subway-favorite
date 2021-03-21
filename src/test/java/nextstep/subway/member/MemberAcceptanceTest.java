@@ -96,9 +96,38 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("나의 정보를 관리한다 with Session")
     @Test
-    void manageMyInfo() {
+    void manageMyInfoWithSession() {
+        // when: 회원 생성을 요청
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // then: 회원 생성 됨
+        회원_생성됨(createResponse);
+
+        // when: 내 회원 정보 조회 요청
+        String sessionId = 세션_로그인_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> viewResponse = 내_회원_정보_조회_요청(sessionId);
+
+        // then: 회원 정보 조회 됨
+        회원_정보_조회됨(viewResponse, EMAIL, AGE);
+
+        // when: 회원 정보 수정 요청
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(sessionId, "new" + EMAIL, "new" + PASSWORD, AGE);
+
+        // then: 회원 정보 수정됨
+        회원_정보_수정됨(updateResponse);
+
+        // when: 내 회원 삭제 요청
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(sessionId);
+
+        // then: 회원 삭제됨
+        회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("나의 정보를 관리한다 with JWT")
+    @Test
+    void manageMyInfoWithJWT() {
         // when: 회원 생성을 요청
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
