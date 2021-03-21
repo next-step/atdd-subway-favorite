@@ -19,18 +19,19 @@ public class AuthConfig implements WebMvcConfigurer {
 
   private CustomUserDetailsService userDetailsService;
   private JwtTokenProvider jwtTokenProvider;
+  private ObjectMapper objectMapper;
 
   public AuthConfig(CustomUserDetailsService userDetailsService,
-      JwtTokenProvider jwtTokenProvider) {
+      JwtTokenProvider jwtTokenProvider,ObjectMapper objectMapper) {
     this.userDetailsService = userDetailsService;
     this.jwtTokenProvider = jwtTokenProvider;
+    this.objectMapper = objectMapper;
   }
 
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService,
-        new SessionAuthenticationConverter())).addPathPatterns("/login/session");
-    registry
-        .addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider,new TokenAuthenticationConverter(new ObjectMapper())))
+    registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService, new SessionAuthenticationConverter()))
+        .addPathPatterns("/login/session");
+    registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService,new TokenAuthenticationConverter(objectMapper),jwtTokenProvider,objectMapper))
         .addPathPatterns("/login/token");
     registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
     registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
