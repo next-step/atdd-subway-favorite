@@ -14,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
@@ -30,13 +31,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        TokenResponse tokenResponse = null;
-        if (authentication == null) {
-            throw new RuntimeException();
-        }
         String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
-        tokenResponse = new TokenResponse(token);
+        TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -57,7 +54,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String principal = authenticationToken.getPrincipal();
         LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
         checkAuthentication(loginMember, authenticationToken);
-        return new Authentication(loginMember);
+        return Optional.of(new Authentication(loginMember)).orElseThrow(RuntimeException::new);
     }
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
