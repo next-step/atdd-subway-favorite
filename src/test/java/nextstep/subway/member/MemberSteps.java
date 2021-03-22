@@ -2,6 +2,7 @@ package nextstep.subway.member;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
@@ -38,6 +39,20 @@ public class MemberSteps {
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static String 세션_로그인_요청(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("username", email);
+        params.put("password", password);
+
+        return RestAssured.given().log().all()
+                .contentType(ContentType.URLENC.withCharset("UTF-8"))
+                .formParams(params)
+                .when().post("/login/session")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract()
+                .sessionId();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -98,6 +113,16 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String sessionId) {
+        return RestAssured
+                .given().log().all()
+                .sessionId(sessionId)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(MY_PAGE_URI)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -118,10 +143,28 @@ public class MemberSteps {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String sessionId, String email, String password, Integer age) {
+        return RestAssured
+            .given().log().all()
+            .sessionId(sessionId)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new MemberRequest(email, password, age))
+            .when().put(MY_PAGE_URI)
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete(MY_PAGE_URI)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(String sessionId) {
+        return RestAssured
+            .given().log().all()
+            .sessionId(sessionId)
             .when().delete(MY_PAGE_URI)
             .then().log().all().extract();
     }
