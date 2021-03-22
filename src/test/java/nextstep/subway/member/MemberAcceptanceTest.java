@@ -1,13 +1,11 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberSteps.*;
 
@@ -124,25 +122,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_삭제됨(deleteResponse);
-    }
-
-    private ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse loginResponse, String newEmail, String newPassword, int newAge) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .put("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse loginResponse) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(loginResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .delete("/members/me")
-                .then().log().all()
-                .extract();
     }
 }
