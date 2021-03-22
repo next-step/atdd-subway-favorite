@@ -66,7 +66,6 @@ public class Member extends BaseEntity {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
-        this.favorites = member.favorites;
     }
 
     public void checkPassword(String password) {
