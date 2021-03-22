@@ -1,40 +1,51 @@
 package nextstep.subway.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.exception.NotValidPassword;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
+import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 
 class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String NEW_PASSWORD = "new_password";
+
+    private CustomUserDetailsService customUserDetailsService;
+    private JwtTokenProvider jwtTokenProvider;
+    private TokenAuthenticationInterceptor interceptor;
+
+    @BeforeEach
+    void setUp() {
+        customUserDetailsService = mock(CustomUserDetailsService.class);
+        jwtTokenProvider = mock(JwtTokenProvider.class);
+        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
+    }
 
     @Test
     void convert() throws IOException {
         // given
-        final CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
-        final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
-            objectMapper);
         final MockHttpServletRequest mockRequest = createMockRequest();
 
         // when
@@ -47,12 +58,6 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
-        // given
-        final CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
-        final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
-            objectMapper);
-
         // when
         when(customUserDetailsService.loadUserByUsername(any())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         final Authentication authenticate = interceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
@@ -63,12 +68,17 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
+    void authenticateInvalidPassword() {
+        // when, then
+        when(customUserDetailsService.loadUserByUsername(any())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        assertThatThrownBy(
+            () -> interceptor.authenticate(new AuthenticationToken(EMAIL, NEW_PASSWORD)))
+            .isInstanceOf(NotValidPassword.class);
+    }
+
+    @Test
     void preHandle() throws IOException {
         // given
-        final CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
-        final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
-            objectMapper);
         final MockHttpServletRequest request = createMockRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
 

@@ -14,8 +14,10 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.exception.NotValidPassword;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
@@ -59,6 +61,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         final String principal = authenticationToken.getPrincipal();
-        return new Authentication(customUserDetailsService.loadUserByUsername(principal));
+        final LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
+
+        validAuthentication(authenticationToken, loginMember);
+
+        return new Authentication(loginMember);
+    }
+
+    private void validAuthentication(AuthenticationToken authenticationToken, LoginMember loginMember) {
+        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+            throw new NotValidPassword();
+        }
     }
 }
