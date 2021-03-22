@@ -57,7 +57,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() throws Exception {
         // given
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
@@ -70,7 +70,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws Exception {
         // given
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUserName(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

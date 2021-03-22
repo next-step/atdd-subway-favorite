@@ -40,7 +40,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailService.loadUserByUsername(principal);
+        LoginMember userDetails = userDetailService.loadUserByUserName(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);

@@ -11,7 +11,7 @@ import java.io.IOException;
 @Component
 public class TokenAuthenticationConverter implements AuthenticationConverter{
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
