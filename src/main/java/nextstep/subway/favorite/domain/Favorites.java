@@ -29,7 +29,7 @@ public class Favorites {
         favorites.remove(favorite);
     }
 
-    public void add(Member member, Station source, Station target) {
+    public Favorite add(Member member, Station source, Station target) {
         Favorite favorite = new Favorite(member, source, target);
 
         if (stream().anyMatch(favorite::equals)) {
@@ -37,6 +37,8 @@ public class Favorites {
         }
 
         favorites.add(favorite);
+
+        return favorite;
     }
 
     public Stream<Favorite> stream() {

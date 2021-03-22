@@ -48,8 +48,8 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public void addFavorite(Station source, Station target) {
-        favorites.add(this, source, target);
+    public Favorite addFavorite(Station source, Station target) {
+        return favorites.add(this, source, target);
     }
 
     public void removeFavorite(long favoriteId) {

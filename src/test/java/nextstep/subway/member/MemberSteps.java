@@ -55,8 +55,8 @@ public class MemberSteps {
                 .sessionId();
     }
 
-    public static MemberResponse 회원_등록되어_있음(String email, String password, Integer age) {
-        return 회원_생성_요청(email, password, age).as(MemberResponse.class);
+    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
+        return 회원_생성_요청(email, password, age);
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
