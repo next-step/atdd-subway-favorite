@@ -1,6 +1,8 @@
 package nextstep.subway.line.acceptance;
 
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.line.acceptance.FavoriteSteps.*;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
@@ -59,7 +62,30 @@ public class LineFavoritesAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageMyFavorite() {
+        //when
+        ExtractableResponse<Response> favoriteCreateResponse = 즐겨찾기_생성을_요청(memberToken, 강남역.getId(), 양재역.getId());
 
+        //then
+        즐겨찾기_생성됨(favoriteCreateResponse);
+
+        //when
+        ExtractableResponse<Response> readFavoriteResponse = 즐겨찾기_목록_조회를_요청(memberToken);
+
+        //then
+        즐겨찾기_목록_조회됨(readFavoriteResponse);
+        FavoriteSteps.즐겨찾기_목록_내용_일치함(readFavoriteResponse, 강남역, 양재역);
+
+        //when
+        ExtractableResponse<Response> deleteFavoriteResponse = 즐겨찾기_삭제_요청(memberToken, favoriteCreateResponse);
+
+        //then
+        즐겨찾기_삭제됨(deleteFavoriteResponse);
+
+        //when
+        ExtractableResponse<Response> readFavoriteResponse2 = 즐겨찾기_목록_조회를_요청(new TokenResponse(""));
+
+        //then
+        FavoriteSteps.즐겨찾기_목록_조회_실패됨(readFavoriteResponse2);
 
     }
 
