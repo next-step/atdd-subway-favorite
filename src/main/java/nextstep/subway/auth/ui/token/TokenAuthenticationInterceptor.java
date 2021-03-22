@@ -7,6 +7,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.AuthencationAfterHandler;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.TokenAuthenticate;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AuthencationAfterHandler implements HandlerInterceptor  {
 
     private TokenAuthenticate tokenAuthenticate;
     private JwtTokenProvider jwtTokenProvider;
@@ -30,16 +31,22 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         this.authenticationConverter = new TokenAuthenticationConverter();
     }
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
-        Authentication authentication = tokenAuthenticate.authenticate(authenticationToken);
-
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException{
         TokenResponse tokenResponse = new TokenResponse(generateJWToken(authentication));
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
+        Authentication authentication = tokenAuthenticate.authenticate(authenticationToken);
+        if (authentication == null) {
+            throw new RuntimeException();
+        }
+        afterAuthentication(request, response, authentication);
         return false;
     }
 
