@@ -29,6 +29,19 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void convert() throws IOException {
+        // given
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        TokenAuthenticationInterceptor tokenAuthenticationInterceptor
+                                        = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        MockHttpServletRequest request = createMockRequest();
+
+        // when
+        AuthenticationToken convertedToken = tokenAuthenticationInterceptor.convert(request);
+
+        // then
+        assertThat(convertedToken.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(convertedToken.getCredentials()).isEqualTo(PASSWORD);
     }
 
     @Test
