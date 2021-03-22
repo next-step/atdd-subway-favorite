@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.favorite.exception.IsExistFavoriteException;
 import nextstep.subway.favorite.exception.NotFoundFavoriteException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
@@ -30,6 +31,11 @@ public class Favorites {
 
     public void add(Member member, Station source, Station target) {
         Favorite favorite = new Favorite(member, source, target);
+
+        if (stream().anyMatch(favorite::equals)) {
+            throw new IsExistFavoriteException();
+        }
+
         favorites.add(favorite);
     }
 

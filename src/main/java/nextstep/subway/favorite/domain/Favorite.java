@@ -44,4 +44,25 @@ public class Favorite extends BaseEntity {
         return target;
     }
 
+    public Member getMember() {
+        return member;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Favorite)) return false;
+        Favorite favorite = (Favorite) o;
+
+        if (Objects.equals(id, favorite.id)) return true;
+
+        return Objects.equals(member, favorite.member) &&
+               Objects.equals(source, favorite.source) &&
+               Objects.equals(target, favorite.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, member, source, target);
+    }
 }
