@@ -33,17 +33,6 @@ class TokenAuthenticationInterceptorTest {
     private final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
     @Test
-    void convert() throws IOException {
-        // when
-        MockHttpServletRequest request = createMockRequest();
-        AuthenticationToken authenticationToken = interceptor.convert(request);
-
-        // then
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    @Test
     void authenticate() {
         // given
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
