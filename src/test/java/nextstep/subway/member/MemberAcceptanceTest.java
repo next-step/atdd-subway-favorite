@@ -1,10 +1,13 @@
 package nextstep.subway.member;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberSteps.*;
 
@@ -97,5 +100,49 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // then
+        회원_생성됨(createResponse);
+
+        // when
+        TokenResponse loginResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 내정보 = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
+
+        // then
+        회원_정보_조회됨(내정보, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> modifyResponse = 내_정보_수정_요청(loginResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        회원_정보_수정됨(modifyResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(loginResponse);
+
+        // then
+        회원_삭제됨(deleteResponse);
+    }
+
+    private ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse loginResponse, String newEmail, String newPassword, int newAge) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse loginResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(loginResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/members/me")
+                .then().log().all()
+                .extract();
     }
 }
