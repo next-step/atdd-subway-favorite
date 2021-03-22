@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
@@ -7,10 +9,13 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
+import static nextstep.subway.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.subway.line.acceptance.LineSteps.*;
 import static nextstep.subway.member.MemberSteps.*;
 import static nextstep.subway.station.StationSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관리")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -57,10 +62,38 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_관리_테스트() {
         // When 즐겨찾기 생성을 요청
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청();
+
         // Then 즐겨찾기 생성됨
+        즐겨찾기_생성됨(createResponse);
+
         // When 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> viewResponse = 즐겨찾기_목록_조회_요청();
+
         // Then 즐겨찾기 목록 조회됨
+        즐겨찾기_생성됨(viewResponse);
+
         // When 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청();
+
         // Then 즐겨찾기 삭제됨
+        즐겨찾기_생성됨(deleteResponse);
+
     }
+
+    public void 즐겨찾기_생성됨 (ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+            .isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public void 즐겨찾기_목록_조회됨 (ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+            .isEqualTo(HttpStatus.OK.value());
+    }
+
+    public void 즐겨찾기_삭제됨 (ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+            .isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
 }
