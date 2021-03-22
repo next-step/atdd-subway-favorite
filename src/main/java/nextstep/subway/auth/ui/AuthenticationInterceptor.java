@@ -2,8 +2,8 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.domain.UserDetail;
+import nextstep.subway.auth.domain.UserDetailService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +12,11 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailService userDetailService;
     private final AuthenticationConverter authenticationConverter;
 
-    protected AuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
-        this.customUserDetailsService = customUserDetailsService;
+    protected AuthenticationInterceptor(UserDetailService userDetailService, AuthenticationConverter authenticationConverter) {
+        this.userDetailService = userDetailService;
         this.authenticationConverter = authenticationConverter;
     }
 
@@ -32,13 +32,13 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        UserDetail userDetails = userDetailService.loadUserByUsername(principal);
         validateAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    private void validateAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void validateAuthentication(UserDetail userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new RuntimeException();
         }

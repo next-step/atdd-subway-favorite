@@ -1,7 +1,9 @@
 package nextstep.subway.member.domain;
 
+import nextstep.subway.auth.domain.UserDetail;
 
-public class LoginMember {
+public class LoginMember implements UserDetail {
+
     private Long id;
     private String email;
     private String password;
@@ -21,22 +23,27 @@ public class LoginMember {
         return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 
+    @Override
     public boolean validatePassword(String password) {
         return this.password.equals(password);
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public Integer getAge() {
         return age;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
