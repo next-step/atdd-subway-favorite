@@ -4,7 +4,8 @@ import nextstep.subway.common.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Line extends BaseEntity {

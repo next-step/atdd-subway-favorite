@@ -2,8 +2,8 @@ package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.auth.ui.SecurityContextPersistenceInterceptor;
 import nextstep.subway.exceptions.UnMatchedPasswordException;
