@@ -1,15 +1,21 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import java.net.URI;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RestController
 public class MemberController {
