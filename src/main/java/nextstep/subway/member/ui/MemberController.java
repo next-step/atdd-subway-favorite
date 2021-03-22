@@ -3,6 +3,7 @@ package nextstep.subway.member.ui;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +45,14 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal LoginMember userDetails
     ) {
         return ResponseEntity.ok().body(MemberResponse.of(userDetails));
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
-        @AuthenticationPrincipal UserDetails userDetails,
+        @AuthenticationPrincipal LoginMember userDetails,
         @RequestBody MemberRequest param
     ) {
         memberService.updateMember(userDetails.getId(), param);
@@ -60,7 +61,7 @@ public class MemberController {
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal LoginMember userDetails
     ) {
         memberService.deleteMember(userDetails.getId());
         return ResponseEntity.noContent().build();
