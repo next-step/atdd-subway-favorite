@@ -1,4 +1,4 @@
-package nextstep.subway.auth.convert;
+package nextstep.subway.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.AuthenticationToken;
