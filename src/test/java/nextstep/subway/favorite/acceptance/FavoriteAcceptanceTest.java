@@ -59,9 +59,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
+    @DisplayName("비회원이 즐겨찾기 생성을 요청할 경우 401 반환")
+    @Test
+    void 비회원_즐겨찾기_생성_요청_테스트() {
+        // When 즐겨찾기 생성을 요청
+        ExtractableResponse<Response> createResponse = 비회원_즐겨찾기_생성_요청(
+            new FavoriteRequest(강남역.getId(), 남부터미널역.getId())
+        );
+
+        assertThat(createResponse.statusCode())
+            .isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void 즐겨찾기_관리_테스트() {
+
         // When 즐겨찾기 생성을 요청
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(
             tokenResponse,

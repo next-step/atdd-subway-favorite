@@ -13,6 +13,17 @@ public class FavoriteSteps {
 
     public static String BASE_PATH = "/favorites";
 
+    public static ExtractableResponse<Response> 비회원_즐겨찾기_생성_요청(
+        FavoriteRequest favoriteRequest
+    ) {
+        return RestAssured
+            .given().log().all()
+            .body(favoriteRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post(BASE_PATH)
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(
         TokenResponse tokenResponse,
         FavoriteRequest favoriteRequest
