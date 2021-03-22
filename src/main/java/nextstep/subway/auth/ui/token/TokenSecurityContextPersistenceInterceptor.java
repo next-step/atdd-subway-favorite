@@ -3,35 +3,32 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.*;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import nextstep.subway.auth.infrastructure.AuthorizationType;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.ui.SecurityContextInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
-
+    protected boolean proceed(HttpServletRequest request) {
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (!jwtTokenProvider.validateToken(credentials)) {
             return true;
         }
 
         SecurityContext securityContext = extractSecurityContext(credentials);
-        if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext);
-        }
+        setSecurityContext(securityContext);
         return true;
     }
 
@@ -41,7 +38,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
             };
 
-            Map principal = new ObjectMapper().readValue(payload, typeRef);
+            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
             return new SecurityContext(new Authentication(principal));
         } catch (Exception e) {
             return null;
