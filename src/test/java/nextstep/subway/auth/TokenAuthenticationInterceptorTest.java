@@ -49,7 +49,8 @@ class TokenAuthenticationInterceptorTest {
         // given
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        AuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, authenticationConverter);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
@@ -67,7 +68,8 @@ class TokenAuthenticationInterceptorTest {
         // given
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        AuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, authenticationConverter);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
