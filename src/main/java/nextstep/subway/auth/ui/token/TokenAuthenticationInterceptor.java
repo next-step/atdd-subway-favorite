@@ -3,6 +3,7 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -14,12 +15,11 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter converter, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailsService, converter);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -28,7 +28,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
             throw new RuntimeException();
         }
 
-        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         TokenResponse tokenResponse = new TokenResponse(jwtTokenProvider.createToken(payload));
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

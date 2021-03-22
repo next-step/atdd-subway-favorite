@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -36,7 +37,7 @@ class TokenAuthenticationInterceptorTest {
     void setUp() {
         customUserDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, new TokenAuthenticationConverter(), jwtTokenProvider);
     }
 
     @Test
