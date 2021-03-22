@@ -27,6 +27,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        // 요청으로 들어온 인증정보 확인
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
@@ -34,6 +35,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
             throw new RuntimeException("인증에 실패하였습니다.");
         }
 
+        // TokenResponse를 응답
         String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = new TokenResponse(token);
@@ -57,6 +59,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
+        // AuthenticationToken -> Authentication
         LoginMember loginMember = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
         if(loginMember == null){
