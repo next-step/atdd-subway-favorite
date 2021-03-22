@@ -2,10 +2,10 @@ package nextstep.subway.auth.infrastructure;
 
 import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
-import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptorV2;
-import nextstep.subway.auth.ui.session.SessionSecurityContextPersistenceInterceptorV2;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptorV2;
-import nextstep.subway.auth.ui.token.TokenSecurityContextPersistenceInterceptorV2;
+import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
+import nextstep.subway.auth.ui.session.SessionSecurityContextPersistenceInterceptor;
+import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.token.TokenSecurityContextPersistenceInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -23,10 +23,10 @@ public class AuthConfig implements WebMvcConfigurer {
     }
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptorV2(userDetailsService)).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptorV2(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
-        registry.addInterceptor(new SessionSecurityContextPersistenceInterceptorV2());
-        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptorV2(jwtTokenProvider));
+        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
+        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }
 
     @Override

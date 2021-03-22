@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui.base;
+package nextstep.subway.auth.application.base;
 
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
@@ -6,8 +6,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public abstract class SecurityContextInterceptor implements HandlerInterceptor {
     @Override

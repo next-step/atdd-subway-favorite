@@ -7,15 +7,15 @@ import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.base.SecurityContextInterceptor;
+import nextstep.subway.auth.application.base.SecurityContextInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptorV2 extends SecurityContextInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenSecurityContextPersistenceInterceptorV2(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

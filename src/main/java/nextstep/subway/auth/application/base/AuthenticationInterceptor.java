@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui.base;
+package nextstep.subway.auth.application.base;
 
 import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
@@ -12,17 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public abstract class AuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
+public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final UserDetailService userDetailsService;
+    private final AuthenticationConverter authenticationConverter;
 
-    public AuthenticationInterceptor(UserDetailService userDetailsService) {
+    public AuthenticationInterceptor(UserDetailService userDetailsService, AuthenticationConverter authenticationConverter) {
         this.userDetailsService = userDetailsService;
+        this.authenticationConverter = authenticationConverter;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken token = convert(request);
+        AuthenticationToken token = authenticationConverter.convert(request);
         Authentication authentication = authenticate(token);
 
         afterAuthentication(request, response, authentication);
