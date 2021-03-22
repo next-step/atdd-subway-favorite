@@ -1,13 +1,13 @@
 package nextstep.subway.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -29,11 +29,11 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(LoginMember.of(1L, EMAIL, PASSWORD, 20));
 
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
         Authentication authentication = interceptor.authenticate(authenticationToken);
@@ -43,11 +43,11 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(LoginMember.of(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         MockHttpServletRequest request = createMockRequest();

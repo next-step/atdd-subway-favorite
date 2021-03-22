@@ -1,11 +1,9 @@
 package nextstep.subway.auth;
 
-import nextstep.subway.auth.application.SessionAuthenticationConverter;
-import nextstep.subway.auth.application.TokenAuthenticationConverter;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -26,10 +24,10 @@ class SessionAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(LoginMember.of(1L, EMAIL, PASSWORD, 20));
 
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
         Authentication authentication = interceptor.authenticate(authenticationToken);
@@ -39,10 +37,10 @@ class SessionAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(LoginMember.of(1L, EMAIL, PASSWORD, 20));
 
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

@@ -5,16 +5,12 @@ import nextstep.subway.auth.application.TokenAuthenticationConverter;
 import nextstep.subway.auth.application.base.AuthenticationConverter;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 public class TokenAuthenticationConverterTest {
     private static final String EMAIL = "email@email.com";

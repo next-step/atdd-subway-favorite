@@ -1,26 +1,23 @@
 package nextstep.subway.auth.ui.session;
 
 import nextstep.subway.auth.application.SessionAuthenticationConverter;
-import nextstep.subway.auth.application.UserDetailService;
-import nextstep.subway.auth.application.base.AuthenticationConverter;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.exception.InvalidAuthenticationException;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.application.base.AuthenticationInterceptor;
+import nextstep.subway.auth.ui.base.AuthenticationInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Map;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
     public SessionAuthenticationInterceptor(
-        UserDetailService userDetailsService
+        UserDetailsService userDetailsService
     ) {
         super(userDetailsService, new SessionAuthenticationConverter());
     }
