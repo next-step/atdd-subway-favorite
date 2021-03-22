@@ -66,7 +66,7 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    void preHandle() throws IOException {
+    void preHandle() throws Exception {
         // given
         when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
