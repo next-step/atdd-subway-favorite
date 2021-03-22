@@ -132,7 +132,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, MemberRequest memberRequest) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when()
                 .put("/members/me")
@@ -143,7 +143,6 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .delete("/members/me")
                 .then().log().all()
