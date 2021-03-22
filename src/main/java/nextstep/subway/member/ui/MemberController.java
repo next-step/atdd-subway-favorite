@@ -45,25 +45,25 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
-        @AuthenticationPrincipal LoginMember userDetails
+        @AuthenticationPrincipal LoginMember loginMember
     ) {
-        return ResponseEntity.ok().body(MemberResponse.of(userDetails));
+        return ResponseEntity.ok().body(MemberResponse.of(loginMember));
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
-        @AuthenticationPrincipal LoginMember userDetails,
+        @AuthenticationPrincipal LoginMember loginMember,
         @RequestBody MemberRequest param
     ) {
-        memberService.updateMember(userDetails.getId(), param);
+        memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
-        @AuthenticationPrincipal LoginMember userDetails
+        @AuthenticationPrincipal LoginMember loginMember
     ) {
-        memberService.deleteMember(userDetails.getId());
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

@@ -13,8 +13,5 @@ package nextstep.subway.auth.domain;/* Copyright (c) 2021 ZUM Internet, Inc.
  */
 
 public interface UserDetails {
-    String getEmail();
-    Long getId();
-    Integer getAge();
     boolean checkPassword(String password);
 }
