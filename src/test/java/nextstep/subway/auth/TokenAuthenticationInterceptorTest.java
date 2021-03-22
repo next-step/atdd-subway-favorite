@@ -26,13 +26,15 @@ class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void convert() throws IOException {
         // given
         final CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
         final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
+            objectMapper);
         final MockHttpServletRequest mockRequest = createMockRequest();
 
         // when
@@ -48,7 +50,8 @@ class TokenAuthenticationInterceptorTest {
         // given
         final CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
         final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
+            objectMapper);
 
         // when
         when(customUserDetailsService.loadUserByUsername(any())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
@@ -64,7 +67,8 @@ class TokenAuthenticationInterceptorTest {
         // given
         final CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
         final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
+            objectMapper);
         final MockHttpServletRequest request = createMockRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
 
