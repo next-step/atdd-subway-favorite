@@ -105,9 +105,15 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse loginResponse, String newEmail, String newPassword, int newAge) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", newEmail);
+        params.put("password", newPassword);
+        params.put("age", newAge + "");
+
         return RestAssured.given().log().all()
                 .auth().oauth2(loginResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
                 .when()
                 .put("/members/me")
                 .then().log().all()
