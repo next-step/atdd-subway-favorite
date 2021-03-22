@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.TokenAuthenticate;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
@@ -45,7 +46,7 @@ import static org.mockito.Mockito.when;
 class TokenAuthenticationInterceptorTest {
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private TokenAuthenticate tokenAuthenticate;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -58,7 +59,7 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp(){
-        this.tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        this.tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(tokenAuthenticate, jwtTokenProvider);
     }
 
     @Test
@@ -79,10 +80,10 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() {
         // given
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        when(customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 10));
+        when(tokenAuthenticate.authenticate(authenticationToken)).thenReturn(new Authentication());
 
         // when
-        Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
+        Authentication authentication = tokenAuthenticate.authenticate(authenticationToken);
 
         // then
         assertThat(authentication.getPrincipal()).isNotNull();
@@ -94,7 +95,7 @@ class TokenAuthenticationInterceptorTest {
         HttpServletRequest request = createMockRequest();
         HttpServletResponse response = new MockHttpServletResponse();
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        when(customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 10));
+        when(tokenAuthenticate.authenticate(authenticationToken)).thenReturn(new Authentication());
 
         // when
         boolean result = tokenAuthenticationInterceptor.preHandle(request, response, new Object());
