@@ -30,7 +30,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(tokenResponse);
+        ExtractableResponse<Response> response = 나의_정보_조회_요청(tokenResponse);
 
         회원_정보_조회됨(response, EMAIL, AGE);
     }

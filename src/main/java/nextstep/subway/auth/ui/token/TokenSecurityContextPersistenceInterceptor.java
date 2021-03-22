@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +39,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     private SecurityContext extractSecurityContext(String credentials) {
         try {
             String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
-            };
-
-            Map principal = new ObjectMapper().readValue(payload, typeRef);
+            LoginMember principal = new ObjectMapper().readValue(payload, LoginMember.class);
             return new SecurityContext(new Authentication(principal));
         } catch (Exception e) {
             return null;
