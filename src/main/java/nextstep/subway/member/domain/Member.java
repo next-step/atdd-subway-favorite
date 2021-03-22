@@ -1,12 +1,14 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.common.BaseEntity;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
+import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Member extends BaseEntity {
@@ -16,6 +18,9 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private Integer age;
+
+    @Embedded
+    private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -40,6 +45,18 @@ public class Member extends BaseEntity {
 
     public Integer getAge() {
         return age;
+    }
+
+    public void addFavorite(Station source, Station target) {
+        favorites.add(this, source, target);
+    }
+
+    public void removeFavorite(long favoriteId) {
+        favorites.remove(favoriteId);
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites.stream().collect(Collectors.toList());
     }
 
     public void update(Member member) {
