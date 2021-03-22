@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.token;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
@@ -30,10 +31,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
-
-        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
-        String token = jwtTokenProvider.createToken(payload);
-        TokenResponse tokenResponse = new TokenResponse(token);
+        TokenResponse tokenResponse = createTokenResponse(authentication);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -56,6 +54,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
+    }
+
+    private TokenResponse createTokenResponse(Authentication authentication) throws JsonProcessingException {
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        return new TokenResponse(token);
     }
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
