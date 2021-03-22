@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.member.MemberSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -119,7 +120,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(updateResponse);
 
         // when: 내 회원 삭제 요청
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(sessionId);
+        ExtractableResponse<Response> deleteResponse = 내_회원_정보_삭제_요청(sessionId);
 
         // then: 회원 삭제됨
         회원_삭제됨(deleteResponse);
@@ -141,16 +142,39 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then: 회원 정보 조회 됨
         회원_정보_조회됨(viewResponse, EMAIL, AGE);
 
-        // when: 회원 정보 수정 요청
+        // when: 회원 정보 수정 요청청
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         // then: 회원 정보 수정됨
         회원_정보_수정됨(updateResponse);
 
         // when: 내 회원 삭제 요청
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(tokenResponse);
+        ExtractableResponse<Response> deleteResponse = 내_회원_정보_삭제_요청(tokenResponse);
 
         // then: 회원 삭제됨
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("인증 정보가 없을 경우 401 반환")
+    @Test
+    void 인증_실패_테스트() {
+        // when: 회원 정보 조회 요청
+        ExtractableResponse<Response> viewResponse = 내_회원_정보_조회_요청();
+
+        // then
+        인증_실패(viewResponse);
+
+        // when: 회원 정보 수정 요청
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        인증_실패(updateResponse);
+
+        // when: 회원 정보 삭제 요
+        ExtractableResponse<Response> deleteResponse = 내_회원_정보_삭제_요청();
+
+        // then
+        인증_실패(deleteResponse);
+
     }
 }

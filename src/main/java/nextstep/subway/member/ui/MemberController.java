@@ -67,12 +67,5 @@ public class MemberController {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler({ InvalidAuthenticationException.class })
-    public ResponseEntity<String> handleInvalidAuthenticationException(
-        InvalidAuthenticationException e
-    ) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
 }
 
