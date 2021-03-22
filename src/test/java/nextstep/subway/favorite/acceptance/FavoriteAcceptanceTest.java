@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,22 +63,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_관리_테스트() {
         // When 즐겨찾기 생성을 요청
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청();
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(
+            tokenResponse,
+            new FavoriteRequest(강남역.getId(), 남부터미널역.getId())
+        );
 
         // Then 즐겨찾기 생성됨
         즐겨찾기_생성됨(createResponse);
 
         // When 즐겨찾기 목록 조회 요청
-        ExtractableResponse<Response> viewResponse = 즐겨찾기_목록_조회_요청();
+        ExtractableResponse<Response> viewResponse = 즐겨찾기_목록_조회_요청(tokenResponse);
 
         // Then 즐겨찾기 목록 조회됨
-        즐겨찾기_생성됨(viewResponse);
+        즐겨찾기_목록_조회됨(viewResponse);
 
         // When 즐겨찾기 삭제 요청
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청();
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(
+            tokenResponse,
+            createResponse
+        );
 
         // Then 즐겨찾기 삭제됨
-        즐겨찾기_생성됨(deleteResponse);
+        즐겨찾기_삭제됨(deleteResponse);
 
     }
 
