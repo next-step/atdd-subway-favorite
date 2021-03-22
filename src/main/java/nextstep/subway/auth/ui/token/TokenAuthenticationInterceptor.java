@@ -7,14 +7,13 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Map;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
@@ -31,9 +30,13 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
         TokenResponse tokenResponse = null;
-
+        if (authentication == null) {
+            throw new RuntimeException();
+        }
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -51,7 +54,19 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        String principal = authenticationToken.getPrincipal();
+        LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
+        checkAuthentication(loginMember, authenticationToken);
+        return new Authentication(loginMember);
+    }
+
+    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+        if (userDetails == null) {
+            throw new RuntimeException();
+        }
+
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new RuntimeException();
+        }
     }
 }
