@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.converter.AuthenticationConverter;
+import nextstep.subway.auth.infrastructure.converter.TokenAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final AuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.customUserDetailsService = customUserDetailsService;
@@ -29,7 +30,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         Authentication authentication = authenticate(authenticationToken);
         TokenResponse tokenResponse = createTokenResponse(authentication);
 
@@ -39,13 +40,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.getOutputStream().print(responseToClient);
 
         return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-        return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {

@@ -6,6 +6,8 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.converter.AuthenticationConverter;
+import nextstep.subway.auth.infrastructure.converter.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class TokenAuthenticationInterceptorTest {
+
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
@@ -30,13 +33,11 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void convert() throws IOException {
         // given
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
-        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        AuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
         MockHttpServletRequest request = createMockRequest();
 
         // when
-        AuthenticationToken authenticationToken = interceptor.convert(request);
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
 
         // then
         assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
@@ -89,5 +90,4 @@ class TokenAuthenticationInterceptorTest {
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
-
 }
