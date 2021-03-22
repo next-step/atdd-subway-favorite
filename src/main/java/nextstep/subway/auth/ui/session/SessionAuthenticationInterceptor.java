@@ -1,27 +1,20 @@
 package nextstep.subway.auth.ui.session;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.AuthencationAfterHandler;
+import nextstep.subway.auth.ui.AuthenticationAfterCompletion;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.TokenAuthenticate;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
-import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Map;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor extends AuthencationAfterHandler implements HandlerInterceptor {
+public class SessionAuthenticationInterceptor extends AuthenticationAfterCompletion implements HandlerInterceptor {
 
     private TokenAuthenticate tokenAuthenticate;
     private AuthenticationConverter authenticationConverter;

@@ -6,6 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public abstract  class AuthencationAfterHandler {
+public abstract  class AuthenticationAfterCompletion {
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 }

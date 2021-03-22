@@ -2,15 +2,13 @@ package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.AuthencationAfterHandler;
+import nextstep.subway.auth.ui.AuthenticationAfterCompletion;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.TokenAuthenticate;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor extends AuthencationAfterHandler implements HandlerInterceptor  {
+public class TokenAuthenticationInterceptor extends AuthenticationAfterCompletion implements HandlerInterceptor  {
 
     private TokenAuthenticate tokenAuthenticate;
     private JwtTokenProvider jwtTokenProvider;
