@@ -50,15 +50,15 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final LoginMember loginMember = (LoginMember) authentication.getPrincipal();
-        return ResponseEntity.ok().body(memberService.findMember(loginMember.getId()));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok().body(MemberResponse.of(loginMember));
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(
+        @AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        memberService.updateMember(loginMember.getId(), param);
+        return ResponseEntity.ok().body(MemberResponse.of(param.toMember()));
     }
 
     @DeleteMapping("/members/me")
