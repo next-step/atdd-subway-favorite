@@ -11,6 +11,10 @@ public class LoginMember {
         return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 
+    public static LoginMember of(Long id, String email, String password, Integer age) {
+        return new LoginMember(id, email, password, age);
+    }
+
     public LoginMember(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
