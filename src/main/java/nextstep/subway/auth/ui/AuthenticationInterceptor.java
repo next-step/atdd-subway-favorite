@@ -1,9 +1,7 @@
 package nextstep.subway.auth.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -13,11 +11,11 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
     private AuthenticationConverter authenticationConverter;
 
-    public AuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
-        this.customUserDetailsService = customUserDetailsService;
+    public AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
+        this.userDetailsService = userDetailsService;
         this.authenticationConverter = authenticationConverter;
     }
 
@@ -31,7 +29,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
