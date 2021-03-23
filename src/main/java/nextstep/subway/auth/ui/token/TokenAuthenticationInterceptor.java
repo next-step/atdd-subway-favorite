@@ -48,18 +48,8 @@ public class TokenAuthenticationInterceptor extends AuthenticationAfterCompletio
         return false;
     }
 
-    private String generateJWToken(Authentication authentication){
+    private String generateJWToken(Authentication authentication) throws JsonProcessingException {
         LoginMember userDetails = (LoginMember) authentication.getPrincipal();
-        return jwtTokenProvider.createToken(convertMember(userDetails));
-    }
-
-    private String convertMember(LoginMember member){
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(member);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return jwtTokenProvider.createToken(new ObjectMapper().writeValueAsString(userDetails));
     }
 }
