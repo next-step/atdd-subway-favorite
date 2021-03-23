@@ -5,6 +5,8 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.common.AuthenticationConverter;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -29,25 +31,14 @@ class TokenAuthenticationInterceptorTest {
     private TokenAuthenticationInterceptor interceptor;
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private AuthenticationConverter converter;
 
     @BeforeEach
     void setUp() {
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
-    }
-
-    @Test
-    void convert() throws IOException {
-        // given
-        MockHttpServletRequest request = createMockRequest();
-
-        // when
-        AuthenticationToken convertedToken = interceptor.convert(request);
-
-        // then
-        assertThat(convertedToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(convertedToken.getCredentials()).isEqualTo(PASSWORD);
+        converter = new TokenAuthenticationConverter();
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, converter);
     }
 
     @Test

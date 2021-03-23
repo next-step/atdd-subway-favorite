@@ -2,6 +2,8 @@ package nextstep.subway.auth.session;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.ui.common.AuthenticationConverter;
+import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -23,24 +25,13 @@ import static org.mockito.Mockito.when;
 public class SessionAuthenticationInterceptorTest {
     private SessionAuthenticationInterceptor interceptor;
     private CustomUserDetailsService userDetailsService;
+    private AuthenticationConverter converter;
 
     @BeforeEach
     void setUp() {
         userDetailsService = mock(CustomUserDetailsService.class);
-        interceptor = new SessionAuthenticationInterceptor(userDetailsService);
-    }
-
-    @Test
-    void convert() throws IOException {
-        // given
-        MockHttpServletRequest request = createMockRequest();
-
-        // when
-        AuthenticationToken token = interceptor.convert(request);
-
-        // then
-        assertThat(token.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(token.getCredentials()).isEqualTo(PASSWORD);
+        converter = new SessionAuthenticationConverter();
+        interceptor = new SessionAuthenticationInterceptor(userDetailsService, converter);
     }
 
     @Test
