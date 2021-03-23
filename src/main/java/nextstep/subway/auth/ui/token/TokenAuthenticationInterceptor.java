@@ -3,8 +3,8 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.UserDetail;
-import nextstep.subway.auth.domain.UserDetailService;
+import nextstep.subway.auth.domain.UserDetails;
+import nextstep.subway.auth.domain.UserDetailsService;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AuthenticationConverter;
@@ -20,8 +20,8 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(UserDetailService userDetailService, AuthenticationConverter authenticationConverter, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        super(userDetailService, authenticationConverter);
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter authenticationConverter, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        super(userDetailsService, authenticationConverter);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
@@ -33,7 +33,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     }
 
     private TokenResponse getTokenResponse(Authentication authentication) throws JsonProcessingException {
-        UserDetail userDetails = (UserDetail) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtTokenProvider.createToken(objectMapper.writeValueAsString(userDetails));
         return new TokenResponse(token);
     }

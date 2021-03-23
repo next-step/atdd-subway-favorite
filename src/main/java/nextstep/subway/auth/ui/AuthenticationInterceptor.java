@@ -2,8 +2,8 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.domain.UserDetail;
-import nextstep.subway.auth.domain.UserDetailService;
+import nextstep.subway.auth.domain.UserDetails;
+import nextstep.subway.auth.domain.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +12,11 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final UserDetailService userDetailService;
+    private final UserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
 
-    protected AuthenticationInterceptor(UserDetailService userDetailService, AuthenticationConverter authenticationConverter) {
-        this.userDetailService = userDetailService;
+    protected AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
+        this.userDetailsService = userDetailsService;
         this.authenticationConverter = authenticationConverter;
     }
 
@@ -31,13 +31,13 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        UserDetail userDetails = userDetailService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         validateAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    private void validateAuthentication(UserDetail userDetails, AuthenticationToken token) {
+    private void validateAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new RuntimeException();
         }
