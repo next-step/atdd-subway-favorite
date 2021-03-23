@@ -16,16 +16,16 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.NotValidPasswordException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
-import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.domain.LoginMember;
 
 public class AuthenticationInterceptorTest {
@@ -38,13 +38,13 @@ public class AuthenticationInterceptorTest {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 	private static final String NEW_PASSWORD = "new_password";
 
-	private CustomUserDetailsService userDetailsService;
+	private UserDetailsService userDetailsService;
 	private JwtTokenProvider jwtTokenProvider;
 	private AuthenticationInterceptor interceptor;
 
 	@BeforeEach
 	void setUp() {
-		userDetailsService = mock(CustomUserDetailsService.class);
+		userDetailsService = mock(UserDetailsService.class);
 		jwtTokenProvider = mock(JwtTokenProvider.class);
 	}
 

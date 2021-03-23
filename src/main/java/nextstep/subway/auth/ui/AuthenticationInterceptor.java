@@ -7,20 +7,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.UserDetail;
 import nextstep.subway.auth.exception.NotFoundUserException;
 import nextstep.subway.auth.exception.NotValidPasswordException;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
 	private final AuthenticationConverter converter;
-	private final CustomUserDetailsService userDetailsService;
+	private final UserDetailsService userDetailsService;
 
 	protected AuthenticationInterceptor(
-		AuthenticationConverter converter, CustomUserDetailsService userDetailsService) {
+		AuthenticationConverter converter, UserDetailsService userDetailsService) {
 		this.converter = converter;
 		this.userDetailsService = userDetailsService;
 	}
@@ -42,14 +42,14 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
 	private Authentication authenticate(AuthenticationToken authenticationToken) {
 		final String principal = authenticationToken.getPrincipal();
-		final LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
+		final UserDetail userDetail = userDetailsService.loadUserByUsername(principal);
 
-		validAuthentication(authenticationToken, loginMember);
+		validAuthentication(authenticationToken, userDetail);
 
-		return new Authentication(loginMember);
+		return new Authentication(userDetail);
 	}
 
-	private void validAuthentication(AuthenticationToken authenticationToken, LoginMember userDetails) {
+	private void validAuthentication(AuthenticationToken authenticationToken, UserDetail userDetails) {
 		if (userDetails == null) {
 			throw new NotFoundUserException();
 		}

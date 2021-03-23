@@ -9,11 +9,11 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
@@ -21,7 +21,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 	private final ObjectMapper objectMapper;
 
 	public TokenAuthenticationInterceptor(TokenAuthenticationConverter converter,
-		CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+		UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
 		super(converter, userDetailsService);
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.objectMapper = objectMapper;
