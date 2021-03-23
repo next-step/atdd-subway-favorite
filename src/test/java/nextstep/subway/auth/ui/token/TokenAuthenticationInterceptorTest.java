@@ -44,7 +44,7 @@ class TokenAuthenticationInterceptorTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        authenticationConverter = new TokenAuthenticationConverter(objectMapper);
+        authenticationConverter = new TokenAuthenticationConverter();
         interceptor = new TokenAuthenticationInterceptor(userDetailsService, authenticationConverter, jwtTokenProvider, objectMapper);
     }
 

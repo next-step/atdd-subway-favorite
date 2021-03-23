@@ -7,43 +7,25 @@ import nextstep.subway.auth.ui.AuthenticationConverter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public TokenAuthenticationConverter() {
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        InputStream requestBody = getRequestBody(request);
-        TokenRequest tokenRequest = getTokenRequest(requestBody);
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-
-        return new AuthenticationToken(principal, credentials);
-    }
-
-    private TokenRequest getTokenRequest(InputStream requestBody) {
-        TokenRequest tokenRequest;
         try {
-            tokenRequest = objectMapper.readValue(requestBody, TokenRequest.class);
+            TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
+            String principal = tokenRequest.getEmail();
+            String credentials = tokenRequest.getPassword();
+            return new AuthenticationToken(principal, credentials);
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+            e.printStackTrace();
         }
-        return tokenRequest;
-    }
-
-    private InputStream getRequestBody(HttpServletRequest request) {
-        InputStream requestBody;
-        try {
-            requestBody =  request.getInputStream();
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return requestBody;
+        return new AuthenticationToken();
     }
 }

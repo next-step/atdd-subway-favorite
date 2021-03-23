@@ -3,6 +3,7 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.UserDetail;
 import nextstep.subway.auth.domain.UserDetailService;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -32,8 +33,8 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     }
 
     private TokenResponse getTokenResponse(Authentication authentication) throws JsonProcessingException {
-        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
-        String token = jwtTokenProvider.createToken(payload);
+        UserDetail userDetails = (UserDetail) authentication.getPrincipal();
+        String token = jwtTokenProvider.createToken(objectMapper.writeValueAsString(userDetails));
         return new TokenResponse(token);
     }
 

@@ -24,7 +24,7 @@ class TokenAuthenticationConverterTest {
     @DisplayName("Converter 추상화")
     void convert() throws IOException {
         // given
-        authenticationConverter = new TokenAuthenticationConverter(new ObjectMapper());
+        authenticationConverter = new TokenAuthenticationConverter();
         MockHttpServletRequest request = createMockTokenRequest();
 
         // when
