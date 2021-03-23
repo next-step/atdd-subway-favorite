@@ -19,11 +19,9 @@ import java.util.Map;
 public class MemberController {
     private MemberService memberService;
 
-    private CustomUserDetailsService customUserDetailsService;
 
-    public MemberController(MemberService memberService, CustomUserDetailsService customUserDetailsService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.customUserDetailsService = customUserDetailsService;
     }
 
     @PostMapping("/members")
