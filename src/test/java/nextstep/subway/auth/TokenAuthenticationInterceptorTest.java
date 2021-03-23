@@ -2,9 +2,6 @@ package nextstep.subway.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.application.UserDetailsService;
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.dto.UserDetails;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -20,17 +17,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
-import static nextstep.subway.auth.AuthSteps.EMAIL;
-import static nextstep.subway.auth.AuthSteps.createMockRequest;
+import static nextstep.subway.auth.AuthSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class TokenAuthenticationInterceptorTest {
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 30;
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private UserDetailsService userDetailsService;
