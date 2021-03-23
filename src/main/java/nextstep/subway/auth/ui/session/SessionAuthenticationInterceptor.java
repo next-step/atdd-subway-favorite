@@ -1,10 +1,10 @@
 package nextstep.subway.auth.ui.session;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.converter.AuthenticationConverter;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +17,7 @@ public class SessionAuthenticationInterceptor extends AuthenticationInterceptor 
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
+    public SessionAuthenticationInterceptor(UserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
         super(customUserDetailsService, authenticationConverter);
     }
 

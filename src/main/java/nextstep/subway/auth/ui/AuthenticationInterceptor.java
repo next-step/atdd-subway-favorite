@@ -1,10 +1,10 @@
 package nextstep.subway.auth.ui;
 
+import nextstep.subway.auth.application.UserDetailsService;
+import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.infrastructure.converter.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +13,10 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailsService customUserDetailsService;
     private final AuthenticationConverter authenticationConverter;
 
-    protected AuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
+    protected AuthenticationInterceptor(UserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
         this.customUserDetailsService = customUserDetailsService;
         this.authenticationConverter = authenticationConverter;
     }
@@ -34,13 +34,13 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        AuthMember userDetails = customUserDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(AuthMember userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new RuntimeException();
         }
