@@ -1,26 +1,35 @@
 package nextstep.subway.auth.ui.token;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.exception.NotValidPassword;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.domain.LoginMember;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
+        JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -28,10 +37,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        final String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        final String token = jwtTokenProvider.createToken(payload);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        TokenResponse tokenResponse = new TokenResponse(token);
+
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
@@ -40,15 +51,26 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
+        final TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
+
+        String principal = tokenRequest.getEmail();
+        String credentials = tokenRequest.getPassword();
 
         return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        final String principal = authenticationToken.getPrincipal();
+        final LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
+
+        validAuthentication(authenticationToken, loginMember);
+
+        return new Authentication(loginMember);
+    }
+
+    private void validAuthentication(AuthenticationToken authenticationToken, LoginMember loginMember) {
+        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+            throw new NotValidPassword();
+        }
     }
 }

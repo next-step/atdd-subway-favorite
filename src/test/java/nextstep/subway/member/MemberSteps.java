@@ -100,8 +100,34 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String newEmail, String newPassword, int newAge) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", newEmail);
+        params.put("password", newPassword);
+        params.put("age", newAge + "");
+
+        return RestAssured.given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 회원_정보_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
