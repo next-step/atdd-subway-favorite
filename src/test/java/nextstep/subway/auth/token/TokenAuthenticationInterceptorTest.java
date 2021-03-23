@@ -9,6 +9,7 @@ import nextstep.subway.auth.ui.common.AuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class TokenAuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private TokenAuthenticationInterceptor interceptor;
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private AuthenticationConverter converter;
 

@@ -6,6 +6,7 @@ import nextstep.subway.auth.ui.common.AuthenticationConverter;
 import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 import nextstep.subway.member.domain.LoginMember;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 public class SessionAuthenticationInterceptorTest {
     private SessionAuthenticationInterceptor interceptor;
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
     private AuthenticationConverter converter;
 
     @BeforeEach

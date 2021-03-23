@@ -5,6 +5,7 @@ import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.common.AuthenticationConverter;
 import nextstep.subway.auth.ui.common.AuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,10 +15,10 @@ import java.io.IOException;
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
     private AuthenticationConverter converter;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter converter) {
+    public SessionAuthenticationInterceptor(UserDetailService userDetailsService, AuthenticationConverter converter) {
         super(userDetailsService, converter);
     }
 
