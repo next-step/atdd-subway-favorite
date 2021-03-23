@@ -1,7 +1,7 @@
 package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.application.UserDetailService;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -16,8 +16,8 @@ import java.io.IOException;
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter converter) {
-        super(userDetailService, converter);
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter converter) {
+        super(userDetailsService, converter);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

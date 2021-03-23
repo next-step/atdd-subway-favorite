@@ -1,6 +1,6 @@
 package nextstep.subway.auth.infrastructure;
 
-import nextstep.subway.auth.application.UserDetailService;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.ui.*;
 import nextstep.subway.auth.ui.converter.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.converter.TokenAuthenticationConverter;
@@ -16,10 +16,10 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private UserDetailService userDetailsService;
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public AuthConfig(UserDetailService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public AuthConfig(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }

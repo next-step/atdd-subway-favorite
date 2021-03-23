@@ -1,9 +1,9 @@
 package nextstep.subway.auth.ui;
 
-import nextstep.subway.auth.application.UserDetailService;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.UserDetail;
+import nextstep.subway.auth.dto.UserDetails;
 import nextstep.subway.auth.ui.converter.AuthenticationConverter;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -13,11 +13,11 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final UserDetailService userDetailService;
+    private final UserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
 
-    public AuthenticationInterceptor(UserDetailService userDetailService, AuthenticationConverter authenticationConverter) {
-        this.userDetailService = userDetailService;
+    public AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
+        this.userDetailsService = userDetailsService;
         this.authenticationConverter = authenticationConverter;
     }
 
@@ -32,21 +32,21 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        UserDetail userDetail = userDetailService.loadUserByUsername(principal);
-        checkAuthentication(userDetail, authenticationToken);
-        return new Authentication(userDetail);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
+        checkAuthentication(userDetails, authenticationToken);
+        return new Authentication(userDetails);
     }
 
-    private boolean isEqualsPassword(UserDetail userDetail, AuthenticationToken authenticationToken) {
-        return userDetail.checkPassword(authenticationToken.getCredentials());
+    private boolean isEqualsPassword(UserDetails userDetails, AuthenticationToken authenticationToken) {
+        return userDetails.checkPassword(authenticationToken.getCredentials());
     }
 
-    private void checkAuthentication(UserDetail userDetail, AuthenticationToken authenticationToken) {
-        if (userDetail == null) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken authenticationToken) {
+        if (userDetails == null) {
             throw new RuntimeException();
         }
 
-        if (!isEqualsPassword(userDetail, authenticationToken)) {
+        if (!isEqualsPassword(userDetails, authenticationToken)) {
             throw new RuntimeException();
         }
     }

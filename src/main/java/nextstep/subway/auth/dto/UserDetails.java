@@ -1,6 +1,6 @@
 package nextstep.subway.auth.dto;
 
-public interface UserDetail {
+public interface UserDetails {
     Long getId();
 
     String getEmail();
