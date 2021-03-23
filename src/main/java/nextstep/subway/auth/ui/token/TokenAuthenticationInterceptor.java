@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.dto.UserPrincipal;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AuthenticationAfterCompletion;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.TokenAuthenticate;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -50,7 +50,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationAfterCompletio
     }
 
     private String generateJWToken(Authentication authentication) throws JsonProcessingException {
-        LoginMember userDetails = (LoginMember) authentication.getPrincipal();
+        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
         return jwtTokenProvider.createToken(new ObjectMapper().writeValueAsString(userDetails));
     }
 }

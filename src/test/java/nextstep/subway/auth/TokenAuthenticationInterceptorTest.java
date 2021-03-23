@@ -1,55 +1,33 @@
 package nextstep.subway.auth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.dto.UserPrincipal;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.AuthenticationConverter;
+import nextstep.subway.auth.ui.UserAuthenticate;
 import nextstep.subway.auth.ui.TokenAuthenticate;
+import nextstep.subway.auth.ui.UserLoader;
 import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.application.MemberAuthenticate;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.LoginMember;
-import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserLoader userLoader;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -62,7 +40,8 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp(){
-        this.tokenAuthenticate = new MemberAuthenticate(customUserDetailsService);
+        when(userLoader.loadUserPrincipal(anyString())).thenReturn(new UserPrincipal(1L, EMAIL, 20));
+        this.tokenAuthenticate = new UserAuthenticate(userLoader);
     }
 
     @Test
@@ -82,7 +61,6 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when
@@ -97,7 +75,6 @@ class TokenAuthenticationInterceptorTest {
         // given
         MockHttpServletRequest request = createMockRequest();
         TokenAuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
-        when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
@@ -113,12 +90,11 @@ class TokenAuthenticationInterceptorTest {
         MockHttpServletRequest request = createMockRequest();
         TokenAuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
-        when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         // when
         Authentication authentication = tokenAuthenticate.authenticate(authenticationToken);
-        LoginMember userDetails = (LoginMember) authentication.getPrincipal();
+        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
         String tokenString = jwtTokenProvider.createToken(new ObjectMapper().writeValueAsString(userDetails));
 
         // then

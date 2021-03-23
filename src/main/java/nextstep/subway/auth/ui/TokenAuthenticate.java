@@ -5,4 +5,5 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 
 public interface TokenAuthenticate {
     public Authentication authenticate(AuthenticationToken authenticationToken);
+
 }
