@@ -1,5 +1,6 @@
 package nextstep.subway.auth.infrastructure;
 
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.ui.*;
 import nextstep.subway.auth.ui.authentication.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.authentication.TokenAuthenticationInterceptor;
@@ -7,7 +8,6 @@ import nextstep.subway.auth.ui.authorization.SessionSecurityContextPersistenceIn
 import nextstep.subway.auth.ui.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.subway.auth.ui.convert.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.convert.TokenAuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,12 +16,12 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final SessionAuthenticationConverter sessionAuthenticationConverter;
     private final TokenAuthenticationConverter tokenAuthenticationConverter;
 
-    public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider,
+    public AuthConfig(UserDetailService userDetailsService, JwtTokenProvider jwtTokenProvider,
                       SessionAuthenticationConverter sessionAuthenticationConverter, TokenAuthenticationConverter tokenAuthenticationConverter) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;

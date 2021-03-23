@@ -2,11 +2,11 @@ package nextstep.subway.auth.ui.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.convert.AuthenticationConverter;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor{
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(AuthenticationConverter authenticationConverter, CustomUserDetailsService userDetailService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider) {
         super(authenticationConverter, userDetailService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = new ObjectMapper();
