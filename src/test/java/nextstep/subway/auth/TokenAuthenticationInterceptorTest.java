@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.dto.UserDetails;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.converter.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
@@ -19,6 +20,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
+import static nextstep.subway.auth.AuthSteps.EMAIL;
+import static nextstep.subway.auth.AuthSteps.createMockRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -45,12 +48,8 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
-
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        Authentication authentication = interceptor.authenticate(authenticationToken);
-
-        assertThat(authentication.getPrincipal()).isNotNull();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(EMAIL);
+        AuthSteps.authenticate(userDetails, interceptor);
     }
 
     @Test
@@ -68,10 +67,5 @@ class TokenAuthenticationInterceptorTest {
         assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
+
 }
