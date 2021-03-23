@@ -19,7 +19,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.exception.NotValidPassword;
+import nextstep.subway.auth.exception.NotValidPasswordException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -77,7 +77,7 @@ class TokenAuthenticationInterceptorTest {
         // when, then
         assertThatThrownBy(
             () -> interceptor.authenticate(new AuthenticationToken(EMAIL, NEW_PASSWORD)))
-            .isInstanceOf(NotValidPassword.class);
+            .isInstanceOf(NotValidPasswordException.class);
     }
 
     @Test
