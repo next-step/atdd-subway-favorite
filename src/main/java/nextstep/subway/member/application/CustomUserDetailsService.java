@@ -6,7 +6,8 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService {
+public class
+CustomUserDetailsService {
     private MemberRepository memberRepository;
 
     public CustomUserDetailsService(MemberRepository memberRepository) {

@@ -23,7 +23,7 @@ public class SessionSecurityContextPersistenceInterceptor implements HandlerInte
         return true;
     }
 
-    @Override
+    @Override // view 랜더링 이후
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         SecurityContextHolder.clearContext();
     }
