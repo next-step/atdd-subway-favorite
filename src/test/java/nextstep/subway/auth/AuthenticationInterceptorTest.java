@@ -21,9 +21,9 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.NotValidPasswordException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
-import nextstep.subway.auth.ui.session.SessionAuthInterceptor;
+import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
-import nextstep.subway.auth.ui.token.TokenAuthInterceptor;
+import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -54,7 +54,7 @@ public class AuthenticationInterceptorTest {
 		// given
 		final MockHttpServletRequest request = createMockRequestWithToken();
 		final MockHttpServletResponse response = new MockHttpServletResponse();
-		interceptor = new TokenAuthInterceptor(new TokenAuthenticationConverter(objectMapper), userDetailsService, jwtTokenProvider, objectMapper);
+		interceptor = new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper), userDetailsService, jwtTokenProvider, objectMapper);
 		given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 		given(jwtTokenProvider.createToken(any())).willReturn(JWT_TOKEN);
 
@@ -74,7 +74,7 @@ public class AuthenticationInterceptorTest {
 		// given
 		final MockHttpServletRequest request = createMockRequestWithToken();
 		final MockHttpServletResponse response = new MockHttpServletResponse();
-		interceptor = new TokenAuthInterceptor(new TokenAuthenticationConverter(objectMapper), userDetailsService, jwtTokenProvider, objectMapper);
+		interceptor = new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper), userDetailsService, jwtTokenProvider, objectMapper);
 		given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(1L, EMAIL, NEW_PASSWORD, 20));
 
 		// when, then
@@ -89,7 +89,7 @@ public class AuthenticationInterceptorTest {
 		// given
 		final MockHttpServletRequest request = createMockRequestWithForm();
 		final MockHttpServletResponse response = new MockHttpServletResponse();
-		interceptor = new SessionAuthInterceptor(new SessionAuthenticationConverter(), userDetailsService);
+		interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService);
 		given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
 		// when
@@ -105,7 +105,7 @@ public class AuthenticationInterceptorTest {
 		// given
 		final MockHttpServletRequest request = createMockRequestWithForm();
 		final MockHttpServletResponse response = new MockHttpServletResponse();
-		interceptor = new SessionAuthInterceptor(new SessionAuthenticationConverter(), userDetailsService);
+		interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService);
 		given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(1L, EMAIL, NEW_PASSWORD, 20));
 
 		// when, then
