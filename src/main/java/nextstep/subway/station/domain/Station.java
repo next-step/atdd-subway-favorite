@@ -20,6 +20,10 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    public Station(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
     public Long getId() {
         return id;
     }
@@ -41,5 +45,8 @@ public class Station extends BaseEntity {
         return Objects.hash(id, name);
     }
 
+    public void update(Station entity) {
+        this.name = entity.getName();
+    }
 
 }

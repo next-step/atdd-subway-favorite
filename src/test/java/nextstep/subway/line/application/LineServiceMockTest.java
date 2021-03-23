@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -49,13 +50,13 @@ public class LineServiceMockTest {
     @Test
     void addSection() {
         when(lineRepository.findById(이호선.getId())).thenReturn(Optional.of(이호선));
-        when(stationService.findStationById(역삼역.getId())).thenReturn(역삼역);
-        when(stationService.findStationById(삼성역.getId())).thenReturn(삼성역);
+        when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
+        when(stationService.findById(삼성역.getId())).thenReturn(삼성역);
 
         lineService.addSection(이호선.getId(), new SectionRequest(역삼역.getId(), 삼성역.getId(), 10));
 
-        Line line = lineService.findLineById(1L);
+        LineResponse line = lineService.findLineResponseById(이호선.getId());
 
-        assertThat(line.getSections().size()).isEqualTo(2);
+        assertThat(line.getStations().size()).isEqualTo(3);
     }
 }

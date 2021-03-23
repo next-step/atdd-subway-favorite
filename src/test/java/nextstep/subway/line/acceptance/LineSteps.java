@@ -3,17 +3,32 @@ package nextstep.subway.line.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LineSteps {
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(Map<String, String> params) {
         return 지하철_노선_생성_요청(params);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, Long upStation, Long downStation, int distance) {
+        LineRequest request = new LineRequest(name, color, upStation, downStation, distance);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all().
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                body(request).
+                when().post(서비스_호출_경로_생성(null))
+                .then()
+                .log().all()
+                .extract();
+        return response.as(LineResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params) {
@@ -106,5 +121,14 @@ public class LineSteps {
                 then().
                 log().all().
                 extract();
+    }
+
+    public static String 서비스_호출_경로_생성(Long createdId) {
+        String path = "/lines";
+        if (Objects.nonNull(createdId)) {
+            return path + "/" + createdId;
+        }
+
+        return path;
     }
 }
