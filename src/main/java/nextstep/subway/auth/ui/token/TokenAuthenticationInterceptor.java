@@ -2,15 +2,15 @@ package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.CustomUserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.InvalidPasswordException;
 import nextstep.subway.auth.exception.NoUserFoundException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -33,7 +33,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
-
         TokenResponse tokenResponse = convertAuthToToken(authentication);
 
         setResponse(response, tokenResponse);
@@ -51,12 +50,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken authenticationToken) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken authenticationToken) {
         if(userDetails == null) {
             throw new NoUserFoundException();
         }
