@@ -6,6 +6,8 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.exception.InvalidPasswordException;
+import nextstep.subway.auth.exception.NoUserFoundException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -32,7 +34,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        TokenResponse tokenResponse = fetchTokenResponse(authentication);
+        TokenResponse tokenResponse = convertAuthToToken(authentication);
 
         setResponse(response, tokenResponse);
 
@@ -56,15 +58,15 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken authenticationToken) {
         if(userDetails == null) {
-            throw new RuntimeException();
+            throw new NoUserFoundException();
         }
 
         if (!userDetails.checkPassword(authenticationToken.getCredentials())) {
-            throw new RuntimeException();
+            throw new InvalidPasswordException();
         }
     }
 
-    private TokenResponse fetchTokenResponse(Authentication authentication) throws JsonProcessingException {
+    private TokenResponse convertAuthToToken(Authentication authentication) throws JsonProcessingException {
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
         return new TokenResponse(token);

@@ -2,6 +2,8 @@ package nextstep.subway.auth.ui.session;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.exception.InvalidPasswordException;
+import nextstep.subway.auth.exception.NoUserFoundException;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -57,11 +59,11 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
         if (userDetails == null) {
-            throw new RuntimeException();
+            throw new NoUserFoundException();
         }
 
         if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
+            throw new InvalidPasswordException();
         }
     }
 }
