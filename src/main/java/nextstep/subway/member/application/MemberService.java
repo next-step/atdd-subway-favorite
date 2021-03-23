@@ -20,11 +20,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final StationService stationService;
 
-    public MemberService(MemberRepository memberRepository, StationService stationService) {
+    public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.stationService = stationService;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -44,25 +42,6 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
-    }
-
-    public List<FavoriteResponse> findAllFavoriteOfMine(long id) {
-        return findByIdOrThrow(id)
-                    .getFavorites()
-                    .stream()
-                    .map(FavoriteResponse::of)
-                    .collect(Collectors.toList());
-    }
-
-    public Favorite addFavorite(long id, FavoriteRequest favoriteRequest) {
-        Station source = stationService.findById(favoriteRequest.getSource());
-        Station target = stationService.findById(favoriteRequest.getTarget());
-
-        return findByIdOrThrow(id).addFavorite(source, target);
-    }
-
-    public void removeFavorite(long id, long favoriteId) {
-        findByIdOrThrow(id).removeFavorite(favoriteId);
     }
 
     private Member findByIdOrThrow(long id) {

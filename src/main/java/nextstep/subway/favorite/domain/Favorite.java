@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.common.BaseEntity;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -14,9 +13,8 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name = "member_id")
+    private long memberId;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "source_id")
@@ -28,8 +26,8 @@ public class Favorite extends BaseEntity {
 
     public Favorite() {}
 
-    public Favorite(Member member, Station source, Station target) {
-        this.member = member;
+    public Favorite(long memberId, Station source, Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
@@ -46,8 +44,8 @@ public class Favorite extends BaseEntity {
         return target;
     }
 
-    public Member getMember() {
-        return member;
+    public long getMemberId() {
+        return memberId;
     }
 
     @Override
@@ -58,13 +56,13 @@ public class Favorite extends BaseEntity {
 
         if (Objects.equals(id, favorite.id)) return true;
 
-        return Objects.equals(member, favorite.member) &&
+        return Objects.equals(memberId, favorite.memberId) &&
                Objects.equals(source, favorite.source) &&
                Objects.equals(target, favorite.target);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, member, source, target);
+        return Objects.hash(id, memberId, source, target);
     }
 }

@@ -142,7 +142,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then: 회원 정보 조회 됨
         회원_정보_조회됨(viewResponse, EMAIL, AGE);
 
-        // when: 회원 정보 수정 요청청
+        // when: 회원 정보 수정 요청
         ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         // then: 회원 정보 수정됨

@@ -1,15 +1,13 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.exception.InvalidAuthenticationException;
+import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.IsExistFavoriteException;
 import nextstep.subway.favorite.exception.NotFoundFavoriteException;
-import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +18,10 @@ import java.util.List;
 @RequestMapping("/favorites")
 public class FavoriteController {
 
-    private final MemberService memberService;
+    private final FavoriteService favoriteService;
 
-    public FavoriteController(MemberService memberService) {
-        this.memberService = memberService;
+    public FavoriteController(FavoriteService favoriteService) {
+        this.favoriteService = favoriteService;
     }
 
     @GetMapping
@@ -31,7 +29,7 @@ public class FavoriteController {
         @AuthenticationPrincipal LoginMember loginMember
     ) {
         return ResponseEntity.ok(
-            memberService.findAllFavoriteOfMine(loginMember.getId())
+            favoriteService.findAllOfMember(loginMember.getId())
         );
     }
 
@@ -40,7 +38,7 @@ public class FavoriteController {
         @AuthenticationPrincipal LoginMember loginMember,
         @RequestBody FavoriteRequest favoriteRequest
     ) {
-        Favorite favorite = memberService.addFavorite(loginMember.getId(), favoriteRequest);
+        Favorite favorite = favoriteService.addFavorite(loginMember.getId(), favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
@@ -49,7 +47,7 @@ public class FavoriteController {
         @AuthenticationPrincipal LoginMember loginMember,
         @PathVariable long favoriteId
     ) {
-        memberService.removeFavorite(loginMember.getId(), favoriteId);
+        favoriteService.removeFavorite(favoriteId);
         return ResponseEntity.noContent().build();
     }
 

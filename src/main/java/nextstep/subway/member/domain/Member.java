@@ -1,15 +1,12 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.common.BaseEntity;
-import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.favorite.domain.Favorites;
-import nextstep.subway.station.domain.Station;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 public class Member extends BaseEntity {
@@ -19,9 +16,6 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private Integer age;
-
-    @Embedded
-    private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -48,28 +42,10 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public Favorite addFavorite(Station source, Station target) {
-        return favorites.add(this, source, target);
-    }
-
-    public void removeFavorite(long favoriteId) {
-        favorites.remove(favoriteId);
-    }
-
-    public List<Favorite> getFavorites() {
-        return favorites.stream().collect(Collectors.toList());
-    }
-
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new RuntimeException();
-        }
     }
 
     @Override
@@ -82,6 +58,6 @@ public class Member extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, age, favorites);
+        return Objects.hash(id, email, password, age);
     }
 }
