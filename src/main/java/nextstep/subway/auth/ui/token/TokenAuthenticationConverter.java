@@ -12,8 +12,8 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationConverter() {
-        this.objectMapper = new ObjectMapper();
+    public TokenAuthenticationConverter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -24,8 +24,7 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
             String credentials = tokenRequest.getPassword();
             return new AuthenticationToken(principal, credentials);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return new AuthenticationToken();
     }
 }
