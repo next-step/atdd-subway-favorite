@@ -24,7 +24,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     }
 
     @Override
-    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    protected void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         TokenResponse tokenResponse = createTokenResponse(authentication);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

@@ -22,7 +22,7 @@ public class SessionAuthenticationInterceptor extends AuthenticationInterceptor 
     }
 
     @Override
-    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    protected void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         if (authentication == null) {
             throw new RuntimeException();
         }
