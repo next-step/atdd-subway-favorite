@@ -2,7 +2,7 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.domain.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        User userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
@@ -39,7 +39,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         return authenticationConverter.convert(request);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(User userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new RuntimeException();
         }
