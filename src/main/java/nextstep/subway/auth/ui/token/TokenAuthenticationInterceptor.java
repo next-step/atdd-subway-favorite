@@ -6,8 +6,10 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.exception.AuthenticationException;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,12 +22,14 @@ import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -33,11 +37,10 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = new TokenResponse(token);
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
@@ -46,8 +49,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        ObjectMapper objectMapper = new ObjectMapper();
         TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
 
         String principal = tokenRequest.getEmail();
@@ -57,7 +58,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
         LoginMember loginMember = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
         checkAuthentication(loginMember, authenticationToken);
         return new Authentication(loginMember);
@@ -65,11 +65,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
         if (userDetails == null) {
-            throw new RuntimeException();
+            throw new AuthenticationException("사용자가 등록되어 있지 않습니다");
         }
 
         if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
+            throw new AuthenticationException("비밀번호가 틀립니다");
         }
     }
 }

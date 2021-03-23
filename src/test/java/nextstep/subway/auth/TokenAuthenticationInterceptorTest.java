@@ -34,14 +34,16 @@ class TokenAuthenticationInterceptorTest {
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() throws IOException{
         request = createMockRequest(EMAIL, PASSWORD);
         customUserDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
+        objectMapper = new ObjectMapper();
         tokenAuthenticationInterceptor =
-                new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+                new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
     }
 
     @DisplayName("request를 auth token으로")
