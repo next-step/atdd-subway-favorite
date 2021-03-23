@@ -8,10 +8,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor2;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
-import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -33,13 +30,13 @@ class NewTokenAuthenticationInterceptorTest {
 
     UserDetailsService userDetailsService;
     JwtTokenProvider jwtTokenProvider;
-    TokenAuthenticationInterceptor2 interceptor;
+    TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     public void setUp() {
         userDetailsService = mock(UserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor2(userDetailsService, jwtTokenProvider);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
     }
 
 

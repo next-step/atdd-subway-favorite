@@ -3,9 +3,7 @@ package nextstep.subway.auth;
 import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor2;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor2;
+import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,12 +24,12 @@ class NewSessionAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
 
     UserDetailsService userDetailsService;
-    SessionAuthenticationInterceptor2 interceptor;
+    SessionAuthenticationInterceptor interceptor;
 
     @BeforeEach
     public void setUp() {
         userDetailsService = mock(UserDetailsService.class);
-        interceptor = new SessionAuthenticationInterceptor2(userDetailsService);
+        interceptor = new SessionAuthenticationInterceptor(userDetailsService);
     }
 
     @Test
