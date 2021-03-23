@@ -120,12 +120,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_수정됨(modifyResponse);
 
-        // when
-        final ExtractableResponse<Response> oldTokenResponse = 내_회원_정보_조회_요청(tokenResponse);
-
-        // then
-        회원_정보_조회_실패됨(oldTokenResponse);
-
         // given
         final TokenResponse newTokenResponse = 로그인_되어_있음(NEW_EMAIL, NEW_PASSWORD);
 

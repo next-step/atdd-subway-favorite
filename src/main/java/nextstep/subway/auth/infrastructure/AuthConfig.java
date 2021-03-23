@@ -1,19 +1,20 @@
 package nextstep.subway.auth.infrastructure;
 
-import nextstep.subway.auth.ui.*;
-import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
-import nextstep.subway.auth.ui.session.SessionSecurityContextPersistenceInterceptor;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
-import nextstep.subway.auth.ui.token.TokenSecurityContextPersistenceInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
+import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
+import nextstep.subway.auth.ui.session.SessionSecurityContextPersistenceInterceptor;
+import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.token.TokenSecurityContextPersistenceInterceptor;
+import nextstep.subway.member.application.CustomUserDetailsService;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
@@ -31,7 +32,7 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
         registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
-        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(userDetailsService, jwtTokenProvider, objectMapper));
+        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider, objectMapper));
     }
 
     @Override

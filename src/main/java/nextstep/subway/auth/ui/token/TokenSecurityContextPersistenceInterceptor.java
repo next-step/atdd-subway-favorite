@@ -1,29 +1,29 @@
 package nextstep.subway.auth.ui.token;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.exception.NotValidPassword;
-import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
-
-import org.springframework.web.servlet.HandlerInterceptor;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
+
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import nextstep.subway.auth.infrastructure.AuthorizationType;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
     public TokenSecurityContextPersistenceInterceptor(
-        CustomUserDetailsService userDetailsService,
         JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
@@ -41,13 +41,6 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
 
         SecurityContext securityContext = extractSecurityContext(credentials);
         if (securityContext != null) {
-            final LoginMember loginMember =
-                objectMapper.convertValue(securityContext.getAuthentication().getPrincipal(), LoginMember.class);
-
-            if (!userDetailsService.loadUserByUsername(loginMember.getEmail())
-                .checkPassword(loginMember.getPassword())) {
-                throw new NotValidPassword();
-            }
             SecurityContextHolder.setContext(securityContext);
         }
         return true;

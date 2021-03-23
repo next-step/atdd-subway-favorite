@@ -2,7 +2,7 @@ package nextstep.subway.auth;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.io.IOException;
 
@@ -58,8 +58,10 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
+        // given
+        given(customUserDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+
         // when
-        when(customUserDetailsService.loadUserByUsername(any())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         final Authentication authenticate = interceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
 
         // then
@@ -69,8 +71,10 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticateInvalidPassword() {
+        // given
+        given(customUserDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+
         // when, then
-        when(customUserDetailsService.loadUserByUsername(any())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         assertThatThrownBy(
             () -> interceptor.authenticate(new AuthenticationToken(EMAIL, NEW_PASSWORD)))
             .isInstanceOf(NotValidPassword.class);
@@ -81,10 +85,10 @@ class TokenAuthenticationInterceptorTest {
         // given
         final MockHttpServletRequest request = createMockRequest();
         final MockHttpServletResponse response = new MockHttpServletResponse();
+        given(customUserDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        given(jwtTokenProvider.createToken(any())).willReturn(JWT_TOKEN);
 
         // when
-        when(customUserDetailsService.loadUserByUsername(any())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
-        when(jwtTokenProvider.createToken(any())).thenReturn(JWT_TOKEN);
         interceptor.preHandle(request, response, new Object());
 
         // then
