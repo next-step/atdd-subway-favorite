@@ -31,12 +31,14 @@ public class FavoriteService {
                     .collect(Collectors.toList());
     }
 
-    public Favorite addFavorite(long memberId, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse addFavorite(long memberId, FavoriteRequest favoriteRequest) {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
         validateDuplication(memberId, source, target);
 
-        return favoriteRepository.save(new Favorite(memberId, source, target));
+        return FavoriteResponse.of(
+            favoriteRepository.save(new Favorite(memberId, source, target))
+        );
     }
 
     private void validateDuplication(long memberId, Station source, Station target) {
