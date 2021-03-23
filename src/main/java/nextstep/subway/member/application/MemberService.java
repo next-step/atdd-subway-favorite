@@ -21,17 +21,20 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-        return MemberResponse.of(member);
+        return MemberResponse.of(findMemberEntity(id));
     }
 
     public MemberResponse updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        Member member = findMemberEntity(id);
         member.update(param.toMember());
         return MemberResponse.of(memberRepository.save(member));
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    private Member findMemberEntity(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 }
