@@ -21,5 +21,6 @@ public class Favorites {
   }
 
   public void remove(Favorite favorite){
+    favorites.remove(favorite);
   }
 }
