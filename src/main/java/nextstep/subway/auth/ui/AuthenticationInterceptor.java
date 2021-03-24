@@ -15,7 +15,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     private final UserDetailsService userDetailsService;
     private final AuthenticationConverter converter;
 
-    public AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter converter) {
+    protected AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter converter) {
         this.userDetailsService = userDetailsService;
         this.converter = converter;
     }
