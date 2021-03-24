@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.converter.AuthenticationConverter;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.infrastructure.converter.AuthenticationConverter;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
 import org.springframework.http.MediaType;
 
