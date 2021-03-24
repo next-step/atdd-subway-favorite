@@ -62,11 +62,17 @@ public class FavoritesSteps {
     }
 
     public static void 즐겨찾기_목록_내용_일치함(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
-        List<FavoriteResponse> list = response.jsonPath().getList(".", FavoriteResponse.class);
-        list.forEach(favoriteResponse -> {
-            assertThat(favoriteResponse.getSource()).isEqualTo(source);
-            assertThat(favoriteResponse.getTarget()).isEqualTo(target);
+
+        List<FavoriteResponse> responseList = response.jsonPath().getList(".", FavoriteResponse.class);
+
+        responseList.forEach(favoriteResponse -> {
+            assertThat(favoriteResponse.getSource().getId()).isEqualTo(source.getId());
+            assertThat(favoriteResponse.getTarget().getId()).isEqualTo(target.getId());
         });
+    }
+
+    public static void 중복된_즐겨찾기_등록_실패됨(ExtractableResponse<Response> equalsFavoriteResponse) {
+        assertThat(equalsFavoriteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 즐겨찾기_목록_조회_실패됨(ExtractableResponse<Response> response) {

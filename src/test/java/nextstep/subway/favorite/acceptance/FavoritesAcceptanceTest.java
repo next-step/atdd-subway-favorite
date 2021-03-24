@@ -2,6 +2,7 @@ package nextstep.subway.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSteps;
@@ -17,8 +18,8 @@ import static nextstep.subway.favorite.acceptance.FavoritesSteps.*;
 import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberSteps.회원_생성_요청;
 
-@DisplayName("즐겨찾기를 관리 인수 테스트")
-public class FavoritesAcceptanceTest {
+@DisplayName("즐겨찾기 관리 인수 테스트")
+public class FavoritesAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -35,6 +36,8 @@ public class FavoritesAcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+        super.setUp();
+
         강남역 = 지하철역_생성_요청("강남역");
         삼성역 = 지하철역_생성_요청("삼성역");
         잠실역 = 지하철역_생성_요청("잠실역");
@@ -63,17 +66,23 @@ public class FavoritesAcceptanceTest {
         즐겨찾기_생성됨(favoriteCreateResponse);
 
         //when
-        ExtractableResponse<Response> readFavoriteResponse = 즐겨찾기_목록_조회를_요청(memberToken);
+        ExtractableResponse<Response> equalsFavoriteResponse = 즐겨찾기_생성을_요청(memberToken, 잠실역.getId(), 강남역.getId());
 
         //then
-        즐겨찾기_목록_조회됨(readFavoriteResponse);
-        FavoritesSteps.즐겨찾기_목록_내용_일치함(readFavoriteResponse, 잠실역, 강남역);
+        중복된_즐겨찾기_등록_실패됨(equalsFavoriteResponse);
 
         //when
-        ExtractableResponse<Response> readFavoriteResponse2 = 즐겨찾기_목록_조회를_요청(new TokenResponse(""));
+        ExtractableResponse<Response> favoriteResponse = 즐겨찾기_목록_조회를_요청(memberToken);
 
         //then
-        FavoritesSteps.즐겨찾기_목록_조회_실패됨(readFavoriteResponse2);
+        즐겨찾기_목록_조회됨(favoriteResponse);
+        FavoritesSteps.즐겨찾기_목록_내용_일치함(favoriteResponse, 잠실역, 강남역);
+
+        //when
+        ExtractableResponse<Response> failFavoriteResponse = 즐겨찾기_목록_조회를_요청(new TokenResponse(""));
+
+        //then
+        FavoritesSteps.즐겨찾기_목록_조회_실패됨(failFavoriteResponse);
 
         //when
         ExtractableResponse<Response> deleteFavoriteResponse = 즐겨찾기_삭제_요청(memberToken, favoriteCreateResponse);
