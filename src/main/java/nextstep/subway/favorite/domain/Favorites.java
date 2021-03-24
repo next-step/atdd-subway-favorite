@@ -12,11 +12,12 @@ public class Favorites {
   @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<Favorite> favorites = new ArrayList<>();
 
-  public void add(Favorite favorite) {
+  public Favorite add(Favorite favorite) {
     favorites.add(favorite);
+    return favorite;
   }
 
-  public List<Favorite> getFavorites(){
+  public List<Favorite> getAllFavorite(){
     return favorites;
   }
 

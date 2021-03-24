@@ -32,13 +32,13 @@ public class FavoriteSteps {
         .statusCode(HttpStatus.OK.value()).extract();
   }
 
-  public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse,long id){
+  public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse,String url){
     return RestAssured.given().log().all()
         .auth().oauth2(tokenResponse.getAccessToken())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .when().delete("/favorites/{id}",id)
+        .when().delete(url)
         .then().log().all()
-        .statusCode(HttpStatus.OK.value()).extract();
+        .statusCode(HttpStatus.NO_CONTENT.value()).extract();
   }
 
   public static void 즐겨찾기에_경로추가됨(ExtractableResponse<Response> response){

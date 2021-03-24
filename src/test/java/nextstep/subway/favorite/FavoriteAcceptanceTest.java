@@ -41,30 +41,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   public static final int AGE = 20;
   public static final int NEW_AGE = 21;
 
-  @DisplayName("Background : 즐겨찾기 관련기능 전제조건")
-  @Nested
-  class Background {
-    @BeforeEach
-    void init() {
-      강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
-      광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
-      광교중앙역 = 지하철역_등록되어_있음("광교중앙역").as(StationResponse.class);
-      Map<String, String> lineCreateParams = createLineCreateParams();
-      신분당선 = 지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
-      지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 광교중앙역, 5);
-      회원_생성_요청(EMAIL, PASSWORD, AGE);
-      토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
-    }
+  @BeforeEach
+  void init() {
+    강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+    광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
+    광교중앙역 = 지하철역_등록되어_있음("광교중앙역").as(StationResponse.class);
+    Map<String, String> lineCreateParams = createLineCreateParams();
+    신분당선 = 지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
+    지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 광교중앙역, 5);
+    회원_생성_요청(EMAIL, PASSWORD, AGE);
+    토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+  }
 
-    private Map<String, String> createLineCreateParams() {
-      Map<String, String> lineCreateParams = new HashMap<>();
-      lineCreateParams.put("name", "신분당선");
-      lineCreateParams.put("color", "bg-red-600");
-      lineCreateParams.put("upStationId", 강남역.getId() + "");
-      lineCreateParams.put("downStationId", 광교역.getId() + "");
-      lineCreateParams.put("distance", 10 + "");
-      return lineCreateParams;
-    }
+  private Map<String, String> createLineCreateParams() {
+    Map<String, String> lineCreateParams = new HashMap<>();
+    lineCreateParams.put("name", "신분당선");
+    lineCreateParams.put("color", "bg-red-600");
+    lineCreateParams.put("upStationId", 강남역.getId() + "");
+    lineCreateParams.put("downStationId", 광교역.getId() + "");
+    lineCreateParams.put("distance", 10 + "");
+    return lineCreateParams;
   }
 
 
@@ -77,12 +73,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("Scnario : 즐겨찾기 관리 기능 테스트")
     @Test
     void addFavorite() {
-      ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_경로추가_요청(토큰,광교역.getId(),강남역.getId());
-      long 즐겨찾기ID = 즐겨찾기_추가_응답.body().jsonPath().get("id");
+      ExtractableResponse<Response> 즐겨찾기_추가_응답 =  즐겨찾기_경로추가_요청(토큰,광교역.getId(),강남역.getId());
+      String url = 즐겨찾기_추가_응답.header("Location");
       즐겨찾기에_경로추가됨(즐겨찾기_추가_응답);
       ExtractableResponse<Response> 즐겨찾기_목록_조회응답 =즐겨찾기_목록_조회요청(토큰);
       즐겨찾기_목록_조회됨(즐겨찾기_목록_조회응답);
-      ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰,즐겨찾기ID);
+      ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰,url);
       즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
   }

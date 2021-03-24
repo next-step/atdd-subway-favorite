@@ -36,7 +36,7 @@ public class FavoriteTest {
     //when
     favorites.add(favorite);
     //then
-    assertThat(favorites.getFavorites().size()).isEqualTo(1);
+    assertThat(favorites.getAllFavorite().size()).isEqualTo(1);
   }
 
   @DisplayName("즐겨찾기를 삭제한다")
@@ -48,7 +48,7 @@ public class FavoriteTest {
     //when
     favorites.remove(favorite);
     //then
-    assertThat(favorites.getFavorites().indexOf(favorite)).isEqualTo(-1);
+    assertThat(favorites.getAllFavorite().indexOf(favorite)).isEqualTo(-1);
   }
 
   @DisplayName("즐겨찾기가 등록되어있으면 즐겨찾기를 조회한다")
@@ -58,7 +58,7 @@ public class FavoriteTest {
     Favorite favorite = new Favorite(테스트회원,광교중앙역,강남역);
     favorites.add(favorite);
     //when
-    List<Favorite> favoriteList = favorites.getFavorites();
+    List<Favorite> favoriteList = favorites.getAllFavorite();
     //then
     assertThat(favoriteList.size()).isNotEqualTo(0);
   }
