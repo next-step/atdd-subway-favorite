@@ -67,4 +67,17 @@ public class FavoriteSteps {
     public static void 즐겨찾기_삭제됨(ExtractableResponse< Response > response){
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static ExtractableResponse<Response> 권한없이_즐겨찾기_조회_요청() {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_권한없음(ExtractableResponse< Response > response){
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

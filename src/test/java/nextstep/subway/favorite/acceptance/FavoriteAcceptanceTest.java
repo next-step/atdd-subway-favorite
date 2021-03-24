@@ -19,6 +19,8 @@ import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_조
 import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_조회됨;
 import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제됨;
+import static nextstep.subway.favorite.acceptance.FavoriteSteps.권한없이_즐겨찾기_조회_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_권한없음;
 
 @DisplayName("경로 즐겨 찾기 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -84,5 +86,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_삭제됨(response);
+    }
+
+    @DisplayName("로그인 하지 않고 즐겨찾기 조회한다.")
+    @Test
+    void getFavoriteWithoutSignIn(){
+        // when
+        final ExtractableResponse< Response > response = 권한없이_즐겨찾기_조회_요청();
+
+        // then
+        즐겨찾기_권한없음(response);
     }
 }
