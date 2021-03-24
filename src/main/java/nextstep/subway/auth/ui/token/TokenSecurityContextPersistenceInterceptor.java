@@ -1,16 +1,16 @@
 package nextstep.subway.auth.ui.token;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.SecurityContextInterceptor;
-import nextstep.subway.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
 
@@ -37,7 +37,9 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
     private SecurityContext extractSecurityContext(String credentials) {
         try {
             String payload = jwtTokenProvider.getPayload(credentials);
-            UserDetails principal = objectMapper.readValue(payload, LoginMember.class);
+            TypeReference<Map<String, String>> typeReference = new TypeReference<Map<String, String>>() {};
+
+            Map<String, String> principal = objectMapper.readValue(payload, typeReference);
             Authentication authentication = new Authentication(principal);
             return new SecurityContext(authentication);
         } catch (Exception e) {

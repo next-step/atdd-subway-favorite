@@ -9,6 +9,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -30,13 +31,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     private Object extractPrincipal(MethodParameter parameter, Authentication authentication) {
         try {
-            Map<String, String> principal = (Map) authentication.getPrincipal();
+            Map<String, String> principal = (Map<String, String>) authentication.getPrincipal();
 
             Object[] params = Arrays.stream(parameter.getParameterType().getDeclaredFields())
                     .map(it -> toObject(it.getType(), principal.get(it.getName())))
                     .toArray();
 
-            return parameter.getParameterType().getConstructors()[0].newInstance(params);
+            Constructor<?>[] constructors = parameter.getParameterType().getConstructors();
+            return constructors[0].newInstance(params);
         } catch (Exception e) {
             e.printStackTrace();
         }
