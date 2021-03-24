@@ -3,6 +3,7 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.exception.InvalidCredentialException;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.auth.ui.SecurityContextPersistenceInterceptor;
 
@@ -18,28 +19,19 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextP
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
-
+    protected SecurityContext getSecurityContext(HttpServletRequest request) {
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return true;
-        }
-
-        SecurityContext securityContext = extractSecurityContext(credentials);
-        if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext);
-        }
-        return true;
+        return extractSecurityContext(credentials);
     }
 
     private SecurityContext extractSecurityContext(String credentials) {
         try {
+            if (!jwtTokenProvider.validateToken(credentials)) {
+                throw new InvalidCredentialException();
+            }
+
             String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
-            };
+            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>(){};
 
             Map<?, ?> principal = new ObjectMapper().readValue(payload, typeRef);
             return new SecurityContext(new Authentication(principal));

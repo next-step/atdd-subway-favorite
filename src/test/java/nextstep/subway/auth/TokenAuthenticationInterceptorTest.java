@@ -1,7 +1,7 @@
 package nextstep.subway.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.application.CustomUserDetailsService;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.domain.UserDetails;
@@ -10,7 +10,6 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -31,7 +30,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void convert() throws IOException {
         // given
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         TokenAuthenticationInterceptor tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
         MockHttpServletRequest request = createMockRequest();
@@ -46,11 +45,11 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails.Builder().id(1L).email(EMAIL).password(PASSWORD).age(20).build());
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails.Builder().id(1L).email(EMAIL).password(PASSWORD).build());
 
         // when
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
@@ -63,11 +62,11 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails.Builder().id(1L).email(EMAIL).password(PASSWORD).age(20).build());
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails.Builder().id(1L).email(EMAIL).password(PASSWORD).build());
 
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 

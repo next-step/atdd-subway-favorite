@@ -8,8 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.member.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     private static final String DUMMY_TOKEN = "i1am2not3your4token";
@@ -96,9 +94,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         요청_실패함(fakeDeleteResponse);
-    }
-
-    private void 요청_실패함(ExtractableResponse<Response> fakeReadResponse) {
-        assertThat(fakeReadResponse.statusCode()).isEqualTo(500);
     }
 }
