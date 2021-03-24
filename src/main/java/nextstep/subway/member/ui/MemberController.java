@@ -66,10 +66,5 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
-
-    private LoginMember getLoginMember(HttpServletRequest request) {
-        SecurityContext context = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        return (LoginMember) context.getAuthentication().getPrincipal();
-    }
 }
 
