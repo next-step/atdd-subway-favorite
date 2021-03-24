@@ -19,8 +19,7 @@ public class FavoriteSteps {
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body(favoriteRequest)
         .when().post("/favorites")
-        .then().log().all()
-        .statusCode(HttpStatus.CREATED.value()).extract();
+        .then().log().all().extract();
   }
 
   public static ExtractableResponse<Response> 즐겨찾기_목록_조회요청(TokenResponse tokenResponse){
@@ -28,8 +27,7 @@ public class FavoriteSteps {
         .auth().oauth2(tokenResponse.getAccessToken())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when().get("/favorites")
-        .then().log().all()
-        .statusCode(HttpStatus.OK.value()).extract();
+        .then().log().all().extract();
   }
 
   public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse,String url){
@@ -37,8 +35,7 @@ public class FavoriteSteps {
         .auth().oauth2(tokenResponse.getAccessToken())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when().delete(url)
-        .then().log().all()
-        .statusCode(HttpStatus.NO_CONTENT.value()).extract();
+        .then().log().all().extract();
   }
 
   public static void 즐겨찾기에_경로추가됨(ExtractableResponse<Response> response){

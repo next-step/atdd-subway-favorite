@@ -1,5 +1,6 @@
 package nextstep.subway.favorite;
 
+import static nextstep.subway.favorite.FavoriteSteps.로그인되어있지_않음;
 import static nextstep.subway.favorite.FavoriteSteps.즐겨찾기_경로추가_요청;
 import static nextstep.subway.favorite.FavoriteSteps.즐겨찾기_목록_조회됨;
 import static nextstep.subway.favorite.FavoriteSteps.즐겨찾기_목록_조회요청;
@@ -50,7 +51,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     신분당선 = 지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
     지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 광교중앙역, 5);
     회원_생성_요청(EMAIL, PASSWORD, AGE);
-    토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
   }
 
   private Map<String, String> createLineCreateParams() {
@@ -70,9 +70,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   @Nested
   class FeatureFavoriteManage {
 
-    @DisplayName("Scnario : 즐겨찾기 관리 기능 테스트")
+    @DisplayName("Scnario : 로그인 되어 있는 상태에서 즐겨찾기 관리 기능 테스트")
     @Test
-    void addFavorite() {
+    void manageFavorite() {
+      토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
       ExtractableResponse<Response> 즐겨찾기_추가_응답 =  즐겨찾기_경로추가_요청(토큰,광교역.getId(),강남역.getId());
       String url = 즐겨찾기_추가_응답.header("Location");
       즐겨찾기에_경로추가됨(즐겨찾기_추가_응답);
@@ -80,6 +81,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
       즐겨찾기_목록_조회됨(즐겨찾기_목록_조회응답);
       ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰,url);
       즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
+    }
+
+    @DisplayName("Scnario : 로그인되지 않은 상태에서 즐겨찾기 관리 기능 테스트")
+    @Test
+    void manageFavoriteWithUnauthenticated(){
+      ExtractableResponse<Response> 즐겨찾기_추가_응답 =  즐겨찾기_경로추가_요청(토큰,광교역.getId(),강남역.getId());
+      String url = 즐겨찾기_추가_응답.header("Location");
+      로그인되어있지_않음(즐겨찾기_추가_응답);
+      ExtractableResponse<Response> 즐겨찾기_목록_조회응답 =즐겨찾기_목록_조회요청(토큰);
+      로그인되어있지_않음(즐겨찾기_목록_조회응답);
+      ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰,url);
+      로그인되어있지_않음(즐겨찾기_삭제_응답);
     }
   }
 
