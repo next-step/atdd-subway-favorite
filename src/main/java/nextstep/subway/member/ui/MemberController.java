@@ -1,8 +1,8 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -44,25 +44,25 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal LoginMember loginMember
     ) {
-        return ResponseEntity.ok().body(MemberResponse.of(userDetails));
+        return ResponseEntity.ok().body(MemberResponse.of(loginMember));
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
-        @AuthenticationPrincipal UserDetails userDetails,
+        @AuthenticationPrincipal LoginMember loginMember,
         @RequestBody MemberRequest param
     ) {
-        memberService.updateMember(userDetails.getId(), param);
+        memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal LoginMember loginMember
     ) {
-        memberService.deleteMember(userDetails.getId());
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

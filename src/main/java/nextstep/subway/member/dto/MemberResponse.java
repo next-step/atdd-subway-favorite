@@ -1,6 +1,7 @@
 package nextstep.subway.member.dto;
 
 import nextstep.subway.auth.domain.UserDetails;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
@@ -17,12 +18,16 @@ public class MemberResponse {
         this.age = age;
     }
 
-    public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+    private static MemberResponse of(Long id, String email, Integer age) {
+        return new MemberResponse(id, email, age);
     }
 
-    public static MemberResponse of(UserDetails userDetails) {
-        return new MemberResponse(userDetails.getId(), userDetails.getEmail(), userDetails.getAge());
+    public static MemberResponse of(Member member) {
+        return of(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    public static MemberResponse of(LoginMember loginMember) {
+        return of(loginMember.getId(), loginMember.getEmail(), loginMember.getAge());
     }
 
     public Long getId() {

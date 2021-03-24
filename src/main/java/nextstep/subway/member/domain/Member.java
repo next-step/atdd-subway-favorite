@@ -1,12 +1,12 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.common.BaseEntity;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
@@ -48,9 +48,16 @@ public class Member extends BaseEntity {
         this.age = member.age;
     }
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new RuntimeException();
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Member)) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, age);
     }
 }

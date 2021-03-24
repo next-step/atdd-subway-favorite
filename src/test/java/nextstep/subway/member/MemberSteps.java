@@ -55,6 +55,10 @@ public class MemberSteps {
                 .sessionId();
     }
 
+    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
+        return 회원_생성_요청(email, password, age);
+    }
+
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -133,10 +137,27 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청() {
+        return RestAssured.given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(MY_PAGE_URI)
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> 내_회원_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new MemberRequest(email, password, age))
+            .when().put(MY_PAGE_URI)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String email, String password, Integer age) {
+        return RestAssured
+            .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(new MemberRequest(email, password, age))
             .when().put(MY_PAGE_URI)
@@ -153,7 +174,7 @@ public class MemberSteps {
             .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -161,7 +182,14 @@ public class MemberSteps {
             .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_삭제_요청(String sessionId) {
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청() {
+        return RestAssured
+            .given().log().all()
+            .when().delete(MY_PAGE_URI)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(String sessionId) {
         return RestAssured
             .given().log().all()
             .sessionId(sessionId)
@@ -186,5 +214,10 @@ public class MemberSteps {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 인증_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode())
+            .isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

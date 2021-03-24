@@ -9,7 +9,7 @@ public class LoginMember implements UserDetails {
     private String password;
     private Integer age;
 
-    private LoginMember(Long id, String email, String password, Integer age) {
+    public LoginMember(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -21,7 +21,7 @@ public class LoginMember implements UserDetails {
     }
 
     public static LoginMember of(Member member) {
-        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+        return of(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 
     @Override
@@ -29,17 +29,14 @@ public class LoginMember implements UserDetails {
         return this.password.equals(password);
     }
 
-    @Override
     public Long getId() {
         return id;
     }
 
-    @Override
     public String getEmail() {
         return email;
     }
 
-    @Override
     public Integer getAge() {
         return age;
     }
