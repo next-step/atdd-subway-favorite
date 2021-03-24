@@ -33,7 +33,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   StationResponse 강남역;
   StationResponse 광교중앙역;
   LineResponse 신분당선;
-  TokenResponse 토큰;
+  TokenResponse 토큰 = new TokenResponse("UNAUTHORIZED");
 
   public static final String EMAIL = "email@email.com";
   public static final String PASSWORD = "password";
@@ -87,11 +87,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavoriteWithUnauthenticated(){
       ExtractableResponse<Response> 즐겨찾기_추가_응답 =  즐겨찾기_경로추가_요청(토큰,광교역.getId(),강남역.getId());
-      String url = 즐겨찾기_추가_응답.header("Location");
       로그인되어있지_않음(즐겨찾기_추가_응답);
       ExtractableResponse<Response> 즐겨찾기_목록_조회응답 =즐겨찾기_목록_조회요청(토큰);
       로그인되어있지_않음(즐겨찾기_목록_조회응답);
-      ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰,url);
+      ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰,"/favorites/1");
       로그인되어있지_않음(즐겨찾기_삭제_응답);
     }
   }
