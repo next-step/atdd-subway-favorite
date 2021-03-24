@@ -18,17 +18,6 @@ class UserAuthenticate implements TokenAuthenticate {
     @Override
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         UserPrincipal userPrincipal = userLoader.loadUserPrincipal(authenticationToken.getPrincipal());
-//        checkAuthentication(userPrincipal, authenticationToken);
         return new Authentication(userPrincipal);
     }
-
-//    private void checkAuthentication(UserPrincipal userDetails, AuthenticationToken token) {
-//        if (userDetails == null) {
-//            throw new RuntimeException();
-//        }
-//
-//        if (!userDetails.checkCredentials(token.getCredentials())) {
-//            throw new RuntimeException();
-//        }
-//    }
 }
