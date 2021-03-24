@@ -38,4 +38,15 @@ public class FavoriteTest {
     assertThat(favorites.getFavorites().size()).isEqualTo(1);
   }
 
+  @DisplayName("즐겨찾기를 삭제한다")
+  @Test
+  void removeFavorite(){
+    //given
+    Favorite favorite = new Favorite(테스트회원,광교중앙역,강남역);
+    favorites.add(favorite);
+    //when
+    favorites.remove(favorite);
+    //then
+    assertThat(favorites.getFavorites().indexOf(favorite)).isEqualTo(-1);
+  }
 }

@@ -19,4 +19,7 @@ public class Favorites {
   public List<Favorite> getFavorites(){
     return favorites;
   }
+
+  public void remove(Favorite favorite){
+  }
 }
