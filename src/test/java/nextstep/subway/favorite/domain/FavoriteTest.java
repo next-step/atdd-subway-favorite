@@ -2,10 +2,8 @@ package nextstep.subway.favorite.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,7 @@ public class FavoriteTest {
     //when
     favorites.add(favorite);
     //then
-    assertThat(favorites.getFavorite().size()).isEqual(1);
+    assertThat(favorites.getFavorites().size()).isEqualTo(1);
   }
 
 }
