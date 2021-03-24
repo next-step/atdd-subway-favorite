@@ -6,7 +6,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.common.AuthenticationConverter;
 import nextstep.subway.auth.ui.common.AuthenticationInterceptor;
-import nextstep.subway.member.application.UserDetailService;
+import nextstep.subway.auth.application.UserDetailService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;

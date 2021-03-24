@@ -1,4 +1,4 @@
-package nextstep.subway.member.application;
+package nextstep.subway.auth.application;
 
 import nextstep.subway.member.domain.LoginMember;
 

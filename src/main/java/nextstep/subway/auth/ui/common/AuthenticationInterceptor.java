@@ -1,9 +1,9 @@
 package nextstep.subway.auth.ui.common;
 
+import nextstep.subway.auth.application.UserDetailService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.domain.UserDetail;
-import nextstep.subway.member.application.UserDetailService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
