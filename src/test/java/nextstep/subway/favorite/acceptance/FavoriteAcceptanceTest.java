@@ -68,37 +68,36 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
 
         // when
-        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
+        ExtractableResponse<Response> createResponse = RestAssured.given().log().all(true)
                 .auth().oauth2(token.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .body(params)
                 .post("/favorites")
-                .then().log().all()
+                .then().log().all(true)
                 .extract();
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         // when
-        ExtractableResponse<Response> readAllResponse = RestAssured.given().log().all()
+        ExtractableResponse<Response> readAllResponse = RestAssured.given().log().all(true)
                 .auth().oauth2(token.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/favorites")
-                .then().log().all()
+                .then().log().all(true)
                 .extract();
 
         // then
         assertThat(readAllResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         // when
-        ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all()
+        ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all(true)
                 .auth().oauth2(token.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .delete(createResponse.header("Location"))
-                .then().log().all()
+                .then().log().all(true)
                 .extract();
 
         // then
