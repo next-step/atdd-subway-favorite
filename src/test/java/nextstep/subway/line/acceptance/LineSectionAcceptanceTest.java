@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static nextstep.subway.line.acceptance.LineRequestSteps.지하철_노선_생성_요청;
 import static nextstep.subway.line.acceptance.LineSectionRequestSteps.*;
 import static nextstep.subway.line.acceptance.LineSectionVerificationSteps.*;
@@ -54,10 +56,12 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에 등록된 구간 사이에 역을 추가 등록한다.")
     void addBetweenLineSection() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(신분당선.getId(), 양재역.getId(), 양재시민의숲역.getId(), 4);
+        지하철_노선에_구간_등록_요청(신분당선.getId(), 양재역.getId(), 양재시민의숲역.getId(), 4);
+        ExtractableResponse<Response> response = 지하철_노선에_구간_등록_요청(신분당선.getId(), 판교역.getId(), 양재시민의숲역.getId(), 1);
 
         // then
         지하철_노선에_구간_등록_됨(response);
+        지하철_노선에_등록된_구간_이름_확인(response, Arrays.asList(양재역, 판교역, 양재시민의숲역, 청계산입구역));
     }
 
     @Test
