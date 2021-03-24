@@ -2,6 +2,7 @@ package nextstep.subway.favorite.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,5 +49,17 @@ public class FavoriteTest {
     favorites.remove(favorite);
     //then
     assertThat(favorites.getFavorites().indexOf(favorite)).isEqualTo(-1);
+  }
+
+  @DisplayName("즐겨찾기가 등록되어있으면 즐겨찾기를 조회한다")
+  @Test
+  void getFavorite(){
+    //given
+    Favorite favorite = new Favorite(테스트회원,광교중앙역,강남역);
+    favorites.add(favorite);
+    //when
+    List<Favorite> favoriteList = favorites.getFavorites();
+    //then
+    assertThat(favoriteList.size()).isNotEqualTo(0);
   }
 }
