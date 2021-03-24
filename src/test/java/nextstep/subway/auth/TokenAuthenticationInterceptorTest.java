@@ -6,6 +6,8 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.UserDetailsService;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -28,15 +30,15 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
+        userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, new TokenAuthenticationConverter(), jwtTokenProvider);
     }
 
     @Test
@@ -55,7 +57,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when
@@ -66,9 +68,9 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    void preHandle() throws IOException {
+    void preHandle() throws Exception {
         // given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         // when
