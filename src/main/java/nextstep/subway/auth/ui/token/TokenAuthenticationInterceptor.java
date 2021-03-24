@@ -5,20 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.application.CustomUserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.exception.InvalidPasswordException;
-import nextstep.subway.auth.exception.NoUserFoundException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.AbstractAuthenticationInterceptor;
+import nextstep.subway.auth.ui.AuthenticationInterceptor;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -37,7 +34,7 @@ public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterc
     }
 
     @Override
-    protected void setResponse(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    protected void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         TokenResponse tokenResponse = convertAuthToToken(authentication);
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);

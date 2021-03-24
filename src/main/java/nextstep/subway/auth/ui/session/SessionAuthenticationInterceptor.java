@@ -3,12 +3,8 @@ package nextstep.subway.auth.ui.session;
 import nextstep.subway.auth.application.CustomUserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.domain.UserDetails;
-import nextstep.subway.auth.exception.InvalidPasswordException;
-import nextstep.subway.auth.exception.NoUserFoundException;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.AbstractAuthenticationInterceptor;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.subway.auth.ui.AuthenticationInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +14,7 @@ import java.util.Map;
 
 import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -36,7 +32,7 @@ public class SessionAuthenticationInterceptor extends AbstractAuthenticationInte
     }
 
     @Override
-    protected void setResponse(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    protected void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);
