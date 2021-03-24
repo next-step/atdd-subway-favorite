@@ -9,9 +9,6 @@ public class LoginMember implements UserDetails {
     private String password;
     private Integer age;
 
-    public LoginMember() {
-    }
-
     public LoginMember(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
@@ -28,7 +25,6 @@ public class LoginMember implements UserDetails {
         return this.password.equals(password);
     }
 
-    @Override
     public Long getId() {
         return id;
     }
@@ -38,7 +34,6 @@ public class LoginMember implements UserDetails {
         return email;
     }
 
-    @Override
     public Integer getAge() {
         return age;
     }

@@ -1,8 +1,8 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +55,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserDetails loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse memberResponse = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok()
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +63,7 @@ public class MemberController {
     }
 
     @PutMapping(value = "/me", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal UserDetails loginMember,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
                                                              @RequestBody MemberRequest memberRequest) {
         MemberResponse memberResponse = memberService.updateMember(loginMember.getId(), memberRequest);
         return ResponseEntity.ok()
@@ -73,7 +73,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal UserDetails loginMember) {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
