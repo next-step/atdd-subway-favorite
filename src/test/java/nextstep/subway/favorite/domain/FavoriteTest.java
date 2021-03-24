@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.favorite.exception.SameStationsException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
