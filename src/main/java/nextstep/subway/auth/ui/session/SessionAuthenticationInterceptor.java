@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
+import nextstep.subway.member.application.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_S
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor implements HandlerInterceptor {
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService) {
         super(new SessionAuthenticationConverter(), userDetailsService);
     }
 
