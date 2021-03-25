@@ -90,6 +90,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
+
+        // when
+        ExtractableResponse<Response> invalidCreateResponse = RestAssured.given().log().all(true)
+                .auth().oauth2(invalidToken.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .body(params)
+                .post("/favorites")
+                .then().log().all(true)
+                .extract();
+
+        // then
+        assertThat(invalidCreateResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+
         // when
         ExtractableResponse<Response> readAllResponse = RestAssured.given().log().all(true)
                 .auth().oauth2(token.getAccessToken())
@@ -102,6 +117,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(readAllResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
+        // when
+        ExtractableResponse<Response> invalidReadAllResponse = RestAssured.given().log().all(true)
+                .auth().oauth2(invalidToken.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/favorites")
+                .then().log().all(true)
+                .extract();
+
+        // then
+        assertThat(invalidReadAllResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 
         // when
         ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all(true)
@@ -113,5 +139,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        // when
+        ExtractableResponse<Response> invalidDeleteResponse = RestAssured.given().log().all(true)
+                .auth().oauth2(invalidToken.getAccessToken())
+                .when()
+                .delete(createResponse.header("Location"))
+                .then().log().all(true)
+                .extract();
+
+        // then
+        assertThat(invalidDeleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
