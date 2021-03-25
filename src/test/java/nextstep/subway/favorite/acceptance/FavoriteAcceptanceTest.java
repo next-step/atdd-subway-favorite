@@ -41,6 +41,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static int AGE = 10;
 
     private TokenResponse token;
+    private TokenResponse invalidToken;
 
 
     @BeforeEach
@@ -64,6 +65,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         token = MemberSteps.로그인_되어_있음(EMAIL, PASSWORD);
+        invalidToken = new TokenResponse("i1am2not3valid4token");
     }
 
     @DisplayName("Scenario : 즐겨찾기를 관리한다.")
@@ -100,7 +102,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(readAllResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        /*
+
         // when
         ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all(true)
                 .auth().oauth2(token.getAccessToken())
@@ -110,6 +112,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        assertThat(readAllResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());*/
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
