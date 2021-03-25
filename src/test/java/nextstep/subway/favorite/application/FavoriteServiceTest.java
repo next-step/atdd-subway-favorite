@@ -1,12 +1,12 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.auth.dto.UserPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.LoginMemberPrincipal;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class FavoriteServiceTest {
 
     private final Long USER_ID = 1L;
     private final String EMAIL = "email@email.com";
-    private final int AGE = 20;
+    private final String PASSWORD = "password";
 
     private Station 교대역;
     private Station 강남역;
@@ -39,14 +38,14 @@ public class FavoriteServiceTest {
     private FavoriteRepository favoriteRepository;
 
     private FavoriteService favoriteService;
-    private UserPrincipal principal;
+    private LoginMemberPrincipal loginMember;
 
     @BeforeEach
     public void setUp(){
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
 
-        this.principal = new UserPrincipal(USER_ID, EMAIL, AGE);
+        this.loginMember = new LoginMemberPrincipal(USER_ID, EMAIL);
         this.favoriteService = new FavoriteService(stationService, favoriteRepository);
     }
 
@@ -54,10 +53,10 @@ public class FavoriteServiceTest {
     @Test
     void getNoFavorites() {
         // given
-        when(favoriteRepository.findByUserId(anyLong())).thenReturn(Arrays.asList());
+        when(favoriteRepository.findByMemberId(anyLong())).thenReturn(Arrays.asList());
 
         // when
-        final List< FavoriteResponse > favoriteResponses = favoriteService.getFavorites(principal);
+        final List< FavoriteResponse > favoriteResponses = favoriteService.getFavorites(loginMember);
 
         // then
         assertThat(favoriteResponses).isNotNull();
@@ -68,12 +67,12 @@ public class FavoriteServiceTest {
     @Test
     void getFavorites() {
         // given
-        when(favoriteRepository.findByUserId(anyLong())).thenReturn(Arrays.asList(new Favorite(1L, 1L, 2L)));
+        when(favoriteRepository.findByMemberId(anyLong())).thenReturn(Arrays.asList(new Favorite(1L, 1L, 2L)));
         when(stationService.findStationById(1L)).thenReturn(교대역);
         when(stationService.findStationById(2L)).thenReturn(강남역);
 
         // when
-        final List< FavoriteResponse > favoriteResponses = favoriteService.getFavorites(principal);
+        final List< FavoriteResponse > favoriteResponses = favoriteService.getFavorites(loginMember);
 
         // then
         assertThat(favoriteResponses.size()).isEqualTo(1);

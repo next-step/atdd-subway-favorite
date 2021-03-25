@@ -3,14 +3,14 @@ package nextstep.subway.favorite.domain;
 import javax.crypto.spec.PSource;
 import javax.persistence.*;
 
-@Table(uniqueConstraints = @UniqueConstraint(columnNames={"userId", "sourceId", "targetId"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"memberId", "sourceId", "targetId"}))
 @Entity
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    private Long memberId;
 
     private Long sourceId;
 
@@ -18,18 +18,18 @@ public class Favorite {
 
     public Favorite() {}
 
-    public Favorite(final Long userId, final Long sourceId, final Long targetId){
-        this.userId = userId;
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Favorite(final Long memberId, final Long sourceId, final Long targetId){
+        this.memberId = memberId;
         this.sourceId = sourceId;
         this.targetId = targetId;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getUserId() {
-        return userId;
     }
 
     public Long getSourceId() {

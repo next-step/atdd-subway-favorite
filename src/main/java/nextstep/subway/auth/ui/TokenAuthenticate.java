@@ -4,6 +4,5 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 
 public interface TokenAuthenticate {
-    public Authentication authenticate(AuthenticationToken authenticationToken);
-
+    Authentication authenticate(AuthenticationToken authenticationToken);
 }

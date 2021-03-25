@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.LoginMemberPrincipal;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.dto.UserPrincipal;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AuthenticationAfterCompletion;
 import nextstep.subway.auth.ui.AuthenticationConverter;
@@ -50,7 +51,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationAfterCompletio
     }
 
     private String generateJWToken(Authentication authentication) throws JsonProcessingException {
-        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-        return jwtTokenProvider.createToken(new ObjectMapper().writeValueAsString(userDetails));
+        LoginMemberPrincipal loginMemberPrincipal = (LoginMemberPrincipal) authentication.getPrincipal();
+        return jwtTokenProvider.createToken(new ObjectMapper().writeValueAsString(loginMemberPrincipal));
     }
 }

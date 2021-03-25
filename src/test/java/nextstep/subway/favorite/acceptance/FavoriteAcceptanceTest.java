@@ -13,14 +13,7 @@ import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberSteps.회원_생성_요청;
 import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
 
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_생성됨;
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_조회됨;
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제됨;
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.권한없이_즐겨찾기_조회_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteSteps.즐겨찾기_권한없음;
+import static nextstep.subway.favorite.acceptance.FavoriteSteps.*;
 
 @DisplayName("경로 즐겨 찾기 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {

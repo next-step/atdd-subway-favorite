@@ -2,7 +2,8 @@ package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.dto.UserPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.LoginMemberPrincipal;
 import nextstep.subway.auth.infrastructure.*;
 import nextstep.subway.auth.ui.SecurityContextInterceptor;
 
@@ -37,8 +38,8 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
     private SecurityContext extractSecurityContext(String credentials) {
         try {
             String payload = jwtTokenProvider.getPayload(credentials);
-            UserPrincipal principal = new ObjectMapper().readValue(payload, UserPrincipal.class);
-            return new SecurityContext(new Authentication(principal));
+            LoginMemberPrincipal loginMember = new ObjectMapper().readValue(payload, LoginMemberPrincipal.class);
+            return new SecurityContext(new Authentication(loginMember));
         } catch (Exception e) {
             return null;
         }
