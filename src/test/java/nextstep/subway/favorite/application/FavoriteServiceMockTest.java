@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,7 +58,9 @@ class FavoriteServiceMockTest {
         로그인 = new LoginMember(1L, EMAIL, PASSWORD, AGE);
         즐겨찾기_신청 = new FavoriteRequest(강남역.getId(), 역삼역.getId());
         즐겨찾기_1 = new Favorite(로그인.getId(), 강남역, 역삼역);
+        ReflectionTestUtils.setField(즐겨찾기_1, "id", 1L);
         즐겨찾기_2 = new Favorite(로그인.getId(), 역삼역, 서초역);
+        ReflectionTestUtils.setField(즐겨찾기_2, "id", 2L);
     }
 
     @Test
@@ -84,6 +89,15 @@ class FavoriteServiceMockTest {
         // then
         assertThat(즐겨찾기들).hasSize(2);
         assertThat(즐겨찾기들.get(0).getId()).isEqualTo(즐겨찾기_1.getId());
+    }
+
+    @Test
+    void deleteFavorites() {
+        // when / then
+        assertThatCode(() ->
+            favoriteService.deleteFavoritesById(즐겨찾기_1.getId())
+        ).doesNotThrowAnyException();
+        verify(favoriteRepository).deleteById(anyLong());
     }
 
     private Station initStation(Station station, String stationName, Long id) {
