@@ -12,6 +12,17 @@ import java.util.Map;
 
 public class LineSteps {
 
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("color", color);
+        params.put("upStationId", upStation.getId() + "");
+        params.put("downStationId", downStation.getId() + "");
+        params.put("distance", distance + "");
+
+        return 지하철_노선_생성_요청(params);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(Map<String, String> params) {
         return 지하철_노선_생성_요청(params);
     }

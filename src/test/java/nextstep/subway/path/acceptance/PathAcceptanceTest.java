@@ -25,10 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 검색")
 public class PathAcceptanceTest extends AcceptanceTest {
+
     private StationResponse 교대역;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 남부터미널역;
+
     private LineResponse 이호선;
     private LineResponse 신분당선;
     private LineResponse 삼호선;
@@ -66,6 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", upStation.getId() + "");
         params.put("downStationId", downStation.getId() + "");
         params.put("distance", distance + "");
+
         return 지하철_노선_생성_요청(params).as(LineResponse.class);
     }
 
