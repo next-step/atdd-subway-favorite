@@ -23,7 +23,6 @@ public class Favorite {
 
     public Favorite(Station source, Station target) {
         checkStationsNotSame(source, target);
-
         this.source = source;
         this.target = target;
     }
@@ -33,6 +32,8 @@ public class Favorite {
             throw new SameStationsException();
         }
     }
+
+    public Long getId() { return id; }
 
     public Station getSource() {
         return source;
