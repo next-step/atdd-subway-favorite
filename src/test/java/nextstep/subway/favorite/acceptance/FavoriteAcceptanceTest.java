@@ -108,9 +108,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(대충만든_토큰);
 
+        // then
         권한없음(response);
     }
-
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> param, TokenResponse loginResponse) {
         String uri = "/favorites";
