@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineSteps;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberSteps;
@@ -15,8 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선에_지하철역_등록_요청;
@@ -82,7 +87,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-/*
+
         // when
         ExtractableResponse<Response> readAllResponse = RestAssured.given().log().all(true)
                 .auth().oauth2(token.getAccessToken())
@@ -95,6 +100,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(readAllResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
+        /*
         // when
         ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all(true)
                 .auth().oauth2(token.getAccessToken())

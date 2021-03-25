@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class FavoriteController {
@@ -20,9 +21,10 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @GetMapping("/favorites")
-    public ResponseEntity getFavorites() {
-        return ResponseEntity.ok().build();
+    @GetMapping(value = "/favorites", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<FavoriteResponse>> getFavorites() {
+        List<FavoriteResponse> favoriteResponses = favoriteService.getFavorites();
+        return ResponseEntity.ok().body(favoriteResponses);
     }
 
     @PostMapping(value = "/favorites", consumes = MediaType.APPLICATION_JSON_VALUE)

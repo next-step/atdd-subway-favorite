@@ -21,4 +21,12 @@ public class FavoriteResponse {
     public Long getId() {
         return id;
     }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
 }
