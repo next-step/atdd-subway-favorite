@@ -69,6 +69,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(response);
     }
 
+    @DisplayName("즐겨찾기 조회")
+    @Test
+    void searchFavorites() {
+        // given
+        즐겨찾기_생성_요청(param, loginResponse);
+        즐겨찾기_생성_요청(param2, loginResponse);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(loginResponse);
+
+        // then
+        즐겨찾기_조회됨(response);
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> param, TokenResponse loginResponse) {
         String uri = "/favorites";
         return RestAssured.given().log().all()
@@ -81,7 +95,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                           .extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_조회_요청(TokenResponse loginResponse) {
+        String uri = "/favorites";
+        return RestAssured.given().log().all()
+                          .auth().oauth2(loginResponse.getAccessToken())
+                          .when()
+                          .get(uri)
+                          .then().log().all()
+                          .extract();
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".")).isNotEmpty();
     }
 }
