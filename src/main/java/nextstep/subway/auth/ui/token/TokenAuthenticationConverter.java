@@ -3,7 +3,7 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.ui.AuthenticationConverter;
+import nextstep.subway.auth.ui.base.AuthenticationConverter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

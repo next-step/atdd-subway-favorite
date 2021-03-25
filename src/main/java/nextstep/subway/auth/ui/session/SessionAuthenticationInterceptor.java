@@ -3,8 +3,8 @@ package nextstep.subway.auth.ui.session;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.UserDetailsService;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.AuthenticationConverter;
-import nextstep.subway.auth.ui.AuthenticationInterceptor;
+import nextstep.subway.auth.ui.base.AuthenticationConverter;
+import nextstep.subway.auth.ui.base.AuthenticationInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

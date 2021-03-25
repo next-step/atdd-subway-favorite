@@ -1,7 +1,7 @@
 package nextstep.subway.auth.ui.session;
 
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.ui.AuthenticationConverter;
+import nextstep.subway.auth.ui.base.AuthenticationConverter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
