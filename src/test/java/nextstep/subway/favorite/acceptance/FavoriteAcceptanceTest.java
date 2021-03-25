@@ -83,6 +83,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회됨(response);
     }
 
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> 생성된_즐겨찾기 = 즐겨찾기_생성_요청(param, loginResponse);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(생성된_즐겨찾기, loginResponse);
+
+        // then
+        즐겨찾기_삭제됨(response);
+        ExtractableResponse<Response> afterResponse = 즐겨찾기_조회_요청(loginResponse);
+        즐겨찾기_조회_내용_없음(afterResponse);
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> param, TokenResponse loginResponse) {
         String uri = "/favorites";
         return RestAssured.given().log().all()
@@ -105,6 +120,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                           .extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
+        String uri = response.header("Location");
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when()
+                .delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -112,5 +137,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList(".")).isNotEmpty();
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_조회_내용_없음(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getList(".")).hasSize(0);
     }
 }
