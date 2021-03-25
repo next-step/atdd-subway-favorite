@@ -1,6 +1,9 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +44,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse memberResponse = memberService.findMember(loginMember.getId());
+        return ResponseEntity.ok(memberResponse);
     }
 
     @PutMapping("/members/me")
