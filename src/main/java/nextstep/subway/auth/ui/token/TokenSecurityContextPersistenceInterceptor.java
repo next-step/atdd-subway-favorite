@@ -1,68 +1,46 @@
 package nextstep.subway.auth.ui.token;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.exception.NotValidPassword;
-import nextstep.subway.auth.infrastructure.*;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
-
-import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+import javax.servlet.http.HttpServletRequest;
 
-    private final CustomUserDetailsService userDetailsService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    public TokenSecurityContextPersistenceInterceptor(
-        CustomUserDetailsService userDetailsService,
-        JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        this.userDetailsService = userDetailsService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
-    }
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import nextstep.subway.auth.infrastructure.AuthorizationType;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
+import nextstep.subway.auth.ui.SecurityContextInterceptor;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
 
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return true;
-        }
+	private final JwtTokenProvider jwtTokenProvider;
+	private final ObjectMapper objectMapper;
 
-        SecurityContext securityContext = extractSecurityContext(credentials);
-        if (securityContext != null) {
-            final LoginMember loginMember =
-                objectMapper.convertValue(securityContext.getAuthentication().getPrincipal(), LoginMember.class);
+	public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider,
+		ObjectMapper objectMapper) {
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.objectMapper = objectMapper;
+	}
 
-            if (!userDetailsService.loadUserByUsername(loginMember.getEmail())
-                .checkPassword(loginMember.getPassword())) {
-                throw new NotValidPassword();
-            }
-            SecurityContextHolder.setContext(securityContext);
-        }
-        return true;
-    }
+	@Override
+	protected SecurityContext extractSecurityContext(HttpServletRequest request) {
+		String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+		if (!jwtTokenProvider.validateToken(credentials)) {
+			return null;
+		}
 
-    private SecurityContext extractSecurityContext(String credentials) {
-        try {
-            String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
-            };
+		try {
+			String payload = jwtTokenProvider.getPayload(credentials);
+			TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+			};
 
-            Map principal = objectMapper.readValue(payload, typeRef);
-            return new SecurityContext(new Authentication(principal));
-        } catch (Exception e) {
-            return null;
-        }
-    }
+			Map principal = objectMapper.readValue(payload, typeRef);
+			return new SecurityContext(new Authentication(principal));
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }
