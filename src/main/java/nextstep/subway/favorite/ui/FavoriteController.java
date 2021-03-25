@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.ui;
 
+import nextstep.subway.favorite.application.FavoriteService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,10 @@ import java.net.URI;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
+
+    public FavoriteController(FavoriteService favoriteService) {
+        this.favoriteService = favoriteService;
+    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<URI> createFavorite(@RequestBody FavoriteRequest favoriteRequest) {
