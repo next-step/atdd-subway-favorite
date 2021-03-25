@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -10,11 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.subway.member.MemberSteps.*;
 import static nextstep.subway.station.StationSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,38 +109,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         권한없음(response);
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> param, TokenResponse loginResponse) {
-        String uri = "/favorites";
-        return RestAssured.given().log().all()
-                          .auth().oauth2(loginResponse.getAccessToken())
-                          .contentType(MediaType.APPLICATION_JSON_VALUE)
-                          .body(param)
-                          .when()
-                          .post(uri)
-                          .then().log().all()
-                          .extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_조회_요청(TokenResponse loginResponse) {
-        String uri = "/favorites";
-        return RestAssured.given().log().all()
-                          .auth().oauth2(loginResponse.getAccessToken())
-                          .when()
-                          .get(uri)
-                          .then().log().all()
-                          .extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
-        String uri = response.header("Location");
-        return RestAssured.given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when()
-                .delete(uri)
-                .then().log().all()
-                .extract();
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
