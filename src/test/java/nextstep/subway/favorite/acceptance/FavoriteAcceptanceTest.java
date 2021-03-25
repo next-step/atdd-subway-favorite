@@ -98,6 +98,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회_내용_없음(afterResponse);
     }
 
+    @DisplayName("권한 없는 경우 테스트")
+    @Test
+    void testNoAuthentication() {
+        // given
+        즐겨찾기_생성_요청(param, loginResponse);
+        TokenResponse 대충만든_토큰 = new TokenResponse("123");
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(대충만든_토큰);
+
+        권한없음(response);
+    }
+
+
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> param, TokenResponse loginResponse) {
         String uri = "/favorites";
         return RestAssured.given().log().all()
@@ -145,5 +159,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_조회_내용_없음(ExtractableResponse<Response> response) {
         assertThat(response.jsonPath().getList(".")).hasSize(0);
+    }
+
+    private void 권한없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
