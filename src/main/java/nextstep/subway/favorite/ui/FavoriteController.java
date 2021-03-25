@@ -1,10 +1,12 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.exception.NoAuthenticationException;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.LoginMember;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,5 +38,10 @@ public class FavoriteController {
     public ResponseEntity deleteFavorite(@PathVariable Long id) {
         favoriteService.deleteFavoritesById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(NoAuthenticationException.class)
+    public ResponseEntity handleNoAuthenticationException(NoAuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
