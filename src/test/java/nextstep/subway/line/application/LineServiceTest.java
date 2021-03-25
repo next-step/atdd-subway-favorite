@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,17 +24,79 @@ public class LineServiceTest {
     @Autowired
     private LineService lineService;
 
+    private Station 강남역;
+    private Station 교대역;
+    private Station 삼성역;
+    private Line line;
+
+    @BeforeEach
+    void setUp() {
+        강남역 = stationRepository.save(new Station("강남역"));
+        교대역 = stationRepository.save(new Station("교대역"));
+        삼성역 = stationRepository.save(new Station("삼성역"));
+        line = lineRepository.save(new Line("이호선", "green", 강남역, 교대역, 10));
+    }
+
     @Test
     void addSection() {
-        Station 강남역 = stationRepository.save(new Station("강남역"));
-        Station 역삼역 = stationRepository.save(new Station("역삼역"));
-        Station 삼성역 = stationRepository.save(new Station("삼성역"));
-        Line 이호선 = lineRepository.save(new Line("2호선", "green", 강남역, 역삼역, 10));
+        // when
+        // lineService.addSection 호출
+        lineService.addSection(line, 교대역.getId(), 삼성역.getId(), 20);
+        // then
+        // line.getSections 메서드를 통해 검증
+        assertThat(line.getSections().getSections()).hasSize(2);
+    }
 
-        lineService.addSection(이호선.getId(), new SectionRequest(역삼역.getId(), 삼성역.getId(), 10));
+    @Test
+    void addSectionBetweenStations() {
+        // when
+        // lineService.addSection 호출
+        lineService.addSection(line, 삼성역.getId(), 교대역.getId(), 5);
+        // then
+        // line.getSections 메서드를 통해 검증
+        assertThat(line.getSections().getSections()).hasSize(2);
+    }
 
-        Line line = lineService.findLineById(이호선.getId());
+    @Test
+    void removeFirstSection() {
+        // given
+        // stationRepository와 lineRepository를 활용하여 초기값 셋팅
+        lineService.addSection(line, 교대역.getId(), 삼성역.getId(), 10);
 
-        assertThat(line.getSections().size()).isEqualTo(2);
+        // when
+        lineService.removeSection(line.getId(), 강남역.getId());
+
+        // then
+        // line.getSections 메서드를 통해 검증
+        assertThat(line.getSections().getSections()).hasSize(1);
+    }
+
+    @Test
+    void removeLastSection() {
+        // given
+        lineService.addSection(line, 교대역.getId(), 삼성역.getId(), 20);
+
+        // when
+        lineService.removeSection(line.getId(), 삼성역.getId());
+
+        // then
+        // line.getSections 메서드를 통해 검증
+        assertThat(line.getSections().getSections()).hasSize(1);
+    }
+
+    @Test
+    void removeMiddleSection() {
+        // given
+        // stationRepository와 lineRepository를 활용하여 초기값 셋팅
+        int distance = 20;
+        lineService.addSection(line, 교대역.getId(), 삼성역.getId(), distance);
+
+        // when
+        lineService.removeSection(line.getId(), 교대역.getId());
+
+        // then
+        // line.getSections 메서드를 통해 검증
+        assertThat(line.getSections().getSections()).hasSize(1);
+        assertThat(line.getSections().getDistances().get(0)).isEqualTo(distance + 10);
     }
 }
