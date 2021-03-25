@@ -28,6 +28,7 @@ public class MemberSteps {
         params.put("email", email);
         params.put("password", password);
 
+
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)

@@ -25,9 +25,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 class TokenAuthenticationInterceptorTest {
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     @Test
     void preHandle() throws IOException {
@@ -35,24 +32,16 @@ class TokenAuthenticationInterceptorTest {
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService,new TokenAuthenticationConverter(new ObjectMapper()),jwtTokenProvider,new ObjectMapper());
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
-        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+        when(userDetailsService.loadUserByUsername(AuthHelper.EMAIL)).thenReturn(new LoginMember(1L, AuthHelper.EMAIL, AuthHelper.PASSWORD, 20));
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(AuthHelper.JWT_TOKEN);
 
-        MockHttpServletRequest request = createMockRequest();
+        MockHttpServletRequest request = AuthHelper.createTokenMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         interceptor.preHandle(request, response, new Object());
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(AuthHelper.JWT_TOKEN)));
 
     }
-
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
-
 }
