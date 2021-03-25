@@ -1,6 +1,7 @@
 package nextstep.subway.auth.domain;
 
 public class Authentication {
+
     private Object principal;
 
     public Authentication() {

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,7 +49,7 @@ public class Member extends BaseEntity {
         this.age = member.age;
     }
 
-    public void checkPassword(String password) {
+    public void validatePassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
             throw new RuntimeException();
         }
