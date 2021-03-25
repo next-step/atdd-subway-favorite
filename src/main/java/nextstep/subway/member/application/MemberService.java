@@ -1,10 +1,10 @@
 package nextstep.subway.member.application;
+import nextstep.subway.member.exception.NotFoundUserException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -20,8 +20,13 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id).orElseThrow(()->new NotFoundUserException("회원정보를 찾을 수 없습니다."));
         return MemberResponse.of(member);
+    }
+
+    public Member findMemberDomain(Long id){
+        return memberRepository.findById(id)
+            .orElseThrow(()->new NotFoundUserException("회원정보를 찾을 수 없습니다."));
     }
 
     public void updateMember(Long id, MemberRequest param) {
