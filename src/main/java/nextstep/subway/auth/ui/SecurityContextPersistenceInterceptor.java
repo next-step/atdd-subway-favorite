@@ -7,8 +7,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
-
 public abstract class SecurityContextPersistenceInterceptor implements HandlerInterceptor {
 
     @Override

@@ -40,10 +40,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static int AGE = 10;
 
-    private TokenResponse token;
-    private TokenResponse invalidToken;
-
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -64,8 +60,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 광교역, 6);
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        token = MemberSteps.로그인_되어_있음(EMAIL, PASSWORD);
-        invalidToken = new TokenResponse("i1am2not3valid4token");
+
     }
 
     @DisplayName("Scenario : 즐겨찾기를 관리한다.")
@@ -76,6 +71,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("sourceId", 강남역.getId()+"");
         params.put("targetId", 양재역.getId()+"");
+        TokenResponse token = MemberSteps.로그인_되어_있음(EMAIL, PASSWORD);
+        TokenResponse invalidToken = new TokenResponse("i1am2not3valid4token");
 
         // when
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all(true)
@@ -89,7 +86,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
 
         // when
         ExtractableResponse<Response> invalidCreateResponse = RestAssured.given().log().all(true)
