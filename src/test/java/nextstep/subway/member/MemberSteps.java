@@ -122,4 +122,12 @@ public class MemberSteps {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 내_회원_정보_조회_응답됨(ExtractableResponse<Response> response, String email){
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+
+    }
 }
