@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.exception.UnauthorizedException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -47,7 +48,7 @@ public class FavoriteService {
 
         Favorite favorite = favoriteOptional.get();
         if (!favorite.isOwner(memberId)) {
-            throw new RuntimeException();
+            throw new UnauthorizedException();
         }
 
         favoriteRepository.deleteById(favoriteId);
