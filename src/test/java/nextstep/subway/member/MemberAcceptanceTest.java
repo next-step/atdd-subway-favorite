@@ -1,6 +1,5 @@
 package nextstep.subway.member;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;

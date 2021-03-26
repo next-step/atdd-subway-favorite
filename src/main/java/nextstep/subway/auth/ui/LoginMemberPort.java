@@ -1,7 +1,10 @@
 package nextstep.subway.auth.ui;
 
-import nextstep.subway.auth.domain.LoginMember;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import nextstep.subway.auth.domain.UserDetails;
 
 public interface LoginMemberPort {
-    LoginMember getLoginMember(String principal);
+    UserDetails getLoginMember(String principal);
+
+    UserDetails getUserDetailFromPayload(String payload) throws JsonProcessingException;
 }

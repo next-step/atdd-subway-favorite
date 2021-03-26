@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.dto.LoginMemberPrincipal;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -26,21 +25,21 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public Favorite saveFavorite(final LoginMemberPrincipal loginMember, final FavoriteRequest request){
+    public Favorite saveFavorite(final UserDetails loginMember, final FavoriteRequest request){
         final Station source = stationService.findStationById(Long.parseLong(request.getSource()));
         final Station target = stationService.findStationById(Long.parseLong(request.getTarget()));
         return favoriteRepository.save(new Favorite(loginMember.getId(), source.getId(), target.getId()));
     }
 
 
-    public List<FavoriteResponse> getFavorites(final LoginMemberPrincipal loginMember) {
+    public List<FavoriteResponse> getFavorites(final UserDetails loginMember) {
         return favoriteRepository.findByMemberId(loginMember.getId())
                 .stream()
                 .map(favorite -> convertFavorite(favorite))
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(final LoginMemberPrincipal loginMember, Long id) {
+    public void deleteFavorite(final UserDetails loginMember, Long id) {
         final Favorite favorite = favoriteRepository.findByIdAndMemberId(id, loginMember.getId()).orElseThrow(RuntimeException::new);;
         favoriteRepository.deleteById(favorite.getId());
     }

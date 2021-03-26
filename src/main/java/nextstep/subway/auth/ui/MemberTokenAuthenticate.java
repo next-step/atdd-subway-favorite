@@ -2,8 +2,7 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.dto.LoginMemberPrincipal;
+import nextstep.subway.auth.domain.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,17 +17,17 @@ class MemberTokenAuthenticate implements TokenAuthenticate {
 
     @Override
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = memberLoader.getLoginMember(authenticationToken.getPrincipal());
-        checkAuthentication(loginMember, authenticationToken);
-        return new Authentication(LoginMemberPrincipal.of(loginMember));
+        UserDetails userDetails = memberLoader.getLoginMember(authenticationToken.getPrincipal());
+        checkAuthentication(userDetails, authenticationToken);
+        return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember loginMember, AuthenticationToken token) {
-        if (loginMember == null) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
+        if (userDetails == null) {
             throw new RuntimeException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!userDetails.checkPassword(token.getCredentials())) {
             throw new RuntimeException();
         }
     }

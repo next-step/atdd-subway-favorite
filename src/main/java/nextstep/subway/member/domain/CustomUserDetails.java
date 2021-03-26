@@ -1,15 +1,17 @@
-package nextstep.subway.auth.domain;
+package nextstep.subway.member.domain;
 
-public class LoginMember {
+import nextstep.subway.auth.domain.UserDetails;
+
+public class CustomUserDetails implements UserDetails {
     private Long id;
     private String email;
     private String password;
 
-    public LoginMember(){
+    public CustomUserDetails(){
 
     }
 
-    public LoginMember(Long id, String email, String password) {
+    public CustomUserDetails(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -21,6 +23,10 @@ public class LoginMember {
 
     public Long getId() {
         return id;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public boolean checkPassword(String password) {
