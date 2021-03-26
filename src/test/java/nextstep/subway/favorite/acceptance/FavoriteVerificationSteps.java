@@ -50,7 +50,7 @@ public class FavoriteVerificationSteps {
     }
 
     public static Long 지하철_즐겨찾기_생성된_ID(ExtractableResponse<Response> response) {
-        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
-        return favoriteResponse.getId();
+        String location = response.header("Location");
+        return Long.valueOf(location.split("/")[2]);
     }
 }

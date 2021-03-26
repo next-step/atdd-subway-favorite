@@ -103,7 +103,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> addFavoriteResponse = 지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
 
         // when
-
         ExtractableResponse<Response> response = 지하철_즐겨찾기_제거_요청(로그인_멤버_토큰, 지하철_즐겨찾기_생성된_ID(addFavoriteResponse));
 
         // then

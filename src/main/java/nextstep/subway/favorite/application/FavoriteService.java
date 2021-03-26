@@ -43,6 +43,10 @@ public class FavoriteService {
         }
     }
 
+    public void removeFavorite(Long favoriteId) {
+        favoriteRepository.deleteById(favoriteId);
+    }
+
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavoriteResponsesByMemberId(Long memberId) {
         return findAllFavoritesByMemberId(memberId)
