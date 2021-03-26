@@ -2,18 +2,22 @@ package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.dto.UserPrincipal;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.auth.ui.LoginMemberPort;
 import nextstep.subway.auth.ui.SecurityContextInterceptor;
+import nextstep.subway.member.domain.CustomUserDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
     private JwtTokenProvider jwtTokenProvider;
+    private LoginMemberPort loginMemberPort;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, LoginMemberPort loginMemberPort) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.loginMemberPort = loginMemberPort;
     }
 
     @Override
@@ -37,8 +41,8 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
     private SecurityContext extractSecurityContext(String credentials) {
         try {
             String payload = jwtTokenProvider.getPayload(credentials);
-            UserPrincipal principal = new ObjectMapper().readValue(payload, UserPrincipal.class);
-            return new SecurityContext(new Authentication(principal));
+            UserDetails userDetails = loginMemberPort.getUserDetailFromPayload(payload);
+            return new SecurityContext(new Authentication(userDetails));
         } catch (Exception e) {
             return null;
         }

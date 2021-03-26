@@ -1,6 +1,5 @@
 package nextstep.subway.member;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -39,7 +38,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
-
     }
 
     @DisplayName("회원 정보를 수정한다.")

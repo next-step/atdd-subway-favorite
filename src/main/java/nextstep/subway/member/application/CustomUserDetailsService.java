@@ -1,13 +1,17 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.auth.dto.UserPrincipal;
-import nextstep.subway.auth.ui.UserLoader;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.domain.UserDetails;
+import nextstep.subway.auth.ui.LoginMemberPort;
+import nextstep.subway.member.domain.CustomUserDetails;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService implements UserLoader {
+public class CustomUserDetailsService implements LoginMemberPort {
     private MemberRepository memberRepository;
 
     public CustomUserDetailsService(MemberRepository memberRepository) {
@@ -15,8 +19,17 @@ public class CustomUserDetailsService implements UserLoader {
     }
 
     @Override
-    public UserPrincipal loadUserPrincipal(String principal) {
+    public UserDetails getLoginMember(String principal) {
         Member member = memberRepository.findByEmail(principal).orElseThrow(RuntimeException::new);
-        return new UserPrincipal(member.getId(), member.getEmail(),member.getAge());
+        return new CustomUserDetails(member.getId(), member.getEmail(), member.getPassword());
+    }
+
+    @Override
+    public UserDetails getUserDetailFromPayload(String payload) {
+        try {
+            return new ObjectMapper().readValue(payload, CustomUserDetails.class);
+        }catch (JsonProcessingException e){
+            return null;
+        }
     }
 }

@@ -3,13 +3,14 @@ package nextstep.subway.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.domain.UserDetails;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.UserPrincipal;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.UserAuthenticate;
+import nextstep.subway.auth.ui.LoginMemberPort;
+import nextstep.subway.auth.ui.MemberTokenAuthenticate;
 import nextstep.subway.auth.ui.TokenAuthenticate;
-import nextstep.subway.auth.ui.UserLoader;
 import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
+import nextstep.subway.member.domain.CustomUserDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.when;
 class TokenAuthenticationInterceptorTest {
 
     @Mock
-    private UserLoader userLoader;
+    private LoginMemberPort loginMemberPort;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -40,8 +41,7 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp(){
-        when(userLoader.loadUserPrincipal(anyString())).thenReturn(new UserPrincipal(1L, EMAIL, 20));
-        this.tokenAuthenticate = new UserAuthenticate(userLoader);
+        this.tokenAuthenticate = new MemberTokenAuthenticate(loginMemberPort);
     }
 
     @Test
@@ -61,6 +61,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
+        when(loginMemberPort.getLoginMember(anyString())).thenReturn(new CustomUserDetails(1L, EMAIL, PASSWORD));
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when
@@ -75,6 +76,7 @@ class TokenAuthenticationInterceptorTest {
         // given
         MockHttpServletRequest request = createMockRequest();
         TokenAuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
+        when(loginMemberPort.getLoginMember(anyString())).thenReturn(new CustomUserDetails(1L, EMAIL, PASSWORD));
 
         // when
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
@@ -91,10 +93,11 @@ class TokenAuthenticationInterceptorTest {
         TokenAuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+        when(loginMemberPort.getLoginMember(anyString())).thenReturn(new CustomUserDetails(1L, EMAIL, PASSWORD));
 
         // when
         Authentication authentication = tokenAuthenticate.authenticate(authenticationToken);
-        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String tokenString = jwtTokenProvider.createToken(new ObjectMapper().writeValueAsString(userDetails));
 
         // then
