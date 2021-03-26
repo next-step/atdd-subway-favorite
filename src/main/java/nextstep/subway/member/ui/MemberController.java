@@ -33,7 +33,7 @@ public class MemberController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
+        MemberResponse member = memberService.findMemberResponseById(id);
         return ResponseEntity.ok()
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .body(member);
@@ -56,7 +56,7 @@ public class MemberController {
 
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findMember(loginMember.getId());
+        MemberResponse memberResponse = memberService.findMemberResponseById(loginMember.getId());
         return ResponseEntity.ok()
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .body(memberResponse);
