@@ -1,6 +1,9 @@
 package nextstep.subway.favorite.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +25,11 @@ public class FavoriteController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<URI> createFavorite(@RequestBody FavoriteRequest favoriteRequest) {
-        Long id = favoriteService.createFavorite(favoriteRequest);
+    public ResponseEntity<URI> addFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                           @RequestBody FavoriteRequest favoriteRequest) {
+        Long id = favoriteService.add(loginMember.getId(), favoriteRequest);
         URI createdURI = URI.create(String.format("/favorites/%d", id));
+
         return ResponseEntity.created(createdURI)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();

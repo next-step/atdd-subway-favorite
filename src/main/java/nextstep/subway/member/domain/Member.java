@@ -1,10 +1,12 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.common.BaseEntity;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Member extends BaseEntity {
@@ -28,6 +30,33 @@ public class Member extends BaseEntity {
         this.age = age;
     }
 
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(this, favorite);
+    }
+
+    public void updateFavorites(Favorites favorites) {
+        this.favorites = favorites;
+    }
+
+    public void update(Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
+    }
+
+    public void validatePassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new RuntimeException();
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -44,15 +73,7 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public void validatePassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new RuntimeException();
-        }
+    public Set<Favorite> getFavorites() {
+        return favorites.getFavorites();
     }
 }
