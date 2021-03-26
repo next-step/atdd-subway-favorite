@@ -25,7 +25,7 @@ public class FavoriteController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FavoriteResponse>> findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoritesByMemberId(loginMember.getId());
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoriteResponsesByMemberId(loginMember.getId());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +35,7 @@ public class FavoriteController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<URI> addFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                            @RequestBody FavoriteRequest favoriteRequest) {
-        Long id = favoriteService.add(loginMember.getId(), favoriteRequest);
+        Long id = favoriteService.addFavorite(loginMember.getId(), favoriteRequest);
         URI createdURI = URI.create(String.format("/favorites/%d", id));
 
         return ResponseEntity.created(createdURI)

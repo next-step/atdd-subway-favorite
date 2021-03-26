@@ -4,9 +4,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.exception.FavoriteNonExistException;
+import nextstep.subway.favorite.exception.FavoriteAlreadyExistException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -19,57 +17,42 @@ import java.util.stream.Collectors;
 @Transactional
 public class FavoriteService {
 
-    private final MemberService memberService;
     private final StationService stationService;
     private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
-        this.memberService = memberService;
+    public FavoriteService(StationService stationService, FavoriteRepository favoriteRepository) {
         this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
     }
 
-    public Long add(Long memberId, FavoriteRequest favoriteRequest) {
-        Member member = memberService.findMemberById(memberId);
+    public Long addFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Station source = stationService.findStationById(favoriteRequest.getSourceId());
         Station target = stationService.findStationById(favoriteRequest.getTargetId());
 
-        Favorite favorite = new Favorite(member, source, target);
+        validateExistFavorite(memberId, source, target);
+
+        Favorite favorite = new Favorite(memberId, source, target);
         Favorite savedFavorite = favoriteRepository.save(favorite);
 
-        member.addFavorite(savedFavorite);
         return savedFavorite.getId();
     }
 
+    private void validateExistFavorite(Long memberId, Station source, Station target) {
+        if (favoriteRepository.existsByMemberIdAndSourceAndTarget(memberId, source, target)) {
+            throw new FavoriteAlreadyExistException();
+        }
+    }
+
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findAllFavoritesByMemberId(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
-        return member.getFavorites().stream()
+    public List<FavoriteResponse> findAllFavoriteResponsesByMemberId(Long memberId) {
+        return findAllFavoritesByMemberId(memberId)
+                .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findAllFavoriteResponses() {
-        return findAllFavorites().stream()
-                .map(FavoriteResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<Favorite> findAllFavorites() {
-        return favoriteRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public FavoriteResponse findFavoriteResponseById(Long id) {
-        Favorite favorite = findFavoriteById(id);
-        return FavoriteResponse.of(favorite);
-    }
-
-    @Transactional(readOnly = true)
-    public Favorite findFavoriteById(Long id) {
-        return favoriteRepository.findById(id)
-                .orElseThrow(FavoriteNonExistException::new);
+    public List<Favorite> findAllFavoritesByMemberId(Long memberId) {
+        return favoriteRepository.findAllByMemberId(memberId);
     }
 }

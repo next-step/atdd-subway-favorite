@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.common.BaseEntity;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -14,30 +13,28 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "source_id")
     private Station source;
 
-    @JoinColumn(name = "target_id")
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "target_id")
     private Station target;
 
     public Favorite() {
     }
 
-    public Favorite(Member member, Station source, Station target) {
-        this.member = member;
+    public Favorite(Long memberId, Station source, Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
 
-    public Favorite(Long id, Member member, Station source, Station target) {
+    public Favorite(Long id, Long memberId, Station source, Station target) {
         this.id = id;
-        this.member = member;
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
@@ -46,8 +43,8 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Station getSource() {
@@ -63,14 +60,11 @@ public class Favorite extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Favorite favorite = (Favorite) o;
-        return id.equals(favorite.id) &&
-                member.equals(favorite.member) &&
-                source.equals(favorite.source) &&
-                target.equals(favorite.target);
+        return id.equals(favorite.id) && memberId.equals(favorite.memberId) && source.equals(favorite.source) && target.equals(favorite.target);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, member, source, target);
+        return Objects.hash(id, memberId, source, target);
     }
 }
