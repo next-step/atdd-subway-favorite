@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.favorite.exception.FavoriteAlreadyExistException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,14 +12,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("지하철 즐겨찾기 Domain 단위 테스트")
-class FavoriteTest {
+class FavoritesTest {
+
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
 
     private Station savedStationGangnam;
     private Station savedStationCheonggyesan;
 
     private Line lineNewBunDang;
+    private Favorites favorites;
+    private Member member;
 
-    private Favorite favorite;
 
     @BeforeEach
     void setUp() {
@@ -27,30 +34,32 @@ class FavoriteTest {
         lineNewBunDang = new Line(1L, "신분당선", "bg-red-600");
         lineNewBunDang.addSection(savedStationGangnam, savedStationCheonggyesan, 10);
 
-        favorite = new Favorite();
+        member = new Member(1L, EMAIL, PASSWORD, AGE);
+        favorites = new Favorites();
+
     }
 
     @Test
     @DisplayName("즐겨찾기 추가")
     void createFavorite() {
         // when
-        favorite.createFavorite(savedStationGangnam, savedStationCheonggyesan);
+        Favorite favorite = new Favorite(1L, member, savedStationGangnam, savedStationCheonggyesan);
+        favorites.add(member, favorite);
 
         // then
-        assertThat(favorite.getFavorites()).hasSize(1);
-        assertThat(favorite.getFavorites()).containsAll(savedStationGangnam, savedStationCheonggyesan);
+        assertThat(favorites.getFavorites()).hasSize(1);
+        assertThat(member.getFavorites()).containsExactly(favorite);
     }
 
     @Test
     @DisplayName("이미 존재하는 구간을 즐겨찾기 등록할 경우 에러 발생")
     void validateSameFavorite() {
         // given
-        favorite.createFavorite(savedStationGangnam, savedStationCheonggyesan);
+        Favorite favorite = new Favorite(1L, member, savedStationGangnam, savedStationCheonggyesan);
+        favorites.add(member, favorite);
 
         // when & then
-        assertThatExceptionOfType(FavoriteExistException.class)
-                .isThrownBy(() -> {
-                    favorite.createFavorite(savedStationGangnam, savedStationCheonggyesan);
-                });
+        assertThatExceptionOfType(FavoriteAlreadyExistException.class)
+                .isThrownBy(() -> favorites.add(member, favorite));
     }
 }

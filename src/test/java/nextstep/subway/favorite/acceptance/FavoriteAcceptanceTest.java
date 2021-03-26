@@ -4,17 +4,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.지하철_즐겨찾기_추가_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.지하철_즐겨찾기_개수_확인;
+import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.지하철_즐겨찾기_미인증_회원_실패_됨;
 import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.지하철_즐겨찾기_추가_됨;
-import static nextstep.subway.line.acceptance.LineRequestSteps.지하철_노선_생성_요청;
-import static nextstep.subway.line.acceptance.LineSectionRequestSteps.노선_요청;
 import static nextstep.subway.member.MemberRequestSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberRequestSteps.회원_생성_요청;
 import static nextstep.subway.station.acceptance.StationRequestSteps.지하철_역_등록_됨;
@@ -29,7 +26,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 청계산입구역;
 
-    private LineResponse 신분당선;
+    private TokenResponse 로그인_멤버_토큰 = new TokenResponse("Unauthorized");
 
     @BeforeEach
     void init() {
@@ -39,23 +36,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철_역_등록_됨("강남역").as(StationResponse.class);
         청계산입구역 = 지하철_역_등록_됨("청계산입구역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_생성_요청(노선_요청("신분당선", "bg-red-600", 강남역.getId(), 청계산입구역.getId(), 10))
-                .as(LineResponse.class);
-
         회원_생성_요청(EMAIL, PASSWORD, AGE);
     }
 
     @Test
     @DisplayName("즐겨찾기 추가")
-    void createFavorite() {
+    void addFavorite() {
         // given
-        TokenResponse 로그인_멤버_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        로그인_멤버_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> response = 지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
 
         // then
         지하철_즐겨찾기_추가_됨(response);
-        지하철_즐겨찾기_개수_확인(response, 1);
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 사용자가 즐겨찾기 접근 할 경우 401 에러")
+    void unauthorizedAddFavorite() {
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
+
+        // then & when
+        지하철_즐겨찾기_미인증_회원_실패_됨(response);
     }
 }

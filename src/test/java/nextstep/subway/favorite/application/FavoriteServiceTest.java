@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.member.domain.Member;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 즐겨찾기 비즈니스 로직 단위 테스트")
 @SpringBootTest
@@ -54,14 +58,16 @@ class FavoriteServiceTest {
     }
 
     @Test
-    @DisplayName("즐겨찾기 추가") // TODO : 로그인 여부 확인할 Interceptor 구현
+    @DisplayName("즐겨찾기 추가")
     void createFavorite() {
         // when
-        FavoriteRequest favoriteRequest = new FavoriteRequest(savedStationGangnam, savedStationCheonggyesan);
-        FavoriteResponse favoriteResponse = favoriteService.createFavorite(favoriteRequest);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(savedStationGangnam.getId(), savedStationCheonggyesan.getId());
+        Long savedFavoriteId = favoriteService.add(savedMember.getId(), favoriteRequest);
 
         // then
-        assertThat(favoriteResponse.getFavorites).hasSize(1);
-        assertThat(favoriteResponse.getFavorites).containsExactlyElementsOf(savedStationGangnam, savedStationCheonggyesan);
+        FavoriteResponse response = favoriteService.findFavoriteResponseById(savedFavoriteId);
+
+        assertThat(response.getId()).isEqualTo(savedFavoriteId);
+        assertThat(savedMember.getFavorites()).hasSize(1);
     }
 }
