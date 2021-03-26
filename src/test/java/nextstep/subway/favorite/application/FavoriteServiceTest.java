@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 즐겨찾기 비즈니스 로직 단위 테스트")
@@ -59,7 +62,7 @@ class FavoriteServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 추가")
-    void createFavorite() {
+    void addFavorite() {
         // when
         FavoriteRequest favoriteRequest = new FavoriteRequest(savedStationGangnam.getId(), savedStationCheonggyesan.getId());
         Long savedFavoriteId = favoriteService.add(savedMember.getId(), favoriteRequest);
@@ -69,5 +72,24 @@ class FavoriteServiceTest {
 
         assertThat(response.getId()).isEqualTo(savedFavoriteId);
         assertThat(savedMember.getFavorites()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회")
+    void findAllFavorite() {
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest(savedStationGangnam.getId(), savedStationCheonggyesan.getId());
+        Long savedFavoriteId = favoriteService.add(savedMember.getId(), favoriteRequest);
+
+        // when
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoriteResponses();
+
+        // then
+        List<Long> resultFavoritesIds = favoriteResponses.stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(favoriteResponses).hasSize(1);
+        assertThat(resultFavoritesIds).containsExactly(savedFavoriteId);
     }
 }
