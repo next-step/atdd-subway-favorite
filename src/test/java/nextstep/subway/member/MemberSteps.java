@@ -148,4 +148,8 @@ public class MemberSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static void 요청_실패함(ExtractableResponse<Response> fakeReadResponse) {
+        assertThat(fakeReadResponse.statusCode()).isEqualTo(500);
+    }
 }
