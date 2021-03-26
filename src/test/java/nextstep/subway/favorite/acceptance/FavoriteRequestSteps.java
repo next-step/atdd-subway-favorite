@@ -22,4 +22,14 @@ public class FavoriteRequestSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 지하철_즐겨찾기_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
 }

@@ -9,9 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.지하철_즐겨찾기_조회_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.지하철_즐겨찾기_추가_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.지하철_즐겨찾기_미인증_회원_실패_됨;
-import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.지하철_즐겨찾기_추가_됨;
+import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.*;
 import static nextstep.subway.member.MemberRequestSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberRequestSteps.회원_생성_요청;
 import static nextstep.subway.station.acceptance.StationRequestSteps.지하철_역_등록_됨;
@@ -50,6 +50,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_즐겨찾기_추가_됨(response);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회")
+    void findFavorites() {
+        // given
+        로그인_멤버_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_조회_요청(로그인_멤버_토큰);
+
+        // then
+        지하철_즐겨찾기_조회_됨(response);
     }
 
     @Test

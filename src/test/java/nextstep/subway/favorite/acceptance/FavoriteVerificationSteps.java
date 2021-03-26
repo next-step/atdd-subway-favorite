@@ -15,4 +15,8 @@ public class FavoriteVerificationSteps {
     public static void 지하철_즐겨찾기_미인증_회원_실패_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    public static void 지하철_즐겨찾기_조회_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 }
