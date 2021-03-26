@@ -53,6 +53,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("이미 존재하는 즐겨찾기를 추가할 경우 Exception 발생")
+    void validateAlreadyFavorite() {
+        // given
+        로그인_멤버_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
+
+        // then
+        지하철_즐겨찾기_추가_실패_됨(response);
+    }
+
+    @Test
     @DisplayName("즐겨찾기 조회")
     void findFavorites() {
         // given

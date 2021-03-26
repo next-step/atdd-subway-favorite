@@ -12,6 +12,10 @@ public class FavoriteVerificationSteps {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    public static void 지하철_즐겨찾기_추가_실패_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
+
     public static void 지하철_즐겨찾기_미인증_회원_실패_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
