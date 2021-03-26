@@ -5,6 +5,7 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteAlreadyExistException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -79,5 +83,33 @@ class FavoriteServiceTest {
 
         // then
         assertThat(favoriteResponses).hasSize(2);
+        List<Long> resultStationResponsesIds = getResultStationResponsesIds(favoriteResponses);
+        assertThat(resultStationResponsesIds).containsAll(Arrays.asList(savedStationGangnam.getId(), savedStationYangJae.getId(), savedStationCheonggyesan.getId()));
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 제거")
+    void removeFavorite() {
+        // given
+        Long addedFavoriteId1 = favoriteService.addFavorite(MEMBER_ID, favoriteRequest);
+
+        Station savedStationYangJae = stationRepository.save(new Station("양재역"));
+        FavoriteRequest favoriteRequest2 = new FavoriteRequest(savedStationGangnam.getId(), savedStationYangJae.getId());
+        favoriteService.addFavorite(MEMBER_ID, favoriteRequest2);
+
+        // when
+        favoriteService.removeFavorite(addedFavoriteId1);
+
+        // then
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoriteResponsesByMemberId(MEMBER_ID);
+        assertThat(favoriteResponses).hasSize(1);
+    }
+
+    private List<Long> getResultStationResponsesIds(List<FavoriteResponse> favoriteResponses) {
+        return favoriteResponses.stream()
+                .flatMap(favoriteResponse -> Stream.of(favoriteResponse.getSource(), favoriteResponse.getTarget()))
+                .map(StationResponse::getId)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
