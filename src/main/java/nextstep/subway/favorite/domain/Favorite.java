@@ -44,4 +44,8 @@ public class Favorite extends BaseEntity {
     public Station getTarget() {
         return target;
     }
+
+    public Boolean isOwner(Long memberId) {
+        return this.memberId == memberId;
+    }
 }
