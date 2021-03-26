@@ -1,74 +1,38 @@
 package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.ui.auth.interceptor.AuthenticationInterceptor;
+import nextstep.subway.auth.ui.auth.converter.TokenAuthenticationConverter;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor(UserDetailsService customUserDetailsService,
+                                          JwtTokenProvider jwtTokenProvider) {
+        super(customUserDetailsService, new TokenAuthenticationConverter());
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
-        Authentication authentication = authenticate(authenticationToken);
-
-        // TODO: authentication으로 TokenResponse 추출하기
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
-        TokenResponse tokenResponse = new TokenResponse(token);
+
+        TokenResponse tokenResponse = TokenResponse.of(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-
-        return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-
-        return new AuthenticationToken(principal, credentials);
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 Authentication 객체 생성하기
-        String principal = authenticationToken.getPrincipal();
-        LoginMember loginUserDetail = customUserDetailsService.loadUserByUsername(principal);
-
-        checkAuthentication(loginUserDetail, authenticationToken);
-
-        return new Authentication(loginUserDetail);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new RuntimeException("존재하지 않는 회원입니다.");
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException("pw가 일치하지 않습니다.");
-        }
     }
 }
