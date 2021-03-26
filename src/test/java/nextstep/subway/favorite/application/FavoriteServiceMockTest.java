@@ -81,7 +81,7 @@ class FavoriteServiceMockTest {
     @Test
     void findFavorites() {
         // given
-        when(favoriteRepository.findAll()).thenReturn(Lists.newArrayList(즐겨찾기_1, 즐겨찾기_2));
+        when(favoriteRepository.findByMemberId(로그인.getId())).thenReturn(Lists.newArrayList(즐겨찾기_1, 즐겨찾기_2));
 
         // when
         List<FavoriteResponse> 즐겨찾기들 = favoriteService.findFavorites(로그인);

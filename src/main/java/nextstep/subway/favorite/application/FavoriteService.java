@@ -29,10 +29,12 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findAll();
+        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
+        return toFavoriteResponses(favorites);
+    }
 
+    private List<FavoriteResponse> toFavoriteResponses(List<Favorite> favorites) {
         return favorites.stream()
-                .filter(f -> f.getMemberId() == loginMember.getId())
                 .map(f -> FavoriteResponse.of(f))
                 .collect(Collectors.toList());
     }
