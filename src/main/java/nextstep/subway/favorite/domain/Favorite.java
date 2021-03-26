@@ -11,6 +11,8 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long memberId;
+
     @ManyToOne
     @JoinColumn(name = "source_station_id")
     private Station source;
@@ -21,8 +23,9 @@ public class Favorite {
 
     public Favorite(){}
 
-    public Favorite(Station source, Station target) {
+    public Favorite(Long memberId, Station source, Station target) {
         checkStationsNotSame(source, target);
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
@@ -34,6 +37,8 @@ public class Favorite {
     }
 
     public Long getId() { return id; }
+
+    public Long getMemberId() { return memberId; }
 
     public Station getSource() {
         return source;

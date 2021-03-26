@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class DefaultControllerAdvice {
+public class SubwayControllerAdvice {
 
     @ExceptionHandler(AuthenticationFailException.class)
     public ResponseEntity<Void> handleAuthException() {

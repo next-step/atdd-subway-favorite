@@ -20,9 +20,9 @@ public class FavoriteSteps {
         return params;
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> params, TokenResponse 정상토큰) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> params, TokenResponse token) {
         return RestAssured.given().log().all(true)
-                .auth().oauth2(정상토큰.getAccessToken())
+                .auth().oauth2(token.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .body(params)
@@ -31,9 +31,9 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse 정상토큰) {
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse token) {
         return RestAssured.given().log().all(true)
-                .auth().oauth2(정상토큰.getAccessToken())
+                .auth().oauth2(token.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/favorites")
@@ -41,11 +41,20 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> createResponse, TokenResponse 정상토큰) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> createResponse, TokenResponse token) {
         return RestAssured.given().log().all(true)
-                .auth().oauth2(정상토큰.getAccessToken())
+                .auth().oauth2(token.getAccessToken())
                 .when()
                 .delete(createResponse.header("Location"))
+                .then().log().all(true)
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String uri, TokenResponse token) {
+        return RestAssured.given().log().all(true)
+                .auth().oauth2(token.getAccessToken())
+                .when()
+                .delete(uri)
                 .then().log().all(true)
                 .extract();
     }

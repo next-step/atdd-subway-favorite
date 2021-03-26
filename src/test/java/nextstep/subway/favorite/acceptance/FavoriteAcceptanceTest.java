@@ -71,16 +71,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> invalidCreateResponse = 즐겨찾기_생성_요청(params, 비정상토큰);
-
-        // then
-        인증_실패함(invalidCreateResponse);
-
-        // when
         ExtractableResponse<Response> readAllResponse = 즐겨찾기_목록_조회_요청(정상토큰);
 
         // then
         즐겨찾기_목록_조회됨(readAllResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 정상토큰);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("Scenario : 유효하지 않은 인증정보로 즐겨찾기를 관리를 시도한다.")
+    @Test
+    void manageFavorite_withInvalidAuth() {
+        // given
+        Map<String, String> params = 즐겨찾기_파라미터_설정(강남역.getId() + "", 양재역.getId() + "");
+
+        // when
+        ExtractableResponse<Response> invalidCreateResponse = 즐겨찾기_생성_요청(params, 비정상토큰);
+
+        // then
+        인증_실패함(invalidCreateResponse);
 
         // when
         ExtractableResponse<Response> invalidReadAllResponse = 즐겨찾기_목록_조회_요청(비정상토큰);
@@ -89,13 +102,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         인증_실패함(invalidReadAllResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 정상토큰);
-
-        // then
-        즐겨찾기_삭제됨(deleteResponse);
-
-        // when
-        ExtractableResponse<Response> invalidDeleteResponse = 즐겨찾기_삭제_요청(createResponse, 비정상토큰);
+        ExtractableResponse<Response> invalidDeleteResponse = 즐겨찾기_삭제_요청("/favorites/1", 비정상토큰);
 
         // then
         인증_실패함(invalidDeleteResponse);
