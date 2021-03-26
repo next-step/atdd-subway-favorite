@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.지하철_즐겨찾기_조회_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.지하철_즐겨찾기_추가_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.*;
@@ -25,6 +27,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 강남역;
     private StationResponse 청계산입구역;
+    private StationResponse 양재역;
 
     private TokenResponse 로그인_멤버_토큰 = new TokenResponse("Unauthorized");
 
@@ -35,6 +38,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         강남역 = 지하철_역_등록_됨("강남역").as(StationResponse.class);
         청계산입구역 = 지하철_역_등록_됨("청계산입구역").as(StationResponse.class);
+        양재역 = 지하철_역_등록_됨("양재역").as(StationResponse.class);
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
     }
@@ -72,12 +76,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         로그인_멤버_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
         지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
+        지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 양재역);
 
         // when
         ExtractableResponse<Response> response = 지하철_즐겨찾기_조회_요청(로그인_멤버_토큰);
 
         // then
         지하철_즐겨찾기_조회_됨(response);
+        지하철_즐겨찾기_조회_결과_확인(response, Arrays.asList(강남역, 청계산입구역, 양재역));
     }
 
     @Test

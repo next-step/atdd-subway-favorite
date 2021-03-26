@@ -2,7 +2,13 @@ package nextstep.subway.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,5 +28,20 @@ public class FavoriteVerificationSteps {
 
     public static void 지하철_즐겨찾기_조회_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_즐겨찾기_조회_결과_확인(ExtractableResponse<Response> response, List<StationResponse> expectedStationResponses) {
+        List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+        List<Long> resultStationResponses = favoriteResponses.stream()
+                .flatMap(favoriteResponse -> Stream.of(favoriteResponse.getSource(), favoriteResponse.getTarget()))
+                .map(StationResponse::getId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Long> expectedStationResponseIds = expectedStationResponses.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultStationResponses).containsAll(expectedStationResponseIds);
     }
 }
