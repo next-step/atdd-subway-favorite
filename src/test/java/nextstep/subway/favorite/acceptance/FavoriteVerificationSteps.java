@@ -44,4 +44,13 @@ public class FavoriteVerificationSteps {
 
         assertThat(resultStationResponses).containsAll(expectedStationResponseIds);
     }
+
+    public static void 지하철_즐겨찾기_제거_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static Long 지하철_즐겨찾기_생성된_ID(ExtractableResponse<Response> response) {
+        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
+        return favoriteResponse.getId();
+    }
 }

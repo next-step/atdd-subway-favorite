@@ -32,4 +32,14 @@ public class FavoriteRequestSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 지하철_즐겨찾기_제거_요청(TokenResponse tokenResponse, Long favoriteId) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .pathParam("favoriteId", favoriteId)
+                .when().delete("/favorites/{favoriteId}")
+                .then().log().all()
+                .extract();
+    }
 }

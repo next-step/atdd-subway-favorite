@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.지하철_즐겨찾기_조회_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.지하철_즐겨찾기_추가_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteRequestSteps.*;
 import static nextstep.subway.favorite.acceptance.FavoriteVerificationSteps.*;
 import static nextstep.subway.member.MemberRequestSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberRequestSteps.회원_생성_요청;
@@ -71,6 +70,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("로그인 하지 않은 사용자가 즐겨찾기 접근 할 경우 401 에러")
+    void unauthorizedAddFavorite() {
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
+
+        // then & when
+        지하철_즐겨찾기_미인증_회원_실패_됨(response);
+    }
+
+    @Test
     @DisplayName("즐겨찾기 조회")
     void findFavorites() {
         // given
@@ -87,12 +96,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("로그인 하지 않은 사용자가 즐겨찾기 접근 할 경우 401 에러")
-    void unauthorizedAddFavorite() {
-        // when
-        ExtractableResponse<Response> response = 지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
+    @DisplayName("즐겨찾기 제거")
+    void removeFavorite() {
+        // given
+        로그인_멤버_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> addFavoriteResponse = 지하철_즐겨찾기_추가_요청(로그인_멤버_토큰, 강남역, 청계산입구역);
 
-        // then & when
-        지하철_즐겨찾기_미인증_회원_실패_됨(response);
+        // when
+
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_제거_요청(로그인_멤버_토큰, 지하철_즐겨찾기_생성된_ID(addFavoriteResponse));
+
+        // then
+        지하철_즐겨찾기_제거_됨(response);
     }
 }
