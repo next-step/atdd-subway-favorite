@@ -24,8 +24,8 @@ public class FavoriteController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FavoriteResponse>> findAllFavorites() {
-        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoriteResponses();
+    public ResponseEntity<List<FavoriteResponse>> findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoritesByMemberId(loginMember.getId());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)

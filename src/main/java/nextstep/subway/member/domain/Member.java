@@ -6,7 +6,7 @@ import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
@@ -73,7 +73,7 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public Set<Favorite> getFavorites() {
+    public List<Favorite> getFavorites() {
         return favorites.getFavorites();
     }
 }

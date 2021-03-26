@@ -12,6 +12,9 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class FavoriteService {
@@ -36,6 +39,26 @@ public class FavoriteService {
 
         member.addFavorite(savedFavorite);
         return savedFavorite.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findAllFavoritesByMemberId(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+        return member.getFavorites().stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findAllFavoriteResponses() {
+        return findAllFavorites().stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Favorite> findAllFavorites() {
+        return favoriteRepository.findAll();
     }
 
     @Transactional(readOnly = true)
