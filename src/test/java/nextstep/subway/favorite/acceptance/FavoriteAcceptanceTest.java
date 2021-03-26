@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,8 +28,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private StationResponse 판교역;
     private StationResponse 모란역;
-    private Map<String, String> param;
-    private Map<String, String> param2;
+    private FavoriteRequest 즐겨찾기_요청_1;
+    private FavoriteRequest 즐겨찾기_요청_2;
     private TokenResponse loginResponse;
 
     @BeforeEach
@@ -40,13 +41,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
         판교역 = 지하철역_등록되어_있음("판교역").as(StationResponse.class);
         모란역 = 지하철역_등록되어_있음("모란역").as(StationResponse.class);
-        param = new HashMap<>();
-        param.put("source",강남역.getId() + "");
-        param.put("target", 광교역.getId() + "");
-
-        param2 = new HashMap<>();
-        param2.put("source",판교역.getId() + "");
-        param2.put("target", 모란역.getId() + "");
+        즐겨찾기_요청_1 = new FavoriteRequest(강남역.getId(), 광교역.getId());
+        즐겨찾기_요청_2 = new FavoriteRequest(판교역.getId(), 모란역.getId());
 
         // when
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
@@ -62,7 +58,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(param, loginResponse);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(즐겨찾기_요청_1, loginResponse);
 
         // then
         즐겨찾기_생성됨(response);
@@ -72,8 +68,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void searchFavorites() {
         // given
-        즐겨찾기_생성_요청(param, loginResponse);
-        즐겨찾기_생성_요청(param2, loginResponse);
+        즐겨찾기_생성_요청(즐겨찾기_요청_1, loginResponse);
+        즐겨찾기_생성_요청(즐겨찾기_요청_2, loginResponse);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(loginResponse);
@@ -86,7 +82,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         // given
-        ExtractableResponse<Response> 생성된_즐겨찾기 = 즐겨찾기_생성_요청(param, loginResponse);
+        ExtractableResponse<Response> 생성된_즐겨찾기 = 즐겨찾기_생성_요청(즐겨찾기_요청_1, loginResponse);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(생성된_즐겨찾기, loginResponse);
@@ -101,7 +97,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void testNoAuthentication() {
         // given
-        즐겨찾기_생성_요청(param, loginResponse);
+        즐겨찾기_생성_요청(즐겨찾기_요청_1, loginResponse);
         TokenResponse 대충만든_토큰 = new TokenResponse("123");
 
         // when

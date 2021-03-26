@@ -4,18 +4,17 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import org.springframework.http.MediaType;
-
-import java.util.Map;
 
 public class FavoriteSteps {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> param, TokenResponse loginResponse) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest request, TokenResponse loginResponse) {
         String uri = "/favorites";
         return RestAssured.given().log().all()
                 .auth().oauth2(loginResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(param)
+                .body(request)
                 .when()
                 .post(uri)
                 .then().log().all()
