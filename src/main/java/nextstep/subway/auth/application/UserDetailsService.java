@@ -1,7 +1,7 @@
 package nextstep.subway.auth.application;
 
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.dto.UserDetails;
 
 public interface UserDetailsService {
-    LoginMember loadUserByUsername(String email);
+    UserDetails loadUserByUsername(String email);
 }
