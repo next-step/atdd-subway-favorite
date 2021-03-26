@@ -9,6 +9,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,5 +36,20 @@ public class FavoriteService {
                 .filter(it -> it.isOwner(memberId))
                 .map(it -> FavoriteResponse.of(it))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Optional<Favorite> favoriteOptional = favoriteRepository.findById(favoriteId);
+
+        if (!favoriteOptional.isPresent()) {
+            throw new RuntimeException();
+        }
+
+        Favorite favorite = favoriteOptional.get();
+        if (!favorite.isOwner(memberId)) {
+            throw new RuntimeException();
+        }
+
+        favoriteRepository.deleteById(favoriteId);
     }
 }
