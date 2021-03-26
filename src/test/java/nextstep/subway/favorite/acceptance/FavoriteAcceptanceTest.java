@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,5 +81,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_즐겨찾기_목록_조회됨(response);
+    }
+
+    @DisplayName("지하철 즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        Long favoriteId = 지하철_즐겨찾기_생성_요청(토큰.getAccessToken(), favoriteParams1).as(FavoriteResponse.class).getId();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_삭제_요청(토큰.getAccessToken(), favoriteId);
+
+        // then
+        지하철_즐겨찾기_삭제됨(response);
     }
 }

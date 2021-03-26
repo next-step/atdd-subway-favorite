@@ -36,4 +36,16 @@ public class FavoriteSteps {
     public static void 지하철_즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
+    public static ExtractableResponse<Response> 지하철_즐겨찾기_삭제_요청(String token, Long favoriteId) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/favorites/{id}", favoriteId)
+                .then().log().all().extract();
+    }
+
+    public static void 지하철_즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
