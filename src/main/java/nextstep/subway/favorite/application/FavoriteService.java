@@ -19,11 +19,11 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
-    public FavoriteResponse createFavorite(FavoriteRequest request) {
+    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
 
-        Favorite favorite = favoriteRepository.save(new Favorite(source, target));
+        Favorite favorite = favoriteRepository.save(new Favorite(memberId, source, target));
         return FavoriteResponse.of(favorite);
     }
 }

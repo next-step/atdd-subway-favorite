@@ -12,6 +12,9 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "member_id")
+    private Long memberId;
+
     @ManyToOne
     @JoinColumn(name = "source_id")
     private Station source;
@@ -24,7 +27,8 @@ public class Favorite extends BaseEntity {
 
     }
 
-    public Favorite(Station source, Station target) {
+    public Favorite(Long memberId, Station source, Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
