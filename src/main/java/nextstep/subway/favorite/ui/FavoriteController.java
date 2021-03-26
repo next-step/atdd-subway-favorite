@@ -42,4 +42,11 @@ public class FavoriteController {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
+
+    @DeleteMapping(value = "/{favoriteId}")
+    public ResponseEntity<Void> removeFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                               @PathVariable Long favoriteId) {
+        favoriteService.removeFavorite(favoriteId);
+        return ResponseEntity.noContent().build();
+    }
 }
