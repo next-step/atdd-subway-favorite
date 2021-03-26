@@ -8,7 +8,6 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import sun.tools.jstat.Token;
 
 import java.util.HashMap;
 import java.util.Map;

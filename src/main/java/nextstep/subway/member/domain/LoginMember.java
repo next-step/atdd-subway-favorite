@@ -3,7 +3,7 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.member.dto.MemberRequest;
 
-public class LoginMember {
+public class LoginMember extends User{
     private Long id;
     private String email;
     private String password;
@@ -20,14 +20,11 @@ public class LoginMember {
     }
 
     public LoginMember(Long id, String email, String password, Integer age) {
+        super(email, password);
         this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
     }
 
     public Long getId() {

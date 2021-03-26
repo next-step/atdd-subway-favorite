@@ -34,6 +34,6 @@ public class MemberService {
     }
 
     public void updateMine(LoginMember loginMember, MemberRequest param) {
-        loginMember.update(LoginMember.of(param.toMember()));
+        updateMember(loginMember.getId(), param);
     }
 }

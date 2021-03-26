@@ -4,7 +4,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.exception.AuthenticationException;
 import nextstep.subway.member.application.UserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.member.domain.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     private final AuthenticationConverter authenticationConverter;
     private final UserDetailsService userDetailsService;
 
-    public AuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailsService userDetailsService) {
+    protected AuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailsService userDetailsService) {
         this.authenticationConverter = authenticationConverter;
         this.userDetailsService = userDetailsService;
     }
@@ -32,12 +32,12 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+        User loginMember = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
         checkAuthentication(loginMember, authenticationToken);
         return new Authentication(loginMember);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(User userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException("사용자가 등록되어 있지 않습니다");
         }
