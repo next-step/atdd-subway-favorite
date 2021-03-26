@@ -18,7 +18,6 @@ import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록�
 import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberSteps.회원_등록되어_있음;
 import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -28,7 +27,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 남부터미널역;
 
-    private TokenResponse 토큰;
+    private TokenResponse A유저토큰;
+    private TokenResponse B유저토큰;
 
     private Map<String, String> favoriteParams1;
     private Map<String, String> favoriteParams2;
@@ -46,8 +46,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음("신분당선", "green", 강남역, 양재역, 10);
         지하철_노선_등록되어_있음("3호선", "green", 교대역, 남부터미널역, 2);
 
-        회원_등록되어_있음("test@gmail.com", "test1234", 20);
-        토큰 = 로그인_되어_있음("test@gmail.com", "test1234");
+        회원_등록되어_있음("a_user@gmail.com", "test1234", 20);
+        A유저토큰 = 로그인_되어_있음("a_user@gmail.com", "test1234");
+
+        회원_등록되어_있음("b_user@gmail.com", "test1234", 30);
+        B유저토큰 = 로그인_되어_있음("b_user@gmail.com", "test1234");
 
         favoriteParams1 = new HashMap<>();
         favoriteParams1.put("source", String.valueOf(교대역.getId()));
@@ -63,7 +66,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         // when
-        ExtractableResponse<Response> response = 지하철_즐겨찾기_생성_요청(토큰.getAccessToken(), favoriteParams1);
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_생성_요청(A유저토큰.getAccessToken(), favoriteParams1);
 
         // then
         지하철_즐겨찾기_생성됨(response);
@@ -73,11 +76,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void getFavorites() {
         // given
-        지하철_즐겨찾기_생성_요청(토큰.getAccessToken(), favoriteParams1);
-        지하철_즐겨찾기_생성_요청(토큰.getAccessToken(), favoriteParams2);
+        지하철_즐겨찾기_생성_요청(A유저토큰.getAccessToken(), favoriteParams1);
+        지하철_즐겨찾기_생성_요청(A유저토큰.getAccessToken(), favoriteParams2);
 
         // when
-        ExtractableResponse<Response> response = 지하철_즐겨찾기_조회_요청(토큰.getAccessToken());
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_조회_요청(A유저토큰.getAccessToken());
 
         // then
         지하철_즐겨찾기_목록_조회됨(response);
@@ -87,12 +90,38 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         // given
-        Long favoriteId = 지하철_즐겨찾기_생성_요청(토큰.getAccessToken(), favoriteParams1).as(FavoriteResponse.class).getId();
+        Long favoriteId = 지하철_즐겨찾기_생성_요청(A유저토큰.getAccessToken(), favoriteParams1).as(FavoriteResponse.class).getId();
 
         // when
-        ExtractableResponse<Response> response = 지하철_즐겨찾기_삭제_요청(토큰.getAccessToken(), favoriteId);
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_삭제_요청(A유저토큰.getAccessToken(), favoriteId);
 
         // then
         지하철_즐겨찾기_삭제됨(response);
+    }
+
+    @DisplayName("잘못된 토큰을 사용해 지하철 즐겨찾기를 삭제한다.")
+    @Test
+    void getFavoritesByWrongToken() {
+        // given
+        Long favoriteId = 지하철_즐겨찾기_생성_요청(A유저토큰.getAccessToken(), favoriteParams1).as(FavoriteResponse.class).getId();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_삭제_요청("잘못된토큰", favoriteId);
+
+        // then
+        지하철_즐겨찾기_삭제_실패함(response);
+    }
+
+    @DisplayName("다른 유저 토큰을 사용해 지하철 즐겨찾기를 삭제한다.")
+    @Test
+    void getFavoritesByOtherUserToken() {
+        // given
+        Long favoriteId = 지하철_즐겨찾기_생성_요청(A유저토큰.getAccessToken(), favoriteParams1).as(FavoriteResponse.class).getId();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_삭제_요청(B유저토큰.getAccessToken(), favoriteId);
+
+        // then
+        지하철_즐겨찾기_삭제_실패함(response);
     }
 }
