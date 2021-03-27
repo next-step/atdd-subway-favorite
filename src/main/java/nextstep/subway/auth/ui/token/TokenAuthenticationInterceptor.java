@@ -1,6 +1,7 @@
 package nextstep.subway.auth.ui.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.CharStreams;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -12,15 +13,21 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
+    public static final String EMAIL_FIELD = "email";
+    public static final String PASSWORD_FIELD = "password";
+
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper mapper;
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.mapper = new ObjectMapper();
     }
 
     @Override
@@ -40,9 +47,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
+        String body = CharStreams.toString(request.getReader());
+        Map<String, String> map = mapper.readValue(body, Map.class);
+
+        String principal = map.get(EMAIL_FIELD);
+        String credentials = map.get(PASSWORD_FIELD);
 
         return new AuthenticationToken(principal, credentials);
     }
