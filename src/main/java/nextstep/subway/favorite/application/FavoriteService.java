@@ -31,10 +31,10 @@ public class FavoriteService {
                  .collect(Collectors.toList());
     }
 
-    public FavoriteResponse saveFavorite(FavoriteRequest request) {
+    public FavoriteResponse saveFavorite(FavoriteRequest request, Long memberId) {
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
-        Favorite persistFavorite = favoriteRepository.save(new Favorite(source, target, request.getMemberId()));
+        Favorite persistFavorite = favoriteRepository.save(new Favorite(source, target, memberId));
         return FavoriteResponse.of(persistFavorite);
     }
 

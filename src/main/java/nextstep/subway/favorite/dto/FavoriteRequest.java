@@ -3,12 +3,10 @@ package nextstep.subway.favorite.dto;
 public class FavoriteRequest {
     private Long source;
     private Long target;
-    private Long memberId;
 
-    public FavoriteRequest(Long source, Long target, Long memberId) {
+    public FavoriteRequest(Long source, Long target) {
         this.source = source;
         this.target = target;
-        this.memberId = memberId;
     }
 
     public Long getSource() {
@@ -17,9 +15,5 @@ public class FavoriteRequest {
 
     public Long getTarget() {
         return target;
-    }
-
-    public Long getMemberId() {
-        return memberId;
     }
 }

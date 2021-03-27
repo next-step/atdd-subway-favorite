@@ -1,14 +1,30 @@
 package nextstep.subway.favorite.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteSteps {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청() {
-        return null;
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, FavoriteRequest request) {
+        return RestAssured.given().log().all()
+                    .auth().oauth2(tokenResponse.getAccessToken())
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().post("/favorites/")
+                    .then().log().all()
+                    .extract();
+
     }
-    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {}
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
         return null;

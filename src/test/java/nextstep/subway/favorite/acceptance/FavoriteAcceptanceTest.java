@@ -3,6 +3,8 @@ package nextstep.subway.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,14 +44,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void favoriteScenario() {
         // given
-        로그인_되어_있음(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when, then
-        ExtractableResponse<Response> firstCreateResponse = 즐겨찾기_생성_요청();
+        FavoriteRequest request = new FavoriteRequest(강남역.getId(), 역삼역.getId());
+        ExtractableResponse<Response> firstCreateResponse = 즐겨찾기_생성_요청(tokenResponse, request);
         즐겨찾기_생성됨(firstCreateResponse);
 
-        ExtractableResponse<Response> secondCreateResponse = 즐겨찾기_생성_요청();
-        즐겨찾기_생성됨(secondCreateResponse);
+//        ExtractableResponse<Response> secondCreateResponse = 즐겨찾기_생성_요청();
+//        즐겨찾기_생성됨(secondCreateResponse);
 
         ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청();
         즐겨찾기_목록_조회됨(getResponse);
