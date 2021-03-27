@@ -4,7 +4,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.AuthenticationInterceptor;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.UserDetailsService;
+import nextstep.subway.auth.application.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

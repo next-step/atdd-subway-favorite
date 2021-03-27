@@ -1,5 +1,6 @@
 package nextstep.subway.auth.infrastructure;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.ui.*;
 import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
