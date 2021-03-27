@@ -20,6 +20,7 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+
         Favorite favorite = favoriteRepository.save(favoriteRequest.toFavorite(memberId));
         return favoriteStationService.convertToFavoriteResponse(favorite);
     }
@@ -29,7 +30,7 @@ public class FavoriteService {
         return favoriteStationService.convertToFavoriteResponses(favorites);
     }
 
-    public void deleteFavorite(Long memberId, Long favoriteId) {
+    public void deleteFavorite(Long favoriteId) {
         favoriteRepository.deleteById(favoriteId);
     }
 }

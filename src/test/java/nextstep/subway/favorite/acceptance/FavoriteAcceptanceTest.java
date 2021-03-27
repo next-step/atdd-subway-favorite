@@ -47,14 +47,15 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("3호선", "green", 교대역, 남부터미널역, 2);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 3);
-
-        회원_생성_요청("email@email.com", "password", 20);
-        tokenResponse = 로그인_되어_있음("email@email.com", "password");
     }
 
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageFavorite() {
+        // given
+        회원_생성_요청("email@email.com", "password", 20);
+        tokenResponse = 로그인_되어_있음("email@email.com", "password");
+
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(tokenResponse, 교대역, 강남역);
 
@@ -72,6 +73,41 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("즐겨찾기 저장을 실패한다.")
+    @Test
+    void createFavoriteFail() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(교대역, 강남역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("즐겨찾기 조회를 실패한다.")
+    @Test
+    void getFavoriteFail() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("즐겨찾기 삭제를 실패한다.")
+    @Test
+    void deleteFavoriteFail() {
+        // given
+        회원_생성_요청("email@email.com", "password", 20);
+        tokenResponse = 로그인_되어_있음("email@email.com", "password");
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(tokenResponse, 교대역, 강남역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
