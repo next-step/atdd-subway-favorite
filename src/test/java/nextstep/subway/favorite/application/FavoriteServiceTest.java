@@ -13,12 +13,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Transactional
 class FavoriteServiceTest {
 
     private StationResponse 교대역;
@@ -67,5 +69,19 @@ class FavoriteServiceTest {
 
         // then
         assertThat(favoriteResponses.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기를 삭제한다")
+    void deleteFavorite() {
+        // given
+        FavoriteResponse favoriteResponse = favoriteService.createFavorite(회원.getId(), new FavoriteRequest(교대역.getId(), 강남역.getId()));
+
+        // when
+        favoriteService.deleteFavorite(회원.getId(), favoriteResponse.getId());
+
+        // then
+        List<FavoriteResponse> favoriteResponses = favoriteService.getFavorites(회원.getId());
+        assertThat(favoriteResponses).isEmpty();
     }
 }
