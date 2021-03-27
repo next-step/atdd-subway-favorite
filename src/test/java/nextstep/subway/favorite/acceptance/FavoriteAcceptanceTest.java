@@ -67,8 +67,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(tokenResponse);
         즐겨찾기_목록_조회됨(getResponse, 2);
 
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청();
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(tokenResponse, firstCreateResponse);
         즐겨찾기_삭제됨(deleteResponse);
+
+        ExtractableResponse<Response> getResponseAfterDelete = 즐겨찾기_목록_조회_요청(tokenResponse);
+        즐겨찾기_목록_조회됨(getResponseAfterDelete, 1);
+
     }
 
     @DisplayName("로그인되어있지 않으면 조회 불가")

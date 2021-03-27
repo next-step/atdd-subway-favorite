@@ -38,15 +38,23 @@ public class FavoriteSteps {
                 .extract();
     }
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, int expectedSize) {
-        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<FavoriteResponse> favorites = response.body().jsonPath().getList(".", FavoriteResponse.class);
         assertThat(favorites.size()).isEqualTo(expectedSize);
     }
 
     public static void 즐겨찾기_목록_조회_실패됨(ExtractableResponse<Response> response) {}
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청() {
-        return null;
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
     }
-    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {}
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
