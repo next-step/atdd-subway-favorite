@@ -15,11 +15,11 @@ public class Favorite {
     private Long memberId;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "source_id")
+    @JoinColumn(name = "source")
     private Station source;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "target_id")
+    @JoinColumn(name = "target")
     private Station target;
 
     public Favorite() {

@@ -4,14 +4,12 @@ import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.favorite.exception.NotFoundAuthenticationException;
+import nextstep.subway.auth.exception.NotFoundAuthenticationException;
 import nextstep.subway.member.domain.LoginMember;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
 import java.net.URI;
 
 @RestController
@@ -26,9 +24,9 @@ public class FavoriteController {
 
     @PostMapping
     public ResponseEntity create(@RequestBody FavoriteRequest favoriteRequest,
-                                 @AuthenticationPrincipal LoginMember loginMember) throws AuthenticationException {
+                                 @AuthenticationPrincipal LoginMember loginMember) {
         FavoriteResponse favorite = favoriteService.save(loginMember.getId(), favoriteRequest);
-        return ResponseEntity.created(URI.create("/favorites/" + loginMember.getId())).body(favorite);
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
 
     @GetMapping
@@ -37,8 +35,8 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{favoriteId}")
-    public ResponseEntity remove(@PathVariable long favoriteId) {
-        favoriteService.delete(favoriteId);
+    public ResponseEntity remove(@PathVariable long favoriteId, @AuthenticationPrincipal LoginMember loginMember) {
+        favoriteService.delete(favoriteId, loginMember);
         return ResponseEntity.noContent().build();
     }
 

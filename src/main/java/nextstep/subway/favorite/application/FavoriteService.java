@@ -4,6 +4,8 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.auth.exception.NotFoundAuthenticationException;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -24,24 +26,28 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public FavoriteResponse save(Long userId, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse save(long memberId, FavoriteRequest favoriteRequest) {
         Station sourceStation = stationService.findById(favoriteRequest.getSource());
         Station targetStation = stationService.findById(favoriteRequest.getTarget());
 
-        Favorite favorite = favoriteRepository.save(Favorite.of(userId, sourceStation, targetStation));
+        Favorite favorite = favoriteRepository.save(Favorite.of(memberId, sourceStation, targetStation));
         return FavoriteResponse.of(favorite);
     }
 
 
     public List<FavoriteResponse> getAll(long memberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public void delete(long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
-        favoriteRepository.delete(favorite);
+    public void delete(long favoriteId, LoginMember loginMember) {
+        if (loginMember == null) {
+            throw new NotFoundAuthenticationException();
+        }
+
+        favoriteRepository.deleteById(favoriteId);
     }
 }
