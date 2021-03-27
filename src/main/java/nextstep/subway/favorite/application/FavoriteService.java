@@ -11,7 +11,11 @@ import java.util.List;
 @Service
 @Transactional
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+//    private FavoriteRepository favoriteRepository;
+
+//    public FavoriteService(FavoriteRepository favoriteRepository) {
+//        this.favoriteRepository = favoriteRepository;
+//    }
 
     public List<FavoriteResponse> findFavoritesByMemberId(Long memberId) {
         return null;
