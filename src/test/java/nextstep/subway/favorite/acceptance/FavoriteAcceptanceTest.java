@@ -86,6 +86,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_목록_조회됨(response);
 	}
 
+	@DisplayName("권한 없이 즐겨찾기 목록을 조회한다")
+	@Test
+	void getFavoritesWithoutToken() {
+		// given
+		Map<String, String> favoritesParams = new HashMap<>();
+		favoritesParams.put("source", 교대역.getId() + "");
+		favoritesParams.put("target", 양재역.getId() + "");
+		즐겨찾기_생성_요청(ACCESS_TOKEN, favoritesParams);
+
+		// when
+		ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청("");
+
+		// then
+		즐겨찾기_목록_조회_실패(response);
+	}
+
 	@DisplayName("즐겨찾기 삭제를 요청한다")
 	@Test
 	void deleteFavorites() {
@@ -167,5 +183,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.pathParam("favoriteId", 1L)
 			.when().delete("/favorites/{favoriteId}")
 			.then().log().all().extract();
+	}
+
+	private void 즐겨찾기_목록_조회_실패(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 }
