@@ -4,7 +4,7 @@ import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.infrastructure.converter.AuthenticationConverter;
+import nextstep.subway.auth.domain.converter.AuthenticationConverter;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

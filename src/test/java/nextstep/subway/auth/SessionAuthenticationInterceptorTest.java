@@ -1,8 +1,8 @@
 package nextstep.subway.auth;
 
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.infrastructure.converter.AuthenticationConverter;
-import nextstep.subway.auth.infrastructure.converter.SessionAuthenticationConverter;
+import nextstep.subway.auth.domain.converter.AuthenticationConverter;
+import nextstep.subway.auth.domain.converter.SessionAuthenticationConverter;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
