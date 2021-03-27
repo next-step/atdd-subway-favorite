@@ -105,7 +105,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기 정보를 관리한다")
 	@Test
 	void manageFavorites() {
+		// given
+		Map<String, String> favoritesParams = new HashMap<>();
+		favoritesParams.put("source", 교대역.getId() + "");
+		favoritesParams.put("target", 양재역.getId() + "");
 
+		// when
+		ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(ACCESS_TOKEN, favoritesParams);
+
+		// then
+		즐겨찾기_생성됨(createResponse);
+
+		// when
+		ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(ACCESS_TOKEN);
+
+		// then
+		즐겨찾기_목록_조회됨(response);
+
+		// when
+		ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(ACCESS_TOKEN);
+
+		// then
+		즐겨찾기_삭제됨(deleteResponse);
 	}
 
 	private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
