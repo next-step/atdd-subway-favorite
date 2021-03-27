@@ -39,6 +39,10 @@ public class Favorite extends BaseEntity {
         this.target = target;
     }
 
+    public boolean validateFavoriteOfMine(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
+
     public Long getId() {
         return id;
     }

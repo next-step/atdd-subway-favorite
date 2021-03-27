@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteAlreadyExistException;
+import nextstep.subway.favorite.exception.InvalidFavoriteMemberException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -98,11 +99,22 @@ class FavoriteServiceTest {
         favoriteService.addFavorite(MEMBER_ID, favoriteRequest2);
 
         // when
-        favoriteService.removeFavorite(addedFavoriteId1);
+        favoriteService.removeFavorite(addedFavoriteId1, MEMBER_ID);
 
         // then
         List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavoriteResponsesByMemberId(MEMBER_ID);
         assertThat(favoriteResponses).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("자신이 등록하지 않은 즐겨찾기 제거시 Exception 발생")
+    void validateRemoveOtherFavorite() {
+        // given
+        Long addedFavoriteId = favoriteService.addFavorite(MEMBER_ID, favoriteRequest);
+
+        // when & then
+        assertThatExceptionOfType(InvalidFavoriteMemberException.class)
+                .isThrownBy(() -> favoriteService.removeFavorite(addedFavoriteId, 2L));
     }
 
     private List<Long> getResultStationResponsesIds(List<FavoriteResponse> favoriteResponses) {

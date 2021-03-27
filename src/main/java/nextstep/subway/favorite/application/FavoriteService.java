@@ -5,6 +5,8 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteAlreadyExistException;
+import nextstep.subway.favorite.exception.InvalidFavoriteMemberException;
+import nextstep.subway.member.exception.FavoriteNonExistException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,11 @@ public class FavoriteService {
         }
     }
 
-    public void removeFavorite(Long favoriteId) {
+    public void removeFavorite(Long favoriteId, Long memberId) {
+        Favorite favorite = findFavoriteById(favoriteId);
+        if (!favorite.validateFavoriteOfMine(memberId)) {
+             throw new InvalidFavoriteMemberException();
+        }
         favoriteRepository.deleteById(favoriteId);
     }
 
@@ -58,5 +64,11 @@ public class FavoriteService {
     @Transactional(readOnly = true)
     public List<Favorite> findAllFavoritesByMemberId(Long memberId) {
         return favoriteRepository.findAllByMemberId(memberId);
+    }
+
+    @Transactional(readOnly = true)
+    public Favorite findFavoriteById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                .orElseThrow(FavoriteNonExistException::new);
     }
 }

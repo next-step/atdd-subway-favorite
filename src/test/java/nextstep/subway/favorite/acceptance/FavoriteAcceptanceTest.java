@@ -21,6 +21,7 @@ import static nextstep.subway.station.acceptance.StationRequestSteps.지하철_�
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "email@email.com";
+    private static final String OTHER_EMAIL = "otherEmail@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
@@ -40,6 +41,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철_역_등록_됨("양재역").as(StationResponse.class);
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(OTHER_EMAIL, PASSWORD, AGE);
     }
 
     @Test
@@ -107,5 +109,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_즐겨찾기_제거_됨(response);
+    }
+
+    @Test
+    @DisplayName("자신이 등록하지 않은 즐겨찾기 제거시 Exception 발생")
+    void validateRemoveOtherFavorite() {
+        // given
+        로그인_멤버_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        TokenResponse 다른_사용자_멤버_토큰 = 로그인_되어_있음(OTHER_EMAIL, PASSWORD);
+        ExtractableResponse<Response> addedFavoriteResponse = 지하철_즐겨찾기_추가_요청(다른_사용자_멤버_토큰, 강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_제거_요청(로그인_멤버_토큰, 지하철_즐겨찾기_생성된_ID(addedFavoriteResponse));
+
+        // then
+        지하철_즐겨찾기_제거_실패_됨(response);
     }
 }

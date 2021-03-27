@@ -53,4 +53,8 @@ public class FavoriteVerificationSteps {
         String location = response.header("Location");
         return Long.valueOf(location.split("/")[2]);
     }
+
+    public static void 지하철_즐겨찾기_제거_실패_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
 }

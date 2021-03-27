@@ -1,11 +1,14 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.common.exception.ErrorResponse;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.InvalidFavoriteMemberException;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +49,13 @@ public class FavoriteController {
     @DeleteMapping(value = "/{favoriteId}")
     public ResponseEntity<Void> removeFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                @PathVariable Long favoriteId) {
-        favoriteService.removeFavorite(favoriteId);
+        favoriteService.removeFavorite(favoriteId, loginMember.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(InvalidFavoriteMemberException.class)
+    public ResponseEntity<ErrorResponse> invalidFavoriteMemberExceptionHandler(RuntimeException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 }
