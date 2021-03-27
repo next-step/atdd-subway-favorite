@@ -73,7 +73,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기 목록을 조회한다")
 	@Test
 	void getFavorites() {
+		// given
+		Map<String, String> favoritesParams = new HashMap<>();
+		favoritesParams.put("source", 교대역.getId() + "");
+		favoritesParams.put("target", 양재역.getId() + "");
+		즐겨찾기_생성_요청(ACCESS_TOKEN, favoritesParams);
 
+		// when
+		ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(ACCESS_TOKEN);
+
+		// then
+		즐겨찾기_목록_조회됨(response);
 	}
 
 	@DisplayName("즐겨찾기 삭제를 요청한다")
@@ -100,6 +110,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.body(params)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().post("/favorites")
+			.then().log().all().extract();
+	}
+
+	private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.when().get("/favorites")
 			.then().log().all().extract();
 	}
 }
