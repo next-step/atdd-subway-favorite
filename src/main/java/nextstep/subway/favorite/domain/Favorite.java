@@ -28,6 +28,10 @@ public class Favorite extends BaseEntity {
         this.memberId = memberId;
     }
 
+    public boolean isOwnedBy(Long member) {
+        return member == memberId;
+    }
+
     public Long getId() {
         return id;
     }

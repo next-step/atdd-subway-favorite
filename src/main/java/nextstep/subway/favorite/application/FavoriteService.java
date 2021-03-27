@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,8 +39,13 @@ public class FavoriteService {
         return FavoriteResponse.of(persistFavorite);
     }
 
-    public void removeFavorite(Long id) {
+    public void removeFavorite(Long memberId, Long id) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        if (!favorite.isOwnedBy(memberId)) {
+            throw new UnauthorizedFavoriteAccessException();
+        }
         favoriteRepository.deleteById(id);
     }
+
 
 }
