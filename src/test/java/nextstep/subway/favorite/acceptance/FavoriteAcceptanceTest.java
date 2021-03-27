@@ -72,7 +72,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @DisplayName("로그인되어있지 않으면 조회 불가")
+    @DisplayName("유효하지 않은 로그인 정보로는 조회 불가")
     @Test
     void getFavoritesWithoutLogin() {
         // given
@@ -81,8 +81,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(firstCreateResponse);
 
         // when, then
-        ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(new TokenResponse("randomtoken"));
-        즐겨찾기_목록_조회_실패됨(getResponse);
+        ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(new TokenResponse(""));
+        즐겨찾기_목록_조회_권한없음(getResponse);
     }
 
     @DisplayName("다른 유저의 즐겨찾기는 삭제 불가")

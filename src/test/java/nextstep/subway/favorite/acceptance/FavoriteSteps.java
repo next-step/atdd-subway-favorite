@@ -43,7 +43,9 @@ public class FavoriteSteps {
         assertThat(favorites.size()).isEqualTo(expectedSize);
     }
 
-    public static void 즐겨찾기_목록_조회_실패됨(ExtractableResponse<Response> response) {}
+    public static void 즐겨찾기_목록_조회_권한없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, ExtractableResponse<Response> response) {
         String uri = response.header("Location");

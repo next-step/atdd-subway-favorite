@@ -1,7 +1,7 @@
 package nextstep.subway.favorite.ui;
 
+import nextstep.subway.auth.application.InvalidAuthenticationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.User;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.application.UnauthorizedFavoriteAccessException;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -31,18 +31,20 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember member) {
+        System.out.println(member.toString());
         List<FavoriteResponse> responses = favoriteService.findFavoritesByMemberId(member.getId());
         return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity removeFavorite(@AuthenticationPrincipal LoginMember member, @PathVariable Long id) {
-        try {
             favoriteService.removeFavorite(member.getId(), id);
             return ResponseEntity.noContent().build();
-        } catch (UnauthorizedFavoriteAccessException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
     }
 
+    @ExceptionHandler({InvalidAuthenticationException.class, UnauthorizedFavoriteAccessException.class})
+    public ResponseEntity handleInvalidAuthenticationException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }
+
