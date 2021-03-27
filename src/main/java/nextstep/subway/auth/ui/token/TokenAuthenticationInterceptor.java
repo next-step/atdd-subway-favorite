@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.token;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
@@ -30,22 +31,25 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         // 요청으로 들어온 인증정보 확인
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
+        // 토큰 생성및 응답객체에 세팅
+        TokenResponse tokenResponse = getTokenResponse(authentication);
+        setTokenRespose(response, tokenResponse);
+        return false;
+    }
 
-        if (authentication == null) {
-            throw new RuntimeException("인증에 실패하였습니다.");
-        }
-
-        // TokenResponse를 응답
-        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
-        String token = jwtTokenProvider.createToken(payload);
-        TokenResponse tokenResponse = new TokenResponse(token);
-
+    private void setTokenRespose(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
+    }
 
-        return false;
+    private TokenResponse getTokenResponse(Authentication authentication) throws JsonProcessingException {
+        // Authentication -> TokenResponse
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        TokenResponse tokenResponse = new TokenResponse(token);
+        return tokenResponse;
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {

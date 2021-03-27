@@ -30,7 +30,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
 
         SecurityContext securityContext = extractSecurityContext(credentials);
         if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext);
+            SecurityContextHolder.setContext(securityContext); // 외부상태 변경 코드?? 테스트 하기 어려움
         }
         return true;
     }
