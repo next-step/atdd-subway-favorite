@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.ui;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.LoginMember;
 
 @RestController
@@ -32,8 +34,8 @@ public class FavoriteController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getFavorites(@AuthenticationPrincipal LoginMember member) {
-		return ResponseEntity.ok().build();
+	public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember member) {
+		return ResponseEntity.ok(favoriteService.getFavorites(member.getId()));
 	}
 
 }
