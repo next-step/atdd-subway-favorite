@@ -39,4 +39,8 @@ public class Favorite extends BaseEntity {
     public Station getTarget() {
         return target;
     }
+
+    public Long getMemberId() {
+        return memberId;
+    }
 }

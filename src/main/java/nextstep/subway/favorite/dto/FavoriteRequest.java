@@ -10,4 +10,16 @@ public class FavoriteRequest {
         this.target = target;
         this.memberId = memberId;
     }
+
+    public Long getSource() {
+        return source;
+    }
+
+    public Long getTarget() {
+        return target;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
 }
