@@ -62,4 +62,21 @@ class FavoriteServiceTest {
 		// then
 		assertThat(favorites.size()).isEqualTo(2);
 	}
+
+	@DisplayName("즐겨찾기 삭제")
+	@Test
+	void deleteFavorite() {
+		// given
+		final Station 천안역 = stationRepository.save(new Station("천안역"));
+		final Station 아산역 = stationRepository.save(new Station("아산역"));
+		favoriteService.createFavorite(MEMBER_ID, new FavoriteRequest(강남역.getId(), 양재역.getId()));
+		final Long targetId = favoriteService.createFavorite(MEMBER_ID, new FavoriteRequest(천안역.getId(), 아산역.getId()));
+
+		// when
+		favoriteService.deleteFavorite(targetId);
+
+		// then
+		List<FavoriteResponse> favorites = favoriteService.getFavorites(MEMBER_ID);
+		assertThat(favorites.size()).isEqualTo(1);
+	}
 }

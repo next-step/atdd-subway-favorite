@@ -89,7 +89,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기 삭제를 요청한다")
 	@Test
 	void deleteFavorites() {
+		// given
+		Map<String, String> favoritesParams = new HashMap<>();
+		favoritesParams.put("source", 교대역.getId() + "");
+		favoritesParams.put("target", 양재역.getId() + "");
+		즐겨찾기_생성_요청(ACCESS_TOKEN, favoritesParams);
 
+		// when
+		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(ACCESS_TOKEN);
+
+		// then
+		즐겨찾기_삭제됨(response);
 	}
 
 	@DisplayName("즐겨찾기 정보를 관리한다")
@@ -122,6 +132,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.given().log().all()
 			.auth().oauth2(accessToken)
 			.when().get("/favorites")
+			.then().log().all().extract();
+	}
+
+	private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.pathParam("favoriteId", 1L)
+			.when().delete("/favorites/{favoriteId}")
 			.then().log().all().extract();
 	}
 }

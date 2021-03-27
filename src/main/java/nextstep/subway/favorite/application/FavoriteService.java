@@ -3,7 +3,6 @@ package nextstep.subway.favorite.application;
 import static java.util.stream.Collectors.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,5 +41,9 @@ public class FavoriteService {
 		return favorites.stream()
 			.map(FavoriteResponse::of)
 			.collect(toList());
+	}
+
+	public void deleteFavorite(Long favoriteId) {
+		favoriteRepository.deleteById(favoriteId);
 	}
 }
