@@ -7,7 +7,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,8 @@ import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.라인_요청_PARAM;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
-import static nextstep.subway.member.MemberSteps.*;
+import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.member.MemberSteps.회원_생성_요청;
 import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,11 +57,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public void inquiryFavorite() {
         //given
         회원정보_등록();
-        로그인();
-        즐겨찾기_등록(강남역, 광교역);
+        TokenResponse tokenResponse = 로그인();
+        로그인_후_즐겨찾기_등록(tokenResponse.getAccessToken(), 강남역, 광교역);
 
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_조회();
+        ExtractableResponse<Response> response = 로그인_후_즐겨찾기_조회(tokenResponse.getAccessToken());
 
         //then
         즐겨찾기_조회됨(response);
@@ -73,7 +73,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     public void inquiryFavoriteUnAuthorized() {
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_조회();
+        ExtractableResponse<Response> response = 로그인_없이_즐겨찾기_조회();
 
         //then
         권한없음_401_오류(response);
@@ -84,10 +84,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public void createFavorite() {
         //given
         회원정보_등록();
-        로그인();
+        TokenResponse tokenResponse = 로그인();
 
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_등록(강남역, 광교역);
+        ExtractableResponse<Response> response = 로그인_후_즐겨찾기_등록(tokenResponse.getAccessToken(), 강남역, 광교역);
 
         //then
         즐겨찾기_등록됨(response);
@@ -97,7 +97,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     public void createFavoriteUnAuthorized() {
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_등록(강남역, 광교역);
+        ExtractableResponse<Response> response = 로그인_없이_즐겨찾기_등록(강남역, 광교역);
 
         //then
         권한없음_401_오류(response);
@@ -106,8 +106,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("같은 source/target으로 즐겨찾기 등록시 실패")
     @Test
     public void createFavoriteWithSameSourceTarget() {
+        //given
+        회원정보_등록();
+        TokenResponse tokenResponse = 로그인();
+
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_등록(강남역, 강남역);
+        ExtractableResponse<Response> response = 로그인_후_즐겨찾기_등록(tokenResponse.getAccessToken(), 강남역, 강남역);
 
         //then
         즐겨찾기_등록_실패(response);
@@ -117,11 +121,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
     }
 
-    private void 로그인() {
-        로그인_되어_있음(EMAIL, PASSWORD);
+    private TokenResponse 로그인() {
+        return 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_등록(StationResponse source, StationResponse target) {
+    private ExtractableResponse<Response> 로그인_없이_즐겨찾기_등록(StationResponse source, StationResponse target) {
+
         Map<String, Long> requestParam = new HashMap<>();
         requestParam.put("source", source.getId());
         requestParam.put("target", target.getId());
@@ -134,16 +139,46 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_조회() {
+    private ExtractableResponse<Response> 로그인_후_즐겨찾기_등록(String token, StationResponse source, StationResponse target) {
+        Map<String, Long> requestParam = new HashMap<>();
+        requestParam.put("source", source.getId());
+        requestParam.put("target", target.getId());
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(requestParam)
+                .when().post("/favorites")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 로그인_없이_즐겨찾기_조회() {
         return RestAssured
                 .given().log().all()
                 .when().get("/favorites")
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_삭제(Long id) {
+    private ExtractableResponse<Response> 로그인_후_즐겨찾기_조회(String token) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
+                .when().get("/favorites")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 로그인_없이_즐겨찾기_삭제(Long id) {
+        return RestAssured
+                .given().log().all()
+                .when().delete("/favorites/{id}", id)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 로그인_후_즐겨찾기_삭제(String token, Long id) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
                 .when().delete("/favorites/{id}", id)
                 .then().log().all().extract();
     }

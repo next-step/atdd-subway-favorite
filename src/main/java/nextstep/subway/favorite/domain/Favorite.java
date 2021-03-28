@@ -30,4 +30,16 @@ public class Favorite extends BaseEntity {
         this.source = source;
         this.target = target;
     }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public Station getSource() {
+        return this.source;
+    }
+
+    public Station getTarget() {
+        return this.target;
+    }
 }
