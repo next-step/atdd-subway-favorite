@@ -7,7 +7,7 @@ import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.AuthorizationType;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.SecurityContextInterceptor;
+import nextstep.subway.auth.ui.base.SecurityContextInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;

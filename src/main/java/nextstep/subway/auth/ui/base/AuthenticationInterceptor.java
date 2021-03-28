@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui;
+package nextstep.subway.auth.ui.base;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;

@@ -1,7 +1,7 @@
 package nextstep.subway.auth.ui.session;
 
 import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.ui.SecurityContextInterceptor;
+import nextstep.subway.auth.ui.base.SecurityContextInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 
