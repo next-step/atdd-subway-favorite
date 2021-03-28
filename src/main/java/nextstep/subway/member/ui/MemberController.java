@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 import nextstep.subway.member.application.MemberService;
@@ -44,10 +45,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
-        return ResponseEntity.ok(MemberResponse.login(loginMember));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse member = memberService.findMember(loginMember.getId());
+        return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/me")
