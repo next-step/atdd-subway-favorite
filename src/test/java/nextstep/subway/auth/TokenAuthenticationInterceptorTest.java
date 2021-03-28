@@ -5,6 +5,9 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.AuthenticationConverter;
+import nextstep.subway.auth.ui.AuthenticationInterceptor;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -31,24 +34,28 @@ class TokenAuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private MockHttpServletRequest request;
-    private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
+    private AuthenticationInterceptor tokenAuthenticationInterceptor;
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
+    private AuthenticationConverter authenticationConverter;
 
     @BeforeEach
     void setUp() throws IOException{
         request = createMockRequest(EMAIL, PASSWORD);
         customUserDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
+        objectMapper = new ObjectMapper();
         tokenAuthenticationInterceptor =
-                new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+                new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
+        authenticationConverter = new TokenAuthenticationConverter(objectMapper);
     }
 
     @DisplayName("request를 auth token으로")
     @Test
     void convert() throws IOException {
         //when
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(request);
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
 
         //then
         assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
