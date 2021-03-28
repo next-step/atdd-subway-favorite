@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui;
 
+import nextstep.subway.auth.application.InvalidAuthenticationException;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
@@ -21,11 +22,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof Map) {
-            return extractPrincipal(parameter, authentication);
-        }
+        try {
+            if (authentication.getPrincipal() instanceof Map) {
+                return extractPrincipal(parameter, authentication);
+            }
 
-        return authentication.getPrincipal();
+            return authentication.getPrincipal();
+        } catch (Exception e) {
+            throw new InvalidAuthenticationException();
+        }
     }
 
     private Object extractPrincipal(MethodParameter parameter, Authentication authentication) {

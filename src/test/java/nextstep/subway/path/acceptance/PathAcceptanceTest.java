@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_생성_요청;
-import static nextstep.subway.line.acceptance.LineSteps.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.acceptance.LineSteps.*;
 import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,16 +56,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_거리_경로_응답됨(response);
-    }
-
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-        params.put("upStationId", upStation.getId() + "");
-        params.put("downStationId", downStation.getId() + "");
-        params.put("distance", distance + "");
-        return 지하철_노선_생성_요청(params).as(LineResponse.class);
     }
 
     private ExtractableResponse<Response> 두_역의_최단_거리_경로_조회를_요청(Long source, Long target) {

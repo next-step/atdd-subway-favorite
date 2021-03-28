@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui;
 
+import nextstep.subway.auth.application.UserDetailsService;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.domain.User;
@@ -14,7 +15,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     private UserDetailsService userDetailsService;
     private AuthenticationConverter authenticationConverter;
 
-    public AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
+    protected AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
         this.userDetailsService = userDetailsService;
         this.authenticationConverter = authenticationConverter;
     }
