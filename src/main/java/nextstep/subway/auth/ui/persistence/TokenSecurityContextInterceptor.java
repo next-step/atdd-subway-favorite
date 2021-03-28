@@ -3,10 +3,12 @@ package nextstep.subway.auth.ui.persistence;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.infrastructure.*;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import nextstep.subway.auth.infrastructure.AuthorizationType;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.infrastructure.SecurityContext;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public class TokenSecurityContextInterceptor extends SecurityContextInterceptor{
@@ -17,21 +19,12 @@ public class TokenSecurityContextInterceptor extends SecurityContextInterceptor{
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
-
+    public SecurityContext getSecurityContext(HttpServletRequest request) {
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return true;
+            return null;
         }
-
-        SecurityContext securityContext = extractSecurityContext(credentials);
-        if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext); // 외부상태 변경 코드?? 테스트 하기 어려움
-        }
-        return true;
+        return extractSecurityContext(credentials);
     }
 
     private SecurityContext extractSecurityContext(String credentials) {

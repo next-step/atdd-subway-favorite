@@ -40,7 +40,6 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor{
     }
 
     private TokenResponse getTokenResponse(Authentication authentication) throws JsonProcessingException {
-        // Authentication -> TokenResponse
         String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = new TokenResponse(token);

@@ -8,7 +8,6 @@ import nextstep.subway.auth.ui.converter.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.converter.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.persistence.SessionSecurityContextInterceptor;
 import nextstep.subway.auth.ui.persistence.TokenSecurityContextInterceptor;
-import nextstep.subway.member.application.CustomUserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
