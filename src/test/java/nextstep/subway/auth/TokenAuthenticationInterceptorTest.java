@@ -59,15 +59,23 @@ class TokenAuthenticationInterceptorTest {
                 .thenReturn(new LoginMember(null, EMAIL, PASSWORD, AGE));
 
         // when
-        Authentication authenticate = interceptor.authenticate(authenticationToken);
+        Authentication authenticate = Authentication_요청(authenticationToken);
 
         // then
-        assertThat(((LoginMember) authenticate.getPrincipal()).getEmail()).isEqualTo(EMAIL);
-        assertThat(((LoginMember) authenticate.getPrincipal()).getPassword()).isEqualTo(PASSWORD);
+        Authentication_요청됨(authenticate);
     }
 
     @Test
     void preHandle() throws IOException {
+    }
+
+    private void Authentication_요청됨(Authentication authenticate) {
+        assertThat(((LoginMember) authenticate.getPrincipal()).getEmail()).isEqualTo(EMAIL);
+        assertThat(((LoginMember) authenticate.getPrincipal()).getPassword()).isEqualTo(PASSWORD);
+    }
+
+    private Authentication Authentication_요청(AuthenticationToken authenticationToken) {
+        return interceptor.authenticate(authenticationToken);
     }
 
     private void AuthenticationToken_요청됨(AuthenticationToken token) {
