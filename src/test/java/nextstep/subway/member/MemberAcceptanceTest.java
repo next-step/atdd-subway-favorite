@@ -5,12 +5,15 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.member.dto.MemberResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.member.MemberSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -110,6 +113,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         내_정보_조회됨(response, EMAIL);
+    }
+
+    @DisplayName("내 정보를 수정한다")
+    @Test
+    void updateMemberOfMine() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .body(new MemberRequest(NEW_EMAIL, NEW_PASSWORD, AGE))
+                .when().put("/members/me")
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("나의 정보를 관리한다.")
