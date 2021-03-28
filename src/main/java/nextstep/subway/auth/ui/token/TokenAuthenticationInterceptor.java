@@ -33,11 +33,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         Authentication authentication = authenticate(authenticationToken);
         // 토큰 생성및 응답객체에 세팅
         TokenResponse tokenResponse = getTokenResponse(authentication);
-        setTokenRespose(response, tokenResponse);
+        setTokenResponse(response, tokenResponse);
         return false;
     }
 
-    private void setTokenRespose(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+    private void setTokenResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
