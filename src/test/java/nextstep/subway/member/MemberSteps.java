@@ -6,8 +6,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberResponse;
+import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +36,6 @@ public class MemberSteps {
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
-    }
-
-    public static MemberResponse 회원_생성_되어_있음(String email, String password, Integer age) {
-        return 회원_생성_요청(email, password, age)
-                .as(MemberResponse.class);
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -126,5 +123,18 @@ public class MemberSteps {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 내_정보_조회됨(ExtractableResponse<Response> response, String email) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().as(MemberResponse.class).getEmail()).isEqualTo(email);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().get("/members/me")
+                .then().log().all().extract();
     }
 }

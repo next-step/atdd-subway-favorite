@@ -102,18 +102,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void findMemberOfMine() {
         // given
-        회원_생성_되어_있음(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().get("/members/me")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 내_정보_조회_요청(tokenResponse);
 
         // then
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        내_정보_조회됨(response, EMAIL);
     }
 
     @DisplayName("나의 정보를 관리한다.")
