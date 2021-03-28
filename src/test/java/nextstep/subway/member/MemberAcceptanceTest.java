@@ -136,15 +136,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().delete("/members/me")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 내_정보_삭제_요청(tokenResponse);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
+        내_정보_삭제됨(response);
     }
 
     @DisplayName("나의 정보를 관리한다.")
