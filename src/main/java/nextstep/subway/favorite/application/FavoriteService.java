@@ -33,20 +33,16 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> getFavorites(Long memberId) {
-        return favoriteRepository.findAll().stream()
-                .filter(it -> it.isOwner(memberId))
+        return favoriteRepository.findByMemberId(memberId).stream()
                 .map(it -> FavoriteResponse.of(it))
                 .collect(Collectors.toList());
     }
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Optional<Favorite> favoriteOptional = favoriteRepository.findById(favoriteId);
+        Favorite favorite = Optional.ofNullable(favoriteRepository.findById(favoriteId))
+                .map(Optional::get)
+                .orElseThrow(() -> new RuntimeException());
 
-        if (!favoriteOptional.isPresent()) {
-            throw new RuntimeException();
-        }
-
-        Favorite favorite = favoriteOptional.get();
         if (!favorite.isOwner(memberId)) {
             throw new UnauthorizedException();
         }

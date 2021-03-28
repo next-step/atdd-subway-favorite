@@ -20,4 +20,16 @@ public class FavoriteRequest {
     public Long getTarget() {
         return target;
     }
+
+    public boolean isValid() {
+        if (source == null || target == null) {
+            return false;
+        }
+
+        if (source < 0 || target < 0) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -25,6 +25,10 @@ public class FavoriteSteps {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    public static void 지하철_즐겨찾기_생성_실패됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 지하철_즐겨찾기_조회_요청(String token) {
         return RestAssured
                 .given().log().all().accept(MediaType.APPLICATION_JSON_VALUE)
