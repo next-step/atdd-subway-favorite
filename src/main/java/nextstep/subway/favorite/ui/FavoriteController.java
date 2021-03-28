@@ -44,7 +44,7 @@ public class FavoriteController {
 	public ResponseEntity<Void> deleteFavorite(
 		@AuthenticationPrincipal LoginMember member,
 		@PathVariable Long favoriteId) {
-		favoriteService.deleteFavorite(favoriteId);
+		favoriteService.deleteFavorite(member.getId(), favoriteId);
 		return ResponseEntity.noContent().build();
 	}
 

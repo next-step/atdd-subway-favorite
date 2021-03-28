@@ -11,6 +11,8 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.AccessDeniedException;
+import nextstep.subway.favorite.exception.NotFoundFavoriteException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -43,7 +45,18 @@ public class FavoriteService {
 			.collect(toList());
 	}
 
-	public void deleteFavorite(Long favoriteId) {
-		favoriteRepository.deleteById(favoriteId);
+	public void deleteFavorite(Long memberId, Long favoriteId) {
+		final Favorite findFavorite = favoriteRepository.findById(favoriteId)
+			.orElseThrow(NotFoundFavoriteException::new);
+
+		validateAccess(memberId, findFavorite);
+
+		favoriteRepository.delete(findFavorite);
+	}
+
+	private void validateAccess(Long memberId, Favorite findFavorite) {
+		if (findFavorite.isOwner(memberId)) {
+			throw new AccessDeniedException();
+		}
 	}
 }

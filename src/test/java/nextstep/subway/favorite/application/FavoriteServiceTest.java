@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.AccessDeniedException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 
@@ -73,10 +74,26 @@ class FavoriteServiceTest {
 		final Long targetId = favoriteService.createFavorite(MEMBER_ID, new FavoriteRequest(천안역.getId(), 아산역.getId()));
 
 		// when
-		favoriteService.deleteFavorite(targetId);
+		favoriteService.deleteFavorite(MEMBER_ID, targetId);
 
 		// then
 		List<FavoriteResponse> favorites = favoriteService.getFavorites(MEMBER_ID);
 		assertThat(favorites.size()).isEqualTo(1);
+	}
+
+
+	@DisplayName("다른 사람의 즐겨찾기를 삭제하려고 하면 예외 발생")
+	@Test
+	void deleteFavoriteNotAuthorized() {
+		// given
+		final Station 천안역 = stationRepository.save(new Station("천안역"));
+		final Station 아산역 = stationRepository.save(new Station("아산역"));
+		favoriteService.createFavorite(MEMBER_ID, new FavoriteRequest(강남역.getId(), 양재역.getId()));
+		final Long targetId = favoriteService.createFavorite(MEMBER_ID, new FavoriteRequest(천안역.getId(), 아산역.getId()));
+		final long otherMemberId = 2L;
+
+		// when, then
+		assertThatThrownBy(() -> favoriteService.deleteFavorite(otherMemberId, targetId))
+			.isInstanceOf(AccessDeniedException.class);
 	}
 }
