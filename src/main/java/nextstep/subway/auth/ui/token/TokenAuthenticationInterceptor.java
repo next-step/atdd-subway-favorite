@@ -1,5 +1,6 @@
 package nextstep.subway.auth.ui.token;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;
 import nextstep.subway.auth.domain.Authentication;
@@ -37,17 +38,23 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
+        TokenResponse tokenResponse = create(authentication);
+        send(response, tokenResponse);
+        return false;
+    }
 
-        String payload = mapper.writeValueAsString(authentication.getPrincipal());
-        String token = jwtTokenProvider.createToken(payload);
-        TokenResponse tokenResponse = new TokenResponse(token);
-
+    private void send(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
+    }
 
-        return false;
+    private TokenResponse create(Authentication authentication) throws JsonProcessingException {
+        String payload = mapper.writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        TokenResponse tokenResponse = new TokenResponse(token);
+        return tokenResponse;
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
