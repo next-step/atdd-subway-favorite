@@ -5,11 +5,10 @@ import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -135,6 +134,20 @@ public class MemberSteps {
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static void 내_정보_수정_요첨됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, MemberRequest request) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().put("/members/me")
                 .then().log().all().extract();
     }
 }
