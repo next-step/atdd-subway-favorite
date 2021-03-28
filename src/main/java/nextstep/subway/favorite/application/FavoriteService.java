@@ -46,16 +46,16 @@ public class FavoriteService {
 	}
 
 	public void deleteFavorite(Long memberId, Long favoriteId) {
-		final Favorite findFavorite = favoriteRepository.findById(favoriteId)
+		final Favorite favorite = favoriteRepository.findById(favoriteId)
 			.orElseThrow(NotFoundFavoriteException::new);
 
-		validateAccess(memberId, findFavorite);
+		validateAccess(memberId, favorite);
 
-		favoriteRepository.delete(findFavorite);
+		favoriteRepository.delete(favorite);
 	}
 
-	private void validateAccess(Long memberId, Favorite findFavorite) {
-		if (findFavorite.isOwner(memberId)) {
+	private void validateAccess(Long memberId, Favorite favorite) {
+		if (!favorite.isOwner(memberId)) {
 			throw new AccessDeniedException();
 		}
 	}
