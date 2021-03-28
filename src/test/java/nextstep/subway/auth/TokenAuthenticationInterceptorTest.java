@@ -4,23 +4,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.exception.InvalidPasswordException;
 import nextstep.subway.exception.UserDetailsNotExistException;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.awt.*;
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @DisplayName("TokenAuthenticationInterceptor 관련 테스트")
 class TokenAuthenticationInterceptorTest {
@@ -59,7 +65,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() throws IOException {
         // given
         AuthenticationToken authenticationToken = AuthenticationToken_요청();
-        회원_저장되어있음(authenticationToken, new LoginMember(null, EMAIL, PASSWORD, AGE));
+        회원_저장되어있음(new LoginMember(null, EMAIL, PASSWORD, AGE));
 
         // when
         Authentication authenticate = Authentication_요청(authenticationToken);
@@ -73,7 +79,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticateWhenUserNonExist() throws IOException {
         // given
         AuthenticationToken authenticationToken = AuthenticationToken_요청();
-        회원_저장되어있음(authenticationToken, null);
+        회원_저장되어있음(null);
 
         // when
         assertThatThrownBy(() -> Authentication_요청(authenticationToken))
@@ -85,19 +91,33 @@ class TokenAuthenticationInterceptorTest {
     void authenticateWhenUseWrongPassword() throws IOException {
         // given
         AuthenticationToken authenticationToken = AuthenticationToken_요청();
-        회원_저장되어있음(authenticationToken, new LoginMember(null, EMAIL, WRONG_PASSWORD, AGE));
+        회원_저장되어있음(new LoginMember(null, EMAIL, WRONG_PASSWORD, AGE));
 
         // when
         assertThatThrownBy(() -> Authentication_요청(authenticationToken))
                 .isInstanceOf(InvalidPasswordException.class);
     }
 
+    @DisplayName("JWT를 생성하여 응답으로 보낸다")
     @Test
     void preHandle() throws IOException {
+        // given
+        MockHttpServletRequest request = createMockRequest();
+        MockHttpServletResponse response = createMockResponse();
+        회원_저장되어있음(new LoginMember(1L, EMAIL, PASSWORD, AGE));
+        when(tokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+
+        // when
+        interceptor.preHandle(request, response, new Object());
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(response.getContentType()).isEqualTo(APPLICATION_JSON_VALUE);
+        assertThat(response.getOutputStream()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
-    private void 회원_저장되어있음(AuthenticationToken authenticationToken, LoginMember loginMember) {
-        when(userDetailsService.loadUserByUsername(authenticationToken.getPrincipal()))
+    private void 회원_저장되어있음( LoginMember loginMember) {
+        when(userDetailsService.loadUserByUsername(EMAIL))
                 .thenReturn(loginMember);
     }
 
@@ -124,6 +144,11 @@ class TokenAuthenticationInterceptorTest {
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
+    }
+
+    private MockHttpServletResponse createMockResponse() throws IOException {
+        return new MockHttpServletResponse();
+
     }
 
 }
