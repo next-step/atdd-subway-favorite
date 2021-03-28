@@ -1,12 +1,14 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.common.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
-public class Favorite {
+public class Favorite extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long memberId;
