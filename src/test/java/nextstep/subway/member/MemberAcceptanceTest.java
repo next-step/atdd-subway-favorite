@@ -1,10 +1,13 @@
 package nextstep.subway.member;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.member.MemberSteps.*;
 
@@ -92,6 +95,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then : 회원 삭제됨
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("내 정보를 조회한다")
+    @Test
+    void findMemberOfMine() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().get("/members/me")
+                .then().log().all().extract();
+
+        // then
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("나의 정보를 관리한다.")
