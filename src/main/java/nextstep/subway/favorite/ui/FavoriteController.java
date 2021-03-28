@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.exception.AuthenticationFailException;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -36,11 +37,11 @@ public class FavoriteController {
 
     @DeleteMapping("/{favoriteId}")
     public ResponseEntity remove(@PathVariable long favoriteId, @AuthenticationPrincipal LoginMember loginMember) {
-        favoriteService.delete(favoriteId, loginMember);
+        favoriteService.delete(favoriteId, loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(NotFoundAuthenticationException.class)
+    @ExceptionHandler({NotFoundAuthenticationException.class, AuthenticationFailException.class})
     public ResponseEntity handleAuthenticationException(NotFoundAuthenticationException e) {
         return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

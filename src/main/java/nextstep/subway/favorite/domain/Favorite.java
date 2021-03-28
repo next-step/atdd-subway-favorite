@@ -50,4 +50,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean isOwner(long memberId) {
+        return this.memberId == memberId;
+    }
 }
