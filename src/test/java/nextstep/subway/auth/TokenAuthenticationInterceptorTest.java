@@ -18,11 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.awt.*;
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -113,7 +112,7 @@ class TokenAuthenticationInterceptorTest {
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.SC_OK);
         assertThat(response.getContentType()).isEqualTo(APPLICATION_JSON_VALUE);
-        assertThat(response.getOutputStream()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
     private void 회원_저장되어있음( LoginMember loginMember) {
@@ -126,13 +125,13 @@ class TokenAuthenticationInterceptorTest {
         assertThat(((LoginMember) authenticate.getPrincipal()).getPassword()).isEqualTo(PASSWORD);
     }
 
-    private Authentication Authentication_요청(AuthenticationToken authenticationToken) {
-        return interceptor.authenticate(authenticationToken);
-    }
-
     private void AuthenticationToken_요청됨(AuthenticationToken token) {
         assertThat(token.getPrincipal()).isEqualTo(EMAIL);
         assertThat(token.getCredentials()).isEqualTo(PASSWORD);
+    }
+
+    private Authentication Authentication_요청(AuthenticationToken authenticationToken) {
+        return interceptor.authenticate(authenticationToken);
     }
 
     private AuthenticationToken AuthenticationToken_요청() throws IOException {
@@ -148,7 +147,5 @@ class TokenAuthenticationInterceptorTest {
 
     private MockHttpServletResponse createMockResponse() throws IOException {
         return new MockHttpServletResponse();
-
     }
-
 }
