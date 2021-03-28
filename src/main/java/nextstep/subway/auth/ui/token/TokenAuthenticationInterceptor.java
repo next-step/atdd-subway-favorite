@@ -71,5 +71,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         if (userDetails == null) {
             throw new UserDetailsNotExistException();
         }
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new InvalidPasswordException();
+        }
     }
 }

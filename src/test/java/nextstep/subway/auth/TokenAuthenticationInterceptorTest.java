@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
+import nextstep.subway.exception.InvalidPasswordException;
 import nextstep.subway.exception.UserDetailsNotExistException;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -26,6 +27,7 @@ class TokenAuthenticationInterceptorTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
+    private static final String WRONG_PASSWORD = "wrongPassword";
     private static final int AGE = 20;
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
@@ -76,6 +78,18 @@ class TokenAuthenticationInterceptorTest {
         // when
         assertThatThrownBy(() -> Authentication_요청(authenticationToken))
                 .isInstanceOf(UserDetailsNotExistException.class);
+    }
+
+    @DisplayName("비밀번호가 다를 때, Authentication 객체를 생성한다")
+    @Test
+    void authenticateWhenUseWrongPassword() throws IOException {
+        // given
+        AuthenticationToken authenticationToken = AuthenticationToken_요청();
+        회원_저장되어있음(authenticationToken, new LoginMember(null, EMAIL, WRONG_PASSWORD, AGE));
+
+        // when
+        assertThatThrownBy(() -> Authentication_요청(authenticationToken))
+                .isInstanceOf(InvalidPasswordException.class);
     }
 
     @Test
