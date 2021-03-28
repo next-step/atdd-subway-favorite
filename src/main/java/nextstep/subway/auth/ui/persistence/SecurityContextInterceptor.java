@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui.session;
+package nextstep.subway.auth.ui.persistence;
 
 import nextstep.subway.auth.infrastructure.SecurityContext;
 import nextstep.subway.auth.infrastructure.SecurityContextHolder;
@@ -7,24 +7,26 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+public abstract class SecurityContextInterceptor implements HandlerInterceptor {
 
-public class SessionSecurityContextPersistenceInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             return true;
         }
 
-        SecurityContext securityContext = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        SecurityContext securityContext = getSecurityContext(request);
+
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }
         return true;
     }
 
-    @Override // view 랜더링 이후
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    abstract SecurityContext getSecurityContext(HttpServletRequest request);
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         SecurityContextHolder.clearContext();
     }
 }
