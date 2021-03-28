@@ -57,8 +57,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() throws IOException {
         // given
         AuthenticationToken authenticationToken = AuthenticationToken_요청();
-        when(userDetailsService.loadUserByUsername(authenticationToken.getPrincipal()))
-                .thenReturn(new LoginMember(null, EMAIL, PASSWORD, AGE));
+        회원_저장되어있음(authenticationToken, new LoginMember(null, EMAIL, PASSWORD, AGE));
 
         // when
         Authentication authenticate = Authentication_요청(authenticationToken);
@@ -72,8 +71,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticateWhenUserNonExist() throws IOException {
         // given
         AuthenticationToken authenticationToken = AuthenticationToken_요청();
-        when(userDetailsService.loadUserByUsername(authenticationToken.getPrincipal()))
-                .thenReturn(null);
+        회원_저장되어있음(authenticationToken, null);
 
         // when
         assertThatThrownBy(() -> Authentication_요청(authenticationToken))
@@ -82,6 +80,11 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
+    }
+
+    private void 회원_저장되어있음(AuthenticationToken authenticationToken, LoginMember loginMember) {
+        when(userDetailsService.loadUserByUsername(authenticationToken.getPrincipal()))
+                .thenReturn(loginMember);
     }
 
     private void Authentication_요청됨(Authentication authenticate) {
