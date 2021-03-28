@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
+import nextstep.subway.exception.UserDetailsNotExistException;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +65,19 @@ class TokenAuthenticationInterceptorTest {
 
         // then
         Authentication_요청됨(authenticate);
+    }
+
+    @DisplayName("회원정보가 없을 때, Authentication 객체를 생성한다")
+    @Test
+    void authenticateWhenUserNonExist() throws IOException {
+        // given
+        AuthenticationToken authenticationToken = AuthenticationToken_요청();
+        when(userDetailsService.loadUserByUsername(authenticationToken.getPrincipal()))
+                .thenReturn(null);
+
+        // when
+        assertThatThrownBy(() -> Authentication_요청(authenticationToken))
+                .isInstanceOf(UserDetailsNotExistException.class);
     }
 
     @Test
