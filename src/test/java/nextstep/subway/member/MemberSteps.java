@@ -5,6 +5,7 @@ import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -121,5 +122,44 @@ public class MemberSteps {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 내_정보_조회됨(ExtractableResponse<Response> response, String email) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().as(MemberResponse.class).getEmail()).isEqualTo(email);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().get("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static void 내_정보_수정_요첨됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, MemberRequest request) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().put("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static void 내_정보_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/members/me")
+                .then().log().all().extract();
     }
 }

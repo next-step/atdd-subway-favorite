@@ -1,4 +1,5 @@
 package nextstep.subway.member.dto;
+import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
