@@ -24,17 +24,14 @@ public class LoginMember implements UserDetails {
         return this.password.equals(password);
     }
 
-    @Override
     public Long getId() {
         return id;
     }
 
-    @Override
     public String getEmail() {
         return email;
     }
 
-    @Override
     public Integer getAge() {
         return age;
     }
