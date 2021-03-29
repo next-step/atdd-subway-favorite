@@ -15,11 +15,11 @@ import java.io.IOException;
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final AuthenticationConverter authenticationConverter;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public AuthenticationInterceptor(AuthenticationConverter authenticationConverter, CustomUserDetailsService customUserDetailsService) {
+    public AuthenticationInterceptor(AuthenticationConverter authenticationConverter, CustomUserDetailsService userDetailsService) {
         this.authenticationConverter = authenticationConverter;
-        this.customUserDetailsService = customUserDetailsService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -32,7 +32,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
         return new Authentication(userDetails);
     }

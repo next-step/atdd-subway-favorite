@@ -19,8 +19,8 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper mapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter authenticationConverter) {
-        super(authenticationConverter, customUserDetailsService);
+    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter authenticationConverter) {
+        super(authenticationConverter, userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.mapper = new ObjectMapper();
     }
