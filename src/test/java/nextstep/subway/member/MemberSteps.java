@@ -36,6 +36,11 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    public static TokenResponse 회원등록_되어_있음(String email, String password, Integer age) {
+        ExtractableResponse<Response> response = 회원_생성_요청(email, password, age);
+        return response.as(TokenResponse.class);
+    }
+
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
