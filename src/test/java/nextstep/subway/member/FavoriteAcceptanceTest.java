@@ -1,5 +1,6 @@
 package nextstep.subway.member;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -94,6 +95,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("로그인 없이 즐겨찾기 접근")
+    @Test
+    void 로그인_없이_즐겨찾기_접근(){
+        //given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_만들기(tokenResponse, favoriteRequest);
+
+        //when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().get("/favorites")
+                .then().log().all().extract();
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.valueOf(401).value());
     }
 
     @DisplayName("즐겨찾기 통합 테스트")
