@@ -37,14 +37,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        Map<String, String> lineCreateParams;
-        lineCreateParams = new HashMap<>();
-        lineCreateParams.put("name", "신분당선");
-        lineCreateParams.put("color", "bg-red-600");
-        lineCreateParams.put("upStationId", 강남역.getId() + "");
-        lineCreateParams.put("downStationId", 양재역.getId() + "");
-        lineCreateParams.put("distance", 10 + "");
-        신분당선 = 지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
+        Map<String, String> 신분당선_요청_PARAM = 라인_요청_PARAM("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+        신분당선 = 지하철_노선_등록되어_있음(신분당선_요청_PARAM).as(LineResponse.class);
     }
 
     @DisplayName("지하철 노선에 구간을 등록한다.")
@@ -123,5 +117,17 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static Map<String, String> 라인_요청_PARAM(String name, String color, Long upStationId, Long downStationId, int distance) {
+        Map<String, String> lineCreateParams = new HashMap<>();
+
+        lineCreateParams.put("name", name);
+        lineCreateParams.put("color", color);
+        lineCreateParams.put("upStationId", String.valueOf(upStationId));
+        lineCreateParams.put("downStationId", String.valueOf(downStationId));
+        lineCreateParams.put("distance", String.valueOf(distance));
+
+        return lineCreateParams;
     }
 }
