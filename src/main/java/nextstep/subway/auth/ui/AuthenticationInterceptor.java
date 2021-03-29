@@ -1,6 +1,5 @@
 package nextstep.subway.auth.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.exception.InvalidPasswordException;
