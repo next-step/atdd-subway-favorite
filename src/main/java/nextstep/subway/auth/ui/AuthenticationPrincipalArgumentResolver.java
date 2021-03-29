@@ -1,16 +1,18 @@
 package nextstep.subway.auth.ui;
 
-import nextstep.subway.auth.domain.Authentication;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import java.util.Arrays;
+import java.util.Map;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.Arrays;
-import java.util.Map;
+import nextstep.subway.auth.domain.Authentication;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.exception.UnauthorizedException;
+import nextstep.subway.auth.infrastructure.SecurityContextHolder;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
@@ -21,11 +23,20 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        validateAuthentication(authentication);
+
         if (authentication.getPrincipal() instanceof Map) {
             return extractPrincipal(parameter, authentication);
         }
 
         return authentication.getPrincipal();
+    }
+
+    private void validateAuthentication(Authentication authentication) {
+        if (authentication == null) {
+            throw new UnauthorizedException();
+        }
     }
 
     private Object extractPrincipal(MethodParameter parameter, Authentication authentication) {
