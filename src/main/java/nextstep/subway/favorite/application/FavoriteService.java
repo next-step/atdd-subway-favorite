@@ -32,7 +32,7 @@ public class FavoriteService {
     Member member = memberService.findMemberDomain(id);
     Station source = stationService.findById(favoriteRequest.getSource());
     Station target =  stationService.findById(favoriteRequest.getTarget());
-    return member.addFavorite(new Favorite(member,source,target));
+    return member.addFavorite(new Favorite(id,source.getId(),target.getId()));
   }
 
   public void remove(long id,long favoriteId) {
@@ -49,7 +49,13 @@ public class FavoriteService {
     return member.getFavorites()
         .getAllFavorite()
         .stream()
-        .map(FavoriteResponse::of)
+        .map(favorite ->
+            FavoriteResponse.of(
+                favorite,
+                stationService.findById(favorite.getSourceId()),
+                stationService.findById(favorite.getTargetId())
+            )
+        )
         .collect(Collectors.toList());
   }
 }

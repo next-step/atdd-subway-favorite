@@ -1,6 +1,7 @@
 package nextstep.subway.member.domain;
 
 import javax.persistence.Embedded;
+import javax.persistence.JoinColumns;
 import nextstep.subway.common.BaseEntity;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;

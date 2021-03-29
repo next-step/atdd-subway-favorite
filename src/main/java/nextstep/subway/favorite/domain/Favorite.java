@@ -1,15 +1,11 @@
 package nextstep.subway.favorite.domain;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import nextstep.subway.common.BaseEntity;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -19,41 +15,38 @@ public class Favorite extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "member_id")
-  private Member member;
+  @Column(name = "member_id")
+  private long memberId;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "source_id")
-  private Station source;
+  @Column(name = "source_id")
+  private long sourceId;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "target_id")
-  private Station target;
+  @Column(name = "target_id")
+  private long targetId;
 
   public Favorite(){
 
   }
 
-  public Favorite(Member member, Station source, Station target) {
-    this.member = member;
-    this.source = source;
-    this.target = target;
+  public Favorite(long memberId, long sourceId, long targetId){
+    this.memberId = memberId;
+    this.sourceId = sourceId;
+    this.targetId = targetId;
   }
 
   public Long getId() {
     return id;
   }
 
-  public Member getMember() {
-    return member;
+  public long getMemberId() {
+    return memberId;
   }
 
-  public Station getSource() {
-    return source;
+  public long getSourceId() {
+    return sourceId;
   }
 
-  public Station getTarget() {
-    return target;
+  public long getTargetId() {
+    return targetId;
   }
 }
