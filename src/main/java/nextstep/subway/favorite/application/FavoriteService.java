@@ -39,10 +39,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Favorite favorite = Optional.ofNullable(favoriteRepository.findById(favoriteId))
-                .map(Optional::get)
-                .orElseThrow(() -> new RuntimeException());
-
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new RuntimeException());
         if (!favorite.isOwner(memberId)) {
             throw new UnauthorizedException();
         }
