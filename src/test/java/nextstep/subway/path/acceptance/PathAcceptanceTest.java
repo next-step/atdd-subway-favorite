@@ -5,7 +5,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,9 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_생성_요청;
@@ -42,11 +42,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        이호선 = 지하철_노선_등록되어_있음("2호선", "green", 교대역, 강남역, 10);
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "green", 강남역, 양재역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("3호선", "green", 교대역, 남부터미널역, 2);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 교대역.getId(), 강남역.getId(), 10));
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "green", 강남역.getId(), 양재역.getId(), 10));
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("3호선", "green", 교대역.getId(), 남부터미널역.getId(), 2));
 
-        지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 3);
+        지하철_노선에_지하철역_등록_요청(삼호선, new SectionRequest(남부터미널역.getId(), 양재역.getId(), 3));
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
@@ -59,14 +59,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_거리_경로_응답됨(response);
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-        params.put("upStationId", upStation.getId() + "");
-        params.put("downStationId", downStation.getId() + "");
-        params.put("distance", distance + "");
-        return 지하철_노선_생성_요청(params).as(LineResponse.class);
+    private LineResponse 지하철_노선_등록되어_있음(LineRequest lineRequest) {
+        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
 
     private ExtractableResponse<Response> 두_역의_최단_거리_경로_조회를_요청(Long source, Long target) {
