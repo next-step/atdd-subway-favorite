@@ -3,6 +3,7 @@ package nextstep.subway.favorite.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -14,7 +15,8 @@ public class FavoriteSteps {
 
     public static ExtractableResponse<Response> 지하철_즐겨찾기_생성_요청(String token, Map<String, String> params) {
         return RestAssured
-                .given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(params)
+                .given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
                 .auth().oauth2(token)
                 .when().post("/favorites")
                 .then().log().all().extract();
@@ -56,4 +58,5 @@ public class FavoriteSteps {
     public static void 지하철_즐겨찾기_삭제_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
 }

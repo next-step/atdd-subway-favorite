@@ -108,22 +108,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_즐겨찾기_삭제됨(response);
     }
 
-    @DisplayName("유효하지 않은 토큰을 사용해 지하철 즐겨찾기를 삭제")
-    @Test
-    void getFavoritesWithWrongToken() {
-        // given
-        Long favoriteId = 지하철_즐겨찾기_생성_요청(boramToken.getAccessToken(), favoriteParams1).as(FavoriteResponse.class).getId();
-
-        // when
-        ExtractableResponse<Response> response = 지하철_즐겨찾기_삭제_요청("errToken", favoriteId);
-
-        // then
-        지하철_즐겨찾기_삭제_실패함(response);
-    }
-
     @DisplayName("다른 유저 토큰을 사용해 지하철 즐겨찾기를 삭제")
     @Test
-    void getFavoritesByOtherUserToken() {
+    void deleteFavoritesByOtherUserToken() {
         // given
         Long favoriteId = 지하철_즐겨찾기_생성_요청(boramToken.getAccessToken(), favoriteParams1).as(FavoriteResponse.class).getId();
 
@@ -134,9 +121,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_즐겨찾기_삭제_실패함(response);
     }
 
-    private Map<String, String> createLineParam(String name, String color, StationResponse upStation, StationResponse downStation, Integer distance){
+    private Map<String, String> createLineParam(String name, String color, StationResponse upStation, StationResponse downStation, Integer distance) {
         Map<String, String> params = new HashMap<>();
-        params.put("name",  name);
+        params.put("name", name);
         params.put("color", color);
         params.put("upStationId", String.valueOf(upStation.getId()));
         params.put("downStationId", String.valueOf(downStation.getId()));
@@ -147,10 +134,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Map<String, String> createFavoriteParam(StationResponse source, StationResponse target) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", String.valueOf(source.getId()));
-        params.put("target", String.valueOf(target.getId()));
+        params.put("source", source.getId() + "");
+        params.put("target", target.getId() + "");
         return params;
     }
-
 
 }
