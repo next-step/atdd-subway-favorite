@@ -23,21 +23,19 @@ public class FavoriteTest {
   @BeforeEach
   void init(){
     favorites = new Favorites();
-    favorite = new Favorite();
     강남역 = new Station("강남역");
     광교중앙역 = new Station("광교중앙역");
     테스트회원 = new Member(EMAIL,PASSWORD,AGE);
     ReflectionTestUtils.setField(강남역,"id",1L);
     ReflectionTestUtils.setField(광교중앙역,"id",2L);
     ReflectionTestUtils.setField(테스트회원,"id",1L);
-
+    favorite = new Favorite(테스트회원.getId(),광교중앙역.getId(),강남역.getId());
+    ReflectionTestUtils.setField(favorite,"id",1L);
   }
 
   @DisplayName("즐겨찾기를 추가한다")
   @Test
   void addFavorite(){
-    //given
-    Favorite favorite = new Favorite(테스트회원.getId(),광교중앙역.getId(),강남역.getId());
     //when
     favorites.add(favorite);
     //then
@@ -48,10 +46,9 @@ public class FavoriteTest {
   @Test
   void removeFavorite(){
     //given
-    Favorite favorite = new Favorite(테스트회원.getId(),광교중앙역.getId(),강남역.getId());
     favorites.add(favorite);
     //when
-    favorites.remove(favorite);
+    favorites.remove(favorite.getId());
     //then
     assertThat(favorites.getAllFavorite().indexOf(favorite)).isEqualTo(-1);
   }
@@ -60,7 +57,6 @@ public class FavoriteTest {
   @Test
   void getFavorite(){
     //given
-    Favorite favorite = new Favorite(테스트회원.getId(),광교중앙역.getId(),강남역.getId());
     favorites.add(favorite);
     //when
     List<Favorite> favoriteList = favorites.getAllFavorite();

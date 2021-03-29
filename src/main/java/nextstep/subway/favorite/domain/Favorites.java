@@ -24,7 +24,11 @@ public class Favorites {
     return favorites;
   }
 
-  public void remove(Favorite favorite){
-    favorites.remove(favorite);
+  public void remove(long favoriteId){
+    Favorite targetFavorite = favorites.stream()
+        .filter(favorite -> favorite.getId().equals(favoriteId))
+        .findFirst()
+        .orElseThrow(RuntimeException::new);
+    favorites.remove(targetFavorite);
   }
 }
