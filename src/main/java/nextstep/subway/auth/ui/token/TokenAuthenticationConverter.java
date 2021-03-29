@@ -3,7 +3,6 @@ package nextstep.subway.auth.ui.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;
 import nextstep.subway.auth.domain.AuthenticationToken;
-import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.ui.AuthenticationConverter;
 import org.springframework.stereotype.Component;
 
