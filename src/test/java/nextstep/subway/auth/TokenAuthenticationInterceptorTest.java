@@ -6,6 +6,8 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.AuthenticationConverter;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.exception.InvalidPasswordException;
 import nextstep.subway.exception.UserDetailsNotExistException;
@@ -40,13 +42,15 @@ class TokenAuthenticationInterceptorTest {
     private TokenAuthenticationInterceptor interceptor;
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider tokenProvider;
+    private AuthenticationConverter authenticationConverter;
 
     @BeforeEach
     void setUp() throws IOException {
         request = createMockRequest();
         userDetailsService = mock(CustomUserDetailsService.class);
         tokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, tokenProvider);
+        authenticationConverter = new TokenAuthenticationConverter();
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, tokenProvider, authenticationConverter);
     }
 
     @DisplayName("HttpRequest를 AuthenticationToken으로 변환한다")
@@ -135,7 +139,7 @@ class TokenAuthenticationInterceptorTest {
     }
 
     private AuthenticationToken AuthenticationToken_요청() throws IOException {
-        return interceptor.convert(request);
+        return authenticationConverter.convert(request);
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {

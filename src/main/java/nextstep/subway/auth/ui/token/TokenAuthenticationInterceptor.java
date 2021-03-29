@@ -7,6 +7,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.exception.InvalidPasswordException;
 import nextstep.subway.exception.UserDetailsNotExistException;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -21,22 +22,21 @@ import java.util.Map;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    public static final String EMAIL_FIELD = "email";
-    public static final String PASSWORD_FIELD = "password";
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationConverter authenticationConverter;
+    private final ObjectMapper mapper;
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
-    private ObjectMapper mapper;
-
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter authenticationConverter) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationConverter = authenticationConverter;
         this.mapper = new ObjectMapper();
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         Authentication authentication = authenticate(authenticationToken);
         TokenResponse tokenResponse = create(authentication);
         send(response, tokenResponse);
@@ -55,16 +55,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String token = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = new TokenResponse(token);
         return tokenResponse;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        String body = CharStreams.toString(request.getReader());
-        Map<String, String> map = mapper.readValue(body, Map.class);
-
-        String principal = map.get(EMAIL_FIELD);
-        String credentials = map.get(PASSWORD_FIELD);
-
-        return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
