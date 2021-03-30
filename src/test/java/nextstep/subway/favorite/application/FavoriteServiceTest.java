@@ -14,11 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@Transactional
 class FavoriteServiceTest {
 
     private Station 강남역;
@@ -45,9 +47,6 @@ class FavoriteServiceTest {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         남부터미널역 = new Station("남부터미널역");
-        ReflectionTestUtils.setField(강남역, "id", 1L);
-        ReflectionTestUtils.setField(양재역, "id", 2L);
-        ReflectionTestUtils.setField(남부터미널역, "id", 3L);
 
         A유저 = new Member("a_user@gmail.com", "test1234", 20);
         B유저 = new Member("b_user@gmail.com", "test1234", 30);
@@ -56,8 +55,6 @@ class FavoriteServiceTest {
 
         즐겨찾기1 = new Favorite(A유저.getId(), 강남역, 양재역);
         즐겨찾기2 = new Favorite(A유저.getId(), 양재역, 남부터미널역);
-        ReflectionTestUtils.setField(즐겨찾기1, "id", 1L);
-        ReflectionTestUtils.setField(즐겨찾기2, "id", 2L);
     }
 
     @Test
