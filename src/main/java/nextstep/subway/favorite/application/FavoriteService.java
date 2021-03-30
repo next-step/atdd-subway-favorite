@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.application;
 
-import com.google.common.collect.Lists;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -28,8 +27,8 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Station source = stationService.findById(favoriteRequest.getSourceId());
-        Station target = stationService.findById(favoriteRequest.getTargetId());
+        Station source = stationService.findById(favoriteRequest.getSource());
+        Station target = stationService.findById(favoriteRequest.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(loginMember.getId(), source.getId(), target.getId()));
         return new FavoriteResponse(favorite.getId(), StationResponse.of(source), StationResponse.of(target));
     }
@@ -58,12 +57,12 @@ public class FavoriteService {
     public void checkFavoritesOfMine(List<Favorite> favorites, Long myId) {
         favorites.stream()
                 .forEach(favorite -> {
-                    checkFavoriteOfMine(favorite.getId(), myId);
+                    checkFavoriteOfMine(favorite.getMemberId(), myId);
                 });
     }
 
     public void checkFavoriteOfMine(Long memberId, Long myId) {
-        if(memberId != myId){
+        if(!memberId.equals(myId)){
             throw new IllegalArgumentException();
         }
     }

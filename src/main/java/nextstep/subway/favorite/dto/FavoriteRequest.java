@@ -1,30 +1,30 @@
 package nextstep.subway.favorite.dto;
 
 public class FavoriteRequest {
-    private Long sourceId;
-    private Long targetId;
+    private Long source;
+    private Long target;
 
     public FavoriteRequest() {
     }
 
-    public FavoriteRequest(Long sourceId, Long targetId) {
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+    public FavoriteRequest(Long source, Long target) {
+        this.source = source;
+        this.target = target;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public Long getSource() {
+        return source;
     }
 
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
+    public void setSource(Long source) {
+        this.source = source;
     }
 
-    public Long getTargetId() {
-        return targetId;
+    public Long getTarget() {
+        return target;
     }
 
-    public void setTargetId(Long targetId) {
-        this.targetId = targetId;
+    public void setTarget(Long target) {
+        this.target = target;
     }
 }
