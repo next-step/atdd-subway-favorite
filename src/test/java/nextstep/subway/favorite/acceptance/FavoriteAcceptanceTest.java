@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -29,9 +30,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
     private static StationResponse 강남역, 역삼역, 선릉역;
-    LineResponse 이호선;
-    TokenResponse tokenResponse;
+    private LineResponse 이호선;
+    private TokenResponse tokenResponse;
     private Map<String, String> params = new HashMap<>();
+    private FavoriteRequest favoriteRequest;
 
     @BeforeEach
     public void setUp(){
@@ -47,8 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_등록되어_있음(new MemberRequest(EMAIL, PASSWORD, AGE)); // Location : memberId
         tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
 
-        params.put("source", 강남역.getId() + "");
-        params.put("target", 선릉역.getId() + "");
+        favoriteRequest = new FavoriteRequest(강남역.getId(), 선릉역.getId());
     }
 
     @DisplayName("즐겨찾기를 생성/조회/삭제")
@@ -56,7 +57,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageFavorite(){
 
         // when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(tokenResponse, params);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(tokenResponse, favoriteRequest);
 
         // then
         Long createdId = 즐겨찾기_생성됨(createResponse);
@@ -65,7 +66,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(tokenResponse);
 
         // then
-        즐겨찾기_목록_조회됨(response, createdId);
+        즐겨찾기_목록_조회됨(response);
+        즐겨찾기_목록_포함됨(response, createdId);
 
         // when
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청됨(tokenResponse, createdId);
@@ -73,4 +75,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_삭제됨(deleteResponse);
     }
+
+    @DisplayName("[오류케이스] 즐겨찾기를 생성/조회/삭제 - 권한이 없는 경우")
+    @Test
+    void manageFavoriteWithUnauthorized(){
+
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(new TokenResponse("0000"), favoriteRequest);
+
+        // then
+        권한없음(createResponse);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(new TokenResponse("0000"));
+
+        // then
+        권한없음(response);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청됨(new TokenResponse("0000"), 1L);
+
+        // then
+        권한없음(deleteResponse);
+    }
+
 }

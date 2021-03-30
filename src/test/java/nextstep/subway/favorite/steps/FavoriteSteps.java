@@ -4,21 +4,23 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteSteps {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, Map<String, String> params) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, FavoriteRequest favoriteRequest) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(favoriteRequest)
                 .when()
                 .post("/favorites")
                 .then().log().all().extract();
@@ -39,9 +41,16 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
-    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long createdId) {
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getLong("id")).isEqualTo(createdId);
+    }
+
+    public static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response, Long createdId) {
+        assertThat(response.jsonPath()
+                .getList(".", FavoriteResponse.class)
+                .stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList())).contains(createdId);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청됨(TokenResponse tokenResponse, Long createdId) {
@@ -55,6 +64,10 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 권한없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }
