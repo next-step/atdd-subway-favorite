@@ -34,18 +34,21 @@ class TokenAuthenticationInterceptorTest {
 
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     public void setup(){
         userDetailsService = mock(CustomUserDetailsService.class);
-        jwtTokenProvider =mock(JwtTokenProvider.class);
+        jwtTokenProvider = mock(JwtTokenProvider.class);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
     }
 
 
     @Test
     void convert() throws IOException {
         //Given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
         MockHttpServletRequest request = createMockRequest();
 
         //When
@@ -61,7 +64,6 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         //Given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
         AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
 
         //When
@@ -75,7 +77,6 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         //Given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         //When
@@ -95,7 +96,6 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandleNotMatchedPassword() {
         assertThatThrownBy(() -> {
-            TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
             when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD + "1", 30));
             interceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
         }).isInstanceOf(NotMatchedPasswordException.class);
@@ -104,7 +104,6 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandleNotFoundMember(){
         assertThatThrownBy(() -> {
-            TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
             when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(null);
             interceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
         }).isInstanceOf(NotFoundMemberException.class);
