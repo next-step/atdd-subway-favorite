@@ -5,6 +5,8 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.exception.NotFoundMemberException;
+import nextstep.subway.auth.exception.NotMatchedPasswordException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -18,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -87,6 +90,24 @@ class TokenAuthenticationInterceptorTest {
                 () -> assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)))
 
         );
+    }
+
+    @Test
+    void preHandleNotMatchedPassword() {
+        assertThatThrownBy(() -> {
+            TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+            when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD + "1", 30));
+            interceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
+        }).isInstanceOf(NotMatchedPasswordException.class);
+    }
+
+    @Test
+    void preHandleNotFoundMember(){
+        assertThatThrownBy(() -> {
+            TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+            when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(null);
+            interceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
+        }).isInstanceOf(NotFoundMemberException.class);
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {

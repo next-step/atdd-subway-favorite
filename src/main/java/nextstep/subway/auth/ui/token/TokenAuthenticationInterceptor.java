@@ -6,6 +6,8 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.exception.NotFoundMemberException;
+import nextstep.subway.auth.exception.NotMatchedPasswordException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
@@ -64,11 +66,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
         if (userDetails == null) {
-            throw new RuntimeException();
+            throw new NotFoundMemberException();
         }
 
         if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new RuntimeException();
+            throw new NotMatchedPasswordException();
         }
     }
 }
