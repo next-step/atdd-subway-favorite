@@ -6,12 +6,12 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Embeddable
 public class Favorites {
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "memberId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Favorite> favorites = new ArrayList<>();
 
     public List<Favorite> getFavorites() {
@@ -23,11 +23,11 @@ public class Favorites {
     }
 
     public void delete(Long id) {
-        Optional<Favorite> optFavorite = favorites.stream().filter(favorite ->
-                favorite.getId() == id
-        ).findFirst();
+        Favorite favorite = favorites.stream()
+                .filter(fav -> fav.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("삭제하려는 즐겨찾기가 없습니다"));
 
-        Favorite favorite = optFavorite.orElseThrow(() -> new RuntimeException());
         favorites.remove(favorite);
     }
 }

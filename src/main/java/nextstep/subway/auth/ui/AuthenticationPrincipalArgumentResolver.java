@@ -22,8 +22,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null){
-            throw new UnauthorizedException("접근할 수 없는 유저입니다.");
+        if (authentication == null) {
+            return null;
         }
         if (authentication.getPrincipal() instanceof Map) {
             return extractPrincipal(parameter, authentication);

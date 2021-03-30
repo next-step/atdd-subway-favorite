@@ -11,9 +11,8 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    Member member;
+    @Column(name = "member_id")
+    Long memberId;
 
     @ManyToOne
     @JoinColumn(name = "source_id")
@@ -26,14 +25,14 @@ public class Favorite {
     public Favorite() {
     }
 
-    public Favorite(Member member, Station source, Station target) {
-        this.member = member;
+    public Favorite(Long memberId, Station source, Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Long getId() {

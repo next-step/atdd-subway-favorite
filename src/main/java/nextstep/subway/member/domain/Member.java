@@ -28,6 +28,14 @@ public class Member extends BaseEntity {
         this.age = age;
     }
 
+    public void addFavorite(Favorite favorite){
+        favorites.add(favorite);
+    }
+
+    public void deleteFavorite(Long id){
+        favorites.delete(id);
+    }
+
     public Long getId() {
         return id;
     }

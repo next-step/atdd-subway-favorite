@@ -1,6 +1,7 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.ui.exception.UnauthorizedException;
 import nextstep.subway.member.dto.FavoriteRequest;
 import nextstep.subway.member.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
@@ -71,6 +72,7 @@ public class MemberController {
 
     @GetMapping("/favorites")
     public ResponseEntity searchFavorites(@AuthenticationPrincipal LoginMember loginMember){
+        if(loginMember==null) throw new UnauthorizedException("접근할 수 없는 유저입니다");
         List<FavoriteResponse> favoriteResponses = memberService.searchFavorites(loginMember);
         return ResponseEntity.ok().body(favoriteResponses);
     }
