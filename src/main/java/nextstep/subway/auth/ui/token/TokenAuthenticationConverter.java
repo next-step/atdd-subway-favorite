@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;
 import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.ui.AuthenticationConverter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
-@Component
 public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     public static final String EMAIL_FIELD = "email";

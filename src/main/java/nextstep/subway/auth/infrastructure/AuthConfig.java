@@ -1,9 +1,10 @@
 package nextstep.subway.auth.infrastructure;
 
-import nextstep.subway.auth.ui.AuthenticationConverter;
 import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
+import nextstep.subway.auth.ui.session.SessionAuthenticationConverter;
 import nextstep.subway.auth.ui.session.SessionAuthenticationInterceptor;
 import nextstep.subway.auth.ui.session.SessionSecurityContextPersistenceInterceptor;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.auth.ui.token.TokenSecurityContextPersistenceInterceptor;
 import nextstep.subway.member.application.CustomUserDetailsService;
@@ -17,17 +18,15 @@ import java.util.List;
 public class AuthConfig implements WebMvcConfigurer {
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
-    private AuthenticationConverter authenticationConverter;
 
-    public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter authenticationConverter) {
+    public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationConverter = authenticationConverter;
     }
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, authenticationConverter)).addPathPatterns("/login/token");
+        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService, new SessionAuthenticationConverter())).addPathPatterns("/login/session");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new TokenAuthenticationConverter())).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }
