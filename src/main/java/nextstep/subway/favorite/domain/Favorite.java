@@ -14,19 +14,25 @@ public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long memberId;
     private Long sourceId;
     private Long targetId;
 
     public Favorite() {
     }
 
-    public Favorite(Long sourceId, Long targetId) {
+    public Favorite(Long memberId, Long sourceId, Long targetId) {
+        this.memberId = memberId;
         this.sourceId = sourceId;
         this.targetId = targetId;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Long getSourceId() {
@@ -42,11 +48,11 @@ public class Favorite extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Favorite favorite = (Favorite) o;
-        return Objects.equals(id, favorite.id) && Objects.equals(sourceId, favorite.sourceId) && Objects.equals(targetId, favorite.targetId);
+        return Objects.equals(id, favorite.id) && Objects.equals(memberId, favorite.memberId) && Objects.equals(sourceId, favorite.sourceId) && Objects.equals(targetId, favorite.targetId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sourceId, targetId);
+        return Objects.hash(id, memberId, sourceId, targetId);
     }
 }

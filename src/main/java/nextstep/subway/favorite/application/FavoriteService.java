@@ -29,10 +29,7 @@ public class FavoriteService {
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Station source = stationService.findById(favoriteRequest.getSourceId());
         Station target = stationService.findById(favoriteRequest.getTargetId());
-        Favorite favorite = favoriteRepository.save(new Favorite(source.getId(), target.getId()));
-
-        // TODO 로그인한 계정에 즐겨찾기 등록
-
+        Favorite favorite = favoriteRepository.save(new Favorite(loginMember.getId(), source.getId(), target.getId()));
         return new FavoriteResponse(favorite.getId(), StationResponse.of(source), StationResponse.of(target));
     }
 
@@ -40,15 +37,18 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
 
         // TODO 로그인한 계정에 해당하는 즐겨찾기 목록 가져오기
-
+        // TODO 찾아온 목록이 로그인 계정의 즐찾인지 벨리데이션 - checkFavoriteOfMine
         return (List<FavoriteResponse>) Lists.newArrayList(
                 new FavoriteResponse(1L, new StationResponse(), new StationResponse())
         );
     }
 
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-        // TODO 로그인한 계정에 즐겨찾기 삭제
         Favorite favorite = favoriteRepository.getOne(favoriteId);
+        // TODO 로그인한 계정의 즐찾인지 벨리데이션 추가 - checkFavoriteOfMine
         favoriteRepository.delete(favorite);
+    }
+
+    public void checkFavoriteOfMine(long l, long l1) {
     }
 }

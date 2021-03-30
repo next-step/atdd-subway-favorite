@@ -24,6 +24,7 @@ import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.member.MemberSteps.회원_등록되어_있음;
 import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
 
+@DisplayName("즐겨찾기 관리 인수테스트")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "email@email.com";
