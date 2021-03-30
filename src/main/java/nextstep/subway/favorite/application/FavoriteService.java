@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -35,20 +36,35 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+        checkFavoritesOfMine(favorites, loginMember.getId());
+        return favorites.stream()
+                .map(favorite -> convertResponse(favorite))
+                .collect(Collectors.toList());
+    }
 
-        // TODO 로그인한 계정에 해당하는 즐겨찾기 목록 가져오기
-        // TODO 찾아온 목록이 로그인 계정의 즐찾인지 벨리데이션 - checkFavoriteOfMine
-        return (List<FavoriteResponse>) Lists.newArrayList(
-                new FavoriteResponse(1L, new StationResponse(), new StationResponse())
-        );
+    private FavoriteResponse convertResponse(Favorite favorite) {
+        Station source = stationService.findById(favorite.getSourceId());
+        Station target = stationService.findById(favorite.getTargetId());
+        return new FavoriteResponse(favorite.getId(), StationResponse.of(source), StationResponse.of(target));
     }
 
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-        Favorite favorite = favoriteRepository.getOne(favoriteId);
-        // TODO 로그인한 계정의 즐찾인지 벨리데이션 추가 - checkFavoriteOfMine
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+        checkFavoriteOfMine(favorite.getMemberId(), loginMember.getId());
         favoriteRepository.delete(favorite);
     }
 
-    public void checkFavoriteOfMine(long l, long l1) {
+    public void checkFavoritesOfMine(List<Favorite> favorites, Long myId) {
+        favorites.stream()
+                .forEach(favorite -> {
+                    checkFavoriteOfMine(favorite.getId(), myId);
+                });
+    }
+
+    public void checkFavoriteOfMine(Long memberId, Long myId) {
+        if(memberId != myId){
+            throw new IllegalArgumentException();
+        }
     }
 }

@@ -11,12 +11,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Transactional
 @SpringBootTest
 class FavoriteServiceTest {
 
@@ -97,7 +99,7 @@ class FavoriteServiceTest {
         // when + then
         assertThatThrownBy(() -> {
             favoriteService.checkFavoriteOfMine(1L, 2L);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("[예외처리] 존재하지 않는 즐겨찾기 제거")
