@@ -2,6 +2,8 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationToken;
+import nextstep.subway.auth.infrastructure.UserDetails;
+import nextstep.subway.auth.infrastructure.UserDetailsService;
 import nextstep.subway.exception.InvalidPasswordException;
 import nextstep.subway.exception.UserDetailsNotExistException;
 import org.springframework.web.servlet.HandlerInterceptor;

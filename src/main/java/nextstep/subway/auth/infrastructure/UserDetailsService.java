@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui;
+package nextstep.subway.auth.infrastructure;
 
 public interface UserDetailsService {
 
