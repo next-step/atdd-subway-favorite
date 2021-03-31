@@ -8,7 +8,8 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.NotFoundMemberException;
 import nextstep.subway.auth.exception.NotMatchedPasswordException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
+import nextstep.subway.auth.ui.AuthenticationInterceptor;
+import nextstep.subway.auth.ui.token.TokenAuthenticator;
 import nextstep.subway.member.application.CustomUserDetailsService;
 import nextstep.subway.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,23 +37,22 @@ class TokenAuthenticationInterceptorTest {
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private TokenAuthenticationInterceptor interceptor;
+    private AuthenticationInterceptor authenticationInterceptor;
 
     @BeforeEach
     public void setup(){
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        authenticationInterceptor = new AuthenticationInterceptor(objectMapper, userDetailsService, new TokenAuthenticator(jwtTokenProvider, objectMapper));
     }
 
-
     @Test
-    void convert() throws IOException {
+    void convert() throws Exception {
         //Given
         MockHttpServletRequest request = createMockRequest();
 
         //When
-        AuthenticationToken authenticationToken = interceptor.convert(request);
+        AuthenticationToken authenticationToken = authenticationInterceptor.convert(request);
 
         //Then
         assertAll(
@@ -68,21 +68,22 @@ class TokenAuthenticationInterceptorTest {
 
         //When
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 15));
-        Authentication authentication = interceptor.authenticate(token);
+        Authentication authentication = authenticationInterceptor.authenticate(token);
 
         //Then
         assertThat(authentication.getPrincipal()).isNotNull();
     }
 
+
     @Test
-    void preHandle() throws IOException {
+    void preHandle() throws Exception {
         //Given
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         //When
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 15));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
-        boolean expected = interceptor.preHandle(createMockRequest(), response, this);
+        boolean expected = authenticationInterceptor.preHandle(createMockRequest(), response, this);
 
         //Then
         assertAll(
@@ -97,7 +98,7 @@ class TokenAuthenticationInterceptorTest {
     void preHandleNotMatchedPassword() {
         assertThatThrownBy(() -> {
             when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD + "1", 30));
-            interceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
+            authenticationInterceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
         }).isInstanceOf(NotMatchedPasswordException.class);
     }
 
@@ -105,7 +106,7 @@ class TokenAuthenticationInterceptorTest {
     void preHandleNotFoundMember(){
         assertThatThrownBy(() -> {
             when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(null);
-            interceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
+            authenticationInterceptor.preHandle(createMockRequest(), new MockHttpServletResponse(), this);
         }).isInstanceOf(NotFoundMemberException.class);
     }
 
