@@ -1,6 +1,9 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.ui.exception.UnauthorizedException;
+import nextstep.subway.member.dto.FavoriteRequest;
+import nextstep.subway.member.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
@@ -9,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class MemberController {
@@ -57,6 +61,25 @@ public class MemberController {
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity createFavorites(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest){
+        FavoriteResponse favoriteResponse = memberService.createFavorite(loginMember, favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity searchFavorites(@AuthenticationPrincipal LoginMember loginMember){
+        if(loginMember==null) throw new UnauthorizedException("접근할 수 없는 유저입니다");
+        List<FavoriteResponse> favoriteResponses = memberService.searchFavorites(loginMember);
+        return ResponseEntity.ok().body(favoriteResponses);
+    }
+
+    @DeleteMapping("/favorites/{id}")
+    public ResponseEntity deleteFavorites(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id){
+        memberService.deleteFavorites(id);
         return ResponseEntity.noContent().build();
     }
 }
