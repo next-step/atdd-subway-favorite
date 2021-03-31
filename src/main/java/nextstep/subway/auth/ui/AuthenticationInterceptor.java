@@ -31,7 +31,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        authenticatorStrategy.authenticate(authentication, response);
+        authenticatorStrategy.saveAuthentication(authentication, response);
         return false;
     }
 

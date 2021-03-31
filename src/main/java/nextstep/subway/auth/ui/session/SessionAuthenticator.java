@@ -20,7 +20,7 @@ public class SessionAuthenticator implements AuthenticatorStrategy {
     }
 
     @Override
-    public void authenticate(Authentication authentication, HttpServletResponse response) {
+    public void saveAuthentication(Authentication authentication, HttpServletResponse response) {
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);
     }

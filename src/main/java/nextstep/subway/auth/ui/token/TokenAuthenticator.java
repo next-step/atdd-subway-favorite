@@ -26,7 +26,7 @@ public class TokenAuthenticator implements AuthenticatorStrategy {
     }
 
     @Override
-    public void authenticate(Authentication authentication, HttpServletResponse response) throws IOException {
+    public void saveAuthentication(Authentication authentication, HttpServletResponse response) throws IOException {
         String accessToken = createAccessToken(authentication);
         TokenResponse tokenResponse = new TokenResponse(accessToken);
 

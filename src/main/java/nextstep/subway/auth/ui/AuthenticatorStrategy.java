@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface AuthenticatorStrategy {
 
-    void authenticate(Authentication authentication, HttpServletResponse response) throws IOException;
+    void saveAuthentication(Authentication authentication, HttpServletResponse response) throws IOException;
 }

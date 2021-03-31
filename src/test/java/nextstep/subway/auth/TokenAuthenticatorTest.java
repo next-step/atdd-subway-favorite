@@ -39,7 +39,7 @@ public class TokenAuthenticatorTest {
 
         //When
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
-        tokenAuthenticator.authenticate(authentication, response);
+        tokenAuthenticator.saveAuthentication(authentication, response);
 
         //Then
         assertAll(
