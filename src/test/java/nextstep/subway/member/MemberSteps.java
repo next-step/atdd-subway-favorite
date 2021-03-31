@@ -5,6 +5,7 @@ import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
@@ -60,7 +62,7 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(TokenResponse tokenResponse, ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
         Map<String, String> params = new HashMap<>();
@@ -70,10 +72,13 @@ public class MemberSteps {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
-                .then().log().all().extract();
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
@@ -115,8 +120,12 @@ public class MemberSteps {
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response, Member updateMember) {
+        Member member = response.as(Member.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(member.getEmail()).isEqualTo(updateMember.getEmail())
+        );
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
