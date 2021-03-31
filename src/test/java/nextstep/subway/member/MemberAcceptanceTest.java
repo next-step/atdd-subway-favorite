@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,12 +47,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void updateMember() {
         // given
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        Member updateMember = new Member("new"+EMAIL, "new"+PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        회원_정보_수정_요청(tokenResponse, createResponse, updateMember.getEmail(), updateMember.getPassword(), AGE);
 
         // then
-        회원_정보_수정됨(response);
+        ExtractableResponse<Response> updatedResponse = 회원_정보_조회_요청(createResponse);
+        회원_정보_수정됨(updatedResponse, updateMember);
     }
 
     @DisplayName("회원 정보를 삭제한다.")

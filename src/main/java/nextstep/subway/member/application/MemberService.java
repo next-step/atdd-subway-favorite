@@ -24,11 +24,13 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
