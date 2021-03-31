@@ -31,7 +31,7 @@ public class MemberSteps {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/login/token")
+                .when().post("/login")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
@@ -87,7 +87,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
         return RestAssured
                 .given().log().all()
-                .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD))
+                .auth().form(email, password, new FormAuthConfig("/login", USERNAME_FIELD, PASSWORD_FIELD))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()

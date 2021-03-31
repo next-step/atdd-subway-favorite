@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.ui.AuthenticatorStrategy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Primary
 public class TokenAuthenticator implements AuthenticatorStrategy {
 
     private final JwtTokenProvider jwtTokenProvider;
