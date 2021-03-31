@@ -30,6 +30,7 @@ public class MemberService {
         member.update(param.toMember());
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
