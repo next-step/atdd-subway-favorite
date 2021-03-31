@@ -6,11 +6,13 @@ import nextstep.subway.auth.domain.AuthenticationToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.auth.ui.AuthenticationConverter;
+import nextstep.subway.auth.infrastructure.UserDetails;
+import nextstep.subway.auth.ui.token.TokenAuthenticationConverter;
 import nextstep.subway.auth.ui.token.TokenAuthenticationInterceptor;
 import nextstep.subway.exception.InvalidPasswordException;
 import nextstep.subway.exception.UserDetailsNotExistException;
 import nextstep.subway.member.application.CustomUserDetailsService;
-import nextstep.subway.member.domain.LoginMember;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,20 +35,21 @@ class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final String WRONG_PASSWORD = "wrongPassword";
-    private static final int AGE = 20;
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private MockHttpServletRequest request;
     private TokenAuthenticationInterceptor interceptor;
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider tokenProvider;
+    private AuthenticationConverter authenticationConverter;
 
     @BeforeEach
     void setUp() throws IOException {
         request = createMockRequest();
         userDetailsService = mock(CustomUserDetailsService.class);
         tokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, tokenProvider);
+        authenticationConverter = new TokenAuthenticationConverter();
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, tokenProvider, authenticationConverter);
     }
 
     @DisplayName("HttpRequest를 AuthenticationToken으로 변환한다")
@@ -64,7 +67,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() throws IOException {
         // given
         AuthenticationToken authenticationToken = AuthenticationToken_요청();
-        회원_저장되어있음(new LoginMember(null, EMAIL, PASSWORD, AGE));
+        회원_저장되어있음(UserDetails.of(1L, EMAIL, PASSWORD));
 
         // when
         Authentication authenticate = Authentication_요청(authenticationToken);
@@ -90,7 +93,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticateWhenUseWrongPassword() throws IOException {
         // given
         AuthenticationToken authenticationToken = AuthenticationToken_요청();
-        회원_저장되어있음(new LoginMember(null, EMAIL, WRONG_PASSWORD, AGE));
+        회원_저장되어있음(UserDetails.of(1L, EMAIL, WRONG_PASSWORD));
 
         // when
         assertThatThrownBy(() -> Authentication_요청(authenticationToken))
@@ -103,7 +106,7 @@ class TokenAuthenticationInterceptorTest {
         // given
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = createMockResponse();
-        회원_저장되어있음(new LoginMember(1L, EMAIL, PASSWORD, AGE));
+        회원_저장되어있음(UserDetails.of(1L, EMAIL, PASSWORD));
         when(tokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         // when
@@ -115,14 +118,14 @@ class TokenAuthenticationInterceptorTest {
         assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
-    private void 회원_저장되어있음( LoginMember loginMember) {
+    private void 회원_저장되어있음( UserDetails userDetails) {
         when(userDetailsService.loadUserByUsername(EMAIL))
-                .thenReturn(loginMember);
+                .thenReturn(userDetails);
     }
 
     private void Authentication_요청됨(Authentication authenticate) {
-        assertThat(((LoginMember) authenticate.getPrincipal()).getEmail()).isEqualTo(EMAIL);
-        assertThat(((LoginMember) authenticate.getPrincipal()).getPassword()).isEqualTo(PASSWORD);
+        assertThat(((UserDetails) authenticate.getPrincipal()).getPrincipal()).isEqualTo(EMAIL);
+        assertThat(((UserDetails) authenticate.getPrincipal()).getCredential()).isEqualTo(PASSWORD);
     }
 
     private void AuthenticationToken_요청됨(AuthenticationToken token) {
@@ -135,7 +138,7 @@ class TokenAuthenticationInterceptorTest {
     }
 
     private AuthenticationToken AuthenticationToken_요청() throws IOException {
-        return interceptor.convert(request);
+        return authenticationConverter.convert(request);
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {

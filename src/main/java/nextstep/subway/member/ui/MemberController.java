@@ -1,10 +1,8 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.infrastructure.SecurityContext;
-import nextstep.subway.auth.infrastructure.SecurityContextHolder;
+import nextstep.subway.auth.infrastructure.UserDetails;
 import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -45,23 +43,23 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserDetails userDetails) {
+        MemberResponse member = memberService.findMember(userDetails.getId());
         return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
-            @AuthenticationPrincipal LoginMember loginMember,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody MemberRequest request
     ) {
-        memberService.updateMember(loginMember.getId(), request);
+        memberService.updateMember(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal UserDetails userDetails) {
+        memberService.deleteMember(userDetails.getId());
         return ResponseEntity.noContent().build();
     }
 }
