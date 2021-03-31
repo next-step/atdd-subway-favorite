@@ -1,10 +1,7 @@
 package nextstep.subway.member.application;
-import nextstep.subway.member.domain.Favorite;
+import nextstep.subway.member.domain.*;
 import nextstep.subway.member.dto.FavoriteRequest;
 import nextstep.subway.member.dto.FavoriteResponse;
-import nextstep.subway.member.domain.LoginMember;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.application.StationService;
@@ -22,10 +19,12 @@ import java.util.stream.Collectors;
 public class MemberService {
     private MemberRepository memberRepository;
     private StationService stationService;
+    private FavoriteRepository favoriteRepository;
 
-    public MemberService(MemberRepository memberRepository, StationService stationService) {
+    public MemberService(MemberRepository memberRepository, StationService stationService, FavoriteRepository favoriteRepository) {
         this.memberRepository = memberRepository;
         this.stationService = stationService;
+        this.favoriteRepository = favoriteRepository;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -55,18 +54,17 @@ public class MemberService {
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
         Station upStation = stationService.findById(favoriteRequest.getSource());
         Station downStation = stationService.findById(favoriteRequest.getTarget());
-        member.addFavorite(new Favorite(member.getId(), upStation, downStation));
+        favoriteRepository.save(new Favorite(member.getId(), upStation, downStation));
         return new FavoriteResponse(member.getId(), StationResponse.of(upStation), StationResponse.of(downStation));
     }
 
 
     public List<FavoriteResponse> searchFavorites(LoginMember loginMember) {
-        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
-        return member.getFavorites().getFavorites().stream().map(FavoriteResponse::of).collect(Collectors.toList());
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+        return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 
-    public void deleteFavorites(LoginMember loginMember, Long id) {
-        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
-        member.deleteFavorite(id);
+    public void deleteFavorites(Long id) {
+        favoriteRepository.deleteById(id);
     }
 }
