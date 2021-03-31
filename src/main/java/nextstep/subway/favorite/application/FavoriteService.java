@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.NotExistsFavoriteException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -11,8 +12,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -27,8 +28,8 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Station source = stationService.findById(favoriteRequest.getSource());
-        Station target = stationService.findById(favoriteRequest.getTarget());
+        Station source = stationService.findStationById(favoriteRequest.getSource());
+        Station target = stationService.findStationById(favoriteRequest.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(loginMember.getId(), source.getId(), target.getId()));
         return new FavoriteResponse(favorite.getId(), StationResponse.of(source), StationResponse.of(target));
     }
@@ -36,34 +37,27 @@ public class FavoriteService {
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
-        checkFavoritesOfMine(favorites, loginMember.getId());
-        return favorites.stream()
-                .map(favorite -> convertResponse(favorite))
-                .collect(Collectors.toList());
+        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+        favorites.stream()
+                .forEach(favorite -> {
+                    Station source = stationService.findById(favorite.getSourceId());
+                    Station target = stationService.findById(favorite.getTargetId());
+                    if(source != null && target != null){
+                        favoriteResponses.add(convertResponse(favorite));
+                    }
+                });
+        return favoriteResponses;
     }
 
     private FavoriteResponse convertResponse(Favorite favorite) {
-        Station source = stationService.findById(favorite.getSourceId());
-        Station target = stationService.findById(favorite.getTargetId());
+        Station source = stationService.findStationById(favorite.getSourceId());
+        Station target = stationService.findStationById(favorite.getTargetId());
         return new FavoriteResponse(favorite.getId(), StationResponse.of(source), StationResponse.of(target));
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
-        checkFavoriteOfMine(favorite.getMemberId(), loginMember.getId());
+    public void deleteFavoriteOfMine(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findByMemberIdAndId(loginMember.getId(), favoriteId).orElseThrow(NotExistsFavoriteException::new);
         favoriteRepository.delete(favorite);
     }
 
-    public void checkFavoritesOfMine(List<Favorite> favorites, Long myId) {
-        favorites.stream()
-                .forEach(favorite -> {
-                    checkFavoriteOfMine(favorite.getMemberId(), myId);
-                });
-    }
-
-    public void checkFavoriteOfMine(Long memberId, Long myId) {
-        if(!memberId.equals(myId)){
-            throw new IllegalArgumentException();
-        }
-    }
 }

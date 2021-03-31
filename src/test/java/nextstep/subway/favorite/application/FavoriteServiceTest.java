@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.NotExistsFavoriteException;
 import nextstep.subway.exception.NotExistsStationException;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -71,7 +72,7 @@ class FavoriteServiceTest {
                 .doesNotContain(양재역.getId());
 
         // when 즐겨찾기 삭제
-        favoriteService.deleteFavorite(USER, favorites.get(0).getId());
+        favoriteService.deleteFavoriteOfMine(USER, favorites.get(0).getId());
         favorites = favoriteService.findFavorites(USER);
 
         // then
@@ -93,22 +94,13 @@ class FavoriteServiceTest {
         }).isInstanceOf(NotExistsStationException.class);
     }
 
-    @DisplayName("[예외처리] 로그인한 계정의 즐겨찾기가 아니면 예외발생")
-    @Test
-    void checkFavoriteOfMine(){
-        // when + then
-        assertThatThrownBy(() -> {
-            favoriteService.checkFavoriteOfMine(1L, 2L);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("[예외처리] 존재하지 않는 즐겨찾기 제거")
     @Test
     void deleteFavoriteWithNotExistsFavorite(){
         // when + then
         assertThatThrownBy(() -> {
-            favoriteService.deleteFavorite(USER, 100L);
-        }).isInstanceOf(RuntimeException.class);
+            favoriteService.deleteFavoriteOfMine(USER, 100L);
+        }).isInstanceOf(NotExistsFavoriteException.class);
     }
 
 }
