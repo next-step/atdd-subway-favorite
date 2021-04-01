@@ -16,8 +16,6 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor{
 
-    AuthenticationConverter authenticationConverter;
-    CustomUserDetailsService userDetailsService;
     JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider) {

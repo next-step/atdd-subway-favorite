@@ -17,12 +17,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    public static final MemberRequest 신규회원 = new MemberRequest(EMAIL, PASSWORD, AGE);
 
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
         // when
-        ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 회원_생성_요청(신규회원);
 
         // then
         회원_생성됨(response);
@@ -32,7 +33,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void getMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(신규회원);
 
         // when
         ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
@@ -46,7 +47,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(신규회원);
 
         // when
         ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
@@ -59,7 +60,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(신규회원);
 
         // when
         ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
@@ -72,7 +73,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         //when
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(신규회원);
         //then
         회원_생성됨(createResponse);
 
@@ -97,7 +98,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(신규회원);
         회원_생성됨(createResponse);
 
         TokenResponse tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
