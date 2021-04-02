@@ -43,8 +43,8 @@ public class FavoriteService {
         favoriteRepository.deleteById(favoriteId);
     }
 
-    private Station findStationById(Long sourceId) {
-        return stationRepository.findById(sourceId)
+    private Station findStationById(Long stationId) {
+        return stationRepository.findById(stationId)
                 .orElseThrow(RuntimeException::new);
     }
 }

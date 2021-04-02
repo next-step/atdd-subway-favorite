@@ -14,11 +14,10 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSteps.지하철_노선에_지하철역_등록_요청되어_있음;
-import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.member.MemberSteps.회원_생성_되어_있음;
-import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
+import static nextstep.subway.favorite.acceptance.FavoriteSteps.*;
+import static nextstep.subway.line.acceptance.LineSteps.*;
+import static nextstep.subway.member.MemberSteps.*;
+import static nextstep.subway.station.StationSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 테스트")
@@ -57,7 +56,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Long target = 3L;
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(source, target);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(source, target, 토큰);
 
         // then
         즐겨찾기_생성됨(response);
@@ -67,10 +66,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void findFavorite() {
         // given
-        즐겨찾기_생성_요청되어_있음(1L, 3L);
+        즐겨찾기_생성_요청되어_있음(1L, 3L, 토큰);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(토큰);
 
         // then
         즐겨찾기_목록_조회됨(response);
@@ -80,7 +79,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         // given
-        즐겨찾기_생성_요청되어_있음(1L, 3L);
+        즐겨찾기_생성_요청되어_있음(1L, 3L, 토큰);
         Long favoriteId = 1L;
 
         // when
@@ -98,7 +97,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void unAuthorized() {
         // given
-        즐겨찾기_생성_요청되어_있음(1L, 3L);
+        즐겨찾기_생성_요청되어_있음(1L, 3L, 토큰);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_실패_요청();
@@ -111,41 +110,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_조회_실패_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/favorites")
-                .then().log().all().extract();
-    }
-
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(토큰)
-                .when().get("/favorites")
-                .then().log().all().extract();
-    }
-
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청되어_있음(Long source, Long target) {
-        return 즐겨찾기_생성_요청(source, target);
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(토큰)
-                .params("source", source)
-                .params("target", target)
-                .when().post("/favorites")
-                .then().log().all().extract();
     }
 
     private Map<String, String> createLine(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
