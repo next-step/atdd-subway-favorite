@@ -101,14 +101,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_요청되어_있음(1L, 3L);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
+        ExtractableResponse<Response> response = 즐겨찾기_조회_실패_요청();
+
+        // then를
+        즐겨찾기_조회_실패됨(response);
+    }
+
+    private void 즐겨찾기_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회_실패_요청() {
+        return RestAssured
                 .given().log().all()
                 .when().get("/favorites")
                 .then().log().all().extract();
-
-        // then를
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-
     }
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
