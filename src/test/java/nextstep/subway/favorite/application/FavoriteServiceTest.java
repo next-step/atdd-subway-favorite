@@ -43,7 +43,7 @@ public class FavoriteServiceTest {
         Long target = 2L;
 
         // when
-        FavoriteResponse response = favoriteService.create(source, target, 1L);
+        FavoriteResponse response = 즐겨찾기_생성_요청(source, target, 1L);
 
         // then
         assertThat(response.getId()).isEqualTo(1L);
@@ -53,10 +53,19 @@ public class FavoriteServiceTest {
     @Test
     void findAllByMemberId() {
         // when
+        즐겨찾기_생성_요청됨(1L, 2L, 1L);
         List<FavoriteResponse> response = favoriteService.findAllByMemberId(1L);
 
         // then
         assertThat(response.get(0).getSource()).isEqualTo(강남역);
         assertThat(response.get(0).getTarget()).isEqualTo(역삼역);
+    }
+
+    private FavoriteResponse 즐겨찾기_생성_요청됨(Long source, Long target, Long memberId) {
+        return 즐겨찾기_생성_요청(source, target, memberId);
+    }
+
+    private FavoriteResponse 즐겨찾기_생성_요청(Long source, Long target, Long memberId) {
+        return favoriteService.create(source, target, memberId);
     }
 }

@@ -70,14 +70,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_요청되어_있음(1L, 3L);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+
+        // then
+        즐겨찾기_목록_조회됨(response);
+    }
+
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
+        return RestAssured
                 .given().log().all()
                 .auth().oauth2(토큰)
                 .when().get("/favorites")
                 .then().log().all().extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
