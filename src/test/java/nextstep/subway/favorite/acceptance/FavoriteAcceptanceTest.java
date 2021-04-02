@@ -94,6 +94,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("비로그인 상태에서 즐겨찾기 조회한다")
+    @Test
+    void unAuthorized() {
+        // given
+        즐겨찾기_생성_요청되어_있음(1L, 3L);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().get("/favorites")
+                .then().log().all().extract();
+
+        // then를
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+    }
+
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
