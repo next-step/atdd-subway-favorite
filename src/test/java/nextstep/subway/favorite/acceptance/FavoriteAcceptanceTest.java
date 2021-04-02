@@ -49,6 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         토큰 = 로그인_되어_있음(EMAIL, PASSWORD).getAccessToken();
     }
 
+    @DisplayName("즐겨찾기를 생성한다")
     @Test
     void createFavorite() {
         // given
@@ -56,17 +57,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         int target = 3;
 
         // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(source, target);
+
+        // then
+        즐겨찾기_생성됨(response);
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다")
+    @Test
+    void findFavorite() {
+        // when
         ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(토큰)
+                .when().get("/favorites")
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+    }
+
+    private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(int source, int target) {
+        return RestAssured
                 .given().log().all()
                 .auth().oauth2(토큰)
                 .params("source", source)
                 .params("target", target)
                 .when().post("/favorites")
                 .then().log().all().extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
     }
 
     private Map<String, String> createLine(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
