@@ -39,6 +39,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    public void delete(Long favoriteId) {
+        favoriteRepository.deleteById(favoriteId);
+    }
+
     private Station findStationById(Long sourceId) {
         return stationRepository.findById(sourceId)
                 .orElseThrow(RuntimeException::new);
