@@ -41,7 +41,7 @@ public class FavoriteServiceTest {
         Long target = 2L;
 
         // when
-        FavoriteResponse response = favoriteService.create(source, target);
+        FavoriteResponse response = favoriteService.create(source, target, 1L);
 
         // then
         assertThat(response.getId()).isEqualTo(1L);
