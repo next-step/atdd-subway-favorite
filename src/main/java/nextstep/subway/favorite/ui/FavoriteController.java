@@ -3,12 +3,9 @@ package nextstep.subway.favorite.ui;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.UserDetails;
 import nextstep.subway.favorite.application.FavoriteService;
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,5 +33,10 @@ public class FavoriteController {
     public ResponseEntity findAll(@AuthenticationPrincipal UserDetails userDetails){
         List<FavoriteResponse> favorites = favoriteService.findAllByMemberId(userDetails.getId());
         return ResponseEntity.ok(favorites);
+    }
+
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity delete(@PathVariable Long favoriteId) {
+        return ResponseEntity.noContent().build();
     }
 }

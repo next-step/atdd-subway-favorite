@@ -76,6 +76,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(response);
     }
 
+    @DisplayName("즐겨찾기를 삭제한다")
+    @Test
+    void deleteFavorite() {
+        // given
+        즐겨찾기_생성_요청되어_있음(1L, 3L);
+        Long favoriteId = 1L;
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(토큰)
+                .when().delete("/favorites/{favoriteId}", favoriteId)
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
