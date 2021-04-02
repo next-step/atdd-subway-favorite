@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +16,8 @@ import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선에_지하철역_등록_요청되어_있음;
-import static nextstep.subway.member.MemberSteps.*;
+import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.member.MemberSteps.회원_생성_되어_있음;
 import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,8 +53,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         // given
-        int source = 1;
-        int target = 3;
+        Long source = 1L;
+        Long target = 3L;
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(source, target);
@@ -66,6 +66,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 목록을 조회한다")
     @Test
     void findFavorite() {
+        // given
+        즐겨찾기_생성_요청되어_있음(1L, 3L);
+
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -75,14 +78,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(int source, int target) {
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청되어_있음(Long source, Long target) {
+        return 즐겨찾기_생성_요청(source, target);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(토큰)

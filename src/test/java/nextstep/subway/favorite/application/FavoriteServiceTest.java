@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
@@ -45,5 +47,16 @@ public class FavoriteServiceTest {
 
         // then
         assertThat(response.getId()).isEqualTo(1L);
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다")
+    @Test
+    void findAllByMemberId() {
+        // when
+        List<FavoriteResponse> response = favoriteService.findAllByMemberId(1L);
+
+        // then
+        assertThat(response.get(0).getSource()).isEqualTo(강남역);
+        assertThat(response.get(0).getTarget()).isEqualTo(역삼역);
     }
 }
