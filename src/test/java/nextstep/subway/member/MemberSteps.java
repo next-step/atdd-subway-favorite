@@ -19,6 +19,15 @@ public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
+    public static TokenResponse 회원_로그인_되어_있음(String email, String password, int age) {
+        회원_생성_요청(email, password, age);
+        return 로그인_되어_있음(email, password);
+    }
+
+    public static ExtractableResponse<Response> 회원_생성_되어_있음(String email, String password, int age) {
+        return 회원_생성_요청(email, password, age);
+    }
+
     public static TokenResponse 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         return response.as(TokenResponse.class);
