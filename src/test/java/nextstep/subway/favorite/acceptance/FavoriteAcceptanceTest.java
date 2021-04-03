@@ -67,7 +67,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void findFavorite() {
         // given
-        즐겨찾기_생성_요청되어_있음(1L, 3L, 토큰);
+        Long source = 1L;
+        Long target = 3L;
+        즐겨찾기_생성_요청되어_있음(source, target, 토큰);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(토큰);
@@ -80,8 +82,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         // given
-        즐겨찾기_생성_요청되어_있음(1L, 3L, 토큰);
+        Long source = 1L;
+        Long target = 3L;
         Long favoriteId = 1L;
+        즐겨찾기_생성_요청되어_있음(source, target, 토큰);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(favoriteId, 토큰);
@@ -94,7 +98,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void unAuthorized() {
         // given
-        즐겨찾기_생성_요청되어_있음(1L, 3L, 토큰);
+        Long source = 1L;
+        Long target = 3L;
+        즐겨찾기_생성_요청되어_있음(source, target, 토큰);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_실패_요청();
