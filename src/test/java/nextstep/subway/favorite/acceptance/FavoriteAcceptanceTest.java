@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -15,9 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.favorite.acceptance.FavoriteSteps.*;
-import static nextstep.subway.line.acceptance.LineSteps.*;
-import static nextstep.subway.member.MemberSteps.*;
-import static nextstep.subway.station.StationSteps.*;
+import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineSteps.지하철_노선에_지하철역_등록_요청되어_있음;
+import static nextstep.subway.member.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.member.MemberSteps.회원_생성_되어_있음;
+import static nextstep.subway.station.StationSteps.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 테스트")
@@ -83,14 +84,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Long favoriteId = 1L;
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2(토큰)
-                .when().delete("/favorites/{favoriteId}", favoriteId)
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(favoriteId, 토큰);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        즐겨찾기_삭제됨(response);
     }
 
     @DisplayName("비로그인 상태에서 즐겨찾기 조회한다")
@@ -106,6 +103,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회_실패됨(response);
     }
 
+    @DisplayName("즐겨찾기를 관리한다")
+    @Test
+    void manageFavorite() {
+        // given
+        Long source = 1L;
+        Long target = 3L;
+        Long favoriteId = 1L;
+
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청되어_있음(source, target, 토큰);
+
+        // then
+        즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> searchResponse = 즐겨찾기_목록_조회_요청(토큰);
+
+        // then
+        즐겨찾기_목록_조회됨(searchResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(favoriteId, 토큰);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+    }
+
     private void 즐겨찾기_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -116,6 +140,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Map<String, String> createLine(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
