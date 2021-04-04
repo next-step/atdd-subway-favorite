@@ -48,13 +48,13 @@ public class LineServiceMockTest {
 
     @Test
     void addSection() {
-        when(lineRepository.findById(이호선.getId())).thenReturn(Optional.of(이호선));
+        when(lineRepository.findById(이호선.getId())).thenReturn(Optional.ofNullable(이호선));
         when(stationService.findStationById(역삼역.getId())).thenReturn(역삼역);
         when(stationService.findStationById(삼성역.getId())).thenReturn(삼성역);
 
         lineService.addSection(이호선.getId(), new SectionRequest(역삼역.getId(), 삼성역.getId(), 10));
 
-        Line line = lineService.findLineById(1L);
+        Line line = lineService.findLineById(이호선.getId());
 
         assertThat(line.getSections().size()).isEqualTo(2);
     }
