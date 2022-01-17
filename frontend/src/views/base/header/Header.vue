@@ -10,6 +10,28 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn v-for="navItem in navItems" :key="navItem._id" :to="navItem.link" text>{{ navItem.text }}</v-btn>
+    <v-btn v-if="!member" to="/login" text>로그인</v-btn>
+    <ButtonMenu v-else>
+      <template slot="button">
+        <div class="text-normal cursor-pointer mx-2 my-thumbnail-button">
+          <v-avatar dark width="35" height="35">
+            <img src="https://avatars3.githubusercontent.com/u/4353846?v&amp;#x3D;4" />
+          </v-avatar>
+          <div class="desktop-view d-inline-block">
+            <span>{{ member.email.split('@')[0] }}</span>
+            <v-icon class="font-size-10" right>ti-angle-down</v-icon>
+          </div>
+        </div>
+      </template>
+      <template slot="items">
+        <v-list class="py-0">
+          <MyPageButton />
+          <FavoritesButton />
+          <v-divider class="ma-0" />
+          <LogoutButton />
+        </v-list>
+      </template>
+    </ButtonMenu>
   </v-app-bar>
 </template>
 
@@ -43,6 +65,11 @@ export default {
           _id: 3,
           link: '/sections',
           text: '구간 관리'
+        },
+        {
+          _id: 4,
+          link: '/path',
+          text: '경로 검색'
         }
       ]
     }
