@@ -40,10 +40,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_생성_됨(회원);
 
         //when
-        ExtractableResponse<Response> 내_회원_정보_조회_요청 = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 회원_정보_조회_요청 = 회원_정보_조회_요청(회원);
 
         //then
-        회원_정보_조회됨(내_회원_정보_조회_요청, EMAIL, AGE);
+        회원_정보_조회됨(회원_정보_조회_요청, EMAIL, AGE);
         
         //given
         String nextEmail = "icraft2170@gmail.com";

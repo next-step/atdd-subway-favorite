@@ -51,7 +51,7 @@ public class MemberSteps {
     public static void 회원_생성_됨 (ExtractableResponse<Response> response){
         String location = response.header("Location");
         assertThat(location).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
