@@ -8,9 +8,9 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${security.jwt.token.secret-key}")
+    @Value("atdd-secret-key")
     private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
+    @Value("3600000")
     private long validityInMilliseconds;
 
     public String createToken(String payload) {
