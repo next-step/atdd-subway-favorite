@@ -35,3 +35,7 @@ npm run dev
 ```
 ./gradlew bootRun
 ```
+
+# 💻 로그인 인증 프로세스 실습
+- MemberAcceptanceTest의 인수 테스트 통합하기
+- AuthAcceptanceTest의 myInfoWithSession 테스트 메서드를 성공 시키기
