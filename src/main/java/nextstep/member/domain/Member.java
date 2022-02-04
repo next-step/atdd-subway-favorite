@@ -1,6 +1,6 @@
 package nextstep.member.domain;
 
-import nextstep.subway.domain.BaseEntity;
+import nextstep.subway.common.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
