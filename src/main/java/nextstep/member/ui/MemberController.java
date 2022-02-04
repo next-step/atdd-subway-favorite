@@ -1,12 +1,19 @@
 package nextstep.member.ui;
 
+import nextstep.auth.context.SecurityContext;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+
+import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 public class MemberController {
@@ -41,8 +48,10 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
+        SecurityContext context = (SecurityContext) WebUtils.getSessionAttribute(request, SPRING_SECURITY_CONTEXT_KEY);
+        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
+        return ResponseEntity.ok(MemberResponse.of(loginMember));
     }
 
     @PutMapping("/members/me")
