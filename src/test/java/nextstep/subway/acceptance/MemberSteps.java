@@ -92,6 +92,33 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String email, String password, String newEmail, String newPassword, Integer newAge) {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", newEmail);
+        params.put("password", newPassword);
+        params.put("age", newAge + "");
+
+        return RestAssured
+                .given().log().all()
+                .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(String email, String password) {
+        return RestAssured
+                .given().log().all()
+                .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD))
+                .when().delete("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value()).extract();
+    }
+
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
