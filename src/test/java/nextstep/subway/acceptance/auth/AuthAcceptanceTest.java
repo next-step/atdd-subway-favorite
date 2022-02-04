@@ -1,12 +1,12 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.auth;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
-
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
