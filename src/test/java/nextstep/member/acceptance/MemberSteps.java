@@ -4,12 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.commons.AssertionsUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.commons.AssertionsUtils.삭제요청_성공;
+import static nextstep.subway.commons.AssertionsUtils.생성요청_성공;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
@@ -48,6 +51,10 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    public static void 회원_생성됨(ExtractableResponse<Response> response) {
+        생성요청_성공(response);
+    }
+
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
@@ -56,6 +63,12 @@ public class MemberSteps {
                 .when().get(uri)
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.jsonPath().getString("id")).isNotNull();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
@@ -74,12 +87,21 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
                 .then().log().all().extract();
+    }
+
+    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        삭제요청_성공(response);
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
@@ -102,9 +124,5 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        assertThat(response.jsonPath().getString("id")).isNotNull();
-        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
-    }
+
 }
