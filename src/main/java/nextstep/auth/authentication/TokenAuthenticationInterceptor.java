@@ -64,12 +64,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new AuthenticationException();
-        }
-
         if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
+            throw new InvalidPasswordException();
         }
     }
 }
