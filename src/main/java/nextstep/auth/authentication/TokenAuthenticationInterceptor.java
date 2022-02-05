@@ -5,6 +5,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
+import nextstep.exception.JsonDeserializeFailed;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.HttpMethod;
@@ -45,11 +46,14 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = objectMapper.readValue(extractPostRequestBody(request), TokenRequest.class);
-
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-
+        String principal, credentials;
+        try {
+            TokenRequest tokenRequest = objectMapper.readValue(extractPostRequestBody(request), TokenRequest.class);
+            principal = tokenRequest.getEmail();
+            credentials = tokenRequest.getPassword();
+        } catch (IOException ioe) {
+            throw new JsonDeserializeFailed(ioe.getMessage());
+        }
         return new AuthenticationToken(principal, credentials);
     }
 
