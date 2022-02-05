@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.auth.authentication.NotExistEmailException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -14,7 +15,7 @@ public class CustomUserDetailsService {
     }
 
     public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(NotExistEmailException::new);
         return LoginMember.of(member);
     }
 }
