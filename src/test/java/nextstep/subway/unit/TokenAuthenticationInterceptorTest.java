@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.convert.AuthenticationConverter;
+import nextstep.auth.authentication.convert.TokenAuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -42,30 +44,25 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     JwtTokenProvider jwtTokenProvider;
 
+    AuthenticationConverter tokenAuthenticationConverter;
+
+    AuthenticationToken mockAuthenticationToken;
+
     @BeforeEach
     void setUp() {
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        tokenAuthenticationConverter = new TokenAuthenticationConverter();
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, tokenAuthenticationConverter);
+        mockAuthenticationToken = createMockAuthenticationToken();
     }
 
     @Test
-    void convert() throws IOException {
-        // when
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
-
-        // then
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    @Test
-    void authenticate() throws IOException {
+    void authenticate() {
         // given
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
         when(userDetailsService.loadUserByUsername(anyString()))
                 .thenReturn(getMockLoginMember(EMAIL, PASSWORD));
 
         // when
-        Authentication authenticate = tokenAuthenticationInterceptor.authenticate(authenticationToken);
+        Authentication authenticate = tokenAuthenticationInterceptor.authenticate(mockAuthenticationToken);
         LoginMember principal = (LoginMember) authenticate.getPrincipal();
 
         // then
@@ -76,29 +73,28 @@ class TokenAuthenticationInterceptorTest {
 
     @DisplayName("인증 실패 - email 찾을 수 없음")
     @Test
-    void authenticateNotFoundEmail() throws IOException {
+    void authenticateNotFoundEmail() {
         // given
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
         when(userDetailsService.loadUserByUsername(anyString()))
                 .thenReturn(null);
 
         // when, then
-        assertThatThrownBy(() -> tokenAuthenticationInterceptor.authenticate(authenticationToken))
+        assertThatThrownBy(() -> tokenAuthenticationInterceptor.authenticate(mockAuthenticationToken))
                 .isInstanceOf(AuthenticationException.class);
 
     }
 
     @DisplayName("인증 실패 - password 불일치")
     @Test
-    void authenticateIncorrectPassword() throws IOException {
+    void authenticateIncorrectPassword() {
         // given
         String INCORRECT_PASSWORD = PASSWORD + "-incorrect";
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
+
         when(userDetailsService.loadUserByUsername(anyString()))
                 .thenReturn(getMockLoginMember(EMAIL, INCORRECT_PASSWORD));
 
         // when, then
-        assertThatThrownBy(() -> tokenAuthenticationInterceptor.authenticate(authenticationToken))
+        assertThatThrownBy(() -> tokenAuthenticationInterceptor.authenticate(mockAuthenticationToken))
                 .isInstanceOf(AuthenticationException.class);
     }
 
@@ -116,11 +112,7 @@ class TokenAuthenticationInterceptorTest {
 
         // then
         assertThat(mockResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(getContent(mockResponse)).isEqualTo(getExpectedTokenResponse());
-    }
-
-    private TokenResponse getExpectedTokenResponse() {
-        return new TokenResponse(JWT_TOKEN);
+        assertThat(getContent(mockResponse)).isEqualTo(new TokenResponse(JWT_TOKEN));
     }
 
     private TokenResponse getContent(MockHttpServletResponse mockResponse) throws Exception {
@@ -140,6 +132,10 @@ class TokenAuthenticationInterceptorTest {
 
     private LoginMember getMockLoginMember(String email, String password) {
         return new LoginMember(0L, email, password, 0);
+    }
+
+    private AuthenticationToken createMockAuthenticationToken() {
+        return new AuthenticationToken(EMAIL, PASSWORD);
     }
 
 }
