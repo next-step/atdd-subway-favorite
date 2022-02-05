@@ -64,13 +64,108 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+
+
+    /**
+     * Feature: 회원 정보를 관리한다.
+     *
+     *   Scenario: 회원 정보를 관리
+     *     When 회원 생성을 요청
+     *     Then 회원 생성됨
+     *     When 회원 정보 조회 요청
+     *     Then 회원 정보 조회됨
+     *     When 회원 정보 수정 요청
+     *     Then 회원 정보 수정됨
+     *     When 회원 삭제 요청
+     *     Then 회원 삭제됨
+     */
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        //when
+        ExtractableResponse<Response> 회원 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        //then
+        회원_생성_됨(회원);
+
+        //when
+        ExtractableResponse<Response> 회원_정보_조회_요청 = 회원_정보_조회_요청(회원);
+
+        //then
+        회원_정보_조회됨(회원_정보_조회_요청, EMAIL, AGE);
+
+        //given
+        String nextEmail = "icraft2170@gmail.com";
+        String nextPassword = "icraft2170^@^";
+        int nextAge = 30;
+
+        //when
+        ExtractableResponse<Response> 회원_정보_수정_요청 = 회원_정보_수정_요청(회원, nextEmail, nextPassword, nextAge);
+
+        //then
+        회원_수정_됨(회원_정보_수정_요청);
+
+        //when
+        ExtractableResponse<Response> 회원_삭제_요청 = 회원_삭제_요청(회원);
+        //then
+        회원_삭제_됨(회원_삭제_요청);
     }
 
+
+    /**
+     * Feature: 내 회원 정보를 관리한다.
+     *
+     *   Scenario: 내 회원 정보를 관리
+     *     When 회원 생성을 요청
+     *     Then 회원 생성됨
+     *     When 로그인 요청
+     *     Then 로그인 됨
+     *     When 내 정보 조회 요청
+     *     Then 내 정보 조회됨
+     *     When 내 정보 수정 요청
+     *     Then 내 정보 수정됨
+     *     When 내 정보 삭제 요청
+     *     Then 내 정보 삭제됨
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        //when
+        ExtractableResponse<Response> 회원 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        //then
+        회원_생성_됨(회원);
+
+        //when
+        String 로그인_회원_토큰 = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        //then
+        로그인_되어_있음(EMAIL, PASSWORD);
+
+        //when
+        ExtractableResponse<Response> 내_회원_정보_반환 = 내_회원_정보_조회_요청(로그인_회원_토큰);
+
+        //then
+        내_회원_정보_조회_되어_있음(내_회원_정보_반환);
+
+        //given
+        String nextEmail = "icraft2170@gmail.com";
+        String nextPassword = "password26";
+        int nextAge = 26;
+
+        //when
+        ExtractableResponse<Response> 내_정보_수정_반환 = 내_회원_정보_수정_요청(로그인_회원_토큰, nextEmail, nextPassword, nextAge);
+
+        //then
+        내_정보_수정_되어_있음(내_정보_수정_반환);
+
+        //when
+        ExtractableResponse<Response> 내_정보_삭제_반환 = 내_회원_정보_삭제_요청(로그인_회원_토큰);
+
+        //then
+        내_정보_삭제_되어_있음(내_정보_삭제_반환);
+
     }
+
+
 }
