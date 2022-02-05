@@ -1,7 +1,6 @@
 package nextstep.domain.member;
 
 
-import nextstep.application.member.dto.MemberResponse;
 
 public class LoginMember extends Member {
     private Long id;
