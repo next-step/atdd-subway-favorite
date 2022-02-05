@@ -5,6 +5,7 @@ import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.exception.InvalidPasswordException;
 import nextstep.auth.infrastructure.JwtTokenProvider;
+import nextstep.auth.service.UserDetailService;
 import nextstep.auth.ui.authentication.AuthenticationInterceptor;
 import nextstep.auth.ui.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.ui.authentication.session.SessionAuthenticationInterceptor;
@@ -40,7 +41,7 @@ public class AuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     @Mock
-    CustomUserDetailsService userDetailsService;
+    UserDetailService userDetailsService;
 
     @Mock
     JwtTokenProvider jwtTokenProvider;

@@ -2,7 +2,9 @@ package nextstep.auth.ui.authentication;
 
 import nextstep.auth.domain.Authentication;
 import nextstep.auth.domain.AuthenticationToken;
+import nextstep.auth.domain.UserDetail;
 import nextstep.auth.exception.InvalidPasswordException;
+import nextstep.auth.service.UserDetailService;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,9 +16,9 @@ import java.io.IOException;
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final AuthenticationConverter converter;
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailService userDetailsService;
 
-    public AuthenticationInterceptor(AuthenticationConverter converter, CustomUserDetailsService userDetailsService) {
+    public AuthenticationInterceptor(AuthenticationConverter converter, UserDetailService userDetailsService) {
         this.converter = converter;
         this.userDetailsService = userDetailsService;
     }
@@ -37,13 +39,13 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetail userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetail userDetails, AuthenticationToken token) {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new InvalidPasswordException();
         }
