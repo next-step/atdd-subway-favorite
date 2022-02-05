@@ -119,7 +119,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
      *     When 회원 생성을 요청
      *     Then 회원 생성됨
      *     When 로그인 요청
-     *     Then 로그인 됨
      *     When 내 정보 조회 요청
      *     Then 내 정보 조회됨
      *     When 내 정보 수정 요청
@@ -127,7 +126,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
      *     When 내 정보 삭제 요청
      *     Then 내 정보 삭제됨
      */
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("나의 정보 관리 테스트")
     @Test
     void manageMyInfo() {
         //when
@@ -137,10 +136,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성_됨(회원);
 
         //when
-        String 로그인_회원_토큰 = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
-
-        //then
-        로그인_되어_있음(EMAIL, PASSWORD);
+        String 로그인_회원_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         //when
         ExtractableResponse<Response> 내_회원_정보_반환 = 내_회원_정보_조회_요청(로그인_회원_토큰);
@@ -164,7 +160,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         //then
         내_정보_삭제_되어_있음(내_정보_삭제_반환);
-
     }
 
 
