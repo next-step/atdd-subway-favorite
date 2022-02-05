@@ -49,8 +49,6 @@ class TokenAuthenticationInterceptorTest {
     void convert() throws IOException {
         //given
         MockHttpServletRequest request = createMockRequest();
-        request.setAttribute("email", EMAIL);
-        request.setAttribute("password", PASSWORD);
 
         //when
         AuthenticationToken token = tokenAuthenticationInterceptor.convert(request);
@@ -93,8 +91,8 @@ class TokenAuthenticationInterceptorTest {
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        request.setAttribute("email", EMAIL);
+        request.setAttribute("password", PASSWORD);
         return request;
     }
 
