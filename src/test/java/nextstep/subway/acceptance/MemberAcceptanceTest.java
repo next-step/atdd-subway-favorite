@@ -14,6 +14,33 @@ class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
+    private ExtractableResponse<Response> createResponse;
+    private ExtractableResponse<Response> response;
+
+    @DisplayName("회원 정보를 관리한다")
+    @Test
+    void 회원_정보_관리_통합인수테스트() {
+        // When 회원 생성을 요청
+        createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        // Then 회원 생성됨
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        // When 회원 정보 조회 요청
+        response = 회원_정보_조회_요청(createResponse);
+        // Then 회원 정보 조회됨
+        회원_정보_조회됨(response, EMAIL, AGE);
+
+        // When 회원 정보 수정 요청
+        response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        // Then 회원 정보 수정됨
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        // When
+        response = 회원_삭제_요청(createResponse);
+        // Then 회원 삭제됨
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
