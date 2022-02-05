@@ -1,7 +1,9 @@
-package nextstep.auth.authentication;
+package nextstep.auth.ui.authentication;
 
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
+import nextstep.auth.domain.Authentication;
+import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.infrastructure.SecurityContext;
+import nextstep.auth.domain.AuthenticationToken;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
-import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     public static final String USERNAME_FIELD = "username";

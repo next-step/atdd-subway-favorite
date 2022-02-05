@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.exception;
 
 public class NotExistEmailException extends RuntimeException{
     public static final String MESSAGE = "존재하지 않는 이메일입니다.";

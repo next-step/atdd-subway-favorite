@@ -1,4 +1,6 @@
-package nextstep.auth.context;
+package nextstep.auth.infrastructure;
+
+import nextstep.auth.infrastructure.SecurityContext;
 
 public class SecurityContextHolder {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SECURITY_CONTEXT";

@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.domain;
 
 public class AuthenticationToken {
     private String principal;

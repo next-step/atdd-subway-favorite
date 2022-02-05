@@ -1,13 +1,13 @@
-package nextstep.auth.authorization;
+package nextstep.auth.ui.authorization;
 
-import nextstep.auth.context.SecurityContext;
-import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.infrastructure.SecurityContext;
+import nextstep.auth.infrastructure.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionSecurityContextPersistenceInterceptor implements HandlerInterceptor {
     @Override

@@ -1,12 +1,10 @@
-package nextstep.auth;
+package nextstep.auth.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.SessionAuthenticationInterceptor;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
-import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
-import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
-import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
-import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.ui.authentication.SessionAuthenticationInterceptor;
+import nextstep.auth.ui.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.ui.authorization.SessionSecurityContextPersistenceInterceptor;
+import nextstep.auth.ui.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.member.application.CustomUserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

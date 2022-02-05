@@ -1,11 +1,13 @@
-package nextstep.auth.authorization;
+package nextstep.auth.ui.authorization;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
-import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.domain.Authentication;
+import nextstep.auth.infrastructure.AuthorizationExtractor;
+import nextstep.auth.infrastructure.AuthorizationType;
+import nextstep.auth.infrastructure.SecurityContext;
+import nextstep.auth.infrastructure.SecurityContextHolder;
+import nextstep.auth.infrastructure.JwtTokenProvider;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

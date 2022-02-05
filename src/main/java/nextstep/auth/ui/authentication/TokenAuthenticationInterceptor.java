@@ -1,10 +1,12 @@
-package nextstep.auth.authentication;
+package nextstep.auth.ui.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
+import nextstep.auth.domain.Authentication;
+import nextstep.auth.domain.AuthenticationToken;
+import nextstep.auth.exception.InvalidPasswordException;
+import nextstep.auth.infrastructure.JwtTokenProvider;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;

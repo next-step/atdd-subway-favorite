@@ -1,7 +1,8 @@
-package nextstep.auth.authorization;
+package nextstep.auth.infrastructure;
 
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.domain.Authentication;
+import nextstep.auth.infrastructure.SecurityContextHolder;
+import nextstep.auth.domain.AuthenticationPrincipal;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

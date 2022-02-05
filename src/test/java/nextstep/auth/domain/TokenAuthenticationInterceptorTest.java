@@ -1,23 +1,17 @@
 package nextstep.auth.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.InvalidPasswordException;
-import nextstep.auth.authentication.NotExistEmailException;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
+import nextstep.auth.exception.InvalidPasswordException;
+import nextstep.auth.ui.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.infrastructure.JwtTokenProvider;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
-import nextstep.member.domain.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -26,7 +20,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

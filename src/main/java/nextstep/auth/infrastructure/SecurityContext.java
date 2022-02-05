@@ -1,4 +1,6 @@
-package nextstep.auth.context;
+package nextstep.auth.infrastructure;
+
+import nextstep.auth.domain.Authentication;
 
 public class SecurityContext {
     private Authentication authentication;

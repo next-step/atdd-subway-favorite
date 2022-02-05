@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.auth.authentication.NotExistEmailException;
+import nextstep.auth.exception.NotExistEmailException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;

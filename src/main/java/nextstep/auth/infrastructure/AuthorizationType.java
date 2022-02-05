@@ -1,4 +1,4 @@
-package nextstep.auth.authorization;
+package nextstep.auth.infrastructure;
 
 public enum AuthorizationType {
     BASIC,

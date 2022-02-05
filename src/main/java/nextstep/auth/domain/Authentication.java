@@ -1,4 +1,4 @@
-package nextstep.auth.context;
+package nextstep.auth.domain;
 
 public class Authentication {
     private Object principal;
