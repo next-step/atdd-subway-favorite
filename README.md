@@ -48,7 +48,7 @@ npm run dev
   
 
 # 🚀 2단계 - 인증 로직 리팩터링
-1. 1,2단계에서 구현한 인증 로직에 대한 리팩터링
+### 1. 1,2단계에서 구현한 인증 로직에 대한 리팩터링
 - AuthenticationConverter 추상화
   - AuthenticationConverter 인터페이스 생성
   - SessionAuthenticationConverter 와 TokenAuthenticationConverter 테스트 작성 및 구현
@@ -73,6 +73,7 @@ npm run dev
   - 기존 코드 대체
   - 전체 테스트 수행 후 실패 테스트 확인
   - 기존 코드 제거
-- 내 정보 수정 / 삭제 기능을 처리하는 기능 구현
-  - Controller에서 @ㅐ너테이션을 활용하여 Login 정보에 접근
+
+### 2. 내 정보 수정 / 삭제 기능을 처리하는 기능 구현
+- Controller에서 @ㅐ너테이션을 활용하여 Login 정보에 접근
   
