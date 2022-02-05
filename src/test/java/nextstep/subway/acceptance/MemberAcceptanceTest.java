@@ -41,5 +41,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> getResponse = 내_회원_정보_조회_요청(accessToken);
+        회원_정보_조회됨(getResponse, EMAIL, AGE);
+
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
+        회원_정보_수정됨(updateResponse);
+
+        ExtractableResponse<Response> deleteResponse = 내_회원_정보_삭제_요청(accessToken);
+        회원_정보_삭제됨(deleteResponse);
     }
+
 }
