@@ -1,7 +1,9 @@
 package nextstep.domain.member;
 
 
-public class LoginMember {
+import nextstep.application.member.dto.MemberResponse;
+
+public class LoginMember extends Member {
     private Long id;
     private String email;
     private String password;
@@ -37,4 +39,5 @@ public class LoginMember {
     public String getPassword() {
         return password;
     }
+
 }

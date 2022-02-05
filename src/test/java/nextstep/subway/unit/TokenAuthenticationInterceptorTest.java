@@ -69,7 +69,9 @@ class TokenAuthenticationInterceptorTest {
         Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
         //then
-        assertThat(authentication.getPrincipal()).isNotNull();
+        LoginMember principal = (LoginMember) authentication.getPrincipal();
+        assertThat(principal).isNotNull();
+        assertThat(principal.checkPassword(PASSWORD)).isTrue();
     }
 
     @Test
@@ -91,9 +93,8 @@ class TokenAuthenticationInterceptorTest {
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setAttribute("email", EMAIL);
-        request.setAttribute("password", PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
-
 }

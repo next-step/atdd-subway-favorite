@@ -104,7 +104,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -118,7 +118,7 @@ public class MemberSteps {
         Map<String, String> params = createMemberInfoParam(email, password, age);
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/members/me")
                 .then().log().all()
@@ -135,7 +135,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value())
