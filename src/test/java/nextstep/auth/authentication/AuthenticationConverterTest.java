@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.domain.AuthenticationToken;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.ui.authentication.AuthenticationConverter;
-import nextstep.auth.ui.authentication.SessionAuthenticationConverter;
-import nextstep.auth.ui.authentication.TokenAuthenticationConverter;
+import nextstep.auth.ui.authentication.session.SessionAuthenticationConverter;
+import nextstep.auth.ui.authentication.token.TokenAuthenticationConverter;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 

@@ -1,13 +1,14 @@
-package nextstep.auth.ui.authentication;
+package nextstep.auth.ui.authentication.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.domain.AuthenticationToken;
 import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.ui.authentication.AuthenticationConverter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class TokenAuthenticationConverter implements AuthenticationConverter{
+public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     private final ObjectMapper objectMapper;
 

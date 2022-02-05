@@ -1,11 +1,12 @@
-package nextstep.auth.ui.authentication;
+package nextstep.auth.ui.authentication.session;
 
 import nextstep.auth.domain.AuthenticationToken;
+import nextstep.auth.ui.authentication.AuthenticationConverter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public class SessionAuthenticationConverter implements AuthenticationConverter{
+public class SessionAuthenticationConverter implements AuthenticationConverter {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
