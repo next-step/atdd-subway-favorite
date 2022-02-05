@@ -1,9 +1,6 @@
-package nextstep.subway.unit;
+package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.authentication.convert.AuthenticationConverter;
 import nextstep.auth.authentication.convert.TokenAuthenticationConverter;
 import nextstep.auth.context.Authentication;
