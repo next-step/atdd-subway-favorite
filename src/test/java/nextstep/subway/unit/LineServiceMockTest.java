@@ -1,11 +1,11 @@
 package nextstep.subway.unit;
 
-import nextstep.subway.applicaion.LineService;
-import nextstep.subway.applicaion.StationService;
-import nextstep.subway.applicaion.dto.SectionRequest;
-import nextstep.subway.domain.Line;
-import nextstep.subway.domain.LineRepository;
-import nextstep.subway.domain.Station;
+import nextstep.application.subway.LineService;
+import nextstep.application.subway.StationService;
+import nextstep.application.subway.dto.SectionRequest;
+import nextstep.domain.subway.Line;
+import nextstep.domain.subway.LineRepository;
+import nextstep.domain.subway.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
