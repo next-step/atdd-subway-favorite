@@ -99,5 +99,26 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> 조회_응답 = 내_회원_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(조회_응답, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> 수정_응답 = 내_회원_정보_수정_요청(accessToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        회원_정보_수정됨(수정_응답, NEW_EMAIL, NEW_AGE);
+
+        // when
+        ExtractableResponse<Response> 삭제_응답 = 내_회원_정보_삭제_요청(accessToken);
+
+        // then
+        회원_삭제됨(삭제_응답);
     }
 }

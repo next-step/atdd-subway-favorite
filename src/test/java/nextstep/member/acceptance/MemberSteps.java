@@ -124,5 +124,28 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, String newEmail, String newPassword, int newAge) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", newEmail);
+        params.put("password", newPassword);
+        params.put("age", String.valueOf(newAge));
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE) // 서버에게 자신이 받을 수 있는 미디어 타입이 무언인지 알려줌
+                .contentType(MediaType.APPLICATION_JSON_VALUE) // request body의 미디어 타입이 무엇인지 알려줌
+                .body(params)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
 
 }
