@@ -7,9 +7,9 @@ import nextstep.auth.exception.InvalidPasswordException;
 import nextstep.auth.infrastructure.JwtTokenProvider;
 import nextstep.auth.ui.authentication.AuthenticationInterceptor;
 import nextstep.auth.ui.authentication.session.SessionAuthenticationConverter;
-import nextstep.auth.ui.authentication.session.SessionAuthenticationInterceptor2;
+import nextstep.auth.ui.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.ui.authentication.token.TokenAuthenticationConverter;
-import nextstep.auth.ui.authentication.token.TokenAuthenticationInterceptor2;
+import nextstep.auth.ui.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ public class AuthenticationInterceptorTest {
         // given
         MockHttpServletRequest request = createRequestForSession();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        interceptor = new SessionAuthenticationInterceptor2(new SessionAuthenticationConverter(), userDetailsService);
+        interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
         // when
@@ -70,7 +70,7 @@ public class AuthenticationInterceptorTest {
         // given
         MockHttpServletRequest request = createRequestForSession();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        interceptor = new SessionAuthenticationInterceptor2(new SessionAuthenticationConverter(), userDetailsService);
+        interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, ANOTHER_PASSWORD, AGE));
 
         // when, then
@@ -87,7 +87,7 @@ public class AuthenticationInterceptorTest {
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
-        interceptor = new TokenAuthenticationInterceptor2(new TokenAuthenticationConverter(objectMapper),
+        interceptor = new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper),
                 userDetailsService, jwtTokenProvider, objectMapper);
 
         // when
@@ -106,7 +106,7 @@ public class AuthenticationInterceptorTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, ANOTHER_PASSWORD, AGE));
 
-        interceptor = new TokenAuthenticationInterceptor2(new TokenAuthenticationConverter(objectMapper),
+        interceptor = new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper),
                 userDetailsService, jwtTokenProvider, objectMapper);
 
         // when, then

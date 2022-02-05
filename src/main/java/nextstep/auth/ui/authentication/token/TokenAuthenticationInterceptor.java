@@ -12,15 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor2(TokenAuthenticationConverter converter,
-                                           CustomUserDetailsService userDetailsService,
-                                           JwtTokenProvider jwtTokenProvider,
-                                           ObjectMapper objectMapper) {
+    public TokenAuthenticationInterceptor(TokenAuthenticationConverter converter,
+                                          CustomUserDetailsService userDetailsService,
+                                          JwtTokenProvider jwtTokenProvider,
+                                          ObjectMapper objectMapper) {
         super(converter, userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
@@ -29,7 +29,7 @@ public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
     @Override
     public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
-        String payload = objectMapper.writeValueAsString(authentication);
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
 
         TokenResponse tokenResponse = new TokenResponse(token);

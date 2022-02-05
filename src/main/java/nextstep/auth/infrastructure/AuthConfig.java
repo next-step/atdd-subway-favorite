@@ -1,8 +1,10 @@
 package nextstep.auth.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.ui.authentication.SessionAuthenticationInterceptor;
-import nextstep.auth.ui.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.ui.authentication.session.SessionAuthenticationConverter;
+import nextstep.auth.ui.authentication.session.SessionAuthenticationInterceptor;
+import nextstep.auth.ui.authentication.token.TokenAuthenticationConverter;
+import nextstep.auth.ui.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.ui.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.ui.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.member.application.CustomUserDetailsService;
@@ -28,8 +30,8 @@ public class AuthConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
+        registry.addInterceptor(new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService)).addPathPatterns("/login/session");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper),userDetailsService, jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }
