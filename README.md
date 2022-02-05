@@ -62,7 +62,7 @@ npm run dev
   - 기존 코드 대체
   - 전체 테스트 수행 후 실패 테스트 확인
   - 기존 코드 제거
-- auth 패키지와 member 패키지에 대한 의존 제거
+- auth 패키지와 member 패키지의 양방향 의존 제거
   - UserDetailsService 인터페이스 생성
   - CustomUserDetailService 가 UserDetailsService 를 구현하도록 수정
   - 전체 테스트 수행 후 실패 테스트 확인

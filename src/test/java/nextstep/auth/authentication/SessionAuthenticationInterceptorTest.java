@@ -3,7 +3,7 @@ package nextstep.auth.authentication;
 import nextstep.auth.authentication.convert.AuthenticationConverter;
 import nextstep.auth.authentication.convert.SessionAuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.auth.service.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ class SessionAuthenticationInterceptorTest {
 	AuthenticationConverter sessionAuthenticationConverter;
 
 	@Mock
-	CustomUserDetailsService userDetailsService;
+	UserDetailsService userDetailsService;
 
 	@BeforeEach
 	void setUp() {

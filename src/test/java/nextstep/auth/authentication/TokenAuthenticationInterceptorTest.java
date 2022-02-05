@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.convert.AuthenticationConverter;
 import nextstep.auth.authentication.convert.TokenAuthenticationConverter;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.service.UserDetailsService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ class TokenAuthenticationInterceptorTest {
     TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     @Mock
-    CustomUserDetailsService userDetailsService;
+    UserDetailsService userDetailsService;
 
     @Mock
     JwtTokenProvider jwtTokenProvider;

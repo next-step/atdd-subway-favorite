@@ -3,7 +3,7 @@ package nextstep.auth.authentication;
 import nextstep.auth.authentication.convert.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.auth.service.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +19,10 @@ public class SessionAuthenticationInterceptor extends AuthenticationInterceptor 
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final AuthenticationConverter sessionAuthenticationConverter;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter sessionAuthenticationConverter) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter sessionAuthenticationConverter) {
         this.userDetailsService = userDetailsService;
         this.sessionAuthenticationConverter = sessionAuthenticationConverter;
     }

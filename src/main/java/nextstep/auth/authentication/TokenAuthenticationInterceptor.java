@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.convert.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.service.UserDetailsService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
@@ -19,11 +19,11 @@ import static nextstep.auth.authentication.AuthenticationException.PASSWORD_IS_I
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationConverter tokenAuthenticationConverter;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter tokenAuthenticationConverter) {
+    public TokenAuthenticationInterceptor(UserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter tokenAuthenticationConverter) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.tokenAuthenticationConverter = tokenAuthenticationConverter;
