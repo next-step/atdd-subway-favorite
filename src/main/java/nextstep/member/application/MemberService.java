@@ -27,6 +27,7 @@ public class MemberService {
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
+        memberRepository.save(member);
     }
 
     public void deleteMember(Long id) {
