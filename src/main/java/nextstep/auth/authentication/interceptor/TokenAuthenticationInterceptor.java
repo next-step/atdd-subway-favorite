@@ -17,9 +17,11 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor implements HandlerInterceptor {
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider ) {
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper ) {
         super(userDetailsService);
+        this.objectMapper = objectMapper;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

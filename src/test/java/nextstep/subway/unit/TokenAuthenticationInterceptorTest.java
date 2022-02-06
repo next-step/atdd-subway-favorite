@@ -39,10 +39,10 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
     private AuthenticationInterceptor authenticationInterceptor;
-
+    private ObjectMapper objectMapper = new ObjectMapper();
     @BeforeEach
     void setUp() {
-        authenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        authenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
     }
 
     @DisplayName("로그인 정보 추출 테스트")
