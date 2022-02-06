@@ -1,6 +1,5 @@
 package nextstep.domain.member.domain;
 
-
 public class LoginMember extends Member {
     private Long id;
     private String email;

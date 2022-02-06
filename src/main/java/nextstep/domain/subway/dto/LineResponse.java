@@ -1,5 +1,4 @@
 package nextstep.domain.subway.dto;
-
 import nextstep.domain.subway.domain.Line;
 
 import java.time.LocalDateTime;

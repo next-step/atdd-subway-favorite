@@ -1,5 +1,4 @@
 package nextstep.domain.subway.domain;
-
 import nextstep.global.domain.BaseEntity;
 
 import javax.persistence.*;

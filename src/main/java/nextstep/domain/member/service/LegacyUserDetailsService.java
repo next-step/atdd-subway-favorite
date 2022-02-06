@@ -1,8 +1,8 @@
 package nextstep.domain.member.service;
 
 import nextstep.domain.member.domain.LoginMember;
-import nextstep.domain.member.domain.MemberRepository;
 import nextstep.domain.member.domain.Member;
+import nextstep.domain.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
