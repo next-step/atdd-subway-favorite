@@ -33,7 +33,7 @@ class TokenAuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
-    private JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+    private JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
 
 
     @Test
@@ -67,7 +67,7 @@ class TokenAuthenticationInterceptorTest {
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
-//        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -75,7 +75,7 @@ class TokenAuthenticationInterceptorTest {
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(TokenResponse.of(JWT_TOKEN)));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
