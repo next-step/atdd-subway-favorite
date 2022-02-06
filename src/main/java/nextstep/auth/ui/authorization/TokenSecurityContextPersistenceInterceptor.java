@@ -3,40 +3,34 @@ package nextstep.auth.ui.authorization;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.domain.Authentication;
-import nextstep.auth.infrastructure.AuthorizationExtractor;
-import nextstep.auth.infrastructure.AuthorizationType;
-import nextstep.auth.infrastructure.SecurityContext;
-import nextstep.auth.infrastructure.SecurityContextHolder;
-import nextstep.auth.infrastructure.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.auth.infrastructure.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor{
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
+
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
-
+    protected SecurityContext extractSecurityContext(HttpServletRequest request) {
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return true;
+            return null;
         }
 
         SecurityContext securityContext = extractSecurityContext(credentials);
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }
-        return true;
+
+        return null;
     }
 
     private SecurityContext extractSecurityContext(String credentials) {
@@ -45,7 +39,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
             };
 
-            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
+            Map<String, String> principal = objectMapper.readValue(payload, typeRef);
             return new SecurityContext(new Authentication(principal));
         } catch (Exception e) {
             return null;

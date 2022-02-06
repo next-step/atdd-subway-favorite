@@ -4,14 +4,11 @@ import nextstep.auth.domain.Authentication;
 import nextstep.auth.infrastructure.SecurityContext;
 import nextstep.auth.infrastructure.SecurityContextHolder;
 import nextstep.auth.ui.authorization.SecurityContextInterceptor;
-import nextstep.auth.ui.authorization.SessionSecurityContextPersistenceInterceptor2;
+import nextstep.auth.ui.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.member.domain.LoginMember;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
@@ -32,7 +29,7 @@ public class SessionSecurityContextPersistenceInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        interceptor = new SessionSecurityContextPersistenceInterceptor2();
+        interceptor = new SessionSecurityContextPersistenceInterceptor();
         response = new MockHttpServletResponse();
         loginMember = new LoginMember(1L, EMAIL, PASSWORD, AGE);
     }
