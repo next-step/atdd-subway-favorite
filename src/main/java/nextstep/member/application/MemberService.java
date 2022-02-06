@@ -14,18 +14,23 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    public Member findById(long id) {
+        return memberRepository.findById(id)
+                               .orElseThrow(RuntimeException::new);
+    }
+
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    public MemberResponse findMember(long id) {
+        Member member = findById(id);
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    public void updateMember(long id, MemberRequest param) {
+        Member member = findById(id);
         member.update(param.toMember());
     }
 
