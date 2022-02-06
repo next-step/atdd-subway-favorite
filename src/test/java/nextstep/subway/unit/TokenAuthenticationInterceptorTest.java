@@ -2,9 +2,9 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.domain.member.service.LegacyUserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.interceptor.AuthenticationInterceptor;
+import nextstep.auth.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -26,7 +26,6 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,11 +38,11 @@ class TokenAuthenticationInterceptorTest {
     private UserDetailsService userDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
-    private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
+    private AuthenticationInterceptor authenticationInterceptor;
 
     @BeforeEach
     void setUp() {
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        authenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
     }
 
     @DisplayName("로그인 정보 추출 테스트")
@@ -53,7 +52,7 @@ class TokenAuthenticationInterceptorTest {
         MockHttpServletRequest request = createMockRequest();
 
         //when
-        AuthenticationToken token = tokenAuthenticationInterceptor.convert(request);
+        AuthenticationToken token = authenticationInterceptor.convert(request);
 
         //then
         assertThat(token.getPrincipal()).isEqualTo(EMAIL);
@@ -68,7 +67,7 @@ class TokenAuthenticationInterceptorTest {
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         //when
-        Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
+        Authentication authentication = authenticationInterceptor.authenticate(authenticationToken);
 
         //then
         LoginMember principal = (LoginMember) authentication.getPrincipal();
@@ -85,7 +84,7 @@ class TokenAuthenticationInterceptorTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         //when
-        tokenAuthenticationInterceptor.preHandle(request, response, new Object());
+        authenticationInterceptor.preHandle(request, response, new Object());
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
