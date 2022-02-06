@@ -1,16 +1,18 @@
 package nextstep.subway.utils;
 
-import com.google.common.base.CaseFormat;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.google.common.base.CaseFormat;
 
 @Service
 @ActiveProfiles("test")
