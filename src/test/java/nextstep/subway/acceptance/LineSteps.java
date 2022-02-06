@@ -21,6 +21,10 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
+    public static long 아이디_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getLong("id");
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
@@ -63,5 +67,13 @@ public class LineSteps {
         return RestAssured.given().log().all()
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all().extract();
+    }
+
+    public static Map<String, String> 지하철_구간_생성_파라미터(Long upStationId, Long downStationId, int distance) {
+        Map<String, String> params = new HashMap<>();
+        params.put("upStationId", upStationId + "");
+        params.put("downStationId", downStationId + "");
+        params.put("distance", distance + "");
+        return params;
     }
 }
