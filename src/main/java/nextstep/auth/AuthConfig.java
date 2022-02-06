@@ -2,7 +2,8 @@ package nextstep.auth;
 
 import nextstep.auth.authentication.SessionAuthenticationConverter;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor2;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.TokenAuthenticationConverter;
+import nextstep.auth.authentication.TokenAuthenticationInterceptor2;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
@@ -29,7 +30,8 @@ public class AuthConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
         registry.addInterceptor(new SessionAuthenticationInterceptor2(userDetailsService, new SessionAuthenticationConverter())).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
+//        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(new TokenAuthenticationInterceptor2(userDetailsService, jwtTokenProvider, new TokenAuthenticationConverter())).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }
