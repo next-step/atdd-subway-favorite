@@ -33,7 +33,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public abstract void afterAuthentication(HttpServletRequest request,
+    protected abstract void afterAuthentication(HttpServletRequest request,
                                              HttpServletResponse response,
                                              Authentication authentication) throws IOException;
 
