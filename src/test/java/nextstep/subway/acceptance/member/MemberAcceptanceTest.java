@@ -43,10 +43,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // 수정
         final String CHANGE_EMAIL = "new" + EMAIL;
         final String CHANGE_PASSWORD = "new" + PASSWORD;
-        회원_정보_수정_요청(createResponse, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
+        회원_정보_수정_됨(createResponse, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
 
         // 삭제
-        회원_삭제_요청(createResponse);
+        회원_삭제_됨(createResponse);
     }
 
     /**

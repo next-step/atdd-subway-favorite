@@ -67,7 +67,7 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_됨(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
         Map<String, String> params = new HashMap<>();
@@ -85,12 +85,13 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 회원_삭제_됨(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
                 .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
@@ -129,9 +130,9 @@ public class MemberSteps {
         params.put("age", age + "");
 
         return RestAssured.given().log().all()
-                          .body(params)
                           .auth().oauth2(accessToken)
-                          .accept(MediaType.APPLICATION_JSON_VALUE)
+                          .contentType(MediaType.APPLICATION_JSON_VALUE)
+                          .body(params)
                           .when().put("/members/me")
                           .then().log().all()
                           .statusCode(HttpStatus.OK.value())

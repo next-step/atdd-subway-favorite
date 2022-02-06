@@ -23,14 +23,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService,
-                                          JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+                                          JwtTokenProvider jwtTokenProvider) {
         super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
         TokenResponse tokenResponse = tokenResponse(authentication);
 
-        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
+        String responseToClient = OBJECT_MAPPER.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
@@ -59,7 +59,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     }
 
     private String createJwtToken(Authentication authentication) throws JsonProcessingException {
-        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        String payload = OBJECT_MAPPER.writeValueAsString(authentication.getPrincipal());
         return jwtTokenProvider.createToken(payload);
     }
 }

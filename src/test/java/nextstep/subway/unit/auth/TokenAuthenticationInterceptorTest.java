@@ -41,7 +41,7 @@ class TokenAuthenticationInterceptorTest {
     @BeforeEach
     void setUp() {
         tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(
-            customUserDetailsServiceStub, jwtTokenProviderStub, new ObjectMapper()
+            customUserDetailsServiceStub, jwtTokenProviderStub
         );
     }
 
