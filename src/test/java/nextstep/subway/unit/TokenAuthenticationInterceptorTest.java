@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,14 +34,14 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
+    @Mock
     private CustomUserDetailsService customUserDetailsService;
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     @BeforeEach
     void setUp() {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
-        jwtTokenProvider = mock(JwtTokenProvider.class);
         tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
     }
 
