@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TokenAuthenticationInterceptor2Test {
+class TokenAuthenticationInterceptorTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -36,11 +36,11 @@ class TokenAuthenticationInterceptor2Test {
     private CustomUserDetailsService customUserDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
-    private TokenAuthenticationInterceptor2 interceptor;
+    private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() throws IOException {
-        interceptor = new TokenAuthenticationInterceptor2(customUserDetailsService, jwtTokenProvider, new TokenAuthenticationConverter());
+        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, new TokenAuthenticationConverter());
     }
 
     @DisplayName("AuthenticationToken을 이용해 Authentication을 생성한다")

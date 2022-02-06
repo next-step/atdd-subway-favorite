@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -17,18 +16,21 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationConverter authenticationConverter;
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
-                                          JwtTokenProvider jwtTokenProvider) {
+                                          JwtTokenProvider jwtTokenProvider,
+                                          AuthenticationConverter authenticationConverter) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationConverter = authenticationConverter;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
         String token = token(authentication);
@@ -40,16 +42,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.getOutputStream().print(responseToClient);
 
         return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        TokenRequest tokenRequest = mapper.readValue(request.getInputStream(), TokenRequest.class);
-
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-
-        return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
