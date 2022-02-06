@@ -10,6 +10,10 @@ import io.restassured.response.Response;
 import nextstep.subway.acceptance.AcceptanceTest;
 
 class MemberAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private final int AGE = 20;
+
     /**
      *
      * Feature: 회원 정보를 관리한다.
@@ -28,10 +32,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
-        final String EMAIL = "email@email.com";
-        final String PASSWORD = "password";
-        final int AGE = 20;
-
         // 생성
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(회원_생성_요청(EMAIL, PASSWORD, AGE));
@@ -43,16 +43,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // 수정
         final String CHANGE_EMAIL = "new" + EMAIL;
         final String CHANGE_PASSWORD = "new" + PASSWORD;
-        ExtractableResponse<Response> editResponse = 회원_정보_수정_요청(createResponse, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
-        회원_정보_수정됨(editResponse);
+        회원_정보_수정_요청(createResponse, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
 
         // 삭제
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
-        회원_정보_삭제됨(deleteResponse);
+        회원_삭제_요청(createResponse);
     }
 
+    /**
+     *
+     *
+     * */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // 생성, 로그인
+        String token = 회원_생성_하고_로그인_됨(EMAIL, PASSWORD, AGE);
+
+        // 수정
+        final String CHANGE_EMAIL = "new" + EMAIL;
+        final String CHANGE_PASSWORD = "new" + PASSWORD;
+        내_회원_정보_수정_됨(token, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
+
+        // 탈퇴
+        회원_탈퇴_됨(token);
     }
 }

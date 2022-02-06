@@ -16,16 +16,9 @@ public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    public static ExtractableResponse<Response> 세션_로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return RestAssured.given().log().all()
-                          .body(params)
-                          .when().post("/login/session")
-                          .then().log().all()
-                          .statusCode(HttpStatus.OK.value()).extract();
+    public static String 회원_생성_하고_로그인_됨(String email, String password, int age) {
+        회원_생성됨(회원_생성_요청(email, password, age));
+        return 로그인_되어_있음(email, password);
     }
 
     public static String 로그인_되어_있음(String email, String password) {
@@ -87,11 +80,9 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
-                .then().log().all().extract();
-    }
-
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
@@ -99,11 +90,9 @@ public class MemberSteps {
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
-                .then().log().all().extract();
-    }
-
-    public static void 회원_정보_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
     }
 
 
@@ -119,17 +108,42 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+                          .auth().oauth2(accessToken)
+                          .accept(MediaType.APPLICATION_JSON_VALUE)
+                          .when().get("/members/me")
+                          .then().log().all()
+                          .statusCode(HttpStatus.OK.value())
+                          .extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_됨(String accessToken, String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured.given().log().all()
+                          .body(params)
+                          .auth().oauth2(accessToken)
+                          .accept(MediaType.APPLICATION_JSON_VALUE)
+                          .when().put("/members/me")
+                          .then().log().all()
+                          .statusCode(HttpStatus.OK.value())
+                          .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_탈퇴_됨(String accessToken) {
+        return RestAssured.given().log().all()
+                          .auth().oauth2(accessToken)
+                          .when().delete("/members/me")
+                          .then().log().all()
+                          .statusCode(HttpStatus.NO_CONTENT.value())
+                          .extract();
     }
 }
