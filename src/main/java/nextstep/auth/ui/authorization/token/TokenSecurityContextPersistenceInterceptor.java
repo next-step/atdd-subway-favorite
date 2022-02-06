@@ -1,14 +1,15 @@
-package nextstep.auth.ui.authorization;
+package nextstep.auth.ui.authorization.token;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.domain.Authentication;
 import nextstep.auth.infrastructure.*;
+import nextstep.auth.ui.authorization.SecurityContextInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor{
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
 
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;

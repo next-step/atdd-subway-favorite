@@ -4,7 +4,7 @@ import nextstep.auth.domain.Authentication;
 import nextstep.auth.infrastructure.SecurityContext;
 import nextstep.auth.infrastructure.SecurityContextHolder;
 import nextstep.auth.ui.authorization.SecurityContextInterceptor;
-import nextstep.auth.ui.authorization.SessionSecurityContextPersistenceInterceptor;
+import nextstep.auth.ui.authorization.session.SessionSecurityContextPersistenceInterceptor;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

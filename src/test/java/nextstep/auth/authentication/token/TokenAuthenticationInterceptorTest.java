@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.dto.TokenRequest;
@@ -7,15 +7,14 @@ import nextstep.auth.exception.InvalidPasswordException;
 import nextstep.auth.infrastructure.JwtTokenProvider;
 import nextstep.auth.service.UserDetailService;
 import nextstep.auth.ui.authentication.AuthenticationInterceptor;
-import nextstep.auth.ui.authentication.session.SessionAuthenticationConverter;
-import nextstep.auth.ui.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.ui.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.ui.authentication.token.TokenAuthenticationInterceptor;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,16 +23,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
-import static nextstep.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationInterceptorTest {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+public class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final String ANOTHER_PASSWORD = "another_password";
@@ -46,45 +42,25 @@ public class AuthenticationInterceptorTest {
     @Mock
     JwtTokenProvider jwtTokenProvider;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Spy
+    ObjectMapper objectMapper;
 
     AuthenticationInterceptor interceptor;
+    MockHttpServletRequest request;
+    MockHttpServletResponse response;
 
-    @Test
-    void preHandleWithSession() throws Exception {
-        // given
-        MockHttpServletRequest request = createRequestForSession();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
-
-        // when
-        interceptor.preHandle(request, response, new Object());
-
-        // then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY)).isNotNull();
+    @BeforeEach
+    void setUp() throws IOException {
+        interceptor = new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper),
+                userDetailsService, jwtTokenProvider, objectMapper);
+        response = new MockHttpServletResponse();
+        request = new MockHttpServletRequest();
+        request.setContent(objectMapper.writeValueAsString(new TokenRequest(EMAIL, PASSWORD)).getBytes());
     }
 
     @Test
-    void invalidPasswordWithSession() {
+    void preHandleWithToken() throws Exception {
         // given
-        MockHttpServletRequest request = createRequestForSession();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, ANOTHER_PASSWORD, AGE));
-
-        // when, then
-        assertThatThrownBy(() ->
-                interceptor.preHandle(request, response, new Object()))
-                .isInstanceOf(InvalidPasswordException.class);
-    }
-
-    @Test
-    void preHandleWithToken() throws Exception{
-        // given
-        MockHttpServletRequest request = createRequestForToken();
-        MockHttpServletResponse response = new MockHttpServletResponse();
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
@@ -101,10 +77,8 @@ public class AuthenticationInterceptorTest {
     }
 
     @Test
-    void invalidPasswordWithToken() throws IOException{
+    void invalidPasswordWithToken(){
         // given
-        MockHttpServletRequest request = createRequestForToken();
-        MockHttpServletResponse response = new MockHttpServletResponse();
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, ANOTHER_PASSWORD, AGE));
 
         interceptor = new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper),
@@ -115,18 +89,4 @@ public class AuthenticationInterceptorTest {
                 interceptor.preHandle(request, response, new Object()))
                 .isInstanceOf(InvalidPasswordException.class);
     }
-
-    private MockHttpServletRequest createRequestForSession() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addParameter(USERNAME_FIELD, EMAIL);
-        request.addParameter(PASSWORD_FIELD, PASSWORD);
-        return request;
-    }
-
-    private MockHttpServletRequest createRequestForToken() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setContent(objectMapper.writeValueAsString(new TokenRequest(EMAIL, PASSWORD)).getBytes());
-        return request;
-    }
-
 }

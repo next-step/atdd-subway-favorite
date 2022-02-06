@@ -5,7 +5,7 @@ import nextstep.auth.domain.Authentication;
 import nextstep.auth.infrastructure.JwtTokenProvider;
 import nextstep.auth.infrastructure.SecurityContextHolder;
 import nextstep.auth.ui.authorization.SecurityContextInterceptor;
-import nextstep.auth.ui.authorization.TokenSecurityContextPersistenceInterceptor;
+import nextstep.auth.ui.authorization.token.TokenSecurityContextPersistenceInterceptor;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
