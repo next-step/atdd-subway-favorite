@@ -2,8 +2,8 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.application.member.CustomUserDetailsService;
-import nextstep.domain.member.LoginMember;
+import nextstep.domain.member.service.CustomUserDetailsService;
+import nextstep.domain.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,10 +1,10 @@
 package nextstep.subway.unit;
 
 import com.google.common.collect.Lists;
-import nextstep.domain.subway.Line;
-import nextstep.domain.subway.Path;
-import nextstep.domain.subway.Station;
-import nextstep.domain.subway.SubwayMap;
+import nextstep.domain.subway.domain.Line;
+import nextstep.domain.subway.domain.Path;
+import nextstep.domain.subway.domain.Station;
+import nextstep.domain.subway.domain.SubwayMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;

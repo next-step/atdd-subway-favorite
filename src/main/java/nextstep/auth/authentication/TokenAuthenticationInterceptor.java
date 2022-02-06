@@ -6,8 +6,8 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.application.member.CustomUserDetailsService;
-import nextstep.domain.member.LoginMember;
+import nextstep.domain.member.service.CustomUserDetailsService;
+import nextstep.domain.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
