@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+import static nextstep.auth.authentication.AuthenticationException.NOT_FOUND_EMAIL;
+import static nextstep.auth.authentication.AuthenticationException.PASSWORD_IS_INCORRECT;
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor implements HandlerInterceptor {
@@ -52,11 +54,11 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
         if (userDetails == null) {
-            throw new AuthenticationException();
+			throw new AuthenticationException(NOT_FOUND_EMAIL);
         }
 
         if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
+			throw new AuthenticationException(PASSWORD_IS_INCORRECT);
         }
     }
 }
