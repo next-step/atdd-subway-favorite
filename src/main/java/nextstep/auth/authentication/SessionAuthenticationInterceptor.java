@@ -2,8 +2,9 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.domain.member.service.CustomUserDetailsService;
+import nextstep.domain.member.service.LegacyUserDetailsService;
 import nextstep.domain.member.domain.LoginMember;
+import nextstep.domain.member.service.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +18,9 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

@@ -6,8 +6,9 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.domain.member.service.CustomUserDetailsService;
+import nextstep.domain.member.service.LegacyUserDetailsService;
 import nextstep.domain.member.domain.LoginMember;
+import nextstep.domain.member.service.UserDetailsService;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,11 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -48,7 +49,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+        LoginMember loginMember = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
         loginMember.checkPassword(authenticationToken.getCredentials());
         return new Authentication(loginMember);
     }
