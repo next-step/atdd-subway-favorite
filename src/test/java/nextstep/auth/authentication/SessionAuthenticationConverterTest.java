@@ -12,7 +12,6 @@ class SessionAuthenticationConverterTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
 
     private SessionAuthenticationConverter converter;
 
@@ -24,9 +23,6 @@ class SessionAuthenticationConverterTest {
     @DisplayName("세션을 이용하여 AuthenticationToken을 만든다")
     @Test
     void convert() {
-        // given
-        converter = new SessionAuthenticationConverter();
-
         // when
         AuthenticationToken token = converter.convert(mock_요청생성());
 
@@ -42,6 +38,5 @@ class SessionAuthenticationConverterTest {
 
         return request;
     }
-
 
 }
