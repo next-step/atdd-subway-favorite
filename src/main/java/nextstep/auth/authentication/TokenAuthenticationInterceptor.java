@@ -47,7 +47,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
+        // TODO: AuthenticationToken에서 Authentication 객체 생성하기
         return new Authentication(null);
     }
 }
