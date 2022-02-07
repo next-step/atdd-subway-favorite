@@ -2,6 +2,7 @@ package nextstep.member.ui;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.context.SecurityContext;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -48,11 +49,14 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember) {
-        return ResponseEntity.ok().body(MemberResponse.of(loginMember));
+        final MemberResponse member = memberService.findMember(loginMember.getId());
+        return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember,
+                                                             @RequestBody MemberRequest param) {
+        memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 

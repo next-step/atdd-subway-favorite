@@ -101,6 +101,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_수정됨(내_회원_정보_수정_응답);
+
+        // Transactional 을 빼먹을 뻔했네요 ㅎㅎ;
+        // 해당 구문이 있어서, Member 정보가 실제로 변경되었는지 확인되었기에, 남겨놓습니다.
+        final String newAccessToken = 로그인_되어_있음("new" + EMAIL, "new" + PASSWORD);
+        final ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청(newAccessToken);
+        회원_정보_조회됨(내_회원_정보_조회_응답,"new" + EMAIL, AGE);
     }
 
     /**
