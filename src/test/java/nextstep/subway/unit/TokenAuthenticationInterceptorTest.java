@@ -67,9 +67,21 @@ class TokenAuthenticationInterceptorTest {
         assertThat(authenticate.getPrincipal()).isNotNull();
     }
 
-    @DisplayName("정상적인 요청값이 들어왔을 경우 다음 작업 여부 진행하지 않는다를 반환한다")
+    @DisplayName("정상적인 요청값이 들어왔을 경우 다음 작업을 진행하지 않는다")
     @Test
     void preHandle() throws IOException {
+        // given
+        final MockHttpServletRequest request = createMockRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        given(customUserDetailsService.loadUserByUsername(EMAIL)).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        given(jwtTokenProvider.createToken(anyString())).willReturn(JWT_TOKEN);
+
+        // when
+        final boolean actual = tokenAuthenticationInterceptor.preHandle(request, response, new Object());
+
+        // then
+        assertThat(actual).isFalse();
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
