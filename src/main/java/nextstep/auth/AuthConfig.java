@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.authentication.SessionAuthenticationConverter;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.TokenAuthenticationConverter;
@@ -18,7 +19,7 @@ import java.util.List;
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
 
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
     public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
