@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationConverter;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
@@ -13,15 +14,13 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.io.IOException;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 class TokenAuthenticationInterceptorTest {
@@ -31,7 +30,7 @@ class TokenAuthenticationInterceptorTest {
 
     private TokenAuthenticationInterceptor interceptor;
 
-    private CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+    private UserDetailService userDetailsService = mock(UserDetailService.class);
     private JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
 
     @BeforeEach

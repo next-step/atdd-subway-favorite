@@ -4,12 +4,42 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
+
+    private final AuthenticationConverter authenticationConverter;
+    private final UserDetailService userDetailsService;
+
+    public AuthenticationInterceptor(UserDetailService userDetailsService,
+        AuthenticationConverter authenticationConverter) {
+        this.userDetailsService = userDetailsService;
+        this.authenticationConverter = authenticationConverter;
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+        throws IOException {
+        AuthenticationToken token = convert(request);
+        Authentication authentication = authenticate(token);
+        afterAuthentication(request, response, authentication);
+
+        return false;
+    }
+
+    public AuthenticationToken convert(HttpServletRequest request) {
+        return authenticationConverter.convert(request);
+    }
+
+    public Authentication authenticate(AuthenticationToken token) {
+        String principal = token.getPrincipal();
+        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
+        checkAuthentication(loginMember, token);
+
+        return new Authentication(loginMember);
+    }
 
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 

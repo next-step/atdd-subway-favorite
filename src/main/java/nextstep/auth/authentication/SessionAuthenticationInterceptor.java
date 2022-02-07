@@ -7,39 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.application.UserDetailService;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private final AuthenticationConverter authenticationConverter;
-    private final CustomUserDetailsService userDetailsService;
-
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService,
+    public SessionAuthenticationInterceptor(UserDetailService userDetailsService,
         AuthenticationConverter authenticationConverter) {
-        this.userDetailsService = userDetailsService;
-        this.authenticationConverter = authenticationConverter;
-    }
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        AuthenticationToken token = convert(request);
-        Authentication authentication = authenticate(token);
-        afterAuthentication(request, response, authentication);
-
-        return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) {
-        return authenticationConverter.convert(request);
-    }
-
-    public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(loginMember, token);
-
-        return new Authentication(loginMember);
+        super(userDetailsService, authenticationConverter);
     }
 
     @Override

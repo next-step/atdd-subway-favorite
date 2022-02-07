@@ -8,7 +8,8 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailsServiceImpl;
+import nextstep.member.application.UserDetailService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,10 +18,10 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public AuthConfig(UserDetailsServiceImpl userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -28,11 +29,18 @@ public class AuthConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(
-                new SessionAuthenticationInterceptor(userDetailsService, new SessionAuthenticationConverter())
+                new SessionAuthenticationInterceptor(
+                    userDetailsService,
+                    new SessionAuthenticationConverter()
+                )
             )
             .addPathPatterns("/login/session");
         registry.addInterceptor(
-                new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new TokenAuthenticationConverter())
+                new TokenAuthenticationInterceptor(
+                    userDetailsService,
+                    jwtTokenProvider,
+                    new TokenAuthenticationConverter()
+                )
             )
             .addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
