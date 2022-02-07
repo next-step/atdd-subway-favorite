@@ -3,6 +3,7 @@ package nextstep.auth.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import org.springframework.http.MediaType;
@@ -38,10 +39,10 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        final String principal = "";
-        final String credentials = "";
+    public AuthenticationToken convert(final HttpServletRequest request) throws IOException {
+        final TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
+        final String principal = tokenRequest.getEmail();
+        final String credentials = tokenRequest.getPassword();
         return new AuthenticationToken(principal, credentials);
     }
 
