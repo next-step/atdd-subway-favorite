@@ -3,11 +3,14 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +30,9 @@ class TokenAuthenticationInterceptorTest {
         CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
 
+        LoginMember expectedMember = new LoginMember(-1L, EMAIL, PASSWORD, 0);
+        Mockito.when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedMember);
+
         interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, new ObjectMapper());
     }
 
@@ -42,6 +48,13 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
+        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
+
+        Authentication authentication = interceptor.authenticate(authenticationToken);
+
+        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
+        assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
+        assertThat(loginMember.getPassword()).isEqualTo(PASSWORD);
     }
 
     @Test
