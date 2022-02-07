@@ -1,5 +1,7 @@
 package nextstep.auth.token;
 
+import nextstep.auth.context.Authentication;
+
 public class TokenResponse {
     private String accessToken;
 
