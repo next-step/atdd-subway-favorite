@@ -1,7 +1,7 @@
 package nextstep.domain.member.api;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
-import nextstep.domain.member.domain.LoginMember;
+import nextstep.domain.member.domain.LoginMemberImpl;
 import nextstep.domain.member.dto.MemberRequest;
 import nextstep.domain.member.dto.MemberResponse;
 import nextstep.domain.member.service.MemberService;
@@ -43,19 +43,19 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember member) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMemberImpl member) {
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember member,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMemberImpl member,
                                                              @RequestBody MemberRequest memberRequest) {
         memberService.updateMember(member.getId(), memberRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember member) {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMemberImpl member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
     }

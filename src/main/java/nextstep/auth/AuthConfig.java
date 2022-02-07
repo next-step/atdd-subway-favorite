@@ -7,7 +7,7 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.securityContextInterceptor.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.securityContextInterceptor.TokenSecurityContextPersistenceInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.domain.member.service.UserDetailsService;
+import nextstep.auth.authentication.UserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

@@ -9,8 +9,8 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.domain.member.domain.LoginMember;
-import nextstep.domain.member.service.UserDetailsService;
+import nextstep.domain.member.domain.LoginMemberImpl;
+import nextstep.auth.authentication.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 
@@ -67,14 +66,14 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() throws JsonProcessingException {
         //given
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMemberImpl(1L, EMAIL, PASSWORD, 20));
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         //when
         Authentication authentication = authenticationInterceptor.authenticate(authenticationToken);
 
         //then
-        LoginMember principal = (LoginMember) authentication.getPrincipal();
+        LoginMemberImpl principal = (LoginMemberImpl) authentication.getPrincipal();
         assertThat(principal).isNotNull();
         assertThat(principal.checkPassword(PASSWORD)).isTrue();
     }
@@ -82,7 +81,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         //given
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMemberImpl(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
