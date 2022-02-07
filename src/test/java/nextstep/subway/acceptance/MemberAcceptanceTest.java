@@ -27,7 +27,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(회원_수정_응답, userId, "new" + EMAIL, AGE);
 
         ExtractableResponse<Response> 회원_삭제_응답 = 회원_삭제_요청(회원_생성_응답);
-        회원_정보_삭제됨(회원_삭제_응답);
+        회원_정보_삭제됨(회원_삭제_응답, userId);
     }
 
     @DisplayName("나의 정보를 관리한다.")
@@ -45,5 +45,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 내_회원_수정_응답 = 내_회원_정보_수정_요청(accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
         회원_정보_수정됨(내_회원_수정_응답, userId, "new" + EMAIL, AGE);
+
+        ExtractableResponse<Response> 내_회원_삭제_응답 = 내_회원_정보_삭제_요청(accessToken);
+        회원_정보_삭제됨(내_회원_삭제_응답, userId);
     }
 }

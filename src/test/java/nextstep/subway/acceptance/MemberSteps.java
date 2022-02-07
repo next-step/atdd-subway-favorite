@@ -126,6 +126,16 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all().extract();
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -141,5 +151,12 @@ public class MemberSteps {
 
         ExtractableResponse<Response> 업데이트_회원_정보 = 회원_정보_조회_요청(userId);
         회원_정보_조회됨(업데이트_회원_정보, email, age);
+    }
+
+    public static void 회원_정보_삭제됨(ExtractableResponse<Response> response, Long userId) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        ExtractableResponse<Response> 삭제된_회원_정보 = 회원_정보_조회_요청(userId);
+        assertThat(삭제된_회원_정보.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
