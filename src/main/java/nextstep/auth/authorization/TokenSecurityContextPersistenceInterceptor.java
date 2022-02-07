@@ -1,18 +1,16 @@
 package nextstep.auth.authorization;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
@@ -25,26 +23,24 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             return true;
         }
 
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if (!jwtTokenProvider.validateToken(credentials)) {
+        String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+        if (!jwtTokenProvider.validateToken(token)) {
             return true;
         }
 
-        SecurityContext securityContext = extractSecurityContext(credentials);
+        SecurityContext securityContext = extractSecurityContext(token);
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }
         return true;
     }
 
-    private SecurityContext extractSecurityContext(String credentials) {
+    private SecurityContext extractSecurityContext(String token) {
         try {
-            String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
-            };
+            String payload = jwtTokenProvider.getPayload(token);
 
-            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
-            return new SecurityContext(new Authentication(principal));
+            LoginMember loginMember = new ObjectMapper().readValue(payload, LoginMember.class);
+            return new SecurityContext(new Authentication(loginMember));
         } catch (Exception e) {
             return null;
         }

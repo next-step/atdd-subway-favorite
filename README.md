@@ -45,3 +45,35 @@ npm run dev
   - TokenAuthenticationInterceptor 구현하기
 - MemberAcceptanceTest의 manageMyInfo 성공 시키기
   - @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기
+  
+
+# 🚀 2단계 - 인증 로직 리팩터링
+### 1. 1,2단계에서 구현한 인증 로직에 대한 리팩터링
+- AuthenticationConverter 추상화
+  - AuthenticationConverter 인터페이스 생성
+  - SessionAuthenticationConverter 와 TokenAuthenticationConverter 테스트 작성 및 구현
+  - 기존 코드 대체
+  - 전체 테스트 수행 후 실패 테스트 확인
+  - 기존 코드 제거
+- AuthenticationInterceptor 추상화
+  - AuthenticationInterceptor 인터페이스 생성
+  - 기존 코드 및 관련 테스트는 그대로 둠(SessionAuthenticationInterceptor, TokenAuthenticationInterceptor)
+  - TokenAuthenticationInterceptor2 와 SessionAuthenticationInterceptor2 테스트 작성 및 구현
+  - 기존 코드 대체
+  - 전체 테스트 수행 후 실패 테스트 확인
+  - 기존 코드 제거
+- auth 패키지와 member 패키지의 양방향 의존 제거
+  - UserDetailsService 인터페이스 생성
+  - CustomUserDetailService 가 UserDetailsService 를 구현하도록 수정
+  - 전체 테스트 수행 후 실패 테스트 확인
+- SecurityContextInterceptor 추상화
+  - SecurityContextInterceptor 인터페이스 생성
+  - 기존 코드 및 관련 테스트는 그대로 둠(SessionSecurityContextPersistenceInterceptor, TokenSecurityContextPersistenceInterceptor)
+  - SessionSecurityContextPersistenceInterceptor2, TokenSecurityContextPersistenceInterceptor2 테스트 작성 및 구현
+  - 기존 코드 대체
+  - 전체 테스트 수행 후 실패 테스트 확인
+  - 기존 코드 제거
+
+### 2. 내 정보 수정 / 삭제 기능을 처리하는 기능 구현
+- Controller에서 @ㅐ너테이션을 활용하여 Login 정보에 접근
+  
