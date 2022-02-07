@@ -49,7 +49,10 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(final AuthenticationToken authenticationToken) {
-        return new Authentication(null);
+        final String principal = authenticationToken.getPrincipal();
+        final LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        checkAuthentication(userDetails, authenticationToken);
+        return new Authentication(userDetails);
     }
 
     private void checkAuthentication(final LoginMember userDetails, final AuthenticationToken token) {

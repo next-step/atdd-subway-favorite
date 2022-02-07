@@ -15,11 +15,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,16 +58,16 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() throws IOException {
         // given
         final AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
-        final LoginMember expected = new LoginMember(1L, EMAIL, PASSWORD, 10);
-        given(customUserDetailsService.loadUserByUsername(EMAIL)).willReturn(expected);
+        given(customUserDetailsService.loadUserByUsername(EMAIL)).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
         final Authentication authenticate = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
         // then
-        assertThat(authenticate.getPrincipal()).isEqualTo(expected);
+        assertThat(authenticate.getPrincipal()).isNotNull();
     }
 
+    @DisplayName("정상적인 요청값이 들어왔을 경우 다음 작업 여부 진행하지 않는다를 반환한다")
     @Test
     void preHandle() throws IOException {
     }
