@@ -1,8 +1,6 @@
 package nextstep.member.ui;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
-import nextstep.auth.context.SecurityContext;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -10,11 +8,7 @@ import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-
-import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
-import static nextstep.auth.context.SecurityContextHolder.setContext;
 
 @RestController
 public class MemberController {
@@ -58,15 +52,12 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember,
                                                              @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
-        SecurityContextHolder.clearContext();
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
-        SecurityContextHolder.clearContext();
         return ResponseEntity.noContent().build();
     }
 }
-

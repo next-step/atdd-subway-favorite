@@ -4,10 +4,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -90,6 +88,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_삭제됨(회원_정보_삭제_응답);
     }
 
+    @DisplayName("나의 정보를 조회한다.")
+    @Test
+    void getMyInfo() {
+        final ExtractableResponse<Response> 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_됨(회원_생성_응답);
+
+        final String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        final ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청(accessToken);
+        회원_정보_조회됨(내_회원_정보_조회_응답, EMAIL, AGE);
+    }
+
     @DisplayName("나의 정보를 수정한다")
     @Test
     void updateMyInfo() {
@@ -103,12 +113,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_수정됨(내_회원_정보_수정_응답);
-
-        // Transactional 을 빼먹을 뻔했네요 ㅎㅎ;
-        // 해당 구문이 있어서, Member 정보가 실제로 변경되었는지 확인되었기에, 남겨놓습니다.
-        final String newAccessToken = 로그인_되어_있음("new" + EMAIL, "new" + PASSWORD);
-        final ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청(newAccessToken);
-        회원_정보_조회됨(내_회원_정보_조회_응답,"new" + EMAIL, AGE);
     }
 
     @DisplayName("나의 정보를 삭제한다")
@@ -151,7 +155,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 내_회원_정보_수정_응답 = 내_회원_정보_수정_요청(accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
         회원_정보_수정됨(내_회원_정보_수정_응답);
 
-        // 여기서 바뀐 accessToken 을 사용해야하는지 궁금합니다!
         final ExtractableResponse<Response> 내_회원_정보_삭제_응답 = 내_회원_정보_삭제_요청(accessToken);
         회원_정보_삭제됨(내_회원_정보_삭제_응답);
     }
