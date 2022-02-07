@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.application.UserDetailsService;
 import nextstep.auth.authentication.after.AfterAuthentication;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.UserDetails;
 
 @RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
     private final AfterAuthentication afterAuthentication;
 
@@ -30,13 +30,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }

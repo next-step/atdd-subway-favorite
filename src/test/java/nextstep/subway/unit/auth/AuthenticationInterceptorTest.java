@@ -9,18 +9,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.auth.application.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.after.AfterAuthentication;
-import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.UserDetails;
+import nextstep.subway.acceptance.auth.UserDetailsImpl;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationInterceptorTest {
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
     @InjectMocks
     private AuthenticationInterceptor authenticationInterceptor;
 
@@ -31,17 +30,16 @@ class AuthenticationInterceptorTest {
         String EMAIL = "email@email.com";
         String PASSWORD = "password";
         int AGE = 10;
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 10);
-        when(customUserDetailsService.loadUserByUsername(EMAIL))
-            .thenReturn(loginMember);
+        UserDetails userDetails = new UserDetailsImpl(1L, EMAIL, PASSWORD);
+        when(userDetailsService.loadUserByUsername(EMAIL))
+            .thenReturn(userDetails);
 
         // when
         Authentication authentication = authenticationInterceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
-        LoginMember returnLoginMember = (LoginMember) authentication.getPrincipal();
+        UserDetails returnLoginMember = (UserDetails) authentication.getPrincipal();
         // then
         assertThat(returnLoginMember.getId()).isEqualTo(ID);
         assertThat(returnLoginMember.getEmail()).isEqualTo(EMAIL);
         assertThat(returnLoginMember.getPassword()).isEqualTo(PASSWORD);
-        assertThat(returnLoginMember.getAge()).isEqualTo(AGE);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.application.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.after.SessionAfterAuthentication;
 import nextstep.auth.authentication.after.TokenAfterAuthentication;
@@ -18,7 +19,6 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.application.CustomUserDetailsService;
 
 @RequiredArgsConstructor
 @Configuration
@@ -27,7 +27,7 @@ public class AuthConfig implements WebMvcConfigurer {
     public static final String TOKEN_LOGIN_REQUEST_URI = "/login/token";
 
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
