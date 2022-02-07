@@ -1,16 +1,18 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
-
+import java.io.IOException;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
+import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
@@ -28,7 +30,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         Authentication authentication = authenticate(authenticationToken);
 
         // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        TokenResponse tokenResponse = TokenResponse.of(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -40,14 +44,32 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
         // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
+        String requestData = request.getReader()
+            .lines()
+            .collect(Collectors.joining());
 
-        return new AuthenticationToken(principal, credentials);
+        TokenRequest tokenRequest = new ObjectMapper().readValue(requestData, TokenRequest.class);
+
+        return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        // TODO: AuthenticationToken에서 Authentication 객체 생성하기
+        String principal = authenticationToken.getPrincipal();
+        LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
+
+        checkAuthentication(loginMember, authenticationToken);
+
+        return new Authentication(loginMember);
+    }
+
+    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+        if (userDetails == null) {
+            throw new AuthenticationException();
+        }
+
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
+        }
     }
 }
