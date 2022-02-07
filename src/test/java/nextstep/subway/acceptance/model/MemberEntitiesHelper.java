@@ -1,20 +1,27 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.model;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class MemberSteps {
+public final class MemberEntitiesHelper {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
+    private static final String MEMBER_URI = "/members";
+    private static final String MEMBER_ME_URI = "/members/me";
+    private static final String TOKEN_LOGIN_URI = "/login/token";
+    private static final String SESSION_LOGIN_URI = "/login/session";
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
 
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
@@ -27,24 +34,45 @@ public class MemberSteps {
         params.put("password", password);
 
         return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/login/token")
+                .when().post(TOKEN_LOGIN_URI)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .statusCode(OK.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 회원가입을_한다() {
+        ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        assertThat(response.statusCode()).isEqualTo(CREATED.value());
+        return response;
+    }
+
+    public static void 회원_정보를_조회한다(ExtractableResponse<Response> createResponse) {
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
+        회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    public static void 회원_정보를_수정_한다(ExtractableResponse<Response> createResponse) {
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        assertThat(response.statusCode()).isEqualTo(OK.value());
+    }
+
+    public static void 회원_정보를_삭제_한다(ExtractableResponse<Response> createResponse) {
+        ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
+        assertThat(response.statusCode()).isEqualTo(NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
-        params.put("age", age + "");
+        params.put("age", age);
 
         return RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/members")
+                .when().post(MEMBER_URI)
                 .then().log().all().extract();
     }
 
@@ -52,7 +80,7 @@ public class MemberSteps {
         String uri = response.header("Location");
 
         return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .accept(APPLICATION_JSON_VALUE)
                 .when().get(uri)
                 .then().log().all()
                 .extract();
@@ -68,7 +96,7 @@ public class MemberSteps {
 
         return RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
                 .then().log().all().extract();
@@ -85,20 +113,20 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
         return RestAssured
                 .given().log().all()
-                .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD))
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .auth().form(email, password, new FormAuthConfig(SESSION_LOGIN_URI, USERNAME_FIELD, PASSWORD_FIELD))
+                .accept(APPLICATION_JSON_VALUE)
+                .when().get(MEMBER_ME_URI)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .statusCode(OK.value()).extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+                .accept(APPLICATION_JSON_VALUE)
+                .when().get(MEMBER_ME_URI)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(OK.value())
                 .extract();
     }
 
