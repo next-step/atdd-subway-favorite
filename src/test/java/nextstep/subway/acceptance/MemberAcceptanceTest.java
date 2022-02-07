@@ -151,6 +151,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 내_회원_정보_수정_응답 = 내_회원_정보_수정_요청(accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
         회원_정보_수정됨(내_회원_정보_수정_응답);
 
+        // 여기서 바뀐 accessToken 을 사용해야하는지 궁금합니다!
         final ExtractableResponse<Response> 내_회원_정보_삭제_응답 = 내_회원_정보_삭제_요청(accessToken);
         회원_정보_삭제됨(내_회원_정보_삭제_응답);
     }
