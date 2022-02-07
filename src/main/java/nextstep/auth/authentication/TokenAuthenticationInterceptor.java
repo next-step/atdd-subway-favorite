@@ -3,14 +3,17 @@ package nextstep.auth.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
@@ -23,14 +26,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
-        Authentication authentication = authenticate(authenticationToken);
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws IOException {
+        final AuthenticationToken authenticationToken = convert(request);
+        final Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        final String token = jwtTokenProvider.createToken(payload);
+        final TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        final String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
@@ -38,16 +43,27 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
-
+    public AuthenticationToken convert(final HttpServletRequest request) throws IOException {
+        final TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
+        final String principal = tokenRequest.getEmail();
+        final String credentials = tokenRequest.getPassword();
         return new AuthenticationToken(principal, credentials);
     }
 
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+    public Authentication authenticate(final AuthenticationToken authenticationToken) {
+        final String principal = authenticationToken.getPrincipal();
+        final LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        checkAuthentication(userDetails, authenticationToken);
+        return new Authentication(userDetails);
+    }
+
+    private void checkAuthentication(final LoginMember userDetails, final AuthenticationToken token) {
+        if (Objects.isNull(userDetails)) {
+            throw new AuthenticationException();
+        }
+
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
+        }
     }
 }

@@ -5,6 +5,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class CustomUserDetailsService {
     private MemberRepository memberRepository;
@@ -14,7 +16,7 @@ public class CustomUserDetailsService {
     }
 
     public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         return LoginMember.of(member);
     }
 }
