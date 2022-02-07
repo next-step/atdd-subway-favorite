@@ -1,14 +1,11 @@
-package nextstep.subway.unit.auth.converter;
+package nextstep.subway.unit.auth.authentication.converter;
 
 import static org.assertj.core.api.Assertions.*;
-
-import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import nextstep.auth.AuthConfig;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 

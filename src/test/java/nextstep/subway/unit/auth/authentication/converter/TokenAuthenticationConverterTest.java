@@ -1,4 +1,4 @@
-package nextstep.subway.unit.auth.converter;
+package nextstep.subway.unit.auth.authentication.converter;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,7 +11,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import nextstep.auth.AuthConfig;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import nextstep.auth.token.TokenRequest;

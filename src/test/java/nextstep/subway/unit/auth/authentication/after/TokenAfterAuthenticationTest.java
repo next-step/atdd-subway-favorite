@@ -1,4 +1,4 @@
-package nextstep.subway.unit.auth.after;
+package nextstep.subway.unit.auth.authentication.after;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
