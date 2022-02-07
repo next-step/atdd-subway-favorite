@@ -49,7 +49,7 @@ public final class MemberEntitiesHelper {
 
     public static void 회원_정보를_조회한다(ExtractableResponse<Response> createResponse) {
         ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response);
     }
 
     public static void 회원_정보를_수정_한다(ExtractableResponse<Response> createResponse) {
@@ -110,10 +110,10 @@ public final class MemberEntitiesHelper {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청() {
         return RestAssured
                 .given().log().all()
-                .auth().form(email, password, new FormAuthConfig(SESSION_LOGIN_URI, USERNAME_FIELD, PASSWORD_FIELD))
+                .auth().form(EMAIL, PASSWORD, new FormAuthConfig(SESSION_LOGIN_URI, USERNAME_FIELD, PASSWORD_FIELD))
                 .accept(APPLICATION_JSON_VALUE)
                 .when().get(MEMBER_ME_URI)
                 .then().log().all()
@@ -130,9 +130,9 @@ public final class MemberEntitiesHelper {
                 .extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
-        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE);
     }
 }
