@@ -88,6 +88,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_삭제됨(회원_정보_삭제_응답);
     }
 
+    @DisplayName("나의 정보를 수정한다")
+    @Test
+    void updateMyInfo() {
+        // given
+        final ExtractableResponse<Response> 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_됨(회원_생성_응답);
+        final String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        final ExtractableResponse<Response> 내_회원_정보_수정_응답 = 내_회원_정보_수정_요청(accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
+
+        // then
+        회원_정보_수정됨(내_회원_정보_수정_응답);
+    }
+
     /**
      * When 회원 생성을 요청
      * Then 회원 생성됨
