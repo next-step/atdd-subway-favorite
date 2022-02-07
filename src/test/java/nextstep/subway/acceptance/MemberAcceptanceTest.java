@@ -75,7 +75,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        final ExtractableResponse<Response> 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_됨(회원_생성_응답);
 
+        final ExtractableResponse<Response> 회원_정보_조회_응답 = 회원_정보_조회_요청(회원_생성_응답);
+        회원_정보_조회됨(회원_정보_조회_응답, EMAIL, AGE);
+
+        final ExtractableResponse<Response> 회원_정보_수정_응답 = 회원_정보_수정_요청(회원_생성_응답, "new" + EMAIL, "new" + PASSWORD, AGE);
+        회원_정보_수정됨(회원_정보_수정_응답);
+
+        final ExtractableResponse<Response> 회원_삭제_응답 = 회원_삭제_요청(회원_생성_응답);
+        회원_삭제됨(회원_삭제_응답);
     }
 
     /**
