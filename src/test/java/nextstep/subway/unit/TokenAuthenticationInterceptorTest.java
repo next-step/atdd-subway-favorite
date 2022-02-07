@@ -2,18 +2,20 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.application.member.CustomUserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.interceptor.AuthenticationInterceptor;
+import nextstep.auth.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.domain.member.LoginMember;
+import nextstep.domain.member.domain.LoginMemberImpl;
+import nextstep.auth.authentication.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +26,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
+
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,15 +35,16 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    private CustomUserDetailsService customUserDetailsService;
+    @Mock
+    private UserDetailsService userDetailsService;
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
-    private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
-
+    private AuthenticationInterceptor authenticationInterceptor;
+    private ObjectMapper objectMapper = new ObjectMapper();
     @BeforeEach
     void setUp() {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
-        jwtTokenProvider = mock(JwtTokenProvider.class);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        authenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+
     }
 
     @DisplayName("로그인 정보 추출 테스트")
@@ -51,7 +54,8 @@ class TokenAuthenticationInterceptorTest {
         MockHttpServletRequest request = createMockRequest();
 
         //when
-        AuthenticationToken token = tokenAuthenticationInterceptor.convert(request);
+        //convert 메서드도 따로 추상화 시키라는 요구사항이 있어 변경하지 않았습니다.
+        AuthenticationToken token = authenticationInterceptor.convert(request);
 
         //then
         assertThat(token.getPrincipal()).isEqualTo(EMAIL);
@@ -62,14 +66,14 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() throws JsonProcessingException {
         //given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMemberImpl(1L, EMAIL, PASSWORD, 20));
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         //when
-        Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
+        Authentication authentication = authenticationInterceptor.authenticate(authenticationToken);
 
         //then
-        LoginMember principal = (LoginMember) authentication.getPrincipal();
+        LoginMemberImpl principal = (LoginMemberImpl) authentication.getPrincipal();
         assertThat(principal).isNotNull();
         assertThat(principal.checkPassword(PASSWORD)).isTrue();
     }
@@ -77,13 +81,13 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         //given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMemberImpl(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         //when
-        tokenAuthenticationInterceptor.preHandle(request, response, new Object());
+        authenticationInterceptor.preHandle(request, response, new Object());
 
         //then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
