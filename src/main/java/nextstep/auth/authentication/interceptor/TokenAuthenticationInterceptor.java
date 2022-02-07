@@ -39,17 +39,17 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor im
     }
 
     private String convertToJson(TokenResponse tokenResponse) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(tokenResponse);
+        return objectMapper.writeValueAsString(tokenResponse);
     }
 
     private TokenResponse createTokenResponse(Authentication authentication) throws JsonProcessingException {
-        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
         return new TokenResponse(token);
     }
 
     private TokenRequest requestToToken(HttpServletRequest request) throws IOException {
-        return new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
+        return objectMapper.readValue(request.getInputStream(), TokenRequest.class);
     }
 
     @Override
