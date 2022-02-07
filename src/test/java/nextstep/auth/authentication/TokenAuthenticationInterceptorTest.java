@@ -37,7 +37,7 @@ class TokenAuthenticationInterceptorTest {
         authentication = new Authentication();
     }
 
-    @DisplayName("AuthenticationToken을 이용해 Authentication을 생성한다")
+    @DisplayName("인증 정보를확인 하고 응답한다")
     @Test
     void afterAuthentication() throws IOException {
         // given

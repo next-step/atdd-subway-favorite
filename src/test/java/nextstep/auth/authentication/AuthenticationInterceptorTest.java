@@ -62,7 +62,7 @@ class AuthenticationInterceptorTest {
 
     @DisplayName("Session을 이용한 인증")
     @Test
-    void preHandle() {
+    void preHandle_session() throws IOException {
         // given
         MockHttpServletRequest 요청 = session_인증_요청_mock();
         MockHttpServletResponse 응답 = 인증_응답_mock();
