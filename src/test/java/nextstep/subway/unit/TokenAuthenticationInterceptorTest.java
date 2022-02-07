@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 
@@ -54,6 +55,7 @@ class TokenAuthenticationInterceptorTest {
         MockHttpServletRequest request = createMockRequest();
 
         //when
+        //convert 메서드도 따로 추상화 시키라는 요구사항이 있어 변경하지 않았습니다.
         AuthenticationToken token = authenticationInterceptor.convert(request);
 
         //then

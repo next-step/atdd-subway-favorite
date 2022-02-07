@@ -31,7 +31,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor im
         try {
             body = requestToToken(request);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("잘못된 형식의 요청입니다.");
         }
         String principal = body.getEmail();
         String credentials = body.getPassword();

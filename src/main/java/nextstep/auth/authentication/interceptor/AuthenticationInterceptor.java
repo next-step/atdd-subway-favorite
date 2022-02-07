@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter{
     private UserDetailsService userDetailsService;

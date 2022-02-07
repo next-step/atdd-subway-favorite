@@ -1,11 +1,8 @@
 package nextstep.auth.authentication.interceptor;
 
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.domain.member.service.LegacyUserDetailsService;
-import nextstep.domain.member.domain.LoginMember;
 import nextstep.domain.member.service.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
