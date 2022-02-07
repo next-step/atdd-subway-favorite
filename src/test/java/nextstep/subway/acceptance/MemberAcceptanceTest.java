@@ -4,8 +4,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -107,6 +109,24 @@ class MemberAcceptanceTest extends AcceptanceTest {
         final String newAccessToken = 로그인_되어_있음("new" + EMAIL, "new" + PASSWORD);
         final ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청(newAccessToken);
         회원_정보_조회됨(내_회원_정보_조회_응답,"new" + EMAIL, AGE);
+    }
+
+    @DisplayName("나의 정보를 삭제한다")
+    @Test
+    void deleteMyInfo() {
+        // given
+        final ExtractableResponse<Response> 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_됨(회원_생성_응답);
+        final String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // when
+        final ExtractableResponse<Response> 내_회원_정보_삭제_응답 = 내_회원_정보_삭제_요청(accessToken);
+
+        // then
+        회원_정보_삭제됨(내_회원_정보_삭제_응답);
+
+        final ExtractableResponse<Response> 로그인_요청 = 로그인_요청(EMAIL, PASSWORD);
+        assertThat(로그인_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     /**
