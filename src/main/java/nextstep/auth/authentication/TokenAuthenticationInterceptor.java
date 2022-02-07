@@ -7,42 +7,19 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.service.UserDetailsService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static nextstep.auth.authentication.AuthenticationException.NOT_FOUND_EMAIL;
-import static nextstep.auth.authentication.AuthenticationException.PASSWORD_IS_INCORRECT;
-
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private final UserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationConverter tokenAuthenticationConverter;
 
     public TokenAuthenticationInterceptor(UserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, AuthenticationConverter tokenAuthenticationConverter) {
-        this.customUserDetailsService = customUserDetailsService;
+        super(customUserDetailsService, tokenAuthenticationConverter);
         this.jwtTokenProvider = jwtTokenProvider;
-        this.tokenAuthenticationConverter = tokenAuthenticationConverter;
-    }
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = tokenAuthenticationConverter.convert(request);
-        Authentication authentication = authenticate(authenticationToken);
-
-        afterAuthentication(request, response, authentication);
-
-        return false;
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        LoginMember principal = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
-        checkCredential(principal, authenticationToken.getCredentials());
-        return new Authentication(principal);
     }
 
     @Override
@@ -64,12 +41,4 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
         return new TokenResponse(jwtTokenProvider.createToken(payload));
     }
 
-    private void checkCredential(LoginMember principal, String credentials) {
-        if (principal == null) {
-            throw new AuthenticationException(NOT_FOUND_EMAIL);
-        }
-        if (!principal.checkPassword(credentials)) {
-            throw new AuthenticationException(PASSWORD_IS_INCORRECT);
-        }
-    }
 }

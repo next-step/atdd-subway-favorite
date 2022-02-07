@@ -1,7 +1,9 @@
 package nextstep.member.domain;
 
 
-public class LoginMember {
+import nextstep.auth.domain.AuthenticatedMember;
+
+public class LoginMember implements AuthenticatedMember {
     private Long id;
     private String email;
     private String password;

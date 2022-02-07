@@ -3,8 +3,8 @@ package nextstep.auth.authentication;
 import nextstep.auth.authentication.convert.AuthenticationConverter;
 import nextstep.auth.authentication.convert.SessionAuthenticationConverter;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.domain.AuthenticatedMember;
 import nextstep.auth.service.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ class SessionAuthenticationInterceptorTest {
 		// given
 		MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 		when(userDetailsService.loadUserByUsername(anyString()))
-				.thenReturn(getMockLoginMember());
+				.thenReturn(new MockLoginMember());
 		// when
 		sessionAuthenticationInterceptor.preHandle(createMockRequest(), mockResponse, new Object());
 
@@ -58,7 +58,7 @@ class SessionAuthenticationInterceptorTest {
 	@Test
 	void authenticate() {
 		// given
-		LoginMember mockLoginMember = getMockLoginMember();
+		AuthenticatedMember mockLoginMember = new MockLoginMember();
 		when(userDetailsService.loadUserByUsername(anyString()))
 				.thenReturn(mockLoginMember);
 
@@ -67,13 +67,16 @@ class SessionAuthenticationInterceptorTest {
 		Authentication authenticate = sessionAuthenticationInterceptor.authenticate(authenticationToken);
 
 		// then
-		LoginMember principal = (LoginMember) authenticate.getPrincipal();
-		assertThat(principal.getEmail()).isEqualTo(mockLoginMember.getEmail());
-		assertThat(principal.getPassword()).isEqualTo(mockLoginMember.getPassword());
+		AuthenticatedMember principal = (AuthenticatedMember) authenticate.getPrincipal();
 	}
 
-	private LoginMember getMockLoginMember() {
-		return new LoginMember(0L, EMAIL, PASSWORD, 0);
+	static class MockLoginMember implements AuthenticatedMember {
+
+		@Override
+		public boolean checkPassword(String credentials) {
+			return true;
+		}
+
 	}
 
 	private HttpServletRequest createMockRequest() {
