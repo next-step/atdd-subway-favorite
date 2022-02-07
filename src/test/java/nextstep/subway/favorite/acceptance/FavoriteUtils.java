@@ -3,12 +3,14 @@ package nextstep.subway.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.commons.AssertionsUtils;
+import org.assertj.core.api.Assertions;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.commons.AssertionsUtils.생성요청_성공;
 import static nextstep.subway.commons.RestAssuredUtils.postWithToken;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteUtils {
 
