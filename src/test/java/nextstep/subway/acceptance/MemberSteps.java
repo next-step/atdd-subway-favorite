@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.domain.LoginMember;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -98,8 +99,28 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, Object request) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value())
+            .extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {

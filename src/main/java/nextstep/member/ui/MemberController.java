@@ -1,7 +1,12 @@
 package nextstep.member.ui;
 
 import java.net.URI;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContext;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -54,12 +59,17 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(
+        @AuthenticationPrincipal LoginMember loginMember,
+        @RequestBody MemberRequest request) {
+
+        memberService.updateMember(loginMember.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

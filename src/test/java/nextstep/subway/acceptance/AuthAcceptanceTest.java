@@ -1,17 +1,25 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_삭제_요청;
+import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_수정_요청;
 import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -49,21 +57,19 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 후 내 정보를 수정한다.")
     @Test
     void manageMember() {
+        String newEmail = "newEmail";
+        Integer newAge = 99;
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
-        // When 회원 정보 수정 요청
-        response = 내_회원_정보_수정_요청(accessToken,
-            LoginMember.of(new Member("newEmail", "newPassword", 99)));
+        // when
+        response = 내_회원_정보_수정_요청(accessToken, MemberRequest.of(newEmail, PASSWORD, newAge));
         // Then 회원 정보 수정됨
-        내_회원_정보_수정됨(response);
-    }
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-    private ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, LoginMember loginMember) {
-        return null;
-    }
-
-    private void 내_회원_정보_수정됨(ExtractableResponse<Response> response) {
-
+        // when
+        response = 내_회원_정보_조회_요청(accessToken);
+        // then
+        회원_정보_조회됨(response, newEmail, newAge);
     }
 
     @DisplayName("Bearer Auth 로그인 후 내 정보를 삭제한다.")
@@ -74,14 +80,12 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // When
         response = 내_회원_정보_삭제_요청(accessToken);
         // Then 회원 삭제됨
-        내_회원_정보_삭제됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        // when
+        response = 내_회원_정보_조회_요청(accessToken);
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
-        return null;
-    }
-
-    private void 내_회원_정보_삭제됨(ExtractableResponse<Response> response) {
-
-    }
 }
