@@ -1,11 +1,17 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static nextstep.subway.acceptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -13,25 +19,69 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
+    private ExtractableResponse<Response> response;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+    }
+
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        response = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
 
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("Bearer Auth 로그인 후 내 정보 조회")
     @Test
     void myInfoWithBearerAuth() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(accessToken);
+        response = 내_회원_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("Bearer Auth 로그인 후 내 정보를 수정한다.")
+    @Test
+    void manageMember() {
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // When 회원 정보 수정 요청
+        response = 내_회원_정보_수정_요청(accessToken,
+            LoginMember.of(new Member("newEmail", "newPassword", 99)));
+        // Then 회원 정보 수정됨
+        내_회원_정보_수정됨(response);
+    }
+
+    private ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, LoginMember loginMember) {
+        return null;
+    }
+
+    private void 내_회원_정보_수정됨(ExtractableResponse<Response> response) {
+
+    }
+
+    @DisplayName("Bearer Auth 로그인 후 내 정보를 삭제한다.")
+    @Test
+    void manageMyInfo() {
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        // When
+        response = 내_회원_정보_삭제_요청(accessToken);
+        // Then 회원 삭제됨
+        내_회원_정보_삭제됨(response);
+    }
+
+    private ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
+        return null;
+    }
+
+    private void 내_회원_정보_삭제됨(ExtractableResponse<Response> response) {
+
     }
 }
