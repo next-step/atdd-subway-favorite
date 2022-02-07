@@ -47,8 +47,7 @@ class SessionAuthenticationInterceptorTest {
     void convert() throws IOException {
         //given
         MockHttpServletRequest request = createMockRequest();
-        request.setParameter("username", EMAIL);
-        request.setParameter("password", PASSWORD);
+
 
         //when
         AuthenticationToken token = authenticationInterceptor.convert(request);
@@ -61,8 +60,8 @@ class SessionAuthenticationInterceptorTest {
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        request.setParameter("username", EMAIL);
+        request.setParameter("password", PASSWORD);
         return request;
     }
 
