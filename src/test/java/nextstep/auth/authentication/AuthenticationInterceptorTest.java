@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import static nextstep.auth.authentication.step.AuthenticationStep.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -60,6 +61,22 @@ class AuthenticationInterceptorTest {
         assertThat(응답.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
+    @DisplayName("토큰을 이용한 인증 - 회원 정보가 없으면 실패")
+    @Test
+    void preHandle_token_fail() throws IOException {
+        // given
+        MockHttpServletRequest 요청 = token_인증_요청_mock();
+        MockHttpServletResponse 응답 = 인증_응답_mock();
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, new TokenAuthenticationConverter(), jwtTokenProvider);
+
+        when(customUserDetailsService.loadUserByUsername(anyString()))
+                .thenReturn(null);
+
+        // then
+        assertThatThrownBy(() -> interceptor.preHandle(요청, 응답, new Object()))
+                .isInstanceOf(AuthenticationException.class);
+    }
+
     @DisplayName("Session을 이용한 인증")
     @Test
     void preHandle_session() throws IOException {
@@ -77,6 +94,22 @@ class AuthenticationInterceptorTest {
         // then
         assertThat(result).isFalse();
         assertThat(응답.getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("Session을 이용한 인증 - 회원 정보가 없으면 실패")
+    @Test
+    void preHandle_session_실패() {
+        // given
+        MockHttpServletRequest 요청 = session_인증_요청_mock();
+        MockHttpServletResponse 응답 = 인증_응답_mock();
+        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(customUserDetailsService, new SessionAuthenticationConverter());
+
+        when(customUserDetailsService.loadUserByUsername(anyString()))
+                .thenReturn(null);
+
+        // then
+        assertThatThrownBy(() -> interceptor.preHandle(요청, 응답, new Object()))
+                .isInstanceOf(AuthenticationException.class);
     }
 
 }
