@@ -1,5 +1,6 @@
 package nextstep.auth.authentication.converter;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
