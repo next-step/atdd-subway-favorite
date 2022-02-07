@@ -10,9 +10,8 @@ import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private final AuthenticationConverter authenticationConverter;
     private final CustomUserDetailsService userDetailsService;
@@ -29,9 +28,29 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
-        Authentication authentication = authenticate(authenticationToken);
+        AuthenticationToken token = convert(request);
+        Authentication authentication = authenticate(token);
+        afterAuthentication(request, response, authentication);
 
+        return false;
+    }
+
+    public AuthenticationToken convert(HttpServletRequest request) {
+        return authenticationConverter.convert(request);
+    }
+
+    public Authentication authenticate(AuthenticationToken token) {
+        // TODO: AuthenticationToken에서 Authentication 객체 생성하기
+        String principal = token.getPrincipal();
+        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
+        checkAuthentication(loginMember, token);
+
+        return new Authentication(loginMember);
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) throws IOException {
         // TODO: authentication으로 TokenResponse 추출하기
         String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
@@ -41,31 +60,5 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-
-        return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) {
-        return authenticationConverter.convert(request);
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 Authentication 객체 생성하기
-        String principal = authenticationToken.getPrincipal();
-        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
-
-        checkAuthentication(loginMember, authenticationToken);
-
-        return new Authentication(loginMember);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
     }
 }
