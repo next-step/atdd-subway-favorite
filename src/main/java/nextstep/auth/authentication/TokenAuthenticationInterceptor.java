@@ -2,12 +2,10 @@ package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -16,12 +14,17 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationConverter authenticationConverter;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+
+    public TokenAuthenticationInterceptor(CustomUserDetailsService userDetailsService,
+        JwtTokenProvider jwtTokenProvider,
+        AuthenticationConverter authenticationConverter) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationConverter = authenticationConverter;
     }
 
     @Override
@@ -42,21 +45,14 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String requestData = request.getReader()
-            .lines()
-            .collect(Collectors.joining());
-
-        TokenRequest tokenRequest = new ObjectMapper().readValue(requestData, TokenRequest.class);
-
-        return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
+    public AuthenticationToken convert(HttpServletRequest request) {
+        return authenticationConverter.convert(request);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         // TODO: AuthenticationToken에서 Authentication 객체 생성하기
         String principal = authenticationToken.getPrincipal();
-        LoginMember loginMember = customUserDetailsService.loadUserByUsername(principal);
+        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
 
         checkAuthentication(loginMember, authenticationToken);
 
