@@ -1,31 +1,33 @@
 package nextstep.subway.applicaion;
 
+import nextstep.subway.applicaion.dto.PathRequest;
 import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Line;
-import nextstep.subway.domain.Path;
+import nextstep.subway.domain.LineRepository;
+import nextstep.subway.domain.PathFinder;
 import nextstep.subway.domain.Station;
-import nextstep.subway.domain.SubwayMap;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
 
-    public PathService(LineService lineService, StationService stationService) {
-        this.lineService = lineService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
+
+    public PathService(final LineRepository lineRepository, final StationService stationService) {
+        this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
-        Station upStation = stationService.findById(source);
-        Station downStation = stationService.findById(target);
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-        Path path = subwayMap.findPath(upStation, downStation);
+    public PathResponse findShortestPath(final PathRequest pathRequest) {
+        List<Line> lines = lineRepository.findAll();
+        PathFinder pathFinder = PathFinder.of(lines);
 
-        return PathResponse.of(path);
+        Station source = stationService.findStationById(pathRequest.getSource());
+        Station target = stationService.findStationById(pathRequest.getTarget());
+
+        return pathFinder.findShortestPath(source, target);
     }
 }

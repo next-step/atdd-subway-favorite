@@ -11,16 +11,37 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
+    }
+
+    public static Line of(final Line newLine, final Station upStation, final Station downStation, int distance) {
+        newLine.sections.addFirst(Section.of(newLine, upStation, downStation, distance));
+        return newLine;
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeSection(Long stationId) {
+        this.sections.remove(stationId);
+    }
+
+    public List<Station> getStations() {
+        return sections.getAllStations();
     }
 
     public Long getId() {
@@ -35,28 +56,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
-    public void update(String name, String color) {
-        if (name != null) {
-            this.name = name;
-        }
-        if (color != null) {
-            this.color = color;
-        }
-    }
-
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
-    public void deleteSection(Station station) {
-        sections.delete(station);
+    public Sections getSections() {
+        return sections;
     }
 }

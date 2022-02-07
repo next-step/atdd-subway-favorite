@@ -1,26 +1,55 @@
 package nextstep.subway.applicaion.dto;
 
-import nextstep.subway.domain.Path;
+import nextstep.subway.domain.Station;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponse {
+
     private List<StationResponse> stations;
     private int distance;
 
-    public PathResponse(List<StationResponse> stations, int distance) {
-        this.stations = stations;
+    public static PathResponse of(List<Station> stations, int distance) {
+        return new PathResponse(stations.stream().map(StationResponse::of).collect(Collectors.toList()), distance);
+    }
+
+    private PathResponse(List<StationResponse> stationResponses, int distance) {
+        this.stations = stationResponses;
         this.distance = distance;
     }
 
-    public static PathResponse of(Path path) {
-        List<StationResponse> stations = path.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        int distance = path.extractDistance();
+    public static class StationResponse {
+        private Long id;
+        private String name;
+        private LocalDateTime createdAt;
 
-        return new PathResponse(stations, distance);
+        private static StationResponse of(Station station) {
+            return new StationResponse(
+                    station.getId(),
+                    station.getName(),
+                    station.getCreatedDate()
+            );
+        }
+
+        private StationResponse(Long id, String name, LocalDateTime createdAt) {
+            this.id = id;
+            this.name = name;
+            this.createdAt = createdAt;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public LocalDateTime getCreatedAt() {
+            return createdAt;
+        }
     }
 
     public List<StationResponse> getStations() {

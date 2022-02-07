@@ -1,22 +1,26 @@
 package nextstep.subway.ui;
 
 import nextstep.subway.applicaion.PathService;
+import nextstep.subway.applicaion.dto.PathRequest;
 import nextstep.subway.applicaion.dto.PathResponse;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@RestController
+@RequestMapping("/paths")
+@Controller
 public class PathController {
-    private PathService pathService;
 
-    public PathController(PathService pathService) {
+    private final PathService pathService;
+
+    public PathController(final PathService pathService) {
         this.pathService = pathService;
     }
 
-    @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathService.findPath(source, target));
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PathResponse> findShortedPath(PathRequest pathRequest) {
+        return ResponseEntity.ok().body(pathService.findShortestPath(pathRequest));
     }
 }
