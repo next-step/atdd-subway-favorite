@@ -40,9 +40,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
         // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
-
+        final String principal = "";
+        final String credentials = "";
         return new AuthenticationToken(principal, credentials);
     }
 
