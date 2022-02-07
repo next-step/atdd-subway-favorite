@@ -44,7 +44,7 @@ class AuthenticationInterceptorTest {
         // given
         MockHttpServletRequest 요청 = token_인증_요청_mock();
         MockHttpServletResponse 응답 = 인증_응답_mock();
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, new TokenAuthenticationConverter());
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, new TokenAuthenticationConverter(), jwtTokenProvider);
 
         when(customUserDetailsService.loadUserByUsername(anyString()))
                 .thenReturn(loginMember);

@@ -12,7 +12,7 @@ import java.io.IOException;
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final CustomUserDetailsService userDetailsService;
-    private AuthenticationConverter authenticationConverter;
+    private final AuthenticationConverter authenticationConverter;
 
     protected AuthenticationInterceptor(CustomUserDetailsService userDetailsService,
                                         AuthenticationConverter authenticationConverter) {
