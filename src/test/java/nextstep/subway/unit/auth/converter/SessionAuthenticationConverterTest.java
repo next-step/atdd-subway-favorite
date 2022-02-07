@@ -22,7 +22,7 @@ class SessionAuthenticationConverterTest {
         this.sessionAuthenticationConverter = new SessionAuthenticationConverter();
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
+    private MockHttpServletRequest createMockRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter("username", EMAIL);
         request.addParameter("password", PASSWORD);
@@ -35,7 +35,7 @@ class SessionAuthenticationConverterTest {
     }
 
     @Test
-    void convert() throws IOException {
+    void convert() {
         // when
         AuthenticationToken token = sessionAuthenticationConverter.convert(createMockRequest());
 

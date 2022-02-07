@@ -19,13 +19,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequiredArgsConstructor
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
+    public static final String SESSION_LOGIN_REQUEST_URI = "/login/session";
+    public static final String TOKEN_LOGIN_REQUEST_URI = "/login/token";
+
     private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns(SESSION_LOGIN_REQUEST_URI);
+        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns(TOKEN_LOGIN_REQUEST_URI);
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }

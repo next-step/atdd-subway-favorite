@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
+import nextstep.auth.AuthConfig;
 import nextstep.auth.authentication.AuthenticationToken;
 
 @Component
@@ -15,7 +16,7 @@ public class SessionAuthenticationConverter implements AuthenticationConverter {
 
     @Override
     public boolean matchRequestUri(String url) {
-        return false;
+        return AuthConfig.SESSION_LOGIN_REQUEST_URI.equals(url);
     }
 
     @Override
