@@ -1,7 +1,7 @@
 package nextstep.subway.common.handler;
 
-import nextstep.auth.exception.InvalidPasswordException;
-import nextstep.auth.exception.NotExistEmailException;
+import nextstep.subway.auth.exception.InvalidPasswordException;
+import nextstep.subway.auth.exception.NotExistEmailException;
 import nextstep.subway.common.exception.BadRequestException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
