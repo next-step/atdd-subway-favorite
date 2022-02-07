@@ -124,9 +124,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_삭제됨(내_회원_정보_삭제_응답);
-
-        final ExtractableResponse<Response> 로그인_요청 = 로그인_요청(EMAIL, PASSWORD);
-        assertThat(로그인_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     /**

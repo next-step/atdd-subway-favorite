@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.auth.context.SecurityContextHolder.setContext;
 
 @RestController
 public class MemberController {
@@ -57,11 +58,14 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember,
                                                              @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
+        SecurityContextHolder.clearContext();
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getId());
+        SecurityContextHolder.clearContext();
         return ResponseEntity.noContent().build();
     }
 }
