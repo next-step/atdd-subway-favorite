@@ -1,17 +1,31 @@
 package nextstep.auth.authentication;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.authentication.after.AfterAuthentication;
+import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 
-public abstract class AuthenticationInterceptor implements HandlerInterceptor {
+@RequiredArgsConstructor
+public class AuthenticationInterceptor implements HandlerInterceptor {
     private final CustomUserDetailsService userDetailsService;
+    private final AuthenticationConverter authenticationConverter;
+    private final AfterAuthentication afterAuthentication;
 
-    protected AuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        AuthenticationToken token = authenticationConverter.convert(request);
+        Authentication authentication = authenticate(token);
+        afterAuthentication.afterAuthentication(request, response, authentication);
+        return false;
     }
 
     public Authentication authenticate(AuthenticationToken token) {

@@ -9,7 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.after.AfterAuthentication;
+import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -19,7 +22,7 @@ class AuthenticationInterceptorTest {
     @Mock
     private CustomUserDetailsService customUserDetailsService;
     @InjectMocks
-    private AuthenticationInterceptorImpl authenticationInterceptor;
+    private AuthenticationInterceptor authenticationInterceptor;
 
     @Test
     void authenticate() {

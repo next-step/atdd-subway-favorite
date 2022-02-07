@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import nextstep.auth.AuthConfig;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 
@@ -27,11 +28,6 @@ class SessionAuthenticationConverterTest {
         request.addParameter("username", EMAIL);
         request.addParameter("password", PASSWORD);
         return request;
-    }
-
-    @Test
-    void matchesAuthenticationType() {
-        assertThat(sessionAuthenticationConverter.matchRequestUri("/login/session")).isTrue();
     }
 
     @Test

@@ -35,11 +35,6 @@ class TokenAuthenticationConverterTest {
     }
 
     @Test
-    void matchesAuthenticationType() {
-        assertThat(tokenAuthenticationConverter.matchRequestUri(AuthConfig.TOKEN_LOGIN_REQUEST_URI)).isTrue();
-    }
-
-    @Test
     void convert() throws IOException {
         // when
         AuthenticationToken token = tokenAuthenticationConverter.convert(createMockRequest());
