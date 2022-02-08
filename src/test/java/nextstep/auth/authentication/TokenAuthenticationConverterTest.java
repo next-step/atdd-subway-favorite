@@ -1,12 +1,13 @@
 package nextstep.auth.authentication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.token.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,9 +17,9 @@ class TokenAuthenticationConverterTest {
 
     @DisplayName("application/json 타입의 요청을 AuthenticaionToken으로 변환한다")
     @Test
-    void convert() throws JsonProcessingException {
+    void convert() throws IOException {
         // given
-        TokenAuthenticationConverter tokenAuthenticationConverter = new TokenAuthenticationConverter();
+        TokenAuthenticationConverter tokenAuthenticationConverter = new TokenAuthenticationConverter(new ObjectMapper());
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
@@ -28,6 +29,7 @@ class TokenAuthenticationConverterTest {
         AuthenticationToken authentication = tokenAuthenticationConverter.convert(request);
 
         // then
-        assertThat(authentication).isEqualTo(new AuthenticationToken(EMAIL, PASSWORD));
+        assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(authentication.getCredentials()).isEqualTo(PASSWORD);
     }
 }
