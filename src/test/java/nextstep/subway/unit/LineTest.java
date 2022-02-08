@@ -3,6 +3,8 @@ package nextstep.subway.unit;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
+import nextstep.subway.ui.exception.SectionException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,172 +14,165 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LineTest {
-    @Test
-    void addSection() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
 
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(역삼역, 삼성역, 5);
+    Station 가양역;
+    Station 증미역;
+    Station 등촌역;
+    Station 신목동역;
+    Line line;
+    int tenDistance;
+    int fourDistance;
 
-        assertThat(line.getStations()).containsExactly(강남역, 역삼역, 삼성역);
+    @BeforeEach
+    void setUp() {
+        가양역 = new Station("가양역");
+        증미역 = new Station("증미역");
+        등촌역 = new Station("등촌역");
+        신목동역 = new Station("신목동역");
+        line = new Line("9호선", "금색");
+        tenDistance = 10;
+        fourDistance = 4;
     }
 
-    @DisplayName("상행 기준으로 목록 중간에 추가할 경우")
+    @DisplayName("지하철역 사이에 새로운 구간 추가(기존 구간 상행역과 신규 구간 상행역이 겹친다.")
     @Test
-    void addSectionInMiddle() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
+    void addLineBetweenSection() {
+        // given
+        Section section1 = new Section(line, 가양역, 등촌역, tenDistance);
+        Section section2 = new Section(line, 가양역, 증미역, fourDistance);
 
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(강남역, 삼성역, 5);
+        // when
+        line.addSection(section1);
+        line.addSection(section2);
 
-        assertThat(line.getSections().size()).isEqualTo(2);
-        Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
-        assertThat(section.getDownStation()).isEqualTo(삼성역);
-        assertThat(section.getDistance()).isEqualTo(5);
+        // then
+        assertThat(line.sectionsSize()).isEqualTo(2);
+        assertThat(section1.getUpStation()).isEqualTo(증미역);
+        assertThat(section1.getDownStation()).isEqualTo(등촌역);
+        assertThat(section1.getDistance()).isEqualTo(6);
+        assertThat(section2.getDistance()).isEqualTo(4);
     }
 
-    @DisplayName("하행 기준으로 목록 중간에 추가할 경우")
+    @DisplayName("지하철 노선의 하행 종점역에 구간을 추가")
     @Test
-    void addSectionInMiddle2() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
+    void addLineDownEndStationSection() {
+        // given
+        Section section = new Section(line, 가양역, 증미역, tenDistance);
 
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(삼성역, 역삼역, 5);
+        // when
+        line.addSection(section);
 
-        assertThat(line.getSections().size()).isEqualTo(2);
-        Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
-        assertThat(section.getDownStation()).isEqualTo(삼성역);
-        assertThat(section.getDistance()).isEqualTo(5);
+        // then
+        assertThat(line.sectionsSize()).isEqualTo(1);
+        assertThat(section.getUpStation()).isEqualTo(가양역);
+        assertThat(section.getDownStation()).isEqualTo(증미역);
+        assertThat(section.getDistance()).isEqualTo(tenDistance);
     }
 
-    @DisplayName("목록 앞에 추가할 경우")
-    @Test
-    void addSectionInFront() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
-
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(삼성역, 강남역, 5);
-
-        assertThat(line.getSections().size()).isEqualTo(2);
-        Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
-        assertThat(section.getDownStation()).isEqualTo(역삼역);
-        assertThat(section.getDistance()).isEqualTo(10);
-    }
-
-    @DisplayName("목록 뒤에 추가할 경우")
-    @Test
-    void addSectionBehind() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
-
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(역삼역, 삼성역, 5);
-
-        assertThat(line.getSections().size()).isEqualTo(2);
-        Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 역삼역)
-                .findFirst().orElseThrow(RuntimeException::new);
-        assertThat(section.getDownStation()).isEqualTo(삼성역);
-        assertThat(section.getDistance()).isEqualTo(5);
-    }
-
+    @DisplayName("노선에 속해있는 역 목록 조회")
     @Test
     void getStations() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(강남역, 삼성역, 5);
+        line.addSection(new Section(line, 등촌역, 신목동역, tenDistance));
+        line.addSection(new Section(line, 증미역, 등촌역, fourDistance));
+        line.addSection(new Section(line, 가양역, 증미역, fourDistance));
 
-        List<Station> result = line.getStations();
+        // when
+        List<Station> stations = line.getStations();
 
-        assertThat(result).containsExactly(강남역, 삼성역, 역삼역);
+        // then
+        assertThat(stations).containsExactly(가양역, 증미역, 등촌역, 신목동역);
     }
 
-    @DisplayName("이미 존재하는 구간 추가 시 에러 발생")
+    @DisplayName("구간이 목록에서 사이 역 삭제")
     @Test
-    void addSectionAlreadyIncluded() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Line line = new Line("2호선", "green");
-        line.addSection(강남역, 역삼역, 10);
+    void removeBetweenSection() {
+        // given
+        line.addSection(new Section(line, 가양역, 증미역, tenDistance));
+        line.addSection(new Section(line, 증미역, 등촌역, fourDistance));
 
-        assertThatThrownBy(() -> line.addSection(강남역, 역삼역, 5))
-                .isInstanceOf(IllegalArgumentException.class);
+        Section section = new Section(line, 등촌역, 신목동역, fourDistance);
+        line.addSection(section);
+
+        // when
+        line.removeSection(등촌역);
+
+        // then
+        assertThat(section.getDistance()).isEqualTo(8);
+        assertThat(section.getUpStation().getName()).isEqualTo("증미역");
     }
 
+    @DisplayName("구간이 목록에서 마지막 역 삭제")
     @Test
     void removeSection() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(역삼역, 삼성역, 5);
+        // given
+        line.addSection(new Section(line, 가양역, 증미역, tenDistance));
+        line.addSection(new Section(line, 증미역, 등촌역, fourDistance));
 
-        line.deleteSection(삼성역);
+        // when
+        line.removeSection(등촌역);
 
-        assertThat(line.getStations()).containsExactly(강남역, 역삼역);
+        // then
+        assertThat(line.sectionsSize()).isEqualTo(1);
     }
 
+    @DisplayName("지하철역 사이에 새로운 구간 추가 시 기존 역 사이 길이 이상일 수 없음.")
     @Test
-    void removeSectionInFront() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(역삼역, 삼성역, 5);
+    void exceptionAddLineBetweenSection() {
+        // given
+        Section section1 = new Section(line, 가양역, 등촌역, tenDistance);
+        Section section2 = new Section(line, 가양역, 증미역, tenDistance);
+        line.addSection(section1);
 
-        line.deleteSection(강남역);
 
-        assertThat(line.getStations()).containsExactly(역삼역, 삼성역);
+        // when
+        assertThatThrownBy(() -> line.addSection(section2))
+                // then
+                .isInstanceOf(SectionException.class)
+                .hasMessage("새로 추가되는 구간 거리는 기존 구간의 거리 이상일 수 없습니다. 기존 구간 거리 = 10, 신규 구간 거리 = 10");
     }
 
+    @DisplayName("구간 추가 시 상행역과 하행역이 모두 등록된 역일 수 없음.")
     @Test
-    void removeSectionInMiddle() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Station 삼성역 = new Station("삼성역");
-        Line line = new Line("2호선", "green");
-        line.addSection(강남역, 역삼역, 10);
-        line.addSection(역삼역, 삼성역, 5);
+    void exceptionAddSectionDuplicate() {
+        // given
+        Section section1 = new Section(line, 가양역, 증미역, tenDistance);
+        Section section2 = new Section(line, 가양역, 증미역, tenDistance);
+        line.addSection(section1);
 
-        line.deleteSection(역삼역);
-
-        assertThat(line.getStations()).containsExactly(강남역, 삼성역);
+        // when
+        assertThatThrownBy(() -> line.addSection(section2))
+                // then
+                .isInstanceOf(SectionException.class)
+                .hasMessage("상행역과 하행역 모두 등록된 역입니다. 상행역 = 가양역, 하행역 = 증미역");
     }
 
-    @DisplayName("구간이 하나인 노선에서 역 삭제 시 에러 발생")
+    @DisplayName("구간 추가 시 상행역과 하행역 중 하나도 구간에 등록되어 있지 않으면 등록 불가.(구간이 1개 이상일 경우)")
     @Test
-    void removeSectionNotEndOfList() {
-        Station 강남역 = new Station("강남역");
-        Station 역삼역 = new Station("역삼역");
-        Line line = new Line("2호선", "green");
-        line.addSection(강남역, 역삼역, 10);
+    void exceptionAddSectionNotFoundStation() {
+        // given
+        Section section1 = new Section(line, 가양역, 증미역, tenDistance);
+        Section section2 = new Section(line, 등촌역, 신목동역, tenDistance);
+        line.addSection(section1);
 
-        assertThatThrownBy(() -> line.deleteSection(역삼역))
-                .isInstanceOf(IllegalArgumentException.class);
+        // when
+        assertThatThrownBy(() -> line.addSection(section2))
+                // then
+                .isInstanceOf(SectionException.class)
+                .hasMessage("상행역과 하행역 모두 구간에 존재하지 않는 역입니다. 상행역 = 등촌역, 하행역 = 신목동역");
+    }
+
+    @DisplayName("노선 정보 변경")
+    @Test
+    void updateLine() {
+        // given
+        Section section = new Section(line, 가양역, 증미역, tenDistance);
+        line.addSection(section);
+
+        // when
+        line.updateLine("5호선", "보라색");
+
+        // then
+        assertThat(line.getName()).isEqualTo("5호선");
+        assertThat(line.getColor()).isEqualTo("보라색");
     }
 }
