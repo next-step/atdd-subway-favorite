@@ -51,6 +51,8 @@ public class FavoritePath extends BaseEntity {
     }
 
     public void validCheck() {
-
+        if (startStation == null || endStation == null || member == null) {
+            throw new IllegalArgumentException("즐겨찾기를 생성할 수 없습니다.");
+        }
     }
 }

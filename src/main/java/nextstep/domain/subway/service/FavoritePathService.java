@@ -29,7 +29,7 @@ public class FavoritePathService {
 
         FavoritePath favoritePath = new FavoritePath(startStation, endStation, member);
         favoritePath.validCheck();
-        favoritePathRepository()
-
+        FavoritePath saveFavoritePath = favoritePathRepository.save(favoritePath);
+        return saveFavoritePath.getId();
     }
 }
