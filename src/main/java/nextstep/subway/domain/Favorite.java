@@ -8,9 +8,7 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long memberId;
-
     @ManyToOne
     @JoinColumn(name = "source_id")
     private Station source;
