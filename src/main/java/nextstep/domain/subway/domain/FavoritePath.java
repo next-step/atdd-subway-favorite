@@ -34,5 +34,23 @@ public class FavoritePath extends BaseEntity {
         this.member = member;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public Station getStartStation() {
+        return startStation;
+    }
+
+    public Station getEndStation() {
+        return endStation;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void validCheck() {
+
+    }
 }
