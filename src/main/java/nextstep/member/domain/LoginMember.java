@@ -1,6 +1,8 @@
 package nextstep.member.domain;
 
 
+import nextstep.auth.ui.UserDetails;
+
 public class LoginMember {
     private Long id;
     private String email;
