@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @DisplayName("token SecurityContext 테스트")
 @ExtendWith(MockitoExtension.class)
-class TokenSecurityContextPersistenceInterceptor2Test {
+class TokenSecurityContextPersistenceInterceptorTest {
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -35,7 +35,7 @@ class TokenSecurityContextPersistenceInterceptor2Test {
         // given
         MockHttpServletRequest 요청 = token_인증_요청_mock();
         MockHttpServletResponse 응답 = 인증_응답_mock();
-        TokenSecurityContextPersistenceInterceptor2 interceptor = new TokenSecurityContextPersistenceInterceptor2(jwtTokenProvider);
+        TokenSecurityContextPersistenceInterceptor interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
         Mockito.when(jwtTokenProvider.validateToken(anyString()))
                 .thenReturn(true);
         Mockito.when(jwtTokenProvider.getPayload(anyString()))
@@ -57,7 +57,7 @@ class TokenSecurityContextPersistenceInterceptor2Test {
         // given
         MockHttpServletRequest 요청 = token_인증정보없음_요청_mock();
         MockHttpServletResponse 응답 = 인증_응답_mock();
-        TokenSecurityContextPersistenceInterceptor2 interceptor = new TokenSecurityContextPersistenceInterceptor2(jwtTokenProvider);
+        TokenSecurityContextPersistenceInterceptor interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider);
 
         // when
         boolean preHandle = interceptor.preHandle(요청, 응답, new Object());
