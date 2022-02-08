@@ -31,6 +31,7 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> showFavorites(@AuthenticationPrincipal LoginMember member) {
-        return ResponseEntity.ok(null);
+        List<FavoriteResponse> favorites = favoriteService.findAllByMemberId(member.getId());
+        return ResponseEntity.ok(favorites);
     }
 }

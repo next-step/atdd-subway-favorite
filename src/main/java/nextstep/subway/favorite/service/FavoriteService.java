@@ -3,11 +3,15 @@ package nextstep.subway.favorite.service;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.repository.FavoriteRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotFoundException;
 import nextstep.subway.station.repository.StationRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,5 +30,12 @@ public class FavoriteService {
     private Station findStationById(long id) {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new StationNotFoundException(id));
+    }
+
+    public List<FavoriteResponse> findAllByMemberId(long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }

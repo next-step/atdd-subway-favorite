@@ -36,5 +36,6 @@ public class FavoriteUtils {
 
     public static void 즐겨찾기_조회_성공(ExtractableResponse<Response> response) {
         조회요청_성공(response);
+        assertThat(response.jsonPath().getList("id")).hasSize(2);
     }
 }
