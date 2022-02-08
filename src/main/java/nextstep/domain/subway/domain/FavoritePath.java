@@ -28,8 +28,25 @@ public class FavoritePath extends BaseEntity {
     public FavoritePath() {
     }
 
-    public FavoritePath(Station startStation, Station endStation) {
+    public FavoritePath(Station startStation, Station endStation, Member member) {
         this.startStation = startStation;
         this.endStation = endStation;
+        this.member = member;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getStartStation() {
+        return startStation;
+    }
+
+    public Station getEndStation() {
+        return endStation;
+    }
+
+    public Member getMember() {
+        return member;
     }
 }

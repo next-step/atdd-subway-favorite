@@ -12,12 +12,23 @@ public class LoginMemberImpl extends Member implements LoginMember {
         return new LoginMemberImpl(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 
+    public LoginMemberImpl() {
+    }
+
+    public LoginMemberImpl(String email, String password, Integer age) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
     public LoginMemberImpl(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
     }
+
+
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
