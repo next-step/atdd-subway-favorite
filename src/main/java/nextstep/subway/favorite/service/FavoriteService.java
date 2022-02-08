@@ -9,11 +9,13 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotFoundException;
 import nextstep.subway.station.repository.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
@@ -37,5 +39,9 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(long memberId, long favoriteId) {
+        favoriteRepository.deleteByIdAndMemberId(favoriteId, memberId);
     }
 }

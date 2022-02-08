@@ -44,6 +44,6 @@ public class FavoriteUtils {
 
     public static void 즐겨찾기_삭제_성공(ExtractableResponse<Response> deleteResponse, ExtractableResponse<Response> findResponse) {
         삭제요청_성공(deleteResponse);
-        // assertThat(findResponse.jsonPath().getList("id")).hasSize(1);
+        assertThat(findResponse.jsonPath().getList("id")).hasSize(1);
     }
 }

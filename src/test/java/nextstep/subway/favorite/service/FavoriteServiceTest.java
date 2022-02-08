@@ -70,4 +70,18 @@ class FavoriteServiceTest {
         // then
         assertThat(favorites).hasSize(2);
     }
+
+    @Test
+    void delete() {
+        // given
+        FavoriteRequest request = FavoriteRequest.of(교대역.getId(), 강남역.getId());
+        Long favoriteId = favoriteService.create(MEMBER_ID, request);
+
+        // when
+        favoriteService.deleteFavorite(MEMBER_ID, favoriteId);
+        List<FavoriteResponse> favorites = favoriteService.findAllByMemberId(MEMBER_ID);
+
+        // then
+        assertThat(favorites).hasSize(0);
+    }
 }
