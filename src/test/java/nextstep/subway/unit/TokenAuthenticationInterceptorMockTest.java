@@ -1,61 +1,52 @@
 package nextstep.subway.unit;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberRequest;
+import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@Transactional
-class TokenAuthenticationInterceptorTest {
+class TokenAuthenticationInterceptorMockTest {
+    private static final Long ID = 1L;
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
-    private static final String ACCESS_TOKEN = "accessToken";
+    private static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Autowired
+    @Mock
     private CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private MemberService memberService;
 
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     @BeforeEach
     void setUp() {
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
-        memberService.createMember(new MemberRequest(EMAIL, PASSWORD, AGE));
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, OBJECT_MAPPER);
     }
 
     @Test
@@ -74,6 +65,8 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
+
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when & then
@@ -83,6 +76,9 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+
         HttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -90,20 +86,15 @@ class TokenAuthenticationInterceptorTest {
         tokenAuthenticationInterceptor.preHandle(request, response, new Object());
 
         // then
-        TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>(){
-        };
-        Map<String, String> tokenMap = objectMapper.readValue(response.getContentAsString(), typeRef);
-        String accessToken = tokenMap.get(ACCESS_TOKEN);
-
         assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-        assertThat(jwtTokenProvider.validateToken(accessToken)).isTrue();
+        assertThat(response.getContentAsString()).isEqualTo(OBJECT_MAPPER.writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(objectMapper.writeValueAsString(tokenRequest).getBytes());
+        request.setContent(OBJECT_MAPPER.writeValueAsString(tokenRequest).getBytes());
         return request;
     }
 

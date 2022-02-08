@@ -14,9 +14,11 @@ import java.util.Map;
 
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
             };
 
-            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
+            Map<String, String> principal = objectMapper.readValue(payload, typeRef);
             return new SecurityContext(new Authentication(principal));
         } catch (Exception e) {
             return null;
