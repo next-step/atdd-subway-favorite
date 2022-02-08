@@ -1,11 +1,18 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
+import nextstep.member.application.CustomUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
@@ -14,6 +21,16 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void convert() throws IOException {
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+
+        MockHttpServletRequest request = createMockRequest();
+
+        AuthenticationToken token = interceptor.convert(request);
+
+        assertThat(token.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(token.getCredentials()).isEqualTo(PASSWORD);
     }
 
     @Test
