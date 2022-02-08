@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(final JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -25,25 +25,25 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             return true;
         }
 
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+        final String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (!jwtTokenProvider.validateToken(credentials)) {
             return true;
         }
 
-        SecurityContext securityContext = extractSecurityContext(credentials);
+        final SecurityContext securityContext = extractSecurityContext(credentials);
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }
         return true;
     }
 
-    private SecurityContext extractSecurityContext(String credentials) {
+    private SecurityContext extractSecurityContext(final String credentials) {
         try {
-            String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+            final String payload = jwtTokenProvider.getPayload(credentials);
+            final TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
             };
 
-            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
+            final Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
             return new SecurityContext(new Authentication(principal));
         } catch (Exception e) {
             return null;

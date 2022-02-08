@@ -12,7 +12,7 @@ public class AuthorizationExtractor {
     private AuthorizationExtractor() {
     }
 
-    public static String extract(HttpServletRequest request, AuthorizationType type) {
+    public static String extract(final HttpServletRequest request, final AuthorizationType type) {
         String typeToLowerCase = type.toLowerCase();
         int typeLength = typeToLowerCase.length();
 
