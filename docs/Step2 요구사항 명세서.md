@@ -38,3 +38,6 @@
 **생각난 점**
 1. `checkAuthentication()`에 대해서 공통된 로직을 사용하므로 템플릿 메서드 패턴 구조도 괜찮을 것 같다.  
 2. CustomUserDetailsService 는 authenticate 에서만 사용한다.(콜백 패턴도 생각났지만, 스프링 지원 인터페이스 다름 + 오버 엔지니링)  
+
+**구현하다보니**  
+1. LoginMember 또한, Auth 관련 클래스들에서 사용되므로 실질적으로 auth -> member 의존성이라 판단되어 추상화 적용 
