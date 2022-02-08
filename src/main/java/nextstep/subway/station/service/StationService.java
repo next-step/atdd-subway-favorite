@@ -2,9 +2,11 @@ package nextstep.subway.station.service;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.common.exception.BadRequestException;
+import nextstep.subway.favorite.repository.FavoriteRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.exception.StationNotFoundException;
 import nextstep.subway.station.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private final StationRepository stationRepository;
+    private final FavoriteRepository favoriteRepository;
 
     public StationResponse saveStation(StationRequest stationRequest) {
         validateDuplicateStationName(stationRequest.getName());
