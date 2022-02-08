@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.commons.AssertionsUtils.생성요청_성공;
+import static nextstep.subway.commons.AssertionsUtils.조회요청_성공;
+import static nextstep.subway.commons.RestAssuredUtils.getWithToken;
 import static nextstep.subway.commons.RestAssuredUtils.postWithToken;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,5 +28,13 @@ public class FavoriteUtils {
 
     public static void 즐겨찾기_생성_성공(ExtractableResponse<Response> response) {
         생성요청_성공(response);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
+        return getWithToken("/favorites", accessToken);
+    }
+
+    public static void 즐겨찾기_조회_성공(ExtractableResponse<Response> response) {
+        조회요청_성공(response);
     }
 }

@@ -17,6 +17,6 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionResponse> badRequestExceptionHandler(BadRequestException e) {
         e.printStackTrace();
-        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+        return ResponseEntity.badRequest().body(ExceptionResponse.of(e.getMessage()));
     }
 }

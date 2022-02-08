@@ -9,8 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.favorite.acceptance.FavoriteUtils.즐겨찾기_생성_성공;
-import static nextstep.subway.favorite.acceptance.FavoriteUtils.즐겨찾기_생성_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteUtils.*;
 import static nextstep.subway.line.acceptance.LineUtils.getLineId;
 import static nextstep.subway.line.acceptance.LineUtils.지하철노선_생성_요청;
 import static nextstep.subway.line.acceptance.SectionUtils.지하철노선_구간생성_요청;
@@ -78,6 +77,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_생성_성공(생성_응답);
+
+        // given
+        즐겨찾기_생성_요청(accessToken, 강남역, 선릉역);
+
+        // when
+        ExtractableResponse<Response> 조회_응답 = 즐겨찾기_조회_요청(accessToken);
+
+        // then
+        즐겨찾기_조회_성공(조회_응답);
     }
 
 }
