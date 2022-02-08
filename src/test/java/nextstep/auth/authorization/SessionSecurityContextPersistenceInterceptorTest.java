@@ -11,7 +11,7 @@ import static nextstep.auth.authorization.step.SecurityContextStep.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("session SecurityContext 테스트")
-class SessionSecurityContextPersistenceInterceptor2Test {
+class SessionSecurityContextPersistenceInterceptorTest {
 
     @DisplayName("session을 이용한 인증, SecurityContextHolder 정보를 세팅한다")
     @Test
@@ -19,7 +19,7 @@ class SessionSecurityContextPersistenceInterceptor2Test {
         // given
         MockHttpServletRequest 요청 = session_인증_요청_mock();
         MockHttpServletResponse 응답 = 인증_응답_mock();
-        SessionSecurityContextPersistenceInterceptor2 interceptor = new SessionSecurityContextPersistenceInterceptor2();
+        SessionSecurityContextPersistenceInterceptor interceptor = new SessionSecurityContextPersistenceInterceptor();
 
         // when
         boolean preHandle = interceptor.preHandle(요청, 응답, new Object());
@@ -31,13 +31,13 @@ class SessionSecurityContextPersistenceInterceptor2Test {
         assertThat(preHandle).isTrue();
     }
 
-    @DisplayName("session에 인증 정보가 없는경우 - ")
+    @DisplayName("session에 인증 정보가 없는경우 ")
     @Test
     void preHandle_fail() throws Exception {
         // given
         MockHttpServletRequest 요청 = session_인증정보없음_요청_mock();
         MockHttpServletResponse 응답 = 인증_응답_mock();
-        SessionSecurityContextPersistenceInterceptor2 interceptor = new SessionSecurityContextPersistenceInterceptor2();
+        SessionSecurityContextPersistenceInterceptor interceptor = new SessionSecurityContextPersistenceInterceptor();
 
         // when
         boolean preHandle = interceptor.preHandle(요청, 응답, new Object());
