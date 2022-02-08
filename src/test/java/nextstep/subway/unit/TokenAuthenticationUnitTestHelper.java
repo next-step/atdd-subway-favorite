@@ -11,7 +11,7 @@ public final class TokenAuthenticationUnitTestHelper {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
 
-    public static MockHttpServletRequest createMockRequest() throws IOException {
+    public static MockHttpServletRequest createMockTokenRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
