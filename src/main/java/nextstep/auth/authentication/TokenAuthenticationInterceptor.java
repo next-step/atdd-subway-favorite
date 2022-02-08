@@ -7,6 +7,7 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
@@ -43,6 +44,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    @Override
     public AuthenticationToken convert(final HttpServletRequest request) throws IOException {
         final TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
         final String principal = tokenRequest.getEmail();
