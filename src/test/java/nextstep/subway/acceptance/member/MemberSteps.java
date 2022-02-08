@@ -71,7 +71,6 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 회원_정보_수정_됨(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
-
         MemberRequest body = createMemberRequest(email, password, age);
 
         return RestAssured
