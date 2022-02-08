@@ -56,19 +56,6 @@ class TokenAuthenticationInterceptorMockTest {
     }
 
     @Test
-    void convert() throws IOException {
-        // given
-        HttpServletRequest request = createMockRequest();
-
-        // when
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(request);
-
-        // then
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    @Test
     void authenticate() {
         // given
         when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));

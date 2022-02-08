@@ -6,7 +6,6 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
@@ -24,11 +22,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     private JwtTokenProvider jwtTokenProvider;
     private AuthenticationConverter authenticationConverter;
     private ObjectMapper objectMapper;
-
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
-                                          JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        this(customUserDetailsService, jwtTokenProvider, null, objectMapper);
-    }
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
                                           JwtTokenProvider jwtTokenProvider,
@@ -54,21 +47,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.getOutputStream().print(responseToClient);
 
         return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        BufferedReader reader = request.getReader();
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-        TokenRequest tokenRequest = objectMapper.readValue(sb.toString(), TokenRequest.class);
-
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-
-        return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
