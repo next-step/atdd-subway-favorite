@@ -13,25 +13,27 @@ import org.springframework.http.MediaType;
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
-
+    private final ObjectMapper objectMapper;
 
     public TokenAuthenticationInterceptor(UserDetailService userDetailsService,
         JwtTokenProvider jwtTokenProvider,
-        AuthenticationConverter authenticationConverter) {
-        super(userDetailsService, authenticationConverter);
+        ObjectMapper objectMapper) {
+        super(userDetailsService);
 
+        this.authenticationConverter = new TokenAuthenticationConverter();
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void afterAuthentication(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
         // TODO: authentication으로 TokenResponse 추출하기
-        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = TokenResponse.of(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);

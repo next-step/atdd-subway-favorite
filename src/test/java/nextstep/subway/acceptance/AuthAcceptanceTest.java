@@ -4,22 +4,17 @@ import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_삭제_�
 import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_수정_요청;
 import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.domain.LoginMember;
-import nextstep.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {

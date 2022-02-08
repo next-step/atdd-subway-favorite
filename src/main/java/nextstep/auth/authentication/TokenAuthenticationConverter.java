@@ -9,15 +9,16 @@ import nextstep.auth.token.TokenRequest;
 public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     @Override
-    public AuthenticationToken convert(HttpServletRequest request) {
+    public AuthenticationToken convert(HttpServletRequest servletRequest) {
         // TODO: request에서 AuthenticationToken 객체 생성하기
+        ObjectMapper objectMapper = new ObjectMapper();
+
         try {
-            String requestData = request.getReader()
+            String request = servletRequest.getReader()
                 .lines()
                 .collect(Collectors.joining());
 
-            TokenRequest tokenRequest = new ObjectMapper().readValue(requestData,
-                TokenRequest.class);
+            TokenRequest tokenRequest = objectMapper.readValue(request, TokenRequest.class);
 
             return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
         } catch (IOException e) {

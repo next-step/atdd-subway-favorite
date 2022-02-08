@@ -10,13 +10,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final AuthenticationConverter authenticationConverter;
+    protected AuthenticationConverter authenticationConverter;
     private final UserDetailService userDetailsService;
 
-    protected AuthenticationInterceptor(UserDetailService userDetailsService,
-        AuthenticationConverter authenticationConverter) {
+    protected AuthenticationInterceptor(UserDetailService userDetailsService) {
         this.userDetailsService = userDetailsService;
-        this.authenticationConverter = authenticationConverter;
     }
 
     @Override
@@ -41,7 +39,10 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         return new Authentication(loginMember);
     }
 
-    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
+    public abstract void afterAuthentication(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Authentication authentication) throws IOException;
 
     protected void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
         if (userDetails == null) {

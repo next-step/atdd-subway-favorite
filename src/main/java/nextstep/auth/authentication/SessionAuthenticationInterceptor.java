@@ -11,9 +11,10 @@ import nextstep.member.application.UserDetailService;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    public SessionAuthenticationInterceptor(UserDetailService userDetailsService,
-        AuthenticationConverter authenticationConverter) {
-        super(userDetailsService, authenticationConverter);
+    public SessionAuthenticationInterceptor(UserDetailService userDetailsService) {
+        super(userDetailsService);
+
+        this.authenticationConverter = new SessionAuthenticationConverter();
     }
 
     @Override
