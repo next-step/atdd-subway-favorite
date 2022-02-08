@@ -3,11 +3,14 @@ package nextstep.subway.station.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.commons.RestAssuredUtils;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static nextstep.subway.commons.RestAssuredUtils.delete;
 
 public class StationUtils {
 
@@ -28,5 +31,9 @@ public class StationUtils {
                 .post("/stations")
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_삭제_요청(long id) {
+        return delete("/stations/" + id);
     }
 }

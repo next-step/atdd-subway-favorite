@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.commons.AssertionsUtils;
 import org.assertj.core.api.Assertions;
+import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,14 @@ public class FavoriteUtils {
 
     public static void 즐겨찾기_조회_성공(ExtractableResponse<Response> response) {
         조회요청_성공(response);
-        assertThat(response.jsonPath().getList("id")).hasSize(2);
+    }
+
+    public static void 즐겨찾기_목록_개수_검증(ExtractableResponse<Response> response, int size) {
+        assertThat(response.jsonPath().getList("id")).hasSize(size);
+    }
+
+    public static void 즐겨찾기_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> createResponse) {

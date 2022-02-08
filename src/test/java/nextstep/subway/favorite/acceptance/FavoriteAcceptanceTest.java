@@ -15,8 +15,7 @@ import static nextstep.subway.line.acceptance.LineUtils.지하철노선_생성_�
 import static nextstep.subway.line.acceptance.SectionUtils.지하철노선_구간생성_요청;
 import static nextstep.subway.member.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.member.acceptance.MemberSteps.회원_생성_요청;
-import static nextstep.subway.station.acceptance.StationUtils.getStationId;
-import static nextstep.subway.station.acceptance.StationUtils.지하철역_생성요청;
+import static nextstep.subway.station.acceptance.StationUtils.*;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -86,6 +85,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_조회_성공(조회_응답);
+        즐겨찾기_목록_개수_검증(조회_응답, 2);
 
         // when
         ExtractableResponse<Response> 삭제_응답 = 즐겨찾기_삭제_요청(accessToken, 생성_응답);
@@ -95,4 +95,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제_성공(삭제_응답, 삭제후_조회_응답);
     }
 
+    @Test
+    @DisplayName("권한이 없는 경우 응답을 받을 수 없다.")
+    void InvalidToken() {
+        // when
+        ExtractableResponse<Response> 조회_응답 = 즐겨찾기_조회_요청("");
+
+        // then
+        즐겨찾기_조회_실패(조회_응답);
+    }
 }

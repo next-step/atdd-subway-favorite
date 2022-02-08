@@ -2,6 +2,7 @@ package nextstep.subway.auth.infrastructure;
 
 import nextstep.subway.auth.domain.Authentication;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.exception.AuthorizeException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -20,6 +21,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null) {
+            throw new AuthorizeException();
+        }
+
         if (authentication.getPrincipal() instanceof Map) {
             return extractPrincipal(parameter, authentication);
         }
