@@ -8,8 +8,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.io.IOException;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("인증 컨버터(AuthenticationConverter)")
