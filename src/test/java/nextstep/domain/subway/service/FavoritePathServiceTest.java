@@ -47,7 +47,7 @@ class FavoritePathServiceTest {
     @Test
     void createFavorite() {
         //given
-        LoginMember loginMember = new LoginMemberImpl();
+        LoginMember loginMember = getLoginMember();
         FavoritePathRequest favoritePathRequest = new FavoritePathRequest(1L, 2L);
         FavoritePath favoritePath = getFavoritePath();
         Member member = getMember();
@@ -61,6 +61,12 @@ class FavoritePathServiceTest {
 
         //then
         assertThat(favoriteId).isEqualTo(favoritePath.getId());
+    }
+
+    private LoginMember getLoginMember() {
+        LoginMember loginMember = new LoginMemberImpl();
+        ReflectionTestUtils.setField(loginMember, "id", 1L);
+        return loginMember;
     }
 
     private Member getMember() {
