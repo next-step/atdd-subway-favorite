@@ -6,18 +6,16 @@ import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private static final String USERNAME_FIELD = "email";
-    private static final String PASSWORD_FIELD = "password";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private CustomUserDetailsService customUserDetailsService;
@@ -33,8 +31,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        TokenResponse tokenResponse = new TokenResponse(jwtTokenProvider.createToken(payload));
 
         String responseToClient = OBJECT_MAPPER.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -59,7 +57,20 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        LoginMember loginMember = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+
+        checkAuthentication(loginMember, authenticationToken);
+
+        return new Authentication(loginMember);
+    }
+
+    private void checkAuthentication(LoginMember loginMember, AuthenticationToken authenticationToken) {
+        if (loginMember == null) {
+            throw new AuthenticationException();
+        }
+
+        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+            throw new AuthenticationException();
+        }
     }
 }
