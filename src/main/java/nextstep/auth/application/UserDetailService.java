@@ -1,9 +1,9 @@
 package nextstep.auth.application;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.application.dto.User;
 
 public interface UserDetailService {
 
-    LoginMember loadUserByUsername(String email);
+    User loadUserByUsername(String email);
 
 }

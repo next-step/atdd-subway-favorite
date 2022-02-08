@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.application.UserDetailService;
+import nextstep.auth.application.dto.User;
 import nextstep.auth.context.Authentication;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,13 +33,13 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
+        User loginMember = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(loginMember, authenticationToken);
 
         return new Authentication(loginMember);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(User userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }
