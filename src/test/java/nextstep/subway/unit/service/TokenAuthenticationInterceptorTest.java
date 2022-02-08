@@ -1,11 +1,9 @@
 package nextstep.subway.unit.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,12 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
-import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.*;
+import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.EMAIL;
+import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.PASSWORD;
+import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.createMockTokenRequest;
+import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.getAccessToken;
+import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.getPayload;
+import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.getUserDetails;
 import static nextstep.subway.unit.TokenGenerator.getToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public final class MemberEntitiesHelper {
@@ -86,30 +88,6 @@ public final class MemberEntitiesHelper {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
-
-        return RestAssured
-                .given().log().all()
-                .contentType(APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
-                .then().log().all().extract();
-    }
-
-    private static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all().extract();
-    }
-
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청() {
         return RestAssured
                 .given().log().all()
@@ -134,5 +112,62 @@ public final class MemberEntitiesHelper {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE);
+    }
+
+    public static void 내_회원_정보를_수정_한다(String accessToken) {
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
+        assertThat(updateResponse.statusCode()).isEqualTo(OK.value());
+    }
+
+    public static void 내_회원_정보를_삭제_한다(String accessToken) {
+        ExtractableResponse<Response> deleteResponse = 내_회원_정보_삭제_요청(accessToken);
+        assertThat(deleteResponse.statusCode()).isEqualTo(NO_CONTENT.value());
+    }
+
+    private static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+        String uri = response.header("Location");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured
+                .given().log().all()
+                .contentType(APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put(uri)
+                .then().log().all().extract();
+    }
+
+    private static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured
+                .given().log().all()
+                .when().delete(uri)
+                .then().log().all().extract();
+    }
+
+    private static ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, String email, String password, Integer age) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put(MEMBER_ME_URI)
+                .then().log().all().extract();
+    }
+
+    private static ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(MEMBER_ME_URI)
+                .then().log().all().extract();
     }
 }

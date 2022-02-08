@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.context.SecurityContext;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
@@ -61,19 +62,22 @@ public class MemberController {
     }
 
     @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        SecurityContext context = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember) {
         return ResponseEntity.ok().body(memberService.findMember(loginMember.getId()));
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(
+            @AuthenticationPrincipal final LoginMember loginMember,
+            @RequestBody final MemberRequest request
+    ) {
+        memberService.updateMember(loginMember.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal final LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }
