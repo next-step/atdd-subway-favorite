@@ -15,6 +15,9 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
+
+    private static final String SESSION_LOGIN_URL = "/login/session";
+    private static final String TOKEN_LOGIN_URL = "/login/token";
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -25,8 +28,8 @@ public class AuthConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns(SESSION_LOGIN_URL);
+        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns(TOKEN_LOGIN_URL);
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }

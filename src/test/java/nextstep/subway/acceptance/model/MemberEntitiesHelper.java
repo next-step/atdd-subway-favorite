@@ -23,12 +23,12 @@ public final class MemberEntitiesHelper {
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
 
-    public static String 로그인_되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
+    public static String 로그인_되어_있음() {
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
         return response.jsonPath().getString("accessToken");
     }
 
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -62,7 +62,7 @@ public final class MemberEntitiesHelper {
         assertThat(response.statusCode()).isEqualTo(NO_CONTENT.value());
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
+    private static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, Object> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -76,7 +76,7 @@ public final class MemberEntitiesHelper {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
+    private static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
         return RestAssured.given().log().all()
@@ -86,7 +86,7 @@ public final class MemberEntitiesHelper {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    private static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
         Map<String, String> params = new HashMap<>();
@@ -102,7 +102,7 @@ public final class MemberEntitiesHelper {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+    private static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
