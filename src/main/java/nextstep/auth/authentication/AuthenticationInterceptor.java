@@ -13,7 +13,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     private final AuthenticationConverter authenticationConverter;
     private final UserDetailService userDetailsService;
 
-    public AuthenticationInterceptor(UserDetailService userDetailsService,
+    protected AuthenticationInterceptor(UserDetailService userDetailsService,
         AuthenticationConverter authenticationConverter) {
         this.userDetailsService = userDetailsService;
         this.authenticationConverter = authenticationConverter;
