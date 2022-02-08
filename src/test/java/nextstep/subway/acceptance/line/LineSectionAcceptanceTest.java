@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.line.application.dto.LineRequest;
 import nextstep.subway.acceptance.AcceptanceTest;
 
 @DisplayName("지하철 구간 관리 기능")
@@ -32,7 +33,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         상행 = 지하철역_생성_요청_하고_ID_반환("상행");
         하행 = 지하철역_생성_요청_하고_ID_반환("하행");
 
-        Map<String, Object> lineCreateParams = LineSteps.createLineCreateParams(상행, 하행);
+        LineRequest lineCreateParams = LineSteps.createLineCreateParams(상행, 하행);
         노선 = 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
     }
 
