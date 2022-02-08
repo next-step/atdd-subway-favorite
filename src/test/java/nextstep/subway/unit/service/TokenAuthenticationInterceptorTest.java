@@ -1,9 +1,11 @@
 package nextstep.subway.unit.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
@@ -12,10 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
 import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.*;
+import static nextstep.subway.unit.TokenGenerator.getToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -28,12 +32,18 @@ class TokenAuthenticationInterceptorTest {
     @InjectMocks
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
+    /**
+     * Given 토큰 생성 요청 객체를 만들고
+     * When Request Body 에 담아서 변환을 요청하면
+     * Then 생성된 인증 토큰을 받는다
+     */
     @Test
     void convert() throws IOException {
         인증_토큰_생성();
     }
 
     /**
+     * Given 회원을 생성하고
      * When 토큰 생성 요청 객체를 만들고, Request Body 에 담아서 변환을 요청하면
      * Then 생성된 인증 토큰을 받는다
      * When 인증 토큰을 Request Body 에 담아서 인증 객체 생성을 요청하면
@@ -41,14 +51,30 @@ class TokenAuthenticationInterceptorTest {
      */
     @Test
     void authenticate() throws IOException {
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        LoginMember userDetails = getUserDetails();
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(userDetails);
         Authentication authentication = tokenAuthenticationInterceptor.authenticate(인증_토큰_생성());
         assertThat(authentication.getPrincipal()).isNotNull();
         assertThat(authentication.getPrincipal()).isInstanceOf(LoginMember.class);
     }
 
+    /**
+     * Given 회원을 생성하고
+     * And 인증 토큰을 생성하고
+     * When 인증 토큰을 Request Body 에 담아서 preHandle 을 호출하면
+     * Then Response Body 에 생성된 Access Token 이 들어있다.
+     */
     @Test
     void preHandle() throws IOException {
+        LoginMember userDetails = getUserDetails();
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(userDetails);
+        when(jwtTokenProvider.createToken(getPayload(userDetails))).thenReturn(getToken());
+
+        MockHttpServletRequest request = createMockTokenRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        tokenAuthenticationInterceptor.preHandle(request, response, null);
+
+        assertThat(getAccessToken(response)).isEqualTo(getToken());
     }
 
     /**
