@@ -3,17 +3,19 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.step.StationSteps;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.acceptance.step.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관리 기능")
 class StationAcceptanceTest extends AcceptanceTest {
+
     /**
      * When 지하철역 생성을 요청 하면
      * Then 지하철역 생성이 성공한다.
@@ -27,6 +29,25 @@ class StationAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    /**
+     * Given 지하쳘역을 생성한다
+     * When 지하철역 조회를 요청 하면
+     * Then 지하철 정보를 응답 받는다.
+     */
+    @DisplayName("지하철역 조회")
+    @Test
+    void getStation() {
+        // given
+        ExtractableResponse<Response> 생성_응답 = 지하철역_생성_요청("강남역");
+        String location = 생성_응답.header("Location");
+
+        // when
+        ExtractableResponse<Response> 조회_응답 = StationSteps.지하철역_조회_요청(location);
+
+        // then
+        assertThat(조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     /**
@@ -94,4 +115,5 @@ class StationAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
 }
