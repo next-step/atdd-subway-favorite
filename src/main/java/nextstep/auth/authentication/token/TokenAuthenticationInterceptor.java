@@ -1,6 +1,7 @@
 package nextstep.auth.authentication.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
@@ -21,17 +22,26 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private AuthenticationConverter authenticationConverter;
     private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
+                                          JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        this(customUserDetailsService, jwtTokenProvider, null, objectMapper);
+    }
+
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
+                                          JwtTokenProvider jwtTokenProvider,
+                                          AuthenticationConverter authenticationConverter, ObjectMapper objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationConverter = authenticationConverter;
         this.objectMapper = objectMapper;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());

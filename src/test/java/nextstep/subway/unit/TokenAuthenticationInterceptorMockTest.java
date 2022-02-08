@@ -1,7 +1,9 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -42,11 +44,15 @@ class TokenAuthenticationInterceptorMockTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    private AuthenticationConverter authenticationConverter;
+
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     @BeforeEach
     void setUp() {
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, OBJECT_MAPPER);
+        authenticationConverter = new TokenAuthenticationConverter(OBJECT_MAPPER);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(
+                customUserDetailsService, jwtTokenProvider, authenticationConverter, OBJECT_MAPPER);
     }
 
     @Test

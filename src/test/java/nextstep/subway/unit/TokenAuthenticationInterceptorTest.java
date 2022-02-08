@@ -2,6 +2,7 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
@@ -49,11 +50,15 @@ class TokenAuthenticationInterceptorTest {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private AuthenticationConverter tokenAuthenticationConverter;
+
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     @BeforeEach
     void setUp() {
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
+                tokenAuthenticationConverter, objectMapper);
         memberService.createMember(new MemberRequest(EMAIL, PASSWORD, AGE));
     }
 
