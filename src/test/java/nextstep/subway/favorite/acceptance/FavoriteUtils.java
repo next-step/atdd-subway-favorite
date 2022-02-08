@@ -8,10 +8,8 @@ import org.assertj.core.api.Assertions;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.commons.AssertionsUtils.생성요청_성공;
-import static nextstep.subway.commons.AssertionsUtils.조회요청_성공;
-import static nextstep.subway.commons.RestAssuredUtils.getWithToken;
-import static nextstep.subway.commons.RestAssuredUtils.postWithToken;
+import static nextstep.subway.commons.AssertionsUtils.*;
+import static nextstep.subway.commons.RestAssuredUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteUtils {
@@ -37,5 +35,15 @@ public class FavoriteUtils {
     public static void 즐겨찾기_조회_성공(ExtractableResponse<Response> response) {
         조회요청_성공(response);
         assertThat(response.jsonPath().getList("id")).hasSize(2);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> createResponse) {
+        String location = createResponse.header("Location");
+        return deleteWithToken(location, accessToken);
+    }
+
+    public static void 즐겨찾기_삭제_성공(ExtractableResponse<Response> deleteResponse, ExtractableResponse<Response> findResponse) {
+        삭제요청_성공(deleteResponse);
+        // assertThat(findResponse.jsonPath().getList("id")).hasSize(1);
     }
 }

@@ -86,6 +86,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_조회_성공(조회_응답);
+
+        // when
+        ExtractableResponse<Response> 삭제_응답 = 즐겨찾기_삭제_요청(accessToken, 생성_응답);
+        ExtractableResponse<Response> 삭제후_조회_응답 = 즐겨찾기_조회_요청(accessToken);
+
+        // then
+        즐겨찾기_삭제_성공(삭제_응답, 삭제후_조회_응답);
     }
 
 }
