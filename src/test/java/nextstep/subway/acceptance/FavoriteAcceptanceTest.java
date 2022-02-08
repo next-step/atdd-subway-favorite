@@ -24,6 +24,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private String email = "email@email.com";
     private String password = "password";
     private int age = 30;
+    String 교대역;
+    String 양재역;
 
     /**
      *  Background ( BeforeEach : setUp )
@@ -38,16 +40,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void setUp() {
         super.setUp();
         //given
-        String 교대역 = 지하철역_생성_요청("교대역").jsonPath().getString("id");
-        String 양재역 = 지하철역_생성_요청("양재역").jsonPath().getString("id");
+        교대역 = 지하철역_생성_요청("교대역").jsonPath().getString("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getString("id");
 
         //and
         Map<String, String> 노선_생성_파라미터 = 노선_생성_파라미터("_2호선", "green", 교대역, 양재역);
         지하철_노선_생성_요청(노선_생성_파라미터);
 
-
-        회원_생성_요청(email, password, age);
-        accessToken = 로그인_되어_있음(email, password);
     }
 
 
@@ -66,7 +65,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavorite() {
         //given
-        Map<String, String> params = 즐겨찾기_파라미터_생성("1", "3");
+        회원_생성_요청(email, password, age);
+        accessToken = 로그인_되어_있음(email, password);
+        Map<String, String> params = 즐겨찾기_파라미터_생성(교대역, 양재역);
 
         //when
         ExtractableResponse<Response> 즐겨찾기_생성 = 즐겨찾기_생성_요청(params, accessToken);
@@ -94,9 +95,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         //given
-        Map<String, String> params = 즐겨찾기_파라미터_생성("1", "3");
+        회원_생성_요청(email, password, age);
+        accessToken = 로그인_되어_있음(email, password);
+        Map<String, String> params = 즐겨찾기_파라미터_생성(교대역, 양재역);
 
         //when
         ExtractableResponse<Response> 즐겨찾기_생성 = 즐겨찾기_생성_요청(params, accessToken);
+
+        //then
+        즐겨찾기_생성_검증(즐겨찾기_생성);
     }
 }

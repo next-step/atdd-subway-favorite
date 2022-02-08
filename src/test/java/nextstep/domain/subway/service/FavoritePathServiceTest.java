@@ -64,13 +64,12 @@ class FavoritePathServiceTest {
     }
 
     private LoginMember getLoginMember() {
-        LoginMember loginMember = new LoginMemberImpl();
-        ReflectionTestUtils.setField(loginMember, "id", 1L);
+        LoginMember loginMember = new LoginMemberImpl(1L, "email@email.com","password", 20);
         return loginMember;
     }
 
     private Member getMember() {
-        Member member = new LoginMemberImpl("email@email.com","password", 20);
+        Member member = new Member("email@email.com","password", 20);
         ReflectionTestUtils.setField(member, "id", 1L);
         return member;
     }

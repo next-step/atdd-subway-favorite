@@ -13,10 +13,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteSteps {
 
-    public static Map<String, String> 즐겨찾기_파라미터_생성(String source, String target) {
+    public static Map<String, String> 즐겨찾기_파라미터_생성(String startStationId, String endStationId) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
+        params.put("startStationId", startStationId);
+        params.put("endStationId", endStationId);
         return params;
     }
 
@@ -50,13 +50,13 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_조회_검증하기(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("source.name")).isEqualTo("교대역");
-        assertThat(response.jsonPath().getList("target.name")).isEqualTo("양재역");
+        assertThat(response.jsonPath().getList("startStation.name")).isEqualTo("교대역");
+        assertThat(response.jsonPath().getList("endStation.name")).isEqualTo("양재역");
     }
 
 
-    public static void 즐겨찾기_삭제_검증(ExtractableResponse<Response> 즐겨찾기_삭제) {
-        assertThat(즐겨찾기_삭제.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    public static void 즐겨찾기_삭제_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static void 즐겨찾기_생성_검증(ExtractableResponse<Response> response) {

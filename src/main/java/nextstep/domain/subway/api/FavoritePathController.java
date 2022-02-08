@@ -2,10 +2,12 @@ package nextstep.domain.subway.api;
 
 import nextstep.auth.authentication.LoginMember;
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.domain.member.domain.LoginMemberImpl;
 import nextstep.domain.subway.dto.FavoritePathRequest;
 import nextstep.domain.subway.service.FavoritePathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +23,8 @@ public class FavoritePathController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createFavoritePath(@AuthenticationPrincipal LoginMember loginMember, FavoritePathRequest favoritePathRequest) {
-        long saveFavoriteId = favoritePathService.createFavorite(loginMember, favoritePathRequest);
+    public ResponseEntity<?> createFavoritePath(@AuthenticationPrincipal LoginMemberImpl member, @RequestBody FavoritePathRequest favoritePathRequest) {
+        long saveFavoriteId = favoritePathService.createFavorite(member, favoritePathRequest);
         return ResponseEntity.created(URI.create("/favorites/" + saveFavoriteId)).build();
     }
 
