@@ -10,15 +10,16 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 public class FavoritePath extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "station_id", nullable = false)
+    @JoinColumn(name = "start_station_id", nullable = false)
     private Station startStation;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "station_id", nullable = false)
+    @JoinColumn(name = "end_station_id", nullable = false)
     private Station endStation;
 
     @ManyToOne(fetch = LAZY)

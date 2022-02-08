@@ -90,4 +90,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제_검증(즐겨찾기_삭제);
     }
 
+    @DisplayName("즐겨찾기 생성 검증")
+    @Test
+    void createFavorite() {
+        //given
+        Map<String, String> params = 즐겨찾기_파라미터_생성("1", "3");
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_생성 = 즐겨찾기_생성_요청(params, accessToken);
+    }
 }
