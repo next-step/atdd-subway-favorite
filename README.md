@@ -38,5 +38,5 @@ npm run dev
 
 ### 로그인 인증 프로세스 실습
 - [생략] 패키지 구조 리팩터링
-- [ ] MemberAcceptanceTest#manageMember 인수 테스트 통합하기
+- [x] MemberAcceptanceTest#manageMember 인수 테스트 통합하기
 - [ ] AuthAcceptanceTest#myInfoWithSession 테스트 통과하기
