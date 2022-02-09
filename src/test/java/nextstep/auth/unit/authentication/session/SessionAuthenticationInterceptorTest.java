@@ -1,9 +1,9 @@
 package nextstep.auth.unit.authentication.session;
 
-import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.ProviderManager;
+import nextstep.auth.authentication.UsernamePasswordAuthenticationProvider;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
-import nextstep.auth.context.Authentication;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,18 +33,8 @@ class SessionAuthenticationInterceptorTest {
         LoginMember expectedMember = new LoginMember(-1L, EMAIL, PASSWORD, 0);
         Mockito.when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedMember);
 
-        interceptor = new SessionAuthenticationInterceptor(customUserDetailsService, new SessionAuthenticationConverter());
-    }
-
-    @Test
-    void authenticate() {
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-
-        Authentication authentication = interceptor.authenticate(authenticationToken);
-
-        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
-        assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
-        assertThat(loginMember.getPassword()).isEqualTo(PASSWORD);
+        ProviderManager providerManager = new ProviderManager(Collections.singletonList(new UsernamePasswordAuthenticationProvider(customUserDetailsService)));
+        interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), providerManager);
     }
 
     @Test

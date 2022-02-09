@@ -2,10 +2,10 @@ package nextstep.auth.unit.authentication.token;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.ProviderManager;
+import nextstep.auth.authentication.UsernamePasswordAuthenticationProvider;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
-import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.CustomUserDetailsService;
@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,18 +43,8 @@ class TokenAuthenticationInterceptorTest {
         Mockito.when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedMember);
         Mockito.when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper, new TokenAuthenticationConverter(objectMapper));
-    }
-
-    @Test
-    void authenticate() {
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-
-        Authentication authentication = interceptor.authenticate(authenticationToken);
-
-        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
-        assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
-        assertThat(loginMember.getPassword()).isEqualTo(PASSWORD);
+        ProviderManager providerManager = new ProviderManager(Collections.singletonList(new UsernamePasswordAuthenticationProvider(customUserDetailsService)));
+        interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, objectMapper, new TokenAuthenticationConverter(objectMapper), providerManager);
     }
 
     @Test

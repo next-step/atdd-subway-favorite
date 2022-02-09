@@ -1,6 +1,9 @@
 package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationProvider;
+import nextstep.auth.authentication.ProviderManager;
+import nextstep.auth.authentication.UsernamePasswordAuthenticationProvider;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
@@ -14,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -30,10 +34,18 @@ public class AuthConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService, new SessionAuthenticationConverter())).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper, new TokenAuthenticationConverter(objectMapper))).addPathPatterns("/login/token");
+        ProviderManager providerManager = new ProviderManager(providers());
+
+        registry.addInterceptor(new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), providerManager)).addPathPatterns("/login/session");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(jwtTokenProvider, objectMapper, new TokenAuthenticationConverter(objectMapper), providerManager)).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
+    }
+
+    private List<AuthenticationProvider> providers() {
+        return Arrays.asList(
+                new UsernamePasswordAuthenticationProvider(userDetailsService)
+        );
     }
 
     @Override
