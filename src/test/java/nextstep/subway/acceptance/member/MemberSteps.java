@@ -1,16 +1,16 @@
 package nextstep.subway.acceptance.member;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import nextstep.auth.token.TokenRequest;
+import nextstep.member.application.dto.MemberRequest;
 
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
@@ -27,30 +27,32 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
+        TokenRequest body = new TokenRequest(email, password);
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(body)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
-
+    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, int age) {
+        MemberRequest body = createMemberRequest(email, password, age);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(body)
                 .when().post("/members")
                 .then().log().all().extract();
+    }
+
+    private static MemberRequest createMemberRequest(String email, String password, int age) {
+        return MemberRequest.builder()
+            .email(email)
+            .password(password)
+            .age(age)
+            .build();
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
@@ -69,16 +71,12 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 회원_정보_수정_됨(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        MemberRequest body = createMemberRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(body)
                 .when().put(uri)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -91,7 +89,6 @@ public class MemberSteps {
                 .given().log().all()
                 .when().delete(uri)
                 .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value())
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
@@ -124,15 +121,12 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_수정_됨(String accessToken, String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        MemberRequest body = createMemberRequest(email, password, age);
 
         return RestAssured.given().log().all()
                           .auth().oauth2(accessToken)
                           .contentType(MediaType.APPLICATION_JSON_VALUE)
-                          .body(params)
+                          .body(body)
                           .when().put("/members/me")
                           .then().log().all()
                           .statusCode(HttpStatus.OK.value())

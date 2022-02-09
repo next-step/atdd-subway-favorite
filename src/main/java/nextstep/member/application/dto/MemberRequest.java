@@ -1,5 +1,6 @@
 package nextstep.member.application.dto;
 
+import lombok.Builder;
 import nextstep.member.domain.Member;
 
 public class MemberRequest {
@@ -10,6 +11,7 @@ public class MemberRequest {
     public MemberRequest() {
     }
 
+    @Builder
     public MemberRequest(String email, String password, Integer age) {
         this.email = email;
         this.password = password;

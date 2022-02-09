@@ -8,31 +8,39 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.line.application.dto.LineRequest;
+import nextstep.line.application.dto.SectionRequest;
+import nextstep.line.domain.Distance;
 
 public class LineSteps {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
+        LineRequest body = createLineRequest(name, color);
         return RestAssured
                 .given().log().all()
-                .body(params)
+                .body(body)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
                 .then().log().all().extract();
     }
 
+    private static LineRequest createLineRequest(String name, String color) {
+        return LineRequest.builder()
+            .name(name)
+            .color(color)
+            .build();
+    }
+
     public static Long 지하철_노선_생성_요청_하고_ID_반환(String name, String color) {
-        return 지하철_노선_생성_요청(name, color).jsonPath().getLong("id");
+        return 지하철_노선_생성_요청(name, color).jsonPath()
+                                        .getLong("id");
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(Long id, String name, String color) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
+        LineRequest body = createLineRequest(name, color);
+
         return RestAssured
             .given().log().all()
-            .body(params)
+            .body(body)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().put("/lines/" + id)
             .then().log().all().extract();
@@ -66,16 +74,16 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, Object> params) {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest body) {
         return RestAssured
                 .given().log().all()
-                .body(params)
+                .body(body)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, Object> params) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, SectionRequest params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
@@ -89,25 +97,25 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
-    public static Map<String, Object> createLineCreateParams(Long upStationId, Long downStationId) {
-        Map<String, Object> lineCreateParams = new HashMap<>();
-        lineCreateParams.put("name", "노선");
-        lineCreateParams.put("color", "bg-red-600");
-        lineCreateParams.put("upStationId", upStationId);
-        lineCreateParams.put("downStationId", downStationId);
-        lineCreateParams.put("distance", 10);
-        return lineCreateParams;
+    public static LineRequest createLineCreateParams(Long upStationId, Long downStationId) {
+        return LineRequest.builder()
+            .name("노선")
+            .color("bg-red-600")
+            .upStationId(upStationId)
+            .downStationId(downStationId)
+            .distance(new Distance(10))
+            .build();
     }
 
-    public static Map<String, Object> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-        return params;
+    public static SectionRequest createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
+        return SectionRequest.builder()
+            .upStationId(upStationId)
+            .downStationId(downStationId)
+            .distance(new Distance(distance))
+            .build();
     }
 
-    public static Map<String, Object> createSectionCreateParams(Long upStationId, Long downStationId) {
+    public static SectionRequest createSectionCreateParams(Long upStationId, Long downStationId) {
         return createSectionCreateParams(upStationId, downStationId, 6);
     }
 }
