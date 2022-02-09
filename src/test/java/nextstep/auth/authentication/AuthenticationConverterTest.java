@@ -6,7 +6,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.io.IOException;
 
-import static nextstep.auth.authFixture.*;
+import static nextstep.auth.util.authFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;

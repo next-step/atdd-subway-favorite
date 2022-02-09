@@ -2,11 +2,10 @@ package nextstep.auth.ui;
 
 import nextstep.auth.UserDetails;
 import nextstep.auth.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.auth.authFixture.*;
+import static nextstep.auth.util.authFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -17,7 +16,7 @@ class UserDetailsServiceTest {
     @DisplayName("식별자를 통해 유저 정보를 반환 받는다")
     @Test
     void loadUserByUsername() {
-        final UserDetails userDetails = new LoginMember(DEFAULT_ID, DEFAULT_EMAIL, DEFAULT_PASSWORD, DEFAULT_AGE);
+        final UserDetails userDetails = createUserDetails(DEFAULT_ID, DEFAULT_EMAIL, DEFAULT_PASSWORD, DEFAULT_AGE);
         final UserDetailsService userDetailsService = mock(UserDetailsService.class);
 
         given(userDetailsService.loadUserByUsername(DEFAULT_EMAIL)).willReturn(userDetails);

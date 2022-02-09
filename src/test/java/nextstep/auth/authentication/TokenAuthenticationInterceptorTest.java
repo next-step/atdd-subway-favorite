@@ -1,13 +1,9 @@
 package nextstep.auth.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.UserDetails;
+import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +15,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
+import static nextstep.auth.util.authFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -28,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 class TokenAuthenticationInterceptorTest {
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService customUserDetailsService;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -36,20 +34,18 @@ class TokenAuthenticationInterceptorTest {
     @InjectMocks
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     @DisplayName("정상적인 요청값이 들어왔을 경우 인증 토큰을 받을수 있다")
     @Test
     void convert() throws IOException {
         // when
-        final AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
+        final MockHttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+        final AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(request);
 
         // then
         assertAll(
-                () -> assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL),
-                () -> assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD)
+                () -> assertThat(authenticationToken.getPrincipal()).isEqualTo(DEFAULT_EMAIL),
+                () -> assertThat(authenticationToken.getCredentials()).isEqualTo(DEFAULT_PASSWORD)
         );
     }
 
@@ -57,8 +53,10 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() throws IOException {
         // given
-        final AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
-        given(customUserDetailsService.loadUserByUsername(EMAIL)).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        final MockHttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+        final AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(request);
+        final UserDetails loginMember = createUserDetails(DEFAULT_ID, DEFAULT_EMAIL, DEFAULT_PASSWORD, DEFAULT_AGE);
+        given(customUserDetailsService.loadUserByUsername(DEFAULT_EMAIL)).willReturn(loginMember);
 
         // when
         final Authentication authenticate = tokenAuthenticationInterceptor.authenticate(authenticationToken);
@@ -67,14 +65,42 @@ class TokenAuthenticationInterceptorTest {
         assertThat(authenticate.getPrincipal()).isNotNull();
     }
 
+    @DisplayName("비정상적인 토큰이 들어왔을 경우 인증 객체를 받을 수 없다")
+    @Test
+    void authenticateByNullUserDetails() throws IOException {
+        // given
+        final MockHttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+        final AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(request);
+        given(customUserDetailsService.loadUserByUsername(DEFAULT_EMAIL)).willReturn(null);
+
+        // when
+        assertThatThrownBy(() -> tokenAuthenticationInterceptor.authenticate(authenticationToken))
+                .isInstanceOf(AuthenticationException.class);
+    }
+
+    @DisplayName("비정상적인 토큰이 들어왔을 경우 인증 객체를 받을 수 없다")
+    @Test
+    void authenticateByOtherPassword() throws IOException {
+        // given
+        final MockHttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+        final AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(request);
+        final UserDetails loginMember = createUserDetails(DEFAULT_ID, DEFAULT_EMAIL, "otherPassword", DEFAULT_AGE);
+        given(customUserDetailsService.loadUserByUsername(DEFAULT_EMAIL)).willReturn(loginMember);
+
+        // when
+        assertThatThrownBy(() -> tokenAuthenticationInterceptor.authenticate(authenticationToken))
+                .isInstanceOf(AuthenticationException.class);
+    }
+
     @DisplayName("정상적인 요청값이 들어왔을 경우 다음 작업을 진행하지 않는다")
     @Test
     void preHandle() throws IOException {
         // given
-        final MockHttpServletRequest request = createMockRequest();
+        final MockHttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
         final MockHttpServletResponse response = new MockHttpServletResponse();
+        final UserDetails userDetails = createUserDetails(DEFAULT_ID, DEFAULT_EMAIL, DEFAULT_PASSWORD, DEFAULT_AGE);
 
-        given(customUserDetailsService.loadUserByUsername(EMAIL)).willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        given(customUserDetailsService.loadUserByUsername(DEFAULT_EMAIL)).willReturn(userDetails);
         given(jwtTokenProvider.createToken(anyString())).willReturn(JWT_TOKEN);
 
         // when
@@ -82,12 +108,5 @@ class TokenAuthenticationInterceptorTest {
 
         // then
         assertThat(actual).isFalse();
-    }
-
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
     }
 }
