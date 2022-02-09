@@ -30,7 +30,7 @@ class SessionAuthenticationInterceptorTest extends AuthTest {
     @Test
     void preHandle() throws IOException {
         // given
-        sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(customUserDetailsService, sessionAuthenticationConverter);
+        sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(userDetailsService, sessionAuthenticationConverter);
         HttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 

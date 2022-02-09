@@ -13,7 +13,7 @@ public class AuthenticationInterceptorTest extends AuthTest {
     void authenticate() {
         // given
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        authenticationInterceptor = new EmptyAuthenticationInterceptor(customUserDetailsService);
+        authenticationInterceptor = new EmptyAuthenticationInterceptor(userDetailsService);
 
         // when & then
         assertDoesNotThrow(() -> authenticationInterceptor.authenticate(authenticationToken));

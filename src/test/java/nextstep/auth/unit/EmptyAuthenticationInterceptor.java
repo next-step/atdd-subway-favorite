@@ -1,15 +1,15 @@
 package nextstep.auth.unit;
 
 import nextstep.auth.authentication.AuthenticationInterceptor;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class EmptyAuthenticationInterceptor extends AuthenticationInterceptor {
-    public EmptyAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService) {
-        super(customUserDetailsService, null);
+    public EmptyAuthenticationInterceptor(UserDetailsService userDetailsService) {
+        super(userDetailsService, null);
     }
 
     @Override

@@ -43,7 +43,7 @@ class TokenAuthenticationInterceptorTest extends AuthTest {
     @Test
     void preHandle() throws IOException {
         // given
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider,
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider,
                 tokenAuthenticationConverter, objectMapper);
         HttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

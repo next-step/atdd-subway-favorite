@@ -2,13 +2,12 @@ package nextstep.auth.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationConverter;
-import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +37,7 @@ class TokenAuthenticationInterceptorMockTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -52,13 +50,13 @@ class TokenAuthenticationInterceptorMockTest {
     void setUp() {
         authenticationConverter = new TokenAuthenticationConverter(OBJECT_MAPPER);
         tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(
-                customUserDetailsService, jwtTokenProvider, authenticationConverter, OBJECT_MAPPER);
+                userDetailsService, jwtTokenProvider, authenticationConverter, OBJECT_MAPPER);
     }
 
     @Test
     void preHandle() throws IOException {
         // given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         HttpServletRequest request = createMockRequest();

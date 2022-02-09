@@ -1,6 +1,6 @@
 package nextstep.auth.unit;
 
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,7 @@ public class AuthTest {
     private MemberService memberService;
 
     @Autowired
-    protected CustomUserDetailsService customUserDetailsService;
+    protected UserDetailsService userDetailsService;
 
     @BeforeEach
     void setUp() {

@@ -1,12 +1,12 @@
 package nextstep.auth.authentication.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.AuthenticationInterceptor;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
+    public TokenAuthenticationInterceptor(UserDetailsService customUserDetailsService,
                                           JwtTokenProvider jwtTokenProvider,
                                           AuthenticationConverter authenticationConverter, ObjectMapper objectMapper) {
         super(customUserDetailsService, authenticationConverter);
