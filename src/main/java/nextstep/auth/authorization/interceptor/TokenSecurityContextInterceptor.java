@@ -1,21 +1,23 @@
-package nextstep.auth.authorization;
+package nextstep.auth.authorization.interceptor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authorization.AuthorizationExtractor;
+import nextstep.auth.authorization.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextInterceptor extends SecurityContextInterceptor {
+
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -49,4 +51,5 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             return null;
         }
     }
+
 }
