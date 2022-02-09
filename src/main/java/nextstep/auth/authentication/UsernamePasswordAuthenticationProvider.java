@@ -1,13 +1,11 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 
 public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthenticationProvider(CustomUserDetailsService userDetailsService) {
+    public UsernamePasswordAuthenticationProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -15,7 +13,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
 
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
@@ -26,7 +24,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authenticationToken);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }

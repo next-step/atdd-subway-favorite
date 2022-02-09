@@ -1,11 +1,8 @@
 package nextstep.auth.unit.authentication.session;
 
-import nextstep.auth.authentication.ProviderManager;
-import nextstep.auth.authentication.UsernamePasswordAuthenticationProvider;
+import nextstep.auth.authentication.*;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,12 +26,12 @@ class SessionAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
 
-        LoginMember expectedMember = new LoginMember(-1L, EMAIL, PASSWORD, 0);
-        Mockito.when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedMember);
+        UserDetails expectedUserDetails = new DefaultUserDetails(EMAIL, PASSWORD);
+        Mockito.when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedUserDetails);
 
-        ProviderManager providerManager = new ProviderManager(Collections.singletonList(new UsernamePasswordAuthenticationProvider(customUserDetailsService)));
+        ProviderManager providerManager = new ProviderManager(Collections.singletonList(new UsernamePasswordAuthenticationProvider(userDetailsService)));
         interceptor = new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), providerManager);
     }
 

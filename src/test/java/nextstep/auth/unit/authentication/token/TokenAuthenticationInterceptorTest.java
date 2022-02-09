@@ -2,14 +2,11 @@ package nextstep.auth.unit.authentication.token;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.ProviderManager;
-import nextstep.auth.authentication.UsernamePasswordAuthenticationProvider;
+import nextstep.auth.authentication.*;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,14 +33,14 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        CustomUserDetailsService customUserDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailsService userDetailsService = mock(UserDetailsService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
 
-        LoginMember expectedMember = new LoginMember(-1L, EMAIL, PASSWORD, 0);
-        Mockito.when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedMember);
+        UserDetails expectedUserDetails = new DefaultUserDetails(EMAIL, PASSWORD);
+        Mockito.when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedUserDetails);
         Mockito.when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
-        ProviderManager providerManager = new ProviderManager(Collections.singletonList(new UsernamePasswordAuthenticationProvider(customUserDetailsService)));
+        ProviderManager providerManager = new ProviderManager(Collections.singletonList(new UsernamePasswordAuthenticationProvider(userDetailsService)));
         interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, objectMapper, new TokenAuthenticationConverter(objectMapper), providerManager);
     }
 
