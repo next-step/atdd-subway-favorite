@@ -1,10 +1,10 @@
 package nextstep.auth.authentication.interceptor;
 
+import nextstep.auth.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,10 +14,10 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
     private AuthenticationConverter converter;
 
-    public AuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter converter) {
+    public AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter converter) {
         this.userDetailsService = userDetailsService;
         this.converter = converter;
     }
