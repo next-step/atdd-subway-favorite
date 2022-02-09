@@ -1,5 +1,7 @@
 package nextstep.favorite.dto;
 
+import nextstep.favorite.domain.Favorite;
+
 public class FavoriteRequest {
 
     private Long sourceId;
@@ -17,11 +19,7 @@ public class FavoriteRequest {
         return new FavoriteRequest(sourceId, targetId);
     }
 
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public Long getTargetId() {
-        return targetId;
+    public Favorite toEntity() {
+        return Favorite.of(sourceId, targetId);
     }
 }

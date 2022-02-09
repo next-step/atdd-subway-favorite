@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.exception.UnauthorizedException;
 import nextstep.favorite.dto.FavoriteRequest;
 import nextstep.favorite.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.LineRequest;
@@ -115,7 +116,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         assertThatThrownBy(() -> {
             즐겨찾기를_생성한다(FavoriteRequest.of(강남역.getId(), 남부터미널역.getId()));
-        }).isInstanceOf(Exception.class);
+        }).isInstanceOf(UnauthorizedException.class);
     }
 
     @DisplayName("없는 역으로 즐겨찾기를 생성하면 실패한다.")
@@ -133,7 +134,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         assertThatThrownBy(() ->
             즐겨찾기_목록을_조회한다()
-        ).isInstanceOf(Exception.class);
+        ).isInstanceOf(UnauthorizedException.class);
     }
 
     @DisplayName("로그인 없이 즐겨찾기를 삭제하면 실패한다.")
@@ -151,7 +152,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void 즐겨찾기_삭제_예외테스트_2() {
         assertThatThrownBy(() ->
             즐겨찾기_삭제한다(없는Id)
-        ).isInstanceOf(Exception.class);
+        ).isInstanceOf(UnauthorizedException.class);
     }
 
     private ExtractableResponse<Response> 즐겨찾기를_생성한다(FavoriteRequest request) {
