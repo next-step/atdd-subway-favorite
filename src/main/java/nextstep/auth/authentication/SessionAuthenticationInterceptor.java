@@ -2,7 +2,7 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.auth.ui.UserDetailsService;
+import nextstep.auth.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

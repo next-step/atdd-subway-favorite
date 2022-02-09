@@ -1,4 +1,4 @@
-package nextstep.auth.ui;
+package nextstep.auth;
 
 public interface UserDetails {
     Long getId();

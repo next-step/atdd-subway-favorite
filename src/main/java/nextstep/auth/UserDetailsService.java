@@ -1,4 +1,4 @@
-package nextstep.auth.ui;
+package nextstep.auth;
 
 @FunctionalInterface
 public interface UserDetailsService {

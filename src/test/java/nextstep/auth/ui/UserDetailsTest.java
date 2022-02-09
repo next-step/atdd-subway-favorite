@@ -1,5 +1,6 @@
 package nextstep.auth.ui;
 
+import nextstep.auth.UserDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

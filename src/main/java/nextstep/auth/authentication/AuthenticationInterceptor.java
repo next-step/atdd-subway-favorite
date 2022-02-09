@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.ui.UserDetails;
-import nextstep.auth.ui.UserDetailsService;
+import nextstep.auth.UserDetails;
+import nextstep.auth.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
