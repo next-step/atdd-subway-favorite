@@ -6,25 +6,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.TokenAuthenticationConverter;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailService;
 import nextstep.member.domain.LoginMember;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.io.IOException;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 class TokenAuthenticationInterceptorTest {
@@ -32,17 +28,22 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    private CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+    private TokenAuthenticationInterceptor interceptor;
+
+    private UserDetailService userDetailsService = mock(UserDetailService.class);
     private JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
 
+    @BeforeEach
+    public void setUp() {
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService,
+            jwtTokenProvider,
+            new ObjectMapper());
+    }
 
     @Test
     void convert() throws IOException {
-        TokenAuthenticationInterceptor tokenAuthenticationInterceptor
-            = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
-
         // when
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
+        AuthenticationToken authenticationToken = interceptor.convert(createMockRequest());
 
         // then
         assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
@@ -52,7 +53,6 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when
@@ -64,15 +64,15 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
-
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
+        // when
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         interceptor.preHandle(request, response, new Object());
 
+        // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
         assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(TokenResponse.of(JWT_TOKEN)));

@@ -6,10 +6,11 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService {
-    private MemberRepository memberRepository;
+public class UserDetailService {
 
-    public CustomUserDetailsService(MemberRepository memberRepository) {
+    private final MemberRepository memberRepository;
+
+    public UserDetailService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
@@ -17,4 +18,5 @@ public class CustomUserDetailsService {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return LoginMember.of(member);
     }
+
 }

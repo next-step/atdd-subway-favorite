@@ -9,6 +9,8 @@ public class AuthenticationToken {
         this.credentials = credentials;
     }
 
+    public AuthenticationToken() { }
+
     public String getPrincipal() {
         return principal;
     }
