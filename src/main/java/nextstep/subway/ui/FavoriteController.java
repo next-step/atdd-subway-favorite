@@ -40,4 +40,10 @@ public class FavoriteController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                               @PathVariable Long favoriteId) {
+        return ResponseEntity.ok().build();
+    }
+
 }
