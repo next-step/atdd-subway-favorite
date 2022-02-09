@@ -32,7 +32,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 인증을 한 뒤
-     * When 로그인 없이 즐겨찾기 생성을 요청하면
+     * When 즐겨찾기 생성을 요청하면
      * Then 생성 응답을 받는다
      */
     @DisplayName("즐겨찾기 생성")
@@ -64,7 +64,25 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 인증을 한 뒤
-     * When 로그인 없이 즐겨찾기 조회을 요청하면
+     * When 없는 역을 즐겨찾기 생성 요청하면
+     * Then 잘못된 요청 응답을 받는다
+     */
+    @DisplayName("즐겨찾기 생성 - 없는 역을 요청하면 실패한다")
+    @Test
+    void createFavorite_notFound_fail() {
+        // given
+        String 토큰 = 로그인_되어_있음(MAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(토큰, 강남역.getId(), 1000);
+
+        // then
+        잘못된_요청_응답됨(response);
+    }
+
+    /**
+     * Given 인증을 한 뒤
+     * When 즐겨찾기 조회을 요청하면
      * Then 성공 응답을 받는다
      */
     @DisplayName("즐겨찾기 조회")
@@ -79,7 +97,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_조회_응답됨(response);
     }
-
 
     /**
      * When 로그인 없이 즐겨찾기 조회을 요청하면
