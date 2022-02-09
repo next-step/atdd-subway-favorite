@@ -33,7 +33,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor, A
                                              final HttpServletResponse response,
                                              final Authentication authentication) throws IOException;
 
-    private Authentication authenticate(final AuthenticationToken token) {
+    protected Authentication authenticate(final AuthenticationToken token) {
         final String principal = token.getPrincipal();
         final UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
