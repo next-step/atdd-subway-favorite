@@ -29,4 +29,12 @@ public class Favorite {
         return new Favorite(memberId, source, target);
     }
 
+    public Station source() {
+        return source;
+    }
+
+    public Station target() {
+        return target;
+    }
+
 }
