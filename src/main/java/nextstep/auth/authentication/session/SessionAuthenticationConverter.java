@@ -2,6 +2,7 @@ package nextstep.auth.authentication.session;
 
 import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UsernamePasswordAuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -16,6 +17,6 @@ public class SessionAuthenticationConverter implements AuthenticationConverter {
         String principal = paramMap.get(USERNAME_FIELD)[0];
         String credentials = paramMap.get(PASSWORD_FIELD)[0];
 
-        return new AuthenticationToken(principal, credentials);
+        return new UsernamePasswordAuthenticationToken(principal, credentials);
     }
 }

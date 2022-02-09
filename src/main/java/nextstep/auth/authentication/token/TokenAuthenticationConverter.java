@@ -3,6 +3,7 @@ package nextstep.auth.authentication.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.auth.token.TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
             String principal = tokenRequest.getEmail();
             String credentials = tokenRequest.getPassword();
 
-            return new AuthenticationToken(principal, credentials);
+            return new UsernamePasswordAuthenticationToken(principal, credentials);
         } catch (IOException e) {
             return null;
         }
