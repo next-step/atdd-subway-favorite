@@ -32,4 +32,9 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public MemberResponse findMemberOfMine(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
+    }
 }
