@@ -3,6 +3,7 @@ package nextstep.auth.unit.authentication.token;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -41,17 +42,7 @@ class TokenAuthenticationInterceptorTest {
         Mockito.when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedMember);
         Mockito.when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
-    }
-
-    @Test
-    void convert() throws IOException {
-        HttpServletRequest request = createMockRequest();
-
-        AuthenticationToken authenticationToken = interceptor.convert(request);
-
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
+        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper, new TokenAuthenticationConverter(objectMapper));
     }
 
     @Test

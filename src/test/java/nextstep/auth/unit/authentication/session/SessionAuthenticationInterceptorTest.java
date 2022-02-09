@@ -1,6 +1,7 @@
 package nextstep.auth.unit.authentication.session;
 
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.CustomUserDetailsService;
@@ -31,17 +32,7 @@ class SessionAuthenticationInterceptorTest {
         LoginMember expectedMember = new LoginMember(-1L, EMAIL, PASSWORD, 0);
         Mockito.when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(expectedMember);
 
-        interceptor = new SessionAuthenticationInterceptor(customUserDetailsService);
-    }
-
-    @Test
-    void convert() {
-        HttpServletRequest request = createMockRequest();
-
-        AuthenticationToken authenticationToken = interceptor.convert(request);
-
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
+        interceptor = new SessionAuthenticationInterceptor(customUserDetailsService, new SessionAuthenticationConverter());
     }
 
     @Test
