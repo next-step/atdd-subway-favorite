@@ -17,22 +17,26 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private CustomUserDetailsService userDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
-    private AuthenticationConverter tokenAuthenticationConverter;
-    private ObjectMapper objectMapper;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationConverter sessionAuthenticationConverter;
+    private final AuthenticationConverter tokenAuthenticationConverter;
+    private final ObjectMapper objectMapper;
 
     public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider,
+                      AuthenticationConverter sessionAuthenticationConverter,
                       AuthenticationConverter tokenAuthenticationConverter, ObjectMapper objectMapper) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.sessionAuthenticationConverter = sessionAuthenticationConverter;
         this.tokenAuthenticationConverter = tokenAuthenticationConverter;
         this.objectMapper = objectMapper;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
+        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService,
+                sessionAuthenticationConverter)).addPathPatterns("/login/session");
         registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider,
                 tokenAuthenticationConverter, objectMapper)).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
