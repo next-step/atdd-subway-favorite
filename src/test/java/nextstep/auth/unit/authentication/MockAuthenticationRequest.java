@@ -1,6 +1,5 @@
 package nextstep.auth.unit.authentication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.token.TokenRequest;
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MockRequest {
+public class MockAuthenticationRequest {
     public static MockHttpServletRequest createSessionRequest(String username, String password) {
         MockHttpServletRequest request = new MockHttpServletRequest();
         Map<String, String> params = new HashMap<>();

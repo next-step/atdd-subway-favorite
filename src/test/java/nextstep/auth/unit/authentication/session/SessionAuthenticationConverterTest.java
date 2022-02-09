@@ -2,7 +2,7 @@ package nextstep.auth.unit.authentication.session;
 
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
-import nextstep.auth.unit.authentication.MockRequest;
+import nextstep.auth.unit.authentication.MockAuthenticationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ class SessionAuthenticationConverterTest {
 
     @Test
     void convert() {
-        HttpServletRequest request = MockRequest.createSessionRequest(EMAIL, PASSWORD);
+        HttpServletRequest request = MockAuthenticationRequest.createSessionRequest(EMAIL, PASSWORD);
 
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
 

@@ -6,7 +6,7 @@ import nextstep.auth.authentication.*;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.unit.authentication.MockRequest;
+import nextstep.auth.unit.authentication.MockAuthenticationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -45,7 +45,7 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
-        HttpServletRequest request = MockRequest.createTokenRequest(EMAIL, PASSWORD);
+        HttpServletRequest request = MockAuthenticationRequest.createTokenRequest(EMAIL, PASSWORD);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         interceptor.preHandle(request, response, null);

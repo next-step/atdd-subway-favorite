@@ -3,7 +3,7 @@ package nextstep.auth.unit.authentication.session;
 import nextstep.auth.authentication.*;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
-import nextstep.auth.unit.authentication.MockRequest;
+import nextstep.auth.unit.authentication.MockAuthenticationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,7 +35,7 @@ class SessionAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
-        HttpServletRequest request = MockRequest.createSessionRequest(EMAIL, PASSWORD);
+        HttpServletRequest request = MockAuthenticationRequest.createSessionRequest(EMAIL, PASSWORD);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         interceptor.preHandle(request, response, null);

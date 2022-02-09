@@ -3,7 +3,7 @@ package nextstep.auth.unit.authentication.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
-import nextstep.auth.unit.authentication.MockRequest;
+import nextstep.auth.unit.authentication.MockAuthenticationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ class TokenAuthenticationConverterTest {
 
     @Test
     void convert() throws IOException {
-        HttpServletRequest request = MockRequest.createTokenRequest(EMAIL, PASSWORD);
+        HttpServletRequest request = MockAuthenticationRequest.createTokenRequest(EMAIL, PASSWORD);
 
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
 
