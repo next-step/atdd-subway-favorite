@@ -9,15 +9,18 @@ import nextstep.domain.subway.domain.FavoritePathRepository;
 import nextstep.domain.subway.domain.Station;
 import nextstep.domain.subway.domain.StationRepository;
 import nextstep.domain.subway.dto.FavoritePathRequest;
+import nextstep.domain.subway.dto.response.FavoritePathResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;

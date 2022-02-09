@@ -35,6 +35,7 @@ public class FavoritePath extends BaseEntity {
         this.member = member;
     }
 
+
     public Long getId() {
         return id;
     }

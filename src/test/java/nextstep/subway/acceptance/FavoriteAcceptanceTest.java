@@ -81,14 +81,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //then
         즐겨찾기_조회_검증하기(조회_즐겨찾기);
 
-        //given
-        String location = 즐겨찾기_생성.header("Location");
-
-        //when
-        ExtractableResponse<Response> 즐겨찾기_삭제 = 즐겨찾기_삭제_요청(accessToken, location);
-
-        //then
-        즐겨찾기_삭제_검증(즐겨찾기_삭제);
+//        //given
+//        String location = 즐겨찾기_생성.header("Location");
+//
+//        //when
+//        ExtractableResponse<Response> 즐겨찾기_삭제 = 즐겨찾기_삭제_요청(accessToken, location);
+//
+//        //then
+//        즐겨찾기_삭제_검증(즐겨찾기_삭제);
     }
 
     @DisplayName("즐겨찾기 생성 검증")
@@ -105,4 +105,5 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //then
         즐겨찾기_생성_검증(즐겨찾기_생성);
     }
+
 }

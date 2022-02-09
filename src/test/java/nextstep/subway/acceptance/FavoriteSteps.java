@@ -50,8 +50,8 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_조회_검증하기(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("startStation.name")).isEqualTo("교대역");
-        assertThat(response.jsonPath().getList("endStation.name")).isEqualTo("양재역");
+        assertThat(response.jsonPath().getList("startStation.name")).containsExactly("교대역");
+        assertThat(response.jsonPath().getList("endStation.name")).containsExactly("양재역");
     }
 
 

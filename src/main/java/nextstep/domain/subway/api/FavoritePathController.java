@@ -30,7 +30,7 @@ public class FavoritePathController {
 
     @GetMapping
     public ResponseEntity<List<FavoritePathResponse>> showFavorites(@AuthenticationPrincipal LoginMemberImpl member) {
-        List<FavoritePathResponse> favorites =  favoritePathService.showFavorites();
+        List<FavoritePathResponse> favorites =  favoritePathService.showFavorites(member);
         return ResponseEntity.ok()
                 .body(favorites);
     }
