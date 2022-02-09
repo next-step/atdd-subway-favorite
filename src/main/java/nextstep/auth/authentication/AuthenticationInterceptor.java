@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor {
+public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     private final CustomUserDetailsService customUserDetailsService;
     private final AuthenticationConverter authenticationConverter;
 
-    public AbstractAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
+    public AuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, AuthenticationConverter authenticationConverter) {
         this.customUserDetailsService = customUserDetailsService;
         this.authenticationConverter = authenticationConverter;
     }

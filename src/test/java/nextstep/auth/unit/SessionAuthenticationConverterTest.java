@@ -12,8 +12,8 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SessionAuthenticationConverterTest {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+    private static final String USERNAME_FIELD = "username";
+    private static final String PASSWORD_FIELD = "password";
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
 

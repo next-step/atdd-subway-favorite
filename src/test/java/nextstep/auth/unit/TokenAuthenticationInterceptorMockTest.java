@@ -56,17 +56,6 @@ class TokenAuthenticationInterceptorMockTest {
     }
 
     @Test
-    void authenticate() {
-        // given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
-
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-
-        // when & then
-        assertDoesNotThrow(() -> tokenAuthenticationInterceptor.authenticate(authenticationToken));
-    }
-
-    @Test
     void preHandle() throws IOException {
         // given
         when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
