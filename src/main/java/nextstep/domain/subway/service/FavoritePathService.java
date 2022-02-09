@@ -48,5 +48,9 @@ public class FavoritePathService {
                 .stream().map(FavoritePathResponse::new).collect(toList());
     }
 
-
+    @Transactional
+    public void deleteFavorite(Long favoriteId) {
+        FavoritePath favoritePath = favoritePathRepository.findOneById(favoriteId);
+        favoritePath.validDelete();
+    }
 }
