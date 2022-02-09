@@ -12,7 +12,7 @@ public abstract class SecurityContextInterceptor implements HandlerInterceptor {
     public void afterCompletion(final HttpServletRequest request,
                                 final HttpServletResponse response,
                                 final Object handler,
-                                final Exception ex) throws Exception {
+                                final Exception ex) {
         SecurityContextHolder.clearContext();
     }
 }

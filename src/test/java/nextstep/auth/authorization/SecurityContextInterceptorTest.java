@@ -35,6 +35,24 @@ class SecurityContextInterceptorTest {
         final boolean actual = interceptor.preHandle(request, response, authentication);
 
         // then
+        assertThat(actual).isFalse();
+    }
+
+    @DisplayName("비정상적인 데이터의 경우에는 false 를 반환한다")
+    @Test
+    void preHandleOnInValidData() throws Exception {
+        // given
+        final SecurityContextInterceptor interceptor = mock(SecurityContextInterceptor.class);
+        final Authentication authentication = mock(Authentication.class);
+        final MockHttpServletRequest request = createMockRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+
+        given(interceptor.preHandle(request, response, authentication)).willReturn(true);
+
+        // when
+        final boolean actual = interceptor.preHandle(request, response, authentication);
+
+        // then
         assertThat(actual).isTrue();
     }
 
