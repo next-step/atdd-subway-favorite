@@ -10,5 +10,5 @@ public interface LineRepository extends JpaRepository<Line, Long> {
     @Override
     List<Line> findAll();
 
-    Optional<Line> findByName(String name);
+    boolean existsByName(String name);
 }

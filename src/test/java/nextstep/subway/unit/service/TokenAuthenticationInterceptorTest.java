@@ -1,5 +1,6 @@
 package nextstep.subway.unit.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -32,6 +34,8 @@ class TokenAuthenticationInterceptorTest {
     private CustomUserDetailsService customUserDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Spy
+    private ObjectMapper objectMapper;
     @InjectMocks
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 

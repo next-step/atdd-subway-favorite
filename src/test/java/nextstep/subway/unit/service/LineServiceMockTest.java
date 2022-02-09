@@ -163,7 +163,7 @@ class LineServiceMockTest {
         when(stationService.findStationById(1L)).thenReturn(교대역);
         when(stationService.findStationById(2L)).thenReturn(역삼역);
 
-        Line line = Line.of(이호선_요청_객체.toEntity(), 교대역, 역삼역, 5);
+        Line line = Line.of(이호선_요청_객체.getName(), 이호선_요청_객체.getColor(), 교대역, 역삼역, 5);
         ReflectionTestUtils.setField(line, "id", 1L);
         when(lineRepository.save(any(line.getClass()))).then(AdditionalAnswers.returnsFirstArg());
         when(lineRepository.findById(1L)).thenReturn(Optional.of(line));

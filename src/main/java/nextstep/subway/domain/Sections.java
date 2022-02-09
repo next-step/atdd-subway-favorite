@@ -13,7 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static nextstep.subway.error.ErrorCode.*;
+import static nextstep.subway.error.ErrorCode.ALREADY_EXISTS_STATIONS_ERROR;
+import static nextstep.subway.error.ErrorCode.FIRST_SECTION_CREATE_ERROR;
+import static nextstep.subway.error.ErrorCode.NOT_EXISTS_ANY_STATIONS_ERROR;
+import static nextstep.subway.error.ErrorCode.SECTION_MINIMUM_SIZE_ERROR;
 
 @Embeddable
 public class Sections {
@@ -53,9 +56,9 @@ public class Sections {
                 .get(FIRST);
     }
 
-    public Section findAnotherSectionWhereDownStationOfTheSectionIsTheUpStation(final Section section) {
+    public Section findSectionByDownStation(final Station downStation) {
         return sections.stream()
-                .filter(s -> s.getUpStation().equals(section.getDownStation()))
+                .filter(s -> s.getUpStation().equals(downStation))
                 .collect(Collectors.toList())
                 .get(FIRST);
     }
@@ -86,14 +89,8 @@ public class Sections {
 
     private void saveBetweenStations(Section target) {
         for (Section section : sections) {
-            if (isThereAnSameUpStationInTheSections(target)) {
-                section.validateSectionDistance(target);
-                section.changeUpStation(target.getDownStation());
-            }
-            if (isThereAnSameDownStationInTheSections(target)) {
-                section.validateSectionDistance(target);
-                section.changeDownStation(target.getUpStation());
-            }
+            changeUpStation(section, target);
+            changeDownStation(section, target);
         }
     }
 
@@ -105,20 +102,28 @@ public class Sections {
         return stations.contains(target.getUpStation()) && stations.contains(target.getDownStation());
     }
 
+    private void changeUpStation(Section section, Section target) {
+        if (isThereAnSameUpStationInTheSections(target)) {
+            section.validateSectionDistance(target);
+            section.changeUpStation(target.getDownStation());
+        }
+    }
+
+    private void changeDownStation(Section section, Section target) {
+        if (isThereAnSameDownStationInTheSections(target)) {
+            section.validateSectionDistance(target);
+            section.changeDownStation(target.getUpStation());
+        }
+    }
+
     private boolean isThereAnSameUpStationInTheSections(Section target) {
         return sections.stream()
-                .filter(s -> s.getUpStation().equals(target.getUpStation()))
-                .collect(Collectors.toList())
-                .stream().findFirst()
-                .orElse(null) != null;
+                .anyMatch(s -> s.getUpStation().equals(target.getUpStation()));
     }
 
     private boolean isThereAnSameDownStationInTheSections(Section target) {
         return sections.stream()
-                .filter(s -> s.getDownStation().equals(target.getDownStation()))
-                .collect(Collectors.toList())
-                .stream().findFirst()
-                .orElse(null) != null;
+                .anyMatch(s -> s.getDownStation().equals(target.getDownStation()));
     }
 
     private void removeAndRePosition(final Long stationId) {

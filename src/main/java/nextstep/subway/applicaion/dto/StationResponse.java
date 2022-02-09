@@ -78,7 +78,7 @@ public class StationResponse {
             final Section start,
             final List<Section> sectionStorage
     ) {
-        Section findSection = sections.findAnotherSectionWhereDownStationOfTheSectionIsTheUpStation(start);
+        Section findSection = sections.findSectionByDownStation(start.getDownStation());
         sectionStorage.add(findSection);
         if(sections.getDownStationEndPoint().equals(findSection.getDownStation())) {
             return;

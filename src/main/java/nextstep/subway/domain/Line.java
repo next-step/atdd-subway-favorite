@@ -1,6 +1,11 @@
 package nextstep.subway.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
@@ -17,7 +22,14 @@ public class Line extends BaseEntity {
     protected Line() {
     }
 
-    public static Line of(final Line newLine, final Station upStation, final Station downStation, int distance) {
+    public static Line of(
+            final String name,
+            final String color,
+            final Station upStation,
+            final Station downStation,
+            int distance
+    ) {
+        Line newLine = new Line(name, color);
         newLine.sections.addFirst(Section.of(newLine, upStation, downStation, distance));
         return newLine;
     }

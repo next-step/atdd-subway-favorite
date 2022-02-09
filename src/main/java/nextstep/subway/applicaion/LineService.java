@@ -36,7 +36,7 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        Line line = Line.of(request.toEntity(), upStation, downStation, request.getDistance());
+        Line line = Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
         Line createdLine = lineRepository.save(line);
         return LineResponse.of(createdLine);
     }
@@ -83,8 +83,7 @@ public class LineService {
                 .orElseThrow(NotFoundLineException::new);
     }
 
-    private boolean isDuplicatedLineName(final String lineName) {
-        return lineRepository.findByName(lineName)
-                .isPresent();
+    private boolean isDuplicatedLineName(final String name) {
+        return lineRepository.existsByName(name);
     }
 }
