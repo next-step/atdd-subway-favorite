@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
 
@@ -37,7 +38,26 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리")
     @Test
     void 회원_생명_주기(){
-        
+        //when
+        ExtractableResponse<Response> 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        //then
+        상태_값_검사(회원_생성_응답, HttpStatus.CREATED);
+        //when
+        ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        //then
+        회원_정보_조회됨(내_회원_정보_조회_응답, EMAIL, AGE);
+        //when
+        String updateEmail = "sss@naver.com";
+        String updatePassword = "updatePw";
+        int updateAge =3;
+        회원_정보_수정_요청(회원_생성_응답,updateEmail,updatePassword,updateAge);
+        //then
+        ExtractableResponse<Response> 내_회원_정보_수정_조회_응답 = 내_회원_정보_조회_요청(updateEmail, updatePassword);
+        회원_정보_조회됨(내_회원_정보_수정_조회_응답, updateEmail, updateAge);
+        //when
+        ExtractableResponse<Response> 회원_삭제_응답 = 회원_삭제_요청(회원_생성_응답);
+        //then
+        상태_값_검사(회원_삭제_응답, HttpStatus.NO_CONTENT);
     }
 
 
