@@ -7,16 +7,14 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
+public class TokenAuthenticationInterceptor implements AuthenticationInterceptor {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
@@ -30,7 +28,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws IOException {
         final AuthenticationToken authenticationToken = convert(request);
         final Authentication authentication = authenticate(authenticationToken);
+        afterAuthentication(request, response, authentication);
+        return false;
+    }
 
+    @Override
+    public void afterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         final String token = jwtTokenProvider.createToken(payload);
@@ -40,11 +43,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-
-        return false;
     }
 
-    @Override
     public AuthenticationToken convert(final HttpServletRequest request) throws IOException {
         final TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
         final String principal = tokenRequest.getEmail();

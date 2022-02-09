@@ -11,6 +11,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
@@ -32,9 +33,6 @@ class AuthenticationInterceptorTest {
 
         // when
         interceptor.afterAuthentication(request, response, authentication);
-
-        // then
-        then(response).should(times(1)).setStatus(any());
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
