@@ -11,6 +11,7 @@ import nextstep.domain.subway.dto.FavoritePathRequest;
 import nextstep.domain.subway.dto.PathResponse;
 import nextstep.domain.subway.dto.response.FavoritePathResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class FavoritePathService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public long createFavorite(LoginMember loginMember, FavoritePathRequest favoritePathRequest) {
         Station startStation = stationRepository.findOneById(favoritePathRequest.getStartStationId());
         Station endStation = stationRepository.findOneById(favoritePathRequest.getEndStationId());
@@ -39,9 +41,12 @@ public class FavoritePathService {
         return saveFavoritePath.getId();
     }
 
+    @Transactional(readOnly = true)
     public List<FavoritePathResponse> showFavorites(Member member) {
         Member findMember = memberRepository.findOneById(member.getId());
         return favoritePathRepository.findAllByMember(findMember)
                 .stream().map(FavoritePathResponse::new).collect(toList());
     }
+
+
 }
