@@ -8,7 +8,10 @@ import nextstep.domain.subway.domain.FavoritePathRepository;
 import nextstep.domain.subway.domain.Station;
 import nextstep.domain.subway.domain.StationRepository;
 import nextstep.domain.subway.dto.FavoritePathRequest;
+import nextstep.domain.subway.dto.response.FavoritePathResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FavoritePathService {
@@ -30,5 +33,10 @@ public class FavoritePathService {
         favoritePath.validCheck();
         FavoritePath saveFavoritePath = favoritePathRepository.save(favoritePath);
         return saveFavoritePath.getId();
+    }
+
+    public List<FavoritePathResponse> showFavorites() {
+
+        return null;
     }
 }

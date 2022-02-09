@@ -14,11 +14,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Optional;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,7 +46,7 @@ class FavoritePathServiceTest {
     @Test
     void createFavorite() {
         //given
-        LoginMember loginMember = getLoginMember();
+        LoginMemberImpl loginMember = getLoginMember();
         FavoritePathRequest favoritePathRequest = new FavoritePathRequest(1L, 2L);
         FavoritePath favoritePath = getFavoritePath();
         Member member = getMember();
@@ -63,8 +62,8 @@ class FavoritePathServiceTest {
         assertThat(favoriteId).isEqualTo(favoritePath.getId());
     }
 
-    private LoginMember getLoginMember() {
-        LoginMember loginMember = new LoginMemberImpl(1L, "email@email.com","password", 20);
+    private LoginMemberImpl getLoginMember() {
+        LoginMemberImpl loginMember = new LoginMemberImpl(1L, "email@email.com","password", 20);
         return loginMember;
     }
 
@@ -79,4 +78,6 @@ class FavoritePathServiceTest {
         ReflectionTestUtils.setField(favoritePath, "id", 1L);
         return favoritePath;
     }
+
+
 }
