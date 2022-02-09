@@ -136,8 +136,9 @@ public class MemberSteps {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response, String email) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
     }
 
     public static void 회원_정보_삭제됨(ExtractableResponse<Response> response) {

@@ -35,11 +35,12 @@ public class MemberController {
     @PutMapping("/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
+        MemberResponse member = memberService.findMember(id);
+        return ResponseEntity.ok().body(member);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }

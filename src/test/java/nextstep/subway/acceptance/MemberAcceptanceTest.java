@@ -38,10 +38,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> editResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        // given
+        String newEmail = "new" + EMAIL;
+        String newPassword = "new" + PASSWORD;
+
+        // when
+        ExtractableResponse<Response> editResponse = 회원_정보_수정_요청(createResponse, newEmail, newPassword, AGE);
 
         // then
-        회원_정보_수정됨(editResponse);
+        회원_정보_수정됨(editResponse, newEmail);
 
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
