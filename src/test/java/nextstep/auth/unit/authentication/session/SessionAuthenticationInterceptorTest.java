@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ class SessionAuthenticationInterceptorTest {
     }
 
     @Test
-    void preHandle() {
+    void preHandle() throws IOException {
         HttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -50,8 +51,8 @@ class SessionAuthenticationInterceptorTest {
     private MockHttpServletRequest createMockRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         Map<String, String> params = new HashMap<>();
-        params.put(SessionAuthenticationInterceptor.USERNAME_FIELD, EMAIL);
-        params.put(SessionAuthenticationInterceptor.PASSWORD_FIELD, PASSWORD);
+        params.put(SessionAuthenticationConverter.USERNAME_FIELD, EMAIL);
+        params.put(SessionAuthenticationConverter.PASSWORD_FIELD, PASSWORD);
         request.addParameters(params);
         return request;
     }
