@@ -116,7 +116,6 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -143,7 +142,6 @@ public class MemberSteps {
                 .body(params)
                 .when().put("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -167,7 +165,6 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
 
