@@ -65,6 +65,17 @@ class FavoritePathServiceTest {
         assertThat(favoriteId).isEqualTo(favoritePath.getId());
     }
 
+    @DisplayName("즐겨찾기 삭제 - 없는 favoriteId")
+    @Test
+    void deleteFavorite() {
+        //given
+        Long favoriteId = 1L;
+        when(favoritePathRepository.findOneById(favoriteId)).thenReturn(null);
+
+        //when then
+        assertThrows(IllegalArgumentException.class, () -> favoritePathService.deleteFavorite(favoriteId));
+    }
+
     private LoginMemberImpl getLoginMember() {
         LoginMemberImpl loginMember = new LoginMemberImpl(1L, "email@email.com","password", 20);
         return loginMember;
