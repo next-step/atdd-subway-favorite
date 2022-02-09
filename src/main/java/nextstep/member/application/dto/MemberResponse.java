@@ -1,5 +1,6 @@
 package nextstep.member.application.dto;
 
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 
 public class MemberResponse {
@@ -17,6 +18,10 @@ public class MemberResponse {
     }
 
     public static MemberResponse of(Member member) {
+        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    public static MemberResponse of(LoginMember member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
 
