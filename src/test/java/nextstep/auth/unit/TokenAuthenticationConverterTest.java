@@ -1,6 +1,7 @@
-package nextstep.auth.authentication;
+package nextstep.auth.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.token.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
