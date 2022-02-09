@@ -47,4 +47,9 @@ npm run dev
   여기서 봐야할 것은 넘기는 대상이 단순한 Dto인가, 역할을 맡은 객체인가 하는 것이다. 단순 Dto라면 memberService에서 많이 사용되는지 정도만 생각하면 될 것 같다. 도메인이라면, 의존관계의 흐름 방향(도메인을 서비스가 사용) 정도를 보고, 서비스 안에서 맡은 역할이 있는지를 봐야할 것 같다.
 
 ### step2 질문
+- `AuthenticationConverter.prehandle()`에서 구현체 Session관련쪽은 IOException이 없는데도 남겨주는 것에는 문제가 없는건가 궁금합니다.
+- 추상화 클래스 만들때 Abstract- 로 안 만들어도 되는지?
+- private final을 쓰지 않는 이유에 대해서 궁금하다.
+- LoginMember도 패키지 의존성이 존재하는 것 같아서 UserDetails라는 클래스 이름으로 변경해보았는데 어떤지랑, TokenAuthenticationInterceptorMockTest.prehandle()테스트에서 LoginMember 의존관계가 남아있는데, 없앨 수 있는 방법이 있는지 궁금.
+- 패키지명 변경이나 클래스 이름 변경할 경우. 커밋을 따로 하는지 궁금하고, 따로 한다면 commit convention에 따라 prefix를 뭐로 쓰시는지 궁금합니다. 더하자면.. chore의 의미가 무엇인지 잘 이해가 가지 않아요.. 하기 싫은 일이라는 의미도 잘 모르겠습니다.
 - 
