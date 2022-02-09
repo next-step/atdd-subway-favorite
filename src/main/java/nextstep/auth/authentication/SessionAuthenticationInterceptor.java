@@ -2,8 +2,7 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.ui.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,22 +12,12 @@ import java.util.Map;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor implements AuthenticationInterceptor {
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
-
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken token = convert(request);
-        Authentication authentication = authenticate(token);
-        afterAuthentication(request, response, authentication);
-        return false;
+    public SessionAuthenticationInterceptor(final UserDetailsService userDetailsService) {
+        super(userDetailsService);
     }
 
     @Override
@@ -38,29 +27,12 @@ public class SessionAuthenticationInterceptor implements AuthenticationIntercept
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+    @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        Map<String, String[]> paramMap = request.getParameterMap();
-        String principal = paramMap.get(USERNAME_FIELD)[0];
-        String credentials = paramMap.get(PASSWORD_FIELD)[0];
+        final Map<String, String[]> paramMap = request.getParameterMap();
+        final String principal = paramMap.get(USERNAME_FIELD)[0];
+        final String credentials = paramMap.get(PASSWORD_FIELD)[0];
 
         return new AuthenticationToken(principal, credentials);
-    }
-
-    public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
-
-        return new Authentication(userDetails);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
     }
 }
