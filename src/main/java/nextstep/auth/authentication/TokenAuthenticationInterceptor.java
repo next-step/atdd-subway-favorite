@@ -23,7 +23,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     }
 
     @Override
-    public void afterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
+    protected void afterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
         final String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         final String token = jwtTokenProvider.createToken(payload);

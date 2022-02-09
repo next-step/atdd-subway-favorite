@@ -21,7 +21,7 @@ public class SessionAuthenticationInterceptor extends AuthenticationInterceptor 
     }
 
     @Override
-    public void afterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
+    protected void afterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);

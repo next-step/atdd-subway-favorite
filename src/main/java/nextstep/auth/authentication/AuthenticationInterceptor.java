@@ -29,11 +29,11 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor, A
         return false;
     }
 
-    public abstract void afterAuthentication(final HttpServletRequest request,
+    protected abstract void afterAuthentication(final HttpServletRequest request,
                                              final HttpServletResponse response,
                                              final Authentication authentication) throws IOException;
 
-    public Authentication authenticate(final AuthenticationToken token) {
+    private Authentication authenticate(final AuthenticationToken token) {
         final String principal = token.getPrincipal();
         final UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
