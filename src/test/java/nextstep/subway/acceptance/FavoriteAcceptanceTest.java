@@ -42,7 +42,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         String 토큰 = 로그인_되어_있음(MAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(토큰, 강남역.getId(), 판교역.getId());
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(토큰, 강남역.getId(), 판교역.getId());
 
         // then
         즐겨찾기_생성_응답됨(response);
@@ -56,7 +56,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite_fail() {
         // when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청("", 강남역.getId(), 판교역.getId());
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청("", 강남역.getId(), 판교역.getId());
 
         // then
         권한_없음_응답됨(response);
@@ -74,7 +74,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         String 토큰 = 로그인_되어_있음(MAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(토큰, 강남역.getId(), 1000);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(토큰, 강남역.getId(), 1000);
 
         // then
         잘못된_요청_응답됨(response);
@@ -110,6 +110,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         권한_없음_응답됨(response);
+    }
+
+    /**
+     * Scenario: 즐겨찾기를 관리
+     * Given 인증 요청
+     * When 즐겨찾기 생성을 요청
+     * Then 즐겨찾기 생성됨
+     * When 즐겨찾기 목록 조회 요청
+     * Then 즐겨찾기 목록 조회됨
+     */
+    @DisplayName("즐겨찾기 관리")
+    @Test
+    void manage_favorite() {
+        // given
+        String 토큰 = 로그인_되어_있음(MAIL, PASSWORD);
+        // when
+        ExtractableResponse<Response> 생성응답 = 즐겨찾기_생성_요청(토큰, 강남역.getId(), 판교역.getId());
+        // then
+        즐겨찾기_생성_응답됨(생성응답);
+
+        // when
+        ExtractableResponse<Response> 조회응답 = FavoriteSteps.즐겨찾기_조회_요청(토큰);
+        // then
+        즐겨찾기_조회_응답됨(조회응답);
     }
 
 }
