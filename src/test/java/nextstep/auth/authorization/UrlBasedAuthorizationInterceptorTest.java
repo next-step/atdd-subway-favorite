@@ -55,8 +55,8 @@ class UrlBasedAuthorizationInterceptorTest {
 	}
 
 	@ParameterizedTest
-	@CsvSource({"/favorites, true", "/authorized, false", "/authorized2/abc, false", "/authorized2, false"})
-	void preHandleFail(String requestPath, boolean expectedResult) {
+	@CsvSource({"/members, true", "/favorites, true"})
+	void preHandleTrue(String requestPath, boolean expectedResult) {
 		// given
 		clearContextHolder();
 		HttpServletRequest request = getMockHttpServletRequest(requestPath);
@@ -67,9 +67,22 @@ class UrlBasedAuthorizationInterceptorTest {
 
 		// then
 		assertThat(isSuccess).isEqualTo(expectedResult);
-		if (!isSuccess) {
-			assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-		}
+	}
+
+	@ParameterizedTest
+	@CsvSource({"/authorized, false", "/authorized2/abc, false", "/authorized2, false"})
+	void preHandleFalse(String requestPath, boolean expectedResult) {
+		// given
+		clearContextHolder();
+		HttpServletRequest request = getMockHttpServletRequest(requestPath);
+
+		// when
+		HttpServletResponse response = new MockHttpServletResponse();
+		boolean isSuccess = urlBasedAuthorizationInterceptor.preHandle(request, response, new Object());
+
+		// then
+		assertThat(isSuccess).isEqualTo(expectedResult);
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 	private void clearContextHolder() {

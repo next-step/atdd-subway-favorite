@@ -48,56 +48,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	/**
 	 * When 즐겨찾기 생성을 요청
 	 * Then 즐겨찾기 생성됨
-	 */
-	@DisplayName("즐겨찾기를 생성한다.")
-	@Test
-	void addFavorite() {
-		// when
-		ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(JWT_토큰, 가양역, 강남역);
-
-		// then
-		FavoriteSteps.즐겨찾기_생성됨(즐겨찾기_생성_응답);
-	}
-
-	/**
-	 * Given 즐겨찾기 생성됨
-	 * When 즐겨찾기 목록 조회 요청
-	 * Then 즐겨찾기 목록 조회됨
-	 */
-	@DisplayName("즐겨찾기를 조회한다.")
-	@Test
-	void getFavorite() {
-		// given
-		ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(JWT_토큰, 가양역, 강남역);
-
-		// when
-		ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(JWT_토큰);
-
-		// then
-		즐겨찾기_조회됨(즐겨찾기_조회_응답, 가양역, 강남역);
-	}
-
-	/**
-	 * Given 즐겨찾기 생성되어 있음
-	 * When 즐겨찾기 삭제 요청
-	 * Then 즐겨찾기 삭제됨
-	 */
-	@DisplayName("즐겨찾기를 삭제한다.")
-	@Test
-	void removeFavorite() {
-		// given
-		ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(JWT_토큰, 가양역, 강남역);
-
-		// when
-		ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(JWT_토큰, 즐겨찾기_생성_응답);
-
-		// then
-		즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
-	}
-
-	/**
-	 * When 즐겨찾기 생성을 요청
-	 * Then 즐겨찾기 생성됨
 	 * When 즐겨찾기 목록 조회 요청
 	 * Then 즐겨찾기 목록 조회됨
 	 * When 즐겨찾기 삭제 요청

@@ -3,7 +3,6 @@ package nextstep.subway.unit;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
-import nextstep.member.domain.Favorite;
 import nextstep.member.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -34,7 +33,6 @@ class FavoriteServiceTest {
 	Long 가양역_아이디;
 	Long 강남역_아이디;
 	Member 회원;
-	Favorite 즐겨찾기;
 
 	FavoriteService favoriteService;
 
@@ -56,8 +54,6 @@ class FavoriteServiceTest {
 		Station 강남역 = new Station("강남역");
 		회원 = new Member(EMAIL, PASSWORD, 10);
 		memberRepository.save(회원);
-
-		즐겨찾기 = new Favorite(가양역, 강남역, 회원);
 
 		가양역_아이디 = stationRepository.save(가양역).getId();
 		강남역_아이디 = stationRepository.save(강남역).getId();

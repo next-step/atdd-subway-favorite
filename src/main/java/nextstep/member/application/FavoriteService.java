@@ -42,7 +42,6 @@ public class FavoriteService {
 		Member member = findMember(memberId);
 
 		Favorite favorite = new Favorite(sourceStation, targetStation, member);
-		favorite.setMember(member);
 		favoriteRepository.save(favorite);
 
 		return FavoriteResponse.of(favorite);
