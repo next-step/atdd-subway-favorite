@@ -1,6 +1,8 @@
 package nextstep.member.domain;
 
 
+import java.util.Objects;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -36,5 +38,24 @@ public class LoginMember {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        LoginMember that = (LoginMember) o;
+        return id.equals(that.id) && email.equals(that.email) && password.equals(that.password) && Objects.equals(age, that.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, age);
     }
 }
