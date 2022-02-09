@@ -21,7 +21,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        회원_생성됨(response);
     }
 
     @DisplayName("회원 정보를 조회한다.")
@@ -47,8 +47,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_수정됨(response);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
@@ -61,12 +60,32 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_삭제됨(response);
     }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        // When 회원 생성을 요청
+        ExtractableResponse<Response> 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        // Then 회원 생성됨
+        회원_생성됨(회원_생성_응답);
+
+        // When 회원 정보 조회 요청
+        ExtractableResponse<Response> 회원_정보_조회_응답 = 회원_정보_조회_요청(회원_생성_응답);
+        // Then 회원 정보 조회됨
+        회원_정보_조회됨(회원_정보_조회_응답, EMAIL, AGE);
+
+        // When 회원 정보 수정 요청
+        ExtractableResponse<Response> 회원_정보_수정_응답 = 회원_정보_수정_요청(회원_생성_응답, "new" + EMAIL, "new" + PASSWORD, AGE);
+        // Then 회원 정보 수정됨
+        회원_정보_수정됨(회원_정보_수정_응답);
+
+        // When 회원 삭제 요청
+        ExtractableResponse<Response> 회원_정보_삭제_응답 = 회원_삭제_요청(회원_생성_응답);
+        // Then 회원 삭제됨
+        회원_삭제됨(회원_정보_삭제_응답);
+
     }
 
     @DisplayName("나의 정보를 관리한다.")
