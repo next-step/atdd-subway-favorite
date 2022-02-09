@@ -31,10 +31,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given 인증을 한 뒤
      * When 로그인 없이 즐겨찾기 생성을 요청하면
-     * Then 권한 없음을 응답받는다
+     * Then 생성 응답을 받는다
      */
-    @DisplayName("지하철 노선 생성")
+    @DisplayName("즐겨찾기 생성")
     @Test
     void createFavorite() {
         // given
@@ -51,7 +52,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 로그인 없이 즐겨찾기 생성을 요청하면
      * Then 권한 없음을 응답받는다
      */
-    @DisplayName("지하철 노선 생성")
+    @DisplayName("즐겨찾기 생성 - 인증 없이 요청하면 실패한다")
     @Test
     void createFavorite_fail() {
         // when
@@ -66,7 +67,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 로그인 없이 즐겨찾기 조회을 요청하면
      * Then 성공 응답을 받는다
      */
-    @DisplayName("지하철 노선 생성")
+    @DisplayName("즐겨찾기 조회")
     @Test
     void findFavorite() {
         // given
@@ -84,7 +85,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 로그인 없이 즐겨찾기 조회을 요청하면
      * Then 권한 없음을 응답받는다
      */
-    @DisplayName("지하철 노선 생성")
+    @DisplayName("즐겨찾기 조회 - 인증 없이 조회하면 실패한다")
     @Test
     void findFavorite_fail() {
         // when
