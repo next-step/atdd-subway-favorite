@@ -1,7 +1,9 @@
 package nextstep.subway.applicaion.command;
 
+import nextstep.exception.FavoriteNotFoundException;
 import nextstep.exception.StationNotFoundException;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
+import nextstep.subway.applicaion.query.FavoriteQueryService;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
@@ -27,6 +29,8 @@ class FavoriteCommandServiceTest {
     private FavoriteRepository favoriteRepository;
     @Autowired
     private StationRepository stationRepository;
+    @Autowired
+    private FavoriteQueryService favoriteQueryService;
 
     private FavoriteCommandService service;
     private Station 강남역;
@@ -40,7 +44,7 @@ class FavoriteCommandServiceTest {
         stationRepository.save(강남역);
         stationRepository.save(판교역);
 
-        service = new FavoriteCommandService(favoriteRepository, stationRepository);
+        service = new FavoriteCommandService(favoriteRepository, stationRepository, favoriteQueryService);
     }
 
     @DisplayName("즐겨찾기 생성")
@@ -68,6 +72,18 @@ class FavoriteCommandServiceTest {
         // then
         assertThatThrownBy(() -> service.createFavorite(id, 요청))
                 .isInstanceOf(StationNotFoundException.class);
+    }
+
+    @DisplayName("없는 역을 즐겨찾기 삭 하면 실패")
+    @Test
+    void deleteFavorite_fail() {
+        // given
+        long id = 100L;
+        FavoriteRequest 요청 = FavoriteRequest.of(강남역.getId(), 1000L);
+
+        // then
+        assertThatThrownBy(() -> service.deleteFavorite(id))
+                .isInstanceOf(FavoriteNotFoundException.class);
     }
 
 }
