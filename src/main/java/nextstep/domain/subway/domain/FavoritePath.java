@@ -57,4 +57,8 @@ public class FavoritePath extends BaseEntity {
             throw new IllegalArgumentException("즐겨찾기를 생성할 수 없습니다.");
         }
     }
+
+    public void validDelete() {
+
+    }
 }

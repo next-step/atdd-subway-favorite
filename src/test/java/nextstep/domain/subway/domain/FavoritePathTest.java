@@ -51,4 +51,5 @@ class FavoritePathTest {
         //when
         assertThrows(IllegalArgumentException.class, favoritePath::validCheck);
     }
+
 }

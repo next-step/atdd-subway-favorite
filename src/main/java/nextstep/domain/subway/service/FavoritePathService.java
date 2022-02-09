@@ -51,6 +51,6 @@ public class FavoritePathService {
     @Transactional
     public void deleteFavorite(Long favoriteId) {
         FavoritePath favoritePath = favoritePathRepository.findOneById(favoriteId);
-        favoritePath.validDelete();
+
     }
 }

@@ -21,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,7 +71,7 @@ class FavoritePathServiceTest {
     void deleteFavorite() {
         //given
         Long favoriteId = 1L;
-        when(favoritePathRepository.findOneById(favoriteId)).thenReturn(null);
+        when(favoritePathRepository.findById(favoriteId)).thenReturn(Optional.empty());
 
         //when then
         assertThrows(IllegalArgumentException.class, () -> favoritePathService.deleteFavorite(favoriteId));
