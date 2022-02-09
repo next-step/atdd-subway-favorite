@@ -6,12 +6,11 @@ import nextstep.auth.authentication.*;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
+import nextstep.auth.unit.authentication.MockRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +45,7 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
-        HttpServletRequest request = createMockRequest();
+        HttpServletRequest request = MockRequest.createTokenRequest(EMAIL, PASSWORD);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         interceptor.preHandle(request, response, null);
@@ -55,12 +54,4 @@ class TokenAuthenticationInterceptorTest {
         Map<String, Object> body = objectMapper.readValue(response.getContentAsString(), new TypeReference<HashMap<String,Object>>() {});
         assertThat(body.get("accessToken")).isEqualTo(JWT_TOKEN);
     }
-
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
-
 }

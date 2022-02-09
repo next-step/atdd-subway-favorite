@@ -2,14 +2,11 @@ package nextstep.auth.unit.authentication.session;
 
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
-import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
+import nextstep.auth.unit.authentication.MockRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,20 +22,11 @@ class SessionAuthenticationConverterTest {
 
     @Test
     void convert() {
-        HttpServletRequest request = createMockRequest();
+        HttpServletRequest request = MockRequest.createSessionRequest(EMAIL, PASSWORD);
 
         AuthenticationToken authenticationToken = authenticationConverter.convert(request);
 
         assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
         assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    private MockHttpServletRequest createMockRequest() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        Map<String, String> params = new HashMap<>();
-        params.put(SessionAuthenticationConverter.USERNAME_FIELD, EMAIL);
-        params.put(SessionAuthenticationConverter.PASSWORD_FIELD, PASSWORD);
-        request.addParameters(params);
-        return request;
     }
 }
