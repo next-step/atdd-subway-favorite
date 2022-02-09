@@ -178,6 +178,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기 생성됨
      * When 즐겨찾기 목록 조회 요청
      * Then 즐겨찾기 목록 조회됨
+     * When 즐겨찾기 삭제 요청
+     * Then 즐겨찾기 삭제됨
      */
     @DisplayName("즐겨찾기 관리")
     @Test
@@ -193,6 +195,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 조회응답 = 즐겨찾기_조회_요청(토큰);
         // then
         즐겨찾기_조회_응답됨(조회응답);
+
+        // given
+        List<FavoriteResponse> 조회 = 즐겨찾기_생성_조회(토큰, 강남역.getId(), 판교역.getId());
+        Long 즐겨찾기ID = 조회.get(0).getId();
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(토큰, 즐겨찾기ID);
+        // then
+        즐겨찾기_삭제_응답됨(response);
     }
 
 }
