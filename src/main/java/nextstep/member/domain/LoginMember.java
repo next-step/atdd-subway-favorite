@@ -42,8 +42,14 @@ public class LoginMember {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         LoginMember that = (LoginMember) o;
         return id.equals(that.id) && email.equals(that.email) && password.equals(that.password) && Objects.equals(age, that.age);
     }
