@@ -23,4 +23,16 @@ public class FavoriteResponse {
         return new FavoriteResponse(id, sourceResponse, targetResponse);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public StationResponse getSource() {
+        return source;
+    }
+
+    public StationResponse getTarget() {
+        return target;
+    }
+
 }
