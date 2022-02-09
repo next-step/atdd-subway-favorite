@@ -1,5 +1,6 @@
 package nextstep.subway.applicaion.query;
 
+import nextstep.exception.FavoriteNotFoundException;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.repository.FavoriteRepository;
@@ -19,12 +20,17 @@ public class FavoriteQueryService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public List<FavoriteResponse> findFavorite(long loginId) {
+    public List<FavoriteResponse> findFavorites(long loginId) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginId);
 
         return favorites.stream()
                 .map(it -> FavoriteResponse.of(loginId, it.source(), it.target()))
                 .collect(Collectors.toList());
+    }
+
+    public Favorite findFavorite(long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new FavoriteNotFoundException(favoriteId));
     }
 
 }
