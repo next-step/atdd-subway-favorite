@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AuthSteps.인가_되지_않음;
 import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.*;
 import static nextstep.subway.acceptance.LineSteps.노선_생성_파라미터;
@@ -91,19 +92,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제_검증(즐겨찾기_삭제);
     }
 
-    @DisplayName("즐겨찾기 생성 검증")
+    @DisplayName("즐겨찾기 생성 (로그인 없이)")
     @Test
-    void createFavorite() {
+    void createFavorite_unauthorized() {
         //given
-        회원_생성_요청(email, password, age);
-        accessToken = 로그인_되어_있음(email, password);
         Map<String, String> params = 즐겨찾기_파라미터_생성(교대역, 양재역);
 
         //when
-        ExtractableResponse<Response> 즐겨찾기_생성 = 즐겨찾기_생성_요청(params, accessToken);
+        ExtractableResponse<Response> 즐겨찾기_생성 = 즐겨찾기_생성_요청_인가_없이(params);
 
         //then
-        즐겨찾기_생성_검증(즐겨찾기_생성);
+        인가_되지_않음(즐겨찾기_생성);
     }
+
+    @DisplayName("즐겨찾기 조회 (로그인 없이)")
+    @Test
+    void showFavorites_unauthorized() {
+        //when
+        ExtractableResponse<Response> 조회_즐겨찾기 = 즐겨찾기_조회_요청_인가_없이();
+
+        //then
+        인가_되지_않음(조회_즐겨찾기);
+    }
+
+    @DisplayName("즐겨찾기 삭제 (로그인 없이)")
+    @Test
+    void deleteFavorite_unauthorized() {
+        //when
+        ExtractableResponse<Response> 즐겨찾기_삭제 = 즐겨찾기_삭제_요청_인가_없이("/favorites/1");
+
+        //then
+        인가_되지_않음(즐겨찾기_삭제);
+    }
+
+
 
 }

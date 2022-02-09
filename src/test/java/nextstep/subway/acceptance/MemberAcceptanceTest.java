@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.subway.acceptance.AuthSteps.*;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -163,4 +164,36 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
 
+    @DisplayName("인가 없이 내 정보 조회")
+    @Test
+    void show_me_unauthorized() {
+        //when
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청_인가_없이();
+        //then
+        인가_되지_않음(response);
+    }
+
+    @DisplayName("인가 없이 내 정보 수정")
+    @Test
+    void modify_me_unauthorized() {
+        //given
+        String email = "email@email.com";
+        String password = "password";
+        int age = 30;
+        //when
+        ExtractableResponse<Response> response = 내_회원_정보_수정_요청_인가_없이(email, password, age);
+        //then
+        인가_되지_않음(response);
+
+    }
+
+    @DisplayName("인가 없이 내 정보 삭제")
+    @Test
+    void delete_me_unauthorized() {
+        //when
+        ExtractableResponse<Response> response = 내_회원_정보_삭제_요청_인가_없이();
+        //then
+        인가_되지_않음(response);
+
+    }
 }

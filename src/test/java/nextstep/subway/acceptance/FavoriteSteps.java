@@ -28,6 +28,13 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청_인가_없이(String location) {
+        return RestAssured
+                .given().log().all()
+                .when().delete(location)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
@@ -37,10 +44,27 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청_인가_없이() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(Map<String, String> params, String accessToken) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/favorites")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청_인가_없이(Map<String, String> params) {
+        return RestAssured
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/favorites")
