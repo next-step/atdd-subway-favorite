@@ -10,8 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.step.FavoriteSteps.권한_없음_응답됨;
-import static nextstep.subway.acceptance.step.FavoriteSteps.즐겨찾기_생성_응답됨;
+import static nextstep.subway.acceptance.step.FavoriteSteps.*;
 
 @DisplayName("즐겨 찾기 관리 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -57,6 +56,39 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void createFavorite_fail() {
         // when
         ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청("", 강남역.getId(), 판교역.getId());
+
+        // then
+        권한_없음_응답됨(response);
+    }
+
+    /**
+     * Given 인증을 한 뒤
+     * When 로그인 없이 즐겨찾기 조회을 요청하면
+     * Then 성공 응답을 받는다
+     */
+    @DisplayName("지하철 노선 생성")
+    @Test
+    void findFavorite() {
+        // given
+        String 토큰 = 로그인_되어_있음(MAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회_요청(토큰);
+
+        // then
+        즐겨찾기_조회_응답됨(response);
+    }
+
+
+    /**
+     * When 로그인 없이 즐겨찾기 조회을 요청하면
+     * Then 권한 없음을 응답받는다
+     */
+    @DisplayName("지하철 노선 생성")
+    @Test
+    void findFavorite_fail() {
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회_요청("");
 
         // then
         권한_없음_응답됨(response);
