@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(UserDetailService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
