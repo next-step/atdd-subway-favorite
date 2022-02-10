@@ -99,8 +99,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         응답결과가_CREATED(response);
         Long secondFavoriteId = response.as(FavoriteResponse.class).getId();
 
-//        response = 즐겨찾기_목록을_조회한다();
-//        즐겨찾기_목록이_조회된다(response);
+        response = 즐겨찾기_목록을_조회한다();
+        즐겨찾기_목록이_조회된다(response);
 
 //        response = 즐겨찾기_삭제한다(secondFavoriteId);
 //        즐겨찾기_목록이_삭제된다(response);

@@ -2,6 +2,8 @@ package nextstep.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.dto.FavoriteRequest;
 import nextstep.favorite.dto.FavoriteResponse;
 import nextstep.subway.acceptance.StationSteps;
@@ -40,5 +42,17 @@ class FavoriteServiceTest {
 
         assertThat(response.getSource().getId()).isEqualTo(역1.getId());
         assertThat(response.getTarget().getId()).isEqualTo(역2.getId());
+    }
+
+    @Test
+    void findAllFavoriteTest() {
+        // given
+        favoriteService.saveFavorite(FavoriteRequest.of(역1.getId(), 역2.getId()));
+
+        // when
+        List<FavoriteResponse> responseList = favoriteService.findAllFavorite();
+
+        // then
+        assertThat(responseList.size()).isEqualTo(1);
     }
 }

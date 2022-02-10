@@ -1,6 +1,7 @@
 package nextstep.favorite.ui;
 
 import java.net.URI;
+import java.util.List;
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.dto.FavoriteRequest;
@@ -30,6 +31,12 @@ public class FavoriteController {
     {
         FavoriteResponse response = favoriteService.saveFavorite(request);
         return ResponseEntity.created(URI.create("/favorites" + response.getId())).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> findAllFavorite(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> responseList = favoriteService.findAllFavorite();
+        return ResponseEntity.ok().body(responseList);
     }
 
 }

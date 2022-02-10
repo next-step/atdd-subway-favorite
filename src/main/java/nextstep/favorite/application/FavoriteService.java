@@ -1,5 +1,7 @@
 package nextstep.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.dto.FavoriteRequest;
@@ -29,4 +31,11 @@ public class FavoriteService {
         return FavoriteResponse.of(persistFavorite.getId(), source, target);
     }
 
+    public List<FavoriteResponse> findAllFavorite() {
+        return favoriteRepository.findAll().stream()
+            .map(favorite -> FavoriteResponse.of(favorite.getId(),
+                stationService.findById(favorite.getSource()),
+                stationService.findById(favorite.getTarget())))
+            .collect(Collectors.toList());
+    }
 }
