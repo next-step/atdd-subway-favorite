@@ -16,11 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
@@ -65,6 +68,15 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
+        //given
+        MockHttpServletRequest mockRequest = createMockRequest();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+        //when
+        boolean actual = interceptor.preHandle(mockRequest, mockResponse, new Object());
+        //then
+        assertThat(actual).isEqualTo(false);
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {

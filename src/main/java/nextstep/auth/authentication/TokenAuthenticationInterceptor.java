@@ -31,9 +31,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
-
-        // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        LoginMember loginMember = (LoginMember) authentication.getPrincipal();
+        String payload = new ObjectMapper().writeValueAsString(loginMember);
+        TokenResponse tokenResponse = new TokenResponse(jwtTokenProvider.createToken(payload));
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
