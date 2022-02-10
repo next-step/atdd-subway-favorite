@@ -54,5 +54,23 @@ class FavoriteServiceTest {
 
         // then
         assertThat(responseList.size()).isEqualTo(1);
+        assertThat(responseList.stream()
+            .findFirst().get().getSource().getName()).isEqualTo("역1");
+        assertThat(responseList.stream()
+            .findFirst().get().getTarget().getName()).isEqualTo("역2");
     }
+
+    @Test
+    void deleteByIdTest() {
+        // given
+        Long id = favoriteService.saveFavorite(FavoriteRequest.of(역1.getId(), 역2.getId())).getId();
+
+        // when
+        favoriteService.deleteById(id);
+
+        // then
+        List<FavoriteResponse> responseList = favoriteService.findAllFavorite();
+        assertThat(responseList.isEmpty()).isTrue();
+    }
+    
 }

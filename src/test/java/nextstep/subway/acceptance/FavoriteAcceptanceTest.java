@@ -102,11 +102,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         response = 즐겨찾기_목록을_조회한다();
         즐겨찾기_목록이_조회된다(response);
 
-//        response = 즐겨찾기_삭제한다(secondFavoriteId);
-//        즐겨찾기_목록이_삭제된다(response);
-//
-//        response = 즐겨찾기_목록을_조회한다();
-//        즐겨찾기_목록이_조회된다(response);
+        response = 즐겨찾기_삭제한다(secondFavoriteId);
+        즐겨찾기_목록이_삭제된다(response);
+
+        response = 즐겨찾기_목록을_조회한다();
+        즐겨찾기_목록이_조회된다(response);
     }
 
     @DisplayName("로그인 없이 즐겨찾기를 생성하면 실패한다.")
