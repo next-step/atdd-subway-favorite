@@ -6,11 +6,11 @@ import nextstep.auth.authentication.convert.SessionAuthenticationConverter;
 import nextstep.auth.authentication.interceptor.BaseAuthenticationInterceptor;
 import nextstep.auth.authentication.interceptor.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.interceptor.TokenAuthenticationInterceptor;
-import nextstep.auth.manager.UserMember;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -72,7 +72,7 @@ class TokenAuthenticationInterceptorNewTest {
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         MockHttpServletRequest request = createMockRequest();
@@ -90,7 +90,7 @@ class TokenAuthenticationInterceptorNewTest {
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
         BaseAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
 
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD));
 
         MockHttpServletRequest request = createMockSessionRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

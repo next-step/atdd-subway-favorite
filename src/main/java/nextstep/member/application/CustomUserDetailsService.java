@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.auth.manager.UserDetailsService;
-import nextstep.auth.manager.UserMember;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -15,8 +15,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserMember loadUserByUsername(String email) {
+    public LoginMember loadUserByUsername(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return UserMember.of(member);
+        return LoginMember.of(member);
     }
 }
