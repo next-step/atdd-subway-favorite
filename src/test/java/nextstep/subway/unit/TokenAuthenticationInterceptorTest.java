@@ -3,6 +3,7 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.CustomUserDetailsService;
@@ -19,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
@@ -51,7 +53,14 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    void authenticate() {
+    void authenticate() throws IOException {
+        //given
+        MockHttpServletRequest mockRequest = createMockRequest();
+        AuthenticationToken authenticationToken = interceptor.convert(mockRequest);
+        //when
+        Authentication authenticate = interceptor.authenticate(authenticationToken);
+        //then
+        assertNotNull(authenticate);
     }
 
     @Test

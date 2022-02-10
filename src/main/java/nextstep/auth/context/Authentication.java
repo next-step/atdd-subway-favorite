@@ -6,7 +6,8 @@ public class Authentication {
     public Authentication() {
     }
 
-    public Authentication(Object principal) {
+    public
+    Authentication(Object principal) {
         this.principal = principal;
     }
 
