@@ -37,10 +37,11 @@ public class AuthConfig implements WebMvcConfigurer {
                     jwtTokenProvider,
                     objectMapper
                 )
-            )
-            .addPathPatterns("/login/token");
+            ).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
-        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
+        registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider))
+            .addPathPatterns("/members/me")
+            .addPathPatterns("/favorites");
     }
 
     @Override

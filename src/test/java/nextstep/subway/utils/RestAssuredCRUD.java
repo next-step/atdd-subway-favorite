@@ -143,6 +143,10 @@ public class RestAssuredCRUD {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    public static void 응답결과가_UNAUTHORIZED(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     public static void 응답결과를_확인한다(ExtractableResponse<Response> response, HttpStatus status) {
         assertThat(response.statusCode()).isEqualTo(status.value());
     }

@@ -4,22 +4,26 @@ import nextstep.favorite.domain.Favorite;
 
 public class FavoriteRequest {
 
-    private Long sourceId;
-    private Long targetId;
+    private Long source;
+    private Long target;
 
     public FavoriteRequest() {
     }
 
-    private FavoriteRequest(Long sourceId, Long targetId) {
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+    private FavoriteRequest(Long source, Long target) {
+        this.source = source;
+        this.target = target;
     }
 
-    public static FavoriteRequest of(Long sourceId, Long targetId) {
-        return new FavoriteRequest(sourceId, targetId);
+    public static FavoriteRequest of(Long source, Long target) {
+        return new FavoriteRequest(source, target);
     }
 
-    public Favorite toEntity() {
-        return Favorite.of(sourceId, targetId);
+    public Long getSource() {
+        return source;
+    }
+
+    public Long getTarget() {
+        return target;
     }
 }

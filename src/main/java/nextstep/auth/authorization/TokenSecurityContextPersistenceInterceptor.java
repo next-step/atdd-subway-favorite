@@ -6,6 +6,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.exception.UnauthorizedException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
 
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return true;
+            throw new UnauthorizedException("유효하지 않은 인증");
         }
 
         SecurityContext securityContext = extractSecurityContext(credentials);

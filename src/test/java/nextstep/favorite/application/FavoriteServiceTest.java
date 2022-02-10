@@ -36,10 +36,9 @@ class FavoriteServiceTest {
 
     @Test
     void saveFavoriteTest() {
-        FavoriteResponse response = favoriteService.saveFavorite(
-            FavoriteRequest.of(역1.getId(), 역2.getId()));
+        FavoriteResponse response = favoriteService.saveFavorite(FavoriteRequest.of(역1.getId(), 역2.getId()));
 
-        assertThat(response.getSource()).isEqualTo(역1.getId());
-        assertThat(response.getTarget()).isEqualTo(역2.getId());
+        assertThat(response.getSource().getId()).isEqualTo(역1.getId());
+        assertThat(response.getTarget().getId()).isEqualTo(역2.getId());
     }
 }
