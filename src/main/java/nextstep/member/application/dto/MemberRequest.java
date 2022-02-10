@@ -2,9 +2,15 @@ package nextstep.member.application.dto;
 
 import nextstep.member.domain.Member;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+
 public class MemberRequest {
+    @NotBlank
     private String email;
+    @NotBlank
     private String password;
+    @Positive
     private Integer age;
 
     public MemberRequest() {

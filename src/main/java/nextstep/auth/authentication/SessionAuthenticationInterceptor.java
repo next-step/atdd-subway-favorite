@@ -17,14 +17,14 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(final CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
         AuthenticationToken token = convert(request);
         Authentication authentication = authenticate(token);
 
@@ -34,7 +34,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) {
+    public AuthenticationToken convert(final HttpServletRequest request) {
         Map<String, String[]> paramMap = request.getParameterMap();
         String principal = paramMap.get(USERNAME_FIELD)[0];
         String credentials = paramMap.get(PASSWORD_FIELD)[0];
@@ -42,7 +42,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return new AuthenticationToken(principal, credentials);
     }
 
-    public Authentication authenticate(AuthenticationToken token) {
+    public Authentication authenticate(final AuthenticationToken token) {
         String principal = token.getPrincipal();
         LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
@@ -50,7 +50,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(final LoginMember userDetails, final AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }

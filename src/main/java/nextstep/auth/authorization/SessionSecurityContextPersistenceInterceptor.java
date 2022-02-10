@@ -16,7 +16,7 @@ public class SessionSecurityContextPersistenceInterceptor implements HandlerInte
             return true;
         }
 
-        SecurityContext securityContext = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        final SecurityContext securityContext = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }

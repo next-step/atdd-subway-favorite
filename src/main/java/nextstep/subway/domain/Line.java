@@ -1,6 +1,11 @@
 package nextstep.subway.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
@@ -11,16 +16,44 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
+    }
+
+    public static Line of(
+            final String name,
+            final String color,
+            final Station upStation,
+            final Station downStation,
+            int distance
+    ) {
+        Line newLine = new Line(name, color);
+        newLine.sections.addFirst(Section.of(newLine, upStation, downStation, distance));
+        return newLine;
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeSection(Long stationId) {
+        this.sections.remove(stationId);
+    }
+
+    public List<Station> getStations() {
+        return sections.getAllStations();
     }
 
     public Long getId() {
@@ -35,28 +68,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
-    public void update(String name, String color) {
-        if (name != null) {
-            this.name = name;
-        }
-        if (color != null) {
-            this.color = color;
-        }
-    }
-
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
-    public void deleteSection(Station station) {
-        sections.delete(station);
+    public Sections getSections() {
+        return sections;
     }
 }

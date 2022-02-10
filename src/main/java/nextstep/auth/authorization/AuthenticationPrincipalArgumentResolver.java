@@ -27,7 +27,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         return authentication.getPrincipal();
     }
 
-    private Object extractPrincipal(MethodParameter parameter, Authentication authentication) {
+    private Object extractPrincipal(final MethodParameter parameter, final Authentication authentication) {
         try {
             Map<String, String> principal = (Map) authentication.getPrincipal();
 
@@ -42,7 +42,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         return null;
     }
 
-    public static Object toObject(Class clazz, String value) {
+    public static Object toObject(final Class clazz, final String value) {
         if (Boolean.class == clazz) return Boolean.parseBoolean(value);
         if (Byte.class == clazz) return Byte.parseByte(value);
         if (Short.class == clazz) return Short.parseShort(value);
