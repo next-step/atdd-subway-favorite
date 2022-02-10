@@ -1,21 +1,26 @@
 package nextstep.subway.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
+import nextstep.util.ObjectMapperUtil;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,12 +67,32 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
+        //given
+        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(jwtTokenProvider.createToken(any())).thenReturn(JWT_TOKEN);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        //when
+        interceptor.preHandle(createMockRequest(), response, new Object());
+
+        int status = response.getStatus();
+        String contentType = response.getContentType();
+        String content = response.getContentAsString();
+
+        //then
+        assertAll(
+                () -> assertThat(status).isEqualTo(HttpStatus.SC_OK),
+                () -> assertThat(contentType).isEqualTo(MediaType.APPLICATION_JSON_VALUE),
+                () -> assertThat(content).isEqualTo(ObjectMapperUtil.writeValueAsString(new TokenResponse(JWT_TOKEN)))
+        );
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        request.setContent(ObjectMapperUtil.writeValueAsString(tokenRequest).getBytes());
         return request;
     }
 

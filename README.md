@@ -45,11 +45,11 @@ npm run dev
 
 ### 1단계 - 토큰 기반 로그인 구현
 
-- [ ] AuthAcceptanceTest#myInfoWithBearerAuth 테스트 통과하기
-  - [ ] TokenAuthenticationInterceptor#TODO 구현하기
+- [x] AuthAcceptanceTest#myInfoWithBearerAuth 테스트 통과하기
+  - [x] TokenAuthenticationInterceptor#TODO 구현하기
   - [x] convert
   - [x] authenticate
-  - [ ] preHandle
+  - [x] preHandle
 - [ ] MemberAcceptanceTest#manageMyInfo 테스트 통과하기
   - [ ] @AuthenticationPrincipal 활용하기
 
