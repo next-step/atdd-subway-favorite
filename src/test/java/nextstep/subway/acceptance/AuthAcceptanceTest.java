@@ -60,8 +60,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         상태_값_검사(회원_삭제_응답, HttpStatus.NO_CONTENT);
     }
 
-
-    @Disabled
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
