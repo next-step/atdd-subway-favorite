@@ -24,7 +24,7 @@
 |3주차|토큰 기반 로그인 구현|22/02/10|
 
 ### 로그인 프로세스 실습 요구 사항
-- [ ] 패키지 구조 리팩토링
+- [x] 패키지 구조 리팩토링
 - [ ] MemberAcceptanceTest 의 인수 테스트 통합하기
 - [ ] AuthAcceptanceTest 의 myInfoWithSession 테스트 메서드를 성공 시키기
 
