@@ -35,3 +35,21 @@ npm run dev
 ```
 ./gradlew bootRun
 ```
+
+---
+
+### 로그인 인증 프로세스 실습
+- [생략] 패키지 구조 리팩터링
+- [x] MemberAcceptanceTest#manageMember 인수 테스트 통합하기
+- [x] AuthAcceptanceTest#myInfoWithSession 테스트 통과하기
+
+### 1단계 - 토큰 기반 로그인 구현
+
+- [x] AuthAcceptanceTest#myInfoWithBearerAuth 테스트 통과하기
+  - [x] TokenAuthenticationInterceptor#TODO 구현하기
+  - [x] convert
+  - [x] authenticate
+  - [x] preHandle
+- [x] MemberAcceptanceTest#manageMyInfo 테스트 통과하기
+  - [x] @AuthenticationPrincipal 활용하기
+
