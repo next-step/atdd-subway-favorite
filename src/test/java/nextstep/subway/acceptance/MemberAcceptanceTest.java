@@ -90,8 +90,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청(token);
         회원_정보_조회됨(내_회원_정보_조회_응답, EMAIL, AGE);
 
-        ExtractableResponse<Response> 회원_정보_수정_응답 = 내_회원_정보_수정_요청(token, "e@mail.com", PASSWORD, AGE);
-        회원_정보_수정됨(회원_정보_수정_응답);
+        ExtractableResponse<Response> 내_회원_정보_수정_응답 = 내_회원_정보_수정_요청(token, "e@mail.com", PASSWORD, AGE);
+        회원_정보_수정됨(내_회원_정보_수정_응답);
+
+        ExtractableResponse<Response> 내_회원_삭제_응답 = 내_회원_삭제_요청(token);
+        회원_정보_삭제됨(내_회원_삭제_응답);
 
     }
 }

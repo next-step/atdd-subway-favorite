@@ -50,6 +50,6 @@ npm run dev
   - [x] convert
   - [x] authenticate
   - [x] preHandle
-- [ ] MemberAcceptanceTest#manageMyInfo 테스트 통과하기
-  - [ ] @AuthenticationPrincipal 활용하기
+- [x] MemberAcceptanceTest#manageMyInfo 테스트 통과하기
+  - [x] @AuthenticationPrincipal 활용하기
 
