@@ -16,22 +16,20 @@
 
 <br>
 
-## 🚀 Getting Started
+## 🚀 화이팅
 
-### Install
-#### npm 설치
-```
-cd frontend
-npm install
-```
-> `frontend` 디렉토리에서 수행해야 합니다.
+|주차|실습|날짜|
+|:---:|:---:|:---:|
+|3주차|로그인 프로세스 실습|22/02/10|
+|3주차|토큰 기반 로그인 구현|22/02/10|
 
-### Usage
-#### webpack server 구동
-```
-npm run dev
-```
-#### application 구동
-```
-./gradlew bootRun
-```
+### 로그인 프로세스 실습 요구 사항
+- [ ] 패키지 구조 리팩토링
+- [ ] MemberAcceptanceTest 의 인수 테스트 통합하기
+- [ ] AuthAcceptanceTest 의 myInfoWithSession 테스트 메서드를 성공 시키기
+
+### 실습 요구사항
+- [ ] AuthAcceptanceTest 의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기  
+  TokenAuthenticationInterceptor 을 구현해보자
+- [ ] MemberAcceptanceTest 의 manageMyInfo 성공 시키기  
+  @AuthenticationPrincipal 을 활용하여 메서드 파라미터 주입을 시도해보자
