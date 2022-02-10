@@ -34,6 +34,9 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    /**
+     * @see nextstep.member.ui.MemberController#createMember
+     */
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -82,6 +85,9 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    /**
+     * @see nextstep.auth.AuthConfig#addInterceptors
+     */
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
         return RestAssured
                 .given().log().all()
