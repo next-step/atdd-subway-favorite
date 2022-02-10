@@ -48,7 +48,7 @@ npm run dev
 - [ ] AuthAcceptanceTest#myInfoWithBearerAuth 테스트 통과하기
   - [ ] TokenAuthenticationInterceptor#TODO 구현하기
   - [x] convert
-  - [ ] authenticate
+  - [x] authenticate
   - [ ] preHandle
 - [ ] MemberAcceptanceTest#manageMyInfo 테스트 통과하기
   - [ ] @AuthenticationPrincipal 활용하기
