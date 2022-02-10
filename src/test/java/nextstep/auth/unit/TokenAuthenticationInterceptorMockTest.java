@@ -1,12 +1,13 @@
-package nextstep.subway.unit;
+package nextstep.auth.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.UserDetailsService;
+import nextstep.auth.authentication.token.TokenAuthenticationConverter;
+import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,12 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TokenAuthenticationInterceptorTest {
+class TokenAuthenticationInterceptorMockTest {
     private static final Long ID = 1L;
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -37,46 +37,26 @@ class TokenAuthenticationInterceptorTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+
+    private AuthenticationConverter authenticationConverter;
 
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     @BeforeEach
     void setUp() {
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
-    }
-
-    @Test
-    void convert() throws IOException {
-        // given
-        HttpServletRequest request = createMockRequest();
-
-        // when
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(request);
-
-        // then
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    @Test
-    void authenticate() {
-        // given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
-
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-
-        // when & then
-        assertDoesNotThrow(() -> tokenAuthenticationInterceptor.authenticate(authenticationToken));
+        authenticationConverter = new TokenAuthenticationConverter(OBJECT_MAPPER);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(
+                userDetailsService, jwtTokenProvider, authenticationConverter, OBJECT_MAPPER);
     }
 
     @Test
     void preHandle() throws IOException {
         // given
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         HttpServletRequest request = createMockRequest();

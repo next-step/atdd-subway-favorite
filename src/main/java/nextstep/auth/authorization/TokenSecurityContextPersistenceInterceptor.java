@@ -6,17 +6,18 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
             };
 
-            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
+            Map<String, String> principal = objectMapper.readValue(payload, typeRef);
             return new SecurityContext(new Authentication(principal));
         } catch (Exception e) {
             return null;
