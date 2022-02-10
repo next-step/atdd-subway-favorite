@@ -152,7 +152,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void 즐겨찾기_삭제_예외테스트_2() {
         response = 즐겨찾기_삭제한다(없는Id);
 
-        응답결과가_UNAUTHORIZED(response);
+        응답결과가_BAD_REQUEST(response);
     }
 
     private ExtractableResponse<Response> 즐겨찾기를_생성한다(FavoriteRequest request) {
@@ -164,7 +164,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제한다(Long id) {
-        return RestAssuredCRUD.deleteWithOAuth("/favorites/"+id, accessToken);
+        return RestAssuredCRUD.deleteWithOAuth("/favorites/{id}", accessToken, id);
     }
 
     private void 즐겨찾기_목록이_조회된다(ExtractableResponse<Response> response) {

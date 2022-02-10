@@ -127,6 +127,15 @@ public class RestAssuredCRUD {
             .extract();
     }
 
+    public static ExtractableResponse<Response> deleteWithOAuth(String path, String token, Object... params) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(token)
+            .when()
+            .delete(path, params)
+            .then().log().all()
+            .extract();
+    }
+
     public static void 응답결과가_OK(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }

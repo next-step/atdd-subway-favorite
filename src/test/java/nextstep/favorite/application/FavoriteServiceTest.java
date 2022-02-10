@@ -72,5 +72,5 @@ class FavoriteServiceTest {
         List<FavoriteResponse> responseList = favoriteService.findAllFavorite();
         assertThat(responseList.isEmpty()).isTrue();
     }
-    
+
 }

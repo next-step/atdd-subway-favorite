@@ -41,7 +41,7 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider))
             .addPathPatterns("/members/me")
-            .addPathPatterns("/favorites");
+            .addPathPatterns("/favorites/*", "/favorites");
     }
 
     @Override

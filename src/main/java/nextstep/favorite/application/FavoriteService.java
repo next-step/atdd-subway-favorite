@@ -1,6 +1,7 @@
 package nextstep.favorite.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
@@ -9,8 +10,10 @@ import nextstep.favorite.dto.FavoriteResponse;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
@@ -31,6 +34,7 @@ public class FavoriteService {
         return FavoriteResponse.of(persistFavorite.getId(), source, target);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavorite() {
         return favoriteRepository.findAll().stream()
             .map(favorite -> FavoriteResponse.of(favorite.getId(),
@@ -40,6 +44,8 @@ public class FavoriteService {
     }
 
     public void deleteById(Long id) {
-
+        favoriteRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("삭제 대상 즐겨찾기 없음"));
+        favoriteRepository.deleteById(id);
     }
 }

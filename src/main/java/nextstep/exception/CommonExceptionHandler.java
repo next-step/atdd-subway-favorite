@@ -25,8 +25,8 @@ public class CommonExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<Void> handleUnauthorizedException(UnauthorizedException e) {
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Void> handleAuthenticationException(AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
