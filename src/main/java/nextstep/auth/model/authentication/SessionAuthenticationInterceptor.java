@@ -3,7 +3,7 @@ package nextstep.auth.model.authentication;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.authentication.service.CustomUserDetailsService;
-import nextstep.subway.domain.member.LoginMember;
+import nextstep.subway.domain.member.MemberAdaptor;
 import nextstep.utils.exception.AuthenticationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -45,18 +45,18 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
+        MemberAdaptor memberAdaptor = userDetailsService.loadUserByUsername(principal);
+        checkAuthentication(memberAdaptor, token);
 
-        return new Authentication(userDetails);
+        return new Authentication(memberAdaptor);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
+    private void checkAuthentication(MemberAdaptor memberAdaptor, AuthenticationToken token) {
+        if (memberAdaptor == null) {
             throw new AuthenticationException();
         }
 
-        if (!userDetails.checkPassword(token.getCredentials())) {
+        if (!memberAdaptor.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
     }

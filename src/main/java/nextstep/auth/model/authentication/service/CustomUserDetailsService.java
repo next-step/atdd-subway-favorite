@@ -1,8 +1,9 @@
 package nextstep.auth.model.authentication.service;
 
-import nextstep.subway.domain.member.LoginMember;
+import nextstep.subway.domain.member.MemberAdaptor;
 import nextstep.subway.domain.member.Member;
 import nextstep.subway.domain.member.MemberRepository;
+import nextstep.utils.exception.MemberException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,8 +14,8 @@ public class CustomUserDetailsService {
         this.memberRepository = memberRepository;
     }
 
-    public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return LoginMember.of(member);
+    public MemberAdaptor loadUserByUsername(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(MemberException::new);
+        return MemberAdaptor.of(member);
     }
 }

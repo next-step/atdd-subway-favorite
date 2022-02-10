@@ -1,17 +1,17 @@
 package nextstep.subway.domain.member;
 
 
-public class LoginMember {
+public class MemberAdaptor {
     private Long id;
     private String email;
     private String password;
     private Integer age;
 
-    public static LoginMember of(Member member) {
-        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+    public static MemberAdaptor of(Member member) {
+        return new MemberAdaptor(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 
-    public LoginMember(Long id, String email, String password, Integer age) {
+    public MemberAdaptor(Long id, String email, String password, Integer age) {
         this.id = id;
         this.email = email;
         this.password = password;

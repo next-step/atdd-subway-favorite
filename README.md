@@ -25,8 +25,8 @@
 
 ### 로그인 프로세스 실습 요구 사항
 - [x] 패키지 구조 리팩토링
-- [ ] MemberAcceptanceTest 의 인수 테스트 통합하기
-- [ ] AuthAcceptanceTest 의 myInfoWithSession 테스트 메서드를 성공 시키기
+- [x] MemberAcceptanceTest 의 인수 테스트 통합하기
+- [x] AuthAcceptanceTest 의 myInfoWithSession 테스트 메서드를 성공 시키기
 
 ### 실습 요구사항
 - [ ] AuthAcceptanceTest 의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기  
