@@ -18,10 +18,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(
+            CustomUserDetailsService customUserDetailsService,
+            JwtTokenProvider jwtTokenProvider,
+            ObjectMapper objectMapper
+    ) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -29,8 +35,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
