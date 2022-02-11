@@ -17,6 +17,7 @@ public enum ErrorCode {
     NOT_EXISTS_ANY_STATIONS_ERROR(HttpStatus.BAD_REQUEST, "-10016", "상행역과 하행역이 모두 존재하지 않습니다."),
     SAME_STATION_ERROR(HttpStatus.BAD_REQUEST, "-10017", "출발역과 도착역은 같을 수 없습니다."),
     NOT_CONNECTED_ERROR(HttpStatus.BAD_REQUEST, "-10018", "연결되어있지 않습니다."),
+    TOKEN_AUTHENTICATION_CONVERT_ERROR(HttpStatus.BAD_REQUEST, "-10019", "토큰 인증 변환에 실패하였습니다."),
     ;
 
     private final HttpStatus status;
