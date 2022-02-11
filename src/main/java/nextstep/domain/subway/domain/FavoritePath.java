@@ -30,6 +30,9 @@ public class FavoritePath extends BaseEntity {
     }
 
     public FavoritePath(Station startStation, Station endStation, Member member) {
+        if (startStation == null || endStation == null || member == null) {
+            throw new IllegalArgumentException("즐겨찾기를 생성할 수 없습니다.");
+        }
         this.startStation = startStation;
         this.endStation = endStation;
         this.member = member;
@@ -52,10 +55,5 @@ public class FavoritePath extends BaseEntity {
         return member;
     }
 
-    public void validCheck() {
-        if (startStation == null || endStation == null || member == null) {
-            throw new IllegalArgumentException("즐겨찾기를 생성할 수 없습니다.");
-        }
-    }
 
 }

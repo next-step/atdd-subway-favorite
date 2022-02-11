@@ -25,10 +25,9 @@ class FavoritePathTest {
     void validCheck_case1() {
         //given
         startStation = null;
-        FavoritePath favoritePath = new FavoritePath(startStation, endStation, member);
 
         //when then
-        assertThrows(IllegalArgumentException.class, favoritePath::validCheck);
+        assertThrows(IllegalArgumentException.class, () -> new FavoritePath(startStation, endStation, member));
 
     }
     @DisplayName("FavoritePath 유효성 검사 - case 02")
@@ -36,20 +35,18 @@ class FavoritePathTest {
     void validCheck_case2() {
         //given
         endStation = null;
-        FavoritePath favoritePath = new FavoritePath(startStation, endStation, member);
 
         //when
-        assertThrows(IllegalArgumentException.class, favoritePath::validCheck);
+        assertThrows(IllegalArgumentException.class, () -> new FavoritePath(startStation, endStation, member));
     }
     @DisplayName("FavoritePath 유효성 검사 - case 03")
     @Test
     void validCheck_case3() {
         //given
         member = null;
-        FavoritePath favoritePath = new FavoritePath(startStation, endStation, member);
 
         //when
-        assertThrows(IllegalArgumentException.class, favoritePath::validCheck);
+        assertThrows(IllegalArgumentException.class, () -> new FavoritePath(startStation, endStation, member));
     }
 
 }
