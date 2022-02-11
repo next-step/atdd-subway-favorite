@@ -40,4 +40,10 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
+
+    public StationResponse findStation(Long id) {
+        Station station = findById(id);
+        return StationResponse.of(station);
+    }
+
 }

@@ -12,7 +12,8 @@ import java.util.List;
 
 @RestController
 public class StationController {
-    private StationService stationService;
+
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
@@ -29,9 +30,16 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
+    @GetMapping("/stations/{id}")
+    public ResponseEntity<StationResponse> getStation(@PathVariable Long id) {
+        StationResponse response = stationService.findStation(id);
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/stations/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
+
 }
