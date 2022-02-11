@@ -33,7 +33,7 @@ public class FavoritePathService {
         Station startStation = stationRepository.findOneById(favoritePathRequest.getStartStationId());
         Station endStation = stationRepository.findOneById(favoritePathRequest.getEndStationId());
         Member member = memberRepository.findOneById(loginMember.getId());
-        FavoritePath favoritePath = new FavoritePath(startStation, endStation, member);
+        FavoritePath favoritePath = new FavoritePath(startStation, endStation, member.getId());
         FavoritePath saveFavoritePath = favoritePathRepository.save(favoritePath);
         return saveFavoritePath.getId();
     }
