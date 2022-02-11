@@ -1,6 +1,5 @@
 package nextstep.subway.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.application.TokenAuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationInterceptor;
@@ -29,7 +28,6 @@ class TokenAuthenticationInterceptorTest {
 
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
-    private ObjectMapper objectMapper;
     private AuthenticationConverter converter;
     private AuthenticationInterceptor interceptor;
 
@@ -37,9 +35,8 @@ class TokenAuthenticationInterceptorTest {
     void setUp() {
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        objectMapper = new ObjectMapper();
         converter = mock(TokenAuthenticationConverter.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, converter, jwtTokenProvider, objectMapper);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, converter, jwtTokenProvider, FIXTURE_OBJECT_MAPPER);
     }
 
     @Test
@@ -63,7 +60,7 @@ class TokenAuthenticationInterceptorTest {
         assertAll(
                 () -> assertThat(status).isEqualTo(HttpStatus.SC_OK),
                 () -> assertThat(contentType).isEqualTo(MediaType.APPLICATION_JSON_VALUE),
-                () -> assertThat(content).isEqualTo(objectMapper.writeValueAsString(new TokenResponse(JWT_TOKEN)))
+                () -> assertThat(content).isEqualTo(FIXTURE_OBJECT_MAPPER.writeValueAsString(new TokenResponse(JWT_TOKEN)))
         );
     }
 

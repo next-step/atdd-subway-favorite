@@ -18,7 +18,7 @@ class TokenAuthenticationConverterTest {
     @Test
     void converter() throws IOException {
         //given
-        AuthenticationConverter converter = new TokenAuthenticationConverter();
+        AuthenticationConverter converter = new TokenAuthenticationConverter(FIXTURE_OBJECT_MAPPER);
 
         //when
         AuthenticationToken token = converter.convert(createMockRequest());
