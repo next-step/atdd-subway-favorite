@@ -8,10 +8,14 @@ import nextstep.member.application.CustomUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.unit.AuthenticationFixture.EMAIL;
-import static nextstep.subway.unit.AuthenticationFixture.PASSWORD;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static nextstep.subway.unit.AuthenticationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AuthenticationInterceptorTest {
 
@@ -29,11 +33,13 @@ class AuthenticationInterceptorTest {
         //given
         AuthenticationInterceptor interceptor = new AuthenticationInterceptor(userDetailsService, converter) {
             @Override
-            public void afterAuthentication(Authentication authentication) {
+            public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
             }
+
         };
         AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(FIXTURE_LOGIN_MEMBER);
 
         //when
         Authentication authentication = interceptor.authenticate(token);

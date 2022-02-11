@@ -15,10 +15,11 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
-import static nextstep.subway.unit.AuthenticationFixture.EMAIL;
-import static nextstep.subway.unit.AuthenticationFixture.PASSWORD;
+import static nextstep.subway.unit.AuthenticationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DisplayName("세션 기반 로그인")
 class SessionAuthenticationInterceptor2Test {
@@ -40,12 +41,15 @@ class SessionAuthenticationInterceptor2Test {
         //given
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(FIXTURE_LOGIN_MEMBER);
+        when(converter.convert(any())).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
 
         //when
         interceptor.preHandle(request, response, new Object());
 
-        //then
         Object session = Objects.requireNonNull(request.getSession()).getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+
+        //then
         assertThat(session).isNotNull();
         assertThat(response.getStatus()).isEqualTo(HttpStatus.SC_OK);
 
