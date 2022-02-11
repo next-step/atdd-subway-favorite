@@ -22,8 +22,8 @@ import java.util.Map;
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
 
-    private static final String SESSION_LOGIN_URL = "/login/session/new";
-    private static final String TOKEN_LOGIN_URL = "/login/token/new";
+    private static final String SESSION_LOGIN_URL = "/login/session";
+    private static final String TOKEN_LOGIN_URL = "/login/token";
     private final CustomUserDetailsService userDetailsService;
     private final Map<String, AuthenticationConverter> converters;
     private final JwtTokenProvider jwtTokenProvider;

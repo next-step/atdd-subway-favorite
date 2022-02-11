@@ -2,7 +2,6 @@ package nextstep.auth.authorization;
 
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

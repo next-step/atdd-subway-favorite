@@ -27,9 +27,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보를_삭제_한다(response);
     }
 
-    @DisplayName("나의 정보를 관리한다.")
     @Test
-    void manageMyInfo() {
+    void 나의_정보를_관리한다() {
         회원가입을_한다();
         String accessToken = 로그인_되어_있음();
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(accessToken);
