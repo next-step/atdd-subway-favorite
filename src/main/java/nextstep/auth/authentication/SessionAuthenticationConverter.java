@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
-public class SessionAuthenticationConverter implements AuthenticationConverter{
+public class SessionAuthenticationConverter implements AuthenticationConverter {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 

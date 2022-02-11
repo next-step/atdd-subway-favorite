@@ -6,7 +6,7 @@ import nextstep.auth.token.TokenRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class TokenAuthenticationConverter implements AuthenticationConverter{
+public class TokenAuthenticationConverter implements AuthenticationConverter {
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
         TokenRequest tokenRequest = getTokenRequest(request);
