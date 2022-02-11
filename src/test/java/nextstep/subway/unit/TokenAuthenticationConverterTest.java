@@ -3,7 +3,7 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.SessionAuthenticationConverter;
+import nextstep.auth.authentication.TokenAuthenticationConverter;
 import nextstep.auth.token.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +16,13 @@ import static nextstep.subway.unit.AuthenticationFixture.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class SessionAuthenticationConverterTest {
+class TokenAuthenticationConverterTest {
 
-    @DisplayName("세션 기반 토큰 변환")
+    @DisplayName("토큰 기반 토큰 변환")
     @Test
     void converter() throws IOException {
         //given
-        AuthenticationConverter converter = new SessionAuthenticationConverter();
+        AuthenticationConverter converter = new TokenAuthenticationConverter();
 
         //when
         AuthenticationToken token = converter.convert(createMockRequest());
@@ -35,10 +35,10 @@ class SessionAuthenticationConverterTest {
 
     }
 
-    private MockHttpServletRequest createMockRequest() {
+    private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setParameter("username", EMAIL);
-        request.setParameter("password", PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
 }
