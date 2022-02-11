@@ -8,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Embeddable
 public class Sections {
@@ -242,5 +240,28 @@ public class Sections {
                 .filter(section -> section.isSameUpStation(id))
                 .findFirst()
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public Set<Station> distinctDuplication() {
+        if (sections.isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<Station> result = new LinkedHashSet<>();
+        Section firstSection = findFirstSection();
+        result.add(firstSection.getUpStation());
+        result.add(firstSection.getDownStation());
+
+        while (true) {
+            try {
+                Section section = findSectionByUpStation(firstSection.getDownStation().getId());
+                result.add(firstSection.getUpStation());
+                result.add(firstSection.getDownStation());
+                firstSection = section;
+            } catch (Exception e) {
+                result.add(firstSection.getDownStation());
+                break;
+            }
+        }
+        return result;
     }
 }

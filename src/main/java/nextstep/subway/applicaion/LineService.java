@@ -24,7 +24,7 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         lineRepository.findByName(request.getName())
-                .ifPresent(l -> {
+                .ifPresent(line -> {
                     throw new DuplicationException();
                 });
         Line line = request.toEntity();
@@ -44,13 +44,13 @@ public class LineService {
     }
 
     public LineResponse findById(Long id) {
-        Line line = lineRepository.findById(id).orElseThrow(() -> new RuntimeException("없는 노선"));
+        Line line = lineRepository.findById(id).orElseThrow(NotFoundException::new);
         return LineResponse.of(line);
     }
 
     @Transactional
     public void update(Long id, LineRequest request) {
-        Line line = lineRepository.findById(id).orElseThrow(() -> new RuntimeException("없는 노선"));
+        Line line = lineRepository.findById(id).orElseThrow(NotFoundException::new);
         line.update(request.toEntity());
     }
 
