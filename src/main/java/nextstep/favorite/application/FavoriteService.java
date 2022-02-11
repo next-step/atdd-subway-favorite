@@ -42,7 +42,7 @@ public class FavoriteService {
                 stationService.findById(favorite.getSource()),
                 stationService.findById(favorite.getTarget())))
             .collect(Collectors.toList());
-        
+
         return favoriteResponses;
     }
 

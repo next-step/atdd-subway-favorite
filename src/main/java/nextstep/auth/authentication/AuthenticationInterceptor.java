@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.context.Authentication;
 import nextstep.exception.AuthenticationException;
 import nextstep.member.application.UserDetailService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
@@ -34,7 +33,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
+        UserDetails loginMember = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(loginMember, token);
 
         return new Authentication(loginMember);
@@ -45,7 +44,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         HttpServletResponse response,
         Authentication authentication) throws IOException;
 
-    protected void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    protected void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }
