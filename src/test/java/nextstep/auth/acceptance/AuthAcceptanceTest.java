@@ -1,11 +1,15 @@
-package nextstep.subway.acceptance;
+package nextstep.auth.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.common.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.acceptance.model.MemberEntitiesHelper.*;
+import static nextstep.auth.acceptance.model.MemberEntitiesHelper.내_회원_정보_조회_요청;
+import static nextstep.auth.acceptance.model.MemberEntitiesHelper.로그인_되어_있음;
+import static nextstep.auth.acceptance.model.MemberEntitiesHelper.회원_정보_조회됨;
+import static nextstep.auth.acceptance.model.MemberEntitiesHelper.회원가입을_한다;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 

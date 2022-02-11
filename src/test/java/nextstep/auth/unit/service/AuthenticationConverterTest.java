@@ -1,4 +1,4 @@
-package nextstep.subway.unit.service;
+package nextstep.auth.unit.service;
 
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
@@ -11,9 +11,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.createMockSessionRequest;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.createMockTokenRequest;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.PASSWORD;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.createMockSessionRequest;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.createMockTokenRequest;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

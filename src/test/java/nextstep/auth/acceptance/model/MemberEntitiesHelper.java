@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance.model;
+package nextstep.auth.acceptance.model;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;

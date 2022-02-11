@@ -1,4 +1,4 @@
-package nextstep.subway.unit.service;
+package nextstep.auth.unit.service;
 
 import nextstep.auth.authentication.UserDetails;
 import nextstep.member.application.CustomUserDetailsService;
@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.*;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.EMAIL;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.getMemberRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

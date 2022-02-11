@@ -1,4 +1,4 @@
-package nextstep.subway.unit.service;
+package nextstep.auth.unit.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
@@ -25,13 +25,13 @@ import javax.servlet.http.HttpSession;
 
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.EMAIL;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.createMockSessionRequest;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.createMockTokenRequest;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.getAuthenticationToken;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.getUserDetails;
-import static nextstep.subway.unit.AuthenticationUnitTestHelper.getPayload;
-import static nextstep.subway.unit.TokenGenerator.getToken;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.EMAIL;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.createMockSessionRequest;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.createMockTokenRequest;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.getAuthenticationToken;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.getUserDetails;
+import static nextstep.auth.unit.model.AuthenticationUnitTestHelper.getPayload;
+import static nextstep.auth.unit.TokenGenerator.getToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

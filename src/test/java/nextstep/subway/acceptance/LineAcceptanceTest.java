@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.common.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,11 +10,23 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.model.LineEntitiesHelper.*;
-import static nextstep.subway.acceptance.model.StationEntitiesHelper.*;
+import static nextstep.subway.acceptance.model.LineEntitiesHelper.newLine;
+import static nextstep.subway.acceptance.model.LineEntitiesHelper.노선_단건_조회_요청;
+import static nextstep.subway.acceptance.model.LineEntitiesHelper.노선_목록_조회_요청;
+import static nextstep.subway.acceptance.model.LineEntitiesHelper.노선_삭제_요청;
+import static nextstep.subway.acceptance.model.LineEntitiesHelper.노선_생성_요청;
+import static nextstep.subway.acceptance.model.LineEntitiesHelper.노선_수정_요청;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.강남역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.역삼역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.정자역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.지하철역_생성_요청후_아이디_조회;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.판교역;
 import static org.apache.http.HttpHeaders.LOCATION;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {

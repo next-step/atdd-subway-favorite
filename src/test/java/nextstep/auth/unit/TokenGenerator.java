@@ -1,4 +1,4 @@
-package nextstep.subway.unit;
+package nextstep.auth.unit;
 
 public final class TokenGenerator {
 
