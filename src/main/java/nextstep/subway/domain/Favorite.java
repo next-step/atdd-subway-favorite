@@ -29,6 +29,10 @@ public class Favorite {
         return new Favorite(memberId, source, target);
     }
 
+    public Long id() {
+        return id;
+    }
+
     public Station source() {
         return source;
     }

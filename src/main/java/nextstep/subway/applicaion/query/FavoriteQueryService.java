@@ -33,4 +33,9 @@ public class FavoriteQueryService {
                 .orElseThrow(() -> new FavoriteNotFoundException(favoriteId));
     }
 
+    public Favorite findFavorite(long memberId, long favoriteId) {
+        return favoriteRepository.findByMemberIdAndId(memberId, favoriteId)
+                .orElseThrow(() -> new FavoriteNotFoundException(favoriteId));
+    }
+
 }
