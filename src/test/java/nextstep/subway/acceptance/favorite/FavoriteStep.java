@@ -55,4 +55,16 @@ public class FavoriteStep {
                            .getList("target", Long.class)
                            .get(0)).isEqualTo(target);
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, long id) {
+        return RestAssured.given().log().all()
+                          .auth().oauth2(accessToken)
+                          .when().delete("/favorites/" + id)
+                          .then().log().all()
+                          .extract();
+    }
+
+    public static void 즐겨찾기_삭제_요청_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }

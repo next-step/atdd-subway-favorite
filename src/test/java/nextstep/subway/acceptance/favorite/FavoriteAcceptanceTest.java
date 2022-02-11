@@ -3,15 +3,10 @@ package nextstep.subway.acceptance.favorite;
 import static nextstep.subway.acceptance.favorite.FavoriteStep.*;
 import static nextstep.subway.acceptance.member.MemberSteps.*;
 import static nextstep.subway.acceptance.station.StationSteps.*;
-import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.subway.acceptance.AcceptanceTest;
 import nextstep.subway.acceptance.line.LineSteps;
 
@@ -54,6 +49,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         );
 
         // 삭제
-
+        즐겨찾기_삭제_요청_성공(즐겨찾기_삭제_요청(accessToken, 즐겨찾기));
     }
 }
