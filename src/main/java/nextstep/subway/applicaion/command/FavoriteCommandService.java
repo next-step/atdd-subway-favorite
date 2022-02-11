@@ -40,6 +40,11 @@ public class FavoriteCommandService {
         favoriteRepository.delete(favorite);
     }
 
+    public void deleteFavorite2(long memberId, long favoriteId) {
+        Favorite favorite = favoriteQueryService.findFavorite(memberId, favoriteId);
+        favoriteRepository.delete(favorite);
+    }
+
     private Station findStationById(long id) {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new StationNotFoundException(id));

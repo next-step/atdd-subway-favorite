@@ -74,6 +74,22 @@ class FavoriteCommandServiceTest {
                 .isInstanceOf(StationNotFoundException.class);
     }
 
+    @DisplayName("회원의 id를 이용하여 즐겨찾기를 제거")
+    @Test
+    void deleteFavorite2() {
+        // given
+        long memberId = 1L;
+        Favorite 즐겨찾기 = Favorite.of(memberId, 강남역, 판교역);
+        favoriteRepository.save(즐겨찾기);
+
+        // when
+        service.deleteFavorite2(memberId, 즐겨찾기.id());
+
+        // then
+        List<Favorite> all = favoriteRepository.findAll();
+        assertThat(all).isEmpty();
+    }
+
     @DisplayName("없는 역을 즐겨찾기 삭 하면 실패")
     @Test
     void deleteFavorite_fail() {
