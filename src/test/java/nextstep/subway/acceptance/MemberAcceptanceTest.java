@@ -68,6 +68,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        val 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        val 회원_정보_조회_응답 = 회원_정보_조회_요청(회원_생성_응답);
+        회원_정보_조회됨(회원_정보_조회_응답, EMAIL, AGE);
+
+        val 수정_응답 = 회원_정보_수정_요청(회원_생성_응답, "e@mail.com", PASSWORD, AGE);
+        assertThat(수정_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        val 삭제_응답 = 회원_삭제_요청(회원_생성_응답);
+        assertThat(삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("나의 정보를 관리한다.")
