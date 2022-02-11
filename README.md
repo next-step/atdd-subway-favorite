@@ -60,8 +60,8 @@ npm run dev
 
 ### 2단계 - 인증 로직 리팩터링
 - [ ] 인증 로직 리팩터링
-  - [ ] HandleInterceptor를 구현하는 구현체의 중복 제거 (추상화)
+  - [x] HandleInterceptor를 구현하는 구현체의 중복 제거 (추상화)
     - [x] AuthenticationInterceptor
-    - [ ] SecurityContextPersistenceInterceptor
+    - [x] SecurityContextPersistenceInterceptor
   - [ ] auth <-> member 양방향 의존성 제거
 - [ ] 내 정보 수정 / 삭제 기능 구현

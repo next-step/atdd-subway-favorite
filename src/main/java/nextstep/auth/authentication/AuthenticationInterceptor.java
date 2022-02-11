@@ -7,6 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -27,7 +28,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication);
+    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
