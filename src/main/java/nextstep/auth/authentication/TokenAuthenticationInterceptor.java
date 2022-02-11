@@ -16,9 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
-
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
