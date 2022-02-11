@@ -1,6 +1,8 @@
 package nextstep.subway.unit;
 
+import nextstep.auth.authorization.SecurityContextHolderStrategy;
 import nextstep.auth.authorization.SecurityContextInterceptor;
+import nextstep.auth.authorization.SessionSecurityContextHolderStrategy;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
@@ -16,13 +18,15 @@ import static nextstep.subway.unit.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SessionSecurityContextPersistenceInterceptorTest {
+    SecurityContextHolderStrategy securityContextHolderStrategy;
     SecurityContextInterceptor interceptor;
     MockHttpServletRequest request;
     MockHttpServletResponse response;
 
     @BeforeEach
     void setUp() throws IOException {
-        interceptor = new SessionSecurityContextPersistenceInterceptor();
+        securityContextHolderStrategy = new SessionSecurityContextHolderStrategy();
+        interceptor = new SessionSecurityContextPersistenceInterceptor(securityContextHolderStrategy);
         request = createSessionMockRequest();
         response = createMockResponse();
     }
