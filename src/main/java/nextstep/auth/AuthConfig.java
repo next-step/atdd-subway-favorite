@@ -1,7 +1,9 @@
 package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.SessionAuthenticationConverter;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
+import nextstep.auth.authentication.TokenAuthenticationConverter;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
@@ -28,8 +30,10 @@ public class AuthConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login/session");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
+        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService,
+                new SessionAuthenticationConverter())).addPathPatterns("/login/session");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService,
+                new TokenAuthenticationConverter(), jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
     }

@@ -21,19 +21,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@DisplayName("세션 기반 로그인")
-class SessionAuthenticationInterceptor2Test {
+@DisplayName("세션 기반 인증")
+class SessionAuthenticationInterceptorTest {
 
     private CustomUserDetailsService userDetailsService;
     private AuthenticationConverter converter;
-    private SessionAuthenticationInterceptor2 interceptor;
+    private SessionAuthenticationInterceptor interceptor;
 
 
     @BeforeEach
     void setUp() {
         userDetailsService = mock(CustomUserDetailsService.class);
         converter = mock(SessionAuthenticationConverter.class);
-        interceptor = new SessionAuthenticationInterceptor2(userDetailsService, converter);
+        interceptor = new SessionAuthenticationInterceptor(userDetailsService, converter);
     }
 
     @Test
