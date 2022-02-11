@@ -66,3 +66,11 @@ npm run dev
   - [x] auth <-> member 양방향 의존성 제거
 - [생략] 내 정보 수정 / 삭제 기능 구현
   - 1단계에서 구현
+
+### 2단계 피드백
+- [ ] new ObjectMapper 제거
+- AuthenticationInterceptorTest 불필요
+  - `따로 SessionAuthenticationInterceptorTest와 TokenAuthenticationInterceptorTest를 잘 만들어주셔서 요 테스트는 꼭 없어도 될 것 같습니다 :)`
+  - public으로 열려있으니 무조건 테스트 해야겠다는 생각만 들어서 테스트를 작성하다 보니 중복 테스트가 생겨서 상위 클래스의 메소드를 테스트 했는데
+  - 피드백을 받고 생각해보니 XXXAuthenticationInterceptorTest 에서 preHandle을 통해 간접 테스트가 가능하니 꼭 있어야할 테스트는 아닌 것 같다.
+  - 이왕 작성해뒀으니 굳이 삭제 하지 않아도 될 것 같다.
