@@ -18,10 +18,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -29,7 +31,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         TokenResponse tokenResponse = new TokenResponse(jwtTokenProvider.createToken(payload));
 
@@ -42,7 +43,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
+        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
