@@ -73,10 +73,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // 수정
         final String CHANGE_EMAIL = "new" + EMAIL;
         final String CHANGE_PASSWORD = "new" + PASSWORD;
-        내_회원_정보_수정_됨(accessToken, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
+        내_회원_정보_수정_성공(
+            내_회원_정보_수정_요청(accessToken, CHANGE_EMAIL, CHANGE_PASSWORD, AGE)
+        );
 
         // 탈퇴
-        회원_탈퇴_됨(accessToken);
+        회원_탈퇴_성공(
+            회원_탈퇴_요청(accessToken)
+        );
     }
 
     /**
@@ -97,12 +101,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
         final String CHANGE_EMAIL = "new" + EMAIL;
         final String CHANGE_PASSWORD = "new" + PASSWORD;
         권한_없음(
-            내_회원_정보_수정_됨("", CHANGE_EMAIL, CHANGE_PASSWORD, AGE)
+            내_회원_정보_수정_요청("", CHANGE_EMAIL, CHANGE_PASSWORD, AGE)
         );
 
         // 탈퇴
         권한_없음(
-            회원_탈퇴_됨("")
+            회원_탈퇴_요청("")
         );
     }
 }
