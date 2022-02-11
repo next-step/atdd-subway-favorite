@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance.member;
 
+import static nextstep.subway.acceptance.auth.AuthStep.*;
 import static nextstep.subway.acceptance.member.MemberSteps.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -51,20 +52,57 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
     /**
      *
+     * Feature: 나의 회원 정보를 관리한다.
+     *
+     *   Scenario: 나의 회원 정보를 관리
+     *     Given 회원이 생성 되어있고
+     *     And   로그인 되어 있다.
+     *
+     *     When 나의 회원 정보 수정 요청
+     *     Then 나의 회원 정보 수정됨
+     *     When 나의 회원 탈퇴 요청
+     *     Then 나의 회원 탈퇴됨
      *
      * */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-        // 생성, 로그인
-        String token = 회원_생성_하고_로그인_됨(EMAIL, PASSWORD, AGE);
+        // Given
+        String accessToken = 회원_생성_하고_로그인_됨(EMAIL, PASSWORD, AGE);
 
         // 수정
         final String CHANGE_EMAIL = "new" + EMAIL;
         final String CHANGE_PASSWORD = "new" + PASSWORD;
-        내_회원_정보_수정_됨(token, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
+        내_회원_정보_수정_됨(accessToken, CHANGE_EMAIL, CHANGE_PASSWORD, AGE);
 
         // 탈퇴
-        회원_탈퇴_됨(token);
+        회원_탈퇴_됨(accessToken);
+    }
+
+    /**
+     *
+     * Feature: 나의 회원 정보 관리를 실패한다.
+     *
+     *   Scenario: 로그인 하지 않은채로 나의 회원 정보를 관리
+     *     When 회원 정보 수정 요청
+     *     When 회원 정보 수정 실패
+     *     When 회원 탈퇴 요청
+     *     Then 회원 탈퇴 실패
+     *
+     * */
+    @DisplayName("나의 정보를 관리한다. - 권한이 없을 경우")
+    @Test
+    void manageMyInfoFailCase() {
+        // 수정
+        final String CHANGE_EMAIL = "new" + EMAIL;
+        final String CHANGE_PASSWORD = "new" + PASSWORD;
+        권한_없음(
+            내_회원_정보_수정_됨("", CHANGE_EMAIL, CHANGE_PASSWORD, AGE)
+        );
+
+        // 탈퇴
+        권한_없음(
+            회원_탈퇴_됨("")
+        );
     }
 }
