@@ -1,6 +1,7 @@
 package nextstep.common.domain.exception;
 
 public enum ErrorMessage {
+    NOT_LOGGED_IN_EXCEPTION("로그인 상태가 아닙니다."),
     NOT_LAST_STATION_DELETED("노선에 포함된 역중 마지막 역만 삭제할 수 있습니다."),
     EXISTS_STATIONS("상행역 또는 하행역이 모두 노선에 이미 존재 합니다."),
     NOT_EXISTS_STATIONS("상행역 또는 하행역이 노선에 존재하지 않습니다."),
