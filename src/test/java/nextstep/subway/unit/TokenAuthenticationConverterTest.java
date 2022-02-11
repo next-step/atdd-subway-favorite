@@ -17,7 +17,7 @@ class TokenAuthenticationConverterTest {
     @Test
     void convert() throws IOException {
         // given
-        MockHttpServletRequest request = createMockRequest();
+        MockHttpServletRequest request = createTokenMockRequest();
 
         // when
         AuthenticationToken token = converter.convert(request);
