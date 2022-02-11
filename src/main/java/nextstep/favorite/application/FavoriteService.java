@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.repository.FavoriteRepository;
 import nextstep.member.application.MemberService;
@@ -22,7 +23,7 @@ public class FavoriteService {
     private final MemberService memberService;
     private final StationService stationService;
 
-    public Long addFavorite(long memberId, FavoriteRequest request) {
+    public FavoriteResponse addFavorite(long memberId, FavoriteRequest request) {
         Member member = memberService.findById(memberId);
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
@@ -32,7 +33,8 @@ public class FavoriteService {
             .sourceId(source.getId())
             .targetId(target.getId())
             .build();
-        return favoriteRepository.save(favorite).getId();
+        favoriteRepository.save(favorite);
+        return FavoriteResponse.of(favorite);
     }
 
     @Transactional(readOnly = true)
