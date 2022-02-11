@@ -20,7 +20,7 @@ class FavoritePathTest {
         member = new Member("E", "P", 20);
     }
 
-    @DisplayName("FavoritePath 유효성 검사 - case 01")
+    @DisplayName("FavoritePath 유효성 검사 - 시작역 데이터가 null 인 경우")
     @Test
     void validCheck_case1() {
         //given
@@ -30,7 +30,7 @@ class FavoritePathTest {
         assertThrows(IllegalArgumentException.class, () -> new FavoritePath(startStation, endStation, member));
 
     }
-    @DisplayName("FavoritePath 유효성 검사 - case 02")
+    @DisplayName("FavoritePath 유효성 검사 - 종착역 데이터가 null 인 경우")
     @Test
     void validCheck_case2() {
         //given
@@ -39,7 +39,8 @@ class FavoritePathTest {
         //when
         assertThrows(IllegalArgumentException.class, () -> new FavoritePath(startStation, endStation, member));
     }
-    @DisplayName("FavoritePath 유효성 검사 - case 03")
+    //Todo: 다시 생각해보니 member 는 아에 null 이면 이전에 걸릴거 같기는 한데... 이런 경우에도 테스트를 해야할 까요?
+    @DisplayName("FavoritePath 유효성 검사 - 즐겨찾기 신청 멤버의 데이터가 null 인 경우")
     @Test
     void validCheck_case3() {
         //given
