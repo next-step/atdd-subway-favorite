@@ -65,17 +65,7 @@ class FavoritePathServiceTest {
         //then
         assertThat(favoriteId).isEqualTo(favoritePath.getId());
     }
-//
-//    @DisplayName("즐겨찾기 삭제 - 없는 favoriteId")
-//    @Test
-//    void deleteFavorite() {
-//        //given
-//        Long favoriteId = 1L;
-//        when(favoritePathRepository.findById(favoriteId)).thenReturn(Optional.empty());
-//
-//        //when then
-//        assertThrows(IllegalArgumentException.class, () -> favoritePathService.deleteFavorite(favoriteId));
-//    }
+
 
     @DisplayName("즐겨찾기 삭제 - 삭제할 수 없는 즐겨찾기 일 경우")
     @Test
