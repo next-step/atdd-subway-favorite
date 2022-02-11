@@ -1,15 +1,10 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AuthSteps.인가_되지_않음;
@@ -18,7 +13,6 @@ import static nextstep.subway.acceptance.LineSteps.*;
 import static nextstep.subway.acceptance.LineSteps.노선_생성_파라미터;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private String accessToken;

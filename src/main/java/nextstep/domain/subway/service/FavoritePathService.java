@@ -8,13 +8,11 @@ import nextstep.domain.subway.domain.FavoritePathRepository;
 import nextstep.domain.subway.domain.Station;
 import nextstep.domain.subway.domain.StationRepository;
 import nextstep.domain.subway.dto.FavoritePathRequest;
-import nextstep.domain.subway.dto.PathResponse;
 import nextstep.domain.subway.dto.response.FavoritePathResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
