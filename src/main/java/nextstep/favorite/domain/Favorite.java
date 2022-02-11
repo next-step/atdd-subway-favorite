@@ -15,7 +15,8 @@ import nextstep.common.domain.model.BaseEntity;
 public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    @Column(name = "FAVORITE_ID", nullable = false)
+    private Long id;
 
     @Column(name = "FAVORITE_MEMBER", nullable = false)
     private Long memberId;
