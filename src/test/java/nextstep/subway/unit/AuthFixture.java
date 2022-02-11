@@ -2,6 +2,7 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authorization.SecurityContextHolderStrategy;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.TokenRequest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -37,5 +38,9 @@ public class AuthFixture {
     public static Authentication createAuthentication() {
         AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
         return new Authentication(token);
+    }
+
+    public static SecurityContextHolderStrategy createSecurityContextHolderStrategy() {
+        return new FakeSecurityContextHolderStrategy();
     }
 }
