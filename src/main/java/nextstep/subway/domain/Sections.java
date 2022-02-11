@@ -23,6 +23,7 @@ public class Sections {
 
     private static final int FIRST = 0;
     private static final int SECTION_MINIMUM_SIZE = 1;
+    private static final int IS_NOT_REQUIRED_RE_ORDER_COUNT = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -242,5 +243,44 @@ public class Sections {
         return sections.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
+    }
+
+    public List<Station> createStations() {
+        return isRequiredReOrdering(this)
+                ? createStations(createReOrderedSections(this))
+                : createStations(sections);
+    }
+
+    private static boolean isRequiredReOrdering(final Sections sections) {
+        return sections.getSections().size() > IS_NOT_REQUIRED_RE_ORDER_COUNT;
+    }
+
+    private static List<Section> createReOrderedSections(final Sections sections) {
+        List<Section> sectionStorage = new ArrayList<>();
+        Section start = sections.findSectionHasUpStationEndPoint();
+        sectionStorage.add(start);
+        reOrderSections(sections, start, sectionStorage);
+        return sectionStorage;
+    }
+
+    private static void reOrderSections(
+            final Sections sections,
+            final Section start,
+            final List<Section> sectionStorage
+    ) {
+        Section findSection = sections.findSectionByDownStation(start.getDownStation());
+        sectionStorage.add(findSection);
+        if(sections.getDownStationEndPoint().equals(findSection.getDownStation())) {
+            return;
+        }
+
+        reOrderSections(sections, findSection, sectionStorage);
+    }
+
+    private static List<Station> createStations(final List<Section> sections) {
+        return Stream.concat(
+                sections.stream().map(Section::getUpStation),
+                sections.stream().map(Section::getDownStation)
+        ).distinct().collect(Collectors.toList());
     }
 }
