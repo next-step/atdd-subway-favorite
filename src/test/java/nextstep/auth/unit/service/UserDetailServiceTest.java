@@ -3,6 +3,7 @@ package nextstep.auth.unit.service;
 import nextstep.auth.authentication.UserDetails;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,8 @@ class UserDetailServiceTest {
     void loadUserByUsername() {
         memberService.createMember(getMemberRequest());
         UserDetails userDetails = userDetailsService.loadUserByUsername(EMAIL);
-        assertThat(userDetails.getEmail()).isEqualTo(EMAIL);
+        assertThat(userDetails).isInstanceOf(LoginMember.class);
+        LoginMember loginMember = (LoginMember) userDetails;
+        assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
     }
 }
