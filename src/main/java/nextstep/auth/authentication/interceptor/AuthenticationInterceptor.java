@@ -1,11 +1,12 @@
 package nextstep.auth.authentication.interceptor;
 
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.exception.AuthenticationException;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
 
     protected AuthenticationInterceptor(final CustomUserDetailsService userDetailsService, final AuthenticationConverter authenticationConverter) {
@@ -33,7 +34,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
@@ -41,7 +42,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
-    private void checkAuthentication(final LoginMember userDetails, final AuthenticationToken token) {
+    private void checkAuthentication(final UserDetails userDetails, final AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }

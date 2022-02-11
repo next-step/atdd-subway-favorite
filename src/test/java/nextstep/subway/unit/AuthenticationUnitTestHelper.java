@@ -3,10 +3,10 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
@@ -19,6 +19,7 @@ public final class AuthenticationUnitTestHelper {
     public static final String PASSWORD = "password";
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
+    private static final int AGE = 20;
 
     public static MockHttpServletRequest createMockTokenRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -44,12 +45,17 @@ public final class AuthenticationUnitTestHelper {
         return new LoginMember(1L, EMAIL, PASSWORD, 20);
     }
 
-    public static String getPayload(LoginMember userDetails) throws IOException {
-        return new ObjectMapper().writeValueAsString(userDetails);
+    public static Member getMember() {
+        Member member = new Member(EMAIL, PASSWORD, AGE);
+        ReflectionTestUtils.setField(member, "id", 1L);
+        return member;
     }
 
-    public static String getAccessToken(MockHttpServletResponse response) throws IOException {
-        TokenResponse tokenResponse = new ObjectMapper().readValue(response.getContentAsString(), TokenResponse.class);
-        return tokenResponse.getAccessToken();
+    public static MemberRequest getMemberRequest() {
+        return new MemberRequest(EMAIL, PASSWORD, AGE);
+    }
+
+    public static String getPayload(LoginMember userDetails) throws IOException {
+        return new ObjectMapper().writeValueAsString(userDetails);
     }
 }
