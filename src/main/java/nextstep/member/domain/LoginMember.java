@@ -1,21 +1,20 @@
 package nextstep.member.domain;
 
+import nextstep.auth.manager.UserMember;
 
-public class LoginMember {
+public class LoginMember implements UserMember {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
 
     public static LoginMember of(Member member) {
-        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+        return new LoginMember(member.getId(), member.getEmail(), member.getPassword());
     }
 
-    public LoginMember(Long id, String email, String password, Integer age) {
+    public LoginMember(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.age = age;
     }
 
     public boolean checkPassword(String password) {
@@ -28,10 +27,6 @@ public class LoginMember {
 
     public String getEmail() {
         return email;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 
     public String getPassword() {
