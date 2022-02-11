@@ -53,3 +53,7 @@ npm run dev
 - [x] MemberAcceptanceTest#manageMyInfo 테스트 통과하기
   - [x] @AuthenticationPrincipal 활용하기
 
+### 1단계 - 피드백
+- [ ] ObjectMapper 를 static으로 만들어 쓰지 말고 필요한 객체에게 주입해서 쓸 수 있도록 변경
+  - static 은 전역으로 관리되기 외부에서 접근이 가능하고
+  - 상태가 변화될 경우 상태에 대한 추론이 어렵다
