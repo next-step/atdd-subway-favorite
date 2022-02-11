@@ -1,6 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.authentication.*;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -23,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class TokenAuthenticationInterceptorTest {
-    CustomUserDetailsService customUserDetailsService;
+    UserDetailsService userDetailsService;
     JwtTokenProvider jwtTokenProvider;
     AuthenticationConverter converter;
     AuthenticationInterceptor interceptor;
@@ -32,11 +33,11 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
+        userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
         converter = new TokenAuthenticationConverter();
         interceptor = new TokenAuthenticationInterceptor(
-                customUserDetailsService, jwtTokenProvider, new ObjectMapper(), converter);
+                userDetailsService, jwtTokenProvider, new ObjectMapper(), converter);
         request = createMockRequest();
         response = createMockResponse();
     }
@@ -45,7 +46,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() {
         // given
         AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
-        given(customUserDetailsService.loadUserByUsername(EMAIL))
+        given(userDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
@@ -73,7 +74,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws Exception {
         // given
-        given(customUserDetailsService.loadUserByUsername(EMAIL))
+        given(userDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         given(jwtTokenProvider.createToken(anyString())).willReturn(JWT_TOKEN);
 
