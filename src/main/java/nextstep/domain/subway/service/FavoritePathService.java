@@ -46,8 +46,8 @@ public class FavoritePathService {
     }
 
     @Transactional
-    public void deleteFavorite(Long favoriteId) {
-        FavoritePath favoritePath = favoritePathRepository.findById(favoriteId)
+    public void deleteFavorite(Long favoriteId, Long memberId) {
+        FavoritePath favoritePath = favoritePathRepository.findByIdAndMemberId(favoriteId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("삭제할 수 없는 내용 입니다."));
         favoritePathRepository.delete(favoritePath);
     }
