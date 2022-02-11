@@ -1,6 +1,6 @@
-package nextstep.subway.error;
+package nextstep.error;
 
-import nextstep.subway.exception.*;
+import nextstep.exception.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

@@ -1,9 +1,9 @@
 package nextstep.subway.domain;
 
 import nextstep.subway.applicaion.dto.PathResponse;
-import nextstep.subway.exception.NotConnectedException;
-import nextstep.subway.exception.NotFoundStationException;
-import nextstep.subway.exception.SameStationException;
+import nextstep.exception.NotConnectedException;
+import nextstep.exception.NotFoundStationException;
+import nextstep.exception.SameStationException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;

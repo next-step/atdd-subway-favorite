@@ -1,6 +1,6 @@
-package nextstep.subway.exception;
+package nextstep.exception;
 
-import nextstep.subway.error.ErrorCode;
+import nextstep.error.ErrorCode;
 
 public class NotFoundSectionException extends NextStepException {
 

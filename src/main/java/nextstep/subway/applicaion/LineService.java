@@ -8,8 +8,8 @@ import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
-import nextstep.subway.exception.DuplicateException;
-import nextstep.subway.exception.NotFoundLineException;
+import nextstep.exception.DuplicateException;
+import nextstep.exception.NotFoundLineException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

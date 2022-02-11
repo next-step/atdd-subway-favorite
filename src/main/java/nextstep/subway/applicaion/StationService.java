@@ -4,8 +4,8 @@ import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
-import nextstep.subway.exception.DuplicateException;
-import nextstep.subway.exception.NotFoundStationException;
+import nextstep.exception.DuplicateException;
+import nextstep.exception.NotFoundStationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

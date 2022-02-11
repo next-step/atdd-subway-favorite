@@ -1,7 +1,7 @@
 package nextstep.subway.domain;
 
-import nextstep.subway.exception.NotFoundStationException;
-import nextstep.subway.exception.ValidationException;
+import nextstep.exception.NotFoundStationException;
+import nextstep.exception.ValidationException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -13,10 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static nextstep.subway.error.ErrorCode.ALREADY_EXISTS_STATIONS_ERROR;
-import static nextstep.subway.error.ErrorCode.FIRST_SECTION_CREATE_ERROR;
-import static nextstep.subway.error.ErrorCode.NOT_EXISTS_ANY_STATIONS_ERROR;
-import static nextstep.subway.error.ErrorCode.SECTION_MINIMUM_SIZE_ERROR;
+import static nextstep.error.ErrorCode.ALREADY_EXISTS_STATIONS_ERROR;
+import static nextstep.error.ErrorCode.FIRST_SECTION_CREATE_ERROR;
+import static nextstep.error.ErrorCode.NOT_EXISTS_ANY_STATIONS_ERROR;
+import static nextstep.error.ErrorCode.SECTION_MINIMUM_SIZE_ERROR;
 
 @Embeddable
 public class Sections {
