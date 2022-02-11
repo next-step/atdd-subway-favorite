@@ -65,7 +65,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
      * When 회원 삭제 요청
      * Then 회원 삭제됨
      */
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("나의 정보를 생성, 조회, 수정, 삭제한다.")
     @Test
     void manageMyInfo() {
         // when
