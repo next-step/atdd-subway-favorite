@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -72,5 +73,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String token = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        val response = 회원_정보_수정_요청(token, "e@mail.com", PASSWORD, AGE);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
