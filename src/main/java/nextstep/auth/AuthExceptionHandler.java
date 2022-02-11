@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class AuthExceptionHandler {
     @ExceptionHandler(value = {AuthenticationException.class})
-    public ResponseEntity<?> exceptionHandlingAuthenticationException(AuthenticationException ex) {
+    public ResponseEntity<Void> exceptionHandlingAuthenticationException(AuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .build();
     }
