@@ -21,7 +21,6 @@ import nextstep.subway.applicaion.dto.SectionRequest;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.utils.RestAssuredCRUD;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -60,39 +59,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *                  2                       21
      */
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        given_노선이_만들어져_있다: {
-            강남역 = 지하철역_생성_요청한다(StationRequest.of("강남역")).as(StationResponse.class);
-            양재역 = 지하철역_생성_요청한다(StationRequest.of("양재역")).as(StationResponse.class);
-            교대역 = 지하철역_생성_요청한다(StationRequest.of("교대역")).as(StationResponse.class);
-            남강역 = 지하철역_생성_요청한다(StationRequest.of("남강역")).as(StationResponse.class);
-            대교역 = 지하철역_생성_요청한다(StationRequest.of("대교역")).as(StationResponse.class);
-            널미터부남역 = 지하철역_생성_요청한다(StationRequest.of("널미터부남역")).as(StationResponse.class);
-            남부터미널역 = 지하철역_생성_요청한다(StationRequest.of("남부터미널역")).as(StationResponse.class);
-
-            신분당선 = 지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 27)).as(
-                LineResponse.class);
-            이호선 = 지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30)).as(LineResponse.class);
-            삼호선 = 지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
-
-            지하철_노선에_지하철_구간_생성_요청(삼호선.getId(), SectionRequest.of(교대역.getId(), 남부터미널역.getId(), 43));
-            지하철_노선에_지하철_구간_생성_요청(신분당선.getId(), SectionRequest.of(강남역.getId(), 남강역.getId(), 17));
-            지하철_노선에_지하철_구간_생성_요청(이호선.getId(), SectionRequest.of(강남역.getId(), 대교역.getId(), 11));
-            지하철_노선에_지하철_구간_생성_요청(삼호선.getId(), SectionRequest.of(양재역.getId(), 널미터부남역.getId(), 21));
-        }
-
-        and_회원으로_로그인_되어있다: {
-            회원_생성_요청(EMAIL, PASSWORD, AGE);
-            accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-        }
-    }
-
     @DisplayName("즐겨찾기 관련 기능을 확인한다")
     @Test
     void 즐겨찾기_통합인수테스트() {
+        given: {
+            전체노선이_만들어져_있다();
+            회원으로_로그인_되어있다();
+        }
+
         response = 즐겨찾기를_생성한다(FavoriteRequest.of(널미터부남역.getId(), 대교역.getId()));
         응답결과가_CREATED(response);
         response = 즐겨찾기를_생성한다(FavoriteRequest.of(남강역.getId(), 남부터미널역.getId()));
@@ -112,6 +86,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 없이 즐겨찾기를 생성하면 실패한다.")
     @Test
     void 즐겨찾기_생성_예외테스트_1() {
+        회원으로_로그인_되어있다();
+        강남역_남부터미널역_등록되어있다();
         로그인이_안되어있다();
 
         response = 즐겨찾기를_생성한다(FavoriteRequest.of(강남역.getId(), 남부터미널역.getId()));
@@ -122,6 +98,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("없는 역으로 즐겨찾기를 생성하면 실패한다.")
     @Test
     void 즐겨찾기_생성_예외테스트_2() {
+        회원으로_로그인_되어있다();
+        강남역_남부터미널역_등록되어있다();
+
         response = 즐겨찾기를_생성한다(FavoriteRequest.of(없는Id, 남부터미널역.getId()));
 
         응답결과가_BAD_REQUEST(response);
@@ -130,6 +109,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 없이 즐겨찾기를 조회하면 실패한다.")
     @Test
     void 즐겨찾기_조회_예외테스트_1() {
+        회원으로_로그인_되어있다();
+        즐겨찾기가_등록되어있다();
         로그인이_안되어있다();
 
         response = 즐겨찾기_목록을_조회한다();
@@ -140,19 +121,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 없이 즐겨찾기를 삭제하면 실패한다.")
     @Test
     void 즐겨찾기_삭제_예외테스트_1() {
+        회원으로_로그인_되어있다();
+        FavoriteResponse 등록된_즐겨찾기 = 즐겨찾기가_등록되어있다().as(FavoriteResponse.class);
         로그인이_안되어있다();
 
-        response = 즐겨찾기_삭제한다(1L);
+        response = 즐겨찾기_삭제한다(등록된_즐겨찾기.getId());
 
         응답결과가_UNAUTHORIZED(response);
-    }
-
-    @DisplayName("없는 즐겨찾기를 삭제하면 실패한다.")
-    @Test
-    void 즐겨찾기_삭제_예외테스트_2() {
-        response = 즐겨찾기_삭제한다(없는Id);
-
-        응답결과가_BAD_REQUEST(response);
     }
 
     private ExtractableResponse<Response> 즐겨찾기를_생성한다(FavoriteRequest request) {
@@ -178,4 +153,40 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 로그인이_안되어있다() {
         accessToken = "no";
     }
+
+    private void 강남역_남부터미널역_등록되어있다() {
+        강남역 = 지하철역_생성_요청한다(StationRequest.of("강남역")).as(StationResponse.class);
+        남부터미널역 = 지하철역_생성_요청한다(StationRequest.of("남부터미널역")).as(StationResponse.class);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기가_등록되어있다() {
+        강남역_남부터미널역_등록되어있다();
+        return 즐겨찾기를_생성한다(FavoriteRequest.of(강남역.getId(), 남부터미널역.getId()));
+    }
+
+    private void 전체노선이_만들어져_있다() {
+        강남역 = 지하철역_생성_요청한다(StationRequest.of("강남역")).as(StationResponse.class);
+        양재역 = 지하철역_생성_요청한다(StationRequest.of("양재역")).as(StationResponse.class);
+        교대역 = 지하철역_생성_요청한다(StationRequest.of("교대역")).as(StationResponse.class);
+        남강역 = 지하철역_생성_요청한다(StationRequest.of("남강역")).as(StationResponse.class);
+        대교역 = 지하철역_생성_요청한다(StationRequest.of("대교역")).as(StationResponse.class);
+        널미터부남역 = 지하철역_생성_요청한다(StationRequest.of("널미터부남역")).as(StationResponse.class);
+        남부터미널역 = 지하철역_생성_요청한다(StationRequest.of("남부터미널역")).as(StationResponse.class);
+
+        신분당선 = 지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 27)).as(
+            LineResponse.class);
+        이호선 = 지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30)).as(LineResponse.class);
+        삼호선 = 지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+
+        지하철_노선에_지하철_구간_생성_요청(삼호선.getId(), SectionRequest.of(교대역.getId(), 남부터미널역.getId(), 43));
+        지하철_노선에_지하철_구간_생성_요청(신분당선.getId(), SectionRequest.of(강남역.getId(), 남강역.getId(), 17));
+        지하철_노선에_지하철_구간_생성_요청(이호선.getId(), SectionRequest.of(강남역.getId(), 대교역.getId(), 11));
+        지하철_노선에_지하철_구간_생성_요청(삼호선.getId(), SectionRequest.of(양재역.getId(), 널미터부남역.getId(), 21));
+    }
+
+    private void 회원으로_로그인_되어있다() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+    }
+
 }

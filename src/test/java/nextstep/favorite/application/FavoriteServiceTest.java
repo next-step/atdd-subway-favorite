@@ -3,12 +3,8 @@ package nextstep.favorite.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.dto.FavoriteRequest;
 import nextstep.favorite.dto.FavoriteResponse;
-import nextstep.subway.acceptance.StationSteps;
-import nextstep.subway.applicaion.dto.StationRequest;
-import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,28 +22,28 @@ class FavoriteServiceTest {
     @Autowired
     private StationRepository stationRepository;
 
-    private Station 역1;
-    private Station 역2;
+    private Station 첫번째역;
+    private Station 두번째역;
 
     @BeforeEach
     public void setUp() {
         // given 역이 등록되어 있다.
-        역1 = stationRepository.save(new Station("역1"));
-        역2 = stationRepository.save(new Station("역2"));
+        첫번째역 = stationRepository.save(new Station("첫번째역"));
+        두번째역 = stationRepository.save(new Station("두번째역"));
     }
 
     @Test
     void saveFavoriteTest() {
-        FavoriteResponse response = favoriteService.saveFavorite(FavoriteRequest.of(역1.getId(), 역2.getId()));
+        FavoriteResponse response = favoriteService.saveFavorite(FavoriteRequest.of(첫번째역.getId(), 두번째역.getId()));
 
-        assertThat(response.getSource().getId()).isEqualTo(역1.getId());
-        assertThat(response.getTarget().getId()).isEqualTo(역2.getId());
+        assertThat(response.getSource().getId()).isEqualTo(첫번째역.getId());
+        assertThat(response.getTarget().getId()).isEqualTo(두번째역.getId());
     }
 
     @Test
     void findAllFavoriteTest() {
         // given
-        favoriteService.saveFavorite(FavoriteRequest.of(역1.getId(), 역2.getId()));
+        favoriteService.saveFavorite(FavoriteRequest.of(첫번째역.getId(), 두번째역.getId()));
 
         // when
         List<FavoriteResponse> responseList = favoriteService.findAllFavorite();
@@ -55,15 +51,15 @@ class FavoriteServiceTest {
         // then
         assertThat(responseList.size()).isEqualTo(1);
         assertThat(responseList.stream()
-            .findFirst().get().getSource().getName()).isEqualTo("역1");
+            .findFirst().get().getSource().getName()).isEqualTo("첫번째역");
         assertThat(responseList.stream()
-            .findFirst().get().getTarget().getName()).isEqualTo("역2");
+            .findFirst().get().getTarget().getName()).isEqualTo("두번째역");
     }
 
     @Test
     void deleteByIdTest() {
         // given
-        Long id = favoriteService.saveFavorite(FavoriteRequest.of(역1.getId(), 역2.getId())).getId();
+        Long id = favoriteService.saveFavorite(FavoriteRequest.of(첫번째역.getId(), 두번째역.getId())).getId();
 
         // when
         favoriteService.deleteById(id);

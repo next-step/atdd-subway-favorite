@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.domain.BaseEntity;
+import nextstep.subway.domain.Station;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -15,15 +16,15 @@ public class Favorite extends BaseEntity {
     private Long source;
     private Long target;
 
-    public Favorite() {
+    protected Favorite() {
     }
 
-    public Favorite(Long source, Long target) {
-        this.source = source;
-        this.target = target;
+    public Favorite(Station source, Station target) {
+        this.source = source.getId();
+        this.target = target.getId();
     }
 
-    public static Favorite of(Long source, Long target) {
+    public static Favorite of(Station source, Station target) {
         return new Favorite(source, target);
     }
 
