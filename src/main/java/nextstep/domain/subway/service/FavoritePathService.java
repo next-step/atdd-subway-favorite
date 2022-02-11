@@ -40,8 +40,7 @@ public class FavoritePathService {
 
     @Transactional(readOnly = true)
     public List<FavoritePathResponse> showFavorites(Member member) {
-        Member findMember = memberRepository.findOneById(member.getId());
-        return favoritePathRepository.findAllByMember(findMember)
+        return favoritePathRepository.findAllByMemberId(member.getId())
                 .stream().map(FavoritePathResponse::new).collect(toList());
     }
 

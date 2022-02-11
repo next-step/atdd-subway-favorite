@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FavoritePathRepository extends JpaRepository<FavoritePath,Long> {
-    @Query("select f from FavoritePath f where f.member = ?1")
-    List<FavoritePath> findAllByMember(Member member);
+    @Query("select f from FavoritePath f where f.memberId = ?1")
+    List<FavoritePath> findAllByMemberId(Long memberId);
 
     FavoritePath findOneById(Long favoriteId);
 
