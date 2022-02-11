@@ -1,23 +1,23 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.auth;
 
-import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationConverter;
+import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.io.IOException;
 
-import static nextstep.subway.unit.AuthFixture.*;
+import static nextstep.subway.unit.auth.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TokenAuthenticationConverterTest {
-    AuthenticationConverter converter = new TokenAuthenticationConverter();
+class SessionAuthenticationConverterTest {
+    AuthenticationConverter converter = new SessionAuthenticationConverter();
 
     @Test
     void convert() throws IOException {
         // given
-        MockHttpServletRequest request = createTokenMockRequest();
+        MockHttpServletRequest request = createSessionMockRequest();
 
         // when
         AuthenticationToken token = converter.convert(request);

@@ -1,8 +1,8 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authorization.SecurityContextHolderStrategy;
+import nextstep.auth.authorization.strategy.SecurityContextHolderStrategy;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.TokenRequest;
 import org.springframework.mock.web.MockHttpServletRequest;

@@ -1,27 +1,33 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.authentication.*;
+import nextstep.auth.authentication.converter.AuthenticationConverter;
+import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
-import static nextstep.subway.unit.AuthFixture.*;
+import static nextstep.subway.unit.auth.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class SessionAuthenticationInterceptorTest {
+class TokenAuthenticationInterceptorTest {
     UserDetailsService userDetailsService;
+    JwtTokenProvider jwtTokenProvider;
     AuthenticationConverter converter;
     AuthenticationInterceptor interceptor;
     MockHttpServletRequest request;
@@ -30,9 +36,11 @@ class SessionAuthenticationInterceptorTest {
     @BeforeEach
     void setUp() throws IOException {
         userDetailsService = mock(CustomUserDetailsService.class);
-        converter = new SessionAuthenticationConverter();
-        interceptor = new SessionAuthenticationInterceptor(userDetailsService, converter);
-        request = createSessionMockRequest();
+        jwtTokenProvider = mock(JwtTokenProvider.class);
+        converter = new TokenAuthenticationConverter();
+        interceptor = new TokenAuthenticationInterceptor(
+                userDetailsService, converter, jwtTokenProvider, new ObjectMapper());
+        request = createTokenMockRequest();
         response = createMockResponse();
     }
 
@@ -54,16 +62,15 @@ class SessionAuthenticationInterceptorTest {
     void afterAuthentication() throws IOException {
         // given
         Authentication authentication = createAuthentication();
+        given(jwtTokenProvider.createToken(anyString())).willReturn(JWT_TOKEN);
 
         // when
         interceptor.afterAuthentication(request, response, authentication);
 
         // then
-        HttpSession session = request.getSession();
-        SecurityContext securityContext = (SecurityContext) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(securityContext.getAuthentication()).isEqualTo(authentication);
+        assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
     @Test
@@ -71,17 +78,14 @@ class SessionAuthenticationInterceptorTest {
         // given
         given(userDetailsService.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        given(jwtTokenProvider.createToken(anyString())).willReturn(JWT_TOKEN);
 
         // when
         interceptor.preHandle(request, response, new Object());
 
         // then
-        HttpSession session = request.getSession();
-        SecurityContext securityContext = (SecurityContext) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        LoginMember loginMember = (LoginMember) securityContext.getAuthentication().getPrincipal();
-
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
-        assertThat(loginMember.getPassword()).isEqualTo(PASSWORD);
+        assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 }

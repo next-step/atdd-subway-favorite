@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 

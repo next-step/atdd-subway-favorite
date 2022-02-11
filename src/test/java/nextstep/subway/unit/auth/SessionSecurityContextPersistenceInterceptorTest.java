@@ -1,8 +1,8 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.auth;
 
-import nextstep.auth.authorization.SecurityContextHolderStrategy;
+import nextstep.auth.authorization.strategy.SecurityContextHolderStrategy;
 import nextstep.auth.authorization.SecurityContextInterceptor;
-import nextstep.auth.authorization.SessionSecurityContextHolderStrategy;
+import nextstep.auth.authorization.strategy.SessionSecurityContextHolderStrategy;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
@@ -14,7 +14,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.IOException;
 
 import static nextstep.auth.context.SecurityContextHolder.*;
-import static nextstep.subway.unit.AuthFixture.*;
+import static nextstep.subway.unit.auth.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SessionSecurityContextPersistenceInterceptorTest {

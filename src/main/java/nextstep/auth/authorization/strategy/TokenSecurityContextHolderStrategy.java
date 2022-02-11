@@ -1,7 +1,9 @@
-package nextstep.auth.authorization;
+package nextstep.auth.authorization.strategy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authorization.AuthorizationExtractor;
+import nextstep.auth.authorization.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.token.JwtTokenProvider;

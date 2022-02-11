@@ -1,6 +1,6 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.auth;
 
-import nextstep.auth.authorization.SecurityContextHolderStrategy;
+import nextstep.auth.authorization.strategy.SecurityContextHolderStrategy;
 import nextstep.auth.authorization.SecurityContextInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.auth.context.Authentication;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import static nextstep.auth.context.SecurityContextHolder.getContext;
 import static nextstep.auth.context.SecurityContextHolder.setContext;
-import static nextstep.subway.unit.AuthFixture.*;
+import static nextstep.subway.unit.auth.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 

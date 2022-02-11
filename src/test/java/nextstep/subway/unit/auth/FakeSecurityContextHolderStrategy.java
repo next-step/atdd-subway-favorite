@@ -1,11 +1,11 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.auth;
 
-import nextstep.auth.authorization.SecurityContextHolderStrategy;
+import nextstep.auth.authorization.strategy.SecurityContextHolderStrategy;
 import nextstep.auth.context.SecurityContext;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nextstep.subway.unit.AuthFixture.createAuthentication;
+import static nextstep.subway.unit.auth.AuthFixture.createAuthentication;
 
 public class FakeSecurityContextHolderStrategy implements SecurityContextHolderStrategy {
     @Override

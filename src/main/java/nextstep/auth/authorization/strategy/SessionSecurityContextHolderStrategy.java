@@ -1,4 +1,4 @@
-package nextstep.auth.authorization;
+package nextstep.auth.authorization.strategy;
 
 import nextstep.auth.context.SecurityContext;
 

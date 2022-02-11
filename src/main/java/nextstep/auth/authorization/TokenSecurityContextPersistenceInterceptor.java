@@ -1,5 +1,6 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.authorization.strategy.SecurityContextHolderStrategy;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
