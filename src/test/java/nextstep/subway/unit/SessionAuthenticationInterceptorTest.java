@@ -1,9 +1,9 @@
 package nextstep.subway.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.application.SessionAuthenticationConverter;
-import nextstep.auth.authentication.*;
-import nextstep.auth.token.TokenRequest;
+import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.member.application.CustomUserDetailsService;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
@@ -28,7 +27,6 @@ class SessionAuthenticationInterceptorTest {
     private CustomUserDetailsService userDetailsService;
     private AuthenticationConverter converter;
     private SessionAuthenticationInterceptor interceptor;
-
 
     @BeforeEach
     void setUp() {
@@ -56,10 +54,4 @@ class SessionAuthenticationInterceptorTest {
 
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
 }
