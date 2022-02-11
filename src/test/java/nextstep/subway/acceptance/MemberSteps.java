@@ -21,6 +21,11 @@ public class MemberSteps {
         return response.jsonPath().getString("accessToken");
     }
 
+    public static void 회원_생성_되어_있음(String email, String password, Integer age) {
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(email, password, age);
+        회원_생성됨(createResponse);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
