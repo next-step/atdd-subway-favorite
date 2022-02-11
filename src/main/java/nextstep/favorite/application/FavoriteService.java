@@ -1,5 +1,10 @@
 package nextstep.favorite.application;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
@@ -8,8 +13,6 @@ import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import nextstep.station.application.StationService;
 import nextstep.station.domain.Station;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @RequiredArgsConstructor
@@ -25,10 +28,15 @@ public class FavoriteService {
         Station target = stationService.findById(request.getTarget());
 
         Favorite favorite = Favorite.builder()
-            .member(member)
-            .source(source)
-            .target(target)
+            .memberId(member.getId())
+            .sourceId(source.getId())
+            .targetId(target.getId())
             .build();
         return favoriteRepository.save(favorite).getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Favorite> findAllById(long memberId) {
+        return favoriteRepository.findAllByMemberId(memberId);
     }
 }

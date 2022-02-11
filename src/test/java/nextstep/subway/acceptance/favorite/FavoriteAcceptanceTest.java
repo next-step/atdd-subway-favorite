@@ -31,12 +31,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *      Then 즐겨찾기 추가됨
      *      When 즐겨찾기 목록 조회 요청
      *      Then 즐겨찾기 목록 조회됨
-     *
+     *      When 즐겨찾기 삭제 요청
+     *      Then 즐겨찾기 삭제됨
      *
      * */
     @DisplayName("즐겨찾기 관리")
     @Test
-    void addFavorite() {
+    void manage() {
         // given
         String accessToken = 회원_생성_하고_로그인_됨("username@username.com", "password1234", 10);
         Long 교대역 = 지하철역_생성_요청_하고_ID_반환("교대역");
@@ -50,8 +51,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // 목록 조회
         ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(accessToken);
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(getResponse.jsonPath().getList("id")).containsExactly(교대역, 양재역);
+        assertThat(getResponse.jsonPath().getList("source", Long.class).get(0)).isEqualTo(교대역);
+        assertThat(getResponse.jsonPath().getList("target", Long.class).get(0)).isEqualTo(양재역);
 
-
+        // 삭제
     }
 }

@@ -1,17 +1,14 @@
 package nextstep.favorite.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
 import lombok.Builder;
 import lombok.Getter;
 import nextstep.common.domain.model.BaseEntity;
-import nextstep.member.domain.Member;
-import nextstep.station.domain.Station;
 
 @Getter
 @Entity
@@ -20,26 +17,22 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @JoinColumn(name = "FAVORITE_MEMBER", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    @Column(name = "FAVORITE_MEMBER", nullable = false)
+    private Long memberId;
 
-    @JoinColumn(name = "FAVORITE_SOURCE", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Station source;
+    @Column(name = "FAVORITE_SOURCE", nullable = false)
+    private Long sourceId;
 
-    @JoinColumn(name = "FAVORITE_TARGET", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Station target;
+    @Column(name = "FAVORITE_TARGET", nullable = false)
+    private Long targetId;
 
     protected Favorite() {
     }
 
     @Builder
-    public Favorite(Long id, Member member, Station source, Station target) {
-        Id = id;
-        this.member = member;
-        this.source = source;
-        this.target = target;
+    public Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
+        this.memberId = memberId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
     }
 }
