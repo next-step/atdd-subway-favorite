@@ -45,15 +45,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         LineSteps.지하철_노선_생성_요청(LineSteps.createLineCreateParams(교대역, 양재역));
 
         // 추가
-        ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(accessToken, new FavoriteRequest(교대역, 양재역));
-        즐겨찾기_추가_요청_됨(createResponse);
+        Long 즐겨찾기 = 즐겨찾기_추가_요청_하고_ID_반환(accessToken, 교대역, 양재역);
 
         // 목록 조회
-        ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(accessToken);
-        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(getResponse.jsonPath().getList("source", Long.class).get(0)).isEqualTo(교대역);
-        assertThat(getResponse.jsonPath().getList("target", Long.class).get(0)).isEqualTo(양재역);
+        즐겨찾기_목록_조회_요청_성공(
+            즐겨찾기_목록_조회_요청(accessToken),
+            즐겨찾기, 교대역, 양재역
+        );
 
         // 삭제
+
     }
 }
