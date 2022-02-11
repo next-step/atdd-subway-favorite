@@ -1,6 +1,8 @@
-package nextstep.auth.authentication;
+package nextstep.auth.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.token.TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;

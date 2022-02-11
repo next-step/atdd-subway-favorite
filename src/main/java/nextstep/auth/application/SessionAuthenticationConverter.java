@@ -1,4 +1,7 @@
-package nextstep.auth.authentication;
+package nextstep.auth.application;
+
+import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.AuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;

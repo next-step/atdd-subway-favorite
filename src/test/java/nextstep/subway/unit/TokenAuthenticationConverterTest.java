@@ -3,7 +3,7 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationConverter;
+import nextstep.auth.application.TokenAuthenticationConverter;
 import nextstep.auth.token.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

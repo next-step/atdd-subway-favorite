@@ -1,6 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.application.SessionAuthenticationConverter;
 import nextstep.auth.authentication.*;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.CustomUserDetailsService;
