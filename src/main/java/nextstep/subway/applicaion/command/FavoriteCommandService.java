@@ -35,12 +35,7 @@ public class FavoriteCommandService {
         favoriteRepository.save(favorite);
     }
 
-    public void deleteFavorite(long favoriteId) {
-        Favorite favorite = favoriteQueryService.findFavorite(favoriteId);
-        favoriteRepository.delete(favorite);
-    }
-
-    public void deleteFavorite2(long memberId, long favoriteId) {
+    public void deleteFavorite(long memberId, long favoriteId) {
         Favorite favorite = favoriteQueryService.findFavorite(memberId, favoriteId);
         favoriteRepository.delete(favorite);
     }

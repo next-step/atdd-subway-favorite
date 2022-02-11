@@ -83,7 +83,7 @@ class FavoriteCommandServiceTest {
         favoriteRepository.save(즐겨찾기);
 
         // when
-        service.deleteFavorite2(memberId, 즐겨찾기.id());
+        service.deleteFavorite(memberId, 즐겨찾기.id());
 
         // then
         List<Favorite> all = favoriteRepository.findAll();
@@ -99,7 +99,7 @@ class FavoriteCommandServiceTest {
         FavoriteRequest 요청 = FavoriteRequest.of(강남역.getId(), 1000L);
 
         // then
-        assertThatThrownBy(() -> service.deleteFavorite2(memberId, favoriteId))
+        assertThatThrownBy(() -> service.deleteFavorite(memberId, favoriteId))
                 .isInstanceOf(FavoriteNotFoundException.class);
     }
 
