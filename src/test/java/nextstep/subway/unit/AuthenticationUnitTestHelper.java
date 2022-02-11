@@ -1,11 +1,13 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.domain.LoginMember;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,6 +34,10 @@ public final class AuthenticationUnitTestHelper {
         paramMap.put(PASSWORD_FIELD, new String[]{PASSWORD});
         request.setParameters(paramMap);
         return request;
+    }
+
+    public static AuthenticationToken getAuthenticationToken() {
+        return new AuthenticationToken(EMAIL, PASSWORD);
     }
 
     public static LoginMember getUserDetails() {
