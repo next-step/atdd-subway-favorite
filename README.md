@@ -57,3 +57,11 @@ npm run dev
 - [x] ObjectMapper 를 static으로 만들어 쓰지 말고 필요한 객체에게 주입해서 쓸 수 있도록 변경
   - static 은 전역으로 관리되기 외부에서 접근이 가능하고
   - 상태가 변화될 경우 상태에 대한 추론이 어렵다
+
+### 2단계 - 인증 로직 리팩터링
+- [ ] 인증 로직 리팩터링
+  - [ ] HandleInterceptor를 구현하는 구현체의 중복 제거 (추상화)
+    - AuthenticationInterceptor
+    - SecurityContextPersistenceInterceptor
+  - [ ] auth <-> member 양방향 의존성 제거
+- [ ] 내 정보 수정 / 삭제 기능 구현
