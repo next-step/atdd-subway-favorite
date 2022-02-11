@@ -22,6 +22,7 @@ public class FavoritePath extends BaseEntity {
     @JoinColumn(name = "end_station_id", nullable = false)
     private Station endStation;
 
+    //Todo: https://github.com/next-step/atdd-subway-favorite/pull/168#discussion_r803690707
     private Long memberId;
 
     public FavoritePath() {

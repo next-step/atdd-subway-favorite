@@ -46,6 +46,7 @@ public class FavoritePathService {
 
     @Transactional
     public void deleteFavorite(Long favoriteId, Long memberId) {
+        //Todo : https://github.com/next-step/atdd-subway-favorite/pull/168#discussion_r803686310
         FavoritePath favoritePath = favoritePathRepository.findByIdAndMemberId(favoriteId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("삭제할 수 없는 내용 입니다."));
         favoritePathRepository.delete(favoritePath);
