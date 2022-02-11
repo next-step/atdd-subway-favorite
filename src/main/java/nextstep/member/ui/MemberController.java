@@ -1,6 +1,9 @@
 package nextstep.member.ui;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -13,6 +16,8 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private MemberService memberService;
+
+    private JwtTokenProvider jwtTokenProvider;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -56,6 +61,12 @@ public class MemberController {
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine() {
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login/token")
+    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
+        TokenResponse tokenResponse = memberService.createToken(tokenRequest);
+        return ResponseEntity.ok().body(tokenResponse);
     }
 }
 

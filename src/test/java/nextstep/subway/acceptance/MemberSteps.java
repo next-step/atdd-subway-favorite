@@ -18,6 +18,8 @@ public class MemberSteps {
 
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
+        System.out.println("##########");
+        System.out.println(response);
         return response.jsonPath().getString("accessToken");
     }
 

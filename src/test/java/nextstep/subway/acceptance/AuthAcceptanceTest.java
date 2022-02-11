@@ -27,9 +27,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-
+        System.out.println("@@@@@@@@@@@@@@@@");
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-
+        System.out.println("@@@@@@@@@@@@@@@@@@@");
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, EMAIL, AGE);
