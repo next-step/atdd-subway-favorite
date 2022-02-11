@@ -77,6 +77,18 @@ class FavoritePathServiceTest {
         assertThrows(IllegalArgumentException.class, () -> favoritePathService.deleteFavorite(favoriteId));
     }
 
+    @DisplayName("즐겨찾기 삭제 - 삭제할 수 없는 즐겨찾기 일 경우")
+    @Test
+    void deleteFavoriteV2() {
+        //given
+        Long favoriteId = 1L;
+        Long memberId = 1L;
+        when(favoritePathRepository.findByIdAndMemberId(favoriteId, memberId)).thenReturn(Optional.empty());
+
+        //when then
+        assertThrows(IllegalArgumentException.class, () -> favoritePathService.deleteFavorite(favoriteId));
+    }
+
     private LoginMemberImpl getLoginMember() {
         LoginMemberImpl loginMember = new LoginMemberImpl(1L, "email@email.com","password", 20);
         return loginMember;

@@ -6,10 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FavoritePathRepository extends JpaRepository<FavoritePath,Long> {
     @Query("select f from FavoritePath f where f.member = ?1")
     List<FavoritePath> findAllByMember(Member member);
 
     FavoritePath findOneById(Long favoriteId);
+
+    Optional<FavoritePath> findByIdAndMemberId(Long favoriteId, Long memberId);
 }
