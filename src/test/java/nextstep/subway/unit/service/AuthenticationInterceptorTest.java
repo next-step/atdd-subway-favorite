@@ -1,7 +1,8 @@
 package nextstep.subway.unit.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.*;
+import nextstep.auth.authentication.interceptor.SessionAuthenticationInterceptor;
+import nextstep.auth.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import nextstep.auth.context.SecurityContext;
@@ -47,9 +48,9 @@ class AuthenticationInterceptorTest {
     @Spy
     private ObjectMapper objectMapper;
     @InjectMocks
-    private TokenAuthenticationInterceptorNew tokenAuthenticationInterceptorNew;
+    private TokenAuthenticationInterceptor tokenAuthenticationInterceptorNew;
     @InjectMocks
-    private SessionAuthenticationInterceptorNew sessionAuthenticationInterceptorNew;
+    private SessionAuthenticationInterceptor sessionAuthenticationInterceptorNew;
 
     @Test
     void tokenPreHandle() throws Exception {

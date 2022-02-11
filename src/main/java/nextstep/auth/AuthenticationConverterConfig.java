@@ -1,5 +1,8 @@
-package nextstep.auth.authentication.converter;
+package nextstep.auth;
 
+import nextstep.auth.authentication.converter.AuthenticationConverter;
+import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
+import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

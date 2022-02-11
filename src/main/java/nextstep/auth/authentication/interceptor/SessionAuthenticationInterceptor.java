@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.interceptor;
 
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
@@ -12,9 +12,9 @@ import java.io.IOException;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptorNew extends AuthenticationInterceptor {
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    public SessionAuthenticationInterceptorNew(
+    public SessionAuthenticationInterceptor(
             final CustomUserDetailsService userDetailsService,
             final AuthenticationConverter authenticationConverter
     ) {

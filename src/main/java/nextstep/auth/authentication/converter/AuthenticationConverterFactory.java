@@ -2,8 +2,8 @@ package nextstep.auth.authentication.converter;
 
 import java.util.Map;
 
-import static nextstep.auth.authentication.converter.AuthenticationConverterConfig.SESSION_KEY;
-import static nextstep.auth.authentication.converter.AuthenticationConverterConfig.TOKEN_KEY;
+import static nextstep.auth.AuthenticationConverterConfig.SESSION_KEY;
+import static nextstep.auth.AuthenticationConverterConfig.TOKEN_KEY;
 
 public class AuthenticationConverterFactory {
 

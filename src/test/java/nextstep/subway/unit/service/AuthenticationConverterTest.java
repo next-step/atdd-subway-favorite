@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static nextstep.subway.unit.AuthenticationUnitTestHelper.createMockSessionRequest;
 import static nextstep.subway.unit.AuthenticationUnitTestHelper.createMockTokenRequest;
-import static nextstep.subway.unit.TokenAuthenticationUnitTestHelper.PASSWORD;
+import static nextstep.subway.unit.AuthenticationUnitTestHelper.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

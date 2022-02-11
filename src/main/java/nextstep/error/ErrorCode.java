@@ -3,7 +3,7 @@ package nextstep.error;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
-
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "-10002", "UnAuthorized Error"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "-10003", "Internal Server Error"),
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "-10004", "Validation Error"),
     NOT_FOUND_LINE_ERROR(HttpStatus.BAD_REQUEST, "-10005", "노선을 찾을 수 없습니다."),

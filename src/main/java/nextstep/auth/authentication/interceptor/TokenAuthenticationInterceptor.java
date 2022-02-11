@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptorNew extends AuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptorNew(
+    public TokenAuthenticationInterceptor(
             final CustomUserDetailsService userDetailsService,
             final AuthenticationConverter authenticationConverter,
             final JwtTokenProvider jwtTokenProvider,

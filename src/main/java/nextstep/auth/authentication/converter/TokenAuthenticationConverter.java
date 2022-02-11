@@ -11,7 +11,7 @@ import java.io.IOException;
 public class TokenAuthenticationConverter implements AuthenticationConverter {
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        TokenRequest tokenRequest = null;
+        TokenRequest tokenRequest;
         try {
             tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
         } catch (IOException e) {
