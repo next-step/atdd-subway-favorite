@@ -90,15 +90,16 @@ class FavoriteCommandServiceTest {
         assertThat(all).isEmpty();
     }
 
-    @DisplayName("없는 역을 즐겨찾기 삭 하면 실패")
+    @DisplayName("없는 즐겨찾기를 삭제 하면 실패")
     @Test
     void deleteFavorite_fail() {
         // given
-        long id = 100L;
+        long memberId = 1L;
+        long favoriteId = 100L;
         FavoriteRequest 요청 = FavoriteRequest.of(강남역.getId(), 1000L);
 
         // then
-        assertThatThrownBy(() -> service.deleteFavorite(id))
+        assertThatThrownBy(() -> service.deleteFavorite2(memberId, favoriteId))
                 .isInstanceOf(FavoriteNotFoundException.class);
     }
 
