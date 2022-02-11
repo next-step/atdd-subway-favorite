@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
@@ -8,7 +9,6 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
-import nextstep.util.ObjectMapperUtil;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,11 +32,13 @@ class TokenAuthenticationInterceptorTest {
     private CustomUserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private TokenAuthenticationInterceptor interceptor;
+    private ObjectMapper objectMapper;
     @BeforeEach
     void setUp() {
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        objectMapper = new ObjectMapper();
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
     }
 
     @Test
@@ -85,14 +87,14 @@ class TokenAuthenticationInterceptorTest {
         assertAll(
                 () -> assertThat(status).isEqualTo(HttpStatus.SC_OK),
                 () -> assertThat(contentType).isEqualTo(MediaType.APPLICATION_JSON_VALUE),
-                () -> assertThat(content).isEqualTo(ObjectMapperUtil.writeValueAsString(new TokenResponse(JWT_TOKEN)))
+                () -> assertThat(content).isEqualTo(objectMapper.writeValueAsString(new TokenResponse(JWT_TOKEN)))
         );
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(ObjectMapperUtil.writeValueAsString(tokenRequest).getBytes());
+        request.setContent(objectMapper.writeValueAsString(tokenRequest).getBytes());
         return request;
     }
 
