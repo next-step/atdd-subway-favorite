@@ -58,7 +58,4 @@ public class FavoritePath extends BaseEntity {
         }
     }
 
-    public void validDelete() {
-
-    }
 }
