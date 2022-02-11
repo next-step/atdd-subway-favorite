@@ -22,20 +22,18 @@ public class FavoritePath extends BaseEntity {
     @JoinColumn(name = "end_station_id", nullable = false)
     private Station endStation;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    private Long memberId;
 
     public FavoritePath() {
     }
 
-    public FavoritePath(Station startStation, Station endStation, Member member) {
-        if (startStation == null || endStation == null || member == null) {
+    public FavoritePath(Station startStation, Station endStation, Long memberId) {
+        if (startStation == null || endStation == null || memberId == null) {
             throw new IllegalArgumentException("즐겨찾기를 생성할 수 없습니다.");
         }
         this.startStation = startStation;
         this.endStation = endStation;
-        this.member = member;
+        this.memberId = memberId;
     }
 
 
@@ -51,9 +49,7 @@ public class FavoritePath extends BaseEntity {
         return endStation;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
-
-
 }
