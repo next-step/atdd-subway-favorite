@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
+import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
 import nextstep.auth.model.token.dto.TokenResponse;
 import nextstep.subway.domain.member.MemberAdaptor;
@@ -38,7 +39,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
         TokenResponse tokenResponse = TokenResponse.from(extractJwtToken(authentication));
 
-        pushSecurityContextInSession(request, new SecurityContext(authentication));
+        pushSecurityContextInContextHolder(new SecurityContext(authentication));
         makeResponse(response, tokenResponse);
 
         return false;
@@ -74,7 +75,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return jwtTokenProvider.createToken(((MemberAdaptor) authentication.getPrincipal()).getEmail());
     }
 
-    public void pushSecurityContextInSession(HttpServletRequest request, SecurityContext securityContext) {
-        request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, securityContext);
+    public void pushSecurityContextInContextHolder(SecurityContext securityContext) {
+        SecurityContextHolder.setContext(securityContext);
     }
 }

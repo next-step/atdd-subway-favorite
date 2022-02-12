@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
+import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
 import nextstep.subway.domain.member.Member;
 import nextstep.subway.domain.member.MemberAdaptor;
@@ -89,7 +90,7 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    @DisplayName("Session 에 SecurityContext 를 담는다.")
+    @DisplayName("SecurityContextHolder 에 SecurityContext 를 담는다.")
     void putSecurityContextInSession() throws IOException {
         // given
         MockHttpServletRequest mockRequest = createMockRequest(objectMapper);
@@ -98,9 +99,9 @@ class TokenAuthenticationInterceptorTest {
 
         // when
         SecurityContext securityContext = new SecurityContext(authentication);
-        tokenAuthenticationInterceptor.pushSecurityContextInSession(mockRequest, securityContext);
+        tokenAuthenticationInterceptor.pushSecurityContextInContextHolder(securityContext);
 
         // then
-        assertThat(mockRequest.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY)).isEqualTo(securityContext);
+        assertThat(SecurityContextHolder.getContext()).isEqualTo(securityContext);
     }
 }
