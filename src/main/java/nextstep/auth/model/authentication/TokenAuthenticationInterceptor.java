@@ -38,8 +38,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         Authentication authentication = authenticate(authenticationToken);
 
         TokenResponse tokenResponse = TokenResponse.from(extractJwtToken(authentication));
-
-        pushSecurityContextInContextHolder(new SecurityContext(authentication));
         makeResponse(response, tokenResponse);
 
         return false;
@@ -73,9 +71,5 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public String extractJwtToken(Authentication authentication) {
         return jwtTokenProvider.createToken(((MemberAdaptor) authentication.getPrincipal()).getEmail());
-    }
-
-    public void pushSecurityContextInContextHolder(SecurityContext securityContext) {
-        SecurityContextHolder.setContext(securityContext);
     }
 }

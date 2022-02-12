@@ -2,10 +2,12 @@ package nextstep.auth.model.authorization;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
+import nextstep.subway.domain.member.MemberAdaptor;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService userDetailsService;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -25,26 +29,31 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             return true;
         }
 
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if (!jwtTokenProvider.validateToken(credentials)) {
+        /* request 에 담긴 토큰 유효성 검증*/
+        String jwtToken = extractJwtToken(request);
+        if (!jwtTokenProvider.validateToken(jwtToken)) {
             return true;
         }
 
-        SecurityContext securityContext = extractSecurityContext(credentials);
+        /* 토큰에 담긴 정보에 대한 유효성 검증 */
+        SecurityContext securityContext = extractSecurityContext(jwtToken);
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }
+
         return true;
     }
 
-    private SecurityContext extractSecurityContext(String credentials) {
-        try {
-            String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
-            };
+    private String extractJwtToken(HttpServletRequest request) {
+        return AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+    }
 
-            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
-            return new SecurityContext(new Authentication(principal));
+    private SecurityContext extractSecurityContext(String jwtToken) {
+        try {
+            String email = jwtTokenProvider.getPayload(jwtToken);
+            MemberAdaptor memberAdaptor = userDetailsService.loadUserByUsername(email);
+
+            return new SecurityContext(new Authentication(memberAdaptor));
         } catch (Exception e) {
             return null;
         }

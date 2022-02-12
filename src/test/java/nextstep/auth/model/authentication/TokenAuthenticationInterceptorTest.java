@@ -88,20 +88,4 @@ class TokenAuthenticationInterceptorTest {
         // then
         assertThat(jwtTokenProvider.getPayload(token)).isEqualTo(MOCK_EMAIL);
     }
-
-    @Test
-    @DisplayName("SecurityContextHolder 에 SecurityContext 를 담는다.")
-    void putSecurityContextInSession() throws IOException {
-        // given
-        MockHttpServletRequest mockRequest = createMockRequest(objectMapper);
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.extractAuthenticationToken(mockRequest);
-        Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
-
-        // when
-        SecurityContext securityContext = new SecurityContext(authentication);
-        tokenAuthenticationInterceptor.pushSecurityContextInContextHolder(securityContext);
-
-        // then
-        assertThat(SecurityContextHolder.getContext()).isEqualTo(securityContext);
-    }
 }
