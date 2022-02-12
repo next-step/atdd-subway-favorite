@@ -30,6 +30,12 @@
 
 ### 실습 요구사항
 - [ ] AuthAcceptanceTest 의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기  
-  TokenAuthenticationInterceptor 을 구현해보자
+  TokenAuthenticationInterceptor 을 구현한다.
+  - [ ] request 에서 인증에 사용된 email, password 를 통해 AuthenticationToken 을 생성한다.
+  - [ ] AuthenticationToken 의 정보를 통해 Authentication 을 생성한다.
+  - [ ] authentication 을 통해 jwtToken 을 생성하여 response 에 담는다.
+  - [ ] session 에 SecurityContext 를 담는다.
+    MemberService#findMemberOfMine() 를 구현한다.
+  - [ ] 기존에 session 은 유지하면서 토큰 방식 추가
 - [ ] MemberAcceptanceTest 의 manageMyInfo 성공 시키기  
   @AuthenticationPrincipal 을 활용하여 메서드 파라미터 주입을 시도해보자
