@@ -37,13 +37,17 @@ public class FavoriteService {
         Station sourceStation = stationService.findById(sourceStationId);
         Station targetStation = stationService.findById(targetStationId);
 
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-        subwayMap.findPath(sourceStation, targetStation);
+        validatePath(sourceStation, targetStation);
 
         Favorite favorite = favoriteRepository.save(Favorite.of(member, sourceStation, targetStation));
 
         return favorite.getId();
+    }
+
+    private void validatePath(Station sourceStation, Station targetStation) {
+        List<Line> lines = lineService.findLines();
+        SubwayMap subwayMap = new SubwayMap(lines);
+        subwayMap.findPath(sourceStation, targetStation);
     }
 
     @Transactional(readOnly = true)
