@@ -97,9 +97,10 @@ class TokenAuthenticationInterceptorTest {
         Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
         // when
-        tokenAuthenticationInterceptor.pushSecurityContextInSession(mockRequest, new SecurityContext(authentication));
+        SecurityContext securityContext = new SecurityContext(authentication);
+        tokenAuthenticationInterceptor.pushSecurityContextInSession(mockRequest, securityContext);
 
         // then
-        assertThat(mockRequest.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY)).isEqualTo(authentication);
+        assertThat(mockRequest.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY)).isEqualTo(securityContext);
     }
 }
