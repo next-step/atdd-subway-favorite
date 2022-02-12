@@ -2,15 +2,14 @@ package nextstep.auth.authorization;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
+import nextstep.exception.AuthenticationException;
 
 public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
@@ -27,7 +26,7 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
 
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return true;
+            throw new AuthenticationException("유효하지 않은 인증");
         }
 
         SecurityContext securityContext = extractSecurityContext(credentials);

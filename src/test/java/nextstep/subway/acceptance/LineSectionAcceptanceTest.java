@@ -2,6 +2,8 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.applicaion.dto.LineRequest;
+import nextstep.subway.applicaion.dto.SectionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +33,8 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
 
-        Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
-        신분당선 = 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+        신분당선 = 지하철_노선_생성_요청(createLineCreateParams(강남역, 양재역))
+            .jsonPath().getLong("id");
     }
 
     /**
@@ -125,22 +127,11 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 정자역);
     }
 
-    private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
-        Map<String, String> lineCreateParams;
-        lineCreateParams = new HashMap<>();
-        lineCreateParams.put("name", "신분당선");
-        lineCreateParams.put("color", "bg-red-600");
-        lineCreateParams.put("upStationId", upStationId + "");
-        lineCreateParams.put("downStationId", downStationId + "");
-        lineCreateParams.put("distance", 10 + "");
-        return lineCreateParams;
+    private LineRequest createLineCreateParams(Long upStationId, Long downStationId) {
+        return LineRequest.of("신분당선", "bg-red-600", upStationId, downStationId, 10);
     }
 
-    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId) {
-        Map<String, String> params = new HashMap<>();
-        params.put("upStationId", upStationId + "");
-        params.put("downStationId", downStationId + "");
-        params.put("distance", 6 + "");
-        return params;
+    private SectionRequest createSectionCreateParams(Long upStationId, Long downStationId) {
+        return SectionRequest.of(upStationId, downStationId, 6);
     }
 }

@@ -54,7 +54,7 @@ class LineServiceMockTest {
         when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
         when(stationService.findById(삼성역.getId())).thenReturn(삼성역);
 
-        lineService.addSection(이호선.getId(), new SectionRequest(역삼역.getId(), 삼성역.getId(), 10));
+        lineService.addSection(이호선.getId(), SectionRequest.of(역삼역.getId(), 삼성역.getId(), 10));
 
         Line line = lineService.findById(1L);
 
