@@ -74,12 +74,15 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        memberService.updateMember(loginMember.getId(), param);
+        MemberResponse updateMember = memberService.findMember(loginMember.getId());
+        return ResponseEntity.ok().body(updateMember);
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

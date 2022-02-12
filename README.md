@@ -44,5 +44,5 @@ npm run dev
 # 🚀 1단계 - 토큰 기반 로그인 구현
 - [x]  AuthAcceptanceTest의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기
     - [x]  TokenAuthenticationInterceptor 구현하기
-- [ ]  MemberAcceptanceTest의 manageMyInfo 성공 시키기
+- [x]  MemberAcceptanceTest의 manageMyInfo 성공 시키기
     - [x]  @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기
