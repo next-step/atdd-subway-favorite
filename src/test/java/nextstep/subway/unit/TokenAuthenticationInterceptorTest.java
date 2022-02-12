@@ -9,6 +9,7 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
+    @DisplayName("HttpServletRequest 를 AuthenticationToken 으로 변환 테스트")
     @Test
     void convert() throws IOException {
         // given
@@ -43,6 +45,7 @@ class TokenAuthenticationInterceptorTest {
         assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
     }
 
+    @DisplayName("AuthenticationToken 를 Authentication 로 변환 테스트")
     @Test
     void authenticate() {
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
@@ -57,6 +60,7 @@ class TokenAuthenticationInterceptorTest {
         assertThat(authentication.getPrincipal()).isNotNull();
     }
 
+    @DisplayName("Authentication 을 TokenResponse 로 변환 테스트")
     @Test
     void preHandle() throws IOException {
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
