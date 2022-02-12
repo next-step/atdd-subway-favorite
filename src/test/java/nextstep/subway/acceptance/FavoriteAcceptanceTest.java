@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성됨;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.MemberAcceptanceTest.*;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_되어_있음;
@@ -51,5 +50,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
+
+        // then
+        즐겨찾기_목록_조회됨(response, 강남역id, 양재역id);
     }
 }
