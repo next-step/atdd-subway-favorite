@@ -24,14 +24,14 @@ public class FavoriteService {
     private final StationService stationService;
 
     public FavoriteResponse addFavorite(long memberId, FavoriteRequest request) {
-        Member member = memberService.findById(memberId);
-        Station source = stationService.findById(request.getSource());
-        Station target = stationService.findById(request.getTarget());
+        memberService.verifyExists(memberId);
+        stationService.verifyExists(request.getSource());
+        stationService.verifyExists(request.getTarget());
 
         Favorite favorite = Favorite.builder()
-            .memberId(member.getId())
-            .sourceId(source.getId())
-            .targetId(target.getId())
+            .memberId(memberId)
+            .sourceId(request.getSource())
+            .targetId(request.getTarget())
             .build();
         favoriteRepository.save(favorite);
         return FavoriteResponse.of(favorite);

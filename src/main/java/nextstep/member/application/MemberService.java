@@ -1,22 +1,34 @@
 package nextstep.member.application;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import nextstep.common.domain.model.exception.EntityNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
+    private static final String ENTITY_NAME_FOR_EXCEPTION = "사용자";
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional(readOnly = true)
     public Member findById(long id) {
         return memberRepository.findById(id)
-                               .orElseThrow(RuntimeException::new);
+                               .orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME_FOR_EXCEPTION));
+    }
+
+    @Transactional(readOnly = true)
+    public void verifyExists(long id) {
+        if (!memberRepository.existsById(id)) {
+            throw new EntityNotFoundException(ENTITY_NAME_FOR_EXCEPTION);
+        }
     }
 
     public MemberResponse createMember(MemberRequest request) {

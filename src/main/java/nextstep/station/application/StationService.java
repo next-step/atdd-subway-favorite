@@ -22,9 +22,17 @@ public class StationService {
 
     private final StationRepository stationRepository;
 
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationRepository.findById(id)
                                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME_FOR_EXCEPTION));
+    }
+
+    @Transactional(readOnly = true)
+    public void verifyExists(long id) {
+        if (!stationRepository.existsById(id)) {
+            throw new EntityNotFoundException(ENTITY_NAME_FOR_EXCEPTION);
+        }
     }
 
     public StationResponse saveStation(StationRequest request) {
