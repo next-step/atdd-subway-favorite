@@ -40,3 +40,9 @@ npm run dev
 - [x]  패키지 구조 리팩토링(선택)
 - [x]  MemberAcceptanceTest의 인수 테스트 통합하기
 - [x]  AuthAcceptanceTest의 myInfoWithSession 테스트 메서드를 성공 시키기
+
+# 🚀 1단계 - 토큰 기반 로그인 구현
+- [ ]  AuthAcceptanceTest의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기
+    - [x]  TokenAuthenticationInterceptor 구현하기
+- [ ]  MemberAcceptanceTest의 manageMyInfo 성공 시키기
+    - [ ]  @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기

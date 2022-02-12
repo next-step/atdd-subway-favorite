@@ -55,6 +55,12 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine() {
+//        SecurityContext context = (SecurityContext) request.getSession()
+//                .getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+//        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
+//        MemberResponse member = memberService.findMember(loginMember.getId());
+//        return ResponseEntity.ok().body(member);
+
         SecurityContext context = SecurityContextHolder.getContext();
         LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
 
