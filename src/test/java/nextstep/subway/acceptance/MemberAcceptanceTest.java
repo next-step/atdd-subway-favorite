@@ -27,7 +27,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("회원 정보를 관리")
     @Test
-    void ManageMemberInformation() {
+    void manageMember() {
         // when
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
         // then
@@ -47,15 +47,5 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("회원 정보를 관리한다.")
-    @Test
-    void manageMember() {
-    }
-
-    @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
     }
 }
