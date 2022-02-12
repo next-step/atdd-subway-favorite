@@ -62,11 +62,5 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine() {
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
-        TokenResponse tokenResponse = memberService.createToken(tokenRequest);
-        return ResponseEntity.ok().body(tokenResponse);
-    }
 }
 
