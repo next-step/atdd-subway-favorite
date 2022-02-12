@@ -54,6 +54,10 @@ public class FavoriteService {
     }
 
     public void removeFavorite(Long memberId, Long favoriteId) {
+        if (!favoriteRepository.existsByIdAndMemberId(favoriteId, memberId)) {
+            throw new IllegalArgumentException();
+        }
+
         favoriteRepository.deleteByIdAndMemberId(favoriteId, memberId);
     }
 }
