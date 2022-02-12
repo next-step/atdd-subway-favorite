@@ -42,7 +42,7 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Favorite> findAllById(long memberId) {
+    public List<Favorite> findAllByMember(long memberId) {
         return favoriteRepository.findAllByMemberId(memberId);
     }
 }
