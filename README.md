@@ -68,7 +68,7 @@ npm run dev
   - 1단계에서 구현
 
 ### 2단계 피드백
-- [ ] new ObjectMapper 제거
+- [x] new ObjectMapper 제거
 - AuthenticationInterceptorTest 불필요
   - `따로 SessionAuthenticationInterceptorTest와 TokenAuthenticationInterceptorTest를 잘 만들어주셔서 요 테스트는 꼭 없어도 될 것 같습니다 :)`
   - public으로 열려있으니 무조건 테스트 해야겠다는 생각만 들어서 테스트를 작성하다 보니 중복 테스트가 생겨서 상위 클래스의 메소드를 테스트 했는데
@@ -76,15 +76,15 @@ npm run dev
   - 이왕 작성해뒀으니 굳이 삭제 하지 않아도 될 것 같다.
 
 ### 3단계 - 즐겨찾기 기능 구현
-- [ ] 즐겨찾기 기능 구현
-  - [ ] 회원별 즐겨찾기 기능
+- [x] 즐겨찾기 기능 구현
+  - [x] 회원별 즐겨찾기 기능
     - [x] 인수 조건 도출
     - [x] 인수 테스트 작성
     - [x] 즐겨찾기 등록
       - [x] 비정상 경로 등록 예외
     - [x] 즐겨찾기 목록조회
     - [x] 즐겨찾기 삭제
-      - [ ] 존재하지 않는 즐겨찾기 삭제 예외
+      - [x] 존재하지 않는 즐겨찾기 삭제 예외
 - [x] 권한이 없을 떄 권한이 필요한 API 호출 시 401 코드 응답
   - [x] 내 정보 관리
   - [x] 즐겨 찾기 기능
