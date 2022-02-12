@@ -51,8 +51,10 @@ class TokenAuthenticationInterceptorTest {
         AuthenticationToken authenticationToken = interceptor.convert(mockRequest);
 
         // then
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
+        assertAll(
+                () -> assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL),
+                () -> assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD)
+        );
     }
 
     @Test

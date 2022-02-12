@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
@@ -31,7 +29,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        TokenResponse tokenResponse = new TokenResponse(jwtTokenProvider.createToken((String) authentication.getPrincipal()));
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -50,9 +50,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        LoginMember userDetail = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
-        checkAuthentication(userDetail, authenticationToken);
-        return new Authentication(authenticationToken.getPrincipal());
+        String principal = authenticationToken.getPrincipal();
+        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        checkAuthentication(userDetails, authenticationToken);
+
+        return new Authentication(userDetails);
     }
 
     private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
