@@ -20,7 +20,7 @@ public class FavoriteAcceptanceSteps {
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source + "");
-        params.put("password", target + "");
+        params.put("target", target + "");
 
         return RestAssured
                 .given().log().all()

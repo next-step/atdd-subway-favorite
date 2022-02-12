@@ -84,11 +84,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선 즐겨찾기 관리")
     @Test
     void manageMyFavorites() {
-        //given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String 로그인_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
-
-        //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 판교역, 고속터미널역);
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
 
