@@ -72,7 +72,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(이호선, createSectionParams(교대역, 강남역, 10));
         지하철_노선에_지하철_구간_생성_요청(이호선, createSectionParams(강남역, 역삼역, 10));
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionParams(고속터미널역, 교대역, 10));
-        지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionParams(강남역, 남부터미널역, 10));
+        지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionParams(교대역, 남부터미널역, 10));
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionParams(남부터미널역, 양재역, 10));
         지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionParams(강남역, 양재역, 5));
         지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionParams(양재역, 판교역, 10));
@@ -99,20 +99,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void invalidPathFavoriteException() {
         //when
-        ThrowingCallable 즐겨찾기_생성_시도 = () -> 즐겨찾기_생성_요청(로그인_토큰, 판교역, 서울역);
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 판교역, 서울역);
 
         //then
-        즐겨찾기_생성_실패됨(즐겨찾기_생성_시도);
+        즐겨찾기_생성_실패됨(즐겨찾기_생성_응답);
     }
 
     @DisplayName("존재하지 않은 즐겨찾기 삭제 예외")
     @Test
     void notExistFavoriteException() {
         //when
-        ThrowingCallable 즐겨찾기_삭제_시도 = () -> 즐겨찾기_삭제_요청(로그인_토큰, 99L);
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, 99L);
 
         //then
-        즐겨찾기_삭제_실패됨(즐겨찾기_삭제_시도);
+        즐겨찾기_삭제_실패됨(즐겨찾기_삭제_응답);
     }
 
     @DisplayName("비로그인 상태에서 즐겨찾기 관리 예외")

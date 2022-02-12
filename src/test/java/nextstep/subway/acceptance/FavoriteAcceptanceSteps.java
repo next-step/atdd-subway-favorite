@@ -53,12 +53,12 @@ public class FavoriteAcceptanceSteps {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 즐겨찾기_생성_실패됨(ThrowingCallable actual) {
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+    public static void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static void 즐겨찾기_삭제_실패됨(ThrowingCallable actual) {
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+    public static void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, int favoriteCount) {
