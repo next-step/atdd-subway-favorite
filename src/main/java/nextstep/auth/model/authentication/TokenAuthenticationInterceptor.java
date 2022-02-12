@@ -53,11 +53,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken extractAuthenticationToken(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
-
-        return new AuthenticationToken(principal, credentials);
+        return objectMapper.readValue(request.getInputStream(), AuthenticationToken.class);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {

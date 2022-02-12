@@ -1,19 +1,19 @@
 package nextstep.auth.model.authentication;
 
 public class AuthenticationToken {
-    private String principal;
-    private String credentials;
+    private String email;
+    private String password;
 
-    public AuthenticationToken(String principal, String credentials) {
-        this.principal = principal;
-        this.credentials = credentials;
+    public AuthenticationToken(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
-    public String getPrincipal() {
-        return principal;
+    public String getEmail() {
+        return email;
     }
 
-    public String getCredentials() {
-        return credentials;
+    public String getPassword() {
+        return password;
     }
 }

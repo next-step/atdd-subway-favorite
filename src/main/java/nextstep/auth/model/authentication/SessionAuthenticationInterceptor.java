@@ -44,7 +44,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
+        String principal = token.getEmail();
         MemberAdaptor memberAdaptor = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(memberAdaptor, token);
 
@@ -56,7 +56,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
             throw new AuthenticationException();
         }
 
-        if (!memberAdaptor.checkPassword(token.getCredentials())) {
+        if (!memberAdaptor.checkPassword(token.getPassword())) {
             throw new AuthenticationException();
         }
     }
