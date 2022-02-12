@@ -1,5 +1,6 @@
 package nextstep.favorite.applicataion;
 
+import nextstep.favorite.applicataion.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,5 +44,12 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.save(Favorite.of(member, sourceStation, targetStation));
 
         return favorite.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> getAllFavorites(Long memberId) {
+        return favoriteRepository.findAllByMemberId(memberId).stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 }
