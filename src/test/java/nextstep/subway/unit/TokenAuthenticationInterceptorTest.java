@@ -1,7 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.token.TokenRequest;
+import nextstep.auth.model.token.dto.TokenRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
