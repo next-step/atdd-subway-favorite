@@ -37,4 +37,8 @@ public class MemberAdaptor {
     public String getPassword() {
         return password;
     }
+
+    public void clearPassword() {
+        this.password = null;
+    }
 }

@@ -7,6 +7,7 @@ import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.token.JwtTokenProvider;
 import nextstep.auth.model.token.dto.TokenResponse;
 import nextstep.subway.domain.member.MemberAdaptor;
+import nextstep.utils.exception.AuthenticationException;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -57,8 +58,18 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        MemberAdaptor memberAdaptor = customUserDetailsService.loadUserByUsername(authenticationToken.getEmail());
+        validatePassword(memberAdaptor, authenticationToken);
+
+        return new Authentication(memberAdaptor);
+    }
+
+    private void validatePassword(MemberAdaptor memberAdaptor, AuthenticationToken authenticationToken) {
+        if (memberAdaptor.checkPassword(authenticationToken.getPassword())) {
+            memberAdaptor.clearPassword();
+            return ;
+        }
+        throw new AuthenticationException();
     }
 
     public String extractJwtToken(Authentication authentication) {
