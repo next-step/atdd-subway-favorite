@@ -33,7 +33,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        String token = jwtTokenProvider.createToken(authentication.getPrincipal().toString());
+        String loginMember = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(loginMember);
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

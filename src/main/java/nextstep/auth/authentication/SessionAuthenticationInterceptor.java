@@ -31,7 +31,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);
-        return true;
+        return false;
     }
 
     public AuthenticationToken convert(HttpServletRequest request) {
