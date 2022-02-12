@@ -6,8 +6,12 @@ public class TokenResponse {
     public TokenResponse() {
     }
 
-    public TokenResponse(String accessToken) {
+    private TokenResponse(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public static TokenResponse from(String accessToken) {
+        return new TokenResponse(accessToken);
     }
 
     public String getAccessToken() {

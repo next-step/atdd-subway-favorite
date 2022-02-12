@@ -36,9 +36,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = extractAuthenticationToken(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기'
-        String token = extractJwtToken(authentication);
-        TokenResponse tokenResponse = null;
+        TokenResponse tokenResponse = TokenResponse.from(extractJwtToken(authentication));
 
         pushSecurityContextInSession(request, new SecurityContext(authentication));
         makeResponse(response, tokenResponse);
