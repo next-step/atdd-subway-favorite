@@ -1,17 +1,15 @@
 package nextstep.subway.domain;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
     private String color;
-
     @Embedded
     private Sections sections = new Sections();
 
@@ -23,8 +21,18 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(Long id, String name, String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
+
     public Long getId() {
         return id;
+    }
+    public void update(Line updateLine) {
+        this.name = updateLine.getName();
+        this.color = updateLine.getColor();
     }
 
     public String getName() {
@@ -35,28 +43,26 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public Sections getSections() {
+        return sections;
     }
 
-    public void update(String name, String color) {
-        if (name != null) {
-            this.name = name;
-        }
-        if (color != null) {
-            this.color = color;
-        }
+    public void addSection(Section section) {
+        sections.addSection(section);
+        section.updateLine(this);
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.add(new Section(this, upStation, downStation, distance));
+    public void deleteSection(Long stationId) {
+
+        sections.deleteSection(stationId);
     }
 
-    public List<Station> getStations() {
-        return sections.getStations();
+    public int getSectionSize() {
+        return sections.getSize();
     }
 
-    public void deleteSection(Station station) {
-        sections.delete(station);
+    public Set<Station> getDistinctStation() {
+        return sections.distinctDuplication();
     }
+
 }

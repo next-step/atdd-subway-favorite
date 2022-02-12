@@ -1,31 +1,27 @@
 package nextstep.subway.applicaion;
 
 import nextstep.subway.applicaion.dto.PathResponse;
-import nextstep.subway.domain.Line;
-import nextstep.subway.domain.Path;
-import nextstep.subway.domain.Station;
-import nextstep.subway.domain.SubwayMap;
+import nextstep.subway.applicaion.exception.NotFoundException;
+import nextstep.subway.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
 
-    public PathService(LineService lineService, StationService stationService) {
-        this.lineService = lineService;
-        this.stationService = stationService;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+
+    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPath(Long source, Long target) {
-        Station upStation = stationService.findById(source);
-        Station downStation = stationService.findById(target);
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-        Path path = subwayMap.findPath(upStation, downStation);
-
-        return PathResponse.of(path);
+    public PathResponse getPath(Long source, Long target) {
+        List<Line> lineList = lineRepository.findAll();
+        Station from = stationRepository.findById(source).orElseThrow(NotFoundException::new);
+        Station to = stationRepository.findById(target).orElseThrow(NotFoundException::new);
+        return PathFinder.findPath(lineList,from,to);
     }
 }
