@@ -5,7 +5,6 @@ import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
-import nextstep.auth.authorization.ㅐ너테이션ArgumentResolver;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -35,6 +34,6 @@ public class AuthConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List argumentResolvers) {
-        argumentResolvers.add(new ㅐ너테이션ArgumentResolver());
+        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver());
     }
 }

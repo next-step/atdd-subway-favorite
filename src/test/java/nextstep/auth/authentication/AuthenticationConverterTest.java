@@ -2,11 +2,11 @@ package nextstep.auth.authentication;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static nextstep.auth.util.authFixture.*;
+import static nextstep.auth.util.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -18,16 +18,15 @@ class AuthenticationConverterTest {
     @Test
     void convert() throws IOException {
         // given
+        final HttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
         final AuthenticationConverter authenticationConverter = mock(AuthenticationConverter.class);
-        final MockHttpServletRequest mockRequest = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
-        final AuthenticationToken authenticationToken = new AuthenticationToken(DEFAULT_EMAIL, DEFAULT_PASSWORD);
 
-        given(authenticationConverter.convert(mockRequest)).willReturn(authenticationToken);
+        given(authenticationConverter.convert(request)).willReturn(new AuthenticationToken(DEFAULT_EMAIL, DEFAULT_PASSWORD));
 
         // when
-        final AuthenticationToken actual = authenticationConverter.convert(mockRequest);
+        final AuthenticationToken actual = authenticationConverter.convert(request);
 
         // then
-        assertThat(actual).isEqualTo(authenticationToken);
+        assertThat(actual).isNotNull();
     }
 }

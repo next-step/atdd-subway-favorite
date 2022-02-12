@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
-import nextstep.auth.context.Authentication;
 import nextstep.auth.UserDetails;
 import nextstep.auth.UserDetailsService;
+import nextstep.auth.context.Authentication;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,10 +30,10 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor, A
     }
 
     protected abstract void afterAuthentication(final HttpServletRequest request,
-                                             final HttpServletResponse response,
-                                             final Authentication authentication) throws IOException;
+                                                final HttpServletResponse response,
+                                                final Authentication authentication) throws IOException;
 
-    protected Authentication authenticate(final AuthenticationToken token) {
+    private Authentication authenticate(final AuthenticationToken token) {
         final String principal = token.getPrincipal();
         final UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
@@ -42,11 +42,11 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor, A
 
     private void checkAuthentication(final UserDetails userDetails, final AuthenticationToken token) {
         if (Objects.isNull(userDetails)) {
-            throw new AuthenticationException();
+            throw new NullPointerException();
         }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
+        if (userDetails.checkPassword(token.getCredentials())) {
+            return;
         }
+        throw new AuthenticationException();
     }
 }

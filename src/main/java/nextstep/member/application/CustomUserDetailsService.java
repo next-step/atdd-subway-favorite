@@ -12,15 +12,16 @@ import javax.persistence.EntityNotFoundException;
 @Transactional(readOnly = true)
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private MemberRepository memberRepository;
 
-    public CustomUserDetailsService(MemberRepository memberRepository) {
+    private final MemberRepository memberRepository;
+
+    public CustomUserDetailsService(final MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
     @Override
     public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        return LoginMember.of(member);
+        final Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 }

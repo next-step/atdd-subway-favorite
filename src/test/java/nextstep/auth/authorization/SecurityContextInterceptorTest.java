@@ -3,10 +3,12 @@ package nextstep.auth.authorization;
 import nextstep.auth.context.Authentication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static nextstep.auth.util.authFixture.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static nextstep.auth.util.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -20,8 +22,8 @@ class SecurityContextInterceptorTest {
         // given
         final SecurityContextInterceptor interceptor = mock(SecurityContextInterceptor.class);
         final Authentication authentication = mock(Authentication.class);
-        final MockHttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final HttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+        final HttpServletResponse response = new MockHttpServletResponse();
 
         given(interceptor.preHandle(request, response, authentication)).willReturn(false);
 
@@ -38,8 +40,8 @@ class SecurityContextInterceptorTest {
         // given
         final SecurityContextInterceptor interceptor = mock(SecurityContextInterceptor.class);
         final Authentication authentication = mock(Authentication.class);
-        final MockHttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
-        final MockHttpServletResponse response = new MockHttpServletResponse();
+        final HttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+        final HttpServletResponse response = new MockHttpServletResponse();
 
         given(interceptor.preHandle(request, response, authentication)).willReturn(true);
 
