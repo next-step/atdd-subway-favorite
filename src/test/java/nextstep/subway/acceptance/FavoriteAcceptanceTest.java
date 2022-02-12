@@ -15,7 +15,6 @@ import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철
 import static nextstep.subway.acceptance.MemberFixture.*;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
-import static org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -88,11 +87,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
 
         ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(로그인_토큰);
-        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답, 1);
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
 
         Long 첫_번째_즐겨찾기 = 첫_번째_즐겨찾기(즐겨찾기_목록_조회_응답);
         ExtractableResponse<Response> 즐겨찾기_목록_삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, 첫_번째_즐겨찾기);
-        즐겨찾기_삭제됨(즐겨찾기_목록_삭제_응답, 0);
+        즐겨찾기_삭제됨(즐겨찾기_목록_삭제_응답);
     }
 
     @DisplayName("비정상 경로 즐겨찾기 생성 예외")

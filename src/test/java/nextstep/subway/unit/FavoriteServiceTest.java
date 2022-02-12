@@ -81,4 +81,20 @@ class FavoriteServiceTest {
         assertThat(allFavorites).hasSize(1);
 
     }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        //given
+        Long favoriteId = favoriteService.createFavorite(회원.getId(), 출발역.getId(), 도착역.getId());
+
+        //when
+        favoriteService.removeFavorite(회원.getId(), favoriteId);
+
+        List<FavoriteResponse> allFavorites = favoriteService.getAllFavorites(회원.getId());
+
+        //then
+        assertThat(allFavorites).isEmpty();
+
+    }
 }
