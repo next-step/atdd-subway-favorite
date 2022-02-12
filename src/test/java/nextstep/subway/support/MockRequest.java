@@ -11,4 +11,11 @@ public class MockRequest {
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
+
+    public static MockHttpServletRequest crateSessionRequest(String username, String password) {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter("username", username);
+        request.addParameter("password", password);
+        return request;
+    }
 }
