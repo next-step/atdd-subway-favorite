@@ -110,6 +110,15 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청_인가_없이() {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 내_회원_정보_조회_되어_있음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -126,6 +135,16 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청_인가_없이(String email, String password, int age) {
+        Map<String, String> params = createMemberInfoParam(email, password, age);
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 내_정보_수정_되어_있음(ExtractableResponse<Response> 수정된_회원) {
         assertThat(수정된_회원.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -139,6 +158,13 @@ public class MemberSteps {
                 .when().delete("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
+    }
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청_인가_없이() {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
                 .extract();
     }
 

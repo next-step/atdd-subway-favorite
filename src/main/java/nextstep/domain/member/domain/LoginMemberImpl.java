@@ -19,6 +19,8 @@ public class LoginMemberImpl extends Member implements LoginMember {
         this.age = age;
     }
 
+
+
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }

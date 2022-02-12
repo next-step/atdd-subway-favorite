@@ -21,6 +21,16 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
+    public static Map<String, String> 노선_생성_파라미터(String name, String color, String upStationId, String downStationId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("color", color);
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        return params;
+    }
+
+
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
