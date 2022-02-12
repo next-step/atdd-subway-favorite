@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
@@ -9,16 +10,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AuthenticationConverterConfig {
 
-    public static final String SESSION_KEY = "session";
-    public static final String TOKEN_KEY = "token";
-
     @Bean
-    public AuthenticationConverter session() {
+    public AuthenticationConverter sessionAuthenticationConverter() {
         return new SessionAuthenticationConverter();
     }
 
     @Bean
-    public AuthenticationConverter token() {
-        return new TokenAuthenticationConverter();
+    public AuthenticationConverter tokenAuthenticationConverter() {
+        return new TokenAuthenticationConverter(new ObjectMapper());
     }
 }

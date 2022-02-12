@@ -10,8 +10,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class AuthenticationUnitTestHelper {
 
@@ -30,10 +28,8 @@ public final class AuthenticationUnitTestHelper {
 
     public static MockHttpServletRequest createMockSessionRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        Map<String, String[]> paramMap = new HashMap<>();
-        paramMap.put(USERNAME_FIELD, new String[]{EMAIL});
-        paramMap.put(PASSWORD_FIELD, new String[]{PASSWORD});
-        request.setParameters(paramMap);
+        request.setParameter(USERNAME_FIELD, EMAIL);
+        request.setParameter(PASSWORD_FIELD, PASSWORD);
         return request;
     }
 

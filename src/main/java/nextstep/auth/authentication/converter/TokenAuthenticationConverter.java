@@ -9,11 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class TokenAuthenticationConverter implements AuthenticationConverter {
+
+    private final ObjectMapper objectMapper;
+
+    public TokenAuthenticationConverter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
         TokenRequest tokenRequest;
         try {
-            tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
+            tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
         } catch (IOException e) {
             throw new TokenAuthenticationConvertException();
         }

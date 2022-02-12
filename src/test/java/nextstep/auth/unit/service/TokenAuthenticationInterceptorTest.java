@@ -42,7 +42,7 @@ class TokenAuthenticationInterceptorTest {
     @Spy
     private ObjectMapper objectMapper;
     @InjectMocks
-    private TokenAuthenticationInterceptor tokenAuthenticationInterceptorNew;
+    private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
     private LoginMember userDetails;
     private AuthenticationToken authenticationToken;
 
@@ -60,7 +60,7 @@ class TokenAuthenticationInterceptorTest {
         when(jwtTokenProvider.createToken(getPayload(userDetails))).thenReturn(getToken());
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        tokenAuthenticationInterceptorNew.preHandle(request, response, null);
+        tokenAuthenticationInterceptor.preHandle(request, response, null);
 
         assertThat(response.getStatus()).isEqualTo(SC_OK);
         assertThat(response.getContentType()).isEqualTo(APPLICATION_JSON_VALUE);
