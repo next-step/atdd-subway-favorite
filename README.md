@@ -70,7 +70,7 @@ npm run dev
 ## 🚀 1단계 - 토큰 기반 로그인 구현
 
 ### 요구 사항
-- [] AuthAcceptanceTest의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기
+- [x] AuthAcceptanceTest의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기
   
 ~~~
 Request
@@ -101,13 +101,13 @@ Content-Length: 383
   "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjIsXCJlbWFpbFwiOlwiT1RIRVJfbG9naW5AZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwiT1RIRVJfcGFzc3dvcmRcIixcIm5hbWVcIjpcIuyCrOyaqeyekFwiLFwiY3JlZGVudGlhbHNcIjpcIk9USEVSX3Bhc3N3b3JkXCIsXCJwcmluY2lwYWxcIjpcIk9USEVSX2xvZ2luQGVtYWlsLmNvbVwifSIsImlhdCI6MTYxNjExOTQ3NywiZXhwIjoxNjE2MTIzMDc3fQ.XWoW0hzX09OUiO8LETcBp_oeXNctt1jjTGtlBpD1Zhk"
 }
 ~~~
-- [] TokenAuthenticationInterceptor 구현하기
-- [] 내 정보 관리 인수 테스트 구현
-  - [] /members/me 로 멤버 조회/수정/삭제 기능을 요청하는 인수 테스트 작성
-  - [] 로그인 후 token을 응답 받은 후 요청 시 포함시키기
-- [] @AuthenticationPrincipal 적용
-  - [] Controller에서 LoginMember 정보를 받아올 때 @AuthenticationPrincipal를 활용하여 받기
-  - [] AuthenticationPrincipalArgumentResolver를 참고하여 ArgumentResolver 기능을 사용하기
+- [x] TokenAuthenticationInterceptor 구현하기
+- [x] 내 정보 관리 인수 테스트 구현
+  - [x] /members/me 로 멤버 조회/수정/삭제 기능을 요청하는 인수 테스트 작성
+  - [x] 로그인 후 token을 응답 받은 후 요청 시 포함시키기
+- [x] @AuthenticationPrincipal 적용
+  - [x] Controller에서 LoginMember 정보를 받아올 때 @AuthenticationPrincipal를 활용하여 받기
+  - [x] AuthenticationPrincipalArgumentResolver를 참고하여 ArgumentResolver 기능을 사용하기
  
-- [] MemberAcceptanceTest의 manageMyInfo 성공 시키기
-  - [] @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기
+- [x] MemberAcceptanceTest의 manageMyInfo 성공 시키기
+  - [x] @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기
