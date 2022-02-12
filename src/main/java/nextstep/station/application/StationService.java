@@ -47,12 +47,8 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
-
-        return stations.stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
+    public List<Station> findAllStations() {
+        return stationRepository.findAll();
     }
 
     public void deleteStation(Long id) {

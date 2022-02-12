@@ -2,6 +2,7 @@ package nextstep.station.ui;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,11 @@ public class StationController {
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStations());
+        List<StationResponse> responses = stationService.findAllStations()
+                                                        .stream()
+                                                        .map(StationResponse::from)
+                                                        .collect(Collectors.toList());
+        return ResponseEntity.ok().body(responses);
     }
 
     @DeleteMapping("/stations/{id}")

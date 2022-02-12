@@ -1,6 +1,5 @@
 package nextstep.subway.unit.favorite.application;
 
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -11,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import nextstep.common.domain.model.exception.EntityNotFoundException;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -24,6 +22,7 @@ import nextstep.station.application.StationService;
 @DisplayName("FavoriteService 테스트")
 public class FavoriteServiceTest {
     private static final Favorite FAVORITE = new Favorite(1L, 1L, 1L, 2L);
+
     @Mock
     private FavoriteRepository favoriteRepository;
     @Mock
