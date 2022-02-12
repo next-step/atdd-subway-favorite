@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class AuthenticationTokenConverter implements AuthenticationConverter {
+public class TokenAuthenticationConverter implements AuthenticationConverter {
     private final ObjectMapper objectMapper;
 
-    public AuthenticationTokenConverter(ObjectMapper objectMapper) {
+    public TokenAuthenticationConverter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
