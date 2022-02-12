@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
@@ -53,17 +56,20 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-//        SecurityContext context = (SecurityContext) request.getSession()
-//                .getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+    /**
+     * 이렇게 하면 context.getAuthentication().getPrincipal()가 LinkedHashMap을 반환하기 때문에
+     * LoginMember로 변환할 수 없는 에러가 발생하여, 해결하려면 루프를 돌려서 꺼내거나, TokenSecurityContextPersistenceInterceptor의
+     * extractSecurityContext()를 변경해야 합니다. 하지만 다른 분들 코드보면 변경하지 않고 하고 있어서 일단은 @AuthenticationPrincipal로 진행하였습니다.
+     */
+//    @GetMapping("/members/me")
+//    public ResponseEntity<MemberResponse> findMemberOfMine() {
+//        SecurityContext context = SecurityContextHolder.getContext();
 //        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
-//        MemberResponse member = memberService.findMember(loginMember.getId());
-//        return ResponseEntity.ok().body(member);
-
-        SecurityContext context = SecurityContextHolder.getContext();
-        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
-
+//
+//        return ResponseEntity.ok().body(new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge()));
+//    }
+    @GetMapping("/members/me")
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok().body(new MemberResponse(loginMember.getId(), loginMember.getEmail(), loginMember.getAge()));
     }
 
