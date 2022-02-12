@@ -107,4 +107,46 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static void 회원_생성요청_후_응답_검증(String email, String password, int age) {
+        // when
+        ExtractableResponse<Response> response = 회원_생성_요청(email, password, age);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 회원_조회요청_후_응답_검증(String email, String password, int age) {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(email, password, age);
+
+        // when
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
+
+        // then
+        회원_정보_조회됨(response, email, age);
+
+    }
+
+    public static void 회원_수정요청_후_응답_검증(String email, String password, int age) {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(email, password, age);
+
+        // when
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + email, "new" + password, age);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 회원_삭제요청_후_응답검증(String email, String password, int age) {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(email, password, age);
+
+        // when
+        ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
