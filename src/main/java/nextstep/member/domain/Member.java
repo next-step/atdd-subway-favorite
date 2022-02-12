@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.Builder;
 import nextstep.common.domain.model.BaseEntity;
 
 @Entity
@@ -20,7 +21,9 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
-    public Member(String email, String password, Integer age) {
+    @Builder
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
@@ -42,9 +45,9 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
+    public void update(String email, String password, int age) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
     }
 }

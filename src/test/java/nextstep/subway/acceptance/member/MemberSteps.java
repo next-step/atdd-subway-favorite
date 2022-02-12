@@ -120,7 +120,7 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_수정_됨(String accessToken, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, String email, String password, Integer age) {
         MemberRequest body = createMemberRequest(email, password, age);
 
         return RestAssured.given().log().all()
@@ -129,16 +129,22 @@ public class MemberSteps {
                           .body(body)
                           .when().put("/members/me")
                           .then().log().all()
-                          .statusCode(HttpStatus.OK.value())
                           .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_탈퇴_됨(String accessToken) {
+    public static void 내_회원_정보_수정_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 회원_탈퇴_요청(String accessToken) {
         return RestAssured.given().log().all()
                           .auth().oauth2(accessToken)
                           .when().delete("/members/me")
                           .then().log().all()
-                          .statusCode(HttpStatus.NO_CONTENT.value())
                           .extract();
+    }
+
+    public static void 회원_탈퇴_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

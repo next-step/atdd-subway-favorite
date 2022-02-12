@@ -1,26 +1,43 @@
 package nextstep.member.application;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+import nextstep.common.domain.model.exception.EntityNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import org.springframework.stereotype.Service;
 
+@Transactional
+@RequiredArgsConstructor
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private static final String ENTITY_NAME_FOR_EXCEPTION = "사용자";
+    private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
-
+    @Transactional(readOnly = true)
     public Member findById(long id) {
         return memberRepository.findById(id)
-                               .orElseThrow(RuntimeException::new);
+                               .orElseThrow(() -> new EntityNotFoundException(ENTITY_NAME_FOR_EXCEPTION));
+    }
+
+    @Transactional(readOnly = true)
+    public void verifyExists(long id) {
+        if (!memberRepository.existsById(id)) {
+            throw new EntityNotFoundException(ENTITY_NAME_FOR_EXCEPTION);
+        }
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
+        Member member = Member.builder()
+            .email(request.getEmail())
+            .password(request.getPassword())
+            .age(request.getAge())
+            .build();
+        memberRepository.save(member);
+
         return MemberResponse.of(member);
     }
 
@@ -31,7 +48,7 @@ public class MemberService {
 
     public void updateMember(long id, MemberRequest param) {
         Member member = findById(id);
-        member.update(param.toMember());
+        member.update(param.getEmail(), param.getPassword(), param.getAge());
     }
 
     public void deleteMember(Long id) {
