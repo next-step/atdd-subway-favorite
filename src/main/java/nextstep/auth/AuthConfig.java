@@ -3,6 +3,7 @@ package nextstep.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.application.UserDetailsService;
 import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 

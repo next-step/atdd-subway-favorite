@@ -1,6 +1,7 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.application.UserDetailsService;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -17,7 +18,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
     private final ObjectMapper objectMapper;
 
     public TokenAuthenticationInterceptor(
-            CustomUserDetailsService userDetailsService,
+            UserDetailsService userDetailsService,
             JwtTokenProvider jwtTokenProvider,
             ObjectMapper objectMapper,
             AuthenticationConverter authenticationConverter

@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.authentication.application.UserDetailsService;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
 
     public AuthenticationInterceptor(
-            CustomUserDetailsService userDetailsService,
+            UserDetailsService userDetailsService,
             AuthenticationConverter authenticationConverter
     ) {
         this.userDetailsService = userDetailsService;
@@ -37,7 +37,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        LoginMember userDetails = (LoginMember) userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
