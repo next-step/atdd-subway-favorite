@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -51,13 +52,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
     }
 
     @DisplayName("즐겨찾기를 생성한다")
+    @Test
     void createFavorite() {
-        final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 남부터미널역);
+        final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(final Long source, final Long target) {
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(final String accessToken, final Long source, final Long target) {
         final Map<String, String> params = 즐겨찾기_생성_데이터를_만든다(source, target);
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
@@ -66,12 +68,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
                 .body(params)
                 .when().post("/favorites")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .extract();
     }
 
     private Map<String, String> 즐겨찾기_생성_데이터를_만든다(final Long source, final Long target) {
         Map<String, String> params = new HashMap<>();
+        params.put("source", source.toString());
+        params.put("target", target.toString());
         return params;
     }
 }
