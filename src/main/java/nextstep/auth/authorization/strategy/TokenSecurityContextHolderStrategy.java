@@ -11,7 +11,7 @@ import nextstep.auth.token.JwtTokenProvider;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public class TokenSecurityContextHolderStrategy implements SecurityContextHolderStrategy {
+public class TokenSecurityContextHolderStrategy extends SecurityContextHolderStrategy {
     private final JwtTokenProvider jwtTokenProvider;
 
     public TokenSecurityContextHolderStrategy(JwtTokenProvider jwtTokenProvider) {

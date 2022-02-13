@@ -5,9 +5,9 @@ import nextstep.auth.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface SecurityContextHolderStrategy {
-    SecurityContext extract(HttpServletRequest request);
-    default void setContext(SecurityContext securityContext) {
+public abstract class SecurityContextHolderStrategy {
+    public abstract SecurityContext extract(HttpServletRequest request);
+    public void setContext(SecurityContext securityContext) {
         if (securityContext != null) {
             SecurityContextHolder.setContext(securityContext);
         }

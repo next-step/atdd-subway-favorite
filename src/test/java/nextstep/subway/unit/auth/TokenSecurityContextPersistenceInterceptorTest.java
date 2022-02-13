@@ -30,7 +30,7 @@ class TokenSecurityContextPersistenceInterceptorTest {
     void setUp() throws IOException {
         jwtTokenProvider = mock(JwtTokenProvider.class);
         strategy = createSecurityContextHolderStrategy();
-        interceptor = new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider, strategy);
+        interceptor = new TokenSecurityContextPersistenceInterceptor(strategy);
         request = createSessionMockRequest();
         response = createMockResponse();
     }

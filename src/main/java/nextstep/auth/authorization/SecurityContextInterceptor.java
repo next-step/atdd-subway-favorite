@@ -8,9 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public abstract class SecurityContextInterceptor implements HandlerInterceptor {
     @Override
-    public abstract boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
-
-    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         SecurityContextHolder.clearContext();
     }

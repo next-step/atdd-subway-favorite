@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static nextstep.subway.unit.auth.AuthFixture.createAuthentication;
 
-public class FakeSecurityContextHolderStrategy implements SecurityContextHolderStrategy {
+public class FakeSecurityContextHolderStrategy extends SecurityContextHolderStrategy {
     @Override
     public SecurityContext extract(HttpServletRequest request) {
         return new SecurityContext(createAuthentication());
