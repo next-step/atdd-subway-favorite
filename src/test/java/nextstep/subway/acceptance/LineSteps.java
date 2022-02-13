@@ -64,4 +64,37 @@ public class LineSteps {
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all().extract();
     }
+
+    public static Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
+        Map<String, String> lineCreateParams = 노선_생성_데이터를_만든다(name, color, upStation, downStation, distance);
+        return LineSteps.지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+    }
+
+    private static Map<String, String> 노선_생성_데이터를_만든다(final String name, final String color, final Long upStation, final Long downStation, final int distance) {
+        Map<String, String> lineCreateParams;
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", name);
+        lineCreateParams.put("color", color);
+        lineCreateParams.put("upStationId", upStation + "");
+        lineCreateParams.put("downStationId", downStation + "");
+        lineCreateParams.put("distance", distance + "");
+        return lineCreateParams;
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        final Map<String, String> params = 노선_구간_생성_요청_데이터를_만든다(upStationId, downStationId, distance);
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines/{lineId}/sections", lineId)
+                .then().log().all().extract();
+    }
+
+    private static Map<String, String> 노선_구간_생성_요청_데이터를_만든다(Long upStationId, Long downStationId, int distance) {
+        Map<String, String> params = new HashMap<>();
+        params.put("upStationId", upStationId + "");
+        params.put("downStationId", downStationId + "");
+        params.put("distance", distance + "");
+        return params;
+    }
 }
