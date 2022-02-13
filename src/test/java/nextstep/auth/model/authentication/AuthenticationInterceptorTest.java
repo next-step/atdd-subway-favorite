@@ -2,6 +2,7 @@ package nextstep.auth.model.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.model.authentication.interceptor.AuthenticationInterceptor;
 import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.factory.MockServletDataFactory;
@@ -50,7 +51,6 @@ class AuthenticationInterceptorTest {
     @BeforeEach
     void init() {
         memberRepository.save(new Member(MOCK_EMAIL, MOCK_PASSWORD, MOCK_AGE));
-
         mockResponse = MockServletDataFactory.createMockResponse();
     }
 
@@ -58,8 +58,7 @@ class AuthenticationInterceptorTest {
     @DisplayName("세션 기반 인증 interceptor 단위 테스트")
     void 세션_인증() throws IOException {
         // given
-        authenticationInterceptor = sessionAuthenticationInterceptor;
-        mockRequest = createSessionMockRequest();
+        알맞는_interceptor_와_request_를_구성한다(sessionAuthenticationInterceptor, createSessionMockRequest());
 
         // when
         인증을_수행한다();
@@ -84,8 +83,7 @@ class AuthenticationInterceptorTest {
     @DisplayName("토큰 기반 인증 interceptor 단위 테스트")
     void 토큰_인증() throws IOException {
         // given
-        authenticationInterceptor = tokenAuthenticationInterceptor;
-        mockRequest = createTokenMockRequest(objectMapper);
+        알맞는_interceptor_와_request_를_구성한다(tokenAuthenticationInterceptor, createTokenMockRequest(objectMapper));
 
         // when
         인증을_수행한다();
@@ -104,6 +102,11 @@ class AuthenticationInterceptorTest {
         String email = jwtTokenProvider.getPayload(token.getAccessToken());
 
         return userDetailsService.loadUserByUsername(email);
+    }
+
+    private void 알맞는_interceptor_와_request_를_구성한다(AuthenticationInterceptor sessionAuthenticationInterceptor, MockHttpServletRequest sessionMockRequest) {
+        authenticationInterceptor = sessionAuthenticationInterceptor;
+        mockRequest = sessionMockRequest;
     }
 
     private boolean 인증을_수행한다() throws IOException {

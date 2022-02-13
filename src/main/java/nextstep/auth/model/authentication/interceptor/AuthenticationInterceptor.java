@@ -1,5 +1,6 @@
-package nextstep.auth.model.authentication;
+package nextstep.auth.model.authentication.interceptor;
 
+import nextstep.auth.model.authentication.AuthenticationToken;
 import nextstep.auth.model.context.Authentication;
 import org.springframework.web.servlet.HandlerInterceptor;
 

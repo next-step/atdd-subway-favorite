@@ -6,12 +6,11 @@ import nextstep.auth.model.token.dto.TokenRequest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.auth.model.authentication.SessionAuthenticationInterceptor.PASSWORD_FIELD;
-import static nextstep.auth.model.authentication.SessionAuthenticationInterceptor.USERNAME_FIELD;
+import static nextstep.auth.model.authentication.interceptor.SessionAuthenticationInterceptor.PASSWORD_FIELD;
+import static nextstep.auth.model.authentication.interceptor.SessionAuthenticationInterceptor.USERNAME_FIELD;
 
 public class MockServletDataFactory {
     public static final String MOCK_EMAIL = "login@email.com";

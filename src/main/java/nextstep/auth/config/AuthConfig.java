@@ -1,8 +1,8 @@
 package nextstep.auth.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.model.authentication.SessionAuthenticationInterceptor;
-import nextstep.auth.model.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.model.authentication.interceptor.SessionAuthenticationInterceptor;
+import nextstep.auth.model.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.model.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.model.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.model.authorization.TokenSecurityContextPersistenceInterceptor;

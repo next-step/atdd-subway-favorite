@@ -42,8 +42,7 @@
 
 **step2**
 리팩터링
-- [ ] AuthenticationConverter 추상화
-- [ ] AuthenticationInterceptor 추상화
+- [x] AuthenticationInterceptor 추상화
 - [ ] auth 패키지와 member 패키지에 대한 의존 제거 (UserDetailsService 추상화)
 - [ ] SecurityContextInterceptor 추상화
 
