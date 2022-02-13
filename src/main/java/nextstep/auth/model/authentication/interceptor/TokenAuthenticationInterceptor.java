@@ -2,13 +2,11 @@ package nextstep.auth.model.authentication.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.model.authentication.AuthenticationToken;
-import nextstep.auth.model.authentication.interceptor.AuthenticationInterceptor;
-import nextstep.auth.model.authentication.service.CustomUserDetailsService;
+import nextstep.auth.model.authentication.UserDetails;
+import nextstep.auth.model.authentication.service.UserDetailsService;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.token.JwtTokenProvider;
 import nextstep.auth.model.token.dto.TokenResponse;
-import nextstep.subway.domain.member.MemberAdaptor;
-import nextstep.utils.exception.AuthenticationException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +17,11 @@ import java.io.IOException;
 @Component(value = "tokenAuthenticationInterceptor")
 public class TokenAuthenticationInterceptor implements AuthenticationInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
+    public TokenAuthenticationInterceptor(UserDetailsService customUserDetailsService,
                                           JwtTokenProvider jwtTokenProvider,
                                           ObjectMapper objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
@@ -38,18 +36,11 @@ public class TokenAuthenticationInterceptor implements AuthenticationInterceptor
 
     @Override
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        MemberAdaptor memberAdaptor = customUserDetailsService.loadUserByUsername(authenticationToken.getEmail());
-        validatePassword(memberAdaptor, authenticationToken);
+        String principle = authenticationToken.getEmail();
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(principle);
+        userDetails.validateCredential(authenticationToken.getPassword());
 
-        return new Authentication(memberAdaptor);
-    }
-
-    private void validatePassword(MemberAdaptor memberAdaptor, AuthenticationToken authenticationToken) {
-        if (memberAdaptor.checkPassword(authenticationToken.getPassword())) {
-            memberAdaptor.clearPassword();
-            return;
-        }
-        throw new AuthenticationException();
+        return new Authentication(userDetails);
     }
 
     @Override
@@ -59,8 +50,8 @@ public class TokenAuthenticationInterceptor implements AuthenticationInterceptor
     }
 
     private String createJwtToken(Authentication authentication) {
-        MemberAdaptor memberAdaptor = (MemberAdaptor) authentication.getPrincipal();
-        return jwtTokenProvider.createToken(memberAdaptor.getEmail());
+        UserDetails userDetails = authentication.getPrincipal();
+        return jwtTokenProvider.createToken(userDetails.getUsername());
     }
 
     private void makeResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {

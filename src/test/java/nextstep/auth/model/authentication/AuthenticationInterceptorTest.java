@@ -3,7 +3,7 @@ package nextstep.auth.model.authentication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.model.authentication.interceptor.AuthenticationInterceptor;
-import nextstep.auth.model.authentication.service.CustomUserDetailsService;
+import nextstep.auth.model.authentication.service.UserDetailsService;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.factory.MockServletDataFactory;
 import nextstep.auth.model.token.JwtTokenProvider;
@@ -42,7 +42,7 @@ class AuthenticationInterceptorTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     private AuthenticationInterceptor authenticationInterceptor;
     private MockHttpServletRequest mockRequest;
@@ -65,10 +65,7 @@ class AuthenticationInterceptorTest {
 
         // then
         MemberAdaptor memberAdaptor = 세션으로부터_인증정보를_불러온다();
-
-        assertThat(memberAdaptor.getEmail()).isEqualTo(MOCK_EMAIL);
-        assertThat(memberAdaptor.getAge()).isEqualTo(MOCK_AGE);
-
+        assertThat(memberAdaptor.getUsername()).isEqualTo(MOCK_EMAIL);
         assertThat(mockResponse.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
     }
 
@@ -90,10 +87,7 @@ class AuthenticationInterceptorTest {
 
         // then
         MemberAdaptor memberAdaptor = 토큰으로부터_인증정보를_불러온다();
-
-        assertThat(memberAdaptor.getEmail()).isEqualTo(MOCK_EMAIL);
-        assertThat(memberAdaptor.getAge()).isEqualTo(MOCK_AGE);
-
+        assertThat(memberAdaptor.getUsername()).isEqualTo(MOCK_EMAIL);
         assertThat(mockResponse.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
     }
 
@@ -101,7 +95,7 @@ class AuthenticationInterceptorTest {
         TokenResponse token = objectMapper.readValue(mockResponse.getContentAsString(), TokenResponse.class);
         String email = jwtTokenProvider.getPayload(token.getAccessToken());
 
-        return userDetailsService.loadUserByUsername(email);
+        return (MemberAdaptor) userDetailsService.loadUserByUsername(email);
     }
 
     private void 알맞는_interceptor_와_request_를_구성한다(AuthenticationInterceptor sessionAuthenticationInterceptor, MockHttpServletRequest sessionMockRequest) {
