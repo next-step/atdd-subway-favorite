@@ -3,8 +3,6 @@ package nextstep.auth.model.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.Authentication;
-import nextstep.auth.model.context.SecurityContext;
-import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
 import nextstep.auth.model.token.dto.TokenResponse;
 import nextstep.subway.domain.member.MemberAdaptor;
@@ -15,8 +13,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static nextstep.auth.model.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
@@ -44,13 +40,13 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private void makeResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
     }
 
-    public AuthenticationToken extractAuthenticationToken(HttpServletRequest request) throws IOException {
+    private AuthenticationToken extractAuthenticationToken(HttpServletRequest request) throws IOException {
         return objectMapper.readValue(request.getInputStream(), AuthenticationToken.class);
     }
 
@@ -64,7 +60,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     private void validatePassword(MemberAdaptor memberAdaptor, AuthenticationToken authenticationToken) {
         if (memberAdaptor.checkPassword(authenticationToken.getPassword())) {
             memberAdaptor.clearPassword();
-            return ;
+            return;
         }
         throw new AuthenticationException();
     }

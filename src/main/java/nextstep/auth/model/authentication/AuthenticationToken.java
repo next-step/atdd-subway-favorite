@@ -4,6 +4,9 @@ public class AuthenticationToken {
     private String email;
     private String password;
 
+    public AuthenticationToken() {
+    }
+
     public AuthenticationToken(String email, String password) {
         this.email = email;
         this.password = password;
