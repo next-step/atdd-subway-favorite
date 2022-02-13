@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +42,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() {
         //given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
         //when
@@ -56,8 +56,8 @@ class TokenAuthenticationInterceptorTest {
     void preHandle() throws IOException {
         //given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
-        when(jwtTokenProvider.createToken(any())).thenReturn(JWT_TOKEN);
+        given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
+        given(jwtTokenProvider.createToken(any())).willReturn(JWT_TOKEN);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
