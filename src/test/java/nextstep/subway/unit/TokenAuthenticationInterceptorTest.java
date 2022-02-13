@@ -9,7 +9,7 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -81,7 +81,7 @@ class TokenAuthenticationInterceptorTest {
         String content = response.getContentAsString();
 
         //then
-        assertThat(status).isEqualTo(HttpStatus.SC_OK);
+        assertThat(status).isEqualTo(HttpStatus.OK.value());
         assertThat(contentType).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
         assertThat(content).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
