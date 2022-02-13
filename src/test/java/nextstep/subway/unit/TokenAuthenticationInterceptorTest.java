@@ -1,6 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.val;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
@@ -61,7 +62,10 @@ class TokenAuthenticationInterceptorTest {
         Authentication authenticate = interceptor.authenticate(authenticationToken);
 
         //then
-        assertThat(authenticate.getPrincipal()).isEqualTo(loginMember);
+        val principal = (LoginMember) authenticate.getPrincipal();
+        assertThat(principal.getEmail()).isEqualTo(EMAIL);
+        assertThat(principal.getPassword()).isEqualTo(PASSWORD);
+        assertThat(principal.getAge()).isEqualTo(20);
     }
 
     @Test
