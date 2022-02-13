@@ -3,6 +3,7 @@ package nextstep.favorite.applicataion;
 import nextstep.favorite.applicataion.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.CannotDeleteNotMineFavoriteException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.LineService;
@@ -59,7 +60,7 @@ public class FavoriteService {
 
     public void removeFavorite(Long memberId, Long favoriteId) {
         if (!favoriteRepository.existsByIdAndMemberId(favoriteId, memberId)) {
-            throw new IllegalArgumentException();
+            throw new CannotDeleteNotMineFavoriteException();
         }
 
         favoriteRepository.deleteByIdAndMemberId(favoriteId, memberId);
