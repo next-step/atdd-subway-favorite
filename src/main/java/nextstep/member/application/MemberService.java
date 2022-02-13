@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,11 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse findMemberByEmailAndPassword(LoginMember loginMember) {
+        final Member foundMember = memberRepository.findByEmailAndPassword(loginMember.getEmail(), loginMember.getPassword())
+                .orElseThrow(RuntimeException::new);
+        return MemberResponse.of(foundMember);
     }
 }
