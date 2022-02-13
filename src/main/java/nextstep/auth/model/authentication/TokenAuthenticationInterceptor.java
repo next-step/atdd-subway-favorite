@@ -31,26 +31,16 @@ public class TokenAuthenticationInterceptor implements AuthenticationInterceptor
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        return null;
+        return objectMapper.readValue(request.getInputStream(), AuthenticationToken.class);
     }
 
     @Override
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        return null;
+        MemberAdaptor memberAdaptor = customUserDetailsService.loadUserByUsername(authenticationToken.getEmail());
+        validatePassword(memberAdaptor, authenticationToken);
+
+        return new Authentication(memberAdaptor);
     }
-
-    @Override
-    public void afterAuthenticate(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-
-    }
-
-    private void makeResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
-        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().print(responseToClient);
-    }
-
 
     private void validatePassword(MemberAdaptor memberAdaptor, AuthenticationToken authenticationToken) {
         if (memberAdaptor.checkPassword(authenticationToken.getPassword())) {
@@ -58,5 +48,23 @@ public class TokenAuthenticationInterceptor implements AuthenticationInterceptor
             return;
         }
         throw new AuthenticationException();
+    }
+
+    @Override
+    public void afterAuthenticate(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        TokenResponse tokenResponse = TokenResponse.from(createJwtToken(authentication));
+        makeResponse(response, tokenResponse);
+    }
+
+    private String createJwtToken(Authentication authentication) {
+        MemberAdaptor memberAdaptor = (MemberAdaptor) authentication.getPrincipal();
+        return jwtTokenProvider.createToken(memberAdaptor.getEmail());
+    }
+
+    private void makeResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getOutputStream().print(responseToClient);
     }
 }

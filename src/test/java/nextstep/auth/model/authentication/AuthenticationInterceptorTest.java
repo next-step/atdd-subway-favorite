@@ -1,8 +1,12 @@
 package nextstep.auth.model.authentication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.factory.MockServletDataFactory;
+import nextstep.auth.model.token.JwtTokenProvider;
+import nextstep.auth.model.token.dto.TokenResponse;
 import nextstep.subway.domain.member.Member;
 import nextstep.subway.domain.member.MemberAdaptor;
 import nextstep.subway.domain.member.MemberRepository;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import static nextstep.auth.model.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static nextstep.auth.model.factory.MockServletDataFactory.*;
@@ -33,11 +38,14 @@ class AuthenticationInterceptorTest {
     private AuthenticationInterceptor tokenAuthenticationInterceptor;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     private AuthenticationInterceptor authenticationInterceptor;
     private MockHttpServletRequest mockRequest;
     private MockHttpServletResponse mockResponse;
-    private SecurityContext securityContext;
 
     @BeforeEach
     void init() {
@@ -91,8 +99,11 @@ class AuthenticationInterceptorTest {
         assertThat(mockResponse.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
     }
 
-    private MemberAdaptor 토큰으로부터_인증정보를_불러온다() {
-        return null;
+    private MemberAdaptor 토큰으로부터_인증정보를_불러온다() throws UnsupportedEncodingException, JsonProcessingException {
+        TokenResponse token = objectMapper.readValue(mockResponse.getContentAsString(), TokenResponse.class);
+        String email = jwtTokenProvider.getPayload(token.getAccessToken());
+
+        return userDetailsService.loadUserByUsername(email);
     }
 
     private boolean 인증을_수행한다() throws IOException {
