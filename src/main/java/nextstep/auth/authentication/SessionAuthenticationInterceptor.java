@@ -2,7 +2,6 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -13,13 +12,13 @@ import java.util.Map;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor {
+public class SessionAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(UserDetailService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -34,6 +33,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    @Override
     public AuthenticationToken convert(HttpServletRequest request) {
         Map<String, String[]> paramMap = request.getParameterMap();
         String principal = paramMap.get(USERNAME_FIELD)[0];

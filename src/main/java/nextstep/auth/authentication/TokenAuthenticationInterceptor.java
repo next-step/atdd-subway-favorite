@@ -1,12 +1,7 @@
 package nextstep.auth.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.ObjectMapperBean;
-import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.auth.token.*;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapperBean objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapperBean objectMapper) {
+    public TokenAuthenticationInterceptor(UserDetailService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapperBean objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
@@ -44,6 +39,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    @Override
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
         TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
         String principal = tokenRequest.getEmail();
