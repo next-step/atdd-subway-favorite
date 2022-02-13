@@ -1,6 +1,8 @@
-package nextstep.auth.model.authentication;
+package nextstep.auth.model.authentication.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.model.authentication.AuthenticationToken;
+import nextstep.auth.model.authentication.interceptor.AuthenticationInterceptor;
 import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.token.JwtTokenProvider;
