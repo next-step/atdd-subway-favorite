@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.*;
 import nextstep.auth.token.ObjectMapperBean;
 import nextstep.auth.token.TokenRequest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@DisplayName("컨버터 관리 - 토큰")
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationConverterTest {
     private static final String EMAIL = "email@email.com";

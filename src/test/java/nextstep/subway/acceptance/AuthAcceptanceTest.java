@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
 
-
+@DisplayName("인증 관리 기능")
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";

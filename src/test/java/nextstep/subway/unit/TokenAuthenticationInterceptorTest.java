@@ -12,6 +12,7 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.domain.LoginMember;
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@DisplayName("인증 인터셉터 관리 - 토큰")
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";

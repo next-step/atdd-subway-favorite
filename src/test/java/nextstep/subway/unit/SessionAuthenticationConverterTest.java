@@ -6,6 +6,7 @@ import nextstep.auth.authentication.SesstionAuthenticationConverter;
 import nextstep.auth.authentication.TokenAuthenticationConverter;
 import nextstep.auth.token.ObjectMapperBean;
 import nextstep.auth.token.TokenRequest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@DisplayName("컨버터 관리 - 세션")
 @ExtendWith(MockitoExtension.class)
 class SessionAuthenticationConverterTest {
     private static final String EMAIL = "email@email.com";
