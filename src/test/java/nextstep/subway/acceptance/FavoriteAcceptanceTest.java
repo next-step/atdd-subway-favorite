@@ -89,19 +89,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
 
         // when
-        final ExtractableResponse<Response> response = 즐겨_찾기_삭제_요청(accessToken, createResponse.jsonPath().getLong("id"));
+        final ExtractableResponse<Response> response = 즐겨_찾기_삭제_요청(accessToken, createResponse.header("Location"));
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 즐겨_찾기_삭제_요청(final String accessToken, final long id) {
+    private ExtractableResponse<Response> 즐겨_찾기_삭제_요청(final String accessToken, final String locationUrl) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .accept(MediaType.ALL_VALUE)
-                .when().delete("/favorites/"+id)
+                .when().delete(locationUrl)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
 
