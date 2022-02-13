@@ -42,6 +42,8 @@ public class FavoriteService {
         final Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
         if (favorite.isMember(memberId)) {
             favoriteRepository.delete(favorite);
+            return;
         }
+        throw new IllegalArgumentException("it is not member's favorite");
     }
 }
