@@ -29,7 +29,7 @@ class SessionAuthenticationInterceptorTest {
         assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
+    private MockHttpServletRequest createMockRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter("username", EMAIL);
         request.addParameter("password", PASSWORD);
