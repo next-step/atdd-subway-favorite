@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,6 +34,11 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavoriteResponses(Long memberId) {
-        return null;
+        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
+        return favorites.stream()
+                .map(favorite -> FavoriteResponse.of(favorite,
+                        stationService.findById(favorite.getSourceId()),
+                        stationService.findById(favorite.getTargetId())
+                )).collect(Collectors.toList());
     }
 }
