@@ -36,7 +36,7 @@ public class MockServletDataFactory {
         return mockRequest;
     }
 
-    public static MockHttpServletRequest createMockRequest(ObjectMapper objectMapper) {
+    public static MockHttpServletRequest createMockRequest() {
         return new MockHttpServletRequest();
     }
 
