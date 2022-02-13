@@ -1,7 +1,8 @@
-package nextstep.subway.applicaion;
+package nextstep.subway.unit;
 
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
@@ -53,7 +54,7 @@ class FavoriteServiceTest {
     void createFavorite() {
         final Long favoriteId = favoriteService.createFavorite(member.getId(), 강남역.getId(), 남부터미널역.getId());
 
-        assertThat(favoriteId).isEqualTo(1L);
+        assertThat(favoriteId).isNotNull();
     }
 
     @DisplayName("즐겨찾기 목록을 조회한다.")

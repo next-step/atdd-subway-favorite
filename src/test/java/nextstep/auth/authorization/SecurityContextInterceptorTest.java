@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 @DisplayName("인증 컨텍스트 인터셉터")
 class SecurityContextInterceptorTest {
@@ -22,7 +23,7 @@ class SecurityContextInterceptorTest {
     @Test
     void preHandle() throws Exception {
         // given
-        final SecurityContextInterceptor interceptor = mock(SecurityContextInterceptor.class);
+        final SecurityContextInterceptor interceptor = spy(SecurityContextInterceptor.class);
         final HttpServletRequest request = createMockRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
         final HttpServletResponse response = new MockHttpServletResponse();
         final Authentication authentication = new Authentication(createUserDetails(DEFAULT_PASSWORD));
@@ -32,7 +33,6 @@ class SecurityContextInterceptorTest {
         // when
         final boolean actual = interceptor.preHandle(request, response, new Object());
 
-        // then // -> 이부분이 false 로 나오는데 모르겠씁니다 ㅠㅠ
         assertThat(actual).isTrue();
     }
 }
