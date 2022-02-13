@@ -68,7 +68,7 @@ class TokenAuthenticationInterceptorTest2 {
         // given
         LoginMember member = new LoginMember(1L, EMAIL, PASSWORD, 20);
 
-        when(objectMapper.readValue(any(), any())).thenReturn(new TokenRequest(EMAIL, PASSWORD));
+        when(converter.convert(any())).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(member);
         when(objectMapper.writeValueAsString(any())).thenReturn(new ObjectMapper().writeValueAsString(new Authentication(member).getPrincipal()));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
