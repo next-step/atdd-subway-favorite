@@ -53,7 +53,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
             String email = jwtTokenProvider.getPayload(jwtToken);
             MemberAdaptor memberAdaptor = userDetailsService.loadUserByUsername(email);
 
-            return new SecurityContext(new Authentication(memberAdaptor));
+            return new SecurityContext();
         } catch (Exception e) {
             return null;
         }
