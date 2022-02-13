@@ -23,6 +23,7 @@
 |3주차|로그인 프로세스 실습|22/02/10|
 |3주차|토큰 기반 로그인 구현|22/02/10|
 |3주차|step1 리뷰 반영|22/02/13|
+|3주차|인증 로직 리팩토링|22/02/13|
 
 ### 로그인 프로세스 실습 요구 사항
 - [x] 패키지 구조 리팩토링
@@ -38,6 +39,17 @@
   - [x] session 에 SecurityContext 를 담는다.
 - [x] MemberAcceptanceTest 의 manageMyInfo 성공 시키기  
   @AuthenticationPrincipal 을 활용하여 메서드 파라미터 주입을 시도해보자
+
+**step2**
+리팩터링
+- [ ] AuthenticationConverter 추상화
+- [ ] AuthenticationInterceptor 추상화
+- [ ] auth 패키지와 member 패키지에 대한 의존 제거 (UserDetailsService 추상화)
+- [ ] SecurityContextInterceptor 추상화
+
+기능 구현
+- [ ] 내 정보 수정
+- [ ] 내 정보 삭제
 
 ### 리뷰 반영사항
 - [x] objectMapper Bean 잘 활용하기
