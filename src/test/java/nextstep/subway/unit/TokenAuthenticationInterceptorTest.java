@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -38,17 +39,12 @@ class TokenAuthenticationInterceptorTest {
     void setUp() {
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new ObjectMapper());
-    }
-
-    @Test
-    void convert() throws IOException {
-        //when
-        AuthenticationToken authenticationToken = interceptor.convert(createMockRequest());
-
-        //then
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
+        interceptor = new TokenAuthenticationInterceptor(
+                userDetailsService,
+                jwtTokenProvider,
+                new ObjectMapper(),
+                new TokenAuthenticationConverter(new ObjectMapper())
+        );
     }
 
     @Test
