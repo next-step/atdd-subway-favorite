@@ -9,12 +9,12 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
 @Service
 public class MemberService {
-    private JwtTokenProvider jwtTokenProvider;
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -31,6 +31,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
@@ -38,21 +39,5 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
-    }
-
-    public TokenResponse createToken(TokenRequest tokenRequest) {
-        String email = tokenRequest.getEmail();
-        String password = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("해당 email 을 가지는 member 가 없습니다."))
-                .getPassword();
-        checkPassword(password, tokenRequest.getPassword());
-        return new TokenResponse(jwtTokenProvider.createToken(email));
-    }
-
-    private void checkPassword(String password, String passwordRequest) {
-        if (password.equals(passwordRequest)) {
-            return;
-        }
-        throw new NotEqualPasswordException();
     }
 }
