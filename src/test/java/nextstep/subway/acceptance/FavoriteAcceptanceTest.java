@@ -1,25 +1,19 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -57,6 +51,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         otherAccessToken = 로그인_되어_있음("other@email.com", "password");
     }
 
+    /**
+     * Scenario: 즐겨찾기를 관리
+     * When 즐겨찾기 생성을 요청
+     * Then 즐겨찾기 생성됨
+     * When 즐겨찾기 목록 조회 요청
+     * Then 즐겨찾기 목록 조회됨
+     * When 즐겨찾기 삭제 요청
+     * Then 즐겨찾기 삭제됨
+     */
+    @DisplayName("즐겨찾기를 관리한다")
+    @Test
+    void manageFavorite() {
+        final ExtractableResponse<Response> 증겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
+        즐겨찾기_생성됨(증겨찾기_생성_응답);
+
+        final ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(accessToken);
+        즐겨찾기_목록_조회_됨(즐겨찾기_목록_조회_응답);
+
+        final ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨_찾기_삭제_요청(accessToken, 증겨찾기_생성_응답.header("Location"));
+        즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
+    }
+
+
     @DisplayName("즐겨찾기를 생성한다")
     @Test
     void createFavorite() {
@@ -64,7 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        즐겨찾기_생성됨(response);
     }
 
     @DisplayName("즐겨찾기 목록을 조회한다")
@@ -81,7 +98,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> 즐겨찾기_삭제됨(response),
                 () -> assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(강남역, 양재역, 교대역, 남부터미널역),
                 () -> assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(남부터미널역, 강남역, 양재역, 교대역)
         );
@@ -97,7 +114,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 즐겨_찾기_삭제_요청(accessToken, createResponse.header("Location"));
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        즐겨찾기_삭제됨(response);
     }
 
     @DisplayName("다른 사람의 즐겨찾기를 삭제할  수 없다")
@@ -113,40 +130,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> 즐겨_찾기_삭제_요청(final String accessToken, final String locationUrl) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.ALL_VALUE)
-                .when().delete(locationUrl)
-                .then().log().all()
-                .extract();
+
+    private void 즐겨찾기_생성됨(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
+    private void 즐겨찾기_목록_조회_됨(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(final String accessToken, final Long source, final Long target) {
-        final Map<String, String> params = 즐겨찾기_생성_데이터를_만든다(source, target);
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.ALL_VALUE)
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    private Map<String, String> 즐겨찾기_생성_데이터를_만든다(final Long source, final Long target) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source.toString());
-        params.put("target", target.toString());
-        return params;
+    private void 즐겨찾기_삭제됨(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
