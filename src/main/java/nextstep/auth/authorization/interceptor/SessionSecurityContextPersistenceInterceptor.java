@@ -1,6 +1,5 @@
 package nextstep.auth.authorization.interceptor;
 
-import nextstep.auth.authorization.interceptor.SecurityContextInterceptor;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 

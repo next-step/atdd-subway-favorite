@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authorization.AuthorizationExtractor;
 import nextstep.auth.authorization.AuthorizationType;
-import nextstep.auth.authorization.interceptor.SecurityContextInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
