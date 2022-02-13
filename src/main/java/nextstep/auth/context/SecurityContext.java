@@ -1,5 +1,7 @@
 package nextstep.auth.context;
 
+import java.util.Objects;
+
 public class SecurityContext {
     private Authentication authentication;
 
@@ -16,5 +18,9 @@ public class SecurityContext {
 
     public Authentication getAuthentication() {
         return authentication;
+    }
+
+    public boolean hasNotAuthentication() {
+        return Objects.isNull(authentication);
     }
 }
