@@ -42,8 +42,18 @@ public class Member extends BaseEntity {
     }
 
     public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
+        if(verifyChange(member.getEmail(), this.email)) {
+            this.email = member.email;
+        }
+        if(verifyChange(member.getPassword(), this.password)) {
+            this.password = member.password;
+        }
+        if(verifyChange(member.getAge(), this.age)) {
+            this.age = member.age;
+        }
+    }
+
+    private boolean verifyChange(Object target, Object originalValue) {
+        return target != null && !target.equals(originalValue);
     }
 }
