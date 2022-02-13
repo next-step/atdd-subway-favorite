@@ -1,7 +1,5 @@
 package nextstep.auth.authentication;
 
-import nextstep.auth.authentication.AuthenticationToken;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 

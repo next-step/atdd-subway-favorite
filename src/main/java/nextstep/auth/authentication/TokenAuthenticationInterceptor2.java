@@ -30,6 +30,12 @@ public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
+        afterAuthentication(request, response, authentication);
+        return false;
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = new TokenResponse(token);
@@ -38,8 +44,6 @@ public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-
-        return false;
     }
 
     @Override
@@ -67,10 +71,5 @@ public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
-    }
-
-    @Override
-    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-
     }
 }

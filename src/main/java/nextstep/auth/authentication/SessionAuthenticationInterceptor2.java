@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor2 extends AuthenticationInterceptor{
+public class SessionAuthenticationInterceptor2 extends AuthenticationInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -28,10 +28,15 @@ public class SessionAuthenticationInterceptor2 extends AuthenticationInterceptor
         AuthenticationToken token = convert(request);
         Authentication authentication = authenticate(token);
 
+        afterAuthentication(request, response, authentication);
+        return false;
+    }
+
+    @Override
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);
-        return false;
     }
 
     @Override
@@ -59,10 +64,5 @@ public class SessionAuthenticationInterceptor2 extends AuthenticationInterceptor
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
-    }
-
-    @Override
-    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-
     }
 }
