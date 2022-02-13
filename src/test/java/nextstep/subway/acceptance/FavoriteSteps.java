@@ -32,7 +32,6 @@ public class FavoriteSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -54,6 +53,10 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 권한_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }

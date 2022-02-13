@@ -54,4 +54,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    @DisplayName("권한이 없는 경우")
+    @Test
+    void unauthorized() {
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청("", 강남역, 선릉역);
+        권한_없음(createResponse);
+
+        ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청("");
+        권한_없음(getResponse);
+    }
+
 }
