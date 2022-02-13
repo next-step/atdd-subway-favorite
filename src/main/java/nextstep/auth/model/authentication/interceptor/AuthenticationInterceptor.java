@@ -18,9 +18,9 @@ public interface AuthenticationInterceptor extends HandlerInterceptor {
         return false;
     }
 
-    AuthenticationToken convert(HttpServletRequest request) throws IOException;
-
     Authentication authenticate(AuthenticationToken authenticationToken);
+
+    AuthenticationToken convert(HttpServletRequest request) throws IOException;
 
     void afterAuthenticate(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 }

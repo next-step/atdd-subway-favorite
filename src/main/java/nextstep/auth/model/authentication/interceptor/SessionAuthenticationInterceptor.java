@@ -1,12 +1,10 @@
 package nextstep.auth.model.authentication.interceptor;
 
 import nextstep.auth.model.authentication.AuthenticationToken;
-import nextstep.auth.model.authentication.interceptor.AuthenticationInterceptor;
-import nextstep.auth.model.authentication.service.CustomUserDetailsService;
+import nextstep.auth.model.authentication.UserDetails;
+import nextstep.auth.model.authentication.service.UserDetailsService;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
-import nextstep.subway.domain.member.MemberAdaptor;
-import nextstep.utils.exception.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,9 +19,9 @@ public class SessionAuthenticationInterceptor implements AuthenticationIntercept
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -37,12 +35,12 @@ public class SessionAuthenticationInterceptor implements AuthenticationIntercept
     }
 
     @Override
-    public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getEmail();
-        MemberAdaptor memberAdaptor = userDetailsService.loadUserByUsername(principal);
-        validatePassword(memberAdaptor, token);
+    public Authentication authenticate(AuthenticationToken authenticationToken) {
+        String principal = authenticationToken.getEmail();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
+        userDetails.validateCredential(authenticationToken.getPassword());
 
-        return new Authentication(memberAdaptor);
+        return new Authentication(userDetails);
     }
 
     @Override
@@ -50,11 +48,5 @@ public class SessionAuthenticationInterceptor implements AuthenticationIntercept
         HttpSession session = request.getSession();
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, SecurityContext.from(authentication));
         response.setStatus(HttpServletResponse.SC_OK);
-    }
-
-    private void validatePassword(MemberAdaptor memberAdaptor, AuthenticationToken token) {
-        if (!memberAdaptor.checkPassword(token.getPassword())) {
-            throw new AuthenticationException();
-        }
     }
 }

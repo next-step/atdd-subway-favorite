@@ -1,44 +1,46 @@
 package nextstep.subway.domain.member;
 
 
-public class MemberAdaptor {
+import nextstep.auth.model.authentication.UserDetails;
+import nextstep.utils.exception.AuthenticationException;
+
+public class MemberAdaptor implements UserDetails {
     private Long id;
-    private String email;
-    private String password;
-    private Integer age;
+    private String username;
+    private String credential;
+
+    private MemberAdaptor(Long id, String username, String credential) {
+        this.id = id;
+        this.username = username;
+        this.credential = credential;
+    }
 
     public static MemberAdaptor of(Member member) {
-        return new MemberAdaptor(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+        return new MemberAdaptor(member.getId(), member.getEmail(), member.getPassword());
     }
 
-    public MemberAdaptor(Long id, String email, String password, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.age = age;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
-
+    @Override
     public Long getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
-    public Integer getAge() {
-        return age;
+    @Override
+    public String getCredential() {
+        return credential;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    @Override
+    public boolean validateCredential(String targetPassword) {
+        if (this.credential.equals(targetPassword)) {
+            this.credential = null;
+            return true;
+        }
 
-    public void clearPassword() {
-        this.password = null;
+        throw new AuthenticationException();
     }
 }
