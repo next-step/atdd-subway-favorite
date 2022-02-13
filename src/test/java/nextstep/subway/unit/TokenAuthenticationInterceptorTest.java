@@ -1,8 +1,10 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthenticationTokenConverter;
+import nextstep.auth.authentication.NewTokenAuthenticationInterceptor;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.authentication.TokenAuthenticationTokenConverter;
 import nextstep.auth.context.Authentication;
@@ -30,6 +32,7 @@ class TokenAuthenticationInterceptorTest {
     private static final int AGE = 20;
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
+    /* 신 버전 */
     @Test
     void newConvert() throws IOException {
         // given
@@ -44,6 +47,33 @@ class TokenAuthenticationInterceptorTest {
         assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
     }
 
+    @Test
+    void newAfterAuthentication() throws IOException {
+        // given
+        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        AuthenticationInterceptor interceptor = new NewTokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new ObjectMapper());
+
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+
+        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
+        Authentication authentication = interceptor.authenticate(authenticationToken);
+
+        MockHttpServletRequest request = createMockRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // when
+        interceptor.afterAuthentication(request, response, authentication);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
+    }
+
+
+    /* 구 버전 */
     @Test
     void convert() throws IOException {
         // given
