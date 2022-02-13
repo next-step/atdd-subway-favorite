@@ -1,30 +1,27 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.authorization.strategy.SecurityContextHolderStrategy;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+public class SessionSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
+    private final SecurityContextHolderStrategy strategy;
 
-public class SessionSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+    public SessionSecurityContextPersistenceInterceptor(SecurityContextHolderStrategy strategy) {
+        this.strategy = strategy;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             return true;
         }
 
-        SecurityContext securityContext = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext);
-        }
+        SecurityContext securityContext = strategy.extract(request);
+        strategy.setContext(securityContext);
         return true;
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        SecurityContextHolder.clearContext();
     }
 }
