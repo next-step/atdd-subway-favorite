@@ -5,6 +5,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.ObjectMapperBean;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
@@ -24,6 +25,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -39,6 +41,9 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    private ObjectMapperBean objectMapper;
+
     @InjectMocks
     private TokenAuthenticationInterceptor interceptor;
 
@@ -46,6 +51,7 @@ class TokenAuthenticationInterceptorTest {
     void convert() throws IOException {
         // given
         MockHttpServletRequest mockRequest = createMockRequest();
+        when(objectMapper.readValue(any(), any())).thenReturn(new TokenRequest(EMAIL, PASSWORD));
 
         // when
         AuthenticationToken authenticationToken = interceptor.convert(mockRequest);
@@ -73,8 +79,13 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        LoginMember member = new LoginMember(1L, EMAIL, PASSWORD, 20);
+
+        when(objectMapper.readValue(any(), any())).thenReturn(new TokenRequest(EMAIL, PASSWORD));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(member);
+        when(objectMapper.writeValueAsString(any())).thenReturn(new ObjectMapper().writeValueAsString(new Authentication(member).getPrincipal()));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+        when(objectMapper.writeValueAsString(any())).thenReturn(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
 
         // when
         MockHttpServletRequest request = createMockRequest();
