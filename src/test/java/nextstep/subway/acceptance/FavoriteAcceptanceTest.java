@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.FavoriteSteps.*;
-import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
-import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
@@ -18,13 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
+    private static final String INVALID_ACCESS_TOKEN = "invalidAccessToken";
+
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;
     private Long 남부터미널역;
-    private Long 이호선;
-    private Long 신분당선;
-    private Long 삼호선;
 
     private String accessToken;
     private String otherAccessToken;
@@ -37,12 +34,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
         남부터미널역 = 지하철역_생성_요청("남부터미널역").jsonPath().getLong("id");
-
-        이호선 = 지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10);
-        신분당선 = 지하철_노선_생성_요청("신분당선", "red", 강남역, 양재역, 10);
-        삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
-
-        지하철_노선에_지하철_구간_생성_요청(삼호선, 남부터미널역, 양재역, 3);
 
         회원_생성_요청("email@email.com", "password", 20);
         accessToken = 로그인_되어_있음("email@email.com", "password");
@@ -84,6 +75,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(response);
     }
 
+    @DisplayName("잘못된 유저 정보로는 즐겨찾기를 생성할 수 없다")
+    @Test
+    void createFavoriteWithInvalidAccessToken() {
+        // when
+        final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(INVALID_ACCESS_TOKEN, 강남역, 남부터미널역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("즐겨찾기 목록을 조회한다")
     @Test
     void findAllFavorite() {
@@ -98,10 +99,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> 즐겨찾기_삭제됨(response),
+                () -> 즐겨찾기_목록_조회_됨(response),
                 () -> assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(강남역, 양재역, 교대역, 남부터미널역),
                 () -> assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(남부터미널역, 강남역, 양재역, 교대역)
         );
+    }
+
+    @DisplayName("잘못된 유저 정보로는 즐겨찾기 목록을 조회할 수 없다")
+    @Test
+    void findAllFavoriteWithInvalidAccessToken() {
+        // given
+        즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
+        즐겨찾기_생성_요청(accessToken, 양재역, 강남역);
+        즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+        즐겨찾기_생성_요청(accessToken, 남부터미널역, 교대역);
+
+        // when
+        final ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(INVALID_ACCESS_TOKEN);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("즐겨찾기를 삭제한다")
@@ -117,7 +134,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(response);
     }
 
-    @DisplayName("다른 사람의 즐겨찾기를 삭제할  수 없다")
+
+    @DisplayName("잘못된 유저 정보로는 즐겨찾기를 삭제할 수 없다")
+    @Test
+    void deleteFavoriteWithInvalidAccessToken() {
+        // given
+        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
+
+        // when
+        final ExtractableResponse<Response> response = 즐겨_찾기_삭제_요청(INVALID_ACCESS_TOKEN, createResponse.header("Location"));
+
+        // then
+        인증에_실패됨(response);
+    }
+
+    @DisplayName("다른 사람의 즐겨찾기를 삭제할 수 없다")
     @Test
     void deleteFavoriteByOther() {
         // given
@@ -130,16 +161,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-
-    private void 즐겨찾기_생성됨(final ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private void 즐겨찾기_목록_조회_됨(final ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private void 즐겨찾기_삭제됨(final ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    private void 인증에_실패됨(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
