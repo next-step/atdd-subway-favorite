@@ -3,8 +3,6 @@ package nextstep.auth.authentication;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,14 +11,14 @@ import java.util.Map;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor {
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
     private CustomUserDetailsService userDetailsService;
 
     public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+        super(userDetailsService);
     }
 
     @Override
@@ -40,23 +38,5 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         String credentials = paramMap.get(PASSWORD_FIELD)[0];
 
         return new AuthenticationToken(principal, credentials);
-    }
-
-    public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
-
-        return new Authentication(userDetails);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
     }
 }
