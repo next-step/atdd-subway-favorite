@@ -1,5 +1,7 @@
 package nextstep.subway.domain;
 
+import nextstep.member.domain.Member;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,16 +12,19 @@ public class Favorite {
     @Column(unique = true, nullable = false, updatable = false)
     private Long id;
 
-    private Long member;
+    @ManyToOne
+    private Member member;
 
-    private Long source;
+    @ManyToOne
+    private Station source;
 
-    private Long target;
+    @ManyToOne
+    private Station target;
 
     protected Favorite() {
     }
 
-    public Favorite(final Long member, final Long source, final Long target) {
+    public Favorite(final Member member, final Station source, final Station target) {
         this.member = member;
         this.source = source;
         this.target = target;
@@ -29,15 +34,15 @@ public class Favorite {
         return id;
     }
 
-    public Long getMember() {
+    public Member getMember() {
         return member;
     }
 
-    public Long getSource() {
+    public Station getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public Station getTarget() {
         return target;
     }
 }

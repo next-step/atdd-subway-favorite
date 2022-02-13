@@ -7,6 +7,9 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
+
 @Transactional
 @Service
 public class MemberService {
@@ -34,5 +37,9 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findById(final Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
     }
 }
