@@ -3,8 +3,6 @@ package nextstep.auth.model.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.model.authentication.service.CustomUserDetailsService;
 import nextstep.auth.model.context.Authentication;
-import nextstep.auth.model.context.SecurityContext;
-import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
 import nextstep.subway.domain.member.Member;
 import nextstep.subway.domain.member.MemberAdaptor;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 
 import static nextstep.auth.model.authentication.service.MockServletDataFactory.*;
-import static nextstep.auth.model.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -46,25 +43,11 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    @DisplayName("Request Body 를 통해 AuthenticationToken 을 구성한다.")
-    void extractAuthenticationToken() throws IOException {
-        // given
-        MockHttpServletRequest mockRequest = createMockRequest(objectMapper);
-
-        // when
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.extractAuthenticationToken(mockRequest);
-
-        // then
-        assertThat(authenticationToken.getEmail()).isEqualTo(MOCK_EMAIL);
-        assertThat(authenticationToken.getPassword()).isEqualTo(MOCK_PASSWORD);
-    }
-
-    @Test
     @DisplayName("AuthenticationToken 을 통해 Authentication 을 구성한다.")
     void authenticate() throws IOException {
         // given
         MockHttpServletRequest mockRequest = createMockRequest(objectMapper);
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.extractAuthenticationToken(mockRequest);
+        AuthenticationToken authenticationToken = objectMapper.readValue(mockRequest.getInputStream(), AuthenticationToken.class);
 
         // when
         Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
@@ -79,7 +62,7 @@ class TokenAuthenticationInterceptorTest {
     void extractToken() throws IOException {
         // given
         MockHttpServletRequest mockRequest = createMockRequest(objectMapper);
-        AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.extractAuthenticationToken(mockRequest);
+        AuthenticationToken authenticationToken = objectMapper.readValue(mockRequest.getInputStream(), AuthenticationToken.class);
         Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
         // when

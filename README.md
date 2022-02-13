@@ -22,6 +22,7 @@
 |:---:|:---:|:---:|
 |3주차|로그인 프로세스 실습|22/02/10|
 |3주차|토큰 기반 로그인 구현|22/02/10|
+|3주차|step1 리뷰 반영|22/02/13|
 
 ### 로그인 프로세스 실습 요구 사항
 - [x] 패키지 구조 리팩토링
@@ -37,3 +38,10 @@
   - [x] session 에 SecurityContext 를 담는다.
 - [x] MemberAcceptanceTest 의 manageMyInfo 성공 시키기  
   @AuthenticationPrincipal 을 활용하여 메서드 파라미터 주입을 시도해보자
+
+### 리뷰 반영사항
+- [x] objectMapper Bean 잘 활용하기
+- [x] 안쓰는 테스트 클래스 삭제하기
+- [x] 인수 테스트 가독성 있게 메서드 명 수정하기 (개발자가 아닌 사람도 읽을 수 있도록)
+- [x] 데이터 치환 과정에 대한 메서드 테스트 제거 (접근제어자 수정)
+- [x] ObjectMapper 와 deserialize
