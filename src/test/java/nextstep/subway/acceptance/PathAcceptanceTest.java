@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.common.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,12 @@ import static nextstep.subway.acceptance.model.PathEntitiesHelper.최단_경로_
 import static nextstep.subway.acceptance.model.PathEntitiesHelper.최단_경로_조회됨;
 import static nextstep.subway.acceptance.model.SectionEntitiesHelper.newSection;
 import static nextstep.subway.acceptance.model.SectionEntitiesHelper.구간_생성_요청;
-import static nextstep.subway.acceptance.model.StationEntitiesHelper.*;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.강남역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.교대역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.남부터미널역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.양재역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.역삼역;
+import static nextstep.subway.acceptance.model.StationEntitiesHelper.지하철역_생성_요청후_아이디_조회;
 import static org.apache.http.HttpHeaders.LOCATION;
 
 class PathAcceptanceTest extends AcceptanceTest {

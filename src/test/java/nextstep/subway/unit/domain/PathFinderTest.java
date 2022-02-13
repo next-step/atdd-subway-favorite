@@ -2,9 +2,9 @@ package nextstep.subway.unit.domain;
 
 import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.PathFinder;
-import nextstep.subway.exception.NotConnectedException;
-import nextstep.subway.exception.NotFoundStationException;
-import nextstep.subway.exception.SameStationException;
+import nextstep.exception.NotConnectedException;
+import nextstep.exception.NotFoundStationException;
+import nextstep.exception.SameStationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
