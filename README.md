@@ -47,8 +47,8 @@
 - [x] SecurityContextInterceptor 추상화
 
 기능 구현
-- [ ] 내 정보 수정
-- [ ] 내 정보 삭제
+- [x] 내 정보 수정
+- [x] 내 정보 삭제
 
 ### 리뷰 반영사항
 - [x] objectMapper Bean 잘 활용하기
