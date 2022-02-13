@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static nextstep.auth.model.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static nextstep.auth.model.factory.MockServletDataFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,7 +66,10 @@ class AuthenticationInterceptorTest {
     }
 
     private MemberAdaptor 세션으로부터_인증정보를_불러온다() {
-        return null;
+        SecurityContext securityContext = (SecurityContext) mockRequest.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        MemberAdaptor memberAdaptor = (MemberAdaptor) securityContext.getAuthentication().getPrincipal();
+
+        return memberAdaptor;
     }
 
     @Test

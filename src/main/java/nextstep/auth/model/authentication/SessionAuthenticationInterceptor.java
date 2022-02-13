@@ -27,16 +27,27 @@ public class SessionAuthenticationInterceptor implements AuthenticationIntercept
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        return null;
+        Map<String, String[]> paramMap = request.getParameterMap();
+        String principal = paramMap.get(USERNAME_FIELD)[0];
+        String credentials = paramMap.get(PASSWORD_FIELD)[0];
+
+        return new AuthenticationToken(principal, credentials);
     }
 
     @Override
     public Authentication authenticate(AuthenticationToken token) {
-        return null;
+        String principal = token.getEmail();
+        MemberAdaptor memberAdaptor = userDetailsService.loadUserByUsername(principal);
+        validatePassword(memberAdaptor, token);
+
+        return new Authentication(memberAdaptor);
     }
 
     @Override
     public void afterAuthenticate(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        HttpSession session = request.getSession();
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, SecurityContext.from(authentication));
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     private void validatePassword(MemberAdaptor memberAdaptor, AuthenticationToken token) {
