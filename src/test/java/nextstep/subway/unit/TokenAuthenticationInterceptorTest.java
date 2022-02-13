@@ -24,9 +24,21 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
 class TokenAuthenticationInterceptorTest {
+
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
+
+    private CustomUserDetailsService userDetailsService;
+    private JwtTokenProvider jwtTokenProvider;
+    private TokenAuthenticationInterceptor interceptor;
+
+    @BeforeEach
+    void setUp() {
+        userDetailsService = mock(CustomUserDetailsService.class);
+        jwtTokenProvider = mock(JwtTokenProvider.class);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new ObjectMapper());
+    }
 
     @Test
     void convert() throws IOException {
@@ -80,15 +92,4 @@ class TokenAuthenticationInterceptorTest {
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
-
-    private CustomUserDetailsService userDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
-    private TokenAuthenticationInterceptor interceptor;
-    @BeforeEach
-    void setUp() {
-        userDetailsService = mock(CustomUserDetailsService.class);
-        jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new ObjectMapper());
-    }
-
 }
