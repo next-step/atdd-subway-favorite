@@ -20,6 +20,7 @@ public class LoginMember implements UserDetails {
         this.age = age;
     }
 
+    @Override
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
