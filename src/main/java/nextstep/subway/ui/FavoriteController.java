@@ -3,7 +3,7 @@ package nextstep.subway.ui;
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.member.domain.LoginMember;
 import nextstep.subway.applicaion.FavoriteService;
-import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.subway.applicaion.dto.FavoriteReadResponse;
 import nextstep.subway.applicaion.dto.FavoriteSaveRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +31,9 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findAllFavorite(@AuthenticationPrincipal final LoginMember loginMember) {
-        final List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavorite(loginMember.getId()).stream()
-                .map(FavoriteResponse::new)
+    public ResponseEntity<List<FavoriteReadResponse>> findAllFavorite(@AuthenticationPrincipal final LoginMember loginMember) {
+        final List<FavoriteReadResponse> favoriteResponses = favoriteService.findAllFavorite(loginMember.getId()).stream()
+                .map(FavoriteReadResponse::new)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(favoriteResponses);
     }

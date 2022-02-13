@@ -5,17 +5,17 @@ import nextstep.subway.domain.Station;
 
 import java.time.LocalDateTime;
 
-public class FavoriteResponse {
+public class FavoriteReadResponse {
 
     private final Long id;
     private final StationResponse source;
     private final StationResponse target;
 
-    public FavoriteResponse(final Favorite favorite) {
+    public FavoriteReadResponse(final Favorite favorite) {
         this(favorite.getId(), favorite.getSource(), favorite.getTarget());
     }
 
-    public FavoriteResponse(final Long id, final Station source, final Station target) {
+    public FavoriteReadResponse(final Long id, final Station source, final Station target) {
         this.id = id;
         this.source = new StationResponse(source);
         this.target = new StationResponse(target);
