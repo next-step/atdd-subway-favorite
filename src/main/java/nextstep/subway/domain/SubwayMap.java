@@ -5,6 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SubwayMap {
@@ -21,6 +22,9 @@ public class SubwayMap {
         // 다익스트라 최단 경로 찾기
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
+        if (Objects.isNull(result)) {
+            throw new IllegalArgumentException();
+        }
 
         List<Section> sections = result.getEdgeList().stream()
                 .map(it -> it.getSection())

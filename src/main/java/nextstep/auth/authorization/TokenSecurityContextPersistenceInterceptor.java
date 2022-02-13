@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextI
             TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
             };
 
-            Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);
+            Map<String, String> principal = objectMapper.readValue(payload, typeRef);
             return new SecurityContext(new Authentication(principal));
         } catch (Exception e) {
             return null;

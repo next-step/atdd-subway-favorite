@@ -98,7 +98,6 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -115,7 +114,6 @@ public class MemberSteps {
                 .body(params)
                 .when().put("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -124,7 +122,6 @@ public class MemberSteps {
                 .auth().oauth2(accessToken)
                 .when().delete("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
 
@@ -145,5 +142,9 @@ public class MemberSteps {
 
     public static void 회원_정보_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 권한_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

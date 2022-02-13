@@ -6,13 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.subway.acceptance.MemberFixture.*;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
 
     @DisplayName("회원가입을 한다.")
     @Test
@@ -95,6 +93,23 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 내_회원_삭제_응답 = 내_회원_삭제_요청(token);
         회원_정보_삭제됨(내_회원_삭제_응답);
+
+    }
+
+    @DisplayName("비로그인 상태에서 내 정보 관리 예외")
+    @Test
+    void manageMyInfoUnauthorizedException() {
+        //given
+        String 유효하지_않은_토큰 = "invalid token";
+
+        ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청(유효하지_않은_토큰);
+        권한_없음(내_회원_정보_조회_응답);
+
+        ExtractableResponse<Response> 내_회원_정보_수정_응답 = 내_회원_정보_수정_요청(유효하지_않은_토큰, "e@mail.com", PASSWORD, AGE);
+        권한_없음(내_회원_정보_수정_응답);
+
+        ExtractableResponse<Response> 내_회원_삭제_응답 = 내_회원_삭제_요청(유효하지_않은_토큰);
+        권한_없음(내_회원_삭제_응답);
 
     }
 }
