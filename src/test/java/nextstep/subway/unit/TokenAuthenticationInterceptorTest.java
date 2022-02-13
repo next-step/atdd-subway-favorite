@@ -2,7 +2,9 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.AuthenticationTokenConverter;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.TokenAuthenticationTokenConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -27,6 +29,20 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
+
+    @Test
+    void newConvert() throws IOException {
+        // given
+        AuthenticationTokenConverter converter = new TokenAuthenticationTokenConverter(new ObjectMapper());
+        MockHttpServletRequest request = createMockRequest();
+
+        // when
+        AuthenticationToken authenticationToken = converter.convert(request);
+
+        // then
+        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
+    }
 
     @Test
     void convert() throws IOException {

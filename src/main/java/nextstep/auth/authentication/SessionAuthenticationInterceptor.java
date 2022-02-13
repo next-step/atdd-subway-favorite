@@ -17,7 +17,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
