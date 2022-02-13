@@ -8,13 +8,14 @@ import nextstep.auth.model.token.dto.TokenResponse;
 import nextstep.subway.domain.member.MemberAdaptor;
 import nextstep.utils.exception.AuthenticationException;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+@Component(value = "tokenAuthenticationInterceptor")
+public class TokenAuthenticationInterceptor implements AuthenticationInterceptor {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
@@ -29,14 +30,18 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = extractAuthenticationToken(request);
-        Authentication authentication = authenticate(authenticationToken);
+    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
+        return null;
+    }
 
-        TokenResponse tokenResponse = TokenResponse.from(extractJwtToken(authentication));
-        makeResponse(response, tokenResponse);
+    @Override
+    public Authentication authenticate(AuthenticationToken authenticationToken) {
+        return null;
+    }
 
-        return false;
+    @Override
+    public void afterAuthenticate(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+
     }
 
     private void makeResponse(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
@@ -46,16 +51,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.getOutputStream().print(responseToClient);
     }
 
-    private AuthenticationToken extractAuthenticationToken(HttpServletRequest request) throws IOException {
-        return objectMapper.readValue(request.getInputStream(), AuthenticationToken.class);
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        MemberAdaptor memberAdaptor = customUserDetailsService.loadUserByUsername(authenticationToken.getEmail());
-        validatePassword(memberAdaptor, authenticationToken);
-
-        return new Authentication(memberAdaptor);
-    }
 
     private void validatePassword(MemberAdaptor memberAdaptor, AuthenticationToken authenticationToken) {
         if (memberAdaptor.checkPassword(authenticationToken.getPassword())) {
@@ -63,9 +58,5 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
             return;
         }
         throw new AuthenticationException();
-    }
-
-    public String extractJwtToken(Authentication authentication) {
-        return jwtTokenProvider.createToken(((MemberAdaptor) authentication.getPrincipal()).getEmail());
     }
 }

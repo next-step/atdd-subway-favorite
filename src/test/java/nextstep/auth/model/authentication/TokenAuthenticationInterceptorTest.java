@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
-import static nextstep.auth.model.authentication.service.MockServletDataFactory.*;
+import static nextstep.auth.model.factory.MockServletDataFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -55,20 +55,5 @@ class TokenAuthenticationInterceptorTest {
         // then
         assertThat(((MemberAdaptor) authentication.getPrincipal()).getEmail()).isEqualTo(MOCK_EMAIL);
         assertThat(((MemberAdaptor) authentication.getPrincipal()).getAge()).isEqualTo(26);
-    }
-
-    @Test
-    @DisplayName("authentication 을 통해 token 을 추출한다.")
-    void extractToken() throws IOException {
-        // given
-        MockHttpServletRequest mockRequest = createMockRequest(objectMapper);
-        AuthenticationToken authenticationToken = objectMapper.readValue(mockRequest.getInputStream(), AuthenticationToken.class);
-        Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
-
-        // when
-        String token = tokenAuthenticationInterceptor.extractJwtToken(authentication);
-
-        // then
-        assertThat(jwtTokenProvider.getPayload(token)).isEqualTo(MOCK_EMAIL);
     }
 }
