@@ -19,6 +19,7 @@ import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -32,6 +33,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 삼호선;
 
     private String accessToken;
+    private String otherAccessToken;
 
     @BeforeEach
     public void setUp() {
@@ -50,6 +52,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         회원_생성_요청("email@email.com", "password", 20);
         accessToken = 로그인_되어_있음("email@email.com", "password");
+
+        회원_생성_요청("other@email.com", "password", 21);
+        otherAccessToken = 로그인_되어_있음("other@email.com", "password");
     }
 
     @DisplayName("즐겨찾기를 생성한다")
@@ -95,13 +100,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("다른 사람의 즐겨찾기를 삭제할  수 없다")
+    @Test
+    void deleteFavoriteByOther() {
+        // given
+        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(otherAccessToken, 강남역, 남부터미널역);
+
+        // when
+        final ExtractableResponse<Response> response = 즐겨_찾기_삭제_요청(accessToken, createResponse.header("Location"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private ExtractableResponse<Response> 즐겨_찾기_삭제_요청(final String accessToken, final String locationUrl) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .accept(MediaType.ALL_VALUE)
                 .when().delete(locationUrl)
                 .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
 
@@ -111,7 +128,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -124,7 +140,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .body(params)
                 .when().post("/favorites")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
                 .extract();
     }
 
