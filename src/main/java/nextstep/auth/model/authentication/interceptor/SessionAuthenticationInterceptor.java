@@ -5,7 +5,6 @@ import nextstep.auth.model.authentication.UserDetails;
 import nextstep.auth.model.authentication.service.UserDetailsService;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 import static nextstep.auth.model.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-@Component(value = "sessionAuthenticationInterceptor")
 public class SessionAuthenticationInterceptor implements AuthenticationInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";

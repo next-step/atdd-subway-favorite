@@ -3,6 +3,8 @@ package nextstep.auth.model.authentication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.model.authentication.interceptor.AuthenticationInterceptor;
+import nextstep.auth.model.authentication.interceptor.SessionAuthenticationInterceptor;
+import nextstep.auth.model.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.model.authentication.service.UserDetailsService;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.factory.MockServletDataFactory;
@@ -34,10 +36,6 @@ class AuthenticationInterceptorTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private AuthenticationInterceptor sessionAuthenticationInterceptor;
-    @Autowired
-    private AuthenticationInterceptor tokenAuthenticationInterceptor;
-    @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -58,7 +56,8 @@ class AuthenticationInterceptorTest {
     @DisplayName("세션 기반 인증 interceptor 단위 테스트")
     void 세션_인증() throws IOException {
         // given
-        알맞는_interceptor_와_request_를_구성한다(sessionAuthenticationInterceptor, createSessionMockRequest());
+        authenticationInterceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        알맞는_interceptor_와_request_를_구성한다(authenticationInterceptor, createSessionMockRequest());
 
         // when
         인증을_수행한다();
@@ -80,7 +79,8 @@ class AuthenticationInterceptorTest {
     @DisplayName("토큰 기반 인증 interceptor 단위 테스트")
     void 토큰_인증() throws IOException {
         // given
-        알맞는_interceptor_와_request_를_구성한다(tokenAuthenticationInterceptor, createTokenMockRequest(objectMapper));
+        authenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        알맞는_interceptor_와_request_를_구성한다(authenticationInterceptor, createTokenMockRequest(objectMapper));
 
         // when
         인증을_수행한다();

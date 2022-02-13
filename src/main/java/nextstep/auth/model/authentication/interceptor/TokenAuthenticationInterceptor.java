@@ -8,13 +8,11 @@ import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.token.JwtTokenProvider;
 import nextstep.auth.model.token.dto.TokenResponse;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component(value = "tokenAuthenticationInterceptor")
 public class TokenAuthenticationInterceptor implements AuthenticationInterceptor {
 
     private UserDetailsService customUserDetailsService;
