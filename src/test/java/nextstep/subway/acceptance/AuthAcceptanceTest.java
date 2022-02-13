@@ -29,8 +29,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> 내_회원_정보_반환 = 내_회원_정보_조회_요청(accessToken);
 
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(내_회원_정보_반환, EMAIL, AGE);
     }
 }
