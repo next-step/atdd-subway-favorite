@@ -1,6 +1,5 @@
 package nextstep.favorite.domain;
 
-import nextstep.member.domain.Member;
 import nextstep.subway.domain.BaseEntity;
 import nextstep.subway.domain.Station;
 
@@ -16,12 +15,12 @@ public class Favorite extends BaseEntity {
     @Column(name = "member_id")
     private Long memberId;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "source_id")
     private Station sourceStation;
 
     @JoinColumn(name = "target_id")
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     private Station targetStation;
 
     protected Favorite() {
