@@ -19,7 +19,8 @@ public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapperBean objectMapper;
 
-    public TokenAuthenticationInterceptor2(UserDetailService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapperBean objectMapper) {
+    public TokenAuthenticationInterceptor2(UserDetailService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapperBean objectMapper, AuthenticationConverter authenticationConverter) {
+        super(authenticationConverter);
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
@@ -44,15 +45,6 @@ public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-    }
-
-    @Override
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-
-        return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {

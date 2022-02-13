@@ -14,12 +14,10 @@ import java.util.Map;
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor2 extends AuthenticationInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
-
     private UserDetailService userDetailsService;
 
-    public SessionAuthenticationInterceptor2(UserDetailService userDetailsService) {
+    public SessionAuthenticationInterceptor2(UserDetailService userDetailsService, AuthenticationConverter authenticationConverter) {
+        super(authenticationConverter);
         this.userDetailsService = userDetailsService;
     }
 
@@ -37,15 +35,6 @@ public class SessionAuthenticationInterceptor2 extends AuthenticationInterceptor
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);
-    }
-
-    @Override
-    public AuthenticationToken convert(HttpServletRequest request) {
-        Map<String, String[]> paramMap = request.getParameterMap();
-        String principal = paramMap.get(USERNAME_FIELD)[0];
-        String credentials = paramMap.get(PASSWORD_FIELD)[0];
-
-        return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken token) {

@@ -1,6 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor2;
 import nextstep.auth.authentication.UserDetailService;
@@ -42,6 +43,9 @@ class TokenAuthenticationInterceptorTest2 {
 
     @Mock
     private ObjectMapperBean objectMapper;
+
+    @Mock
+    private AuthenticationConverter converter;
 
     @InjectMocks
     private TokenAuthenticationInterceptor2 interceptor;
