@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class PathFinder {
     private final List<Line> lines;
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
         this.lines = lines;
@@ -22,7 +22,7 @@ public class PathFinder {
     }
 
     public List<Station> shortsPathStations(Station source, Station target) {
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
             throw new PathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
@@ -33,7 +33,7 @@ public class PathFinder {
         return (int)dijkstraShortestPath.getPathWeight(source, target);
     }
 
-    private DijkstraShortestPath createDijkstraShortestPath() {
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> createDijkstraShortestPath() {
         Set<Station> stations = new HashSet<>();
         List<Section> sections = new ArrayList<>();
         for (Line line : lines) {
@@ -41,7 +41,7 @@ public class PathFinder {
             sections.addAll(line.getSections());
         }
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Station station : stations) {
             graph.addVertex(station);
         }
