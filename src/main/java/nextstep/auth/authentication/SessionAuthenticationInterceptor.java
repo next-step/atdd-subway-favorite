@@ -11,8 +11,8 @@ import java.io.IOException;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class NewSessionAuthenticationInterceptor extends AuthenticationInterceptor {
-    public NewSessionAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService) {
+public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
+    public SessionAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService) {
         super(customUserDetailsService, new SessionAuthenticationTokenConverter());
     }
 

@@ -3,7 +3,7 @@ package nextstep.subway.unit;
 import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthenticationTokenConverter;
-import nextstep.auth.authentication.NewSessionAuthenticationInterceptor;
+import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.SessionAuthenticationTokenConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
@@ -44,7 +44,7 @@ class SessionAuthenticationInterceptorTest {
     void afterAuthentication() throws IOException {
         // given
         CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
-        AuthenticationInterceptor interceptor = new NewSessionAuthenticationInterceptor(userDetailsService);
+        AuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
 
