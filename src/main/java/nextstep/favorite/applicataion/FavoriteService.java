@@ -5,7 +5,6 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.CannotDeleteNotMineFavoriteException;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Line;
@@ -34,13 +33,12 @@ public class FavoriteService {
     }
 
     public Long createFavorite(Long memberId, Long sourceStationId, Long targetStationId) {
-        Member member = memberService.findById(memberId);
         Station sourceStation = stationService.findById(sourceStationId);
         Station targetStation = stationService.findById(targetStationId);
 
         validatePath(sourceStation, targetStation);
 
-        Favorite favorite = favoriteRepository.save(Favorite.of(member, sourceStation, targetStation));
+        Favorite favorite = favoriteRepository.save(Favorite.of(memberId, sourceStation, targetStation));
 
         return favorite.getId();
     }

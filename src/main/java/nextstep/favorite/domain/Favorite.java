@@ -13,9 +13,8 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name = "member_id")
+    private Long memberId;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "source_id")
@@ -28,14 +27,14 @@ public class Favorite extends BaseEntity {
     protected Favorite() {
     }
 
-    private Favorite(Member member, Station sourceStation, Station targetStation) {
-        this.member = member;
+    private Favorite(Long memberId, Station sourceStation, Station targetStation) {
+        this.memberId = memberId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }
 
-    public static Favorite of(Member member, Station sourceStation, Station targetStation) {
-        return new Favorite(member, sourceStation, targetStation);
+    public static Favorite of(Long memberId, Station sourceStation, Station targetStation) {
+        return new Favorite(memberId, sourceStation, targetStation);
     }
 
     public Long getId() {
