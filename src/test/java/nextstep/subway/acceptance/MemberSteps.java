@@ -107,4 +107,37 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, String changedEmail,
+                                                              String changedPassword, int changedAge) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("email", changedEmail);
+        requestBody.put("password", changedPassword);
+        requestBody.put("age", changedAge);
+
+        return RestAssured
+                .given().log().all()
+                .auth().preemptive().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(requestBody)
+
+                .when()
+                .put("/members/me")
+
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().preemptive().oauth2(accessToken)
+
+                .when()
+                .delete("/members/me")
+
+                .then().log().all()
+                .extract();
+    }
 }
