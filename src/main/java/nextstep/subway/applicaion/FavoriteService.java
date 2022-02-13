@@ -7,6 +7,7 @@ import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -32,8 +33,15 @@ public class FavoriteService {
         return favoriteRepository.save(favorite).getId();
     }
 
-    public List<Favorite> findAllFavorite(final Long id) {
-        final Member member = memberService.findById(id);
+    public List<Favorite> findAllFavorite(final Long memberId) {
+        final Member member = memberService.findById(memberId);
         return favoriteRepository.findByMember(member);
+    }
+
+    public void delete(final Long memberId, final Long favoriteId) {
+        final Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
+        if (favorite.isMember(memberId)) {
+            favoriteRepository.delete(favorite);
+        }
     }
 }

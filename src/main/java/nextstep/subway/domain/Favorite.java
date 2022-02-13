@@ -30,6 +30,10 @@ public class Favorite {
         this.target = target;
     }
 
+    public boolean isMember(final Long memberId) {
+        return member.getId() == memberId;
+    }
+
     public Long getId() {
         return id;
     }
