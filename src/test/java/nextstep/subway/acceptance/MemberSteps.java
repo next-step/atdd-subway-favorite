@@ -93,12 +93,37 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
-        return RestAssured.given().log().all()
+        return RestAssured
+                .given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_수정_요청(String accessToken, String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/members/me")
+                .then().log().all()
                 .extract();
     }
 
@@ -106,5 +131,9 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 회원_생성_요청_확인(ExtractableResponse<Response> response) {
+
     }
 }
