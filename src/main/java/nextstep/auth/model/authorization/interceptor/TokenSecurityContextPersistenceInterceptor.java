@@ -1,18 +1,18 @@
-package nextstep.auth.model.authorization;
+package nextstep.auth.model.authorization.interceptor;
 
 import nextstep.auth.model.authentication.UserDetails;
 import nextstep.auth.model.authentication.service.UserDetailsService;
+import nextstep.auth.model.authorization.AuthorizationExtractor;
+import nextstep.auth.model.authorization.AuthorizationType;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
-import nextstep.subway.domain.member.MemberAdaptor;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor implements SecurityContextPersistenceInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
 

@@ -1,5 +1,6 @@
-package nextstep.auth.model.authorization;
+package nextstep.auth.model.authorization.resolver;
 
+import nextstep.auth.model.authorization.AuthenticationPrincipal;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContextHolder;
 import org.springframework.core.MethodParameter;
