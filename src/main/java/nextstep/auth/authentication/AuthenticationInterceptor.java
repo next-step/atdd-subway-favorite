@@ -1,8 +1,7 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.context.DetailMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailService userDetailsService;
     private final AuthenticationTokenConverter authenticationTokenConverter;
 
-    protected AuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, AuthenticationTokenConverter authenticationTokenConverter) {
-        this.customUserDetailsService = customUserDetailsService;
+    protected AuthenticationInterceptor(UserDetailService userDetailService, AuthenticationTokenConverter authenticationTokenConverter) {
+        this.userDetailsService = userDetailService;
         this.authenticationTokenConverter = authenticationTokenConverter;
     }
 
@@ -29,18 +28,18 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
+        DetailMember detailMember = userDetailsService.loadUserByUsername(principal);
+        checkAuthentication(detailMember, token);
 
-        return new Authentication(userDetails);
+        return new Authentication(detailMember);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
+    private void checkAuthentication(DetailMember detailMember, AuthenticationToken token) {
+        if (detailMember == null) {
             throw new AuthenticationException();
         }
 
-        if (!userDetails.checkPassword(token.getCredentials())) {
+        if (!detailMember.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
     }

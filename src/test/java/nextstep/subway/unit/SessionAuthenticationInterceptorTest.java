@@ -5,9 +5,10 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthenticationTokenConverter;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.SessionAuthenticationTokenConverter;
+import nextstep.auth.authentication.UserDetailService;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.context.DetailMember;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ class SessionAuthenticationInterceptorTest {
     @Test
     void afterAuthentication() throws IOException {
         // given
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailService userDetailsService = mock(UserDetailService.class);
         AuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, AGE));
@@ -60,7 +61,7 @@ class SessionAuthenticationInterceptorTest {
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         SecurityContext securityContext = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        LoginMember loginMember = (LoginMember) securityContext.getAuthentication().getPrincipal();
+        DetailMember loginMember = (DetailMember) securityContext.getAuthentication().getPrincipal();
         assertThat(loginMember).isEqualTo(new LoginMember(1L, EMAIL, PASSWORD, AGE));
     }
 

@@ -6,11 +6,11 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthenticationTokenConverter;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.authentication.TokenAuthenticationTokenConverter;
+import nextstep.auth.authentication.UserDetailService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -48,7 +48,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void afterAuthentication() throws IOException {
         // given
-        CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        UserDetailService userDetailsService = mock(UserDetailService.class);
         JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
         AuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new ObjectMapper());
 
