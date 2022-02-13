@@ -2,6 +2,7 @@ package nextstep.subway.applicaion;
 
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,21 +30,36 @@ class FavoriteServiceTest {
     private FavoriteService favoriteService;
 
     private Member member;
-    private Station source;
-    private Station target;
+    private Station 강남역;
+    private Station 남부터미널역;
+    private Station 교대역;
+    private Station 양재역;
 
     @BeforeEach
     void setUp() {
         member = memberRepository.save(new Member("email@email.com", "password", 20));
-        source = stationRepository.save(new Station("강남역"));
-        target = stationRepository.save(new Station("남부터미널역"));
+        강남역 = stationRepository.save(new Station("강남역"));
+        남부터미널역 = stationRepository.save(new Station("남부터미널역"));
+        교대역 = stationRepository.save(new Station("교대역"));
+        양재역 = stationRepository.save(new Station("영재역"));
     }
 
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void createFavorite() {
-        final Long favoriteId = favoriteService.createFavorite(member.getId(), source.getId(), target.getId());
+        final Long favoriteId = favoriteService.createFavorite(member.getId(), 강남역.getId(), 남부터미널역.getId());
 
         assertThat(favoriteId).isEqualTo(1L);
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void findAllFavorite() {
+        favoriteService.createFavorite(member.getId(), 강남역.getId(), 남부터미널역.getId());
+        favoriteService.createFavorite(member.getId(), 교대역.getId(), 양재역.getId());
+
+        List<Favorite> favorites = favoriteService.findAllFavorite(member.getId());
+
+        assertThat(favorites.size()).isEqualTo(2);
     }
 }
