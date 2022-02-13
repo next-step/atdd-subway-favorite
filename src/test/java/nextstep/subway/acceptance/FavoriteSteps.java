@@ -15,8 +15,8 @@ public class FavoriteSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
         Map<String, Object> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
+        params.put("sourceId", source);
+        params.put("targetId", target);
 
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
@@ -48,8 +48,8 @@ public class FavoriteSteps {
     }
 
     public static void 즐겨찾기_조회됨(ExtractableResponse<Response> response, Long source, Long target) {
-        assertThat(response.jsonPath().getLong("source.id")).isEqualTo(source);
-        assertThat(response.jsonPath().getLong("target.id")).isEqualTo(target);
+        assertThat(response.jsonPath().getList("source.id", Long.class).get(0)).isEqualTo(source);
+        assertThat(response.jsonPath().getList("target.id", Long.class).get(0)).isEqualTo(target);
     }
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {

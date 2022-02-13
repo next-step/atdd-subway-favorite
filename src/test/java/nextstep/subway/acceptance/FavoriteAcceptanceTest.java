@@ -24,6 +24,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+        super.setUp();
+
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         역삼역 = 지하철역_생성_요청("역삼역").jsonPath().getLong("id");
         선릉역 = 지하철역_생성_요청("선릉역").jsonPath().getLong("id");
@@ -47,7 +49,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청(accessToken);
         즐겨찾기_조회됨(getResponse, 강남역, 선릉역);
 
-        Long 즐겨찾기 = getResponse.jsonPath().getLong("id");
+        Long 즐겨찾기 = getResponse.jsonPath().getList("id", Long.class).get(0);
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, 즐겨찾기);
         즐겨찾기_삭제됨(deleteResponse);
     }

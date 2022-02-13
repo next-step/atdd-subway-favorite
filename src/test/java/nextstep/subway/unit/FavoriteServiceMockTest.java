@@ -25,6 +25,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class FavoriteServiceMockTest {
 
+    private static final Long MEMBER_ID = 1L;
+
     @Mock
     private FavoriteRepository favoriteRepository;
 
@@ -46,7 +48,7 @@ public class FavoriteServiceMockTest {
         when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
 
         List<Favorite> favoriteList = new ArrayList<>();
-        favoriteList.add(new Favorite(1L, 강남역, 역삼역));
+        favoriteList.add(new Favorite(MEMBER_ID, 강남역, 역삼역));
         when(favoriteRepository.findAllByMemberId(any())).thenReturn(favoriteList);
         favoriteService = new FavoriteService(favoriteRepository, stationService);
     }
@@ -54,9 +56,9 @@ public class FavoriteServiceMockTest {
     @Test
     void addFavorite() {
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 강남역.getId(), 역삼역.getId());
-        favoriteService.addFavorite(favoriteRequest);
+        favoriteService.createFavorite(MEMBER_ID, favoriteRequest);
 
-        List<FavoriteResponse> responseList = favoriteService.findFavorite(favoriteRequest);
+        List<FavoriteResponse> responseList = favoriteService.findFavorite(MEMBER_ID);
         assertThat(responseList.size()).isEqualTo(1);
         assertThat(responseList.get(0).getSource().getName()).isEqualTo("강남역");
         assertThat(responseList.get(0).getTarget().getName()).isEqualTo("역삼역");
