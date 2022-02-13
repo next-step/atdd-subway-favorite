@@ -55,25 +55,54 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 생성한다")
     @Test
     void createFavorite() {
+        // when
         final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
 
+        // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("즐겨찾기 목록을 조회한다")
     @Test
     void findAllFavorite() {
+        // given
         즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
         즐겨찾기_생성_요청(accessToken, 양재역, 강남역);
         즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
         즐겨찾기_생성_요청(accessToken, 남부터미널역, 교대역);
+
+        // when
         final ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
 
+        // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(강남역, 양재역, 교대역, 남부터미널역),
                 () -> assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(남부터미널역, 강남역, 양재역, 교대역)
         );
+    }
+
+    @DisplayName("즐겨찾기를 삭제한다")
+    @Test
+    void deleteFavorite() {
+        // given
+        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 남부터미널역);
+
+        // when
+        final ExtractableResponse<Response> response = 즐겨_찾기_삭제_요청(accessToken, createResponse.jsonPath().getLong("id"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    private ExtractableResponse<Response> 즐겨_찾기_삭제_요청(final String accessToken, final long id) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.ALL_VALUE)
+                .when().delete("/favorites/"+id)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final String accessToken) {
