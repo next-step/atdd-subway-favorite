@@ -1,6 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.when;
 class TokenAuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailService userDetailService;
     private ObjectMapper objectMapper;
     private JwtTokenProvider jwtTokenProvider;
     private AuthenticationConverter authenticationConverter;
@@ -39,11 +40,11 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
+        userDetailService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
         objectMapper = new ObjectMapper();
         authenticationConverter = new TokenAuthenticationConverter(objectMapper);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(authenticationConverter, customUserDetailsService, jwtTokenProvider, objectMapper);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(authenticationConverter, userDetailService, jwtTokenProvider, objectMapper);
     }
 
     @DisplayName("이메일/비밀번호가 담긴 토큰을 반환한다.")
@@ -66,7 +67,7 @@ class TokenAuthenticationInterceptorTest {
         // given
         Member member = new Member(EMAIL, PASSWORD, 10);
         LoginMember loginMember = LoginMember.of(member);
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(userDetailService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when
@@ -84,7 +85,7 @@ class TokenAuthenticationInterceptorTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         LoginMember loginMember = LoginMember.of(new Member(EMAIL, PASSWORD, 10));
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(userDetailService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         when(jwtTokenProvider.createToken(any())).thenReturn(JWT_TOKEN);
 
         // when

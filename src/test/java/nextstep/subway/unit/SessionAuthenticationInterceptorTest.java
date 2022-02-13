@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
@@ -23,15 +24,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class SessionAuthenticationInterceptorTest {
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailService userDetailsService;
     private AuthenticationConverter authenticationConverter;
     private SessionAuthenticationInterceptor sessionAuthenticationInterceptor;
 
     @BeforeEach
     void setUp() {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
+        userDetailsService = mock(CustomUserDetailsService.class);
         authenticationConverter = new SessionAuthenticationConverter();
-        sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(authenticationConverter, customUserDetailsService);
+        sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(authenticationConverter, userDetailsService);
     }
 
     @DisplayName("이메일/비밀번호가 담긴 토큰을 반환한다.")
@@ -54,7 +55,7 @@ class SessionAuthenticationInterceptorTest {
         // given
         Member member = new Member(EMAIL, PASSWORD, 10);
         LoginMember loginMember = LoginMember.of(member);
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
         AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
 
         // when
@@ -72,7 +73,7 @@ class SessionAuthenticationInterceptorTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         LoginMember loginMember = LoginMember.of(new Member(EMAIL, PASSWORD, 10));
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(loginMember);
 
         // when
         sessionAuthenticationInterceptor.preHandle(request, response, null);
