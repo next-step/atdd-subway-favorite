@@ -1,11 +1,11 @@
 package nextstep.auth.authentication.interceptor;
 
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.UserDetails;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +15,11 @@ import java.io.IOException;
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final AuthenticationConverter authenticationConverter;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailService userDetailService;
 
-    public AuthenticationInterceptor(AuthenticationConverter authenticationConverter, CustomUserDetailsService customUserDetailsService) {
+    public AuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailService userDetailService) {
         this.authenticationConverter = authenticationConverter;
-        this.customUserDetailsService = customUserDetailsService;
+        this.userDetailService = userDetailService;
     }
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -35,15 +35,15 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws  IOException;
+    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken authenticationToken) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken authenticationToken) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }
