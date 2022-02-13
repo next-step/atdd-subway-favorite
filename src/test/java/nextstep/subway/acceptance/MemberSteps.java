@@ -132,8 +132,4 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
-
-    public static void 회원_생성_요청_확인(ExtractableResponse<Response> response) {
-
-    }
 }
