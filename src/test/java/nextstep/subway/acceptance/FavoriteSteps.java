@@ -46,4 +46,17 @@ public class FavoriteSteps {
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> fineResponse) {
         assertThat(fineResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> createResponse) {
+        Long id = createResponse.jsonPath().getLong("id");
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/favorites/{id}", id)
+                .then().log().all().extract();
+    }
+
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }

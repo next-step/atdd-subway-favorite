@@ -50,14 +50,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void findFavorites() {
         // given
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
-        즐겨찾기_생성됨(createResponse);
+        즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
 
         // when
         ExtractableResponse<Response> fineResponse = 즐겨찾기_목록_조회_요청(accessToken);
 
         // then
         즐겨찾기_목록_조회됨(fineResponse);
+    }
+
+    @Test
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+
     }
 
     /**
