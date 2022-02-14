@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
-    private ObjectMapperBean objectMapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapperBean objectMapper;
 
     public TokenAuthenticationInterceptor(UserDetailService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapperBean objectMapper, AuthenticationConverter authenticationConverter) {
         super(authenticationConverter, customUserDetailsService);

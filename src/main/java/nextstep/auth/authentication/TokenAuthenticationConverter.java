@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class TokenAuthenticationConverter implements AuthenticationConverter {
-    private ObjectMapperBean objectMapper;
+    private final ObjectMapperBean objectMapper;
 
     public TokenAuthenticationConverter(ObjectMapperBean objectMapper) {
         this.objectMapper = objectMapper;

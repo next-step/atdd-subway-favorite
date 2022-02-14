@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
-    private AuthenticationConverter converter;
-    private UserDetailService userDetailService;
+    private final AuthenticationConverter converter;
+    private final UserDetailService userDetailService;
 
     public AuthenticationInterceptor(AuthenticationConverter converter, UserDetailService userDetailService) {
         this.converter = converter;
@@ -27,7 +27,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
-    public Authentication authenticate(AuthenticationToken token) {
+    private Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
         UserDetails userDetails = userDetailService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
