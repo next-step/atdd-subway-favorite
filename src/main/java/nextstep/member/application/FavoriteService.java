@@ -9,8 +9,13 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
@@ -31,11 +36,23 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
+    @Transactional(readOnly = true)
     private Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional(readOnly = true)
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        Member member = findMemberById(memberId);
+        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
+        return favorites
+                .stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }
