@@ -3,14 +3,14 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
-import nextstep.auth.context.Authentication;
+import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.token.TokenAuthenticationConverter;
+import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.subway.support.MockRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,38 +41,19 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        TokenAuthenticationConverter converter = new TokenAuthenticationConverter(objectMapper);
+
         userDetailsService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
-        request = createMockRequest();
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, converter, jwtTokenProvider, objectMapper);
+        request = MockRequest.createTokenRequest(new TokenRequest(EMAIL, PASSWORD));
         response = new MockHttpServletResponse();
     }
 
     @Test
-    @DisplayName("httpRequest로 AuthenticationToken 생성")
-    void convert() throws IOException {
-        AuthenticationToken token = interceptor.convert(request);
-
-        AuthenticationToken_생성_검증(token);
-    }
-
-    @Test
-    @DisplayName("로그인 사용자 검증")
-    void authenticate() {
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
-
-        Authentication authenticate = interceptor.authenticate(authenticationToken);
-
-        authenticate_사용자_검증(authenticate);
-    }
-
-    @Test
-    void preHandle() throws IOException {
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
-
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+    void preHandle() throws Exception {
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails(1L, EMAIL, PASSWORD));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         interceptor.preHandle(request, response, new Object());
@@ -83,41 +64,21 @@ class TokenAuthenticationInterceptorTest {
     @Test
     @DisplayName("비밀번호가 일치하지 않으면 AuthenticationException 발생")
     void authenticateInvalidPassword() {
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, "NEW_PASSWORD", 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails(1L, EMAIL, "NEW_PASSWORD"));
 
-        사용자_검증에_실패하면_에러_발생(authenticationToken, interceptor);
+        사용자_검증에_실패하면_에러_발생(interceptor, request, response, new Object());
     }
 
     @Test
     @DisplayName("사용자 정보가 없으면 AuthenticationException 발생")
     void authenticateUserNotFound() {
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(null);
 
-        사용자_검증에_실패하면_에러_발생(authenticationToken, interceptor);
+        사용자_검증에_실패하면_에러_발생(interceptor, request, response, new Object());
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
-
-    private void AuthenticationToken_생성_검증(AuthenticationToken token) {
-        assertThat(token.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(token.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    private void authenticate_사용자_검증(Authentication authenticate) {
-        assertThat(authenticate.getPrincipal()).isEqualTo(new LoginMember(1L, EMAIL, PASSWORD, 20));
-    }
-
-    private void 사용자_검증에_실패하면_에러_발생(AuthenticationToken authenticationToken, TokenAuthenticationInterceptor interceptor) {
-        assertThatThrownBy(() -> interceptor.authenticate(authenticationToken))
+    private void 사용자_검증에_실패하면_에러_발생(TokenAuthenticationInterceptor interceptor, MockHttpServletRequest request, MockHttpServletResponse response, Object o) {
+        assertThatThrownBy(() -> interceptor.preHandle(request, response, o))
             .isInstanceOf(AuthenticationException.class);
     }
 
