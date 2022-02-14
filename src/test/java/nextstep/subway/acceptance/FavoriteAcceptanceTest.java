@@ -38,6 +38,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         로그인_요청(EMAIL, PASSWORD);
     }
 
+    @Test
+    void createFavorite() {
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(강남역, 양재역);
+        FavoriteSteps.즐겨찾기_생성됨(createResponse);
+    }
+
     /**
      * Feature: 즐겨찾기를 관리한다.
      *
@@ -52,7 +58,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기를 관리한다.")
     void manageFavorite() {
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(강남역, 양재역);
-        FavoriteSteps.즐겨찾기_생성됨(createResponse);
+
     }
 }
