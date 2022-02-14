@@ -5,6 +5,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
+import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -17,6 +18,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
+
+    public static final String USERNAME_FIELD = "username";
+    public static final String PASSWORD_FIELD = "password";
+
+
     public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -27,8 +33,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
+//        final String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+//        final String token = jwtTokenProvider.createToken(payload);
+
         // TODO: authentication으로 TokenResponse 추출하기
         TokenResponse tokenResponse = null;
+//        TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -39,11 +49,13 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
+        final String requestString = request.getReader()
+                .lines()
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
 
-        return new AuthenticationToken(principal, credentials);
+        JSONObject requestJson = new JSONObject(requestString);
+        return new AuthenticationToken(requestJson.get("email").toString(), requestJson.get("password").toString());
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
