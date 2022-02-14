@@ -24,8 +24,7 @@ public class LoginMember implements UserDetail {
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
-
-    @Override
+    
     public String getEmail() {
         return email;
     }
