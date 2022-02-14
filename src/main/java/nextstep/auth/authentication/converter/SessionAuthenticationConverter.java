@@ -4,7 +4,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class SessionAuthenticationConverter implements AuthenticationConverter{
+public class SessionAuthenticationConverter implements AuthenticationConverter {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
