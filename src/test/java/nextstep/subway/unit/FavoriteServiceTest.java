@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.unit.auth.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @DataJpaTest
 class FavoriteServiceTest {
@@ -89,10 +90,24 @@ class FavoriteServiceTest {
         FavoriteResponse response = favoriteService.createFavorite(memberId, createRequest);
 
         // when
-        favoriteService.deleteFavorite(response.getId());
+        favoriteService.deleteFavorite(memberId, response.getId());
 
         // then
         Optional<Favorite> favorite = favoriteRepository.findById(response.getId());
         assertThat(favorite).isEmpty();
+    }
+
+    @Test
+    void deleteFavoriteNotMine() {
+        // given
+        Member anotherMember = memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        FavoriteRequest createRequest = new FavoriteRequest(source, target);
+        FavoriteResponse response = favoriteService.createFavorite(memberId, createRequest);
+
+        // when
+        Throwable thrown = catchThrowable(() -> { favoriteService.deleteFavorite(anotherMember.getId(), response.getId()); });
+
+        // then
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
     }
 }
