@@ -7,7 +7,6 @@ import nextstep.auth.token.TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class TokenAuthenticationConverter implements AuthenticationConverter {
     private final ObjectMapper objectMapper;
@@ -18,16 +17,10 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = objectMapper.readValue(getRequestBody(request), TokenRequest.class);
+        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
         return new AuthenticationToken(principal, credentials);
-    }
-
-    private String getRequestBody(HttpServletRequest request) throws IOException {
-        return request.getReader()
-            .lines()
-            .collect(Collectors.joining(System.lineSeparator()));
     }
 }
