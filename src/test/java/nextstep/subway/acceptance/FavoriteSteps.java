@@ -12,11 +12,12 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteSteps {
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
         Map<String, String> params = createParams(source, target);
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/favorites")

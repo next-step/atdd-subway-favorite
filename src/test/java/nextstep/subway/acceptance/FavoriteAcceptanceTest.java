@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_등록되어_있음;
-import static nextstep.subway.acceptance.MemberSteps.로그인_요청;
-import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -19,6 +18,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 강남역;
     private Long 양재역;
+    String accessToken;
 
     /**
      *   Background
@@ -35,13 +35,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
         지하철_노선_등록되어_있음(강남역, 양재역);
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        로그인_요청(EMAIL, PASSWORD);
+        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
     @Test
     void createFavorite() {
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(강남역, 양재역);
-        FavoriteSteps.즐겨찾기_생성됨(createResponse);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+        즐겨찾기_생성됨(createResponse);
     }
 
     /**
