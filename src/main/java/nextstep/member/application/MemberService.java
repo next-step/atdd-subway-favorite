@@ -34,8 +34,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMemberByEmailAndPassword(LoginMember loginMember) {
-        final Member foundMember = memberRepository.findByEmailAndPassword(loginMember.getEmail(), loginMember.getPassword())
+    public MemberResponse findMemberByEmail(String email) {
+        final Member foundMember = memberRepository.findByEmail(email)
                 .orElseThrow(RuntimeException::new);
         return MemberResponse.of(foundMember);
     }
