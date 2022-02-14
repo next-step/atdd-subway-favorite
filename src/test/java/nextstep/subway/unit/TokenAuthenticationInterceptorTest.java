@@ -1,11 +1,8 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.val;
-import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
-import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
