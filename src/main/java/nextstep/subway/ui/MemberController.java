@@ -47,12 +47,15 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal MemberAdaptor memberAdaptor,
+                                                             @RequestBody MemberRequest memberRequest) {
+        MemberResponse memberResponse = memberService.updateMember(memberAdaptor.getId(), memberRequest);
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine() {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal MemberAdaptor memberAdaptor) {
+        memberService.deleteMember(memberAdaptor.getId());
         return ResponseEntity.noContent().build();
     }
 }

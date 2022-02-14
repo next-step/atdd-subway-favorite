@@ -6,8 +6,12 @@ public class SecurityContext {
     public SecurityContext() {
     }
 
-    public SecurityContext(Authentication authentication) {
+    private SecurityContext(Authentication authentication) {
         this.authentication = authentication;
+    }
+
+    public static SecurityContext from(Authentication authentication) {
+        return new SecurityContext(authentication);
     }
 
     public void setAuthentication(Authentication authentication) {

@@ -1,24 +1,22 @@
-package nextstep.auth.model.authorization;
+package nextstep.auth.model.authorization.interceptor;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.model.authentication.service.CustomUserDetailsService;
+import nextstep.auth.model.authentication.UserDetails;
+import nextstep.auth.model.authentication.service.UserDetailsService;
+import nextstep.auth.model.authorization.AuthorizationExtractor;
+import nextstep.auth.model.authorization.AuthorizationType;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
 import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
-import nextstep.subway.domain.member.MemberAdaptor;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor implements SecurityContextPersistenceInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService) {
+    public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
     }
@@ -51,9 +49,9 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     private SecurityContext extractSecurityContext(String jwtToken) {
         try {
             String email = jwtTokenProvider.getPayload(jwtToken);
-            MemberAdaptor memberAdaptor = userDetailsService.loadUserByUsername(email);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            return new SecurityContext(new Authentication(memberAdaptor));
+            return SecurityContext.from(new Authentication(userDetails));
         } catch (Exception e) {
             return null;
         }
