@@ -1,153 +1,140 @@
 package nextstep.subway.domain;
 
+import nextstep.subway.ui.exception.SectionException;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Sections() {
+    void addSection(Section newSection) {
+        validateAddSectionStationNotExistInSection(newSection);
+        for (Section existingSection : sections) {
+            existingSection.updateAddLineBetweenSection(newSection);
+        }
+        sections.add(newSection);
     }
 
-    public Sections(List<Section> sections) {
-        this.sections = sections;
+    void remove(Station downStation) {
+        validateOneSection();
+        Section removeSection = sections.stream()
+                .filter(equalsDownStation(downStation))
+                .findFirst()
+                .orElseThrow(() ->
+                        new SectionException(String.format("상행역과 하행역 모두 구간에 존재하지 않는 역입니다. 하행역 = %s", downStation)));
+        sections.remove(removeSection);
+
+        for (Section section : sections) {
+            section.updateRemoveLineBetweenSection(removeSection);
+        }
+    }
+
+    List<Station> getStations() {
+        return getStations(getFirstSection());
+    }
+
+    boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
+    Station getDownStation(int sectionIndex) {
+        return sections.get(sectionIndex).getDownStation();
+    }
+
+    int size() {
+        return sections.size();
     }
 
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
-    public void add(Section section) {
-        if (this.sections.isEmpty()) {
-            this.sections.add(section);
-            return;
+    private Predicate<Section> equalsDownStation(Station downStation) {
+        return section -> section.getDownStation().equals(downStation);
+    }
+
+    private void validateAddSectionStationNotExistInSection(Section section) {
+        if (!getUpStations().contains(section.getUpStation()) &&
+                !getUpStations().contains(section.getDownStation()) &&
+                !getDownStations().contains(section.getUpStation()) &&
+                !getDownStations().contains(section.getDownStation()) &&
+                !sections.isEmpty()) {
+            throw new SectionException(
+                    String.format("상행역과 하행역 모두 구간에 존재하지 않는 역입니다. 상행역 = %s, 하행역 = %s",
+                            section.getUpStation().getName(), section.getDownStation().getName()));
         }
-
-        checkDuplicateSection(section);
-
-        rearrangeSectionWithUpStation(section);
-        rearrangeSectionWithDownStation(section);
-
-        sections.add(section);
     }
 
-    public void delete(Station station) {
-        if (this.sections.size() <= 1) {
-            throw new IllegalArgumentException();
+    private void validateOneSection() {
+        if (sections.size() <= 1) {
+            throw new SectionException("구간이 1개 이하인 경우 삭제할 수 없습니다.");
         }
-
-        Optional<Section> upSection = findSectionAsUpStation(station);
-        Optional<Section> downSection = findSectionAsDownStation(station);
-
-        addNewSectionForDelete(upSection, downSection);
-
-        upSection.ifPresent(it -> this.sections.remove(it));
-        downSection.ifPresent(it -> this.sections.remove(it));
     }
 
-    public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        Station upStation = findFirstUpStation();
-        List<Station> result = new ArrayList<>();
-        result.add(upStation);
-
-        while (true) {
-            Station finalUpStation = upStation;
-            Optional<Section> section = findSectionAsUpStation(finalUpStation);
-
-            if (!section.isPresent()) {
-                break;
-            }
-
-            upStation = section.get().getDownStation();
-            result.add(upStation);
-        }
-
-        return result;
-    }
-
-    private void checkDuplicateSection(Section section) {
-        sections.stream()
-                .filter(it -> it.hasDuplicateSection(section.getUpStation(), section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> {
-                    throw new IllegalArgumentException();
-                });
-    }
-
-    private void rearrangeSectionWithDownStation(Section section) {
-        sections.stream()
-                .filter(it -> it.isSameDownStation(section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> {
-                    // 신규 구간의 상행역과 기존 구간의 상행역에 대한 구간을 추가한다.
-                    sections.add(new Section(section.getLine(), it.getUpStation(), section.getUpStation(), it.getDistance() - section.getDistance()));
-                    sections.remove(it);
-                });
-    }
-
-    private void rearrangeSectionWithUpStation(Section section) {
-        sections.stream()
-                .filter(it -> it.isSameUpStation(section.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> {
-                    // 신규 구간의 하행역과 기존 구간의 하행역에 대한 구간을 추가한다.
-                    sections.add(new Section(section.getLine(), section.getDownStation(), it.getDownStation(), it.getDistance() - section.getDistance()));
-                    sections.remove(it);
-                });
-    }
-
-    private Station findFirstUpStation() {
-        List<Station> upStations = this.sections.stream()
+    private List<Station> getUpStations() {
+        return sections.stream()
                 .map(Section::getUpStation)
                 .collect(Collectors.toList());
-        List<Station> downStations = this.sections.stream()
+    }
+
+    private List<Station> getDownStations() {
+        return sections.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
+    }
 
-        return upStations.stream()
-                .filter(it -> !downStations.contains(it))
+    private List<Station> getStations(Section firstSection) {
+        List<Station> stations = new ArrayList<>();
+        addEndUpSectionStation(firstSection, stations);
+        addEndDownStation(stations);
+        return stations;
+    }
+
+    private Section getFirstSection() {
+        return sections.stream()
+                .filter(section ->
+                        getDownStations().stream()
+                        .noneMatch(equalsUpAndDownStation(section)))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElse(sections.get(0));
     }
 
-    private void addNewSectionForDelete(Optional<Section> upSection, Optional<Section> downSection) {
-        if (upSection.isPresent() && downSection.isPresent()) {
-            Section newSection = new Section(
-                    upSection.get().getLine(),
-                    downSection.get().getUpStation(),
-                    upSection.get().getDownStation(),
-                    upSection.get().getDistance() + downSection.get().getDistance()
-            );
+    private Predicate<Station> equalsUpAndDownStation(Section section) {
+        return downStation -> downStation.equals(section.getUpStation());
+    }
 
-            this.sections.add(newSection);
+    /**
+     *
+     * @param firstSection : getFirstSection()에서 가져온 상행 종점 구간이다.
+     * @param stations : 빈 객체로 최초로 상행 종점 구간의 역을 추가할 객체이다.
+     */
+    private void addEndUpSectionStation(Section firstSection, List<Station> stations) {
+        stations.add(firstSection.getUpStation());
+        stations.add(firstSection.getDownStation());
+    }
+
+    /**
+     * 상행 종점 구간의 하행 종점역 부터 시작하여 추가되는 하행 종점역과 각 구간의 상행역이 같으면 각 구간의 하행역을 추가한다.
+     * @param stations : getFirstSection()에서 가져온 상행 종점 구간의 상행 종점역과 하행 종점역
+     */
+    private void addEndDownStation(List<Station> stations) {
+        for (int i = 0; i < stations.size(); i++) {
+            for (Section section : sections) {
+                Station endDownStation = stations.get(stations.size() - 1);
+                if (endDownStation.equals(section.getUpStation())) {
+                    stations.add(section.getDownStation());
+                }
+            }
         }
-    }
-
-    private Optional<Section> findSectionAsUpStation(Station finalUpStation) {
-        return this.sections.stream()
-                .filter(it -> it.isSameUpStation(finalUpStation))
-                .findFirst();
-    }
-
-    private Optional<Section> findSectionAsDownStation(Station station) {
-        return this.sections.stream()
-                .filter(it -> it.isSameDownStation(station))
-                .findFirst();
-    }
-
-    public int totalDistance() {
-        return sections.stream().mapToInt(Section::getDistance).sum();
     }
 }

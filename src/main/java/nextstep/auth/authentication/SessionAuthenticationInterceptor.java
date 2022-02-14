@@ -34,6 +34,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    // Form을 이용해 로그인 정보를 추출
     public AuthenticationToken convert(HttpServletRequest request) {
         Map<String, String[]> paramMap = request.getParameterMap();
         String principal = paramMap.get(USERNAME_FIELD)[0];

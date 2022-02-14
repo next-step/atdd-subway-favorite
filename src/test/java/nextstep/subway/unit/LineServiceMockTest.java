@@ -2,7 +2,9 @@ package nextstep.subway.unit;
 
 import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.StationService;
+import nextstep.subway.applicaion.dto.LineResponse;
 import nextstep.subway.applicaion.dto.SectionRequest;
+import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
@@ -11,9 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,43 +22,53 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceMockTest {
+
     @Mock
     private LineRepository lineRepository;
     @Mock
     private StationService stationService;
 
-    @Autowired
-    private LineService lineService;
-    private Station 강남역;
-    private Station 역삼역;
-    private Station 삼성역;
-    private Line 이호선;
+    LineService lineService = null;
+
+    private Station 가양역;
+    private Station 증미역;
+    private Long 가양역_ID = 1L;
+    private Long 증미역_ID = 2L;
+    private Line 구호선;
+    private Long 구호선_ID;
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(lineRepository, stationService);
+        가양역 = new Station("가양역");
+        증미역 = new Station("증미역");
+        가양역_ID = 1L;
+        증미역_ID = 2L;
 
-        강남역 = new Station("강남역");
-        ReflectionTestUtils.setField(강남역, "id", 1L);
-        역삼역 = new Station("역삼역");
-        ReflectionTestUtils.setField(역삼역, "id", 2L);
-        삼성역 = new Station("삼성역");
-        ReflectionTestUtils.setField(삼성역, "id", 3L);
-        이호선 = new Line("2호선", "green");
-        이호선.addSection(강남역, 역삼역, 10);
-        ReflectionTestUtils.setField(이호선, "id", 1L);
+        구호선 = new Line("9호선", "갈색");
+        구호선_ID = 1L;
+
+        lineService = new LineService(lineRepository, stationService);
     }
 
     @Test
     void addSection() {
-        when(lineRepository.findById(이호선.getId())).thenReturn(Optional.of(이호선));
-        when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
-        when(stationService.findById(삼성역.getId())).thenReturn(삼성역);
+        // given
+        // lineRepository, stationService stub 설정을 통해 초기값 셋팅
+        when(stationService.findById(가양역_ID)).thenReturn(가양역);
+        when(stationService.findById(증미역_ID)).thenReturn(증미역);
+        when(lineRepository.findById(구호선_ID)).thenReturn(Optional.of(구호선));
 
-        lineService.addSection(이호선.getId(), new SectionRequest(역삼역.getId(), 삼성역.getId(), 10));
+        SectionRequest sectionRequest = new SectionRequest(가양역_ID, 증미역_ID, 10);
 
-        Line line = lineService.findById(1L);
+        // when
+        // lineService.addSection 호출
+        lineService.addSection(구호선_ID, sectionRequest);
 
-        assertThat(line.getSections().size()).isEqualTo(2);
+        // then
+        // line.findLineById 메서드를 통해 검증
+        LineResponse response = lineService.findById(구호선_ID);
+        List<StationResponse> stations = response.getStations();
+        assertThat(stations.size()).isEqualTo(2);
+        assertThat(response.getStations().get(0).getName()).isEqualTo("가양역");
     }
 }

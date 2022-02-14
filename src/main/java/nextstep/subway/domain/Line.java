@@ -1,6 +1,11 @@
 package nextstep.subway.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
@@ -23,6 +28,27 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public void addSection(Section newSection) {
+        sections.addSection(newSection);
+    }
+
+    public void removeSection(Station downStation) {
+        sections.remove(downStation);
+    }
+
+    public void updateLine(String name,  String color) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (color != null) {
+            this.color = color;
+        }
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
+
     public Long getId() {
         return id;
     }
@@ -34,29 +60,15 @@ public class Line extends BaseEntity {
     public String getColor() {
         return color;
     }
+    public int sectionsSize() {
+        return sections.size();
+    }
+
+    public boolean isEmptySections() {
+        return sections.isEmpty();
+    }
 
     public List<Section> getSections() {
         return sections.getSections();
-    }
-
-    public void update(String name, String color) {
-        if (name != null) {
-            this.name = name;
-        }
-        if (color != null) {
-            this.color = color;
-        }
-    }
-
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
-    public void deleteSection(Station station) {
-        sections.delete(station);
     }
 }

@@ -1,26 +1,20 @@
 package nextstep.subway.applicaion.dto;
 
-import nextstep.subway.domain.Path;
+import nextstep.subway.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PathResponse {
-    private List<StationResponse> stations;
-    private int distance;
 
-    public PathResponse(List<StationResponse> stations, int distance) {
-        this.stations = stations;
+    private final List<StationResponse> stations = new ArrayList<>();
+    private final int distance;
+
+    public PathResponse(List<Station> stations, int distance) {
+        for (Station station : stations) {
+            this.stations.add(StationResponse.createStationResponse(station));
+        }
         this.distance = distance;
-    }
-
-    public static PathResponse of(Path path) {
-        List<StationResponse> stations = path.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        int distance = path.extractDistance();
-
-        return new PathResponse(stations, distance);
     }
 
     public List<StationResponse> getStations() {
@@ -29,5 +23,13 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "PathResponse{" +
+                "stations=" + stations +
+                ", distance=" + distance +
+                '}';
     }
 }

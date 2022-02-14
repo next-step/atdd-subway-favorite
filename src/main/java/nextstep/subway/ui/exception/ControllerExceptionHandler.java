@@ -1,4 +1,4 @@
-package nextstep.subway.ui;
+package nextstep.subway.ui.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,8 @@ public class ControllerExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler({SectionException.class, PathException.class, StationException.class})
+    public ResponseEntity<String> handleIllegalArgsException(RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

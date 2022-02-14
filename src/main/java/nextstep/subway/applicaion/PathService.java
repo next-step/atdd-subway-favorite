@@ -2,30 +2,38 @@ package nextstep.subway.applicaion;
 
 import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Line;
-import nextstep.subway.domain.Path;
+import nextstep.subway.domain.LineRepository;
+import nextstep.subway.domain.PathFinder;
 import nextstep.subway.domain.Station;
-import nextstep.subway.domain.SubwayMap;
+import nextstep.subway.ui.exception.PathException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class PathService {
-    private LineService lineService;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
-    public PathService(LineService lineService, StationService stationService) {
-        this.lineService = lineService;
+    public PathService(LineRepository lineRepository, StationService stationService) {
+        this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
     public PathResponse findPath(Long source, Long target) {
-        Station upStation = stationService.findById(source);
-        Station downStation = stationService.findById(target);
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-        Path path = subwayMap.findPath(upStation, downStation);
+        if (source.equals(target)) {
+            throw new PathException("출발역과 도착역을 다르게 설정해주세요.");
+        }
+        List<Line> lines = lineRepository.findAll();
+        Station sourceStation = stationService.findById(source);
+        Station targetStation = stationService.findById(target);
 
-        return PathResponse.of(path);
+        PathFinder pathFinder = new PathFinder(lines);
+        List<Station> stations = pathFinder.shortsPathStations(sourceStation, targetStation);
+        int distance = pathFinder.shortsPathDistance(sourceStation, targetStation);
+
+        return new PathResponse(stations, distance);
     }
 }
