@@ -41,4 +41,8 @@ public class FavoriteService {
                         stationService.findById(favorite.getTargetId())
                 )).collect(Collectors.toList());
     }
+
+    public void deleteFavorite(Long id) {
+
+    }
 }
