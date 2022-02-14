@@ -10,8 +10,8 @@ public class SessionAuthenticationConverter implements AuthenticationConverter {
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        String principal = request.getParameterValues(USERNAME_FIELD)[0];
-        String credentials = request.getParameterValues(PASSWORD_FIELD)[0];
+        String principal = request.getParameter(USERNAME_FIELD);
+        String credentials = request.getParameter(PASSWORD_FIELD);
 
         return new AuthenticationToken(principal, credentials);
     }
