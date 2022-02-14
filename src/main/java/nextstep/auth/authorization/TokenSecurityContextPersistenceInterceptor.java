@@ -20,19 +20,23 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        try {
+            if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                return true;
+            }
 
-        String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return true;
-        }
+            String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+            if (!jwtTokenProvider.validateToken(credentials)) {
+                return true;
+            }
 
-        SecurityContext securityContext = extractSecurityContext(credentials);
-        if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext);
+            SecurityContext securityContext = extractSecurityContext(credentials);
+            if (securityContext != null) {
+                SecurityContextHolder.setContext(securityContext);
+            }
+        } catch (Exception e) {
+            throw new NoAuthorizedException();
         }
         return true;
     }
