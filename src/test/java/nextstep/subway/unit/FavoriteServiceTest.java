@@ -72,6 +72,19 @@ public class FavoriteServiceTest {
         assertThat(favoriteResponses.get(1).getTarget().getName()).isEqualTo("판교역");
     }
 
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        // given
+        Long favoriteId = 즐겨찾기생성(memberId, 강남역, 양재역).getId();
+
+        // when
+        favoriteService.deleteFavorite(favoriteId);
+
+        // then
+        assertThat(favoriteRepository.findById(favoriteId)).isEmpty();
+    }
+
     private Station 역생성(String name) {
         return stationRepository.save(new Station(name));
     }

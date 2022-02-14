@@ -43,6 +43,6 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long id) {
-
+        favoriteRepository.deleteById(id);
     }
 }
