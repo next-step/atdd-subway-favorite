@@ -11,7 +11,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("노선 테스트")
 class LineTest {
+
+    @DisplayName("구간을 추가한다")
     @Test
     void addSection() {
         Station 강남역 = new Station("강남역");
@@ -101,6 +104,7 @@ class LineTest {
         assertThat(section.getDistance()).isEqualTo(5);
     }
 
+    @DisplayName("노선의 구간을 조회")
     @Test
     void getStations() {
         Station 강남역 = new Station("강남역");
@@ -127,6 +131,7 @@ class LineTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("마지막 구간을 제거")
     @Test
     void removeSection() {
         Station 강남역 = new Station("강남역");
@@ -141,6 +146,7 @@ class LineTest {
         assertThat(line.getStations()).containsExactly(강남역, 역삼역);
     }
 
+    @DisplayName("첫번째 구간을 제거")
     @Test
     void removeSectionInFront() {
         Station 강남역 = new Station("강남역");
@@ -155,6 +161,7 @@ class LineTest {
         assertThat(line.getStations()).containsExactly(역삼역, 삼성역);
     }
 
+    @DisplayName("중간 구간을 제거")
     @Test
     void removeSectionInMiddle() {
         Station 강남역 = new Station("강남역");
