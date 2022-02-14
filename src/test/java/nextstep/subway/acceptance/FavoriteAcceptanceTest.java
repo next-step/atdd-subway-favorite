@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.MemberAcceptanceTest.*;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.MemberSteps.회원_생성_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 강남역id;
@@ -61,5 +61,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deletedResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
 
         즐겨찾기_삭제됨(deletedResponse);
+    }
+
+    @DisplayName("유효하지 않은 token으로 즐겨찾기 관리 요청 - 권한이 없습니다.")
+    @Test
+    void manageFavoriteWithInvalidToken() {
+        // given
+        회원_생성_되어_있음(EMAIL, PASSWORD, AGE);
+
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(INVALID_TOKEN, 강남역id, 양재역id);
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(INVALID_TOKEN);
+
+        // then
+        assertAll(
+                () -> 회원_권한이_없음(createResponse),
+                () -> 회원_권한이_없음(response)
+        );
     }
 }
