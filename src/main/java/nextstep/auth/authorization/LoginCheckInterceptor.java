@@ -1,5 +1,6 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.UnAuthorizedStateException;
 import nextstep.auth.token.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +16,8 @@ public class LoginCheckInterceptor extends SecurityContextInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String credentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if (credentials.isEmpty()) {
-            return false;
-        }
-
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return false;
+        if (credentials.isEmpty() || !jwtTokenProvider.validateToken(credentials)) {
+            throw new UnAuthorizedStateException();
         }
 
         return super.preHandle(request, response, handler);
