@@ -3,13 +3,13 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import nextstep.subway.support.MockRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws Exception {
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails(1L, EMAIL, PASSWORD));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         interceptor.preHandle(request, response, new Object());
@@ -64,7 +64,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     @DisplayName("비밀번호가 일치하지 않으면 AuthenticationException 발생")
     void authenticateInvalidPassword() {
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, "NEW_PASSWORD", 20));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails(1L, EMAIL, "NEW_PASSWORD"));
 
         사용자_검증에_실패하면_에러_발생(interceptor, request, response, new Object());
     }

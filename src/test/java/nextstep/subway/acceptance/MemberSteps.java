@@ -105,7 +105,6 @@ public class MemberSteps {
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
     public static void 회원_정보_생성_응답됨(ExtractableResponse<Response> response) {
