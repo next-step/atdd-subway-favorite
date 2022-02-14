@@ -1,6 +1,6 @@
 package nextstep.auth.authentication.interceptor;
 
-import nextstep.auth.application.UserDetailService;
+import nextstep.auth.application.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
@@ -15,9 +15,9 @@ import java.io.IOException;
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final AuthenticationConverter authenticationConverter;
-    private final UserDetailService userDetailService;
+    private final UserDetailsService userDetailService;
 
-    public AuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailService userDetailService) {
+    public AuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailsService userDetailService) {
         this.authenticationConverter = authenticationConverter;
         this.userDetailService = userDetailService;
     }

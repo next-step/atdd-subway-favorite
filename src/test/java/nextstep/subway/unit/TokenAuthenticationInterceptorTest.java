@@ -1,10 +1,8 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.application.UserDetailService;
+import nextstep.auth.application.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.converter.AuthenticationConverter;
-import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import nextstep.auth.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -32,10 +30,9 @@ import static org.mockito.Mockito.when;
 class TokenAuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    private UserDetailService userDetailService;
+    private UserDetailsService userDetailService;
     private ObjectMapper objectMapper;
     private JwtTokenProvider jwtTokenProvider;
-    private AuthenticationConverter authenticationConverter;
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     @BeforeEach
@@ -43,8 +40,7 @@ class TokenAuthenticationInterceptorTest {
         userDetailService = mock(CustomUserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
         objectMapper = new ObjectMapper();
-        authenticationConverter = new TokenAuthenticationConverter(objectMapper);
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(authenticationConverter, userDetailService, jwtTokenProvider, objectMapper);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailService, jwtTokenProvider, objectMapper);
     }
 
     @DisplayName("이메일/비밀번호가 담긴 토큰을 반환한다.")

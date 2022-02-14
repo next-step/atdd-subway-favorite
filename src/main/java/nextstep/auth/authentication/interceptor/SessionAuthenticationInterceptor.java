@@ -1,7 +1,7 @@
 package nextstep.auth.authentication.interceptor;
 
-import nextstep.auth.application.UserDetailService;
-import nextstep.auth.authentication.converter.AuthenticationConverter;
+import nextstep.auth.application.UserDetailsService;
+import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 
@@ -13,8 +13,8 @@ import java.io.IOException;
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
-    public SessionAuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailService userDetailService) {
-        super(authenticationConverter, userDetailService);
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailService) {
+        super(new SessionAuthenticationConverter(), userDetailService);
     }
 
     @Override
