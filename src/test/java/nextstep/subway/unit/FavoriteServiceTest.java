@@ -3,6 +3,7 @@ package nextstep.subway.unit;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
+import nextstep.member.domain.Favorite;
 import nextstep.member.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.unit.auth.AuthFixture.*;
@@ -78,5 +80,19 @@ class FavoriteServiceTest {
         List<String> targets = responses.stream().map(f -> f.getTarget().getName()).collect(Collectors.toList());
         assertThat(sources).containsOnly(강남역.getName(), 신림역.getName());
         assertThat(targets).containsOnly(양재역.getName(), 서초역.getName());
+    }
+
+    @Test
+    void deleteFavorite() {
+        // given
+        FavoriteRequest createRequest = new FavoriteRequest(source, target);
+        FavoriteResponse response = favoriteService.createFavorite(memberId, createRequest);
+
+        // when
+        favoriteService.deleteFavorite(response.getId());
+
+        // then
+        Optional<Favorite> favorite = favoriteRepository.findById(response.getId());
+        assertThat(favorite).isEmpty();
     }
 }
