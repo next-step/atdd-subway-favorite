@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static nextstep.subway.unit.auth.AuthFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,5 +60,23 @@ class FavoriteServiceTest {
         // then
         assertThat(response.getSource().getName()).isEqualTo(강남역.getName());
         assertThat(response.getTarget().getName()).isEqualTo(양재역.getName());
+    }
+
+    @Test
+    void findFavorites() {
+        // given
+        Station 신림역 = stationRepository.save(new Station("신림역"));
+        Station 서초역 = stationRepository.save(new Station("서초역"));
+        favoriteService.createFavorite(memberId, new FavoriteRequest(source, target));
+        favoriteService.createFavorite(memberId, new FavoriteRequest(신림역.getId(), 서초역.getId()));
+
+        // when
+        List<FavoriteResponse> responses = favoriteService.findFavorites(memberId);
+
+        // then
+        List<String> sources = responses.stream().map(f -> f.getSource().getName()).collect(Collectors.toList());
+        List<String> targets = responses.stream().map(f -> f.getTarget().getName()).collect(Collectors.toList());
+        assertThat(sources).containsOnly(강남역.getName(), 신림역.getName());
+        assertThat(targets).containsOnly(양재역.getName(), 서초역.getName());
     }
 }
