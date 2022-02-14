@@ -36,12 +36,10 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
-    @Transactional(readOnly = true)
     private Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Transactional(readOnly = true)
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
@@ -65,6 +63,7 @@ public class FavoriteService {
 
     private boolean isNotMine(Long memberId, Long favoriteId) {
         List<Favorite> favorites = favoriteRepository.findAllByMember(findMemberById(memberId));
-        return favorites.stream().noneMatch(f -> f.getId().equals(favoriteId));
+        return favorites.stream()
+                .noneMatch(f -> f.getId().equals(favoriteId));
     }
 }
