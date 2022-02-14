@@ -1,6 +1,7 @@
 package nextstep.auth.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.UnAuthorizedStateException;
 import nextstep.auth.authorization.LoginCheckInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
@@ -14,6 +15,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LoginCheckInterceptorTest extends AuthTest {
     @Autowired
@@ -48,28 +50,24 @@ public class LoginCheckInterceptorTest extends AuthTest {
 
     @DisplayName("로그인이 되어있는지 확인(Bearer token이 존재하고 유효하지않음)")
     @Test
-    void preHandle2() throws Exception {
+    void preHandle2() {
         // given
         request = createMockRequestWithInvalidAccessToken();
 
-        // when
-        boolean result = loginCheckInterceptor.preHandle(request, response, new Object());
-
-        //then
-        assertThat(result).isFalse();
+        // when & then
+        assertThatThrownBy(() -> loginCheckInterceptor.preHandle(request, response, new Object()))
+                .isInstanceOf(UnAuthorizedStateException.class);
     }
 
     @DisplayName("로그인이 되어있는지 확인(Authorization이 존재하지 않음)")
     @Test
-    void preHandle3() throws Exception {
+    void preHandle3() {
         // given
         request = new MockHttpServletRequest();
 
-        // when
-        boolean result = loginCheckInterceptor.preHandle(request, response, new Object());
-
-        //then
-        assertThat(result).isFalse();
+        // when & then
+        assertThatThrownBy(() -> loginCheckInterceptor.preHandle(request, response, new Object()))
+                .isInstanceOf(UnAuthorizedStateException.class);
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
