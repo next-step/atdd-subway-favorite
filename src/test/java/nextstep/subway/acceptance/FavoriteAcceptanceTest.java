@@ -86,6 +86,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기를 관리한다.")
     void manageFavorite() {
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+        즐겨찾기_생성됨(createResponse);
 
+        ExtractableResponse<Response> fineResponse = 즐겨찾기_목록_조회_요청(accessToken);
+        즐겨찾기_목록_조회됨(fineResponse);
+
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
+        즐겨찾기_삭제됨(deleteResponse);
     }
 }
