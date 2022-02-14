@@ -56,5 +56,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_목록_조회됨(response, 강남역id, 양재역id);
+
+        // when
+        ExtractableResponse<Response> deletedResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
+
+        즐겨찾기_삭제됨(deletedResponse);
     }
 }
