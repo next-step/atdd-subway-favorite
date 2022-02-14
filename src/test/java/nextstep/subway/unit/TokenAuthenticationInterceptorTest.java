@@ -48,23 +48,6 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    void authenticate() {
-        //given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
-        given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-
-        //when
-        Authentication authenticate = interceptor.authenticate(authenticationToken);
-
-        //then
-        val principal = (LoginMember) authenticate.getPrincipal();
-        assertThat(principal.getEmail()).isEqualTo(EMAIL);
-        assertThat(principal.getPassword()).isEqualTo(PASSWORD);
-        assertThat(principal.getAge()).isEqualTo(20);
-    }
-
-    @Test
     void preHandle() throws IOException {
         //given
         LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 20);
