@@ -36,7 +36,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
+    private Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
         LoginMember userDetails = (LoginMember) userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
