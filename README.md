@@ -74,3 +74,6 @@ npm run dev
 
 ### step3 질문
 - 줄바꿈 질문. TokenAuthenticationInterceptor의 경우 생성자 인수로 4개를 받다보니 너무 길어서 120자가 넘어가게 됩니다. 그냥 가독성 좋아보이게만 엔터쳐서 줄바꿈 해주면 되는지 궁금함
+- AuthorizationExtractor에서 `request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, typeLength).trim());`하는 이유?? 추출했다는 이력을 알고 싶어서? request의 header는 계속 남아있을테니, 이력을 남길 필요는 업으니 아닌것 같음. 손쉽게 알기 위해서인가?
+- 
+- 
