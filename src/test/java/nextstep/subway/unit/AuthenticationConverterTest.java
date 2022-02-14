@@ -23,22 +23,6 @@ public class AuthenticationConverterTest {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private MockHttpServletRequest createMockSessionRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(USERNAME_FIELD, EMAIL);
-        paramMap.put(PASSWORD_FIELD, PASSWORD);
-        request.setParameters(paramMap);
-        return request;
-    }
-
-    private MockHttpServletRequest createMockTokenRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
-
     @DisplayName("세션 기반 인증")
     @Test
     void sessionAuthenticationConvert() throws IOException {
@@ -55,5 +39,21 @@ public class AuthenticationConverterTest {
         AuthenticationToken authenticationToken = new TokenAuthenticationConverter(new ObjectMapper()).convert(request);
         assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
         assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
+    }
+
+    private MockHttpServletRequest createMockSessionRequest() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(USERNAME_FIELD, EMAIL);
+        paramMap.put(PASSWORD_FIELD, PASSWORD);
+        request.setParameters(paramMap);
+        return request;
+    }
+
+    private MockHttpServletRequest createMockTokenRequest() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        return request;
     }
 }
