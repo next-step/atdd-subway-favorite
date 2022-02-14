@@ -1,11 +1,26 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
+import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
@@ -14,14 +29,50 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void convert() throws IOException {
+        // given
+        final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        final MockHttpServletRequest request = createMockRequest();
+
+        // when
+        final AuthenticationToken authenticationToken = interceptor.convert(request);
+
+        // then
+        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
     }
 
     @Test
     void authenticate() {
+        final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 30));
+
+        final AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
+        final Authentication authentication = interceptor.authenticate(authenticationToken);
+
+        assertThat(authentication.getPrincipal()).isNotNull();
     }
 
     @Test
     void preHandle() throws IOException {
+        final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+        final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+        final TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 30));
+        when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
+
+        final MockHttpServletRequest request = createMockRequest();
+        final MockHttpServletResponse response = new MockHttpServletResponse();
+        interceptor.preHandle(request, response, new Object());
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {

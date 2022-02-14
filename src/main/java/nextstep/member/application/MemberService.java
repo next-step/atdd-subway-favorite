@@ -2,11 +2,14 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MemberService {
     private MemberRepository memberRepository;
 
@@ -31,5 +34,20 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public void deleteMember(String email) {
+        memberRepository.deleteByEmail(email);
+    }
+
+    public MemberResponse findMemberByEmail(String email) {
+        final Member foundMember = memberRepository.findByEmail(email)
+                .orElseThrow(RuntimeException::new);
+        return MemberResponse.of(foundMember);
+    }
+
+    public void updateMember(String email, MemberRequest memberRequest) {
+        final Member foundMember = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        foundMember.update(memberRequest.toMember());
     }
 }
