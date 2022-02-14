@@ -56,7 +56,15 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        if (isNotMine(memberId, favoriteId)) {
+            throw new IllegalArgumentException();
+        }
+        favoriteRepository.deleteById(favoriteId);
+    }
+
+    private boolean isNotMine(Long memberId, Long favoriteId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMember(findMemberById(memberId));
+        return favorites.stream().noneMatch(f -> f.getId().equals(favoriteId));
     }
 }
