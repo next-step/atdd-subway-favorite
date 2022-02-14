@@ -24,6 +24,17 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 권한_없이_즐겨찾기_생성_요청(Long source, Long target) {
+        Map<String, String> params = createParams(source, target);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/favorites")
+                .then().log().all().extract();
+    }
+
     private static Map<String, String> createParams(Long source, Long target) {
         HashMap<String, String> params = new HashMap<>();
         params.put("source", source + "");

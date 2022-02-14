@@ -140,4 +140,8 @@ public class MemberSteps {
         return params;
     }
 
+
+    public static void 권한_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

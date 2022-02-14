@@ -39,6 +39,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기 생성 요청")
     void createFavorite() {
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
@@ -48,6 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기 목록 조회 요청")
     void findFavorites() {
         // given
         즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
@@ -60,6 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기 삭제 요청")
     void deleteFavorite() {
         // given
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
@@ -70,6 +73,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_삭제됨(deleteResponse);
 
+    }
+
+    @Test
+    @DisplayName("권한이 없는 경우 즐겨찾기 관리 요청")
+    void manageFavoriteWhenUnauthorized() {
+        String invalidToken = "";
+
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(invalidToken, 강남역, 양재역);
+        권한_없음(createResponse);
+
+        ExtractableResponse<Response> fineResponse = 즐겨찾기_목록_조회_요청(invalidToken);
+        권한_없음(fineResponse);
+
+        ExtractableResponse<Response> createSuccessResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(invalidToken, createSuccessResponse);
+        권한_없음(deleteResponse);
     }
 
     /**
