@@ -40,8 +40,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Test
     void createFavorite() {
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+
+        // then
+        즐겨찾기_생성됨(createResponse);
+    }
+
+    @Test
+    void findFavorites() {
+        // given
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
         즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> fineResponse = 즐겨찾기_목록_조회_요청(accessToken);
+
+        // then
+        즐겨찾기_목록_조회됨(fineResponse);
     }
 
     /**
