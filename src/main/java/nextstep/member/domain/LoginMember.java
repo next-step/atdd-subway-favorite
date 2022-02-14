@@ -1,7 +1,9 @@
 package nextstep.member.domain;
 
 
-public class LoginMember {
+import nextstep.auth.domain.UserDetails;
+
+public class LoginMember implements UserDetails {
     private Long id;
     private String email;
     private String password;
@@ -18,6 +20,7 @@ public class LoginMember {
         this.age = age;
     }
 
+    @Override
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
