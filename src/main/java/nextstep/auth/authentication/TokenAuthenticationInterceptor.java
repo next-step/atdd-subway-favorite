@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.application.UserDetailsService;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
 import org.springframework.http.MediaType;
@@ -36,10 +37,19 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String accessToken = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = new TokenResponse(accessToken);
-
         String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
+    }
+
+    @Override
+    public void afterCompletion(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
+            Exception ex
+    ) {
+        SecurityContextHolder.clearContext();
     }
 }

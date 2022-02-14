@@ -3,7 +3,6 @@ package nextstep.auth.authentication;
 import nextstep.auth.authentication.application.UserDetailsService;
 import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -59,14 +58,4 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
             HttpServletResponse response,
             Authentication authentication
     ) throws IOException;
-
-    @Override
-    public void afterCompletion(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Object handler,
-            Exception ex
-    ) throws Exception {
-        SecurityContextHolder.clearContext();
-    }
 }
