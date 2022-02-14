@@ -1,0 +1,58 @@
+package nextstep.subway.acceptance;
+
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static nextstep.subway.acceptance.FavoriteSteps.*;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_등록되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+
+public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
+
+    private Long 강남역;
+    private Long 양재역;
+
+    /**
+     *   Background
+     *     Given 지하철역 등록되어 있음
+     *     And 지하철 노선 등록되어 있음
+     *     And 지하철 노선에 지하철역 등록되어 있음
+     *     And 회원 등록되어 있음
+     *     And 로그인 되어있음
+     */
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+        지하철_노선_등록되어_있음(강남역, 양재역);
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        로그인_요청(EMAIL, PASSWORD);
+    }
+
+    /**
+     * Feature: 즐겨찾기를 관리한다.
+     *
+     *   Scenario: 즐겨찾기를 관리
+     *     When 즐겨찾기 생성을 요청
+     *     Then 즐겨찾기 생성됨
+     *     When 즐겨찾기 목록 조회 요청
+     *     Then 즐겨찾기 목록 조회됨
+     *     When 즐겨찾기 삭제 요청
+     *     Then 즐겨찾기 삭제됨
+     */
+    @Test
+    @DisplayName("즐겨찾기를 관리한다.")
+    void manageFavorite() {
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(강남역, 양재역);
+        FavoriteSteps.즐겨찾기_생성됨(createResponse);
+    }
+}
