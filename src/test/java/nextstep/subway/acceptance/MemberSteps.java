@@ -120,4 +120,8 @@ public class MemberSteps {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 액세스_토큰_발급됨(String  accessToken) {
+        assertThat(accessToken).isNotBlank();
+    }
 }
