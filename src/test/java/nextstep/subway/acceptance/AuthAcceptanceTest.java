@@ -2,10 +2,11 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.member.aceeptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {

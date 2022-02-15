@@ -1,4 +1,4 @@
-package nextstep.subway.unit;
+package nextstep.auth.unit;
 
 import nextstep.auth.authentication.UserDetails;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
@@ -6,7 +6,7 @@ import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.subway.support.MockRequest;
+import nextstep.support.MockRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
