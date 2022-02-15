@@ -1,6 +1,6 @@
 package nextstep.member.ui;
 
-import nextstep.auth.context.SecurityContext;
+import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -47,9 +47,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        SecurityContext context = (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok().body(memberService.findMember(loginMember.getId()));
     }
 
