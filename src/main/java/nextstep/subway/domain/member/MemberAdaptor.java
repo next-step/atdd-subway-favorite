@@ -19,7 +19,6 @@ public class MemberAdaptor implements UserDetails {
         return new MemberAdaptor(member.getId(), member.getEmail(), member.getPassword());
     }
 
-    @Override
     public Long getId() {
         return id;
     }

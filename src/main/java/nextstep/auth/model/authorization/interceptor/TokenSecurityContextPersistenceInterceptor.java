@@ -6,13 +6,11 @@ import nextstep.auth.model.authorization.AuthorizationExtractor;
 import nextstep.auth.model.authorization.AuthorizationType;
 import nextstep.auth.model.context.Authentication;
 import nextstep.auth.model.context.SecurityContext;
-import nextstep.auth.model.context.SecurityContextHolder;
 import nextstep.auth.model.token.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class TokenSecurityContextPersistenceInterceptor implements SecurityContextPersistenceInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurityContextPersistenceInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
 
@@ -22,24 +20,8 @@ public class TokenSecurityContextPersistenceInterceptor implements SecurityConte
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            return true;
-        }
-
-        /* request 에 담긴 토큰 유효성 검증*/
-        String jwtToken = extractJwtToken(request);
-        if (!jwtTokenProvider.validateToken(jwtToken)) {
-            return true;
-        }
-
-        /* 토큰에 담긴 정보에 대한 유효성 검증 */
-        SecurityContext securityContext = extractSecurityContext(jwtToken);
-        if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext);
-        }
-
-        return true;
+    protected SecurityContext extractSecurityContext(HttpServletRequest request) {
+        return extractSecurityContext(extractJwtToken(request));
     }
 
     private String extractJwtToken(HttpServletRequest request) {

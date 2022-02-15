@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface SecurityContextPersistenceInterceptor extends HandlerInterceptor {
     @Override
-    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
+    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler);
 
     @Override
     default void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {

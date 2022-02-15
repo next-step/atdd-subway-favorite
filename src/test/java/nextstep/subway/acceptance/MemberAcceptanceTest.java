@@ -92,7 +92,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // given
-        /* 회원 생성 */
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 토큰_인증(EMAIL, PASSWORD);
 
