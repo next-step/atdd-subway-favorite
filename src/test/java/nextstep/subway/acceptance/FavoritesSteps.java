@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class FavoritesSteps {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();

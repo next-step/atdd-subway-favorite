@@ -55,8 +55,12 @@ public class StationResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         StationResponse response = (StationResponse) o;
         return Objects.equals(getId(), response.getId()) && Objects.equals(getName(), response.getName()) && Objects.equals(getCreatedDate(), response.getCreatedDate()) && Objects.equals(getModifiedDate(), response.getModifiedDate());
     }

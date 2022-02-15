@@ -106,7 +106,7 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("id")).contains(id1, id2);
+        assertThat(response.jsonPath().getList("id", Long.class)).contains(id1, id2);
     }
 
     /**
