@@ -1,10 +1,8 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.converter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.token.TokenRequest;
+import nextstep.auth.authentication.AuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Map;
 
 public class SessionAuthenticationConverter implements AuthenticationConverter{
