@@ -21,7 +21,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
         // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        회원_정보_생성됨(createResponse);
 
 
         // when
@@ -33,13 +33,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
         // then
-        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_수정됨(updateResponse);
 
 
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_정보_삭제됨(deleteResponse);
     }
 
     @DisplayName("나의 정보를 관리한다.")
@@ -56,9 +56,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         final Integer age = 30;
 
         final ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(accessToken, email, password, age);
-        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_수정됨(updateResponse);
 
         final ExtractableResponse<Response> deleteResponse = 내_회원_정보_삭제_요청(accessToken);
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_정보_삭제됨(deleteResponse);
     }
 }
