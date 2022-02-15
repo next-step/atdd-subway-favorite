@@ -11,6 +11,9 @@ import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -23,12 +26,15 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
+    @Mock
     CustomUserDetailsService userDetailsService;
+    @Mock
     JwtTokenProvider jwtTokenProvider;
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -38,8 +44,6 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     public void setup() {
-        userDetailsService = mock(CustomUserDetailsService.class);
-        jwtTokenProvider = mock(JwtTokenProvider.class);
         interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
     }
 
