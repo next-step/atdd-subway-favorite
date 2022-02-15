@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor implements SecurityContextInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
