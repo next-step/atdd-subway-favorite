@@ -41,13 +41,18 @@ public class MemberService {
     }
 
     public MemberResponse findMemberByEmail(String email) {
-        final Member foundMember = memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
+        final Member foundMember = getFoundMember(email);
         return MemberResponse.of(foundMember);
     }
 
     public void updateMember(String email, MemberRequest memberRequest) {
-        final Member foundMember = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        final Member foundMember = getFoundMember(email);
         foundMember.update(memberRequest.toMember());
+    }
+
+    private Member getFoundMember(String email) {
+        final Member foundMember = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 멤버를 찾을 수 없습니다."));
+        return foundMember;
     }
 }
