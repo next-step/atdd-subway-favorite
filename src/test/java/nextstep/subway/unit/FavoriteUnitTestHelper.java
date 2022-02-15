@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import nextstep.member.domain.Member;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
@@ -12,6 +13,7 @@ public final class FavoriteUnitTestHelper {
     public static Station 강남역;
     public static Station 역삼역;
     public static Station 판교역;
+    public static Member member;
 
     public static void createLines() {
         이호선 = new Line("2호선", "bg-green-600");
@@ -29,5 +31,10 @@ public final class FavoriteUnitTestHelper {
 
     public static void createSections() {
         이호선.addSection(new Section(이호선, 강남역, 역삼역, 10));
+    }
+
+    public static void createMember() {
+        member = new Member();
+        ReflectionTestUtils.setField(member, "id", 1L);
     }
 }
