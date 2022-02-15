@@ -7,6 +7,7 @@ import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,8 +58,8 @@ public class MemberController {
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest memberRequest) {
         final String email = loginMember.getEmail();
-        memberService.updateMember(email, memberRequest);
-        return ResponseEntity.ok().build();
+        final MemberResponse member = memberService.updateMember(email, memberRequest);
+        return ResponseEntity.ok().body(member);
     }
 
     @DeleteMapping("/members/me")
