@@ -2,6 +2,7 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.application.UserDetailsService;
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
@@ -23,6 +24,7 @@ import java.io.IOException;
 
 import static nextstep.subway.utils.MockRequest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -93,5 +95,19 @@ class TokenAuthenticationInterceptorTest {
         assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
+    @DisplayName("인증에 실패한다.")
+    @Test
+    void preHandleThrowException() throws IOException {
+        // given
+        MockHttpServletRequest request = createMockTokenRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
+        when(userDetailService.loadUserByUsername(EMAIL)).thenReturn(null);
+
+        // when
+        assertThrows(
+                AuthenticationException.class,
+                () -> tokenAuthenticationInterceptor.preHandle(request, response, null)
+        );
+    }
 }
