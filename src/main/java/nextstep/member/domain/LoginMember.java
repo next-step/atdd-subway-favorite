@@ -1,7 +1,10 @@
 package nextstep.member.domain;
 
+import nextstep.auth.context.DetailMember;
 
-public class LoginMember {
+import java.util.Objects;
+
+public class LoginMember implements DetailMember {
     private Long id;
     private String email;
     private String password;
@@ -18,23 +21,41 @@ public class LoginMember {
         this.age = age;
     }
 
+    @Override
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public Integer getAge() {
         return age;
     }
 
+    @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LoginMember that = (LoginMember) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getPassword(), that.getPassword()) && Objects.equals(getAge(), that.getAge());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getEmail(), getPassword(), getAge());
     }
 }
