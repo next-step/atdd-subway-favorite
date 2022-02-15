@@ -40,13 +40,13 @@ public class FavoriteController {
         if(bindingResult.hasErrors()) {
             throw new ValidationException();
         }
-        FavoriteResponse response = favoriteService.saveFavorite(request, loginMember);
+        FavoriteResponse response = favoriteService.saveFavorite(loginMember.getId(), request);
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).body(response);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FavoriteResponse>> showFavorites(@AuthenticationPrincipal final LoginMember loginMember) {
-        return ResponseEntity.ok(favoriteService.findAllFavorites(loginMember));
+        return ResponseEntity.ok(favoriteService.findAllFavorites(loginMember.getId()));
     }
 
     @DeleteMapping("/{id}")
@@ -54,7 +54,7 @@ public class FavoriteController {
             @PathVariable final Long id,
             @AuthenticationPrincipal final LoginMember loginMember
     ) {
-        favoriteService.deleteFavoriteById(id, loginMember);
+        favoriteService.deleteFavoriteById(id, loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

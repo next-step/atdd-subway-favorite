@@ -1,10 +1,17 @@
 package nextstep.subway.unit;
 
 import nextstep.member.domain.Member;
+import nextstep.subway.applicaion.dto.FavoriteRequest;
+import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.subway.applicaion.dto.PathRequest;
+import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class FavoriteUnitTestHelper {
 
@@ -14,10 +21,16 @@ public final class FavoriteUnitTestHelper {
     public static Station 역삼역;
     public static Station 판교역;
     public static Member member;
+    public static FavoriteRequest favoriteRequest;
+    public static List<Line> lines = new ArrayList<>();
+    public static Favorite favorite;
+    public static FavoriteResponse favoriteResponse;
 
     public static void createLines() {
         이호선 = new Line("2호선", "bg-green-600");
         신분당선 = new Line("신분당선", "bg-red-600");
+        lines.add(이호선);
+        lines.add(신분당선);
     }
 
     public static void createStations() {
@@ -36,5 +49,24 @@ public final class FavoriteUnitTestHelper {
     public static void createMember() {
         member = new Member();
         ReflectionTestUtils.setField(member, "id", 1L);
+    }
+
+    public static Favorite createFavorite() {
+        favorite = Favorite.of(강남역, 역삼역, member);
+        ReflectionTestUtils.setField(favorite, "id", 1L);
+        return favorite;
+    }
+
+    public static FavoriteRequest createFavoriteRequest() {
+        favoriteRequest = new FavoriteRequest();
+        ReflectionTestUtils.setField(favoriteRequest, "source", 1L);
+        ReflectionTestUtils.setField(favoriteRequest, "target", 2L);
+        return favoriteRequest;
+    }
+
+    public static FavoriteResponse createFavoriteResponse() {
+        favoriteResponse = FavoriteResponse.of(favorite);
+        ReflectionTestUtils.setField(favoriteResponse, "id", 1L);
+        return favoriteResponse;
     }
 }
