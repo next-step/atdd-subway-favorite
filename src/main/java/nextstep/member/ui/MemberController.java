@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
@@ -46,8 +47,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        LoginMember loginMember = loginMember();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMemberOfMine(loginMember);
 
         return ResponseEntity.ok().body(member);
@@ -63,12 +63,6 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine() {
 
         return ResponseEntity.noContent().build();
-    }
-
-    private LoginMember loginMember() {
-        SecurityContext context = SecurityContextHolder.getContext();
-
-        return (LoginMember) context.getAuthentication().getPrincipal();
     }
 }
 
