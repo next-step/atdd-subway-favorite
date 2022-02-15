@@ -36,20 +36,21 @@ public class MemberController {
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
+        MemberResponse memberResponse = memberService.updateMember(id, param);
+
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
+
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        LoginMember loginMember = (LoginMember) context.getAuthentication().getPrincipal();
+        LoginMember loginMember = loginMember();
         MemberResponse member = memberService.findMemberOfMine(loginMember);
 
         return ResponseEntity.ok().body(member);
@@ -57,7 +58,6 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine() {
-
 
         return ResponseEntity.ok().build();
     }
@@ -67,6 +67,12 @@ public class MemberController {
 
 
         return ResponseEntity.noContent().build();
+    }
+
+    private LoginMember loginMember() {
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        return (LoginMember) context.getAuthentication().getPrincipal();
     }
 }
 

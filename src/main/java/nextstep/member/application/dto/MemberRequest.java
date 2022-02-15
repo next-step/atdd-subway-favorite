@@ -1,5 +1,6 @@
 package nextstep.member.application.dto;
 
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 
 public class MemberRequest {
@@ -14,6 +15,11 @@ public class MemberRequest {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public static MemberRequest of(LoginMember loginMember) {
+
+        return new MemberRequest(loginMember.getEmail(), loginMember.getPassword(), loginMember.getAge());
     }
 
     public String getEmail() {
