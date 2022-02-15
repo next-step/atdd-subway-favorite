@@ -76,57 +76,37 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
     /**
      * When 즐겨찾기 생성 요청
      * Then 즐겨찾기 생성됨
-     */
-    @DisplayName("즐겨찾기 생성")
-    @Test
-    void createFavorites() {
-        // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isEqualTo("/favorites/1");
-    }
-
-    /**
-     * Given 즐겨찾기 생성 요청
-     * AND 새로운 즐겨찾기 생성 요청
+     * Given 새로운 즐겨찾기 생성 요청
      * When 즐겨찾기 목록 조회 요청
-     * Then 즐겨찾기 목록 조회 됨
-     */
-    @DisplayName("즐겨찾기 목록 조회")
-    @Test
-    void getFavorites() {
-        // given
-        Long id1 = getFavoritesId(즐겨찾기_생성_요청(교대역, 양재역, accessToken));
-        Long id2 = getFavoritesId(즐겨찾기_생성_요청(남부터미널역, 양재역, accessToken));
-
-        // when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("id", Long.class)).contains(id1, id2);
-    }
-
-    /**
-     * Given 즐겨찾기 생성 요청
-     * And 새로운 즐겨찾기 생성 요청
+     * Then 즐겨찾기 목록 조회됨
      * When 즐겨찾기 삭제 요청
-     * Then 즐겨찾기 삭제 됨
+     * Then 즐겨찾기 삭제됨
      */
-    @DisplayName("즐겨찾기 삭제")
+    @DisplayName("즐겨찾기 추가, 조회, 삭제")
     @Test
-    void deleteFavorites() {
-        // given
-        Long id = getFavoritesId(즐겨찾기_생성_요청(교대역, 양재역, accessToken));
-        getFavoritesId(즐겨찾기_생성_요청(남부터미널역, 양재역, accessToken));
-
+    void manageFavorites() {
+        /* 즐겨찾기 생성 요청 */
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(id, accessToken);
-
+        ExtractableResponse<Response> createResponse1 = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(createResponse1.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createResponse1.header("Location")).isEqualTo("/favorites/1");
+
+        /* 즐겨찾기 목록 조회 요청 */
+        // given
+        Long createId1 = getFavoritesId(createResponse1);
+        Long createId2 = getFavoritesId(즐겨찾기_생성_요청(남부터미널역, 양재역, accessToken));
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(accessToken);
+        // then
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(findResponse.jsonPath().getList("id", Long.class)).containsExactly(createId1, createId2);
+
+        /* 즐겨찾기 삭제 요청 */
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createId1, accessToken);
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId, int distance) {

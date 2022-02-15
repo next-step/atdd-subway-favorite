@@ -84,8 +84,9 @@ class AuthenticationInterceptorTest {
 
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
-        // then
+        // when
         assertThatThrownBy(() -> interceptor.authenticate(authenticationToken))
+                // then
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessage("존재하지 않는 이메일입니다.");
     }
@@ -102,8 +103,9 @@ class AuthenticationInterceptorTest {
 
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, "111");
 
-        // then
+        // when
         assertThatThrownBy(() -> interceptor.authenticate(authenticationToken))
+                // then
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessage("비밀번호가 틀렸습니다.");
     }
