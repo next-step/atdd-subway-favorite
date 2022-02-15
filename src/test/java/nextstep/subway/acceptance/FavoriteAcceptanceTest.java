@@ -39,43 +39,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("즐겨찾기 생성 요청")
-    void createFavorite() {
-        // when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
-
-        // then
-        즐겨찾기_생성됨(createResponse);
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 목록 조회 요청")
-    void findFavorites() {
-        // given
-        즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
-
-        // when
-        ExtractableResponse<Response> fineResponse = 즐겨찾기_목록_조회_요청(accessToken);
-
-        // then
-        즐겨찾기_목록_조회됨(fineResponse);
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 삭제 요청")
-    void deleteFavorite() {
-        // given
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
-
-        // when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
-
-        // then
-        즐겨찾기_삭제됨(deleteResponse);
-
-    }
-
-    @Test
     @DisplayName("권한이 없는 경우 즐겨찾기 관리 요청")
     void manageFavoriteWhenUnauthorized() {
         String invalidToken = "";
@@ -89,5 +52,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createSuccessResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(invalidToken, createSuccessResponse);
         권한_없음(deleteResponse);
+    }
+
+    /**
+     * Feature: 즐겨찾기를 관리한다.
+     *
+     *   Scenario: 즐겨찾기를 관리
+     *     When 즐겨찾기 생성을 요청
+     *     Then 즐겨찾기 생성됨
+     *     When 즐겨찾기 목록 조회 요청
+     *     Then 즐겨찾기 목록 조회됨
+     *     When 즐겨찾기 삭제 요청
+     *     Then 즐겨찾기 삭제됨
+     */
+    @Test
+    @DisplayName("즐겨찾기를 관리한다.")
+    void manageFavorite() {
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+        즐겨찾기_생성됨(createResponse);
+
+        ExtractableResponse<Response> fineResponse = 즐겨찾기_목록_조회_요청(accessToken);
+        즐겨찾기_목록_조회됨(fineResponse);
+
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
+        즐겨찾기_삭제됨(deleteResponse);
     }
 }
