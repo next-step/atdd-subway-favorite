@@ -1,12 +1,42 @@
 package nextstep.error;
 
-import nextstep.exception.*;
+import nextstep.exception.AuthenticationException;
+import nextstep.exception.DuplicateException;
+import nextstep.exception.NextStepException;
+import nextstep.exception.NotConnectedException;
+import nextstep.exception.NotExistAuthorizationException;
+import nextstep.exception.NotFoundLineException;
+import nextstep.exception.NotFoundMemberException;
+import nextstep.exception.NotFoundStationException;
+import nextstep.exception.SameStationException;
+import nextstep.exception.ValidationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> authentication(final AuthenticationException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(ErrorResponse.of(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(NotExistAuthorizationException.class)
+    public ResponseEntity<ErrorResponse> notExistAuthorization(final NotExistAuthorizationException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(ErrorResponse.of(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(NotFoundMemberException.class)
+    public ResponseEntity<ErrorResponse> notFoundMember(final NotFoundMemberException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(ErrorResponse.of(e.getErrorCode()));
+    }
 
     @ExceptionHandler(NotConnectedException.class)
     public ResponseEntity<ErrorResponse> notConnected(final NotConnectedException e) {
