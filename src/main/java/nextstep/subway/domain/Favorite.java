@@ -3,12 +3,7 @@ package nextstep.subway.domain;
 import nextstep.exception.SameStationException;
 import nextstep.member.domain.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -18,15 +13,15 @@ public class Favorite extends BaseEntity {
     private Long id;
 
     @JoinColumn(name = "source_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Station source;
 
     @JoinColumn(name = "target_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Station target;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     protected Favorite() {

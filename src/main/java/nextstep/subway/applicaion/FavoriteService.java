@@ -1,5 +1,7 @@
 package nextstep.subway.applicaion;
 
+import nextstep.exception.NotExistAuthorizationException;
+import nextstep.exception.NotFoundMemberException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -41,17 +43,29 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findAllFavorites(final Long memberId) {
         Member member = findMemberById(memberId);
-        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
-        return favorites.stream()
+        return findAllMyFavorites(member).stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void deleteFavoriteById(final Long favoriteId, final Long memberId) {
+        if(isNotMyFavorite(favoriteId, memberId)) {
+            throw new NotExistAuthorizationException();
+        }
+        favoriteRepository.deleteById(favoriteId);
+    }
 
+    private boolean isNotMyFavorite(final Long favoriteId, final Long memberId) {
+        Member member = findMemberById(memberId);
+        return findAllMyFavorites(member).stream()
+                .noneMatch(f -> f.getId().equals(favoriteId));
     }
 
     private Member findMemberById(final Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+    }
+
+    private List<Favorite> findAllMyFavorites(final Member member) {
+        return favoriteRepository.findAllByMember(member);
     }
 }

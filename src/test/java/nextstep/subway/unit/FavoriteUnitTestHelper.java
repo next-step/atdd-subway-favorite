@@ -27,7 +27,7 @@ public final class FavoriteUnitTestHelper {
     public static Favorite 강남_TO_역삼;
     public static Favorite 정자_TO_판교;
     public static List<Favorite> favorites = new ArrayList<>();
-    public static FavoriteResponse favoriteResponse;
+    public static List<FavoriteResponse> favoriteResponses = new ArrayList<>();
 
     public static void createLines() {
         이호선 = new Line("2호선", "bg-green-600");
@@ -74,9 +74,13 @@ public final class FavoriteUnitTestHelper {
         return favoriteRequest;
     }
 
-    public static FavoriteResponse createFavoriteResponse() {
-        favoriteResponse = FavoriteResponse.of(강남_TO_역삼);
-        ReflectionTestUtils.setField(favoriteResponse, "id", 1L);
-        return favoriteResponse;
+    public static void createFavoriteResponse() {
+        FavoriteResponse first = FavoriteResponse.of(강남_TO_역삼);
+        ReflectionTestUtils.setField(first, "id", 1L);
+        FavoriteResponse second = FavoriteResponse.of(정자_TO_판교);
+        ReflectionTestUtils.setField(second, "id", 2L);
+
+        favoriteResponses.add(first);
+        favoriteResponses.add(second);
     }
 }
