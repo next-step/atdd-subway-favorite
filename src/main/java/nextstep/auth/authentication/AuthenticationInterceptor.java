@@ -45,5 +45,4 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
-
 }

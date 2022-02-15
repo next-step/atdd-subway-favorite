@@ -8,28 +8,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.FavoritesSteps.getFavoritesId;
+import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_목록_조회_요청;
+import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_삭제_요청;
+import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
-import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_삭제_요청;
-import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_삭제됨;
-import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_수정_요청;
-import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_수정됨;
-import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청;
-import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회됨;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
-import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
-import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
-import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기를 관리한다.")
-class BookMarkAcceptanceTest extends AcceptanceTest {
+class FavoritesAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
@@ -41,6 +34,8 @@ class BookMarkAcceptanceTest extends AcceptanceTest {
     private Long 이호선;
     private Long 신분당선;
     private Long 삼호선;
+
+    private String accessToken;
 
     /**
      * Background
@@ -75,21 +70,63 @@ class BookMarkAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3));
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
     /**
      * When 즐겨찾기 생성 요청
      * Then 즐겨찾기 생성됨
      */
-    @DisplayName("즐겨찾기 생성 요청")
+    @DisplayName("즐겨찾기 생성")
     @Test
-    void manageMyInfoSession() {
+    void createFavorites() {
         // when
-//        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(교대역, 양재역);
-//
-//        // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isEqualTo("/favorites/1");
+    }
+
+    /**
+     * Given 즐겨찾기 생성 요청
+     * AND 새로운 즐겨찾기 생성 요청
+     * When 즐겨찾기 목록 조회 요청
+     * Then 즐겨찾기 목록 조회 됨
+     */
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void getFavorites() {
+        // given
+        Long id1 = getFavoritesId(즐겨찾기_생성_요청(교대역, 양재역, accessToken));
+        Long id2 = getFavoritesId(즐겨찾기_생성_요청(남부터미널역, 양재역, accessToken));
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("id")).contains(id1, id2);
+    }
+
+    /**
+     * Given 즐겨찾기 생성 요청
+     * And 새로운 즐겨찾기 생성 요청
+     * When 즐겨찾기 삭제 요청
+     * Then 즐겨찾기 삭제 됨
+     */
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorites() {
+        // given
+        Long id = getFavoritesId(즐겨찾기_생성_요청(교대역, 양재역, accessToken));
+        getFavoritesId(즐겨찾기_생성_요청(남부터미널역, 양재역, accessToken));
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(id, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId, int distance) {
