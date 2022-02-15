@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
 public class AuthenticationToken {
-    private String principal;
-    private String credentials;
+    private final String principal;
+    private final String credentials;
 
     public AuthenticationToken(String principal, String credentials) {
         this.principal = principal;

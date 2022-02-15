@@ -15,7 +15,7 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class MemberService {
     private JwtTokenProvider jwtTokenProvider;
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
