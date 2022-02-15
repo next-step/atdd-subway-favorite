@@ -58,7 +58,9 @@ npm run dev
 - [x]  즐겨찾기 기능 구현하기
    - [x] 인수 테스트 작성
    - [x] 인수테스트를 통과하기 위한 상세 기능 단위 테스트 TDD
-- [ ]  로그인이 필요한 API 요청 시 유효하지 않은 경우 401 응답 내려주기
+- [x]  로그인이 필요한 API 요청 시 유효하지 않은 경우 401 응답 내려주기
+   - [ ]  `**AuthenticationInterceptor` 응답 메시지 반환하기**
+   - [ ]  `AuthenticationPrincipalArgumentResolver` 테스트 작성하기
 
 # 요구사항 설명
 

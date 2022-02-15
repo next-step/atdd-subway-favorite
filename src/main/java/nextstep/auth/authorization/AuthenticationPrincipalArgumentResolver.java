@@ -1,5 +1,6 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.core.MethodParameter;
@@ -10,6 +11,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
@@ -19,12 +21,20 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getSecurityContextHolderInAuthentication();
         if (authentication.getPrincipal() instanceof Map) {
             return extractPrincipal(parameter, authentication);
         }
 
         return authentication.getPrincipal();
+    }
+
+    private Authentication getSecurityContextHolderInAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new AuthenticationException("로그인이 필요하거나 재로그인을 해주세요.");
+        }
+        return authentication;
     }
 
     private Object extractPrincipal(MethodParameter parameter, Authentication authentication) {

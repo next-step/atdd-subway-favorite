@@ -35,11 +35,13 @@ public class FavoritesService {
         return favoritesRepository.save(favorites).getId();
     }
 
+    @Transactional(readOnly = true)
     public List<FavoritesResponse> findByMemberId(LoginMember loginMember) {
         List<Favorites> favoriteses = favoritesRepository.findByMemberId(loginMember.getId());
         return FavoritesResponse.convertFavoritesResponses(favoriteses);
     }
 
+    @Transactional(readOnly = true)
     public void deleteFavorites(LoginMember loginMember, Long id) {
         favoritesRepository.deleteByIdAndMemberId(loginMember.getId(), id);
     }

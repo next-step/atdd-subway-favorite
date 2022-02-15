@@ -34,4 +34,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         회원_정보_조회됨(response, EMAIL, AGE);
     }
+
+    // 리뷰 코멘트 질문 : AuthenticationPrincipalArgumentResolver 테스트 방법
+    // AuthenticationPrincipalArgumentResolver 테스트 방법을 몰라 주석해 두었습니다.
+//    @DisplayName("Bearer Auth 비로그인 예외")
+//    @Test
+//    void exception_BearerAuth() {
+//        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(null);
+//
+//        회원_정보_조회됨(response, EMAIL, AGE);
+//    }
 }
