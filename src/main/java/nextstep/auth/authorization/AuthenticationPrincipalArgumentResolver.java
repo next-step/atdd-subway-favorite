@@ -1,5 +1,6 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.core.MethodParameter;
@@ -12,6 +13,17 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    public static Object toObject(Class clazz, String value) {
+        if (Boolean.class == clazz) return Boolean.parseBoolean(value);
+        if (Byte.class == clazz) return Byte.parseByte(value);
+        if (Short.class == clazz) return Short.parseShort(value);
+        if (Integer.class == clazz) return Integer.parseInt(value);
+        if (Long.class == clazz) return Long.parseLong(value);
+        if (Float.class == clazz) return Float.parseFloat(value);
+        if (Double.class == clazz) return Double.parseDouble(value);
+        return value;
+    }
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
@@ -20,6 +32,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new AuthenticationException();
+        }
+
         if (authentication.getPrincipal() instanceof Map) {
             return extractPrincipal(parameter, authentication);
         }
@@ -40,16 +56,5 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static Object toObject(Class clazz, String value) {
-        if (Boolean.class == clazz) return Boolean.parseBoolean(value);
-        if (Byte.class == clazz) return Byte.parseByte(value);
-        if (Short.class == clazz) return Short.parseShort(value);
-        if (Integer.class == clazz) return Integer.parseInt(value);
-        if (Long.class == clazz) return Long.parseLong(value);
-        if (Float.class == clazz) return Float.parseFloat(value);
-        if (Double.class == clazz) return Double.parseDouble(value);
-        return value;
     }
 }

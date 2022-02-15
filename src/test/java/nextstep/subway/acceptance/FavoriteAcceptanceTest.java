@@ -5,6 +5,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
@@ -14,7 +16,7 @@ import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 
 @DisplayName("즐겨찾기 관리")
-class FavoriteAcceptanceTest extends AcceptanceTest{
+class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -63,5 +65,53 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
 
         // then
         삭제_확인(deleteResponse);
+    }
+
+    @DisplayName("로그인하지 않을 경우 즐겨찾기 생성시 401를 반환한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "wrong_token"})
+    void return401whenUnauthorizedWithCreate(String wrongToken) {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(wrongToken, 방배역, 서초역);
+
+        // then
+        권한_없음(response);
+    }
+
+    @DisplayName("로그인하지 않을 경우 즐겨찾기 조회시 401를 반환한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "wrong_token"})
+    void return401whenUnauthorizedWithFind(String wrongToken) {
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 방배역, 서초역);
+
+        // then
+        생성_확인(createResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(wrongToken);
+
+        // then
+        권한_없음(findResponse);
+    }
+
+    @DisplayName("로그인하지 않을 경우 즐겨찾기 삭제시 401를 반환한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "wrong_token"})
+    void return401whenUnauthorizedWithDelete(String wrongToken) {
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 방배역, 서초역);
+
+        // then
+        생성_확인(createResponse);
+
+        // given
+        Long id = Long.valueOf(createResponse.header("Location").split("/")[2]);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(wrongToken, id);
+
+        // then
+        권한_없음(response);
     }
 }
