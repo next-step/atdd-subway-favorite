@@ -3,7 +3,6 @@ package nextstep.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
-import nextstep.auth.authentication.converter.AuthenticationConverter;
 import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 import nextstep.auth.authentication.converter.TokenAuthenticationConverter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
@@ -24,8 +23,6 @@ public class AuthConfig implements WebMvcConfigurer {
     private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
-    private final AuthenticationConverter sessionAuthenticationConverter;
-    private final AuthenticationConverter tokenAuthenticationConverter;
 
     public AuthConfig(CustomUserDetailsService userDetailsService,
                       JwtTokenProvider jwtTokenProvider,
@@ -33,16 +30,14 @@ public class AuthConfig implements WebMvcConfigurer {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
-        this.sessionAuthenticationConverter = new SessionAuthenticationConverter();
-        this.tokenAuthenticationConverter = new TokenAuthenticationConverter();
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService, sessionAuthenticationConverter))
+        registry.addInterceptor(new SessionAuthenticationInterceptor(userDetailsService, new SessionAuthenticationConverter()))
                 .addPathPatterns("/login/session");
         registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService,
-                tokenAuthenticationConverter,
+                new TokenAuthenticationConverter(),
                 jwtTokenProvider,
                 objectMapper))
                 .addPathPatterns("/login/token");

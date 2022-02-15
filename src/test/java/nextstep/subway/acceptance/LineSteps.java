@@ -42,6 +42,17 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
+    public static Long 지하철_노선_등록되어_있음(Long upStationId, Long downStationId) {
+        Map<String, String> lineCreateParams;
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", "신분당선");
+        lineCreateParams.put("color", "bg-red-600");
+        lineCreateParams.put("upStationId", upStationId + "");
+        lineCreateParams.put("downStationId", downStationId + "");
+        lineCreateParams.put("distance", 10 + "");
+        return 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params) {
         return RestAssured
                 .given().log().all()
