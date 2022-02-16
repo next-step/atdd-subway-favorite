@@ -14,9 +14,9 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private UserDetailService userDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
-    private ObjectMapperBean objectMapper;
+    private final UserDetailService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapperBean objectMapper;
 
     public AuthConfig(UserDetailService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapperBean objectMapper) {
         this.userDetailsService = userDetailsService;

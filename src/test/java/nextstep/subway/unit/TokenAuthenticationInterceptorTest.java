@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -43,7 +44,7 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
-    @Mock
+    @Spy
     private ObjectMapperBean objectMapper;
 
     @Mock
@@ -53,28 +54,13 @@ class TokenAuthenticationInterceptorTest {
     private TokenAuthenticationInterceptor interceptor;
 
     @Test
-    void authenticate() {
-        // given
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
-
-        // when
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        Authentication authentication = interceptor.authenticate(authenticationToken);
-
-        // then
-        assertThat(authentication.getPrincipal()).isNotNull();
-    }
-
-    @Test
     void preHandle() throws IOException {
         // given
         LoginMember member = new LoginMember(1L, EMAIL, PASSWORD, 20);
 
         when(converter.convert(any())).thenReturn(new AuthenticationToken(EMAIL, PASSWORD));
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(member);
-        when(objectMapper.writeValueAsString(any())).thenReturn(new ObjectMapper().writeValueAsString(new Authentication(member).getPrincipal()));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
-        when(objectMapper.writeValueAsString(any())).thenReturn(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
 
         // when
         MockHttpServletRequest request = createMockRequest();
