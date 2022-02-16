@@ -8,8 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.member.aceeptance.MemberSteps.*;
-import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_생성_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_생성_응답됨;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 
@@ -40,11 +39,23 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨찾기 요청하면
      * Then 즐겨찾기 추가가 성공한다.
      */
-    @DisplayName("즐겨찾기 추가")
+    @DisplayName("로그인 후 즐겨찾기 추가")
     @Test
-    void createFavorite() {
-        ExtractableResponse<Response> 즐겨찾기_요청 = 지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
+    void loginCreateFavorite() {
+        ExtractableResponse<Response> 즐겨찾기_생성_요청 = 로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
 
-        지하철_즐겨찾기_생성_응답됨(즐겨찾기_요청);
+        지하철_즐겨찾기_생성_응답됨(즐겨찾기_생성_요청);
+    }
+
+    /**
+     * When 로그인을 하지 않고 즐겨찾기를 추가하면
+     * Then 에러가 발생한다.
+     */
+    @DisplayName("비로그인 즐겨찾기 추가")
+    @Test
+    void notLoginCreateFavorite() {
+        ExtractableResponse<Response> 즐겨찾기_요청 = 비로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역);
+
+        비로그인_지하철_즐겨찾기_생성_응답됨(즐겨찾기_요청);
     }
 }
