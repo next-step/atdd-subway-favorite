@@ -24,10 +24,10 @@ public class FavoriteService {
         this.memberRepository = memberRepository;
     }
 
-    public FavoriteResponse saveFavorite(FavoriteRequest favoriteRequest, UserDetails userDetails) {
+    public FavoriteResponse saveFavorite(FavoriteRequest favoriteRequest, long memberId) {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Member member = memberRepository.findById(userDetails.getId())
+        Member member = memberRepository.findById(memberId)
             .orElseThrow(IllegalArgumentException::new);
 
         boolean isDuplicated = favoriteRepository.existsFavoriteBySourceIdAndTargetId(source.getId(), target.getId());
