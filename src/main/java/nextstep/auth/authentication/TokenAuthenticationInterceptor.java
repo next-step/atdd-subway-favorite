@@ -34,7 +34,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         final String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
         final String token = jwtTokenProvider.createToken(payload);
 
-        // TODO: authentication으로 TokenResponse 추출하기
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
@@ -56,7 +55,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
         final String principal = authenticationToken.getPrincipal();
         final LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
