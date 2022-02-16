@@ -41,7 +41,6 @@ public class FavoritesService {
         return FavoritesResponse.convertFavoritesResponses(favoriteses);
     }
 
-    @Transactional(readOnly = true)
     public void deleteFavorites(LoginMember loginMember, Long id) {
         favoritesRepository.deleteByIdAndMemberId(loginMember.getId(), id);
     }
