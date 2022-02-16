@@ -5,7 +5,11 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.MediaType;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,12 +27,14 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException, JSONException {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        final String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        final String token = jwtTokenProvider.createToken(payload);
+
+        TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -38,16 +44,33 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
+    public AuthenticationToken convert(HttpServletRequest request) throws IOException, JSONException {
+        final String requestString = request.getReader()
+                .lines()
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        JSONObject requestJson = new JSONObject(requestString);
 
-        return new AuthenticationToken(principal, credentials);
+        return new AuthenticationToken(requestJson.get("email").toString(), requestJson.get("password").toString());
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        final String principal = authenticationToken.getPrincipal();
+        final LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        checkAuthentication(userDetails, authenticationToken);
+
+        return new Authentication(userDetails);
+    }
+
+    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+        if (ObjectUtils.isEmpty(userDetails)) {
+
+            throw new AuthenticationException();
+        }
+
+        if (!userDetails.checkPassword(token.getCredentials())) {
+
+            throw new AuthenticationException();
+        }
     }
 }
