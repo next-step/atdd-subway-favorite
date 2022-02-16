@@ -55,6 +55,7 @@ class FavoriteServiceMockTest {
 
     @Test
     void 즐겨찾기_등록() {
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
         when(stationService.findStationById(강남역.getId())).thenReturn(강남역);
         when(stationService.findStationById(역삼역.getId())).thenReturn(역삼역);
         when(favoriteRepository.save(any(강남_TO_역삼.getClass()))).then(AdditionalAnswers.returnsFirstArg());
@@ -65,6 +66,7 @@ class FavoriteServiceMockTest {
 
     @Test
     void 즐겨찾기_목록_조회() {
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
         when(favoriteRepository.findAllByMember(member)).thenReturn(favorites);
         List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavorites(member.getId());
         assertThat(favoriteResponses).hasSize(2);
@@ -76,7 +78,7 @@ class FavoriteServiceMockTest {
 
     @Test
     void 즐겨찾기_삭제() {
-        when(favoriteRepository.findAllByMember(member)).thenReturn(favorites);
+        when(favoriteRepository.findByIdAndMemberId(강남_TO_역삼.getId(), member.getId())).thenReturn(Optional.of(강남_TO_역삼));
         favoriteService.deleteFavoriteById(강남_TO_역삼.getId(), member.getId());
         Mockito.verify(favoriteRepository).deleteById(강남_TO_역삼.getId());
     }
@@ -89,6 +91,5 @@ class FavoriteServiceMockTest {
         createFavorites();
         createFavoriteRequest();
         createFavoriteResponse();
-        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
     }
 }

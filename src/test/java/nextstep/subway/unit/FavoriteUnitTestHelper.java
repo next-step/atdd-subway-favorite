@@ -3,7 +3,6 @@ package nextstep.subway.unit;
 import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
-import nextstep.subway.applicaion.dto.PathRequest;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Section;
@@ -57,10 +56,10 @@ public final class FavoriteUnitTestHelper {
     }
 
     public static void createFavorites() {
-        강남_TO_역삼 = Favorite.of(강남역, 역삼역, member);
+        강남_TO_역삼 = new Favorite(강남역, 역삼역, member);
         ReflectionTestUtils.setField(강남_TO_역삼, "id", 1L);
 
-        정자_TO_판교 = Favorite.of(정자역, 판교역, member);
+        정자_TO_판교 = new Favorite(정자역, 판교역, member);
         ReflectionTestUtils.setField(강남_TO_역삼, "id", 2L);
 
         favorites.add(강남_TO_역삼);

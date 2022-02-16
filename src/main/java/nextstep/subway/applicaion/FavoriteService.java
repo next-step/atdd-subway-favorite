@@ -12,6 +12,7 @@ import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +37,7 @@ public class FavoriteService {
         Station target = stationService.findStationById(request.getTarget());
         Member member = findMemberById(memberId);
 
-        Favorite favorite = Favorite.of(source, target, member);
+        Favorite favorite = new Favorite(source, target, member);
         Favorite createdFavorite = favoriteRepository.save(favorite);
         return FavoriteResponse.of(createdFavorite);
     }
@@ -56,9 +57,8 @@ public class FavoriteService {
     }
 
     private boolean isNotMyFavorite(final Long favoriteId, final Long memberId) {
-        Member member = findMemberById(memberId);
-        return findAllMyFavorites(member).stream()
-                .noneMatch(f -> f.getId().equals(favoriteId));
+        Optional<Favorite> favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId);
+        return !favorite.isPresent();
     }
 
     private Member findMemberById(final Long memberId) {

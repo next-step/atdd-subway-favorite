@@ -1,9 +1,14 @@
 package nextstep.subway.domain;
 
-import nextstep.exception.SameStationException;
 import nextstep.member.domain.Member;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -27,18 +32,10 @@ public class Favorite extends BaseEntity {
     protected Favorite() {
     }
 
-    public static Favorite of(Station source, Station target, Member member) {
-        return new Favorite(source, target, member);
-    }
-
-    private Favorite(Station source, Station target, Member member) {
+    public Favorite(Station source, Station target, Member member) {
         this.source = source;
         this.target = target;
         this.member = member;
-    }
-
-    public void validateStations() {
-        validateStations();
     }
 
     public Long getId() {
