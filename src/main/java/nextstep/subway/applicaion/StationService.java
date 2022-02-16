@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,5 +42,12 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Map<Long, Station> loadFindStationsIds(Set<Long> stationIds) {
+        return stationRepository.findAllById(stationIds).stream()
+                .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 }

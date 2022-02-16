@@ -2,10 +2,10 @@ package nextstep.favorite.application;
 
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.favorite.application.manager.FavoriteStationService;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
+import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
-    private final FavoriteStationService favoriteStationService;
+    private final StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, FavoriteStationService favoriteStationService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
-        this.favoriteStationService = favoriteStationService;
+        this.stationService = stationService;
     }
 
     public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
@@ -37,7 +37,7 @@ public class FavoriteService {
         Set<Long> stationIds = favorites.stream().flatMap(section -> section.getStationIds().stream())
                 .collect(Collectors.toSet());
 
-        Map<Long, Station> stations = favoriteStationService.loadFindStationsIds(stationIds);
+        Map<Long, Station> stations = stationService.loadFindStationsIds(stationIds);
 
         return favorites.stream()
                 .map(it -> FavoriteResponse.of(
@@ -48,10 +48,12 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
-        if (!favorite.isCreatedBy(loginMember.getId())) {
-            throw new RuntimeException();
+        Favorite favorite = favoriteRepository.findById(id).orElse(null);
+        if (favorite != null) {
+            if (!favorite.isCreatedBy(loginMember.getId())) {
+                throw new RuntimeException();
+            }
+            favoriteRepository.deleteById(id);
         }
-        favoriteRepository.deleteById(id);
     }
 }

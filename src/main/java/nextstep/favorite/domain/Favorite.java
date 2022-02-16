@@ -18,7 +18,7 @@ public class Favorite extends BaseEntity {
     private Long sourceStationId;
     private Long targetStationId;
 
-    public Favorite() {
+    protected Favorite() {
     }
 
     public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
