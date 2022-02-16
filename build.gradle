@@ -28,8 +28,12 @@ dependencies {
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.jetbrains:annotations:20.1.0'
 
-	// test
+	// json
+	implementation group: 'org.json', name: 'json', version: '20211205'
+
+    // test
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
