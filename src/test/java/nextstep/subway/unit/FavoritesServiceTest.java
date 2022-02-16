@@ -10,6 +10,7 @@ import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Favorites;
 import nextstep.subway.domain.FavoritesRepository;
 import nextstep.subway.domain.Station;
+import nextstep.subway.ui.exception.FavoritesException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,5 +79,19 @@ class FavoritesServiceTest {
         FavoritesResponse favoritesResponse2 = new FavoritesResponse(favorites2.getId(), StationResponse.createStationResponse(교대역), StationResponse.createStationResponse(역삼역));
         assertThat(favoritesResponses.get(0)).isEqualTo(favoritesResponse1);
         assertThat(favoritesResponses.get(1)).isEqualTo(favoritesResponse2);
+    }
+
+    @DisplayName("존재하지 않는 즐겨찾기")
+    @Test
+    void exception_deleteFavorites() {
+        // given
+        LoginMember loginMember = new LoginMember(MEMBER_ID, "email", "password", 31);
+        when(favoritesRepository.findById(any())).thenReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> favoritesService.deleteFavorites(loginMember, 1L))
+                // then
+                .isInstanceOf(FavoritesException.class)
+                .hasMessage("존재하지 않는 즐겨찾기 입니다.");
     }
 }

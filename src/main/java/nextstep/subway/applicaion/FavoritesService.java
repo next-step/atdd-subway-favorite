@@ -8,10 +8,12 @@ import nextstep.subway.applicaion.dto.FavoritesResponse;
 import nextstep.subway.domain.Favorites;
 import nextstep.subway.domain.FavoritesRepository;
 import nextstep.subway.domain.Station;
+import nextstep.subway.ui.exception.FavoritesException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -42,6 +44,10 @@ public class FavoritesService {
     }
 
     public void deleteFavorites(LoginMember loginMember, Long id) {
-        favoritesRepository.deleteByIdAndMemberId(loginMember.getId(), id);
+        Favorites findFavorites = favoritesRepository.findById(id)
+                .orElseThrow(() -> new FavoritesException("존재하지 않는 즐겨찾기 입니다."));
+        if (findFavorites.canDeleteFavorites(loginMember.getId())) {
+            favoritesRepository.deleteById(id);
+        }
     }
 }

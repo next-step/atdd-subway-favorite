@@ -1,6 +1,7 @@
 package nextstep.subway.domain;
 
 import nextstep.member.domain.Member;
+import nextstep.subway.ui.exception.FavoritesException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,6 +42,13 @@ public class Favorites {
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    public boolean canDeleteFavorites(Long loginId) {
+        if (id.equals(loginId)) {
+            return true;
+        }
+        throw new FavoritesException("자신의 즐겨찾기만 삭제할 수 있습니다.");
     }
 
     public Long getId() {
