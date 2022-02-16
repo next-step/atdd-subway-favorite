@@ -1,32 +1,32 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.application.PasswordCheckableUserService;
+import nextstep.member.domain.PasswordCheckableUser;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final PasswordCheckableUserService customUserDetailsService;
 
-    public AuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public AuthenticationInterceptor(PasswordCheckableUserService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
+        PasswordCheckableUser passwordCheckableUser = customUserDetailsService.loadUserByUsername(principal);
+        checkAuthentication(passwordCheckableUser, token);
 
-        return new Authentication(userDetails);
+        return new Authentication(passwordCheckableUser);
     }
 
-    protected void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
+    protected void checkAuthentication(PasswordCheckableUser passwordCheckableUser, AuthenticationToken token) {
+        if (passwordCheckableUser == null) {
             throw new AuthenticationException();
         }
 
-        if (!userDetails.checkPassword(token.getCredentials())) {
+        if (!passwordCheckableUser.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
     }
