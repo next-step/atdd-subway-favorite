@@ -21,8 +21,7 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    public Favorite() {
-
+    protected Favorite() {
     }
 
     public Favorite(Long memberId, Station upStation, Station downStation) {
