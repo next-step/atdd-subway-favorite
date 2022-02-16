@@ -64,26 +64,26 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    /**
-     * When 회원 생성을 요청
-     * Then 회원 생성됨
-     * When 회원 정보 조회 요청
-     * Then 회원 정보 조회됨
-     * When 회원 정보 수정 요청
-     * Then 회원 정보 수정됨
-     * When 회원 삭제 요청
-     * Then 회원 삭제됨
-     */
-
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
-        //
+        // when
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
         ExtractableResponse<Response> memberResponse = 회원_정보_조회_요청(createResponse);
         ExtractableResponse<Response> newMemberResponse = 회원_정보_수정_요청(createResponse, "New Email", "New Password", AGE);
         ExtractableResponse<Response> deletedMemberResponse = 회원_삭제_요청(createResponse);
 
+        // then
+        manageMemberThen(createResponse, memberResponse, newMemberResponse, deletedMemberResponse);
+    }
+
+    private void manageMemberThen(
+            ExtractableResponse<Response> createResponse,
+            ExtractableResponse<Response> memberResponse,
+            ExtractableResponse<Response> newMemberResponse,
+            ExtractableResponse<Response> deletedMemberResponse
+    ) {
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(memberResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
         assertThat(newMemberResponse.jsonPath().getString("email")).isEqualTo("New Email");
         assertThat(deletedMemberResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -92,15 +92,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-        ExtractableResponse<Response> createResponse = 내_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> meResponse = 내_회원_정보_조회_요청(accessToken);
         ExtractableResponse<Response> updateResponse =
                 내_회원_정보_수정_요청(accessToken, "New Email", "New Password", AGE);
         ExtractableResponse<Response> deletedMemberResponse = 내_회원_삭제_요청(accessToken);
 
-        assertThat(createResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
+        // then
+        manageMemberMeInfoThen(createResponse, meResponse, updateResponse, deletedMemberResponse);
+    }
+
+    private void manageMemberMeInfoThen(
+            ExtractableResponse<Response> createResponse,
+            ExtractableResponse<Response> meResponse,
+            ExtractableResponse<Response> updateResponse,
+            ExtractableResponse<Response> deletedMemberResponse
+    ) {
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(meResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
         assertThat(updateResponse.jsonPath().getString("email")).isEqualTo("New Email");
         assertThat(deletedMemberResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
 }
