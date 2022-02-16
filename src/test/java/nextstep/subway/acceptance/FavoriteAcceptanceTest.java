@@ -14,6 +14,7 @@ import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.utils.ResponseUtil.아이디_추출;
 
 @DisplayName("즐겨찾기 관리")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -38,7 +39,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
         지하철_노선에_지하철_구간_생성_요청(이호선, 방배역, 서초역);
         지하철_노선에_지하철_구간_생성_요청(이호선, 서초역, 교대역);
-        회원ID = 회원_생성_요청(EMAIL, PASSWORD, AGE).header("Location").split("/")[2];
+        회원ID = 아이디_추출(회원_생성_요청(EMAIL, PASSWORD, AGE));
         accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
@@ -106,7 +107,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         생성_확인(createResponse);
 
         // given
-        Long id = Long.valueOf(createResponse.header("Location").split("/")[2]);
+        Long id = Long.valueOf(아이디_추출(createResponse));
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(wrongToken, id);
