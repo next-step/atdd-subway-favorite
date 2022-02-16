@@ -2,10 +2,16 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청_토큰_비인증;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -35,13 +41,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
-    // 리뷰 코멘트 질문 : AuthenticationPrincipalArgumentResolver 테스트 방법
-    // AuthenticationPrincipalArgumentResolver 테스트 방법을 몰라 주석해 두었습니다.
-//    @DisplayName("Bearer Auth 비로그인 예외")
-//    @Test
-//    void exception_BearerAuth() {
-//        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(null);
-//
-//        회원_정보_조회됨(response, EMAIL, AGE);
-//    }
+    @DisplayName("Bearer Auth 비로그인 예외")
+    @Test
+    void exception_BearerAuth() {
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청_토큰_비인증();
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
