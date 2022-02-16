@@ -46,4 +46,8 @@ public class FavoriteSteps {
     public static void 비로그인_지하철_즐겨찾기_생성_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    public static void 즐겨찾기_중복_생성_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

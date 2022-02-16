@@ -58,4 +58,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         비로그인_지하철_즐겨찾기_생성_응답됨(즐겨찾기_요청);
     }
+
+    /**
+     * Given 즐겨찾기를 추가하고
+     * When 중복 즐겨찾기를 추가하면
+     * Then 에러가 발생한다.
+     */
+    @DisplayName("비로그인 즐겨찾기 추가")
+    @Test
+    void duplicateFavorite() {
+        로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
+
+        ExtractableResponse<Response> 중복_즐겨찾기_요청 = 로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
+
+        즐겨찾기_중복_생성_응답됨(중복_즐겨찾기_요청);
+    }
 }
