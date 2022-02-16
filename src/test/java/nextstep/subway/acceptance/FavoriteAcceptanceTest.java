@@ -27,8 +27,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 강남역;
     private Long 삼성역;
 
-    private Long 이호선;
-
     /**
      * Background
      * Given 지하철역 등록되어 있음
@@ -44,8 +42,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         삼성역 = 지하철역_생성_요청("삼성역").jsonPath().getLong("id");
 
-        Map<String, String> lineCreateParams = createLineCreateParams(강남역, 삼성역);
-        이호선 = 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+        지하철_노선_생성_요청(createLineCreateParams(강남역, 삼성역));
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
@@ -98,8 +95,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
         Map<String, String> lineCreateParams;
         lineCreateParams = new HashMap<>();
-        lineCreateParams.put("name", "신분당선");
-        lineCreateParams.put("color", "bg-red-600");
+        lineCreateParams.put("name", "이호선");
+        lineCreateParams.put("color", "bg-green-600");
         lineCreateParams.put("upStationId", upStationId + "");
         lineCreateParams.put("downStationId", downStationId + "");
         lineCreateParams.put("distance", 10 + "");
