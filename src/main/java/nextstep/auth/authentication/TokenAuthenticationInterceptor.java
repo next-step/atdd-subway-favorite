@@ -59,8 +59,19 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
         String principal = authenticationToken.getPrincipal();
-
         LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
-        return new Authentication(null);
+        checkAuthentication(userDetails, authenticationToken);
+
+        return new Authentication(userDetails);
+    }
+
+    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+        if (userDetails == null) {
+            throw new AuthenticationException();
+        }
+
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
+        }
     }
 }
