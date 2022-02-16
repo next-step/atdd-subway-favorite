@@ -98,7 +98,7 @@ class FavoriteServiceMockTest {
         favoriteService.createFavorite(사용자, request);
 
         // when
-        favoriteService.removeFavorite(favorite.getId());
+        favoriteService.removeFavorite(사용자, favorite.getId());
 
         // then
         List<FavoriteResponse> list = favoriteService.findAll(사용자);

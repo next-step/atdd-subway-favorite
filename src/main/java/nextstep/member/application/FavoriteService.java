@@ -39,7 +39,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void removeFavorite(Long favoriteId) {
-        favoriteRepository.deleteById(favoriteId);
+    public void removeFavorite(Long memberId, Long favoriteId) {
+        favoriteRepository.deleteByIdAndMemberId(favoriteId, memberId);
     }
 }

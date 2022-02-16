@@ -54,45 +54,25 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * When 즐겨찾기 생성을 요청
      * Then 즐겨찾기 생성됨
-     */
-    @DisplayName("즐겨찾기 생성을 요청")
-    @Test
-    void createFavorite() {
-        // When
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역, 삼성역);
-
-        // Then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    /**
-     * Givne 즐겨찾기 생성을 요청
      * When 즐겨찾기 목록 조회 요청
      * Then 즐겨찾기 목록 조회됨
-     */
-    @DisplayName("즐겨찾기 목록 조회를 요청.")
-    @Test
-    void getFavorites() {
-        // Given
-        ExtractableResponse<Response> 즐겨찾기_생성_요청 = 즐겨찾기_생성_요청(accessToken, 강남역, 삼성역);
-
-        // When
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
-
-        // Then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    /**
-     * Givne 즐겨찾기 생성을 요청
      * When 즐겨찾기 제거 요청
      * Then 즐겨찾기 제거됨
      */
-    @DisplayName("즐겨찾기 제거를 요청.")
+    @DisplayName("즐겨찾기를 관리한다.")
     @Test
-    void deleteFavorite() {
-        // Given
+    void menageFavorite() {
+        // When
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 삼성역);
+
+        // Then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        // When
+        ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(accessToken);
+
+        // Then
+        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         // When
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_제거_요청(accessToken, createResponse.header("Location"));

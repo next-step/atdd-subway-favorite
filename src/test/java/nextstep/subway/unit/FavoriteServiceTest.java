@@ -66,7 +66,7 @@ class FavoriteServiceTest {
         FavoriteResponse favorite = favoriteService.createFavorite(사용자, createRequest(강남역, 역삼역));
 
         // when
-        favoriteService.removeFavorite(favorite.getId());
+        favoriteService.removeFavorite(사용자, favorite.getId());
 
         // then
         List<FavoriteResponse> list = favoriteService.findAll(사용자);
