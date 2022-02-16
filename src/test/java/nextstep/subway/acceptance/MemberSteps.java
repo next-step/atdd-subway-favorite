@@ -13,6 +13,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
+
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -48,8 +49,8 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> createResponse) {
+        String uri = createResponse.header("Location");
 
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -58,8 +59,8 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> createResponse, String email, String password, Integer age) {
+        String uri = createResponse.header("Location");
 
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -74,8 +75,8 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> createResponse) {
+        String uri = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
@@ -102,9 +103,25 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static void 회원_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 액세스_토큰_발급됨(String  accessToken) {
+        assertThat(accessToken).isNotBlank();
     }
 }
