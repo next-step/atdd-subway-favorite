@@ -25,12 +25,6 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberOfMine(LoginMember loginMember) {
-        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(RuntimeException::new);
-
-        return MemberResponse.of(member);
-    }
-
     public MemberResponse updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
@@ -40,5 +34,22 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse findMemberOfMine(LoginMember loginMember) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(RuntimeException::new);
+
+        return MemberResponse.of(member);
+    }
+
+    public MemberResponse updateMemberOfMine(LoginMember loginMember, MemberRequest memberRequest) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(RuntimeException::new);
+        member.update(memberRequest.toMember());
+
+        return MemberResponse.of(member);
+    }
+
+    public void deleteMemberOfMine(LoginMember loginMember) {
+
     }
 }

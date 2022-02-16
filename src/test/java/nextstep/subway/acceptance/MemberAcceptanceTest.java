@@ -92,6 +92,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-        //
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> createResponse = 내_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> updateResponse =
+                내_회원_정보_수정_요청(accessToken, "New Email", "New Password", AGE);
+
+        assertThat(createResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(updateResponse.jsonPath().getString("email")).isEqualTo("New Email");
+
     }
 }
