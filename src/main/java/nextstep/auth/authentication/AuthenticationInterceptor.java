@@ -7,7 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     public AuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
