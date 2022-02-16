@@ -115,5 +115,4 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(updateResponse.jsonPath().getString("email")).isEqualTo("New Email");
         assertThat(deletedMemberResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-
 }
