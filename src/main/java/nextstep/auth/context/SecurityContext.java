@@ -10,11 +10,11 @@ public class SecurityContext {
         this.authentication = authentication;
     }
 
-    public void setAuthentication(Authentication authentication) {
-        this.authentication = authentication;
-    }
-
     public Authentication getAuthentication() {
         return authentication;
+    }
+
+    public void setAuthentication(Authentication authentication) {
+        this.authentication = authentication;
     }
 }

@@ -12,6 +12,17 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    public static Object toObject(Class clazz, String value) {
+        if (Boolean.class == clazz) return Boolean.parseBoolean(value);
+        if (Byte.class == clazz) return Byte.parseByte(value);
+        if (Short.class == clazz) return Short.parseShort(value);
+        if (Integer.class == clazz) return Integer.parseInt(value);
+        if (Long.class == clazz) return Long.parseLong(value);
+        if (Float.class == clazz) return Float.parseFloat(value);
+        if (Double.class == clazz) return Double.parseDouble(value);
+        return value;
+    }
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
@@ -40,16 +51,5 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static Object toObject(Class clazz, String value) {
-        if (Boolean.class == clazz) return Boolean.parseBoolean(value);
-        if (Byte.class == clazz) return Byte.parseByte(value);
-        if (Short.class == clazz) return Short.parseShort(value);
-        if (Integer.class == clazz) return Integer.parseInt(value);
-        if (Long.class == clazz) return Long.parseLong(value);
-        if (Float.class == clazz) return Float.parseFloat(value);
-        if (Double.class == clazz) return Double.parseDouble(value);
-        return value;
     }
 }
