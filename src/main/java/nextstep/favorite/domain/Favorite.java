@@ -1,5 +1,6 @@
 package nextstep.favorite.domain;
 
+import nextstep.member.domain.Member;
 import nextstep.subway.domain.BaseEntity;
 import nextstep.subway.domain.Station;
 
@@ -11,7 +12,9 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
@@ -24,8 +27,8 @@ public class Favorite extends BaseEntity {
     protected Favorite() {
     }
 
-    public Favorite(Long memberId, Station upStation, Station downStation) {
-        this.memberId = memberId;
+    public Favorite(Member member, Station upStation, Station downStation) {
+        this.member = member;
         this.upStation = upStation;
         this.downStation = downStation;
     }

@@ -34,7 +34,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    private Member findMemberById(Long id) {
+    public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 }
