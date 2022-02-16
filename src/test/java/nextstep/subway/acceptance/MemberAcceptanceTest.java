@@ -97,9 +97,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 내_회원_정보_조회_요청(accessToken);
         ExtractableResponse<Response> updateResponse =
                 내_회원_정보_수정_요청(accessToken, "New Email", "New Password", AGE);
+        ExtractableResponse<Response> deletedMemberResponse = 내_회원_삭제_요청(accessToken);
 
         assertThat(createResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
         assertThat(updateResponse.jsonPath().getString("email")).isEqualTo("New Email");
-
+        assertThat(deletedMemberResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -50,6 +50,7 @@ public class MemberService {
     }
 
     public void deleteMemberOfMine(LoginMember loginMember) {
-
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(RuntimeException::new);
+        memberRepository.delete(member);
     }
 }
