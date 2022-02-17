@@ -18,6 +18,8 @@ public enum ErrorCode {
     SAME_STATION_ERROR(HttpStatus.BAD_REQUEST, "-10017", "출발역과 도착역은 같을 수 없습니다."),
     NOT_CONNECTED_ERROR(HttpStatus.BAD_REQUEST, "-10018", "연결되어있지 않습니다."),
     TOKEN_AUTHENTICATION_CONVERT_ERROR(HttpStatus.BAD_REQUEST, "-10019", "토큰 인증 변환에 실패하였습니다."),
+    NOT_FOUND_MEMBER_ERROR(HttpStatus.BAD_REQUEST, "-10020", "회원 정보를 찾을 수 없습니다."),
+    NOT_EXIST_AUTHORIZATION_ERROR(HttpStatus.BAD_REQUEST, "-10021", "권한이 존재하지 않습니다."),
     ;
 
     private final HttpStatus status;
