@@ -27,13 +27,6 @@ public class Favorite extends BaseEntity {
         this.targetStationId = targetStationId;
     }
 
-    public Set<Long> getStationIds() {
-        Set<Long> ids = new HashSet<>();
-        ids.add(sourceStationId);
-        ids.add(targetStationId);
-        return ids;
-    }
-
     public Long getId() {
         return id;
     }

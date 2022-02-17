@@ -10,10 +10,9 @@ import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FavoriteService {
@@ -34,7 +33,7 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
 
-        Set<Long> stationIds = favorites.stream().flatMap(section -> section.getStationIds().stream())
+        Set<Long> stationIds = favorites.stream().flatMap(this::getStationIds)
                 .collect(Collectors.toSet());
 
         Map<Long, Station> stations = stationService.loadFindStationsIds(stationIds);
@@ -48,12 +47,20 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElse(null);
-        if (favorite != null) {
-            if (!favorite.isCreatedBy(loginMember.getId())) {
-                throw new RuntimeException();
-            }
-            favoriteRepository.deleteById(id);
-        }
+        favoriteRepository.findById(id).ifPresent(favorite -> {
+                    if (!favorite.isCreatedBy(loginMember.getId())) {
+                        throw new NoMartianException();
+                    }
+                }
+        );
+
+        favoriteRepository.deleteById(id);
+    }
+
+    public Stream<Long> getStationIds(Favorite favorite) {
+        Set<Long> ids = new HashSet<>();
+        ids.add(favorite.getSourceStationId());
+        ids.add(favorite.getTargetStationId());
+        return ids.stream();
     }
 }
