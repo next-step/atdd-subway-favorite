@@ -36,6 +36,15 @@ public class FavoriteAcceptanceSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨_찾기_삭제_요청(final String accessToken, int favoriteId) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .pathParam("favoriteId", favoriteId)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(FAVORITES_URI + "/{favoriteId}")
+                .then().log().all()
+                .extract();
+    }
 
     public static Map<String, String> 구간_생성_파람(Long upStationId, Long downStationId, int distance) {
         Map<String, String> params = new HashMap<>();

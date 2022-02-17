@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.FavoriteAcceptanceSteps.구간_생성_파람;
+import static nextstep.subway.acceptance.FavoriteAcceptanceSteps.즐겨_찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.acceptance.FavoriteAcceptanceSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
@@ -129,6 +130,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void 즐겨찾기_삭제() {
+        // given
+        즐겨찾기_생성_요청(로그인_토큰, 삼성역, 서울역);
+
+        // when
+        val response = 즐겨_찾기_삭제_요청(로그인_토큰, 1);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }
