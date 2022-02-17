@@ -15,8 +15,8 @@ import nextstep.auth.context.Authentication;
 import nextstep.member.domain.UserDetails;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
-	private AuthenticationConverter authenticationConverter;
-	private UserDetailsService userDetailsService;
+	private final AuthenticationConverter authenticationConverter;
+	private final UserDetailsService userDetailsService;
 
 	AuthenticationInterceptor(AuthenticationConverter authenticationConverter, UserDetailsService userDetailsService) {
 		this.authenticationConverter = authenticationConverter;
@@ -32,7 +32,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 		Object handler) throws IOException {
 		AuthenticationToken token = convert(request);
 		Authentication authentication = authenticate(token);
-		afterAuthentication(request,response,authentication);
+		afterAuthentication(request, response, authentication);
 		return false;
 	}
 

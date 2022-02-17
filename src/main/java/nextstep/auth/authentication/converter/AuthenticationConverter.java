@@ -6,6 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import nextstep.auth.authentication.AuthenticationToken;
 
-public interface AuthenticationConverter{
+public interface AuthenticationConverter {
 	AuthenticationToken convert(HttpServletRequest request) throws IOException;
 }

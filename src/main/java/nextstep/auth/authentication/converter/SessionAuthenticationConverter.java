@@ -20,5 +20,6 @@ public class SessionAuthenticationConverter implements AuthenticationConverter {
 		String principal = paramMap.get(USERNAME_FIELD)[0];
 		String credentials = paramMap.get(PASSWORD_FIELD)[0];
 
-		return new AuthenticationToken(principal, credentials);	}
+		return new AuthenticationToken(principal, credentials);
+	}
 }

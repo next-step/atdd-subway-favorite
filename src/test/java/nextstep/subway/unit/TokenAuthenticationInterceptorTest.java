@@ -22,9 +22,9 @@ import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.UserDetails;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.UserDetails;
 
 class TokenAuthenticationInterceptorTest {
 	public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
