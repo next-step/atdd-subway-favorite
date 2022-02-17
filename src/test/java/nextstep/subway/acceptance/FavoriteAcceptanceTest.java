@@ -1,7 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -94,11 +92,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("잘못된 유저 정보로는 즐겨찾기를 생성할 수 없다")
+    @DisplayName("[예외] 유효하지 않은 멤버 즐겨찾기 생성 방지")
     @Test
-    void createFavoriteWithInvalidAccessToken() {
+    void 유효하지_않은_멤버_즐겨찾기_생성_방지() {
         // when
-        final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(INVALID_ACCESS_TOKEN, 삼성역, 서울역);
+        val response = 즐겨찾기_생성_요청(INVALID_ACCESS_TOKEN, 삼성역, 서울역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
