@@ -18,19 +18,18 @@ import nextstep.auth.token.TokenResponse;
 public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private final ObjectMapper objectMapper;
 
     public TokenAuthenticationInterceptor(AuthenticationConverter authenticationConverter,
 		UserDetailsService userDetailsService
-		, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+		, JwtTokenProvider jwtTokenProvider) {
 		super(authenticationConverter, userDetailsService);
 		this.jwtTokenProvider = jwtTokenProvider;
-		this.objectMapper = objectMapper;
 	}
 
 	@Override
 	public void afterAuthentication(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 		String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
 		TokenResponse tokenResponse = new TokenResponse(jwtTokenProvider.createToken(payload));
 		String responseToClient = objectMapper.writeValueAsString(tokenResponse);
