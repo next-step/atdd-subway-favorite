@@ -48,11 +48,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        String stringJosn = request.getReader()
+        String stringJson = request.getReader()
             .lines()
             .findFirst()
             .orElseThrow(RuntimeException::new);
-        JSONObject jsonObject = new JSONObject(stringJosn);
+        JSONObject jsonObject = new JSONObject(stringJson);
 
         return new AuthenticationToken(jsonObject.getString(EMAIL), jsonObject.getString(PASSWORD));
     }
