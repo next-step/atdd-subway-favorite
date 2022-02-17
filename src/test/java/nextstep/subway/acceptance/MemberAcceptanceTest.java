@@ -89,4 +89,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
         val response = 회원_정보_수정_요청(token, "e@mail.com", PASSWORD, AGE);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
+    @DisplayName("권한 없는 경우 예외")
+    @Test
+    void 권한_없는_경우_예외() {
+        //given
+        String 유효하지_않은_토큰 = "invalid token";
+
+        ExtractableResponse<Response> 회원_정보_조회_응답 = 내_회원_정보_조회_요청(유효하지_않은_토큰);
+        assertThat(회원_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        ExtractableResponse<Response> 회원_정보_수정_응답 = 회원_정보_수정_요청(유효하지_않은_토큰, "e@mail.com", PASSWORD, AGE);
+        assertThat(회원_정보_수정_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        ExtractableResponse<Response> 회원_삭제_응답 = 회원_정보_삭제_요청(유효하지_않은_토큰);
+        assertThat(회원_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+    }
 }
