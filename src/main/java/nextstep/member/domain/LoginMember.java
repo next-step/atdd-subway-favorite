@@ -1,7 +1,7 @@
 package nextstep.member.domain;
 
 
-public class LoginMember {
+public class LoginMember implements PasswordCheckableUser {
     private Long id;
     private String email;
     private String password;
@@ -18,10 +18,6 @@ public class LoginMember {
         this.age = age;
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
-
     public Long getId() {
         return id;
     }
@@ -36,5 +32,10 @@ public class LoginMember {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 }
