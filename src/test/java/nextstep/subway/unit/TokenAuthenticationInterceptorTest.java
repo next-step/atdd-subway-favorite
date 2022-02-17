@@ -42,7 +42,7 @@ class TokenAuthenticationInterceptorTest {
         when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, new ObjectMapper());
     }
 
     @Test
