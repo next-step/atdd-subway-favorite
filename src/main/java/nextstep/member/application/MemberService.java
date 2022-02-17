@@ -27,9 +27,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(Long id, MemberRequest param) {
+    public MemberResponse updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(AuthenticationException::new);
         member.update(param.toMember());
+
+        return MemberResponse.of(member);
     }
 
 //    public void updateMember(LoginMember loginMember) {
