@@ -16,8 +16,8 @@ class AuthenticationInterceptorTest extends AuthenticationInterceptorTestSupport
     @Test
     void authenticate() {
         // given
-        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor(userDetailsService);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 1));
+        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor(customUserDetailsService);
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 1));
 
         // when
         Authentication authentication = authenticationInterceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
@@ -33,8 +33,8 @@ class AuthenticationInterceptorTest extends AuthenticationInterceptorTestSupport
     @Test
     void authenticateInValidationFailure() {
         // given
-        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor(userDetailsService);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 1));
+        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor(customUserDetailsService);
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 1));
 
         // when then
         assertThrows(AuthenticationException.class, () -> authenticationInterceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD + "123")));
@@ -43,8 +43,8 @@ class AuthenticationInterceptorTest extends AuthenticationInterceptorTestSupport
     @Test
     void authenticateNotExistUserFailure() {
         // given
-        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor(userDetailsService);
-        when(userDetailsService.loadUserByUsername(any())).thenReturn(null);
+        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor(customUserDetailsService);
+        when(customUserDetailsService.loadUserByUsername(any())).thenReturn(null);
 
         // when then
         assertThrows(AuthenticationException.class, () -> authenticationInterceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD)));
