@@ -7,7 +7,7 @@ import nextstep.auth.token.TokenRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class TokenAuthenticationConverter implements AuthenticationConverter{
+public class TokenAuthenticationConverter implements AuthenticationConverter {
 
     private final ObjectMapper objectMapper;
 

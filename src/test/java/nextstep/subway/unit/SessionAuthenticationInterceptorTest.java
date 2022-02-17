@@ -1,9 +1,7 @@
 package nextstep.subway.unit;
 
-import nextstep.auth.application.UserDetailService;
+import nextstep.auth.application.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.converter.AuthenticationConverter;
-import nextstep.auth.authentication.converter.SessionAuthenticationConverter;
 import nextstep.auth.authentication.interceptor.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.CustomUserDetailsService;
@@ -24,15 +22,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class SessionAuthenticationInterceptorTest {
-    private UserDetailService userDetailsService;
-    private AuthenticationConverter authenticationConverter;
+    private UserDetailsService userDetailsService;
     private SessionAuthenticationInterceptor sessionAuthenticationInterceptor;
 
     @BeforeEach
     void setUp() {
         userDetailsService = mock(CustomUserDetailsService.class);
-        authenticationConverter = new SessionAuthenticationConverter();
-        sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(authenticationConverter, userDetailsService);
+        sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(userDetailsService);
     }
 
     @DisplayName("이메일/비밀번호가 담긴 토큰을 반환한다.")
