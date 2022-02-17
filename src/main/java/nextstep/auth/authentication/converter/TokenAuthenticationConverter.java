@@ -13,14 +13,12 @@ import nextstep.auth.token.TokenRequest;
 
 @Component
 public class TokenAuthenticationConverter implements AuthenticationConverter {
-	private final ObjectMapper objectMapper;
-
-	public TokenAuthenticationConverter(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
+	public TokenAuthenticationConverter() {
 	}
 
 	@Override
 	public AuthenticationToken convert(HttpServletRequest request) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 		TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
 		String principal = tokenRequest.getEmail();
 		String credentials = tokenRequest.getPassword();
