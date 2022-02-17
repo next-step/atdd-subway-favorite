@@ -81,4 +81,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
 		회원_정보_조회됨(내_회원_정보_반환, "newemail@email.com", AGE);
 	}
+
+	@DisplayName("나의 정보를 삭제한다.")
+	@Test
+	void deleteMyInfo() {
+		ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+		String 로그인_회원_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+
+		ExtractableResponse<Response> response = 내_회원_정보_삭제_요청(로그인_회원_토큰);
+
+		assertThat(response.statusCode()).isEqualTo(204);
+	}
 }
