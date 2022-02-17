@@ -22,26 +22,19 @@ import nextstep.member.application.CustomUserDetailsService;
 public class AuthConfig implements WebMvcConfigurer {
 	private final CustomUserDetailsService userDetailsService;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final TokenAuthenticationConverter tokenAuthenticationConverter;
-	private final SessionAuthenticationConverter sessionAuthenticationConverter;
 
-	public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider,
-		TokenAuthenticationConverter tokenAuthenticationConverter,
-		SessionAuthenticationConverter sessionAuthenticationConverter) {
-
-		this.sessionAuthenticationConverter = sessionAuthenticationConverter;
+	public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
 		this.userDetailsService = userDetailsService;
 		this.jwtTokenProvider = jwtTokenProvider;
-		this.tokenAuthenticationConverter = tokenAuthenticationConverter;
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(
-				new SessionAuthenticationInterceptor(sessionAuthenticationConverter, userDetailsService))
+				new SessionAuthenticationInterceptor(new SessionAuthenticationConverter(), userDetailsService))
 			.addPathPatterns("/login/session");
 		registry.addInterceptor(
-			new TokenAuthenticationInterceptor(tokenAuthenticationConverter, userDetailsService, jwtTokenProvider,
+			new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(), userDetailsService, jwtTokenProvider,
 				new ObjectMapper())).addPathPatterns("/login/token");
 		registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
 		registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider));
