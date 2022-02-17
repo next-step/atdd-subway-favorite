@@ -20,15 +20,15 @@ public class Favorite {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member memeber;
+    private Member member;
 
     public Favorite() {
     }
 
-    public Favorite(Station source, Station target, Member memeber) {
+    public Favorite(Station source, Station target, Member member) {
         this.source = source;
         this.target = target;
-        this.memeber = memeber;
+        this.member = member;
     }
 
     public Long getId() {
@@ -43,7 +43,7 @@ public class Favorite {
         return target;
     }
 
-    public Member getMemeber() {
-        return memeber;
+    public Member getMember() {
+        return member;
     }
 }

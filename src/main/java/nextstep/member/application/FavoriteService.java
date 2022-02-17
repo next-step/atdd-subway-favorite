@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import lombok.val;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Favorite;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -52,5 +54,13 @@ public class FavoriteService {
         List<Line> lines = lineService.findLines();
         SubwayMap subwayMap = new SubwayMap(lines);
         subwayMap.checkConnected(upStation, downStation);
+    }
+
+    public List<FavoriteResponse> findAllFavorite(final Long memberId) {
+        val member = memberService.findById(memberId);
+        val favorites = favoriteRepository.findByMember(member);
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }
