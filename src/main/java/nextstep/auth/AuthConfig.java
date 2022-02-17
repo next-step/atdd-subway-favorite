@@ -1,9 +1,9 @@
 package nextstep.auth;
 
-import nextstep.auth.authentication.SessionAuthenticationInterceptor;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.authentication.convertor.SessionConvertor;
 import nextstep.auth.authentication.convertor.TokenConvertor;
+import nextstep.auth.authentication.interceptor.SessionAuthenticationInterceptor;
+import nextstep.auth.authentication.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;

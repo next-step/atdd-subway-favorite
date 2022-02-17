@@ -1,36 +1,36 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.interceptor;
 
-import nextstep.auth.authentication.convertor.SessionConvertor;
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.convertor.AuthenticationConverter;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
-import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
+public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor {
+    protected final AuthenticationConverter converter;
+    private final CustomUserDetailsService userDetailsService;
 
-    private CustomUserDetailsService userDetailsService;
-    private SessionConvertor sessionConvertor;
-
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService, SessionConvertor sessionConvertor) {
+    public AuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter converter) {
         this.userDetailsService = userDetailsService;
-        this.sessionConvertor = sessionConvertor;
+        this.converter = converter;
     }
 
+    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
+
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        AuthenticationToken token = sessionConvertor.convert(request);
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        AuthenticationToken token = converter.convert(request);
         Authentication authentication = authenticate(token);
 
-        HttpSession httpSession = request.getSession();
-        httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
-        response.setStatus(HttpServletResponse.SC_OK);
+        afterAuthentication(request,response,authentication);
         return false;
     }
 
