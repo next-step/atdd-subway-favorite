@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 증겨찾기 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
+    private static final String INVALID_ACCESS_TOKEN = "invalidAccessToken";
+
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
@@ -90,5 +92,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //when
         val 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 삼성역, 신길역);
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("잘못된 유저 정보로는 즐겨찾기를 생성할 수 없다")
+    @Test
+    void createFavoriteWithInvalidAccessToken() {
+        // when
+        final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(INVALID_ACCESS_TOKEN, 삼성역, 서울역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

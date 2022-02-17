@@ -1,5 +1,6 @@
 package nextstep.subway.domain;
 
+import lombok.val;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
@@ -27,6 +28,21 @@ public class SubwayMap {
                 .collect(Collectors.toList());
 
         return new Path(new Sections(sections));
+    }
+
+    public void checkConnected(Station source, Station target) {
+        // 그래프 만들기
+        SimpleDirectedWeightedGraph<Station, SectionEdge> graph = createGraph();
+
+        // 다익스트라 최단 경로 찾기
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
+
+        try {
+            result.getEdgeList();
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private SimpleDirectedWeightedGraph<Station, SectionEdge> createGraph() {
