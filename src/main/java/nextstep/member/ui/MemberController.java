@@ -2,12 +2,10 @@ package nextstep.member.ui;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,15 +46,15 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserDetails userDetails) {
+        MemberResponse memberResponse = memberService.findMember(userDetails.getId());
         return ResponseEntity.ok().body(memberResponse);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal UserDetails userDetails,
                                                              @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember.getId(), param);
+        memberService.updateMember(userDetails.getId(), param);
 
         return ResponseEntity.ok().build();
     }
