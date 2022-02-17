@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.FavoriteAcceptanceSteps.구간_생성_파람;
+import static nextstep.subway.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.acceptance.FavoriteAcceptanceSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
@@ -101,4 +102,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void 즐겨찾기_목록_조회() {
+        //given
+        즐겨찾기_생성_요청(로그인_토큰, 삼성역, 서울역);
+
+        // when
+        val response = 즐겨찾기_목록_조회_요청(로그인_토큰);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(삼성역);
+        assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(서울역);
+    }
+
+    @DisplayName("[예외] 유효하지 않은 멤버 즐겨찾기 목록 조회 방지")
+    @Test
+    void 유효하지_않은_멤버_즐겨찾기_목록_조회_방지() {
+        //given
+        즐겨찾기_생성_요청(로그인_토큰, 삼성역, 서울역);
+
+        // when
+        val response = 즐겨찾기_목록_조회_요청(INVALID_ACCESS_TOKEN);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }
