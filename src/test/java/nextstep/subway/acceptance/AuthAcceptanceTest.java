@@ -2,10 +2,16 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청_토큰_비인증;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -33,5 +39,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("Bearer Auth 비로그인 예외")
+    @Test
+    void exception_BearerAuth() {
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청_토큰_비인증();
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

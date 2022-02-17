@@ -34,16 +34,16 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         return new Authentication(detailMember);
     }
 
+    // 리뷰 코멘트 질문 : 컨트롤러에 요청 가기 전에 예외 메시지 응답하는 방법
     private void checkAuthentication(DetailMember detailMember, AuthenticationToken token) {
         if (detailMember == null) {
-            throw new AuthenticationException();
+            throw new AuthenticationException("존재하지 않는 이메일입니다.");
         }
 
         if (!detailMember.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
+            throw new AuthenticationException("비밀번호가 틀렸습니다.");
         }
     }
 
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
-
 }

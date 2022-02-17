@@ -53,8 +53,12 @@ public class PathFinder {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         PathFinder that = (PathFinder) o;
         return Objects.equals(lines, that.lines);
     }

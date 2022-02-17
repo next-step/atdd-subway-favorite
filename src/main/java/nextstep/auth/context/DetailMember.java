@@ -5,9 +5,5 @@ public interface DetailMember {
 
     Long getId();
 
-    String getEmail();
-
-    Integer getAge();
-
     String getPassword();
 }
