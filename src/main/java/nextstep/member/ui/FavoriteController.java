@@ -7,7 +7,9 @@ import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,5 +40,14 @@ public class FavoriteController {
     public ResponseEntity<List<FavoriteResponse>> findAllFavorite(@AuthenticationPrincipal final LoginMember loginMember) {
         val favoriteResponses = favoriteService.findAllFavorite(loginMember.getId());
         return ResponseEntity.ok().body(favoriteResponses);
+    }
+
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<List<FavoriteResponse>> removeFavorite(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @PathVariable Long favoriteId
+    ) {
+        favoriteService.removeFavorite(loginMember.getId(), favoriteId);
+        return ResponseEntity.noContent().build();
     }
 }
