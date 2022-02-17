@@ -29,8 +29,8 @@ import static org.mockito.Mockito.when;
 class TokenAuthenticationInterceptorTest {
 
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
     @Mock
     private CustomUserDetailsService customUserDetailsService;
     @Mock
@@ -39,6 +39,13 @@ class TokenAuthenticationInterceptorTest {
     private TokenAuthenticationInterceptor interceptor;
 
     private TokenConvertor tokenConvertor = new TokenConvertor();
+
+    public static MockHttpServletRequest createMockRequest() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        return request;
+    }
 
     @BeforeEach
     void setUp() {
@@ -80,13 +87,6 @@ class TokenAuthenticationInterceptorTest {
         boolean actual = interceptor.preHandle(mockRequest, mockResponse, new Object());
         //then
         assertThat(actual).isEqualTo(false);
-    }
-
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        return request;
     }
 
 }
