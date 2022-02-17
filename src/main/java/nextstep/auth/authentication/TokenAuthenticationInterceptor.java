@@ -7,6 +7,8 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailServiceStrategy;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailsServiceStrategy;
+import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,24 +16,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
+public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
+    private AuthenticationConverter authenticationConverter;
 
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService,
                                           JwtTokenProvider jwtTokenProvider,
-                                          ObjectMapper objectMapper) {
+                                          ObjectMapper objectMapper,
+                                          AuthenticationConverter authenticationConverter) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
+        this.authenticationConverter = authenticationConverter;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
+        AuthenticationToken authenticationToken = authenticationConverter.convert(request);
         Authentication authentication = authenticate(authenticationToken, new CustomUserDetailServiceStrategy(customUserDetailsService));
 
         final String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
@@ -47,9 +52,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
         return false;
     }
 
-    @Override
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        final TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
-        return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
+    public Authentication authenticate(AuthenticationToken token, UserDetailsServiceStrategy userDetailsService) {
+        String principal = token.getPrincipal();
+        final LoginMember userDetails = userDetailsService.authenticate(principal, token);
+        return new Authentication(userDetails);
     }
 }

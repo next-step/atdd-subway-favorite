@@ -4,28 +4,31 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.member.application.CustomUserDetailServiceStrategy;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailsServiceStrategy;
+import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
+import java.io.IOException;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+public class SessionAuthenticationInterceptor implements HandlerInterceptor {
+
 
     private CustomUserDetailsService userDetailsService;
+    private AuthenticationConverter authenticationConverter;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
         this.userDetailsService = userDetailsService;
+        this.authenticationConverter = authenticationConverter;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        AuthenticationToken token = convert(request);
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        AuthenticationToken token = authenticationConverter.convert(request);
         Authentication authentication = authenticate(token, new CustomUserDetailServiceStrategy(userDetailsService));
 
         HttpSession httpSession = request.getSession();
@@ -34,12 +37,9 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor, Aut
         return false;
     }
 
-    @Override
-    public AuthenticationToken convert(HttpServletRequest request) {
-        Map<String, String[]> paramMap = request.getParameterMap();
-        String principal = paramMap.get(USERNAME_FIELD)[0];
-        String credentials = paramMap.get(PASSWORD_FIELD)[0];
-
-        return new AuthenticationToken(principal, credentials);
+    Authentication authenticate(AuthenticationToken token, UserDetailsServiceStrategy userDetailsService) {
+        String principal = token.getPrincipal();
+        final LoginMember userDetails = userDetailsService.authenticate(principal, token);
+        return new Authentication(userDetails);
     }
 }

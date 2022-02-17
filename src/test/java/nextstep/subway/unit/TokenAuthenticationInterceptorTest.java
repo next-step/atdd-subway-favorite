@@ -1,7 +1,9 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.TokenAuthenticationConverter;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -40,11 +42,14 @@ class TokenAuthenticationInterceptorTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     TokenAuthenticationInterceptor interceptor;
+
+    AuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
+
     MockHttpServletRequest request;
 
     @BeforeEach
     public void setup() {
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper, authenticationConverter);
     }
 
     @Test
@@ -53,7 +58,7 @@ class TokenAuthenticationInterceptorTest {
         request = createMockRequest();
 
         // when
-        final AuthenticationToken authenticationToken = interceptor.convert(request);
+        final AuthenticationToken authenticationToken = authenticationConverter.convert(request);
 
         // then
         assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
