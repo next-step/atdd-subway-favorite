@@ -45,30 +45,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
         return false;
     }
 
-    @Override
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        final TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
-
-        return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
-    }
-
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         final String principal = authenticationToken.getPrincipal();
         final LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (ObjectUtils.isEmpty(userDetails)) {
-
-            throw new AuthenticationException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-
-            throw new AuthenticationException();
-        }
     }
 }
