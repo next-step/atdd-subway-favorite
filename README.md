@@ -77,4 +77,9 @@ npm run dev
 - AuthorizationExtractor에서 `request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, typeLength).trim());`하는 이유?? 추출했다는 이력을 알고 싶어서? request의 header는 계속 남아있을테니, 이력을 남길 필요는 업으니 아닌것 같음. 손쉽게 알기 위해서인가?
 - 세션 로그인 방식와, 토큰 로그인 방식을 동시에 사용할 수 있는가?, 로그인 체크는? - 사용할 수는 있을 것 같음. 다만 로그인 체크 등, 여러 체크를 할 때, 해당 체크 로직에서 둘 다 검증해야할 것 같다.
 - 패키지 질문?, authentication(인증)의 경우 로그인 관련된 패키지라는 것을 이해하는데 어렵지 않았음. authorization의 경우, 권한인데, ArgumentResolver와 SecurityContextPersistenceInterceptor가 권한과 관련이 있는가? 어떤 의미에서 authorization패키지에 온 것인지
-- 
+- step2에서 테스트에서 의존 제거할 수 있는 방법에 대한 피드백을 주셨었는데, 테스트에서는 의존을 굳이 제거할 필요가 없는 것인지 궁금합니다.
+
+### step3 피드백 정리
+- 메서드의 인자로 넘겨주는게 길어진다면 가독성을 위해 로컬 변수로 정의한 후에 넘겨주는 방법도 있다.
+- 오픈소스 코드를 보는 것도 좋은 학습 방법이다.
+- 도구 클래스를 이용하여 테스트에서 중복을 제거한다?
