@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,9 +15,9 @@ import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEX
 
 public class SessionAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
