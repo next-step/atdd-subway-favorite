@@ -67,11 +67,27 @@ public class MemberSteps {
         params.put("age", age + "");
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
-                .then().log().all().extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put(uri)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(String token, String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured.given().log().all()
+            .auth().oauth2(token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
@@ -80,6 +96,14 @@ public class MemberSteps {
                 .given().log().all()
                 .when().delete(uri)
                 .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_삭제_요청(String token) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .when().delete("/members/me")
+            .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
