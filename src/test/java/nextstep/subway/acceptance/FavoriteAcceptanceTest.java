@@ -102,4 +102,26 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         즐겨찾기_목록_응답됨(로그인_지하철_즐겨찾기_목록_요청, 교대역, 양재역);
     }
+
+    /**
+     * When 즐겨찾기 생성 요청
+     * Then 즐겨찾기 생성 됨
+     * When 즐겨찾기 목록 조회 요청
+     * Then 즐겨 찾기 목록 조회
+     * When 즐겨 찾기 목록 삭제 요청
+     * Then 즐겨 찾기 삭제 됨
+     */
+    @DisplayName("즐겨찾기 관리")
+    @Test
+    void manageFavorites() {
+        ExtractableResponse<Response> 즐겨찾기_생성_요청 = 로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
+        지하철_즐겨찾기_생성_응답됨(즐겨찾기_생성_요청);
+
+        ExtractableResponse<Response> 로그인_지하철_즐겨찾기_목록_요청 = 로그인_지하철_즐겨찾기_목록_요청(로그인_토큰);
+        즐겨찾기_목록_응답됨(로그인_지하철_즐겨찾기_목록_요청, 교대역, 양재역);
+
+
+        ExtractableResponse<Response> 삭제_요청 = 로그인_지하철_즐겨찾기_삭제_요청(즐겨찾기_생성_요청.header("location"), 로그인_토큰);
+        즐겨찾기_삭제_응답됨(삭제_요청);
+    }
 }
