@@ -47,6 +47,14 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_지하철_즐겨찾기_목록_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("favorites")
+                .then().log().all().extract();
+    }
+
     public static void 지하철_즐겨찾기_생성_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -62,5 +70,9 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_삭제_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_목록_응답됨(ExtractableResponse<Response> response, Long 교대역, Long 양재역) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

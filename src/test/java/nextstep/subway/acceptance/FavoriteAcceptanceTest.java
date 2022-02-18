@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.member.aceeptance.MemberSteps.*;
 import static nextstep.subway.acceptance.FavoriteSteps.*;
+import static nextstep.subway.acceptance.FavoriteSteps.로그인_지하철_즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 
@@ -86,5 +87,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 삭제_요청 = 로그인_지하철_즐겨찾기_삭제_요청(즐겨찾기_생성_요청.header("location"), 로그인_토큰);
 
         즐겨찾기_삭제_응답됨(삭제_요청);
+    }
+
+    /**
+     * When 즐겨 찾기 목록 조회 요청하면
+     * Then 즐겨찾기 목록이 반환된다.
+     */
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void getFavorites() {
+        로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
+
+        ExtractableResponse<Response> 로그인_지하철_즐겨찾기_목록_요청 = 로그인_지하철_즐겨찾기_목록_요청(로그인_토큰);
+
+        즐겨찾기_목록_응답됨(로그인_지하철_즐겨찾기_목록_요청, 교대역, 양재역);
     }
 }
