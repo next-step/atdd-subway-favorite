@@ -1,6 +1,5 @@
 package nextstep.subway.applicaion;
 
-import nextstep.auth.authentication.UserDetails;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -38,5 +37,9 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
 
         return FavoriteResponse.of(favorite);
+    }
+
+    public void deleteFavorite(Long id, Long memberId) {
+        favoriteRepository.deleteByIdAndMemberId(id, memberId);
     }
 }
