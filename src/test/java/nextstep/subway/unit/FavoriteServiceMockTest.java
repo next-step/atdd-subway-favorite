@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -67,5 +67,16 @@ public class FavoriteServiceMockTest {
         assertThat(favoriteResponse.getId()).isEqualTo(1);
         assertThat(favoriteResponse.getSource().getName()).isEqualTo(StationResponse.of(강남역).getName());
         assertThat(favoriteResponse.getTarget().getName()).isEqualTo(StationResponse.of(역삼역).getName());
+    }
+
+    @Test
+    void getFavorites() {
+        when(favoriteRepository.findAllByMemberId(사용자.getId())).thenReturn(Arrays.asList(즐겨찾기));
+
+        List<FavoriteResponse> favorites = favoriteService.getFavorites(사용자.getId());
+
+        assertThat(favorites.size()).isEqualTo(1);
+        assertThat(favorites.get(0).getSource().getName()).isEqualTo(StationResponse.of(강남역).getName());
+        assertThat(favorites.get(0) .getTarget().getName()).isEqualTo(StationResponse.of(역삼역).getName());
     }
 }
