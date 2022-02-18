@@ -47,9 +47,4 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-//    public Authentication authenticate(AuthenticationToken token, UserDetailsServiceStrategy userDetailsService) {
-//        String principal = token.getPrincipal();
-//        final LoginMember userDetails = userDetailsService.authenticate(principal, token);
-//        return new Authentication(userDetails);
-//    }
 }
