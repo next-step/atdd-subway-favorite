@@ -3,6 +3,7 @@ package nextstep.auth.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
@@ -44,14 +45,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException, JSONException {
-        final String requestString = request.getReader()
-                .lines()
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-        JSONObject requestJson = new JSONObject(requestString);
+    @Override
+    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
+        final TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
 
-        return new AuthenticationToken(requestJson.get("email").toString(), requestJson.get("password").toString());
+        return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
