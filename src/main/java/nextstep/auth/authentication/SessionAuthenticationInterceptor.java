@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
-public class SessionAuthenticationInterceptor implements HandlerInterceptor {
+public class SessionAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -34,6 +34,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    @Override
     public AuthenticationToken convert(HttpServletRequest request) {
         Map<String, String[]> paramMap = request.getParameterMap();
         String principal = paramMap.get(USERNAME_FIELD)[0];

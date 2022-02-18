@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
@@ -20,7 +20,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             return true;
         }
