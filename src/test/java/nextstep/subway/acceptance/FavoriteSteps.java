@@ -18,12 +18,12 @@ public class FavoriteSteps {
         params.put("target", target.toString());
 
         return RestAssured
-            .given().log().all()
-            .auth().oauth2(accessToken)
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/favorites")
-            .then().log().all().extract();
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 비로그인_지하철_즐겨찾기_생성_요청(Long source, Long target) {
@@ -32,11 +32,19 @@ public class FavoriteSteps {
         params.put("target", target.toString());
 
         return RestAssured
-            .given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/favorites")
-            .then().log().all().extract();
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_지하철_즐겨찾기_삭제_요청(String location, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(location)
+                .then().log().all().extract();
     }
 
     public static void 지하철_즐겨찾기_생성_응답됨(ExtractableResponse<Response> response) {
@@ -49,5 +57,10 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_중복_생성_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+
+    public static void 즐겨찾기_삭제_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

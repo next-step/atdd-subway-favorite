@@ -64,7 +64,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 중복 즐겨찾기를 추가하면
      * Then 에러가 발생한다.
      */
-    @DisplayName("비로그인 즐겨찾기 추가")
+    @DisplayName("중복 즐겨찾기 추가")
     @Test
     void duplicateFavorite() {
         로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
@@ -72,5 +72,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 중복_즐겨찾기_요청 = 로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
 
         즐겨찾기_중복_생성_응답됨(중복_즐겨찾기_요청);
+    }
+
+    /**
+     * When 즐겨찾기 삭제를 요청하면
+     * Then 즐겨찾기가 삭제된다.
+     */
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        ExtractableResponse<Response> 즐겨찾기_생성_요청 = 로그인_지하철_즐겨찾기_생성_요청(교대역, 양재역, 로그인_토큰);
+
+        ExtractableResponse<Response> 삭제_요청 = 로그인_지하철_즐겨찾기_삭제_요청(즐겨찾기_생성_요청.header("location"), 로그인_토큰);
+
+        즐겨찾기_삭제_응답됨(삭제_요청);
     }
 }
