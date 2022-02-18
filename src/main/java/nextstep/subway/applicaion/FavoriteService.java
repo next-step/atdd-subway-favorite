@@ -10,6 +10,9 @@ import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class FavoriteService {
@@ -27,7 +30,7 @@ public class FavoriteService {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(IllegalArgumentException::new);
 
         boolean isDuplicated = favoriteRepository.existsFavoriteBySourceIdAndTargetId(source.getId(), target.getId());
         if (isDuplicated) {
@@ -41,5 +44,11 @@ public class FavoriteService {
 
     public void deleteFavorite(Long id, Long memberId) {
         favoriteRepository.deleteByIdAndMemberId(id, memberId);
+    }
+
+    public List<FavoriteResponse> getFavorites(Long memberId) {
+        return favoriteRepository.findAllByMemberId(memberId).stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }
