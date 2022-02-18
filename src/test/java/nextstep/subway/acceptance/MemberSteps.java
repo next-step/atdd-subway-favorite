@@ -21,6 +21,11 @@ public class MemberSteps {
         return response.jsonPath().getString("accessToken");
     }
 
+    public static void 회원_생성_되어_있음(String email, String password, Integer age) {
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(email, password, age);
+        회원_생성됨(createResponse);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -98,7 +103,6 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -141,5 +145,9 @@ public class MemberSteps {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 회원_권한이_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

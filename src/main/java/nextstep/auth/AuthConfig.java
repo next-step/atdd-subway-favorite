@@ -6,6 +6,7 @@ import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
+import nextstep.auth.authorization.LoginCheckInterceptor;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
@@ -40,6 +41,8 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider,
                 tokenAuthenticationConverter, objectMapper)).addPathPatterns("/login/token");
         registry.addInterceptor(new SessionSecurityContextPersistenceInterceptor());
+        registry.addInterceptor(new LoginCheckInterceptor(jwtTokenProvider))
+                .addPathPatterns("/members/me", "/favorites/**");
         registry.addInterceptor(new TokenSecurityContextPersistenceInterceptor(jwtTokenProvider, objectMapper));
     }
 

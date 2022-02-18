@@ -4,6 +4,8 @@ import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.auth.unit.AuthData.EMAIL;
+import static nextstep.auth.unit.AuthData.PASSWORD;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class AuthenticationInterceptorTest extends AuthTest {

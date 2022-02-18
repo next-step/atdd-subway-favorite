@@ -10,15 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static nextstep.auth.unit.AuthData.*;
+
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @Transactional
 public class AuthTest {
-    protected static final String USERNAME_FIELD = "username";
-    protected static final String PASSWORD_FIELD = "password";
-    protected static final String EMAIL = "email@email.com";
-    protected static final String PASSWORD = "password";
-    protected static final Integer AGE = 20;
 
     @Autowired
     private MemberService memberService;

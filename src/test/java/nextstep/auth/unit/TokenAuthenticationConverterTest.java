@@ -10,12 +10,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.io.IOException;
 
+import static nextstep.auth.unit.AuthData.EMAIL;
+import static nextstep.auth.unit.AuthData.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TokenAuthenticationConverterTest {
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-
     @DisplayName("application/json 타입의 요청을 AuthenticaionToken으로 변환한다")
     @Test
     void convert() throws IOException {

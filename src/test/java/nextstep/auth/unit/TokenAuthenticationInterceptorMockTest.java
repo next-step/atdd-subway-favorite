@@ -1,27 +1,28 @@
 package nextstep.auth.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.authentication.token.TokenAuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static nextstep.auth.unit.AuthData.EMAIL;
+import static nextstep.auth.unit.AuthData.PASSWORD;
+import static nextstep.auth.unit.MockRequest.OBJECT_MAPPER;
+import static nextstep.auth.unit.MockRequest.createMockRequestWithToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -29,12 +30,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorMockTest {
     private static final Long ID = 1L;
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
     private static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Mock
     private UserDetailsService userDetailsService;
@@ -56,10 +52,10 @@ class TokenAuthenticationInterceptorMockTest {
     @Test
     void preHandle() throws IOException {
         // given
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(ID, EMAIL, PASSWORD, AGE));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new FakeLoginMember());
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
-        HttpServletRequest request = createMockRequest();
+        HttpServletRequest request = createMockRequestWithToken();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // when
@@ -71,11 +67,20 @@ class TokenAuthenticationInterceptorMockTest {
         assertThat(response.getContentAsString()).isEqualTo(OBJECT_MAPPER.writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(OBJECT_MAPPER.writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
+    static class FakeLoginMember implements UserDetails {
+        @Override
+        public boolean checkPassword(String password) {
+            return PASSWORD.equals(password);
+        }
 
+        @Override
+        public Long getId() {
+            return ID;
+        }
+
+        @Override
+        public String getEmail() {
+            return EMAIL;
+        }
+    }
 }
