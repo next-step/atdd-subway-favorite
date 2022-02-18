@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
+import static nextstep.auth.unit.MockRequest.createMockRequestWithToken;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -42,7 +41,7 @@ class TokenAuthenticationInterceptorTest extends AuthTest {
         // given
         tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider,
                 tokenAuthenticationConverter, objectMapper);
-        HttpServletRequest request = createMockRequest();
+        HttpServletRequest request = createMockRequestWithToken();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // when
@@ -56,13 +55,6 @@ class TokenAuthenticationInterceptorTest extends AuthTest {
         assertThat(jwtTokenProvider.validateToken(accessToken)).isTrue();
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(objectMapper.writeValueAsString(tokenRequest).getBytes());
-        return request;
-    }
-
     private String getAccessToken(MockHttpServletResponse response) throws IOException {
         TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>(){
         };
@@ -70,5 +62,4 @@ class TokenAuthenticationInterceptorTest extends AuthTest {
         String accessToken = tokenMap.get(ACCESS_TOKEN);
         return accessToken;
     }
-
 }

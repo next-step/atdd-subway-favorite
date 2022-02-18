@@ -1,10 +1,8 @@
 package nextstep.auth.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.UnAuthorizedStateException;
 import nextstep.auth.authorization.LoginCheckInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,17 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.IOException;
-
+import static nextstep.auth.unit.MockRequest.createMockRequestWithInvalidAccessToken;
+import static nextstep.auth.unit.MockRequest.createMockRequestWithValidAccessToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LoginCheckInterceptorTest extends AuthTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private LoginCheckInterceptor loginCheckInterceptor;
     private MockHttpServletRequest request;
@@ -39,7 +34,7 @@ public class LoginCheckInterceptorTest extends AuthTest {
     @Test
     void preHandle() throws Exception {
         // given
-        request = createMockRequest();
+        request = createMockRequestWithValidAccessToken(jwtTokenProvider);
 
         // when
         boolean result = loginCheckInterceptor.preHandle(request, response, new Object());
@@ -68,23 +63,5 @@ public class LoginCheckInterceptorTest extends AuthTest {
         // when & then
         assertThatThrownBy(() -> loginCheckInterceptor.preHandle(request, response, new Object()))
                 .isInstanceOf(UnAuthorizedStateException.class);
-    }
-
-    private MockHttpServletRequest createMockRequest() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, AGE);
-        String payload = objectMapper.writeValueAsString(loginMember);
-        String accessToken = jwtTokenProvider.createToken(payload);
-        request.addHeader("Authorization", "Bearer " + accessToken);
-
-        return request;
-    }
-
-    private MockHttpServletRequest createMockRequestWithInvalidAccessToken() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer invalidAccessToken");
-
-        return request;
     }
 }

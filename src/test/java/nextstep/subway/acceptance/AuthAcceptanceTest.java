@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private static final Integer AGE = 20;
 
     @DisplayName("Session 로그인 후 내 정보 조회")
+    @Disabled
     @Test
     void myInfoWithSession() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
