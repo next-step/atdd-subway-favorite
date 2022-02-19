@@ -6,7 +6,10 @@ import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.member.aceeptance.MemberSteps.*;
+import static nextstep.member.aceeptance.MemberSteps.내_회원_정보_조회_요청;
+import static nextstep.member.aceeptance.MemberSteps.로그인_되어_있음;
+import static nextstep.member.aceeptance.MemberSteps.회원_생성_요청;
+import static nextstep.member.aceeptance.MemberSteps.회원_정보_조회됨;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
