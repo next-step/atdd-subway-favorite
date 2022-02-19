@@ -23,7 +23,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     회원_정보_조회됨(response, EMAIL, AGE);
   }
 
-  // TODO
   @DisplayName("Bearer Auth")
   @Test
   void myInfoWithBearerAuth() {
