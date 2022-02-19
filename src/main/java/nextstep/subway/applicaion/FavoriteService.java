@@ -32,7 +32,7 @@ public class FavoriteService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        boolean isDuplicated = favoriteRepository.existsFavoriteBySourceIdAndTargetId(source.getId(), target.getId());
+        boolean isDuplicated = favoriteRepository.existsFavoriteBySourceAndTarget(source, target);
         if (isDuplicated) {
             throw new IllegalArgumentException();
         }
