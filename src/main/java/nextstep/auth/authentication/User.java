@@ -4,19 +4,19 @@ import nextstep.member.domain.Member;
 
 import java.util.Objects;
 
-public class UserDetails {
+public class User {
     private Long id;
     private String email;
     private String password;
 
-    public UserDetails(Long id, String email, String password) {
+    public User(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
     }
 
-    public static UserDetails ofMember(Member member) {
-        return new UserDetails(member.getId(), member.getEmail(), member.getPassword());
+    public static User ofMember(Member member) {
+        return new User(member.getId(), member.getEmail(), member.getPassword());
     }
 
     public Long getId() {
@@ -43,7 +43,7 @@ public class UserDetails {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        UserDetails that = (UserDetails) o;
+        User that = (User) o;
         return Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(password, that.password);
     }
 

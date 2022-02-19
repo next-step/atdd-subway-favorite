@@ -1,6 +1,6 @@
 package nextstep.auth.unit;
 
-import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.User;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
@@ -38,7 +38,7 @@ public class SessionAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws Exception {
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails(1L, EMAIL, PASSWORD));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new User(1L, EMAIL, PASSWORD));
 
         interceptor.preHandle(request, response, new Object());
 
@@ -50,6 +50,6 @@ public class SessionAuthenticationInterceptorTest {
         Authentication authentication = attribute.getAuthentication();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(authentication.getPrincipal()).isEqualTo(new UserDetails(1L, EMAIL, PASSWORD));
+        assertThat(authentication.getPrincipal()).isEqualTo(new User(1L, EMAIL, PASSWORD));
     }
 }

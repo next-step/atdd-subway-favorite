@@ -1,6 +1,6 @@
 package nextstep.subway.ui;
 
-import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.User;
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -21,19 +21,19 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> createFavorite(@RequestBody FavoriteRequest favoriteRequest, @AuthenticationPrincipal UserDetails userDetails) {
-        FavoriteResponse favoriteResponse = favoriteService.saveFavorite(favoriteRequest, userDetails.getId());
+    public ResponseEntity<FavoriteResponse> createFavorite(@RequestBody FavoriteRequest favoriteRequest, @AuthenticationPrincipal User user) {
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorite(favoriteRequest, user.getId());
         return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).body(favoriteResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
-        favoriteService.deleteFavorite(id, userDetails.getId());
+    public ResponseEntity<Void> deleteFavorite(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        favoriteService.deleteFavorite(id, user.getId());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok().body(favoriteService.getFavorites(userDetails.getId()));
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(favoriteService.getFavorites(user.getId()));
     }
 }
