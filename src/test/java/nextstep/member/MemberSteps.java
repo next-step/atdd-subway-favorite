@@ -1,9 +1,11 @@
-package nextstep.subway.acceptance;
+package nextstep.member;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.common.Steps;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -12,7 +14,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemberSteps {
+public class MemberSteps extends Steps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -98,7 +100,7 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(String token) {
+    public static ExtractableResponse<Response> 토근_기반_회원_삭제_요청(String token) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(token)
@@ -116,7 +118,7 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
+    public static ExtractableResponse<Response> 토큰_기반_내_회원_정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
