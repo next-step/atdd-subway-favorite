@@ -14,8 +14,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
-	public static final String USERNAME_FIELD = "username";
-	public static final String PASSWORD_FIELD = "password";
+
 
 	public SessionAuthenticationInterceptor(SessionAuthenticationConverter sessionAuthenticationConverter,
 		UserDetailsService userDetailsService) {

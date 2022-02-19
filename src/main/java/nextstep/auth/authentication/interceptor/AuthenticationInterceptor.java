@@ -15,6 +15,8 @@ import nextstep.auth.context.Authentication;
 import nextstep.member.domain.UserDetails;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
+
+
 	private final AuthenticationConverter authenticationConverter;
 	private final UserDetailsService userDetailsService;
 
