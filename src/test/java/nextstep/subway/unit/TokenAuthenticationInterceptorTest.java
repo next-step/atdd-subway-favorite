@@ -51,7 +51,7 @@ class TokenAuthenticationInterceptorTest {
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
-        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
+        AuthenticationToken authenticationToken = AuthenticationToken.of(EMAIL, PASSWORD);
         Authentication authentication = interceptor.authenticate(authenticationToken);
 
         // then

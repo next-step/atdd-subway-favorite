@@ -10,7 +10,7 @@ public class AuthenticationToken {
     }
 
     public static AuthenticationToken of(String principal, String credentials) {
-        new AuthenticationToken(principal, credentials);
+        return new AuthenticationToken(principal, credentials);
     }
 
     public String getPrincipal() {
