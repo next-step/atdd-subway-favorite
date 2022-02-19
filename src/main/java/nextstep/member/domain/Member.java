@@ -2,6 +2,7 @@ package nextstep.member.domain;
 
 import nextstep.subway.domain.BaseEntity;
 import nextstep.subway.domain.Sections;
+import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;

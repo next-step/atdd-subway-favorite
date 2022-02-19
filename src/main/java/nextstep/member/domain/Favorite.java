@@ -19,15 +19,34 @@ public class Favorite {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
-    private Station origin;
+    private Station source;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
-    private Station destination;
+    private Station target;
 
-    public Favorite(Member member, Station origin, Station destination) {
+    public Favorite() {
+    }
+
+    public Favorite(Member member, Station source, Station target) {
         this.member = member;
-        this.origin = origin;
-        this.destination = destination;
+        this.source = source;
+        this.target = target;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
     }
 }
