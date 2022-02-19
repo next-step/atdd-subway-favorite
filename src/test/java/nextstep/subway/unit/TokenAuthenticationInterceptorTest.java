@@ -1,35 +1,43 @@
 package nextstep.subway.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockHttpServletRequest;
-
 import static nextstep.subway.unit.TokenFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import nextstep.auth.authentication.AuthenticationConverter;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.UserDetailsService;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenResponse;
+import nextstep.member.domain.LoginMember;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 @ExtendWith(MockitoExtension.class)
-class TokenAuthenticationInterceptorTest {
+public class TokenAuthenticationInterceptorTest {
     @Mock
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+
+    @Mock
+    private AuthenticationConverter authenticationConverter;
+
+    @Spy
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
@@ -38,14 +46,14 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() {
         // given
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 30);
-        given(customUserDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
+        UserDetails userDetails = new LoginMember(1L, EMAIL, PASSWORD, 30);
+        given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(userDetails);
 
         // when
         Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
         // then
-        assertThat(authentication.getPrincipal()).isEqualTo(loginMember);
+        assertThat(authentication.getPrincipal()).isEqualTo(userDetails);
     }
 
     @Test
@@ -53,10 +61,12 @@ class TokenAuthenticationInterceptorTest {
         // given
         MockHttpServletRequest request = createMockRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        LoginMember loginMember = new LoginMember(1L, EMAIL, PASSWORD, 30);
+        UserDetails userDetails = new LoginMember(1L, EMAIL, PASSWORD, 30);
+        AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
 
-        given(customUserDetailsService.loadUserByUsername(EMAIL)).willReturn(loginMember);
+        given(userDetailsService.loadUserByUsername(EMAIL)).willReturn(userDetails);
         given(jwtTokenProvider.createToken(any())).willReturn(JWT_TOKEN);
+        given(authenticationConverter.convert(request)).willReturn(authenticationToken);
 
         // when
         tokenAuthenticationInterceptor.preHandle(request, response, null);
