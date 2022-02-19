@@ -3,10 +3,7 @@ package nextstep.auth.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,13 +13,13 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
     private final TokenAuthenticationConverter tokenAuthenticationConverter;
 
     public TokenAuthenticationInterceptor(
-        CustomUserDetailsService customUserDetailsService,
+        UserDetailsService customUserDetailsService,
         JwtTokenProvider jwtTokenProvider,
         ObjectMapper objectMapper,
         TokenAuthenticationConverter tokenAuthenticationConverter) {
@@ -49,13 +46,13 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }

@@ -2,8 +2,6 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,11 +12,11 @@ import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEX
 
 public class SessionAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     private final SessionAuthenticationConverter sessionAuthenticationConverter;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService, SessionAuthenticationConverter sessionAuthenticationConverter) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService, SessionAuthenticationConverter sessionAuthenticationConverter) {
         this.userDetailsService = userDetailsService;
         this.sessionAuthenticationConverter = sessionAuthenticationConverter;
     }
@@ -36,13 +34,13 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }
