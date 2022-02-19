@@ -3,18 +3,16 @@ package nextstep.auth.authentication.convertor;
 import nextstep.auth.authentication.AuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
-public class SessionConvertor implements AuthenticationConverter{
+public class SessionConvertor implements AuthenticationConverter {
 
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+    private static final String USERNAME_FIELD = "username";
+    private static final String PASSWORD_FIELD = "password";
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        Map<String, String[]> paramMap = request.getParameterMap();
-        String principal = paramMap.get(USERNAME_FIELD)[0];
-        String credentials = paramMap.get(PASSWORD_FIELD)[0];
+        String principal = request.getParameter(USERNAME_FIELD);
+        String credentials = request.getParameter(PASSWORD_FIELD);
 
         return new AuthenticationToken(principal, credentials);
     }

@@ -9,9 +9,13 @@ import org.springframework.http.HttpStatus;
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
-public class TokenConvertor implements AuthenticationConverter{
+public class TokenConvertor implements AuthenticationConverter {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
+
+    public TokenConvertor(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
@@ -22,7 +26,7 @@ public class TokenConvertor implements AuthenticationConverter{
             String credentials = tokenRequest.getPassword();
 
             return new AuthenticationToken(principal, credentials);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new BusinessException("알 수 없는 서버오류", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

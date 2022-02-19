@@ -37,8 +37,9 @@ class TokenAuthenticationInterceptorTest {
     private JwtTokenProvider jwtTokenProvider;
 
     private TokenAuthenticationInterceptor interceptor;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    private TokenConvertor tokenConvertor = new TokenConvertor();
+    private TokenConvertor tokenConvertor = new TokenConvertor(objectMapper);
 
     public static MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -49,7 +50,7 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, tokenConvertor);
+        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
     }
 
     @Test
