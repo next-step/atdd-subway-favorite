@@ -16,10 +16,8 @@ public class SessionAuthenticationConverter implements AuthenticationConverter {
 
 	@Override
 	public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-		Map<String, String[]> paramMap = request.getParameterMap();
-		String principal = paramMap.get(USERNAME_FIELD)[0];
-		String credentials = paramMap.get(PASSWORD_FIELD)[0];
-
+		String principal = request.getParameter(USERNAME_FIELD);
+		String credentials = request.getParameter(PASSWORD_FIELD);
 		return new AuthenticationToken(principal, credentials);
 	}
 }
