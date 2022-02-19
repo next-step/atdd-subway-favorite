@@ -18,10 +18,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -30,12 +32,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         Authentication authentication = authenticate(authenticationToken);
 
         // TODO: authentication으로 TokenResponse 추출하기
-        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
 
         TokenResponse tokenResponse = TokenResponse.of(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
@@ -45,7 +47,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
         // TODO: request에서 AuthenticationToken 객체 생성하기
-        TokenRequest tokenRequest = new ObjectMapper().readValue(request.getInputStream(), TokenRequest.class);
+        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
 
         return AuthenticationToken.of(tokenRequest.getEmail(), tokenRequest.getPassword());
     }

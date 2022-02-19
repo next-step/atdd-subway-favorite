@@ -19,8 +19,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
@@ -29,11 +28,12 @@ class TokenAuthenticationInterceptorTest {
 
     private final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
     private final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
+    private final ObjectMapper objectMapper = spy(ObjectMapper.class);
 
     @Test
     void convert() throws IOException {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
         MockHttpServletRequest request = createMockRequest();
 
         // when
@@ -47,7 +47,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
@@ -61,7 +61,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
