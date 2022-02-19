@@ -22,8 +22,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        boolean isNotLogin = authentication == null;
-        if (isNotLogin) {
+        if (authentication == null) {
             throw new AuthenticationException();
         }
 
