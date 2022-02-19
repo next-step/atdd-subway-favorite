@@ -1,7 +1,7 @@
 package nextstep.subway.unit;
 
+import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -19,7 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -31,7 +32,7 @@ public class FavoriteServiceMockTest {
     @Mock
     private StationService stationService;
     @Mock
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     @Autowired
     private FavoriteService favoriteService;
@@ -43,7 +44,7 @@ public class FavoriteServiceMockTest {
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(favoriteRepository, stationService, memberRepository);
+        favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
         강남역 = new Station("강남역");
         ReflectionTestUtils.setField(강남역, "id", 1L);
         역삼역 = new Station("역삼역");
@@ -58,7 +59,7 @@ public class FavoriteServiceMockTest {
     void createFavorite() {
         when(stationService.findById(강남역.getId())).thenReturn(강남역);
         when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
-        when(memberRepository.findById(사용자.getId())).thenReturn(Optional.of(사용자));
+        when(memberService.findById(사용자.getId())).thenReturn(사용자);
         when(favoriteRepository.save(Mockito.any(Favorite.class))).thenReturn(즐겨찾기);
 
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 역삼역.getId());

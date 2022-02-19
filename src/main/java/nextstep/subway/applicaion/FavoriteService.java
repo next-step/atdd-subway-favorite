@@ -1,7 +1,7 @@
 package nextstep.subway.applicaion;
 
+import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
@@ -18,19 +18,18 @@ import java.util.stream.Collectors;
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationService stationService;
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberRepository memberRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
     public FavoriteResponse saveFavorite(FavoriteRequest favoriteRequest, long memberId) {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(IllegalArgumentException::new);
+        Member member = memberService.findById(memberId);
 
         boolean isDuplicated = favoriteRepository.existsFavoriteBySourceAndTarget(source, target);
         if (isDuplicated) {
