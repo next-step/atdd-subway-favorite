@@ -11,7 +11,6 @@ import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,15 +43,12 @@ class TokenAuthenticationInterceptorTest {
     @InjectMocks
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
-    @BeforeEach
-    void setup(){
-        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 25));
-    }
-
     @Test
     void convert() throws IOException {
+        // when
         AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
 
+        // then
         assertAll(
           () -> assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL),
           () -> assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD)
@@ -62,18 +58,21 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() throws IOException {
         // given
+        createMockLoginMember();
         Authentication targetAuth = new Authentication(customUserDetailsService.loadUserByUsername(EMAIL));
         AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
 
         // when
         Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
+        // then
         assertThat(authentication.getPrincipal()).isEqualTo(targetAuth.getPrincipal());
     }
 
     @Test
     void invalidTokenAuthenticationTest() throws IOException {
         // given
+        createMockLoginMember();
         AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createInvalidMockRequest());
 
         // when & then
@@ -85,6 +84,7 @@ class TokenAuthenticationInterceptorTest {
         // given
         MockHttpServletRequest mockRequest = createMockRequest();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+        createMockLoginMember();
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
         // when
@@ -96,6 +96,11 @@ class TokenAuthenticationInterceptorTest {
           () -> assertThat(mockResponse.getStatus()).isEqualTo(SC_OK),
           () -> assertThat(mockResponse.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)))
         );
+    }
+
+    private void createMockLoginMember() {
+        // given
+        when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 25));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
