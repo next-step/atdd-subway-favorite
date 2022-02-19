@@ -1,8 +1,6 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,10 +9,10 @@ import java.io.IOException;
 
 public abstract class AbstractAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
 
-    protected AbstractAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService) {
-        this.customUserDetailsService = customUserDetailsService;
+    protected AbstractAuthenticationInterceptor(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     protected abstract void afterAuthentication(HttpServletRequest request,
@@ -32,13 +30,13 @@ public abstract class AbstractAuthenticationInterceptor implements HandlerInterc
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }
