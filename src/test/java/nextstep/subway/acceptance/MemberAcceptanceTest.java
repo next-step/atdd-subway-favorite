@@ -91,5 +91,29 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when 내 정보 생성을 요청
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        // then 내 정보 생성됨
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        // when 로그인 요청
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        // then 액세스 토큰 발급 받음
+        assertThat(accessToken).isNotBlank();
+
+        // when 내 정보 조회 요청
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
+        // then 내 정보 조회됨
+        회원_정보_조회됨(response, EMAIL, AGE);
+
+        // when 내 정보 수정 요청
+        ExtractableResponse<Response> modifyResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        // then 내 정보 수정됨
+        assertThat(modifyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        // when 내 정보 삭제 요청
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+        // then 내 정보 삭제됨
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
