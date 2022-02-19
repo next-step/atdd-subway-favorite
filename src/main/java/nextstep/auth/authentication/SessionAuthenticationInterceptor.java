@@ -29,9 +29,9 @@ public class SessionAuthenticationInterceptor extends AbstractAuthenticationInte
     }
 
     @Override
-    protected void afterAuthentication(HttpServletRequest request,
-                                       HttpServletResponse response,
-                                       Authentication authentication) {
+    public void afterAuthentication(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    Authentication authentication) {
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);

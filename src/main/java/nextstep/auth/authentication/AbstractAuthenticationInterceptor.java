@@ -15,10 +15,6 @@ public abstract class AbstractAuthenticationInterceptor implements HandlerInterc
         this.userDetailsService = userDetailsService;
     }
 
-    protected abstract void afterAuthentication(HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                Authentication authentication) throws IOException;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
