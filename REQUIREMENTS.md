@@ -1,15 +1,14 @@
 # 요구사항
 
 ## 0~1단계 요구사항
-* [ ] 패키지 구조 리팩터링(선택)
+* [X] 패키지 구조 리팩터링(선택)
   * 뼈대 코드의 구조를 자신이 편한 구조로 리팩터링 하세요.
   * subway는 2주차까지의 미션의 샘플 코드 입니다.
   * auth는 인증과 관련된 로직입니다
   * member는 회원 관리 관련된 로직 입니다.
-* [ ] MemberAcceptanceTest의 인수 테스트 통합하기
+* [X] MemberAcceptanceTest의 인수 테스트 통합하기
   * 인수 테스트를 통합하는 경험을 하기 위한 요구사항입니다.
-  * 아래의 인수 조건에 맞게 인수 테스트를 리팩터링 하세요.
-* [ ] AuthAcceptanceTest의 myInfoWithSession 테스트 메서드를 성공 시키기
+* [X] AuthAcceptanceTest의 myInfoWithSession 테스트 메서드를 성공 시키기
   * 뼈대 코드 분석을 위한 요구사항입니다.
   * GET /members/me 요청을 처리하는 컨트롤러 메서드를 완성하여 myInfoWithSession 인수 테스트를 성공시키세요
   * MemberController의 findMemberOfMine메서드를 구현하면 위의 요청을 처리할 수 있습니다.
