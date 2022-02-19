@@ -5,6 +5,10 @@ public class FavoriteRequest {
     private Long target;
 
     public FavoriteRequest(Long source, Long target) {
+        if (source == null || target == null) {
+            throw new IllegalArgumentException();
+        }
+
         this.source = source;
         this.target = target;
     }
