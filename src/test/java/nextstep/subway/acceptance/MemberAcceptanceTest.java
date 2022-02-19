@@ -64,9 +64,43 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /*
+     * Scenario: 회원 정보를 관리
+        When 회원 생성을 요청
+        Then 회원 생성됨
+        When 회원 정보 조회 요청
+        Then 회원 정보 조회됨
+        When 회원 정보 수정 요청
+        Then 회원 정보 수정됨
+        When 회원 삭제 요청
+        Then 회원 삭제됨
+     */
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        // When 회원 생성을 요청
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        // when
+        ExtractableResponse<Response> searchResponse = 회원_정보_조회_요청(createResponse);
+
+        // then
+        회원_정보_조회됨(searchResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+
+        // then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("나의 정보를 관리한다.")
