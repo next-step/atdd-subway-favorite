@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
@@ -47,4 +48,23 @@ public class MemberFavoriteAcceptanceTest extends MemberAcceptanceTest {
         // then
         즐겨찾기_정보_삭제됨(내_즐겨찾기_삭제_요청_응답);
     }
+
+    @DisplayName("로그인 하지 않은 유저가 즐겨찾기를 조회하는 경우")
+    @Test
+    void notLoggedInUserGetFavorites() {
+        // given
+        Long 강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        Long 양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+        Map<String, String> lineCreateParams = LineSectionAcceptanceTest.createLineCreateParams(강남역, 양재역);
+        지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = "";
+
+        // when
+        ExtractableResponse<Response> 내_즐겨찾기_정보_조회_응답 = 내_즐겨찾기_정보_조회_요청(accessToken);
+
+        // then
+        assertThat(내_즐겨찾기_정보_조회_응답.response().statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }

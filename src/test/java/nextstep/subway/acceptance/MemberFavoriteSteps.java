@@ -45,7 +45,6 @@ public class MemberFavoriteSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
