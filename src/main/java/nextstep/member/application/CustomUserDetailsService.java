@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService {
-    private MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
-    public CustomUserDetailsService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+  public CustomUserDetailsService(MemberRepository memberRepository) {
+    this.memberRepository = memberRepository;
+  }
 
-    public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return LoginMember.of(member);
-    }
+  public LoginMember loadUserByUsername(String email) {
+    Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    return LoginMember.of(member);
+  }
 }
