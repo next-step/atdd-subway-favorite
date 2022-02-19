@@ -80,6 +80,20 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
+    void afterAuthentication() throws IOException {
+        // when
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        interceptor.afterAuthentication(createMockRequest(), response, new Authentication(userDetails));
+
+        // then
+        assertAll(
+                () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE),
+                () -> assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)))
+        );
+    }
+
+    @Test
     void preHandle() throws IOException {
         // when
         MockHttpServletResponse response = new MockHttpServletResponse();
