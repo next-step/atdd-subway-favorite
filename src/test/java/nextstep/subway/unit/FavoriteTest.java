@@ -1,5 +1,7 @@
-package nextstep.member.domain;
+package nextstep.subway.unit;
 
+import nextstep.member.domain.Favorite;
+import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
