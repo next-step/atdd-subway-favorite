@@ -16,12 +16,12 @@
     * SecurityContextHolder에 저장된 SecurityContext를 통해 Authentication 객체 조회
     * Authentication에 저장된 LoginMember의 정보로 존재하는 멤버인지 확인 후 멤버 정보 조회
 
-* [ ] AuthAcceptanceTest의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기
-  * [ ] TokenAuthenticationInterceptor 구현하기
+* [X] AuthAcceptanceTest의 myInfoWithBearerAuth 테스트 메서드를 성공 시키기
+  * [X] TokenAuthenticationInterceptor 구현하기
     * TokenAuthenticationInterceptorTest 단위 테스트를 작성하며 TDD로 기능 구현하기
-* [ ] MemberAcceptanceTest의 manageMyInfo 성공 시키기
+* [X] MemberAcceptanceTest의 manageMyInfo 성공 시키기
   * /members/me 로 멤버 조회/수정/삭제 기능을 요청하는 인수 테스트 작성
   * 로그인 후 token을 응답 받은 후 요청 시 포함시키기
-  * [ ] @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기
+  * [X] @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기
     * Controller에서 LoginMember 정보를 받아올 때 @AuthenticationPrincipal를 활용하여 받기
     * AuthenticationPrincipalArgumentResolver를 참고하여 ArgumentResolver 기능을 사용하기
