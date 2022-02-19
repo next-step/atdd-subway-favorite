@@ -17,15 +17,18 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    private final SessionAuthenticationConverter sessionAuthenticationConverter;
+
+    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService, SessionAuthenticationConverter sessionAuthenticationConverter) {
         this.userDetailsService = userDetailsService;
+        this.sessionAuthenticationConverter = sessionAuthenticationConverter;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        AuthenticationToken token = convert(request);
+        AuthenticationToken token = sessionAuthenticationConverter.convert(request);
         Authentication authentication = authenticate(token);
 
         HttpSession httpSession = request.getSession();
