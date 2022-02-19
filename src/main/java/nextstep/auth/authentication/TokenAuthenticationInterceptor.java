@@ -47,13 +47,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-        return new AuthenticationToken(principal, credentials);
-    }
-
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         String principal = authenticationToken.getPrincipal();
         LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
