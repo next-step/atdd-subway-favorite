@@ -74,7 +74,7 @@ class TokenAuthenticationInterceptorTest {
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)));
+        assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(TokenResponse.of(JWT_TOKEN)));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
