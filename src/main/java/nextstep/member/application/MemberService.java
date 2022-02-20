@@ -45,9 +45,10 @@ public class MemberService {
         return MemberResponse.of(foundMember);
     }
 
-    public void updateMember(String email, MemberRequest memberRequest) {
+    public MemberResponse updateMember(String email, MemberRequest memberRequest) {
         final Member foundMember = getFoundMember(email);
         foundMember.update(memberRequest.toMember());
+        return MemberResponse.of(foundMember);
     }
 
     private Member getFoundMember(String email) {

@@ -1,8 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.*;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -39,11 +38,17 @@ class TokenAuthenticationInterceptorTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     TokenAuthenticationInterceptor interceptor;
+
+    AuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
+
+    UserAuthentication userAuthentication;
+
     MockHttpServletRequest request;
 
     @BeforeEach
     public void setup() {
-        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider);
+        userAuthentication = new UserAuthentication(userDetailsService);
+        interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, objectMapper, authenticationConverter, userAuthentication);
     }
 
     @Test
@@ -52,7 +57,7 @@ class TokenAuthenticationInterceptorTest {
         request = createMockRequest();
 
         // when
-        final AuthenticationToken authenticationToken = interceptor.convert(request);
+        final AuthenticationToken authenticationToken = authenticationConverter.convert(request);
 
         // then
         assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
@@ -64,7 +69,7 @@ class TokenAuthenticationInterceptorTest {
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 30));
 
         final AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        final Authentication authentication = interceptor.authenticate(authenticationToken);
+        final Authentication authentication = userAuthentication.authenticate(authenticationToken);
 
         assertThat(authentication.getPrincipal()).isNotNull();
     }

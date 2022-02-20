@@ -51,12 +51,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(accessToken);
         회원_정보_조회됨(response, EMAIL, AGE);
 
-        final String email = "edit@email";
-        final String password = "editPassword";
-        final Integer age = 30;
+        final String editEmail = "edit@editEmail";
+        final String editPassword = "editPassword";
+        final Integer editAge = 30;
 
-        final ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(accessToken, email, password, age);
+        final ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(accessToken, editEmail, editPassword, editAge);
         회원_정보_수정됨(updateResponse);
+        회원_정보_조회됨(updateResponse, editEmail, editAge);
 
         final ExtractableResponse<Response> deleteResponse = 내_회원_정보_삭제_요청(accessToken);
         회원_정보_삭제됨(deleteResponse);
