@@ -15,34 +15,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor_new extends AuthenticationInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor_new(CustomUserDetailsService userDetailsService, AuthenticationConverter converter, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        super(userDetailsService, converter);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
-        Authentication authentication = authenticate(authenticationToken);
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         TokenResponse tokenResponse = generateToken(authentication);
 
         setToken(response, tokenResponse);
-
-        return false;
-    }
-
-    private void setToken(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
-        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().print(responseToClient);
     }
 
     private TokenResponse generateToken(Authentication authentication) throws JsonProcessingException {
@@ -52,24 +40,10 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return TokenResponse.of(token);
     }
 
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
-
-        return AuthenticationToken.of(tokenRequest.getEmail(), tokenRequest.getPassword());
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        String principal = authenticationToken.getPrincipal();
-        LoginMember member = customUserDetailsService.loadUserByUsername(principal);
-
-        validateAuthentication(member, authenticationToken);
-
-        return new Authentication(member);
-    }
-
-    private void validateAuthentication(LoginMember member, AuthenticationToken token) {
-        if(!member.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
+    private void setToken(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getOutputStream().print(responseToClient);
     }
 }

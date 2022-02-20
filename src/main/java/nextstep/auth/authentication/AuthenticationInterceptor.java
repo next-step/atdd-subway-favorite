@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -8,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 	protected AuthenticationConverter authenticationConverter;
@@ -19,7 +21,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 	}
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 		AuthenticationToken token = convert(request);
 		Authentication authentication = authenticate(token);
 
@@ -28,7 +30,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 		return false;
 	}
 
-	public AuthenticationToken convert(HttpServletRequest request) {
+	public AuthenticationToken convert(HttpServletRequest request) throws IOException {
 		return authenticationConverter.convert(request);
 	}
 
@@ -50,5 +52,5 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 		}
 	}
 
-	public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication);
+	public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 }
