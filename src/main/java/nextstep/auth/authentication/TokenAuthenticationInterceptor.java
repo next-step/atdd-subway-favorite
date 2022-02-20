@@ -1,35 +1,31 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
-
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenResponse;
+import org.springframework.http.MediaType;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
-    private ObjectMapper objectMapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor(
+        UserDetailsService userDetailsService,
+        AuthenticationConverter authenticationConverter,
+        JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        super(userDetailsService, authenticationConverter);
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
-        Authentication authentication = authenticate(authenticationToken);
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) throws IOException {
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String accessToken = jwtTokenProvider.createToken(payload);
         TokenResponse tokenResponse = new TokenResponse(accessToken);
@@ -38,31 +34,5 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-        return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-        return new AuthenticationToken(principal, credentials);
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        String principal = authenticationToken.getPrincipal();
-        LoginMember userDetails = customUserDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, authenticationToken);
-
-        return new Authentication(userDetails);
-    }
-
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
-        if (userDetails == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
     }
 }
