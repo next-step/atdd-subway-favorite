@@ -13,31 +13,31 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StationService {
-    private StationRepository stationRepository;
+  private final StationRepository stationRepository;
 
-    public StationService(StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
-    }
+  public StationService(StationRepository stationRepository) {
+    this.stationRepository = stationRepository;
+  }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.save(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
-    }
+  public StationResponse saveStation(StationRequest stationRequest) {
+    Station station = stationRepository.save(new Station(stationRequest.getName()));
+    return StationResponse.of(station);
+  }
 
-    @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+  @Transactional(readOnly = true)
+  public List<StationResponse> findAllStations() {
+    List<Station> stations = stationRepository.findAll();
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
+    return stations.stream()
+      .map(StationResponse::of)
+      .collect(Collectors.toList());
+  }
 
-    public void deleteStationById(Long id) {
-        stationRepository.deleteById(id);
-    }
+  public void deleteStationById(Long id) {
+    stationRepository.deleteById(id);
+  }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-    }
+  public Station findById(Long id) {
+    return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+  }
 }
