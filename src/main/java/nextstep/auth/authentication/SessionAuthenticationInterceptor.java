@@ -16,7 +16,7 @@ import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEX
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
     SessionAuthenticationConverter sessionAuthenticationConverter;
 
-    public SessionAuthenticationInterceptor(CustomUserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService) {
         super(userDetailsService);
         this.sessionAuthenticationConverter = new SessionAuthenticationConverter();
     }

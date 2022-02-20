@@ -1,11 +1,11 @@
 package nextstep.member.domain;
 
-import nextstep.subway.domain.BaseEntity;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import nextstep.subway.domain.BaseEntity;
 
 @Entity
 public class Member extends BaseEntity {
