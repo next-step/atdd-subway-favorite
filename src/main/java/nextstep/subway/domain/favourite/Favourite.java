@@ -37,4 +37,12 @@ public class Favourite {
     public Long getId() {
         return id;
     }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
 }
