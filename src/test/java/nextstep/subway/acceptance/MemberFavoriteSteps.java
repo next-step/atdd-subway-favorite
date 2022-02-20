@@ -3,12 +3,10 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.FavoriteResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +37,10 @@ public class MemberFavoriteSteps {
         assertThat(response.jsonPath().getList("target.id", Long.class)).contains(target);
     }
 
+    public static void 삭제후_즐겨찾기_정보_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getList("id")).isEmpty();
+    }
+
     public static ExtractableResponse<Response> 내_즐겨찾기_정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
@@ -55,9 +57,4 @@ public class MemberFavoriteSteps {
                 .when().delete(location)
                 .then().log().all().extract();
     }
-
-    public static void 즐겨찾기_정보_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
 }

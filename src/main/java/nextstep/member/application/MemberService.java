@@ -11,11 +11,13 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MemberService {
     private MemberRepository memberRepository;
     private StationService stationService;
@@ -62,9 +64,7 @@ public class MemberService {
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
         Favorite favorite = new Favorite(member, source, target);
-
         favoriteRepository.save(favorite);
-        member.addFavorite(favorite);
 
         return FavoriteResponse.of(favorite);
     }
