@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -30,30 +31,34 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
+        TokenResponse tokenResponse = generateToken(authentication);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
-        String token = jwtTokenProvider.createToken(payload);
-
-        TokenResponse tokenResponse = TokenResponse.of(token);
-
-        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().print(responseToClient);
+        setToken(response, tokenResponse);
 
         return false;
     }
 
+    private void setToken(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getOutputStream().print(responseToClient);
+    }
+
+    private TokenResponse generateToken(Authentication authentication) throws JsonProcessingException {
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+
+        return TokenResponse.of(token);
+    }
+
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
         TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
 
         return AuthenticationToken.of(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
         String principal = authenticationToken.getPrincipal();
         LoginMember member = customUserDetailsService.loadUserByUsername(principal);
 
