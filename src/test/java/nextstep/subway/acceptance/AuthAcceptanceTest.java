@@ -2,7 +2,6 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -11,9 +10,9 @@ import static nextstep.subway.acceptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final Integer AGE = 20;
 
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
