@@ -6,29 +6,35 @@ import nextstep.subway.application.dto.station.StationResponse;
 import nextstep.subway.domain.favourite.Favourite;
 import nextstep.subway.domain.favourite.FavouriteRepository;
 import nextstep.subway.domain.favourite.FavouriteValidator;
+import nextstep.subway.domain.line.LineRepository;
 import nextstep.subway.domain.member.Member;
 import nextstep.subway.domain.member.MemberRepository;
+import nextstep.subway.domain.path.PathValidator;
 import nextstep.subway.domain.station.Station;
 import nextstep.subway.domain.station.StationRepository;
 import nextstep.utils.exception.FavouriteNotFoundException;
 import nextstep.utils.exception.MemberException;
 import nextstep.utils.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavouriteService {
     private FavouriteRepository favouriteRepository;
     private StationRepository stationRepository;
     private MemberRepository memberRepository;
+    private LineRepository lineRepository;
 
     public FavouriteService(FavouriteRepository favouriteRepository, StationRepository stationRepository,
-                            MemberRepository memberRepository) {
+                            MemberRepository memberRepository, LineRepository lineRepository) {
         this.favouriteRepository = favouriteRepository;
         this.stationRepository = stationRepository;
         this.memberRepository = memberRepository;
+        this.lineRepository = lineRepository;
     }
 
     public Long add(Long memberId, FavouriteRequest favouriteRequest) {
@@ -36,6 +42,8 @@ public class FavouriteService {
 
         Station upStation = findStationById(favouriteRequest.getSource());
         Station downStation = findStationById(favouriteRequest.getTarget());
+
+        PathValidator.validateNotLinked(lineRepository.findAll(), upStation, downStation);
 
         Favourite newFavourite = createFavourite(authenticatedMember, upStation, downStation);
         favouriteRepository.save(newFavourite);
@@ -52,7 +60,7 @@ public class FavouriteService {
         return Favourite.of(authenticatedMember, upStation, downStation);
     }
 
-
+    @Transactional(readOnly = true)
     public List<FavouriteResponse> findAll(Long id) {
         Member authenticatedMember = findMemberById(id);
 

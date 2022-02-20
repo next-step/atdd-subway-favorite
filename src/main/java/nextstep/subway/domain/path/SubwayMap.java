@@ -19,6 +19,20 @@ public class SubwayMap {
         this.lines = lines;
     }
 
+    public boolean isLinked(Station source, Station target) {
+        // 그래프 만들기
+        SimpleDirectedWeightedGraph<Station, SectionEdge> graph = createGraph();
+
+        // 다익스트라 최단 경로 찾기
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
+
+        if (result == null) {
+            return false;
+        }
+        return true;
+    }
+
     public Path findPath(Station source, Station target) {
         // 그래프 만들기
         SimpleDirectedWeightedGraph<Station, SectionEdge> graph = createGraph();

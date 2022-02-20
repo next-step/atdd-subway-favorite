@@ -1,6 +1,5 @@
 package nextstep.subway.unit;
 
-import nextstep.subway.application.DtoFactory;
 import nextstep.subway.application.FavouriteService;
 import nextstep.subway.application.dto.FavouriteResponse;
 import nextstep.subway.domain.favourite.Favourite;
@@ -24,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static nextstep.subway.application.DtoFactory.*;
+import static nextstep.subway.application.DtoFactory.createFavouriteRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
