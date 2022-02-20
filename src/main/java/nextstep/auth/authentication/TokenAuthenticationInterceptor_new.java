@@ -1,0 +1,75 @@
+package nextstep.auth.authentication;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
+import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+
+    private CustomUserDetailsService customUserDetailsService;
+    private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
+
+    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        AuthenticationToken authenticationToken = convert(request);
+        Authentication authentication = authenticate(authenticationToken);
+        TokenResponse tokenResponse = generateToken(authentication);
+
+        setToken(response, tokenResponse);
+
+        return false;
+    }
+
+    private void setToken(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getOutputStream().print(responseToClient);
+    }
+
+    private TokenResponse generateToken(Authentication authentication) throws JsonProcessingException {
+        String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+
+        return TokenResponse.of(token);
+    }
+
+    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
+        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
+
+        return AuthenticationToken.of(tokenRequest.getEmail(), tokenRequest.getPassword());
+    }
+
+    public Authentication authenticate(AuthenticationToken authenticationToken) {
+        String principal = authenticationToken.getPrincipal();
+        LoginMember member = customUserDetailsService.loadUserByUsername(principal);
+
+        validateAuthentication(member, authenticationToken);
+
+        return new Authentication(member);
+    }
+
+    private void validateAuthentication(LoginMember member, AuthenticationToken token) {
+        if(!member.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
+        }
+    }
+}

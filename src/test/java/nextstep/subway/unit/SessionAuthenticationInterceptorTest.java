@@ -1,18 +1,10 @@
 package nextstep.subway.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.SessionAuthenticationInterceptor;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.*;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -22,7 +14,6 @@ import java.util.Map;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class SessionAuthenticationInterceptorTest {
@@ -30,11 +21,12 @@ class SessionAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
 
     private final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+    private final SessionAuthenticationConverter converter = new SessionAuthenticationConverter();
 
     @Test
     void convert() throws IOException {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        AuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor_new(userDetailsService, converter);
         MockHttpServletRequest request = createMockRequest();
 
         // when
@@ -48,7 +40,7 @@ class SessionAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        SessionAuthenticationInterceptor_new interceptor = new SessionAuthenticationInterceptor_new(userDetailsService, converter);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
@@ -62,10 +54,9 @@ class SessionAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        SessionAuthenticationInterceptor_new interceptor = new SessionAuthenticationInterceptor_new(userDetailsService, converter);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
-//        when(jwtTokenProvider.convert(anyString())).thenReturn(JWT_TOKEN);
 
         // when
         MockHttpServletRequest request = createMockRequest();
@@ -77,7 +68,7 @@ class SessionAuthenticationInterceptorTest {
         assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
+    private MockHttpServletRequest createMockRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         Map<String, String> parameters = Map.of("username", EMAIL, "password", PASSWORD);
