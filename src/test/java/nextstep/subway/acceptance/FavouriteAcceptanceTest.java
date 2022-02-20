@@ -1,13 +1,11 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +28,6 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
     private Long 역삼역Id;
     private Long 양재역Id;
     private Long 이호선Id;
-    private Long 신분당선Id;
 
     /**
      * Background : 사용자와 역이 등록되어져있다.
@@ -45,7 +42,6 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
         양재역Id = extractId(지하철역_생성_요청("양재역"));
 
         이호선Id = extractId(지하철_노선_생성_요청(createParams("이호선", "green", 강남역Id, 역삼역Id, 13)));
-        신분당선Id = extractId(지하철_노선_생성_요청(createParams("신분당선", "orange", 강남역Id, 양재역Id, 10)));
     }
 
     private Long extractId(ExtractableResponse<Response> response) {
@@ -179,5 +175,26 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
 
         // then
         응답_상태코드_검증(postResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Scenario : 인증된 사용자가 이어지지 못하는 두 역을 즐겨찾기로 경로 등록을 하면 에러를 반환한다.
+     * Given    : 새로운 역을 하나 만들고
+     * When     : 새로운 역과 기존 노선의 역에 대해 즐겨찾기 요청을 시도하면
+     * Then     : 400 에러를 반환한다.
+     */
+    @Test
+    @DisplayName("이어지지 못하는 역들에 대해 즐겨찾기를 시도한 경우 에러를 반환한다.")
+    void 이어지지_못하는_두_역에_대해_요청() {
+        // given
+        Long 용산역Id = extractId(지하철역_생성_요청("용산역"));
+        Long 운정역Id = extractId(지하철역_생성_요청("운정역"));
+        지하철_노선_생성_요청(createParams("경의중앙선", "blue", 용산역Id, 운정역Id, 10));
+
+        // when
+        ExtractableResponse<Response> postResponse = 즐겨찾기_요청(사용자토큰, 강남역Id, 용산역Id);
+
+        // then
+        응답_상태코드_검증(postResponse, HttpStatus.BAD_REQUEST);
     }
 }

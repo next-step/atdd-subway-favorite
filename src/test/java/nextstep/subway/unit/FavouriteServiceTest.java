@@ -13,6 +13,7 @@ import nextstep.subway.domain.station.Station;
 import nextstep.subway.domain.station.StationRepository;
 import nextstep.utils.exception.FavouriteNotFoundException;
 import nextstep.utils.exception.FavouriteNotMineException;
+import nextstep.utils.exception.PathNotLinkedException;
 import nextstep.utils.exception.StationNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -126,5 +127,23 @@ public class FavouriteServiceTest {
         // when/then
         assertThatThrownBy(() -> favouriteService.add(사용자.getId(), createFavouriteRequest(강남역.getId(), 1231421L)))
                 .isInstanceOf(StationNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("이어지지 못하는 두 역이면, 예외를 발생한다.")
+    void validateCreateFavourite2() {
+        // given
+        Station 용산역 = new Station("용산역");
+        Station 운정역 = new Station("운정역");
+        stationRepository.save(용산역);
+        stationRepository.save(운정역);
+
+        Line 경의중앙선 = new Line("경의중앙선", "blue");
+        경의중앙선.addSection(용산역, 운정역, 13);
+        lineRepository.save(경의중앙선);
+
+        // when/then
+        assertThatThrownBy(() -> favouriteService.add(사용자.getId(), createFavouriteRequest(강남역.getId(), 용산역.getId())))
+                .isInstanceOf(PathNotLinkedException.class);
     }
 }
