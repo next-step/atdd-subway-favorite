@@ -1,11 +1,13 @@
-package nextstep.subway.acceptance;
+package nextstep.auth;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.common.AcceptanceTest;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.member.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -30,7 +32,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> response = 토큰_기반_내_회원_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, EMAIL, AGE);
     }

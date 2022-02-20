@@ -15,7 +15,7 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
 		String stringJson = request.getReader()
 			.lines()
 			.findFirst()
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(AuthenticationException::new);
 		JSONObject jsonObject = new JSONObject(stringJson);
 
 		return new AuthenticationToken(jsonObject.getString(EMAIL), jsonObject.getString(PASSWORD));
