@@ -3,7 +3,6 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.AuthSteps.*;
+import static nextstep.subway.acceptance.AuthSteps.토큰_인증;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
@@ -65,15 +64,15 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Scenario : 인증된 사용자가 즐겨찾기 기능을 사용한다.
-     *
+     * <p>
      * <즐겨찾기 등록>
      * When     : 인증된 사용자가 두 역에 대해 즐겨찾기를 요청하면,
      * Then     : 선호 경로가 등록된다.
-     *
+     * <p>
      * <즐겨찾기 조회>
      * When     : 인증된 사용자가 즐겨찾기 목록을 조회하면,
      * Then     : 즐겨찾기된 선호경로들이 조회된다.
-     *
+     * <p>
      * <즐겨찾기 삭제>
      * When     : 인증된 사용자가 등록된 선호경로에 대해 즐겨찾기 취소를 요청하면,
      * Then     : 해당 선호경로에 대한 즐겨찾기가 취소된다.
@@ -90,6 +89,7 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> postResponse = RestAssured
                 .given().log().all()
                 .auth().preemptive().oauth2(사용자토큰)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .body(requestBody)
 
@@ -118,7 +118,8 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(getResponse.body().jsonPath().getList("..name")).containsExactly(Arrays.array("강남역", "역삼역"));
+        assertThat(getResponse.body().jsonPath().getString("[0].source.name")).isEqualTo("강남역");
+        assertThat(getResponse.body().jsonPath().getString("[0].target.name")).isEqualTo("역삼역");
 
         /* 즐겨찾기 취소 */
         // when

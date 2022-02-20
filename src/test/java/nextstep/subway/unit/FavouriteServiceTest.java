@@ -61,7 +61,7 @@ public class FavouriteServiceTest {
     @DisplayName("즐겨찾기 등록 요청을 처리한다.")
     void doFavourite() {
         // when
-        Long id = favouriteService.add(사용자, DtoFactory.createFavouriteRequest(강남역.getId(), 역삼역.getId()));
+        Long id = favouriteService.add(사용자.getId(), DtoFactory.createFavouriteRequest(강남역.getId(), 역삼역.getId()));
 
         // then
         Favourite favourite = favouriteRepository.findById(id).orElseThrow(FavouriteNotFoundException::new);
@@ -72,10 +72,10 @@ public class FavouriteServiceTest {
     @DisplayName("즐겨찾기 목록 조회 요청을 처리한다.")
     void showFavourites() {
         //given
-        favouriteService.add(사용자, DtoFactory.createFavouriteRequest(강남역.getId(), 역삼역.getId()));
+        favouriteService.add(사용자.getId(), DtoFactory.createFavouriteRequest(강남역.getId(), 역삼역.getId()));
 
         // when
-        List<FavouriteResponse> favouriteResponseList = favouriteService.findAll(사용자);
+        List<FavouriteResponse> favouriteResponseList = favouriteService.findAll(사용자.getId());
 
         // then
         assertThat(favouriteResponseList.size()).isEqualTo(1);
@@ -85,13 +85,13 @@ public class FavouriteServiceTest {
     @DisplayName("즐겨찾기 취소 요청을 처리한다.")
     void deleteFavourite() {
         //given
-        Long id = favouriteService.add(사용자, DtoFactory.createFavouriteRequest(강남역.getId(), 역삼역.getId()));
+        Long id = favouriteService.add(사용자.getId(), DtoFactory.createFavouriteRequest(강남역.getId(), 역삼역.getId()));
 
         // when
-        favouriteService.delete(사용자, id);
+        favouriteService.delete(사용자.getId(), id);
 
         // then
-        List<FavouriteResponse> favouriteResponseList = favouriteService.findAll(사용자);
+        List<FavouriteResponse> favouriteResponseList = favouriteService.findAll(사용자.getId());
         assertThat(favouriteResponseList.size()).isEqualTo(0);
     }
 }
