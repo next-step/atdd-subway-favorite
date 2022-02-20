@@ -6,10 +6,8 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +18,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
+import static nextstep.subway.unit.AuthTarget.*;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -29,9 +28,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
-  public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
-  private static final String EMAIL = "email@email.com";
-  private static final String PASSWORD = "password";
+
   @Mock
   private UserDetailsService userDetailsService;
 
@@ -49,7 +46,7 @@ class TokenAuthenticationInterceptorTest {
   @Test
   void convert() throws IOException {
     // when
-    AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
+    AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createTokenMockRequest());
 
     // then
     assertAll(
@@ -61,21 +58,19 @@ class TokenAuthenticationInterceptorTest {
   @Test
   void authenticate() throws IOException {
     // given
-    createMockLoginMember();
-    Authentication targetAuth = new Authentication(userDetailsService.loadUserByUsername(EMAIL));
-    AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
+    createMockLoginMember(userDetailsService);
+    AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createTokenMockRequest());
 
     // when
     Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
     // then
-    assertThat(authentication.getPrincipal()).isEqualTo(targetAuth.getPrincipal());
+    assertThat(authentication.getPrincipal()).isEqualTo(LOGIN_MEMBER);
   }
 
   @Test
   void invalidTokenAuthenticationTest() throws IOException {
     // given
-    createMockLoginMember();
     AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createInvalidMockRequest());
 
     // when & then
@@ -85,9 +80,9 @@ class TokenAuthenticationInterceptorTest {
   @Test
   void preHandle() throws IOException {
     // given
-    MockHttpServletRequest mockRequest = createMockRequest();
+    createMockLoginMember(userDetailsService);
+    MockHttpServletRequest mockRequest = createTokenMockRequest();
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
-    createMockLoginMember();
     when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
     // when
@@ -99,25 +94,6 @@ class TokenAuthenticationInterceptorTest {
       () -> assertThat(mockResponse.getStatus()).isEqualTo(SC_OK),
       () -> assertThat(mockResponse.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)))
     );
-  }
-
-  private void createMockLoginMember() {
-    // given
-    when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 25));
-  }
-
-  private MockHttpServletRequest createMockRequest() throws IOException {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-    request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-    return request;
-  }
-
-  private MockHttpServletRequest createInvalidMockRequest() throws IOException {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    TokenRequest tokenRequest = new TokenRequest(EMAIL, "teststeststestst");
-    request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-    return request;
   }
 
 }

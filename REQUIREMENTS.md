@@ -28,6 +28,39 @@
 
 ## 2단계 요구사항
 * [ ] 인증 로직 리팩터링 및 기능 추가
-  * 1,2단계에서 구현한 인증 로직에 대한 리팩터링을 진행하세요
-  * 내 정보 수정 / 삭제 기능을 처리하는 기능을 구현하세요.
-  * Controller에서 @애너테이션을 활용하여 Login 정보에 접근
+  * [ ] 0, 1단계에서 구현한 인증 로직에 대한 리팩터링을 진행하세요
+  * [ ] 내 정보 수정 / 삭제 기능을 처리하는 기능을 구현하세요.
+  * [ ] Controller 에서 @애너테이션을 활용하여 Login 정보에 접근
+
+### 2단계 힌트
+#### AuthenticationConverter 추상화
+* [X] 완료 여부
+* Token Auth와 FormLogin으로 나뉘어 있는 AuthenticationConverter를 추상화
+```
+public interface AuthenticationConverter {
+AuthenticationToken convert(HttpServletRequest request);
+}
+```
+#### AuthenticationInterceptor 추상화
+* [X] 완료 여부
+* AuthenticationInterceptor의 후처리 로직을 추상화
+```
+public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
+```
+#### auth 패키지와 member 패키지에 대한 의존 제거
+* [X] 완료 여부
+* 현재 auth 패키지와 member 패키지는 서로 의존하고 있음
+* UserDetailsService를 추상화 하여 auth -> member 의존을 제거하기
+> [우아한 객체지향 세미나 - 패키지 의존 문제 해결](https://youtu.be/dJ5C4qRqAgA?t=2941)
+
+#### SecurityContextInterceptor 추상화
+* [ ] 완료 여부
+```
+public abstract class SecurityContextInterceptor implements HandlerInterceptor {
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        SecurityContextHolder.clearContext();
+    }
+}
+```
