@@ -133,10 +133,27 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
         응답_상태코드_검증(deleteResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    /**
+     * Scenario : 다른 사람이 즐겨찾기한 선호경로에 대해 취소요청을 하면 403 에러가 발생된다.
+     * Given    : 새로운 사용자를 등록하고
+     * Given    : 새로운 사용자가 선호 경로를 즐겨찾기한다.
+     * When     : 해당 선호경로에 대해 취소 요청을 하면
+     * Then     : 403 권한 에러가 발생한다.
+     */
     @Test
-    @DisplayName("즐겨찾기가 되지 않은 선호 경로에 대해 취소요청을 하면 에러를 반환한다.")
+    @DisplayName("본인의 것이 아닌 선호경로에 대해 취소요청을 하면 에러를 반환한다.")
     void 즐겨찾기_되지않은_경로를_취소() {
+        // given
+        Long 새로운회원_id = extractId(회원_생성_요청("test2@email.com", "1234", 24));
+        String 새로운회원_토큰 = 토큰_인증("test2@email.com", "1234");
+        Long 새로운_회원의_선호경로Id = 즐겨찾기_요청(새로운회원_토큰, 강남역Id, 역삼역Id)
+                .body().jsonPath().getLong("[0].id");
 
+        // when
+        ExtractableResponse<Response> 취소_response = 즐겨찾기_취소(사용자토큰, 새로운_회원의_선호경로Id);
+
+        // then
+        응답_상태코드_검증(취소_response, HttpStatus.UNAUTHORIZED);
     }
 
     @Test

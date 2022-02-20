@@ -12,6 +12,7 @@ import nextstep.subway.domain.member.MemberRepository;
 import nextstep.subway.domain.station.Station;
 import nextstep.subway.domain.station.StationRepository;
 import nextstep.utils.exception.FavouriteNotFoundException;
+import nextstep.utils.exception.FavouriteNotMineException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -93,5 +95,18 @@ public class FavouriteServiceTest {
         // then
         List<FavouriteResponse> favouriteResponseList = favouriteService.findAll(사용자.getId());
         assertThat(favouriteResponseList.size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("내 선호경로인지 검증한다.")
+    void validateDeleteFavourite() {
+        // given
+        Member 새로운_사용자 = memberRepository.save(new Member("test2@email.com", "1234", 24));
+        Long 새로운_사용자_선호경로Id =
+                favouriteService.add(새로운_사용자.getId(), DtoFactory.createFavouriteRequest(강남역.getId(), 역삼역.getId()));
+
+        // when/then
+        assertThatThrownBy(() -> favouriteService.delete(사용자.getId(), 새로운_사용자_선호경로Id))
+                .isInstanceOf(FavouriteNotMineException.class);
     }
 }
