@@ -3,12 +3,12 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
+import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -30,19 +30,32 @@ class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
 
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsService userDetailsService;
+    private UserDetails userDetails;
     private JwtTokenProvider jwtTokenProvider;
     private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
+        userDetailsService = mock(UserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
+        userDetails = new UserDetails() {
 
-        when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+            public Long id = 1L;
+            public String email = EMAIL;
+            public String password = PASSWORD;
+            public Integer age = 20;
+
+            @Override
+            public boolean checkPassword(String credentials) {
+                return true;
+            }
+        };
+
+        when(userDetailsService.loadUserByUsername(anyString())).thenReturn(userDetails);
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);
 
-        interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
+        interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, new ObjectMapper());
     }
 
     @Test
@@ -64,6 +77,20 @@ class TokenAuthenticationInterceptorTest {
 
         // then
         assertThat(authentication.getPrincipal()).isNotNull();
+    }
+
+    @Test
+    void afterAuthentication() throws IOException {
+        // when
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        interceptor.afterAuthentication(createMockRequest(), response, new Authentication(userDetails));
+
+        // then
+        assertAll(
+                () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE),
+                () -> assertThat(response.getContentAsString()).isEqualTo(new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN)))
+        );
     }
 
     @Test
