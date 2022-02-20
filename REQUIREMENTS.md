@@ -54,7 +54,7 @@ public abstract void afterAuthentication(HttpServletRequest request, HttpServlet
 > [우아한 객체지향 세미나 - 패키지 의존 문제 해결](https://youtu.be/dJ5C4qRqAgA?t=2941)
 
 #### SecurityContextInterceptor 추상화
-* [ ] 완료 여부
+* [X] 완료 여부
 ```
 public abstract class SecurityContextInterceptor implements HandlerInterceptor {
 
