@@ -27,10 +27,10 @@
     * AuthenticationPrincipalArgumentResolver를 참고하여 ArgumentResolver 기능을 사용하기
 
 ## 2단계 요구사항
-* [ ] 인증 로직 리팩터링 및 기능 추가
-  * [ ] 0, 1단계에서 구현한 인증 로직에 대한 리팩터링을 진행하세요
-  * [ ] 내 정보 수정 / 삭제 기능을 처리하는 기능을 구현하세요.
-  * [ ] Controller 에서 @애너테이션을 활용하여 Login 정보에 접근
+* [X] 인증 로직 리팩터링 및 기능 추가
+  * [X] 0, 1단계에서 구현한 인증 로직에 대한 리팩터링을 진행하세요
+  * [X] 내 정보 수정 / 삭제 기능을 처리하는 기능을 구현하세요.
+  * [X] Controller 에서 @애너테이션을 활용하여 Login 정보에 접근
 
 ### 2단계 힌트
 #### AuthenticationConverter 추상화
