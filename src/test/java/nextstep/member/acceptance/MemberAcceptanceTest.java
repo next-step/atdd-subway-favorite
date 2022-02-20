@@ -24,6 +24,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 회원_수정_응답 = 회원_정보_수정_요청(회원_생성_응답, "new" + EMAIL, "new" + PASSWORD, AGE);
         ExtractableResponse<Response> 회원_삭제_응답 = 회원_삭제_요청(회원_생성_응답);
 
+
         // then
         응답_확인(회원_생성_응답, HttpStatus.CREATED);
         회원_정보_조회됨(회원_정보_응답, EMAIL, AGE);

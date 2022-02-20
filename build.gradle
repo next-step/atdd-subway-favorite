@@ -32,6 +32,7 @@ dependencies {
 	// json
 	implementation group: 'org.json', name: 'json', version: '20211205'
 
+
 	// test
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -42,5 +43,6 @@ dependencies {
 }
 
 test {
+
 	useJUnitPlatform()
 }

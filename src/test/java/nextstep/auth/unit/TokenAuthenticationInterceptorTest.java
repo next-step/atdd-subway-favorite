@@ -38,6 +38,7 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     JwtTokenProvider jwtTokenProvider;
 
+
     @Test
     void authenticate() {
         // given

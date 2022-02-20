@@ -38,6 +38,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
 
+
         return false;
     }
 }

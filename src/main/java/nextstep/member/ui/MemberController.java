@@ -60,5 +60,6 @@ public class MemberController {
         memberService.deleteMember(loginMember.getEmail());
         return ResponseEntity.noContent().build();
     }
+
 }
 

@@ -44,6 +44,7 @@ public class MemberService {
         member.update(param.toMember());
     }
 
+
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }

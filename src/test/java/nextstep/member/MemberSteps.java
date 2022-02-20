@@ -36,6 +36,7 @@ public class MemberSteps extends Steps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
