@@ -25,3 +25,9 @@
   * [X] @AuthenticationPrincipal을 활용하여 로그인 정보 받아오기
     * Controller에서 LoginMember 정보를 받아올 때 @AuthenticationPrincipal를 활용하여 받기
     * AuthenticationPrincipalArgumentResolver를 참고하여 ArgumentResolver 기능을 사용하기
+
+## 2단계 요구사항
+* [ ] 인증 로직 리팩터링 및 기능 추가
+  * 1,2단계에서 구현한 인증 로직에 대한 리팩터링을 진행하세요
+  * 내 정보 수정 / 삭제 기능을 처리하는 기능을 구현하세요.
+  * Controller에서 @애너테이션을 활용하여 Login 정보에 접근
