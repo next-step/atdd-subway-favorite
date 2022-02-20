@@ -1,11 +1,13 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -162,12 +164,20 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("없는 선호 경로에 대해 취소요청을 하면 에러를 반환한다.")
     void 없는_선호경로에_대한_취소() {
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_취소(사용자토큰, 1929312L);
 
+        // then
+        응답_상태코드_검증(deleteResponse, HttpStatus.NOT_FOUND);
     }
 
     @Test
     @DisplayName("없는 역을 대상으로 즐겨찾기를 시도할 경우 에러를 반환한다.")
-    void 없는_역에_대한_취소() {
+    void 없는_역에_대한_즐겨찾기_요청() {
+        // when
+        ExtractableResponse<Response> postResponse = 즐겨찾기_요청(사용자토큰, 강남역Id, 191919L);
 
+        // then
+        응답_상태코드_검증(postResponse, HttpStatus.NOT_FOUND);
     }
 }
