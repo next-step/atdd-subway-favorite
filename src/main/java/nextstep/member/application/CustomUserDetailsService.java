@@ -6,7 +6,7 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
   private final MemberRepository memberRepository;
 
   public CustomUserDetailsService(MemberRepository memberRepository) {

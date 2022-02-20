@@ -7,7 +7,7 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.authorization.SessionSecurityContextPersistenceInterceptor;
 import nextstep.auth.authorization.TokenSecurityContextPersistenceInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,11 +16,11 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-  private final CustomUserDetailsService userDetailsService;
+  private final UserDetailsService userDetailsService;
   private final JwtTokenProvider jwtTokenProvider;
   private final ObjectMapper objectMapper;
 
-  public AuthConfig(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+  public AuthConfig(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
     this.userDetailsService = userDetailsService;
     this.jwtTokenProvider = jwtTokenProvider;
     this.objectMapper = objectMapper;

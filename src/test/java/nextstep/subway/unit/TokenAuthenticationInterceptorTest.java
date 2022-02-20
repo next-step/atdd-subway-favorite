@@ -8,7 +8,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class TokenAuthenticationInterceptorTest {
   private static final String EMAIL = "email@email.com";
   private static final String PASSWORD = "password";
   @Mock
-  private CustomUserDetailsService customUserDetailsService;
+  private UserDetailsService userDetailsService;
 
   @Mock
   private JwtTokenProvider jwtTokenProvider;
@@ -43,7 +43,7 @@ class TokenAuthenticationInterceptorTest {
   @BeforeEach
   void setup() {
     ObjectMapper objectMapper = new ObjectMapper();
-    tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider, objectMapper);
+    tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
   }
 
   @Test
@@ -62,7 +62,7 @@ class TokenAuthenticationInterceptorTest {
   void authenticate() throws IOException {
     // given
     createMockLoginMember();
-    Authentication targetAuth = new Authentication(customUserDetailsService.loadUserByUsername(EMAIL));
+    Authentication targetAuth = new Authentication(userDetailsService.loadUserByUsername(EMAIL));
     AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
 
     // when
@@ -103,7 +103,7 @@ class TokenAuthenticationInterceptorTest {
 
   private void createMockLoginMember() {
     // given
-    when(customUserDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 25));
+    when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 25));
   }
 
   private MockHttpServletRequest createMockRequest() throws IOException {

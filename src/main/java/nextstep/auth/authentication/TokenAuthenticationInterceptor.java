@@ -5,7 +5,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,12 +16,12 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-  private final CustomUserDetailsService customUserDetailsService;
+  private final UserDetailsService userDetailsService;
   private final JwtTokenProvider jwtTokenProvider;
   private final ObjectMapper objectMapper;
 
-  public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-    this.customUserDetailsService = customUserDetailsService;
+  public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    this.userDetailsService = userDetailsService;
     this.jwtTokenProvider = jwtTokenProvider;
     this.objectMapper = objectMapper;
   }
@@ -52,7 +52,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
   }
 
   public Authentication authenticate(AuthenticationToken authenticationToken) {
-    LoginMember loginMember = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+    LoginMember loginMember = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
     validateAuthentication(loginMember, authenticationToken.getCredentials());
     return new Authentication(loginMember);
