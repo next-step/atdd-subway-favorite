@@ -9,6 +9,8 @@ public class MemberAdaptor implements UserDetails {
     private String username;
     private String credential;
 
+    public MemberAdaptor() {}
+
     private MemberAdaptor(Long id, String username, String credential) {
         this.id = id;
         this.username = username;
@@ -19,7 +21,6 @@ public class MemberAdaptor implements UserDetails {
         return new MemberAdaptor(member.getId(), member.getEmail(), member.getPassword());
     }
 
-    @Override
     public Long getId() {
         return id;
     }
@@ -42,5 +43,10 @@ public class MemberAdaptor implements UserDetails {
         }
 
         throw new AuthenticationException();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

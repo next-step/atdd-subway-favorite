@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements AuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends AbstractAuthenticationInterceptor {
 
     private UserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
@@ -28,12 +28,12 @@ public class TokenAuthenticationInterceptor implements AuthenticationInterceptor
     }
 
     @Override
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
+    protected AuthenticationToken convert(HttpServletRequest request) throws IOException {
         return objectMapper.readValue(request.getInputStream(), AuthenticationToken.class);
     }
 
     @Override
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
+    protected Authentication authenticate(AuthenticationToken authenticationToken) {
         String principle = authenticationToken.getEmail();
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(principle);
         userDetails.validateCredential(authenticationToken.getPassword());
@@ -42,7 +42,7 @@ public class TokenAuthenticationInterceptor implements AuthenticationInterceptor
     }
 
     @Override
-    public void afterAuthenticate(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    protected void afterAuthenticate(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         TokenResponse tokenResponse = TokenResponse.from(createJwtToken(authentication));
         makeResponse(response, tokenResponse);
     }
