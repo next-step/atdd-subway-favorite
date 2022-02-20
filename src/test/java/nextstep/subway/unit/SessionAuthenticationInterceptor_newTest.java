@@ -14,19 +14,19 @@ import java.util.Map;
 
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-class SessionAuthenticationInterceptorTest {
+class SessionAuthenticationInterceptor_newTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
 
     private final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+    private final SessionAuthenticationConverter converter = new SessionAuthenticationConverter();
 
     @Test
     void convert() throws IOException {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        AuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor_new(userDetailsService, converter);
         MockHttpServletRequest request = createMockRequest();
 
         // when
@@ -40,7 +40,7 @@ class SessionAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        SessionAuthenticationInterceptor_new interceptor = new SessionAuthenticationInterceptor_new(userDetailsService, converter);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
@@ -54,7 +54,7 @@ class SessionAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        SessionAuthenticationInterceptor_new interceptor = new SessionAuthenticationInterceptor_new(userDetailsService, converter);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
