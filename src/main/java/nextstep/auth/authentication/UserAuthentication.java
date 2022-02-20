@@ -1,27 +1,25 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserAuthentication {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public UserAuthentication(CustomUserDetailsService userDetailsService) {
+    public UserAuthentication(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
-        final LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, token);
         return new Authentication(userDetails);
     }
 
-    private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+    private void checkAuthentication(UserDetails userDetails, AuthenticationToken token) {
         if (userDetails == null) {
             throw new AuthenticationException();
         }
