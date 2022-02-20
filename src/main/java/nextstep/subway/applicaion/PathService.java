@@ -28,4 +28,8 @@ public class PathService {
 
         return PathResponse.of(path);
     }
+
+    public void deletePath(Long id) {
+
+    }
 }

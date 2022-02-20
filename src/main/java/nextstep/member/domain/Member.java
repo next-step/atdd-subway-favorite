@@ -57,4 +57,14 @@ public class Member extends BaseEntity {
     public void addFavorite(Favorite favorite) {
         favorites.addFavorite(favorite);
     }
+
+    public Favorites getFavorites() {
+        return favorites;
+    }
+
+    public boolean isFavoriteOwner(Long favoriteId) {
+        return favorites.getFavorites().stream().anyMatch(favorite -> {
+            return favorite.getId() == favoriteId;
+        });
+    }
 }
