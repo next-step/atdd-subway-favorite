@@ -146,14 +146,17 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
         // given
         Long 새로운회원_id = extractId(회원_생성_요청("test2@email.com", "1234", 24));
         String 새로운회원_토큰 = 토큰_인증("test2@email.com", "1234");
-        Long 새로운_회원의_선호경로Id = 즐겨찾기_요청(새로운회원_토큰, 강남역Id, 역삼역Id)
-                .body().jsonPath().getLong("[0].id");
+        Long 새로운_회원의_선호경로Id = Long.valueOf(
+                즐겨찾기_요청(새로운회원_토큰, 강남역Id, 역삼역Id)
+                        .header("Location")
+                        .split("/")[2]
+        );
 
         // when
         ExtractableResponse<Response> 취소_response = 즐겨찾기_취소(사용자토큰, 새로운_회원의_선호경로Id);
 
         // then
-        응답_상태코드_검증(취소_response, HttpStatus.UNAUTHORIZED);
+        응답_상태코드_검증(취소_response, HttpStatus.FORBIDDEN);
     }
 
     @Test

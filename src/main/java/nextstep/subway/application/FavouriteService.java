@@ -5,6 +5,7 @@ import nextstep.subway.application.dto.FavouriteResponse;
 import nextstep.subway.application.dto.station.StationResponse;
 import nextstep.subway.domain.favourite.Favourite;
 import nextstep.subway.domain.favourite.FavouriteRepository;
+import nextstep.subway.domain.favourite.FavouriteValidator;
 import nextstep.subway.domain.member.Member;
 import nextstep.subway.domain.member.MemberRepository;
 import nextstep.subway.domain.station.Station;
@@ -68,8 +69,9 @@ public class FavouriteService {
 
     public void delete(Long memberId, Long favouriteId) {
         Member authenticatedMember = findMemberById(memberId);
-
         Favourite favourite = findFavouriteById(favouriteId);
+
+        FavouriteValidator.validateAcceptable(favourite, authenticatedMember);
 
         favouriteRepository.delete(favourite);
     }

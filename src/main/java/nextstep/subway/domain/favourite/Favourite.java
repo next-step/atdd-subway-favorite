@@ -45,4 +45,8 @@ public class Favourite {
     public Station getDownStation() {
         return downStation;
     }
+
+    public boolean isAcceptable(Member targetMember) {
+        return this.member == targetMember;
+    }
 }
