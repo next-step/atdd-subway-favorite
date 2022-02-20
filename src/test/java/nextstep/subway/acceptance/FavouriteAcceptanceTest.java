@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AuthSteps.토큰_인증;
+import static nextstep.subway.acceptance.FavouriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
@@ -80,17 +81,50 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("인증된 회원이 즐겨찾기 기능을 수행한다.")
     void 즐겨찾기_기능() {
+        /* 즐겨찾기 등록 */
+        // when
+        ExtractableResponse<Response> postResponse = 즐겨찾기_요청(사용자토큰, 강남역Id, 역삼역Id);
+        // then
+        응답_상태코드_검증(postResponse, HttpStatus.CREATED);
+        assertThat(postResponse.header("Location")).isEqualTo("/favourites/1");
+
+        /* 즐겨찾기 조회 */
+        // when
+        ExtractableResponse<Response> getResponse = 즐겨찾기_조회(사용자토큰);
+        // then
+        응답_상태코드_검증(getResponse, HttpStatus.OK);
+        assertThat(getResponse.body().jsonPath().getString("[0].source.name")).isEqualTo("강남역");
+        assertThat(getResponse.body().jsonPath().getString("[0].target.name")).isEqualTo("역삼역");
+
+        /* 즐겨찾기 취소 */
+        // when
+        Long 선호경로Id = getResponse.body().jsonPath().getLong("[0].id");
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_취소(사용자토큰, 선호경로Id);
+        // then
+        응답_상태코드_검증(deleteResponse, HttpStatus.NO_CONTENT);
+    }
+
+    private void 응답_상태코드_검증(ExtractableResponse<Response> postResponse, HttpStatus created) {
+        assertThat(postResponse.statusCode()).isEqualTo(created.value());
+    }
+
+    /**
+     * Scenario : 인증되지 않은 회원이 즐겨찾기 기능에 접근하면 에러가 발생된다.
+     * When     : 인증을 수행하지 않은 체로 즐겨찾기 기능에 접근하면
+     * Then     : 401 에러가 발생된다.
+     */
+    @Test
+    @DisplayName("인증되지 않은 회원이 즐겨찾기를 접근하면 에러를 반환한다.")
+    void 미인증_사용자_즐겨찾기_접근() {
         Map<String, Long> requestBody = new HashMap<>(2);
         requestBody.put(SOURCE, 강남역Id);
         requestBody.put(TARGET, 역삼역Id);
 
-        /* 즐겨찾기 등록 */
+        /** 즐겨찾기 요청 **/
         // when
         ExtractableResponse<Response> postResponse = RestAssured
                 .given().log().all()
-                .auth().preemptive().oauth2(사용자토큰)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .body(requestBody)
 
                 .when()
@@ -98,76 +132,35 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
 
                 .then().log().all()
                 .extract();
-
         // then
-        assertThat(postResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(postResponse.header("Location")).isEqualTo("/favourites/1");
+        응답_상태코드_검증(postResponse, HttpStatus.UNAUTHORIZED);
 
-        /* 즐겨찾기 조회 */
+        /** 즐겨찾기 조회 **/
         // when
         ExtractableResponse<Response> getResponse = RestAssured
                 .given().log().all()
-                .auth().preemptive().oauth2(사용자토큰)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
 
                 .when()
                 .get("/favourites")
 
                 .then().log().all()
                 .extract();
-
         // then
-        assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(getResponse.body().jsonPath().getString("[0].source.name")).isEqualTo("강남역");
-        assertThat(getResponse.body().jsonPath().getString("[0].target.name")).isEqualTo("역삼역");
+        응답_상태코드_검증(getResponse, HttpStatus.UNAUTHORIZED);
 
-        /* 즐겨찾기 취소 */
+        /** 즐겨찾기 취소 **/
         // when
         ExtractableResponse<Response> deleteResponse = RestAssured
                 .given().log().all()
-                .auth().preemptive().oauth2(사용자토큰)
 
                 .when()
-                .delete("/favourites/1")
+                .delete("/favourites/" + 1)
 
                 .then().log().all()
                 .extract();
-
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    /**
-     * Scenario : 인증된 사용자가 즐겨찾기를 요청하면 선호 경로가 등록된다.
-     * When     : 인증된 사용자가 즐겨찾기를 요청하면
-     * Then     : 선호 경로가 등록된다.
-     */
-    @Test
-    @DisplayName("인증된 회원이 즐겨찾기를 한다.")
-    void 즐겨찾기_수행() {
-        Map<String, Long> requestBody = new HashMap<>(2);
-        requestBody.put(SOURCE, 강남역Id);
-        requestBody.put(TARGET, 역삼역Id);
-
-
-    }
-
-    @Test
-    @DisplayName("인증된 회원이 즐겨찾기한 선호 경로를 취소한다.")
-    void 즐겨찾기_취소() {
-
-    }
-
-    @Test
-    @DisplayName("내 선호 경로 리스트를 조회한다.")
-    void 즐겨찾기_리스트_조회() {
-
-    }
-
-    @Test
-    @DisplayName("인증되지 않은 회원이 즐겨찾기를 접근하면 에러를 반환한다.")
-    void 미인증_사용자_즐겨찾기_접근() {
-
+        응답_상태코드_검증(postResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @Test
