@@ -32,10 +32,9 @@ public class TokenSecurityContextPersistenceInterceptor extends AbstractSecurity
         try {
             String email = jwtTokenProvider.getPayload(jwtToken);
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
             return SecurityContext.from(new Authentication(userDetails));
         } catch (Exception e) {
-            return null;
+            return SecurityContext.from(new Authentication(UserDetails.Anonymous));
         }
     }
 }

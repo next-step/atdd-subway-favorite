@@ -1,13 +1,11 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,51 +114,23 @@ public class FavouriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("인증되지 않은 회원이 즐겨찾기를 접근하면 에러를 반환한다.")
     void 미인증_사용자_즐겨찾기_접근() {
-        Map<String, Long> requestBody = new HashMap<>(2);
-        requestBody.put(SOURCE, 강남역Id);
-        requestBody.put(TARGET, 역삼역Id);
-
         /** 즐겨찾기 요청 **/
         // when
-        ExtractableResponse<Response> postResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-
-                .when()
-                .post("/favourites")
-
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> postResponse = FavouriteSteps.미인증_즐겨찾기_요청(강남역Id, 역삼역Id);
         // then
         응답_상태코드_검증(postResponse, HttpStatus.UNAUTHORIZED);
 
         /** 즐겨찾기 조회 **/
         // when
-        ExtractableResponse<Response> getResponse = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-
-                .when()
-                .get("/favourites")
-
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> getResponse = FavouriteSteps.미인증_즐겨찾기_조회();
         // then
         응답_상태코드_검증(getResponse, HttpStatus.UNAUTHORIZED);
 
         /** 즐겨찾기 취소 **/
         // when
-        ExtractableResponse<Response> deleteResponse = RestAssured
-                .given().log().all()
-
-                .when()
-                .delete("/favourites/" + 1)
-
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> deleteResponse = FavouriteSteps.미인증_즐겨찾기_취소();
         // then
-        응답_상태코드_검증(postResponse, HttpStatus.UNAUTHORIZED);
+        응답_상태코드_검증(deleteResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @Test
