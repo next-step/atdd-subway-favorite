@@ -32,20 +32,16 @@ public class FavoriteService {
 
 	public FavoriteResponse createFavorites(UserDetails userDetails, FavoriteRequest favoriteRequest) {
 		Member member = memberRepository.findById(userDetails.getId()).orElseThrow(EntityNotFoundException::new);
-		Station source = stationRepository.getById(favoriteRequest.getSourceId());
-		Station target = stationRepository.getById(favoriteRequest.getTargetId());
+		Station source = stationRepository.findById(favoriteRequest.getSourceId())
+			.orElseThrow(EntityNotFoundException::new);
+		Station target = stationRepository.findById(favoriteRequest.getTargetId())
+			.orElseThrow(EntityNotFoundException::new);
 
 		Favorite favorite = favoriteRepository.save(new Favorite());
 		favorite.setSource(source);
 		favorite.setTarget(target);
 
 		member.addFavorite(favorite);
-		System.out.println("=================================");
-		System.out.println(member.getId());
-		System.out.println(member.getFavorites().getFavorites().get(0).getId());
-		System.out.println(member.getFavorites().getFavorites().get(0).getSource().getId());
-		System.out.println(member.getFavorites().getFavorites().get(0).getTarget().getId());
-		System.out.println("=================================");
 		return new FavoriteResponse(favorite);
 	}
 
