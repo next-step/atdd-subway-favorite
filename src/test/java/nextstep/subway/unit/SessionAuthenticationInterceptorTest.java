@@ -39,13 +39,12 @@ class SessionAuthenticationInterceptorTest {
     // given
     createMockLoginMember(userDetailsService);
     AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-    LoginMember loginMember = AuthTarget.LOGIN_MEMBER;
 
     // when
     Authentication authentication = sessionAuthenticationInterceptor.authenticate(authenticationToken);
 
     // then
-    assertThat(authentication.getPrincipal()).isEqualTo(loginMember);
+    assertThat(authentication.getPrincipal()).isEqualTo(AuthTarget.LOGIN_MEMBER);
   }
 
   @Test
