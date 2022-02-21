@@ -105,6 +105,10 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
         return RestAssured
                 .given().log().all()
@@ -130,4 +134,5 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
 }

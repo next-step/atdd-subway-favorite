@@ -55,7 +55,6 @@ class AuthenticationInterceptorTest {
     @Test
     void sessionConvert() throws IOException {
         // given
-        ObjectMapper objectMapper = new ObjectMapper();
         AuthenticationConverter sessionAuthenticationConverter = new SessionAuthenticationConverter();
         MockHttpServletRequest request = createSessionMockRequest();
 

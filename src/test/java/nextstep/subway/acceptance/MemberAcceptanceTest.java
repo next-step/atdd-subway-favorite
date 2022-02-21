@@ -41,7 +41,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 회원_삭제_요청_응답 = 회원_삭제_요청(회원_생성_요청_응답);
 
         // then
-        assertThat(회원_삭제_요청_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_삭제됨(회원_삭제_요청_응답);
     }
 
     @DisplayName("나의 정보를 관리한다.")
@@ -68,7 +68,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 내_회원_삭제_요청_응답 = 내_회원_삭제_요청(accessToken);
 
         // then
-        assertThat(내_회원_삭제_요청_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
+        회원_삭제됨(내_회원_삭제_요청_응답);
     }
 }
