@@ -36,7 +36,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor, A
 
   public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
-  public void validateAuthentication(UserDetail userDetails, String credentials) {
+  private void validateAuthentication(UserDetail userDetails, String credentials) {
 
     if (userDetails == null) {
       throw new AuthenticationException();
