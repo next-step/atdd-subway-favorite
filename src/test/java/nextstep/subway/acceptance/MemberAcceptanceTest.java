@@ -72,5 +72,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = 회원_정보_수정_요청_토큰포함(accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
