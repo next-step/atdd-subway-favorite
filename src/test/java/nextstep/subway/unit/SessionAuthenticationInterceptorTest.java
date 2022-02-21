@@ -1,6 +1,6 @@
 package nextstep.subway.unit;
 
-import nextstep.auth.adapter.in.UserDetailsService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;

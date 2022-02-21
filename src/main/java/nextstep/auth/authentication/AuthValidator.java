@@ -1,6 +1,6 @@
 package nextstep.auth.authentication;
 
-import nextstep.auth.adapter.in.UserDetail;
+import nextstep.auth.user.UserDetail;
 
 public class AuthValidator {
 

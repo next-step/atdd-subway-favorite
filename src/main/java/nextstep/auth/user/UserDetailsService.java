@@ -1,4 +1,4 @@
-package nextstep.auth.adapter.in;
+package nextstep.auth.user;
 
 @FunctionalInterface
 public interface UserDetailsService {

@@ -1,7 +1,7 @@
 package nextstep.member.domain;
 
 
-import nextstep.auth.adapter.in.UserDetail;
+import nextstep.auth.user.UserDetail;
 
 public class LoginMember implements UserDetail {
     private Long id;

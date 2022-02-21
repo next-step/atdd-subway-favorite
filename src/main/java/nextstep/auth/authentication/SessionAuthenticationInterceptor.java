@@ -1,6 +1,6 @@
 package nextstep.auth.authentication;
 
-import nextstep.auth.adapter.in.UserDetailsService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 
