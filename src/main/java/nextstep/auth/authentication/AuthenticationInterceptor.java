@@ -1,14 +1,21 @@
 package nextstep.auth.authentication;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import nextstep.auth.context.Authentication;
 
-public class AuthenticationInterceptor implements HandlerInterceptor {
+public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 	private UserDetailsService userDetailsService;
+	private AuthenticationConverter authenticationConverter;
 
-	public AuthenticationInterceptor(UserDetailsService userDetailsService) {
+	public AuthenticationInterceptor(UserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
 		this.userDetailsService = userDetailsService;
+		this.authenticationConverter = authenticationConverter;
 	}
 
 	public Authentication authenticate(AuthenticationToken authenticationToken) {
@@ -28,4 +35,16 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 			throw new AuthenticationException();
 		}
 	}
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
+		IOException {
+		AuthenticationToken token = authenticationConverter.convert(request);
+		Authentication authentication = authenticate(token);
+		afterAuthentication(request, response, authentication);
+
+		return false;
+	}
+
+	public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication);
 }
