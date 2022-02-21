@@ -1,9 +1,11 @@
 package nextstep.member.domain;
 
 
+import nextstep.auth.authentication.User;
+
 import java.util.Objects;
 
-public class LoginMember {
+public class LoginMember extends User {
     private Long id;
     private String email;
     private String password;
@@ -14,15 +16,13 @@ public class LoginMember {
     }
 
     public LoginMember(Long id, String email, String password, Integer age) {
+        super(email, password);
         this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
 
     public Long getId() {
         return id;
@@ -36,22 +36,16 @@ public class LoginMember {
         return age;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         LoginMember that = (LoginMember) o;
-        return id.equals(that.id) && email.equals(that.email) && password.equals(that.password) && Objects.equals(age, that.age);
+        return Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(age, that.age);
     }
 
     @Override

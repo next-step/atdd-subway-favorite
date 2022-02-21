@@ -1,12 +1,13 @@
-package nextstep.subway.unit;
+package nextstep.auth.unit;
 
-import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.User;
 import nextstep.auth.authentication.session.SessionAuthenticationConverter;
 import nextstep.auth.authentication.session.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.subway.support.MockRequest;
+import nextstep.member.domain.LoginMember;
+import nextstep.support.MockRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,6 @@ public class SessionAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() {
-
         userDetailsService = mock(CustomUserDetailsService.class);
         interceptor = new SessionAuthenticationInterceptor(userDetailsService, new SessionAuthenticationConverter());
         request = MockRequest.crateSessionRequest(EMAIL, PASSWORD);
@@ -38,7 +38,7 @@ public class SessionAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws Exception {
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new UserDetails(1L, EMAIL, PASSWORD));
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 30));
 
         interceptor.preHandle(request, response, new Object());
 
@@ -50,6 +50,6 @@ public class SessionAuthenticationInterceptorTest {
         Authentication authentication = attribute.getAuthentication();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(authentication.getPrincipal()).isEqualTo(new UserDetails(1L, EMAIL, PASSWORD));
+        assertThat(authentication.getPrincipal()).isEqualTo(new LoginMember(1L, EMAIL, PASSWORD, 30));
     }
 }

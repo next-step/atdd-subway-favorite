@@ -30,19 +30,19 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
     public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
     private Authentication authenticate(AuthenticationToken authenticationToken) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+        User user = customUserDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
-        checkAuthentication(userDetails, authenticationToken);
+        checkAuthentication(user, authenticationToken);
 
-        return new Authentication(userDetails);
+        return new Authentication(user);
     }
 
-    private void checkAuthentication(UserDetails userDetails, AuthenticationToken authenticationToken) {
-        if (userDetails == null) {
+    private void checkAuthentication(User user, AuthenticationToken authenticationToken) {
+        if (user == null) {
             throw new AuthenticationException();
         }
 
-        if (!userDetails.checkPassword(authenticationToken.getCredentials())) {
+        if (!user.checkPassword(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
     }

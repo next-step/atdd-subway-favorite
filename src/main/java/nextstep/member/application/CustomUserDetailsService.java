@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.auth.authentication.UserDetailService;
-import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.User;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -16,8 +16,8 @@ public class CustomUserDetailsService implements UserDetailService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
+    public LoginMember loadUserByUsername(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return UserDetails.ofMember(member);
+        return LoginMember.of(member);
     }
 }

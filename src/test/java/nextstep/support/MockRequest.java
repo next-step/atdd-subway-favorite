@@ -1,4 +1,4 @@
-package nextstep.subway.support;
+package nextstep.support;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
