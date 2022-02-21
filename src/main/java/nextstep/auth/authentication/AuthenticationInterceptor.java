@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static nextstep.auth.authentication.AuthValidator.validateAuthentication;
-
 public abstract class AuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
   private final UserDetailsService userDetailsService;
@@ -38,5 +36,15 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor, A
 
   public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
+  public void validateAuthentication(UserDetail userDetails, String credentials) {
+
+    if (userDetails == null) {
+      throw new AuthenticationException();
+    }
+
+    if (!userDetails.checkPassword(credentials)) {
+      throw new AuthenticationException();
+    }
+  }
 
 }
