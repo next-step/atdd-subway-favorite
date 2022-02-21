@@ -2,6 +2,8 @@ package nextstep.subway.applicaion.dto;
 
 import nextstep.subway.domain.Favorite;
 
+import java.util.List;
+
 public class FavoriteResponse {
 
     private Long id;
@@ -28,5 +30,17 @@ public class FavoriteResponse {
 
     public StationResponse getTarget() {
         return target;
+    }
+
+    public static class FavoriteListResponse {
+        List<FavoriteResponse> favoriteResponses;
+
+        public FavoriteListResponse(List<FavoriteResponse> favoriteResponses) {
+            this.favoriteResponses = favoriteResponses;
+        }
+
+        public List<FavoriteResponse> getFavoriteResponses() {
+            return favoriteResponses;
+        }
     }
 }

@@ -5,11 +5,12 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.AuthAcceptanceTest.AGE;
 import static nextstep.subway.acceptance.AuthAcceptanceTest.PASSWORD;
-import static nextstep.subway.acceptance.FavoriteStep.즐겨찾기_생성;
+import static nextstep.subway.acceptance.FavoriteStep.*;
 import static nextstep.subway.acceptance.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
@@ -54,16 +55,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
      * When 즐겨찾기 목록 조회 요청
      * Then 즐겨찾기 목록 조회됨
      * When 즐겨찾기 삭제 요청
-     * Then 즐겨찾기 삭제됨     */
+     * Then 즐겨찾기 삭제됨
+     */
     @DisplayName("즐겨찾기를 관리")
     @Test
-    void 즐겨찾기_관리(){
+    void 즐겨찾기_관리() {
         //when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(액세스_토큰,교대역,강남역);
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(액세스_토큰, 교대역, 강남역);
 
         //then
         상태_값_검사(즐겨찾기_생성_응답, HttpStatus.CREATED);
 
+        //when
+        ExtractableResponse<Response> 즐겨찾기_목록_응답 = 즐겨찾기_목록조회_요청(액세스_토큰);
+
+        //then
+        상태_값_검사(즐겨찾기_목록_응답, HttpStatus.OK);
+
+        //when
+        String 즐겨찾기_생성_주소 = 즐겨찾기_생성_응답.header(HttpHeaders.LOCATION);
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(즐겨찾기_생성_주소, 액세스_토큰);
+
+        //then
+        상태_값_검사(즐겨찾기_삭제_응답, HttpStatus.NO_CONTENT);
     }
 
 

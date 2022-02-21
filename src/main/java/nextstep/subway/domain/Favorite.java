@@ -1,5 +1,6 @@
 package nextstep.subway.domain;
 
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ public class Favorite {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToOne
@@ -39,5 +41,9 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public boolean isYours(LoginMember loginMember) {
+        return member.getId().equals(loginMember.getId());
     }
 }
