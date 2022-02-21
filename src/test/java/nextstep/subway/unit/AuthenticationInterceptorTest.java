@@ -1,10 +1,11 @@
 package nextstep.subway.unit;
 
+import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.user.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import static nextstep.subway.unit.AuthTarget.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationInterceptorTest {
@@ -27,15 +29,14 @@ class AuthenticationInterceptorTest {
   @Mock
   private UserDetailsService userDetailsService;
 
+  @Mock
+  private AuthenticationConverter authenticationConverter;
+
   private AuthenticationInterceptor authenticationInterceptor;
 
   @BeforeEach
   void setup() {
-    authenticationInterceptor = new AuthenticationInterceptor(userDetailsService) {
-      @Override
-      public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        return AUTH_TOKEN;
-      }
+    authenticationInterceptor = new AuthenticationInterceptor(userDetailsService, authenticationConverter) {
 
       @Override
       public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -49,6 +50,7 @@ class AuthenticationInterceptorTest {
     createMockLoginMember(userDetailsService);
     MockHttpServletRequest mockRequest = createTokenMockRequest();
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+    when(authenticationConverter.convert(mockRequest)).thenReturn(AUTH_TOKEN);
 
     // when
     boolean result = authenticationInterceptor.preHandle(mockRequest, mockResponse, new Object());

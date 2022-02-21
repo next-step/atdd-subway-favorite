@@ -1,10 +1,11 @@
 package nextstep.subway.unit;
 
+import nextstep.auth.authentication.AuthenticationConverter;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
+import nextstep.auth.authentication.SessionConverter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.user.UserDetailsService;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,6 @@ import java.io.IOException;
 
 import static nextstep.subway.unit.AuthTarget.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ExtendWith(MockitoExtension.class)
 class SessionAuthenticationInterceptorTest {
@@ -26,11 +26,15 @@ class SessionAuthenticationInterceptorTest {
   @Mock
   private UserDetailsService userDetailsService;
 
+  @Mock
+  private AuthenticationConverter authenticationConverter;
+
   private SessionAuthenticationInterceptor sessionAuthenticationInterceptor;
 
   @BeforeEach
   void setup() {
-    sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(userDetailsService);
+    authenticationConverter = new SessionConverter();
+    sessionAuthenticationInterceptor = new SessionAuthenticationInterceptor(userDetailsService, authenticationConverter);
   }
 
   @Test
@@ -49,9 +53,9 @@ class SessionAuthenticationInterceptorTest {
   @Test
   void preHandle() throws IOException {
     // given
+    createMockLoginMember(userDetailsService);
     MockHttpServletRequest mockRequest = createSessionMockRequest();
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
-    createMockLoginMember(userDetailsService);
 
     // when
     sessionAuthenticationInterceptor.preHandle(mockRequest, mockResponse, new Object());
@@ -59,19 +63,5 @@ class SessionAuthenticationInterceptorTest {
     // then
     assertThat(mockResponse.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
   }
-
-
-  @Test
-  void convert() throws IOException {
-    // when
-    AuthenticationToken authenticationToken = sessionAuthenticationInterceptor.convert(createSessionMockRequest());
-
-    // then
-    assertAll(
-      () -> AssertionsForClassTypes.assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL),
-      () -> AssertionsForClassTypes.assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD)
-    );
-  }
-
 
 }

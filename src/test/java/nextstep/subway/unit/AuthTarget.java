@@ -1,10 +1,10 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.user.UserDetail;
-import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.token.TokenRequest;
+import nextstep.auth.user.UserDetail;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.auth.authentication.SessionAuthenticationInterceptor.PASSWORD_FIELD;
-import static nextstep.auth.authentication.SessionAuthenticationInterceptor.USERNAME_FIELD;
+import static nextstep.auth.authentication.SessionConverter.PASSWORD_FIELD;
+import static nextstep.auth.authentication.SessionConverter.USERNAME_FIELD;
 import static org.mockito.Mockito.lenient;
 
 public class AuthTarget {
