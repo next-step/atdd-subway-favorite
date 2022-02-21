@@ -1,10 +1,9 @@
 package nextstep.subway.unit;
 
-import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.UserDetailsService;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
