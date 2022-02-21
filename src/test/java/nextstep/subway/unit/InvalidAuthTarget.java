@@ -1,7 +1,7 @@
 package nextstep.subway.unit;
 
+import nextstep.auth.adapter.in.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 
 import static org.mockito.Mockito.lenient;

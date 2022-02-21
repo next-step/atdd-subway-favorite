@@ -1,10 +1,10 @@
 package nextstep.auth.authentication;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.adapter.in.UserDetail;
 
 public class AuthValidator {
 
-  public static void validateAuthentication(LoginMember userDetails, String credentials) {
+  public static void validateAuthentication(UserDetail userDetails, String credentials) {
 
     if (userDetails == null) {
       throw new AuthenticationException();

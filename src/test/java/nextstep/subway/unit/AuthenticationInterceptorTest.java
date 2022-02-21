@@ -1,10 +1,9 @@
 package nextstep.subway.unit;
 
-import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.adapter.in.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationInterceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static nextstep.subway.unit.AuthTarget.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,38 +53,6 @@ class AuthenticationInterceptorTest {
 
     // then
     assertThat(result).isFalse();
-  }
-
-
-  @Test
-  void authenticate() throws IOException {
-    // given
-    createMockLoginMember(userDetailsService);
-
-    // when
-    Authentication authentication = authenticationInterceptor.authenticate(AUTH_TOKEN);
-
-    // then
-    assertThat(authentication.getPrincipal()).isEqualTo(LOGIN_MEMBER);
-  }
-
-  @Test
-  void invalidAuthenticate() throws IOException {
-    // given
-    createMockLoginMember(userDetailsService);
-
-    // when & then
-    assertThatThrownBy(
-      () -> authenticationInterceptor.authenticate(InvalidAuthTarget.AUTH_TOKEN)
-    ).isInstanceOf(AuthenticationException.class);
-  }
-
-  @Test
-  void nonExistAuthenticate() throws IOException {
-    // when & then
-    assertThatThrownBy(
-      () -> authenticationInterceptor.authenticate(new AuthenticationToken(InvalidAuthTarget.EMAIL, InvalidAuthTarget.PASSWORD))
-    ).isInstanceOf(AuthenticationException.class);
   }
 
 }

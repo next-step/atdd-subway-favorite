@@ -1,11 +1,11 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.adapter.in.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;

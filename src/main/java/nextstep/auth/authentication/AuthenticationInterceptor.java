@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.adapter.in.UserDetail;
+import nextstep.auth.adapter.in.UserDetailsService;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +28,10 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor, A
   }
 
   public Authentication authenticate(AuthenticationToken authenticationToken) {
-    LoginMember loginMember = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+    UserDetail userDetail = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
-    validateAuthentication(loginMember, authenticationToken.getCredentials());
-    return new Authentication(loginMember);
+    validateAuthentication(userDetail, authenticationToken.getCredentials());
+    return new Authentication(userDetail);
   }
 
   public abstract AuthenticationToken convert(HttpServletRequest request) throws IOException;

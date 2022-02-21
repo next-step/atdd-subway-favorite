@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.adapter.in.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
-import nextstep.member.application.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
