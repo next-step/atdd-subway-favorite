@@ -1,4 +1,4 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.authtarget;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
@@ -30,26 +30,11 @@ public class AuthTarget {
   }
 
   public static MockHttpServletRequest createSessionMockRequest() throws IOException {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    Map<String, String> param = new HashMap<>();
-    param.put(USERNAME_FIELD, EMAIL);
-    param.put(PASSWORD_FIELD, PASSWORD);
-    request.addParameters(param);
-    return request;
+    return MockRequestBuilder.createSessionMockRequest(EMAIL, PASSWORD);
   }
 
   public static MockHttpServletRequest createTokenMockRequest() throws IOException {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-    request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-    return request;
-  }
-
-  public static MockHttpServletRequest createInvalidMockRequest() throws IOException {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    TokenRequest tokenRequest = new TokenRequest(EMAIL, "teststeststestst");
-    request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-    return request;
+    return MockRequestBuilder.createTokenMockRequest(EMAIL, PASSWORD);
   }
 
 }

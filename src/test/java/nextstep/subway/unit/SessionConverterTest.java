@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static nextstep.subway.unit.AuthTarget.*;
+import static nextstep.subway.unit.authtarget.AuthTarget.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SessionConverterTest {
