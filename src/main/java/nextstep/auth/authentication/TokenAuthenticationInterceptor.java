@@ -5,6 +5,7 @@ import nextstep.auth.User;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
@@ -50,5 +51,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
+    }
+
+    @Override
+    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
+        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
+
+        return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
 }
