@@ -61,4 +61,56 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
         즐겨찾기_삭제됨(deleteResponse);
     }
+
+    /**
+     * Given 다른 회원 생성 요청
+     * And 다른 회원 로그인 되어 있음
+     * When 즐겨찾기 생성을 요청
+     * Then 즐겨찾기 생성됨
+     * When 다른 회원으로 즐겨찾기 삭제 요청
+     * Then 권한 없음 오류 반환됨
+     */
+    @DisplayName("다른 회원의 즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavoriteOfOtherMember() {
+        // given
+        final String otherEmail = "otherEmail@email.com";
+        final String otherPassword = "otherPassword";
+        final int otherAge = 20;
+        회원_생성_요청(otherEmail, otherPassword, otherAge);
+        final String otherAccessToken = 로그인_되어_있음(otherEmail, otherPassword);
+
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, sourceId, targetId);
+        // then
+        즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(otherAccessToken, createResponse);
+        // then
+        권한_없음_오류_반환됨(deleteResponse);
+    }
+
+    /**
+     * When 로그인 없이 즐겨찾기 생성을 요청
+     * Then 권한 없음 오류 반환됨
+     * When 로그인 없이 즐겨찾기 목록 조회 요청
+     * Then 권한 없음 오류 반환됨
+     * When 즐겨찾기 생성을 요청
+     * And 로그인 없이 즐겨찾기 삭제 요청
+     * Then 권한 없음 오류 반환됨
+     */
+    @DisplayName("로그인 없이 즐겨찾기를 관리한다.")
+    @Test
+    void deleteFavoriteWithoutAccessToken() {
+        ExtractableResponse<Response> createResponse = 로그인_없이_즐겨찾기_생성_요청(sourceId, targetId);
+        권한_없음_오류_반환됨(createResponse);
+
+        ExtractableResponse<Response> showResponse = 로그인_없이_즐겨찾기_목록_조회_요청();
+        권한_없음_오류_반환됨(showResponse);
+
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, sourceId, targetId);
+        ExtractableResponse<Response> deleteResponse = 로그인_없이_즐겨찾기_삭제_요청(response);
+        권한_없음_오류_반환됨(deleteResponse);
+    }
 }
