@@ -19,13 +19,16 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
     private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
+    private Authorizor authorizor;
 
     public TokenAuthenticationInterceptor(UserDetailsService userDetailsService,
                                           JwtTokenProvider jwtTokenProvider,
-                                          ObjectMapper objectMapper) {
+                                          ObjectMapper objectMapper,
+                                          Authorizor authorizor) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
+        this.authorizor = authorizor;
     }
 
     @Override
@@ -49,7 +52,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         final String principal = authenticationToken.getPrincipal();
         final User userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, authenticationToken);
+        authorizor.checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
     }

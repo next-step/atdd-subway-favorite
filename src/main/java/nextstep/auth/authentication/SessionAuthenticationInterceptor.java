@@ -20,9 +20,11 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor, Aut
     public static final String PASSWORD_FIELD = "password";
 
     private UserDetailsService userDetailsService;
+    private Authorizor authorizor;
 
-    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService, Authorizor authorizor) {
         this.userDetailsService = userDetailsService;
+        this.authorizor = authorizor;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor, Aut
     public Authentication authenticate(AuthenticationToken token) {
         String principal = token.getPrincipal();
         User userDetails = userDetailsService.loadUserByUsername(principal);
-        checkAuthentication(userDetails, token);
+        authorizor.checkAuthentication(userDetails, token);
 
         return new Authentication(userDetails);
     }
