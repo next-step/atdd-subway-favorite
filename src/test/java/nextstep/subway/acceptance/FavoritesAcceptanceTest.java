@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("즐겨찾기 기능")
 public class FavoritesAcceptanceTest extends AcceptanceTest {
+
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
@@ -37,11 +38,8 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |
+     * | 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -83,7 +81,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(로그인토큰);
 
         // then
-        즐겨찾기_정보_조회됨(response, new Long[]{ 강남역, 양재역, 양재역, 교대역});
+        즐겨찾기_정보_조회됨(response, new Long[]{강남역, 양재역}, new Long[]{양재역, 교대역});
     }
 
     @DisplayName("즐겨찾기 삭제 하기")
@@ -120,7 +118,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         // when 즐겨찾기 목록 조회 요청
         ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(로그인토큰);
         // then 즐겨찾기 목록 조회됨
-        즐겨찾기_정보_조회됨(즐겨찾기_목록_조회_응답, new Long[]{ 강남역, 양재역 });
+        즐겨찾기_정보_조회됨(즐겨찾기_목록_조회_응답, new Long[]{ 강남역 }, new Long[]{ 양재역 });
 
         // when 즐겨찾기 삭제 요청
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(로그인토큰, 즐겨찾기_생성_응답);
@@ -129,7 +127,8 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
+    private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation,
+        int distance) {
         Map<String, String> lineCreateParams;
         lineCreateParams = new HashMap<>();
         lineCreateParams.put("name", name);
@@ -141,7 +140,8 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         return LineSteps.지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
     }
 
-    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
+    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId,
+        int distance) {
         Map<String, String> params = new HashMap<>();
         params.put("upStationId", upStationId + "");
         params.put("downStationId", downStationId + "");

@@ -49,9 +49,10 @@ public class FavoritesSteps {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static void 즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, Long[] stationIdList) {
+    public static void 즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, Long[] sourceIdList, Long[] targetIdList) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(stationIdList);
+        assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(sourceIdList);
+        assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(targetIdList);
     }
 
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
