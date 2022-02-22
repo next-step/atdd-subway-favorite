@@ -1,5 +1,7 @@
 package nextstep.subway.domain;
 
+import nextstep.auth.authentication.AuthenticationException;
+
 import javax.persistence.*;
 
 @Entity
@@ -24,6 +26,12 @@ public class Favorite extends BaseEntity {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
+    }
+
+    public void validateMember(Long memberId) {
+        if (!this.memberId.equals(memberId)) {
+            throw new AuthenticationException();
+        }
     }
 
     public Long getId() {
