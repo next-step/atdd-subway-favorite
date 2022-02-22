@@ -1,12 +1,13 @@
 package nextstep.subway.applicaion.dto;
 
+import nextstep.member.domain.RequestedStation;
 import nextstep.subway.domain.Station;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StationResponse {
+public class StationResponse implements RequestedStation {
     private Long id;
     private String name;
     private LocalDateTime createdDate;

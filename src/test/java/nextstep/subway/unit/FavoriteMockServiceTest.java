@@ -1,4 +1,4 @@
 package nextstep.subway.unit;
 
-class FavoriteQueryServiceTest {
+class FavoriteMockServiceTest {
 }
