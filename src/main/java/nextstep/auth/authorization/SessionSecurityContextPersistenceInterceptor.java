@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
