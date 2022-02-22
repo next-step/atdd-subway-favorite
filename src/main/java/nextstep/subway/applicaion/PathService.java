@@ -22,10 +22,14 @@ public class PathService {
     public PathResponse findPath(Long source, Long target) {
         Station upStation = stationService.findById(source);
         Station downStation = stationService.findById(target);
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-        Path path = subwayMap.findPath(upStation, downStation);
+        Path path = findPath(upStation, downStation);
 
         return PathResponse.of(path);
+    }
+
+    Path findPath(Station upStation, Station downStation) {
+        List<Line> lines = lineService.findLines();
+        SubwayMap subwayMap = new SubwayMap(lines);
+        return subwayMap.findPath(upStation, downStation);
     }
 }
