@@ -1,16 +1,13 @@
-package nextstep.subway.acceptance;
+package nextstep.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.utils.DatabaseCleanup;
+import nextstep.common.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
@@ -24,9 +21,5 @@ public class AcceptanceTest {
     public void setUp() {
         RestAssured.port = port;
         databaseCleanup.execute();
-    }
-
-    public static void 응답_확인(ExtractableResponse<Response> response, HttpStatus status) {
-        assertThat(response.statusCode()).isEqualTo(status.value());
     }
 }
