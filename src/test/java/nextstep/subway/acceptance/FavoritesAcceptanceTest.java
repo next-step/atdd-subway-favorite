@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 @DisplayName("즐겨찾기 기능")
 public class FavoritesAcceptanceTest extends AcceptanceTest {
@@ -62,6 +63,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("즐겨찾기 추가 하기")
+    @Test
     public void addFavorite() {
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인토큰, 강남역, 양재역);
@@ -71,6 +73,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("즐겨찾기 조회 하기")
+    @Test
     public void getFavorites() {
         // given
         즐겨찾기_생성_요청(로그인토큰, 강남역, 양재역);
@@ -84,6 +87,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("즐겨찾기 삭제 하기")
+    @Test
     public void deleteFavorites() {
         // given
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(로그인토큰, 강남역, 양재역);
@@ -96,6 +100,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("즐겨찾기 추가 하기 - 유효하지 않은 토큰 일 경우")
+    @Test
     public void addFavoriteWithInvalidToken() {
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청("invalid_token", 강남역, 양재역);
@@ -105,6 +110,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("즐겨찾기 목록을 관리한다.")
+    @Test
     public void manageFavorites() {
         // when 즐겨찾기 생성을 요청
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인토큰, 강남역, 양재역);
