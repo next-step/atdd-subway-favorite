@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.User;
 import nextstep.auth.token.TokenRequest;
-import nextstep.member.domain.LoginMember;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public interface AuthenticationConverter {
 
 	}
 
-	default void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+	default void checkAuthentication(User userDetails, AuthenticationToken token) {
 		if (ObjectUtils.isEmpty(userDetails)) {
 			throw new AuthenticationException();
 		}

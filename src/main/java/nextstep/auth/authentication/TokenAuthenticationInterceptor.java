@@ -1,6 +1,7 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.User;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -45,7 +46,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
         final String principal = authenticationToken.getPrincipal();
-        final LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+        final User userDetails = userDetailsService.loadUserByUsername(principal);
         checkAuthentication(userDetails, authenticationToken);
 
         return new Authentication(userDetails);
