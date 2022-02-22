@@ -1,16 +1,15 @@
 package nextstep.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
