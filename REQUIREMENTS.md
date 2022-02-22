@@ -64,3 +64,7 @@ public abstract class SecurityContextInterceptor implements HandlerInterceptor {
     }
 }
 ```
+
+## 3단계 요구사항
+* [ ] 즐겨 찾기 기능을 구현하기
+* [ ] 로그인이 필요한 API 요청 시 유효하지 않은 경우 401 응답 내려주기
