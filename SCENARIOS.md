@@ -62,3 +62,87 @@ Feature: 즐겨찾기를 관리한다.
     When 즐겨찾기 삭제 요청
     Then 즐겨찾기 삭제됨
 ```
+
+### 즐겨찾기 엔드포인트
+* 생성
+```
+POST /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:60443
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
+accept-encoding: gzip,deflate
+
+{
+    "source": "1",
+    "target": "3"
+}
+```
+
+```
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Set-Cookie: JSESSIONID=204A5CC2753073508BE5CE2343AE26F5; Path=/; HttpOnly
+Content-Length: 0
+Date: Mon, 22 Mar 2021 14:27:37 GMT
+Location: /favorites/1
+```
+
+* 조회
+```
+GET /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
+accept: application/json
+host: localhost:60443
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
+accept-encoding: gzip,deflate
+```
+```
+HTTP/1.1 200 
+Set-Cookie: JSESSIONID=B1F46939E516565DA3808E69D673F3B1; Path=/; HttpOnly
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 22 Mar 2021 14:27:37 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+    {
+        "id": 1,
+        "source": {
+            "id": 1,
+            "name": "교대역",
+            "createdDate": "2021-03-22T23:27:37.185",
+            "modifiedDate": "2021-03-22T23:27:37.185"
+        },
+        "target": {
+            "id": 3,
+            "name": "양재역",
+            "createdDate": "2021-03-22T23:27:37.329",
+            "modifiedDate": "2021-03-22T23:27:37.329"
+        }
+    }
+]
+```
+* 삭제
+```
+DELETE /favorites/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
+accept: */*
+host: localhost:60443
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
+accept-encoding: gzip,deflate
+```
+```
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Set-Cookie: JSESSIONID=587FCC78DBF0EE1B6705C6EC3E612968; Path=/; HttpOnly
+Date: Mon, 22 Mar 2021 14:27:37 GMT
+```
