@@ -35,7 +35,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavoriteById(final Long id) {
+    public void deleteFavoriteById(Long memberId, final Long id) {
+        final Favorite favorite = favoriteRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        favorite.validateMember(memberId);
+
         favoriteRepository.deleteById(id);
     }
 }
