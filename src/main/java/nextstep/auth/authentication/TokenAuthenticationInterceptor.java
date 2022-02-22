@@ -1,16 +1,19 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContext;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.domain.LoginMember;
+import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
@@ -27,8 +30,14 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         AuthenticationToken authenticationToken = convert(request);
         Authentication authentication = authenticate(authenticationToken);
 
-        // TODO: authentication으로 TokenResponse 추출하기
-        TokenResponse tokenResponse = null;
+        String payload = new ObjectMapper().writeValueAsString(authentication.getPrincipal());
+        String token = jwtTokenProvider.createToken(payload);
+        TokenResponse tokenResponse = new TokenResponse(token);
+
+        SecurityContext securityContext = new SecurityContext(authentication);
+        if (securityContext != null) {
+            SecurityContextHolder.setContext(securityContext);
+        }
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -39,15 +48,32 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        String principal = "";
-        String credentials = "";
+        String requestInfo = request.getReader()
+                .lines()
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+
+        JSONObject jsonObject = new JSONObject(requestInfo);
+
+        String principal = jsonObject.get("email").toString();
+        String credentials = jsonObject.get("password").toString();
 
         return new AuthenticationToken(principal, credentials);
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        return new Authentication(null);
+        LoginMember loginMember = customUserDetailsService.loadUserByUsername(
+                authenticationToken.getPrincipal());
+
+        checkUserPassword(authenticationToken.getCredentials(), loginMember.getPassword());
+
+        return new Authentication(loginMember);
+    }
+
+    private void checkUserPassword(String credentials, String password) {
+        if (credentials.equals(password)) {
+            return;
+        }
+        throw new RuntimeException();
     }
 }
