@@ -3,6 +3,7 @@ package nextstep.subway.unit;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
+import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
@@ -44,8 +45,8 @@ class FavoriteServiceTest {
 
   private static void 즐겨찾기_조회_성공(List<FavoriteResponse> response, Long source, Long target) {
     assertThat(response.size()).isEqualTo(1);
-    assertThat(response.stream().findFirst().map(FavoriteResponse::getSourceId).get()).isEqualTo(source);
-    assertThat(response.stream().findFirst().map(FavoriteResponse::getTargetId).get()).isEqualTo(target);
+    assertThat(response.stream().findFirst().map(FavoriteResponse::getSource).map(StationResponse::getId).get()).isEqualTo(source);
+    assertThat(response.stream().findFirst().map(FavoriteResponse::getTarget).map(StationResponse::getId).get()).isEqualTo(target);
   }
 
   @BeforeEach

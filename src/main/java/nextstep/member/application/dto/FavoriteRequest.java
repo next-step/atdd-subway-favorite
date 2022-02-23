@@ -1,20 +1,20 @@
 package nextstep.member.application.dto;
 
 public class FavoriteRequest {
-  private Long sourceId;
+  private Long source;
 
-  private Long targetId;
+  private Long target;
 
-  public FavoriteRequest(Long sourceId, Long targetId) {
-    this.sourceId = sourceId;
-    this.targetId = targetId;
+  public FavoriteRequest(Long source, Long target) {
+    this.source = source;
+    this.target = target;
   }
 
-  public Long getSourceId() {
-    return sourceId;
+  public Long getSource() {
+    return source;
   }
 
-  public Long getTargetId() {
-    return targetId;
+  public Long getTarget() {
+    return target;
   }
 }

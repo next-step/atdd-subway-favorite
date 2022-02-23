@@ -4,10 +4,13 @@ import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Favorite;
 import nextstep.member.domain.FavoriteRepository;
+import nextstep.subway.applicaion.StationService;
+import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,22 +18,22 @@ import java.util.stream.Collectors;
 public class FavoriteService {
 
   private final FavoriteRepository favoriteRepository;
-  private final StationQueryService stationQueryService;
+  private final StationService stationService;
 
-  public FavoriteService(FavoriteRepository favoriteRepository, StationQueryService stationQueryService) {
+  public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
     this.favoriteRepository = favoriteRepository;
-    this.stationQueryService = stationQueryService;
+    this.stationService = stationService;
   }
 
   @Transactional
   public Long saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
-    if (favoriteRequest.getSourceId() == favoriteRequest.getTargetId()) {
+    if (Objects.equals(favoriteRequest.getSource(), favoriteRequest.getTarget())) {
       throw new IllegalArgumentException();
     }
 
-    stationQueryService.searchStation(favoriteRequest.getSourceId());
-    stationQueryService.searchStation(favoriteRequest.getTargetId());
-    Favorite favorite = new Favorite(favoriteRequest.getSourceId(), favoriteRequest.getTargetId(), memberId);
+    Station source = stationService.findById(favoriteRequest.getSource());
+    Station target = stationService.findById(favoriteRequest.getTarget());
+    Favorite favorite = new Favorite(memberId, source, target);
     favoriteRepository.save(favorite);
     return favorite.getId();
   }

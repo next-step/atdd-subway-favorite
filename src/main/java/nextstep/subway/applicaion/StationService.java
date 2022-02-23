@@ -1,6 +1,5 @@
 package nextstep.subway.applicaion;
 
-import nextstep.member.application.StationQueryService;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class StationService implements StationQueryService {
+public class StationService {
   private final StationRepository stationRepository;
 
   public StationService(StationRepository stationRepository) {
@@ -39,11 +38,8 @@ public class StationService implements StationQueryService {
   }
 
   public Station findById(Long id) {
-    return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    return stationRepository.findById(id)
+      .orElseThrow(IllegalArgumentException::new);
   }
 
-  @Transactional(readOnly = true)
-  public StationResponse searchStation(Long id) {
-    return stationRepository.findById(id).map(StationResponse::of).orElseThrow(IllegalArgumentException::new);
-  }
 }

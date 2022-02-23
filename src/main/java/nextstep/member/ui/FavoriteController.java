@@ -5,6 +5,7 @@ import nextstep.member.domain.LoginMember;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,11 @@ public class FavoriteController {
 
   @PostMapping
   public ResponseEntity<URI> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
+    LoggerFactory.getLogger(this.getClass()).info("인증: {}, 바디: {} {}", loginMember.getEmail(), favoriteRequest.getSource(), favoriteRequest.getTarget());
     Long id = favoriteService.saveFavorite(loginMember.getId(), favoriteRequest);
-    return ResponseEntity.created(URI.create("/favorite/" + id)).build();
+    LoggerFactory.getLogger(this.getClass()).info("결과: {}", id);
+
+    return ResponseEntity.created(URI.create("/favorites/" + id)).build();
   }
 
   @GetMapping

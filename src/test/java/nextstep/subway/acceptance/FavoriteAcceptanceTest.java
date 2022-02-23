@@ -29,6 +29,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
   private Long 신분당선;
   private Long 삼호선;
   private String 로그인_토큰;
+  private String 빈_토큰;
 
   /*
   Background
@@ -55,6 +56,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     회원_생성_요청(EMAIL, PASSWORD, AGE);
     로그인_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+    빈_토큰 = "";
   }
 
   @DisplayName("즐겨찾기를 추가")
@@ -64,6 +66,15 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
     // Then
     즐겨찾기_생성됨(response);
+  }
+
+  @DisplayName("비인증 시 즐겨찾기 추가 불가")
+  @Test
+  void addFavoriteWithInvalidToken() {
+    // When
+    ExtractableResponse<Response> response = 즐겨찾기_생성_요청(빈_토큰, 교대역, 강남역);
+    // Then
+    인증_불가(response);
   }
 
   @DisplayName("즐겨찾기 조회")
@@ -78,17 +89,42 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     즐겨찾기_목록_조회됨(queryResponse, 교대역, 강남역);
   }
 
+  @DisplayName("비인증시 즐겨찾기 조회 불가")
+  @Test
+  void getFavoriteWithInvalidToken() {
+    // Given
+    즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
+
+    // When
+    ExtractableResponse<Response> queryResponse = 즐겨찾기_목록_조회_요청(빈_토큰);
+    // Then
+    인증_불가(queryResponse);
+  }
+
   @DisplayName("즐겨찾기 삭제")
   @Test
   void deleteFavorite() {
     // Given
     ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
-    Long createdId = createResponse.jsonPath().getLong("id");
+    String uri = createResponse.header("Location");
 
     // When
-    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(로그인_토큰, createdId);
+    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(로그인_토큰, uri);
     // Then
     즐겨찾기_삭제됨(response);
+  }
+
+  @DisplayName("비인증 시 즐겨찾기 삭제 불가")
+  @Test
+  void deleteFavoriteWithInvalidToken() {
+    // Given
+    ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
+    String uri = createResponse.header("Location");
+
+    // When
+    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(빈_토큰, uri);
+    // Then
+    인증_불가(response);
   }
 
   @DisplayName("즐겨찾기를 관리")
@@ -96,6 +132,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
   void manageFavorites() {
     // When
     ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
+    String uri = createResponse.header("Location");
     // Then
     즐겨찾기_생성됨(createResponse);
 
@@ -104,10 +141,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     // Then
     즐겨찾기_목록_조회됨(queryResponse, 교대역, 강남역);
 
-    Long createdId = createResponse.jsonPath().getLong("id");
-
     // When
-    ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(로그인_토큰, createdId);
+    ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(로그인_토큰, uri);
     // Then
     즐겨찾기_삭제됨(deleteResponse);
   }
