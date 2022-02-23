@@ -83,4 +83,11 @@ public class MemberService {
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+
+        member.removeFavorite(favorite);
+    }
 }

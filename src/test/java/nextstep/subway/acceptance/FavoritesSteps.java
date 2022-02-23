@@ -38,4 +38,13 @@ public class FavoritesSteps {
 						.statusCode(HttpStatus.OK.value())
 						.extract();
 	}
+
+	public static ExtractableResponse<Response> 즐겨찾기_삭제(final String accessToken, final Long id) {
+
+		return RestAssured
+						.given().log().all()
+						.auth().oauth2(accessToken)
+						.when().delete("/favorites/{favoriteId}", id)
+						.then().log().all().extract();
+	}
 }

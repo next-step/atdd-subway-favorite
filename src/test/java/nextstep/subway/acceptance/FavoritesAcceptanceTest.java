@@ -10,8 +10,7 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_목록_조회;
-import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_생성_요청;
+import static nextstep.subway.acceptance.FavoritesSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
@@ -91,8 +90,14 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐가찾기를 삭제하다")
 	@Test
 	void removeFavorites() {
+		// given
+		즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
 
+		// when
+		ExtractableResponse<Response> result = 즐겨찾기_삭제(accessToken, 1L);
 
+		// then
+		assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 
 	private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {

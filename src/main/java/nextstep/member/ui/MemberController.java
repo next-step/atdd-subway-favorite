@@ -89,5 +89,15 @@ public class MemberController {
 
         return ResponseEntity.ok().body(favoriteResponses);
     }
+
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity<MemberResponse> deleteFavoriteOfMine(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @PathVariable Long favoriteId
+    ) {
+        memberService.deleteFavorite(loginMember, favoriteId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
 
