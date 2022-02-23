@@ -1,6 +1,5 @@
 package nextstep.auth.authentication;
 
-import nextstep.auth.User;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
@@ -20,30 +19,22 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor, Aut
     public static final String PASSWORD_FIELD = "password";
 
     private UserDetailsService userDetailsService;
-    private Authorizor authorizor;
+    private Authorizer authorizor;
 
-    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService, Authorizor authorizor) {
+    public SessionAuthenticationInterceptor(UserDetailsService userDetailsService, Authorizer authorizor) {
         this.userDetailsService = userDetailsService;
         this.authorizor = authorizor;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         AuthenticationToken token = convert(request);
-        Authentication authentication = authenticate(token);
+        Authentication authentication = authorizor.authenticate(token);
 
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContext(authentication));
         response.setStatus(HttpServletResponse.SC_OK);
         return false;
-    }
-
-    public Authentication authenticate(AuthenticationToken token) {
-        String principal = token.getPrincipal();
-        User userDetails = userDetailsService.loadUserByUsername(principal);
-        authorizor.checkAuthentication(userDetails, token);
-
-        return new Authentication(userDetails);
     }
 
     @Override
