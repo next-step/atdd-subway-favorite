@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,5 +39,17 @@ public class FavoriteSteps extends Steps {
 			.auth().oauth2(accessToken)
 			.when().delete("/favorites/{favoriteId}", favoriteId)
 			.then().log().all().extract();
+	}
+
+	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+		String uri = response.header("Location");
+		return RestAssured.given().log().all()
+			.auth().oauth2(accessToken)
+			.when().delete(uri)
+			.then().log().all().extract();
+	}
+
+	public static void 즐겨찾기_조회_출발역_확인(ExtractableResponse<Response> response, Long ...stationIds) {
+		assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(stationIds);
 	}
 }
