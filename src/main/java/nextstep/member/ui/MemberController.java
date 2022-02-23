@@ -4,6 +4,8 @@ import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -68,6 +70,16 @@ public class MemberController {
         memberService.deleteMemberOfMine(loginMember);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> createFavorite(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @RequestBody FavoriteRequest request
+    ) {
+        FavoriteResponse favorite = memberService.createFavorite(loginMember, request);
+
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 }
 

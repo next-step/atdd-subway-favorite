@@ -1,10 +1,28 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기")
 public class FavoritesAcceptanceTest extends AcceptanceTest {
+
+	private static final String EMAIL = "email@email.com";
+	private static final String PASSWORD = "password";
+	private static final Integer AGE = 20;
 
 	/**
 	 *     Given 지하철역 등록되어 있음
@@ -13,8 +31,21 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 	 *     And 회원 등록되어 있음
 	 *     And 로그인 되어있음
 	 */
-	private void init() {
 
+	private Long 강남역;
+	private Long 양재역;
+	private Long 신분당선;
+	private String accessToken;
+
+	@BeforeEach
+	private void init() {
+		super.setUp();
+		강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+		양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+		Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
+		신분당선 = 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+		회원_생성_요청(EMAIL, PASSWORD, AGE);
+		accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 	}
 
 	/**
@@ -24,8 +55,12 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기를 생성하다.")
 	@Test
 	void createFavorites() {
-		init();
+		// when
+		ExtractableResponse<Response> result = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
 
+		// then
+		assertThat(result.response().statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		assertThat(result.header("Location")).isNotBlank();
 	}
 
 	/**
@@ -36,7 +71,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기를 조회하다.")
 	@Test
 	void showFavorites() {
-		init();
+
 
 	}
 
@@ -48,7 +83,19 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐가찾기를 삭제하다")
 	@Test
 	void removeFavorites() {
-		init();
 
+
+	}
+
+	private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
+		Map<String, String> lineCreateParams;
+		lineCreateParams = new HashMap<>();
+		lineCreateParams.put("name", "신분당선");
+		lineCreateParams.put("color", "bg-red-600");
+		lineCreateParams.put("upStationId", upStationId + "");
+		lineCreateParams.put("downStationId", downStationId + "");
+		lineCreateParams.put("distance", 10 + "");
+
+		return lineCreateParams;
 	}
 }
