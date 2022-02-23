@@ -33,11 +33,10 @@ public class FavoriteService {
 
     public FavoriteResponse createFavorites(UserDetails userDetails, FavoriteRequest favoriteRequest) {
         Member member = memberRepository.findById(userDetails.getId()).orElseThrow(EntityNotFoundException::new);
-        Station source = stationRepository.findById(favoriteRequest.getSourceId())
+        Station source = stationRepository.findById(favoriteRequest.getSource())
                 .orElseThrow(EntityNotFoundException::new);
-        Station target = stationRepository.findById(favoriteRequest.getTargetId())
+        Station target = stationRepository.findById(favoriteRequest.getTarget())
                 .orElseThrow(EntityNotFoundException::new);
-
         Favorite favorite = favoriteRepository.save(new Favorite());
         favorite.setSource(source);
         favorite.setTarget(target);
