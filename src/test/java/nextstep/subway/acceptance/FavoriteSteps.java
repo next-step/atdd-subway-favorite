@@ -22,4 +22,15 @@ public class FavoriteSteps {
 			.when().post("/favorites")
 			.then().log().all().extract();
 	}
+
+	public static ExtractableResponse<Response> 즐겨찾기_반환(String accessToken) {
+		Map<String, String> params = new HashMap<>();
+		return RestAssured
+				.given().log().all()
+				.auth().oauth2(accessToken)
+				.body(params)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.when().get("/favorites")
+				.then().log().all().extract();
+	}
 }

@@ -47,4 +47,24 @@ public class FavoriteTest {
 		assertThat(member.getFavorites().getFavorites().get(0).getTarget()).isEqualTo(역삼역);
 
 	}
+
+	@Test
+	@Transactional
+	void deleteFavoriteTest() {
+		Station 강남역 = stationRepository.save(new Station("강남역"));
+		Station 역삼역 = stationRepository.save(new Station("역삼역"));
+
+		Member member = new Member("mj@naver.com", "1111", 10);
+		memberRepository.save(member);
+
+		FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+		FavoriteService favoriteService = new FavoriteService(memberRepository, stationRepository, favoriteRepository);
+
+		UserDetails userDetails = new UserDetails(1L, "mj@naver.com", "1111", 10);
+
+		favoriteService.createFavorites(userDetails, favoriteRequest);
+		favoriteService.deleteFavorite(userDetails, 1L);
+		member = memberRepository.findById(1L).get();
+		assertThat(member.getFavorites().getFavorites().size()).isEqualTo(0);
+	}
 }
