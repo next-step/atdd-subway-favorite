@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.subway.domain.BaseEntity;
 import nextstep.subway.domain.Station;
 
@@ -50,5 +51,11 @@ public class Favorite extends BaseEntity {
 
 	public Station getTarget() {
 		return target;
+	}
+
+	public void validateMember(Long memberId) {
+		if(!this.memberId.equals(memberId)) {
+			throw new AuthenticationException();
+		}
 	}
 }

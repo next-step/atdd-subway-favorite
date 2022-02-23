@@ -20,7 +20,7 @@ public class FavoriteSteps extends Steps {
 			.auth().oauth2(accessToken)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(params)
-			.when().post("/favorites ")
+			.when().post("/favorites")
 			.then().log().all().extract();
 	}
 
@@ -28,7 +28,14 @@ public class FavoriteSteps extends Steps {
 		return RestAssured.given().log().all()
 			.auth().oauth2(accessToken)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/favorites ")
+			.when().get("/favorites")
+			.then().log().all().extract();
+	}
+
+	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
+		return RestAssured.given().log().all()
+			.auth().oauth2(accessToken)
+			.when().delete("/favorites/{favoriteId}", favoriteId)
 			.then().log().all().extract();
 	}
 }

@@ -96,6 +96,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		assertThat(즐겨찾기_조회_응답.jsonPath().getList("source.id", Long.class)).containsExactly(교대역, 양재역);
 	}
 
+	@DisplayName("즐겨찾기 삭제")
+	@Test
+	void 즐겨찾기_삭제() {
+		// given
+		Long id = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역).jsonPath().getLong("id");
+
+		// when
+		ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, id);
+
+		// then
+		응답_확인(즐겨찾기_삭제_응답, HttpStatus.OK);
+	}
+
 	private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
 		Map<String, String> lineCreateParams;
 		lineCreateParams = new HashMap<>();

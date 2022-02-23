@@ -1,7 +1,6 @@
 package nextstep.member.application.dto;
 
 import nextstep.member.domain.Favorite;
-import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
 
 public class FavoriteResponse {
@@ -11,6 +10,7 @@ public class FavoriteResponse {
 
 	public FavoriteResponse() {
 	}
+
 	public FavoriteResponse(Long id, Station source, Station target) {
 		this.id = id;
 		this.source = source;

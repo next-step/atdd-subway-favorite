@@ -36,4 +36,12 @@ public class FavoriteService {
 			.stream().map(FavoriteResponse::of)
 			.collect(Collectors.toList());
 	}
+
+	public void deleteById(Long memberId, Long favoriteId) {
+		Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+
+		favorite.validateMember(memberId);
+
+		favoriteRepository.deleteById(favoriteId);
+	}
 }
