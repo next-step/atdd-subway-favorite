@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class MemberController {
@@ -80,6 +81,13 @@ public class MemberController {
         FavoriteResponse favorite = memberService.createFavorite(loginMember, request);
 
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FavoriteResponse>> findFavoritesOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> favoriteResponses = memberService.findFavoritesOfMine(loginMember);
+
+        return ResponseEntity.ok().body(favoriteResponses);
     }
 }
 

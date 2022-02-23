@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_목록_조회;
 import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
@@ -71,8 +72,15 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기를 조회하다.")
 	@Test
 	void showFavorites() {
+		// given
+		즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
 
+		// when
+		ExtractableResponse<Response> result = 즐겨찾기_목록_조회(accessToken);
 
+		// then
+		assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(result.jsonPath().getList("id")).hasSize(1).containsExactly(1);
 	}
 
 	/**
