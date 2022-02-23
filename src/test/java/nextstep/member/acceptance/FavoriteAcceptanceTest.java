@@ -31,14 +31,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	private Long 신분당선;
 	private Long 삼호선;
 
-	/**
-	 *   Background
-	 *     Given 지하철역 등록되어 있음
-	 *     And 지하철 노선 등록되어 있음
-	 *     And 지하철 노선에 지하철역 등록되어 있음
-	 *     And 회원 등록되어 있음
-	 *     And 로그인 되어있음
-	*/
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
@@ -69,5 +61,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		응답_확인(즐겨찾기_조회_응답, HttpStatus.OK);
 		즐겨찾기_조회_출발역_확인(즐겨찾기_조회_응답, 교대역);
 		응답_확인(즐겨찾기_삭제_응답, HttpStatus.NO_CONTENT);
+	}
+
+	@DisplayName("로그인 없이 즐겨찾기를 관리")
+	@Test
+	void 비로그인_즐겨찾기_관리() {
+		ExtractableResponse<Response> 비로그인_즐겨찾기_생성_응답 = 비로그인_즐겨찾기_생성_요청(교대역, 강남역);
+		ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
+		ExtractableResponse<Response> 비로그인_즐겨찾기_삭제_응답 = 비로그인_즐겨찾기_삭제_요청(즐겨찾기_생성_응답);
+
+		응답_확인(비로그인_즐겨찾기_생성_응답, HttpStatus.UNAUTHORIZED);
+		응답_확인(비로그인_즐겨찾기_삭제_응답, HttpStatus.UNAUTHORIZED);
 	}
 }
