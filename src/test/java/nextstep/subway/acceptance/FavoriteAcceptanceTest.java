@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.domain.Station;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_반환;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성;
@@ -60,5 +62,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_반환(로그인_회원_토큰);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("유효하지않은 토큰으로 즐겨찾기 반환 요청시 UNAUTHORIZED 반환")
+    @Test
+    void test() {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .auth().oauth2("test")
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/favorites")
+            .then().log().all()
+            .extract();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
