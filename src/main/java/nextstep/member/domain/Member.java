@@ -24,7 +24,7 @@ public class Member extends BaseEntity {
     }
 
     @Embedded
-    public Favorites favorites = new Favorites();
+    private Favorites favorites = new Favorites();
 
     public Member(String email, String password, Integer age) {
         this.email = email;
