@@ -3,7 +3,6 @@ package nextstep.member;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
@@ -22,6 +21,14 @@ public class FavoriteSteps extends Steps {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(params)
 			.when().post("/favorites ")
+			.then().log().all().extract();
+	}
+
+	public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
+		return RestAssured.given().log().all()
+			.auth().oauth2(accessToken)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/favorites ")
 			.then().log().all().extract();
 	}
 }

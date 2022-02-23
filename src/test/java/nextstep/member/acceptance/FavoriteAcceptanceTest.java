@@ -4,6 +4,7 @@ import static nextstep.member.MemberSteps.*;
 import static nextstep.member.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,6 +79,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		// then
 		응답_확인(즐겨찾기_생성_응답, HttpStatus.CREATED);
+	}
+
+	@DisplayName("즐겨찾기 조회")
+	@Test
+	void 즐겨찾기_조회() {
+		// given
+		즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
+		즐겨찾기_생성_요청(로그인_토큰, 양재역, 남부터미널역);
+
+		// when
+		ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(로그인_토큰);
+
+		// then
+		응답_확인(즐겨찾기_조회_응답, HttpStatus.OK);
+		assertThat(즐겨찾기_조회_응답.jsonPath().getList("source.id", Long.class)).containsExactly(교대역, 양재역);
 	}
 
 	private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
