@@ -42,6 +42,12 @@ class FavoriteServiceTest {
   @Autowired
   private FavoriteService favoriteService;
 
+  private static void 즐겨찾기_조회_성공(List<FavoriteResponse> response, Long source, Long target) {
+    assertThat(response.size()).isEqualTo(1);
+    assertThat(response.stream().findFirst().map(FavoriteResponse::getSourceId).get()).isEqualTo(source);
+    assertThat(response.stream().findFirst().map(FavoriteResponse::getTargetId).get()).isEqualTo(target);
+  }
+
   @BeforeEach
   void setUp() {
     교대역 = stationRepository.save(new Station("교대역"));
@@ -86,6 +92,16 @@ class FavoriteServiceTest {
   }
 
   @Test
+  @DisplayName("출발 역, 도착 역이 동일한 경우 즐겨찾기 추가 시 실패")
+  void addSameSourceAndTargetTest() {
+    // When & Then
+    assertThatThrownBy(
+      () -> favoriteService.saveFavorite(ACTIVE_USER_ID, new FavoriteRequest(교대역.getId(), 교대역.getId()))
+    ).isInstanceOf(IllegalArgumentException.class);
+
+  }
+
+  @Test
   @DisplayName("즐겨찾기 조회 성공")
   void successfulSearchTest() {
     // Given
@@ -105,13 +121,6 @@ class FavoriteServiceTest {
     Long id = favoriteService.saveFavorite(ACTIVE_USER_ID, new FavoriteRequest(교대역.getId(), 강남역.getId()));
 
     favoriteService.deleteFavorite(id);
-  }
-
-
-  private static void 즐겨찾기_조회_성공(List<FavoriteResponse> response, Long source, Long target) {
-    assertThat(response.size()).isEqualTo(1);
-    assertThat(response.stream().findFirst().map(FavoriteResponse::getSourceId).get()).isEqualTo(source);
-    assertThat(response.stream().findFirst().map(FavoriteResponse::getTargetId).get()).isEqualTo(target);
   }
 
 }

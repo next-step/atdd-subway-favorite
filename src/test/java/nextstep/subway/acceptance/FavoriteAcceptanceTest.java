@@ -57,6 +57,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     로그인_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
   }
 
+  @DisplayName("즐겨찾기를 추가")
+  @Test
   void addFavorite() {
     // When
     ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
@@ -64,6 +66,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     즐겨찾기_생성됨(response);
   }
 
+  @DisplayName("즐겨찾기 조회")
+  @Test
   void getFavorite() {
     // Given
     즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
@@ -74,6 +78,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     즐겨찾기_목록_조회됨(queryResponse, 교대역, 강남역);
   }
 
+  @DisplayName("즐겨찾기 삭제")
+  @Test
   void deleteFavorite() {
     // Given
     ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
