@@ -68,6 +68,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		응답_확인(즐겨찾기_생성_응답, HttpStatus.CREATED);
 		응답_확인(즐겨찾기_조회_응답, HttpStatus.OK);
 		즐겨찾기_조회_출발역_확인(즐겨찾기_조회_응답, 교대역);
-		응답_확인(즐겨찾기_삭제_응답, HttpStatus.OK);
+		응답_확인(즐겨찾기_삭제_응답, HttpStatus.NO_CONTENT);
 	}
 }
