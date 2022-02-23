@@ -22,10 +22,10 @@ public class AuthConfig implements WebMvcConfigurer {
     private ObjectMapper objectMapper;
     private Authorizor authorizor;
 
-    public AuthConfig(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public AuthConfig(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
         this.authorizor = new Authorizor();
     }
 
