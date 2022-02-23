@@ -71,15 +71,6 @@ class TokenAuthenticationInterceptorTest {
     }
 
     @Test
-    void authenticate() {
-        // when
-        Authentication authentication = interceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
-
-        // then
-        assertThat(authentication.getPrincipal()).isNotNull();
-    }
-
-    @Test
     void afterAuthentication() throws IOException {
         // when
         MockHttpServletResponse response = new MockHttpServletResponse();
