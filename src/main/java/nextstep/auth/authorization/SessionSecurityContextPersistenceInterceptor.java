@@ -20,9 +20,4 @@ public class SessionSecurityContextPersistenceInterceptor extends SecurityContex
         }
         return true;
     }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        SecurityContextHolder.clearContext();
-    }
 }

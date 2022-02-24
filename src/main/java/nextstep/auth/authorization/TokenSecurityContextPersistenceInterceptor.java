@@ -47,10 +47,4 @@ public class TokenSecurityContextPersistenceInterceptor extends SecurityContextP
             return null;
         }
     }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-            Object handler, Exception ex) {
-        SecurityContextHolder.clearContext();
-    }
 }
