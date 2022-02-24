@@ -116,4 +116,21 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static void 회원_정보_수정_확인(ExtractableResponse<Response> updateResponse, String newEmail, String newPassword, Integer newAge) {
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(newEmail, newPassword);
+
+        assertAll(
+                () -> assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getString("age")).isEqualTo(newAge.toString()),
+                () -> assertThat(response.jsonPath().getString("email")).isEqualTo(newEmail)
+        );
+    }
+
+    public static void 회원_삭제_확인(ExtractableResponse<Response> deleteResponse, ExtractableResponse<Response> createResponse) {
+        assertAll(
+                () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(회원_정보_조회_요청(createResponse).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        );
+    }
 }
