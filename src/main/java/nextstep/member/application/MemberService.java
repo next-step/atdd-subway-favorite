@@ -7,8 +7,10 @@ import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
 
@@ -21,6 +23,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -35,6 +38,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findLoginMemberInfo(LoginMember loginMember) {
         Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(NotFoundMemberException::new);
