@@ -15,7 +15,6 @@ import nextstep.auth.context.SecurityContext;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
 
-
 	public SessionAuthenticationInterceptor(SessionAuthenticationConverter sessionAuthenticationConverter,
 		UserDetailsService userDetailsService) {
 		super(sessionAuthenticationConverter, userDetailsService);

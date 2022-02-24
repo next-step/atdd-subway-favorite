@@ -1,10 +1,14 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -33,4 +37,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
 		회원_정보_조회됨(내_회원_정보_반환, EMAIL, AGE);
 	}
+
+
 }

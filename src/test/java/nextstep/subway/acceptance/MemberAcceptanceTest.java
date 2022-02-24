@@ -93,4 +93,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
 		assertThat(response.statusCode()).isEqualTo(204);
 	}
+
+	@DisplayName("유효하지않은 토큰으로 내 정보 반환")
+	@Test
+	void unAuthorized() {
+		ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+		String 로그인_회원_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+
+		내_회원_정보_수정_요청(로그인_회원_토큰, "new" + EMAIL, "new" + PASSWORD, AGE);
+
+		ExtractableResponse<Response> 내_회원_정보_반환 = 내_회원_정보_조회_요청(로그인_회원_토큰);
+
+		회원_정보_조회됨(내_회원_정보_반환, "newemail@email.com", AGE);
+	}
 }
