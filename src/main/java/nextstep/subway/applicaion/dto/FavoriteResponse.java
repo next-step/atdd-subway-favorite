@@ -1,14 +1,14 @@
-package nextstep.member.application.dto;
+package nextstep.subway.applicaion.dto;
 
-import nextstep.member.domain.Favorite;
-import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.domain.Favorite;
 
 public class FavoriteResponse {
   private Long id;
   private StationResponse source;
   private StationResponse target;
 
-  private FavoriteResponse() {}
+  private FavoriteResponse() {
+  }
 
   private FavoriteResponse(Long id, StationResponse source, StationResponse target) {
     this.id = id;

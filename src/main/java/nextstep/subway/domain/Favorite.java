@@ -1,7 +1,4 @@
-package nextstep.member.domain;
-
-import nextstep.subway.domain.BaseEntity;
-import nextstep.subway.domain.Station;
+package nextstep.subway.domain;
 
 import javax.persistence.*;
 
@@ -19,7 +16,8 @@ public class Favorite extends BaseEntity {
   @ManyToOne
   private Station target;
 
-  protected Favorite() {}
+  protected Favorite() {
+  }
 
   public Favorite(Long memberId, Station source, Station target) {
     this.memberId = memberId;
