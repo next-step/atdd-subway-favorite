@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -132,14 +133,18 @@ class FavoriteServiceTest {
     // Given
     Long id = favoriteService.saveFavorite(ACTIVE_USER_ID, new FavoriteRequest(교대역.getId(), 강남역.getId()));
 
-    assertThatThrownBy(() -> favoriteService.deleteFavorite(ACTIVE_USER_ID + 1, id)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(
+      () -> favoriteService.deleteFavorite(ACTIVE_USER_ID + 1, id)
+    ).isInstanceOf(AuthenticationException.class);
   }
 
   @Test
   @DisplayName("존재하지 않는 즐겨찾기 - 즐겨찾기 삭제 실패")
   void failureWithInvalidIdDeleteTest() {
     // When & Then
-    assertThatThrownBy(() -> favoriteService.deleteFavorite(ACTIVE_USER_ID, INVALID_FAVORITE_ID)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(
+      () -> favoriteService.deleteFavorite(ACTIVE_USER_ID, INVALID_FAVORITE_ID)
+    ).isInstanceOf(IllegalArgumentException.class);
   }
 
   private static void 즐겨찾기_조회_성공(List<FavoriteResponse> response, Long source, Long target) {

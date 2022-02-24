@@ -50,7 +50,7 @@ public class FavoriteService {
   public void deleteFavorite(Long userId, Long id) {
     Favorite deleteFavorite = findFavorite(id).orElseThrow(IllegalArgumentException::new);
 
-    if(deleteFavorite.getMemberId().equals(userId)) {
+    if(!deleteFavorite.getMemberId().equals(userId)) {
       throw new AuthenticationException();
     }
 
