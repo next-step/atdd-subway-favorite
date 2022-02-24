@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
@@ -99,6 +100,15 @@ public class MemberSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static void 회원_생성_확인(ExtractableResponse<Response> createResponse) {
+        String id = createResponse.header("Location").replace("/members/", "");
+
+        assertAll(
+                () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(id).isNotNull()
+        );
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {

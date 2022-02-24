@@ -4,6 +4,7 @@ import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_�
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_확인;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
@@ -35,14 +36,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_확인(createResponse);
+
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
-
-
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
