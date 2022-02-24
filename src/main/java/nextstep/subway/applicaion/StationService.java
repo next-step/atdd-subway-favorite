@@ -3,6 +3,7 @@ package nextstep.subway.applicaion;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.applicaion.exception.DuplicationException;
+import nextstep.subway.applicaion.exception.NotFoundException;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,9 @@ public class StationService {
 
     private StationResponse createStationResponse(Station station) {
         return StationResponse.of(station);
+    }
+
+    public Station findById(Long id) {
+        return stationRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 }

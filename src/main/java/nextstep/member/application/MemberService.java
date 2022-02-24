@@ -21,9 +21,14 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    public MemberResponse findMemberResponse(Long id) {
+        Member member = findMember(id);
         return MemberResponse.of(member);
+    }
+
+    public Member findMember(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return member;
     }
 
     public void updateMember(Long id, MemberRequest param) {

@@ -46,4 +46,8 @@ public class Member extends BaseEntity {
         this.password = member.password;
         this.age = member.age;
     }
+
+    public boolean isSameMember(Long memberId) {
+        return this.id.equals(memberId);
+    }
 }
