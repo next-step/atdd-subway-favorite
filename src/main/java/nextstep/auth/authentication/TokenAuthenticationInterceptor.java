@@ -4,24 +4,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.domain.UserDetails;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailService userDetailService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor(UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailService = userDetailService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -45,6 +45,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    @Override
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
         String requestInfo = request.getReader()
                 .lines()
@@ -60,18 +61,11 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     public Authentication authenticate(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = customUserDetailsService.loadUserByUsername(
+        UserDetails userDetails = userDetailService.loadUserByUsername(
                 authenticationToken.getPrincipal());
 
-        checkUserPassword(authenticationToken.getCredentials(), loginMember.getPassword());
+        userDetails.checkPassword(authenticationToken.getCredentials());
 
-        return new Authentication(loginMember);
-    }
-
-    private void checkUserPassword(String credentials, String password) {
-        if (credentials.equals(password)) {
-            return;
-        }
-        throw new RuntimeException();
+        return new Authentication(userDetails);
     }
 }

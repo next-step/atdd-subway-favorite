@@ -12,7 +12,7 @@ import java.io.IOException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.CustomUserDetailsServiceUser;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,13 +27,13 @@ class TokenAuthenticationInterceptorTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
 
-    private CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsServiceUser customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private TokenAuthenticationInterceptor interceptor;
 
     @BeforeEach
     void setUp() {
-        customUserDetailsService = mock(CustomUserDetailsService.class);
+        customUserDetailsService = mock(CustomUserDetailsServiceUser.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
         interceptor = new TokenAuthenticationInterceptor(customUserDetailsService, jwtTokenProvider);
     }

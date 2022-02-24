@@ -1,11 +1,13 @@
 package nextstep.member.domain;
 
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.domain.UserDetails;
 
-public class LoginMember {
-    private Long id;
-    private String email;
-    private String password;
-    private Integer age;
+public class LoginMember implements UserDetails {
+    private final Long id;
+    private final String email;
+    private final String password;
+    private final Integer age;
 
     public static LoginMember of(Member member) {
         return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
@@ -18,8 +20,10 @@ public class LoginMember {
         this.age = age;
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public void checkPassword(String password) {
+        if (!this.password.equals(password)) {
+            throw new AuthenticationException();
+        }
     }
 
     public Long getId() {
