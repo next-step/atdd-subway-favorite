@@ -1,7 +1,5 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.acceptance.MemberSteps.내_회원_정보_조회_요청;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_확인;
@@ -46,17 +44,5 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @Test
-    @DisplayName("나의 정보를 관리한다.")
-    void manageMyInfo() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(accessToken);
-
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
     }
 }
