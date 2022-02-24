@@ -1,5 +1,6 @@
 package nextstep.subway.applicaion;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +47,17 @@ public class FavoriteService {
   }
 
   @Transactional
-  public void deleteFavorite(Long id) {
+  public void deleteFavorite(Long userId, Long id) {
+    Favorite deleteFavorite = findFavorite(id).orElseThrow(IllegalArgumentException::new);
+
+    if(deleteFavorite.getMemberId().equals(userId)) {
+      throw new AuthenticationException();
+    }
+
     favoriteRepository.deleteById(id);
+  }
+
+  private Optional<Favorite> findFavorite(Long id) {
+    return favoriteRepository.findById(id);
   }
 }

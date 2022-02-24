@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class FavoriteServiceTest {
 
   private static final Long ACTIVE_USER_ID = 1L;
+  private static final Long INVALID_FAVORITE_ID = 9999999L;
 
   private Station 교대역;
   private Station 강남역;
@@ -43,11 +45,6 @@ class FavoriteServiceTest {
   @Autowired
   private FavoriteService favoriteService;
 
-  private static void 즐겨찾기_조회_성공(List<FavoriteResponse> response, Long source, Long target) {
-    assertThat(response.size()).isEqualTo(1);
-    assertThat(response.stream().findFirst().map(FavoriteResponse::getSource).map(StationResponse::getId).get()).isEqualTo(source);
-    assertThat(response.stream().findFirst().map(FavoriteResponse::getTarget).map(StationResponse::getId).get()).isEqualTo(target);
-  }
 
   @BeforeEach
   void setUp() {
@@ -121,7 +118,33 @@ class FavoriteServiceTest {
     // Given
     Long id = favoriteService.saveFavorite(ACTIVE_USER_ID, new FavoriteRequest(교대역.getId(), 강남역.getId()));
 
-    favoriteService.deleteFavorite(id);
+    // When
+    favoriteService.deleteFavorite(ACTIVE_USER_ID, id);
+
+    // Then
+    List<Long> favoriteIds = favoriteService.searchFavorites(ACTIVE_USER_ID).stream().map(FavoriteResponse::getId).collect(Collectors.toList());
+    assertThat(favoriteIds).doesNotContain(id);
   }
 
+  @Test
+  @DisplayName("잘못된 사용자 - 즐겨찾기 삭제 실패")
+  void failureWithInvalidUserDeleteTest() {
+    // Given
+    Long id = favoriteService.saveFavorite(ACTIVE_USER_ID, new FavoriteRequest(교대역.getId(), 강남역.getId()));
+
+    assertThatThrownBy(() -> favoriteService.deleteFavorite(ACTIVE_USER_ID + 1, id)).isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  @DisplayName("존재하지 않는 즐겨찾기 - 즐겨찾기 삭제 실패")
+  void failureWithInvalidIdDeleteTest() {
+    // When & Then
+    assertThatThrownBy(() -> favoriteService.deleteFavorite(ACTIVE_USER_ID, INVALID_FAVORITE_ID)).isInstanceOf(IllegalArgumentException.class);
+  }
+
+  private static void 즐겨찾기_조회_성공(List<FavoriteResponse> response, Long source, Long target) {
+    assertThat(response.size()).isEqualTo(1);
+    assertThat(response.stream().findFirst().map(FavoriteResponse::getSource).map(StationResponse::getId).get()).isEqualTo(source);
+    assertThat(response.stream().findFirst().map(FavoriteResponse::getTarget).map(StationResponse::getId).get()).isEqualTo(target);
+  }
 }
