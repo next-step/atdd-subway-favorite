@@ -17,8 +17,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.customUserDetailsService = customUserDetailsService;
@@ -35,9 +35,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         TokenResponse tokenResponse = new TokenResponse(token);
 
         SecurityContext securityContext = new SecurityContext(authentication);
-        if (securityContext != null) {
-            SecurityContextHolder.setContext(securityContext);
-        }
+        SecurityContextHolder.setContext(securityContext);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
@@ -55,8 +53,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
         JSONObject jsonObject = new JSONObject(requestInfo);
 
-        String principal = jsonObject.get("email").toString();
-        String credentials = jsonObject.get("password").toString();
+        String principal = jsonObject.getString("email");
+        String credentials = jsonObject.getString("password");
 
         return new AuthenticationToken(principal, credentials);
     }
