@@ -13,6 +13,7 @@ import nextstep.auth.domain.UserDetails;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class SessionAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
+
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
