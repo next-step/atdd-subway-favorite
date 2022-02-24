@@ -25,7 +25,7 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Member member,Station source, Station target) {
+    public Favorite(Member member, Station source, Station target) {
         this.member = member;
         this.source = source;
         this.target = target;
@@ -44,6 +44,6 @@ public class Favorite {
     }
 
     public boolean isYours(LoginMember loginMember) {
-        return member.getId().equals(loginMember.getId());
+        return member.isSameMember(loginMember.getId());
     }
 }

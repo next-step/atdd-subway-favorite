@@ -7,6 +7,7 @@ import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.exception.BusinessException;
 import nextstep.subway.applicaion.exception.NotFoundException;
+import nextstep.subway.applicaion.exception.WrongApproachException;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -40,17 +41,13 @@ public class FavoriteService {
 
     public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
-        List<FavoriteResponse> favoriteResponses = favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
-        return favoriteResponses;
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     public void deleteFavorite(Long favoriteId, LoginMember loginMember) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(NotFoundException::new);
-
-        if (!favorite.isYours(loginMember)) {
-            throw new BusinessException("당신의 즐겨찾기 아님", HttpStatus.FORBIDDEN);
-        }
-
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId,loginMember.getId()).orElseThrow(NotFoundException::new);
         favoriteRepository.delete(favorite);
     }
 }

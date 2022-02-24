@@ -18,7 +18,7 @@ public class FavoriteStep {
 
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 액세스_토큰)
+                .header(HttpHeaders.AUTHORIZATION, Bearer타입_추가(액세스_토큰))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/favorites")
@@ -28,7 +28,7 @@ public class FavoriteStep {
     public static ExtractableResponse<Response> 즐겨찾기_목록조회_요청(String 액세스_토큰) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 액세스_토큰)
+                .header(HttpHeaders.AUTHORIZATION, Bearer타입_추가(액세스_토큰))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all().extract();
@@ -37,9 +37,13 @@ public class FavoriteStep {
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String 주소, String 액세스_토큰) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 액세스_토큰)
+                .header(HttpHeaders.AUTHORIZATION, Bearer타입_추가(액세스_토큰))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(주소)
                 .then().log().all().extract();
+    }
+
+    private static String Bearer타입_추가(String 액세스_토큰) {
+        return "Bearer " + 액세스_토큰;
     }
 }

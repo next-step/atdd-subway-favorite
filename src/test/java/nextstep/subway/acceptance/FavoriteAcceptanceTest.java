@@ -23,7 +23,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
 
     private Long 교대역;
     private Long 강남역;
-    private Long 이호선;
     private String 액세스_토큰;
 
     /** Background
@@ -40,7 +39,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
         강남역 = 지하철역생성("강남역").jsonPath().getLong(지하철_역_아이디_키);
 
         //And
-        이호선 = 노선생성(노선파라미터생성("2호선", "green", 교대역, 강남역, 100)).jsonPath().getLong(노선_아이디_키);
+        노선생성(노선파라미터생성("2호선", "green", 교대역, 강남역, 100)).jsonPath().getLong(노선_아이디_키);
 
         //And
         회원_생성_요청(EMAIL, PASSWORD, AGE);

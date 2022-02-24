@@ -50,8 +50,6 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> {
-            throw new NotFoundException();
-        });
+        return stationRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 }
