@@ -1,11 +1,11 @@
 package nextstep.member.application;
 
+import nextstep.global.error.exception.NotFoundMemberException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,8 +36,8 @@ public class MemberService {
     }
 
     public MemberResponse findLoginMemberInfo(LoginMember loginMember) {
-        Member member = memberRepository.findMemberByEmail(loginMember.getEmail())
-                .orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(NotFoundMemberException::new);
 
         return MemberResponse.of(member);
     }
