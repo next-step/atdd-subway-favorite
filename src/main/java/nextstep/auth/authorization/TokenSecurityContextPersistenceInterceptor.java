@@ -6,13 +6,12 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-public class TokenSecurityContextPersistenceInterceptor implements HandlerInterceptor {
+public class TokenSecurityContextPersistenceInterceptor extends SecurityContextInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenSecurityContextPersistenceInterceptor(JwtTokenProvider jwtTokenProvider) {
@@ -40,7 +39,7 @@ public class TokenSecurityContextPersistenceInterceptor implements HandlerInterc
     private SecurityContext extractSecurityContext(String credentials) {
         try {
             String payload = jwtTokenProvider.getPayload(credentials);
-            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+            TypeReference<Map<String, String>> typeRef = new TypeReference<>() {
             };
 
             Map<String, String> principal = new ObjectMapper().readValue(payload, typeRef);

@@ -11,8 +11,6 @@ import javax.servlet.http.HttpSession;
 import static nextstep.auth.context.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY;
 
 public class SessionAuthenticationInterceptor extends AuthenticationInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
 
     public SessionAuthenticationInterceptor(UserDetailService userDetailsService, AuthenticationConverter converter) {
         super(userDetailsService, converter);
