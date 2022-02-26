@@ -13,7 +13,15 @@ public class Authorizer {
 		this.userDetailsService = userDetailsService;
 	}
 
-	public void checkAuthentication(User userDetails, AuthenticationToken token) {
+	public Authentication authenticate(AuthenticationToken authenticationToken) {
+		final String principal = authenticationToken.getPrincipal();
+		final User userDetails = userDetailsService.loadUserByUsername(principal);
+		checkAuthentication(userDetails, authenticationToken);
+
+		return new Authentication(userDetails);
+	}
+
+	private void checkAuthentication(User userDetails, AuthenticationToken token) {
 		if (ObjectUtils.isEmpty(userDetails)) {
 			throw new AuthenticationException();
 		}
@@ -21,13 +29,5 @@ public class Authorizer {
 		if (!userDetails.checkPassword(token.getCredentials())) {
 			throw new AuthenticationException();
 		}
-	}
-
-	public Authentication authenticate(AuthenticationToken authenticationToken) {
-		final String principal = authenticationToken.getPrincipal();
-		final User userDetails = userDetailsService.loadUserByUsername(principal);
-		checkAuthentication(userDetails, authenticationToken);
-
-		return new Authentication(userDetails);
 	}
 }
