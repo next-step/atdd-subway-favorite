@@ -2,6 +2,7 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.Authorizer;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -34,6 +35,7 @@ class TokenAuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private ObjectMapper objectMapper;
+    private Authorizer authorizor;
 
     @Mock
     private CustomUserDetailsService userDetailsService;
@@ -44,12 +46,13 @@ class TokenAuthenticationInterceptorTest {
     @BeforeEach
     void init() {
         objectMapper = new ObjectMapper();
+        authorizor = new Authorizer(userDetailsService);
     }
 
     @Test
     void convert() throws IOException {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, objectMapper, authorizor);
         MockHttpServletRequest request = createMockRequest();
 
         // when
@@ -62,19 +65,19 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void authenticate() {
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, objectMapper, authorizor);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         AuthenticationToken authenticationToken = new AuthenticationToken(EMAIL, PASSWORD);
-        Authentication authentication = interceptor.authenticate(authenticationToken);
+        Authentication authentication = authorizor.authenticate(authenticationToken);
 
         assertThat(authentication.getPrincipal()).isNotNull();
     }
 
     @Test
     void preHandle() throws IOException, JSONException {
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(jwtTokenProvider, objectMapper, authorizor);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);

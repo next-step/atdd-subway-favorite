@@ -4,6 +4,8 @@ import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class MemberController {
@@ -66,6 +69,33 @@ public class MemberController {
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMemberOfMine(loginMember);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> createFavorite(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @RequestBody FavoriteRequest request
+    ) {
+        FavoriteResponse favorite = memberService.createFavorite(loginMember, request);
+
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FavoriteResponse>> findFavoritesOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> favoriteResponses = memberService.findFavoritesOfMine(loginMember);
+
+        return ResponseEntity.ok().body(favoriteResponses);
+    }
+
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity<MemberResponse> deleteFavoriteOfMine(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @PathVariable Long favoriteId
+    ) {
+        memberService.deleteFavorite(loginMember, favoriteId);
 
         return ResponseEntity.noContent().build();
     }

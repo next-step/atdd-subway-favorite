@@ -1,7 +1,6 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.User;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
@@ -16,16 +15,13 @@ import java.io.IOException;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor, AuthenticationConverter {
 
-    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
-    private Authorizor authorizor;
+    private Authorizer authorizor;
 
-    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService,
-                                          JwtTokenProvider jwtTokenProvider,
+    public TokenAuthenticationInterceptor(JwtTokenProvider jwtTokenProvider,
                                           ObjectMapper objectMapper,
-                                          Authorizor authorizor) {
-        this.userDetailsService = userDetailsService;
+                                          Authorizer authorizor) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
         this.authorizor = authorizor;
@@ -34,7 +30,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken authenticationToken = convert(request);
-        Authentication authentication = authenticate(authenticationToken);
+        Authentication authentication = authorizor.authenticate(authenticationToken);
 
         final String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         final String token = jwtTokenProvider.createToken(payload);
@@ -47,14 +43,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor, Authe
         response.getOutputStream().print(responseToClient);
 
         return false;
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        final String principal = authenticationToken.getPrincipal();
-        final User userDetails = userDetailsService.loadUserByUsername(principal);
-        authorizor.checkAuthentication(userDetails, authenticationToken);
-
-        return new Authentication(userDetails);
     }
 
     @Override
