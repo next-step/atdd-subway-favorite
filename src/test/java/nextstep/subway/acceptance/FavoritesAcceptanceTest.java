@@ -79,7 +79,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
 		// then
 		assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(result.jsonPath().getList("id")).hasSize(1).containsExactly(1);
+		assertThat(result.jsonPath().getList("id", Long.class)).hasSize(1).containsExactly(1L);
 	}
 
 	/**
