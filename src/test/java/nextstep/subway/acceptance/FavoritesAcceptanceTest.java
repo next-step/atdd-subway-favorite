@@ -100,6 +100,23 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 		assertThat(result.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 
+	/**
+	 * 비로그인 경우 401 Unauthorized 응답
+	 */
+	@DisplayName("비로그인 즐겨찾기 기능을 사용할 수 없다.")
+	@Test
+	void  isUnauthorized() {
+		// given
+		즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+		accessToken = "";
+
+		// when
+		ExtractableResponse<Response> result = 즐겨찾기_목록_조회(accessToken);
+
+		// then
+		assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
 	private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
 		Map<String, String> lineCreateParams;
 		lineCreateParams = new HashMap<>();
