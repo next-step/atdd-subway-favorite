@@ -1,2 +1,5 @@
-package nextstep.auth;public class UserDetail {
+package nextstep.auth.domain;
+
+public interface UserDetail {
+	boolean checkPassword(String password);
 }

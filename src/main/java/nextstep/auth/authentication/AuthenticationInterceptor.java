@@ -1,21 +1,19 @@
 package nextstep.auth.authentication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.UserDetail;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 	protected AuthenticationConverter authenticationConverter;
-	private final CustomUserDetailsService userDetailsService;
+	private final UserDetailService userDetailsService;
 
-	protected AuthenticationInterceptor(CustomUserDetailsService userDetailsService, AuthenticationConverter authenticationConverter) {
+	protected AuthenticationInterceptor(UserDetailService userDetailsService, AuthenticationConverter authenticationConverter) {
 		this.userDetailsService = userDetailsService;
 		this.authenticationConverter = authenticationConverter;
 	}
@@ -36,13 +34,13 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
 	public Authentication authenticate(AuthenticationToken token) {
 		String principal = token.getPrincipal();
-		LoginMember userDetails = userDetailsService.loadUserByUsername(principal);
+		UserDetail userDetails = userDetailsService.loadUserByUsername(principal);
 		checkAuthentication(userDetails, token);
 
 		return new Authentication(userDetails);
 	}
 
-	private void checkAuthentication(LoginMember userDetails, AuthenticationToken token) {
+	private void checkAuthentication(UserDetail userDetails, AuthenticationToken token) {
 		if (userDetails == null) {
 			throw new AuthenticationException();
 		}
