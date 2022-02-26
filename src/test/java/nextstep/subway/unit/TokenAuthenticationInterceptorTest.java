@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.TokenAuthenticationConverter;
 import nextstep.auth.authentication.TokenAuthenticationInterceptor;
-import nextstep.auth.authentication.TokenAuthenticationInterceptor_new;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -29,13 +28,14 @@ class TokenAuthenticationInterceptorTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+    private final TokenAuthenticationConverter converter = new TokenAuthenticationConverter();
     private final JwtTokenProvider jwtTokenProvider = mock(JwtTokenProvider.class);
     private final ObjectMapper objectMapper = spy(ObjectMapper.class);
 
     @Test
     void convert() throws IOException {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        nextstep.auth.authentication.TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, converter, jwtTokenProvider, objectMapper);
         MockHttpServletRequest request = createMockRequest();
 
         // when
@@ -49,7 +49,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        nextstep.auth.authentication.TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, converter, jwtTokenProvider, objectMapper);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
@@ -63,7 +63,7 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
-        TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider, objectMapper);
+        nextstep.auth.authentication.TokenAuthenticationInterceptor interceptor = new TokenAuthenticationInterceptor(userDetailsService, converter, jwtTokenProvider, objectMapper);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString())).thenReturn(JWT_TOKEN);

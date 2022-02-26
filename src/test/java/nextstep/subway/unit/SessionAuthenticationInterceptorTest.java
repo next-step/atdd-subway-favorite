@@ -1,6 +1,9 @@
 package nextstep.subway.unit;
 
-import nextstep.auth.authentication.*;
+import nextstep.auth.authentication.AuthenticationInterceptor;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.SessionAuthenticationConverter;
+import nextstep.auth.authentication.SessionAuthenticationInterceptor;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -22,11 +25,12 @@ class SessionAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
 
     private final CustomUserDetailsService userDetailsService = mock(CustomUserDetailsService.class);
+    private final SessionAuthenticationConverter converter = new SessionAuthenticationConverter();
 
     @Test
     void convert() throws IOException {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        AuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService, converter);
         MockHttpServletRequest request = createMockRequest();
 
         // when
@@ -40,7 +44,7 @@ class SessionAuthenticationInterceptorTest {
     @Test
     void authenticate() {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        nextstep.auth.authentication.SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService, converter);
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
         // when
@@ -54,7 +58,7 @@ class SessionAuthenticationInterceptorTest {
     @Test
     void preHandle() throws IOException {
         // given
-        SessionAuthenticationInterceptor interceptor = new SessionAuthenticationInterceptor(userDetailsService);
+        nextstep.auth.authentication.SessionAuthenticationInterceptor interceptor = new nextstep.auth.authentication.SessionAuthenticationInterceptor(userDetailsService, converter);
 
         when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
 
