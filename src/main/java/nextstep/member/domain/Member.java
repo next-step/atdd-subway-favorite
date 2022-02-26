@@ -14,9 +14,6 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @Embedded
-    private Favorites favorites = new Favorites();
-
     protected Member() {
 
     }
@@ -47,17 +44,5 @@ public class Member extends BaseEntity {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
-    }
-
-    public List<Favorite> getFavorites() {
-        return favorites.getFavorites();
-    }
-
-    public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
-    }
-
-    public void removeFavorite(Favorite favorite) {
-        this.favorites.remove(favorite);
     }
 }

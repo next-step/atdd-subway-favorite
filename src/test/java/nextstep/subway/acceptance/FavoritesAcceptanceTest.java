@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.authentication.AuthenticationToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,7 @@ import java.util.Map;
 
 import static nextstep.subway.acceptance.FavoritesSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -105,7 +105,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 	 */
 	@DisplayName("비로그인 즐겨찾기 기능을 사용할 수 없다.")
 	@Test
-	void  isUnauthorized() {
+	void isUnauthorizedByLogin() {
 		// given
 		즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
 		accessToken = "";

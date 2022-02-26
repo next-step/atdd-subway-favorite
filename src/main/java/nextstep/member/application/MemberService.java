@@ -70,7 +70,7 @@ public class MemberService {
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Favorite favorite = new Favorite(member, source, target);
+        Favorite favorite = new Favorite(member.getId(), source, target);
         favoriteRepository.save(favorite);
 
         return FavoriteResponse.of(favorite);
@@ -78,16 +78,16 @@ public class MemberService {
 
     public List<FavoriteResponse> findFavoritesOfMine(LoginMember loginMember) {
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
+        List<Favorite> favorites = favoriteRepository.findByMember(member.getId());
 
-        return member.getFavorites().stream()
+        return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
         Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
 
-        member.removeFavorite(favorite);
+        favoriteRepository.delete(favorite);
     }
 }

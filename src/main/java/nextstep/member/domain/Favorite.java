@@ -11,9 +11,8 @@ public class Favorite {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "member_id")
-	private Member member;
+	private Long member;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "up_station_id")
@@ -25,8 +24,8 @@ public class Favorite {
 
 	protected Favorite() {}
 
-	public Favorite(Member member, Station source, Station target) {
-		this.member = member;
+	public Favorite(Long memberId, Station source, Station target) {
+		this.member = memberId;
 		this.source = source;
 		this.target = target;
 	}
@@ -35,7 +34,7 @@ public class Favorite {
 		return id;
 	}
 
-	public Member getMember() {
+	public Long getMember() {
 		return member;
 	}
 
