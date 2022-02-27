@@ -14,7 +14,7 @@ import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.AuthenticationMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class TokenAuthenticationInterceptorTest {
         String token = "token";
 
         when(customUserDetailsService.loadUserByUsername(EMAIL))
-                .thenReturn(new LoginMember(1L, EMAIL, PASSWORD, 20));
+                .thenReturn(new AuthenticationMember(1L, EMAIL, PASSWORD, 20));
         when(jwtTokenProvider.createToken(anyString()))
                 .thenReturn(token);
 

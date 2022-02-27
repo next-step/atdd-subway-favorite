@@ -21,6 +21,8 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         this.authenticationConverter = authenticationConverter;
     }
 
+    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         AuthenticationToken token = authenticationConverter.convert(request);
@@ -34,9 +36,8 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         UserDetails userDetails = userDetailService.loadUserByUsername(principal);
         userDetails.checkPassword(token.getCredentials());
 
-        return new Authentication(userDetails);
+        return new Authentication(userDetails.toLoginMember());
     }
-    public abstract void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
