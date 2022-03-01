@@ -1,70 +1,46 @@
 package nextstep.auth.authentication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    private CustomUserDetailsService customUserDetailsService;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        this.customUserDetailsService = customUserDetailsService;
+    public TokenAuthenticationInterceptor(UserDetailService userDetailsService, AuthenticationConverter converter, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        super(userDetailsService, converter);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        AuthenticationToken authenticationToken = convert(request);
-        Authentication authentication = authenticate(authenticationToken);
+    public void afterAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        TokenResponse tokenResponse = generateToken(authentication);
 
-        // TODO: authentication으로 TokenResponse 추출하기
+        setToken(response, tokenResponse);
+    }
+
+    private TokenResponse generateToken(Authentication authentication) throws JsonProcessingException {
         String payload = objectMapper.writeValueAsString(authentication.getPrincipal());
         String token = jwtTokenProvider.createToken(payload);
 
-        TokenResponse tokenResponse = TokenResponse.of(token);
+        return TokenResponse.of(token);
+    }
 
+    private void setToken(HttpServletResponse response, TokenResponse tokenResponse) throws IOException {
         String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-
-        return false;
-    }
-
-    public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        // TODO: request에서 AuthenticationToken 객체 생성하기
-        TokenRequest tokenRequest = objectMapper.readValue(request.getInputStream(), TokenRequest.class);
-
-        return AuthenticationToken.of(tokenRequest.getEmail(), tokenRequest.getPassword());
-    }
-
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        // TODO: AuthenticationToken에서 AuthenticationToken 객체 생성하기
-        String principal = authenticationToken.getPrincipal();
-        LoginMember member = customUserDetailsService.loadUserByUsername(principal);
-
-        validateAuthentication(member, authenticationToken);
-
-        return new Authentication(member);
-    }
-
-    private void validateAuthentication(LoginMember member, AuthenticationToken token) {
-        if(!member.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
     }
 }
