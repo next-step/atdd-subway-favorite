@@ -10,30 +10,19 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.common.Steps;
 
 public class FavoriteSteps extends Steps {
 	public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
-		Map<String, String> params = new HashMap<>();
-		params.put("source", source + "");
-		params.put("target", target + "");
-
-		return RestAssured.given().log().all()
+		return 즐겨찾기_생성_공통(source, target)
 			.auth().oauth2(accessToken)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(params)
 			.when().post("/favorites")
 			.then().log().all().extract();
 	}
 
 	public static ExtractableResponse<Response> 비로그인_즐겨찾기_생성_요청(Long source, Long target) {
-		Map<String, String> params = new HashMap<>();
-		params.put("source", source + "");
-		params.put("target", target + "");
-
-		return RestAssured.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(params)
+		return 즐겨찾기_생성_공통(source, target)
 			.when().post("/favorites")
 			.then().log().all().extract();
 	}
@@ -70,5 +59,15 @@ public class FavoriteSteps extends Steps {
 
 	public static void 즐겨찾기_조회_출발역_확인(ExtractableResponse<Response> response, Long ...stationIds) {
 		assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(stationIds);
+	}
+
+	private static RequestSpecification 즐겨찾기_생성_공통(Long source, Long target) {
+		Map<String, String> params = new HashMap<>();
+		params.put("source", source + "");
+		params.put("target", target + "");
+
+		return RestAssured.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(params);
 	}
 }
