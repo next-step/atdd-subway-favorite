@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -27,16 +27,27 @@ public class FavoriteService {
 	}
 
 	public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest request) {
+		Favorite favorite = favoriteRepository.save(new Favorite(memberId, request.getSource(), request.getTarget()));
+
 		Station source = stationService.findById(request.getSource());
 		Station target = stationService.findById(request.getTarget());
 
-		return FavoriteResponse.of(favoriteRepository.save(new Favorite(memberId, source, target)));
+		return FavoriteResponse.from(favorite.getId(), source, target);
 	}
 
 	public List<FavoriteResponse> findByMemberId(Long memberId) {
-		return favoriteRepository.findByMemberId(memberId)
-			.stream().map(FavoriteResponse::of)
-			.collect(Collectors.toList());
+		List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+
+		favoriteRepository.findByMemberId(memberId)
+			.stream()
+			.forEach(it -> {
+				Station source = stationService.findById(it.getSource());
+				Station target = stationService.findById(it.getTarget());
+
+				favoriteResponses.add(FavoriteResponse.from(it.getId(), source, target));
+			});
+
+		return favoriteResponses;
 	}
 
 	public void deleteById(Long memberId, Long favoriteId) {

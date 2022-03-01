@@ -1,16 +1,12 @@
 package nextstep.member.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.subway.domain.BaseEntity;
-import nextstep.subway.domain.Station;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -20,21 +16,17 @@ public class Favorite extends BaseEntity {
 
 	private Long memberId;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "source")
-	private Station source;
+	private Long sourceId;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "target")
-	private Station target;
+	private Long targetId;
 
 	public Favorite() {
 	}
 
-	public Favorite(Long memberId, Station source, Station target) {
+	public Favorite(Long memberId, Long sourceId, Long targetId) {
 		this.memberId = memberId;
-		this.source = source;
-		this.target = target;
+		this.sourceId = sourceId;
+		this.targetId = targetId;
 	}
 
 	public Long getId() {
@@ -45,12 +37,12 @@ public class Favorite extends BaseEntity {
 		return memberId;
 	}
 
-	public Station getSource() {
-		return source;
+	public Long getSource() {
+		return sourceId;
 	}
 
-	public Station getTarget() {
-		return target;
+	public Long getTarget() {
+		return targetId;
 	}
 
 	public void validateMember(Long memberId) {
