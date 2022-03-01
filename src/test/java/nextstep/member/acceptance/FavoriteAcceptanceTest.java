@@ -53,24 +53,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기를 관리")
 	@Test
 	void 즐겨찾기_관리() {
+		// when
 		ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
-		ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(로그인_토큰);
-		ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, 즐겨찾기_생성_응답);
-
+		// then
 		응답_확인(즐겨찾기_생성_응답, HttpStatus.CREATED);
+
+		// when
+		ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(로그인_토큰);
+		// then
 		응답_확인(즐겨찾기_조회_응답, HttpStatus.OK);
 		즐겨찾기_조회_출발역_확인(즐겨찾기_조회_응답, 교대역);
+
+		// when
+		ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, 즐겨찾기_생성_응답);
+		// then
 		응답_확인(즐겨찾기_삭제_응답, HttpStatus.NO_CONTENT);
-	}
 
-	@DisplayName("로그인 없이 즐겨찾기를 관리")
-	@Test
-	void 비로그인_즐겨찾기_관리() {
+		// when
 		ExtractableResponse<Response> 비로그인_즐겨찾기_생성_응답 = 비로그인_즐겨찾기_생성_요청(교대역, 강남역);
-		ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
-		ExtractableResponse<Response> 비로그인_즐겨찾기_삭제_응답 = 비로그인_즐겨찾기_삭제_요청(즐겨찾기_생성_응답);
-
+		// then
 		응답_확인(비로그인_즐겨찾기_생성_응답, HttpStatus.UNAUTHORIZED);
+
+		// when
+		ExtractableResponse<Response> 비로근_즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 교대역, 강남역);
+		ExtractableResponse<Response> 비로그인_즐겨찾기_삭제_응답 = 비로그인_즐겨찾기_삭제_요청(비로근_즐겨찾기_생성_응답);
+		// then
 		응답_확인(비로그인_즐겨찾기_삭제_응답, HttpStatus.UNAUTHORIZED);
 	}
 }
