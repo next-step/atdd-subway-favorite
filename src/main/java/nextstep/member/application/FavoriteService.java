@@ -3,6 +3,8 @@ package nextstep.member.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +40,7 @@ public class FavoriteService {
 	}
 
 	public void deleteById(Long memberId, Long favoriteId) {
-		Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+		Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
 
 		favorite.validateMember(memberId);
 
