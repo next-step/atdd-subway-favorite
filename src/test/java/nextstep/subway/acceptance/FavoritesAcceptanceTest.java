@@ -103,6 +103,17 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @Test
+    @DisplayName("로그인 하지 않은 상태에서 권한이 필요한 요청시 401 응답한다")
+    void unauthorized() {
+        Long 강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        Long 양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청("123", new FavoriteRequest(강남역, 양재역));
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId) {
         Map<String, String> params = new HashMap<>();
         params.put("upStationId", upStationId + "");

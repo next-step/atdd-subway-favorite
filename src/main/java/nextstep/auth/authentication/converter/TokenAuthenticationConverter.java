@@ -2,6 +2,7 @@ package nextstep.auth.authentication.converter;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import org.json.JSONObject;
 
@@ -12,7 +13,7 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
         String requestInfo = request.getReader()
                 .lines()
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(AuthenticationException::new);
 
         JSONObject jsonObject = new JSONObject(requestInfo);
 
