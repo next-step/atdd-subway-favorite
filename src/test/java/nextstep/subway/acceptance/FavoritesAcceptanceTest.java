@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_등록_요청;
+import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_조회_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
@@ -79,6 +80,27 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(findResponse.jsonPath().getList("source.id", Long.class)).containsExactly(강남역),
                 () -> assertThat(findResponse.jsonPath().getList("target.id", Long.class)).containsExactly(양재역)
         );
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제 테스트")
+    void deleteFavorites() {
+        Long 강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        Long 양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+
+        Long 이호선 = 지하철_노선_생성_요청("2호선", "green").jsonPath().getLong("id");
+
+        지하철_노선에_지하철_구간_생성_요청(이호선, createSectionCreateParams(강남역, 양재역));
+
+        회원_생성_요청("hi@email.com", "password", 10);
+        String accessToken = 로그인_되어_있음("hi@email.com", "password");
+
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록_요청(accessToken, new FavoriteRequest(강남역, 양재역));
+
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken,
+                createResponse.header("Location"));
+
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId) {
