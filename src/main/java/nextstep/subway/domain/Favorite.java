@@ -18,18 +18,18 @@ public class Favorite extends BaseEntity {
     private Member member;
 
     @ManyToOne
-    private Station target;
+    private Station source;
 
     @ManyToOne
-    private Station source;
+    private Station target;
 
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station target, Station source) {
+    public Favorite(Member member, Station source, Station target) {
         this.member = member;
-        this.target = target;
         this.source = source;
+        this.target = target;
     }
 
     public Long getId() {

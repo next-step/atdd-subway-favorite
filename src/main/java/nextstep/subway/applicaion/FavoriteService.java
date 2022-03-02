@@ -1,6 +1,7 @@
 package nextstep.subway.applicaion;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.global.error.exception.NotFoundMemberException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
@@ -47,5 +48,15 @@ public class FavoriteService {
         Favorite save = favoriteRepository.save(favorite);
 
         return FavoriteResponse.from(save);
+    }
+
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
+
+        return favorites.stream().map(FavoriteResponse::from)
+                                .collect(Collectors.toList());
     }
 }

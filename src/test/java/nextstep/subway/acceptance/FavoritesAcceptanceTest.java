@@ -1,12 +1,14 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_등록_요청;
+import static nextstep.subway.acceptance.FavoritesSteps.즐겨찾기_조회_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -52,6 +54,31 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> createResponse = 즐겨찾기_등록_요청(accessToken, new FavoriteRequest(강남역, 양재역));
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회 테스트")
+    void findMyFavorites() {
+        Long 강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        Long 양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+
+        Long 이호선 = 지하철_노선_생성_요청("2호선", "green").jsonPath().getLong("id");
+
+        지하철_노선에_지하철_구간_생성_요청(이호선, createSectionCreateParams(강남역, 양재역));
+
+        회원_생성_요청("hi@email.com", "password", 10);
+        String accessToken = 로그인_되어_있음("hi@email.com", "password");
+
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록_요청(accessToken, new FavoriteRequest(강남역, 양재역));
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        ExtractableResponse<Response> findResponse = 즐겨찾기_조회_요청(accessToken);
+
+        assertAll(
+                () -> assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(findResponse.jsonPath().getList("source.id", Long.class)).containsExactly(강남역),
+                () -> assertThat(findResponse.jsonPath().getList("target.id", Long.class)).containsExactly(양재역)
+        );
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId) {
