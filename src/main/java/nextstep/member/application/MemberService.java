@@ -45,4 +45,11 @@ public class MemberService {
 
         return MemberResponse.of(member);
     }
+
+    public void registerFavorites(LoginMember loginMember, Long source, Long target) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(NotFoundMemberException::new);
+
+
+    }
 }

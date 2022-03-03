@@ -17,6 +17,7 @@ public class AuthorizationExtractor {
         int typeLength = typeToLowerCase.length();
 
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
+
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
             if ((value.toLowerCase().startsWith(typeToLowerCase))) {
