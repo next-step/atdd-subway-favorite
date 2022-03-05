@@ -21,6 +21,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	private Long 합정역;
 	private Long 당산역;
 
+	private String 로그인토큰;
+
 	/**
 	 * Given 지하철 역 등록되어 있음
 	 */
@@ -41,7 +43,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		// 로그인 되어 있음
 		로그인_요청("email@email.com", "password");
-		로그인_되어_있음("email@email.com", "password");
+		로그인토큰 = 로그인_되어_있음("email@email.com", "password");
 	}
 
 	/**
@@ -52,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void addFavorite() {
 		// when
-		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(합정역, 당산역);
+		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인토큰, 합정역, 당산역);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -67,7 +69,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void searchFavorite() {
 		// when
-		즐겨찾기_생성_요청(합정역, 당산역);
+		즐겨찾기_생성_요청(로그인토큰, 합정역, 당산역);
 		ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
 
 		// then
@@ -84,7 +86,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void removeFavorite() {
 		// when
-		Long id = 즐겨찾기_생성_요청(합정역, 당산역).jsonPath().getLong("id");
+		Long id = 즐겨찾기_생성_요청(로그인토큰, 합정역, 당산역).jsonPath().getLong("id");
 		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(id);
 
 		// then
