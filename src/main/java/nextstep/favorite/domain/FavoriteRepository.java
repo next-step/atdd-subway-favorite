@@ -7,4 +7,6 @@ import java.util.List;
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
 	List<Favorite> findAllByMemberId(Long memberId);
+
+	Long deleteByMemberIdAndId(Long memberId, Long id);
 }

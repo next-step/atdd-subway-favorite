@@ -93,8 +93,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void removeFavorite() {
 		// when
-		Long id = 즐겨찾기_생성_요청(로그인토큰, 홍대입구역, 당산역).jsonPath().getLong("id");
-		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(로그인토큰, id);
+		String url = 즐겨찾기_생성_요청(로그인토큰, 홍대입구역, 당산역).header("Location");
+		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(로그인토큰, url);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());

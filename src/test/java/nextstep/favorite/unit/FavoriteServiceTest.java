@@ -95,6 +95,24 @@ public class FavoriteServiceTest {
 				.containsExactly(홍대입구역.getId(), 당산역.getId());
 	}
 
+	/**
+	 * When 즐겨찾기 리스트를 삭제
+	 * Then 즐겨찾기 리스트가 삭제됨
+	 */
+	@DisplayName("등록된 즐겨찾기중 하나를 삭제 성공한다.")
+	@Test
+	void deleteFavorites() {
+		// given
+		Long favoriteId = 즐겨찾기_생성(회원.getId(), 홍대입구역.getId(), 당산역.getId()).getId();
+
+		// when
+		favoriteService.deleteFavorite(회원.getId(), favoriteId);
+
+		//then
+		List<FavoriteResponse> response = favoriteService.findFavorites();
+		assertThat(response).hasSize(0);
+	}
+
 	private FavoriteResponse 즐겨찾기_생성(Long memberId, Long sourceId, Long targetId) {
 		FavoriteRequest request = new FavoriteRequest(sourceId, targetId);
 		return favoriteService.addFavorite(memberId, request);

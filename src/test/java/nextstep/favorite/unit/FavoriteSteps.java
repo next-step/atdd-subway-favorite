@@ -34,12 +34,12 @@ public class FavoriteSteps {
 				.extract();
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long id) {
+	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, String url) {
 		return RestAssured.given().log().all()
 				.auth().oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.when()
-				.delete("/favorites/{id}", id)
+				.delete(url)
 				.then().log().all()
 				.extract();
 	}
