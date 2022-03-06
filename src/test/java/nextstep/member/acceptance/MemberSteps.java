@@ -88,8 +88,7 @@ public class MemberSteps {
                 .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
@@ -98,7 +97,6 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 

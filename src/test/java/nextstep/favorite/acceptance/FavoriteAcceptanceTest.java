@@ -99,4 +99,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
+
+	@DisplayName("비로그인 상태에서 즐겨찾기 서비스 접근")
+	@Test
+	void accessMyInfoInNotLogin() {
+		String 유효하지_않은_토큰 = "invalid token";
+
+		ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(유효하지_않은_토큰, 홍대입구역, 당산역);
+		assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+		ExtractableResponse<Response> searchResponse = 즐겨찾기_목록_조회_요청(유효하지_않은_토큰);
+		assertThat(searchResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+		ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(유효하지_않은_토큰, "/favorite/1");
+		assertThat(searchResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
 }
