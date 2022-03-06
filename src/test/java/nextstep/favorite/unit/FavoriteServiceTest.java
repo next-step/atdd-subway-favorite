@@ -84,11 +84,11 @@ public class FavoriteServiceTest {
 	 */
 	@DisplayName("등록된 즐겨찾기 리스트를 조회 성공한다.")
 	@Test
-	void getFavorites() {
+	void findAllFavorites() {
 		즐겨찾기_생성(회원.getId(), 홍대입구역.getId(), 당산역.getId());
 		즐겨찾기_생성(회원.getId(), 당산역.getId(), 홍대입구역.getId());
 
-		List<FavoriteResponse> response = favoriteService.findFavorites();
+		List<FavoriteResponse> response = favoriteService.findAllFavorite();
 		assertThat(response)
 				.extracting(FavoriteResponse::getSource)
 				.map(stationResponse -> stationResponse.getId())
@@ -109,7 +109,7 @@ public class FavoriteServiceTest {
 		favoriteService.deleteFavorite(회원.getId(), favoriteId);
 
 		//then
-		List<FavoriteResponse> response = favoriteService.findFavorites();
+		List<FavoriteResponse> response = favoriteService.findAllFavorite();
 		assertThat(response).hasSize(0);
 	}
 

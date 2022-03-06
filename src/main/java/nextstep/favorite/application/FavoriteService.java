@@ -7,6 +7,7 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,8 @@ public class FavoriteService {
 		}
 	}
 
-	public List<FavoriteResponse> findFavorites() {
+	@Transactional(readOnly = true)
+	public List<FavoriteResponse> findAllFavorite() {
 		List<Favorite> favorites = favoriteRepository.findAll();
 
 		return favorites.stream()
