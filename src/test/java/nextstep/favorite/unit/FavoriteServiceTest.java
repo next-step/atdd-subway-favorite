@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -74,6 +76,23 @@ public class FavoriteServiceTest {
 		assertThatThrownBy(() -> favoriteService.addFavorite(회원.getId(), duplicateRequest))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("즐겨찾기가 등록되어 있습니다.");
+	}
+
+	/**
+	 * When 즐겨찾기 리스트를 조회
+	 * Then 즐겨찾기 리스트가 조회됨
+	 */
+	@DisplayName("등록된 즐겨찾기 리스트를 조회 성공한다.")
+	@Test
+	void getFavorites() {
+		즐겨찾기_생성(회원.getId(), 홍대입구역.getId(), 당산역.getId());
+		즐겨찾기_생성(회원.getId(), 당산역.getId(), 홍대입구역.getId());
+
+		List<FavoriteResponse> response = favoriteService.findFavorites();
+		assertThat(response)
+				.extracting(FavoriteResponse::getSource)
+				.map(stationResponse -> stationResponse.getId())
+				.containsExactly(홍대입구역.getId(), 당산역.getId());
 	}
 
 	private FavoriteResponse 즐겨찾기_생성(Long memberId, Long sourceId, Long targetId) {

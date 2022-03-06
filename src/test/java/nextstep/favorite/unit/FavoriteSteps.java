@@ -24,8 +24,9 @@ public class FavoriteSteps {
 				.extract();
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
+	public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
 		return RestAssured.given().log().all()
+				.auth().oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.when()
 				.get("/favorites")
@@ -33,8 +34,9 @@ public class FavoriteSteps {
 				.extract();
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long id) {
+	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long id) {
 		return RestAssured.given().log().all()
+				.auth().oauth2(token)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.when()
 				.delete("/favorites/{id}", id)

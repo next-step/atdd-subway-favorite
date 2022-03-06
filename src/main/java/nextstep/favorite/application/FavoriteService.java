@@ -8,6 +8,9 @@ import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class FavoriteService {
 	private final FavoriteRepository favoriteRepository;
@@ -37,5 +40,13 @@ public class FavoriteService {
 		if (existsFavorite) {
 			throw new IllegalArgumentException("동일한 즐겨찾기가 등록되어 있습니다.");
 		}
+	}
+
+	public List<FavoriteResponse> findFavorites() {
+		List<Favorite> favorites = favoriteRepository.findAll();
+
+		return favorites.stream()
+				.map(FavoriteResponse::from)
+				.collect(Collectors.toList());
 	}
 }

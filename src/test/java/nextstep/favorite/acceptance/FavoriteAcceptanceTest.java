@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 import static nextstep.favorite.unit.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.지하철노선_생성_요청;
@@ -18,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 	private Long 이호선;
 
+	private Long 홍대입구역;
 	private Long 합정역;
 	private Long 당산역;
 
@@ -32,11 +35,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		super.setUp();
 
 		// 지하철 역 등록되어 있음
+		홍대입구역 = 지하철역_생성_요청("홍대입구역").jsonPath().getLong("id");
 		합정역 = 지하철역_생성_요청("합정역").jsonPath().getLong("id");
 		당산역 = 지하철역_생성_요청("당산역").jsonPath().getLong("id");
 
 		// 지하철 노선 등록되어 있음
-		이호선 = 지하철노선_생성_요청("2호선", "green", 합정역, 당산역, 50).jsonPath().getLong("id");
+		이호선 = 지하철노선_생성_요청("2호선", "green", 홍대입구역, 당산역, 50).jsonPath().getLong("id");
 
 		// 회원 등록되어 있음
 		회원_생성_요청("email@email.com", "password", 30);
@@ -54,7 +58,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void addFavorite() {
 		// when
-		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인토큰, 합정역, 당산역);
+		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인토큰, 홍대입구역, 당산역);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -69,13 +73,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void searchFavorite() {
 		// when
+		즐겨찾기_생성_요청(로그인토큰, 홍대입구역, 당산역);
 		즐겨찾기_생성_요청(로그인토큰, 합정역, 당산역);
-		ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+		ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(로그인토큰);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.jsonPath().getLong("source.id")).isEqualTo(합정역);
-		assertThat(response.jsonPath().getLong("target.id")).isEqualTo(당산역);
+
+		//왜 Long으로 던지고있는데 Integer로 반응이 올까? ㅠㅠ
+		List<Integer> sourceIds = response.jsonPath().getList("source.id");
+		assertThat(sourceIds).contains(1, 2);
 	}
 
 	/**
@@ -86,8 +93,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void removeFavorite() {
 		// when
-		Long id = 즐겨찾기_생성_요청(로그인토큰, 합정역, 당산역).jsonPath().getLong("id");
-		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(id);
+		Long id = 즐겨찾기_생성_요청(로그인토큰, 홍대입구역, 당산역).jsonPath().getLong("id");
+		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(로그인토큰, id);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
