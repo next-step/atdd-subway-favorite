@@ -1,5 +1,6 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.core.MethodParameter;
@@ -20,6 +21,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            throw new AuthenticationException();
+        }
+
         if (authentication.getPrincipal() instanceof Map) {
             return extractPrincipal(parameter, authentication);
         }

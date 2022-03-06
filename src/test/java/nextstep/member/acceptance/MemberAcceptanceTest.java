@@ -1,12 +1,13 @@
-package nextstep.subway.acceptance;
+package nextstep.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -115,5 +116,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then 내 정보 삭제됨
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("비로그인 상태에서 내 정보 관리 접근")
+    @Test
+    void accessMyInfoInNotLogin() {
+        String 유효하지_않은_토큰 = "invalid token";
+
+        ExtractableResponse<Response> searchResponse = 내_회원_정보_조회_요청(유효하지_않은_토큰);
+        assertThat(searchResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
     }
 }

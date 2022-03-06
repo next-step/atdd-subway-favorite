@@ -6,7 +6,7 @@ import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
