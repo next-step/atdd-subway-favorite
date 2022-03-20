@@ -1,6 +1,8 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.내_회원_삭제_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.로그인_회원_정보_수정_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
@@ -103,10 +105,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
 		String token = 로그인_되어_있음(EMAIL, PASSWORD);
-		ExtractableResponse<Response> response = 회원_정보_수정_요청(token, EMAIL, PASSWORD, AGE);
+		ExtractableResponse<Response> response = 로그인_회원_정보_수정_요청(token, EMAIL, PASSWORD, AGE);
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-		ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+		ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(token);
 		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 }

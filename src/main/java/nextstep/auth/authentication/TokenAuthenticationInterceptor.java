@@ -53,7 +53,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
             return new Authentication(loginMember);
         }
 
-        throw new IllegalArgumentException();
+        throw new AuthenticationException();
     }
 
     private static class TokenRequest {
