@@ -1,16 +1,15 @@
 package nextstep.subway.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
@@ -74,7 +73,7 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(String accessToken, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 로그인_회원_정보_수정_요청(String accessToken, String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -89,12 +88,20 @@ public class MemberSteps {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 내_회원_삭제_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/members/me")
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all().extract();
+            .given().log().all()
+            .when().delete(uri)
+            .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String email, String password) {
