@@ -1,43 +1,50 @@
 package nextstep.subway.utils;
 
-import com.google.common.base.CaseFormat;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Profile("test")
 @Service
-@ActiveProfiles("test")
 public class DatabaseCleanup implements InitializingBean {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private List<String> tableNames;
 
     @Override
     public void afterPropertiesSet() {
-        tableNames = entityManager.getMetamodel().getEntities().stream()
-                .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .collect(Collectors.toList());
+        tableNames = new ArrayList<>();
+        try {
+            DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
+            ResultSet tables = metaData.getTables(null, null, null, new String[]{"TABLE"});
+            while (tables.next()) {
+                String tableName = tables.getString("TABLE_NAME");
+                tableNames.add(tableName);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 
     @Transactional
     public void execute() {
-        entityManager.flush();
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
-
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
         for (String tableName : tableNames) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
         }
-
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
@@ -26,6 +26,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line line = lineRepository.save(new Line(request.getName(), request.getColor()));
         if (request.getUpStationId() != null && request.getDownStationId() != null && request.getDistance() != 0) {
@@ -36,18 +37,17 @@ public class LineService {
         return createLineResponse(line);
     }
 
-    @Transactional(readOnly = true)
     public List<LineResponse> showLines() {
         return lineRepository.findAll().stream()
                 .map(this::createLineResponse)
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public LineResponse findById(Long id) {
         return createLineResponse(lineRepository.findById(id).orElseThrow(IllegalArgumentException::new));
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineRequest) {
         Line line = lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
@@ -59,10 +59,12 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void deleteLine(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addSection(Long lineId, SectionRequest sectionRequest) {
         Station upStation = stationService.findById(sectionRequest.getUpStationId());
         Station downStation = stationService.findById(sectionRequest.getDownStationId());
@@ -76,9 +78,7 @@ public class LineService {
                 line.getId(),
                 line.getName(),
                 line.getColor(),
-                createStationResponses(line),
-                line.getCreatedDate(),
-                line.getModifiedDate()
+                createStationResponses(line)
         );
     }
 
@@ -98,6 +98,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId).orElseThrow(IllegalArgumentException::new);
         Station station = stationService.findById(stationId);

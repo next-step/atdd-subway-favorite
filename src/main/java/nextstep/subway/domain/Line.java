@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Line extends BaseEntity {
+public class Line {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
     private String color;
 

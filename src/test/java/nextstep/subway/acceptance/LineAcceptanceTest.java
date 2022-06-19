@@ -17,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
     /**
-     * When 지하철 노선 생성을 요청 하면
-     * Then 지하철 노선 생성이 성공한다.
+     * When 지하철 노선을 생성하면
+     * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
      */
     @DisplayName("지하철 노선 생성")
     @Test
@@ -28,13 +28,15 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
+
+        assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
     }
 
     /**
-     * Given 지하철 노선 생성을 요청 하고
-     * Given 새로운 지하철 노선 생성을 요청 하고
-     * When 지하철 노선 목록 조회를 요청 하면
-     * Then 두 노선이 포함된 지하철 노선 목록을 응답받는다
+     * Given 2개의 지하철 노선을 생성하고
+     * When 지하철 노선 목록을 조회하면
+     * Then 지하철 노선 목록 조회 시 2개의 노선을 조회할 수 있다.
      */
     @DisplayName("지하철 노선 목록 조회")
     @Test
@@ -52,9 +54,9 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 지하철 노선 생성을 요청 하고
-     * When 생성한 지하철 노선 조회를 요청 하면
-     * Then 생성한 지하철 노선을 응답받는다
+     * Given 지하철 노선을 생성하고
+     * When 생성한 지하철 노선을 조회하면
+     * Then 생성한 지하철 노선의 정보를 응답받을 수 있다.
      */
     @DisplayName("지하철 노선 조회")
     @Test
@@ -71,9 +73,9 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 지하철 노선 생성을 요청 하고
-     * When 지하철 노선의 정보 수정을 요청 하면
-     * Then 지하철 노선의 정보 수정은 성공한다.
+     * Given 지하철 노선을 생성하고
+     * When 생성한 지하철 노선을 수정하면
+     * Then 해당 지하철 노선 정보는 수정된다
      */
     @DisplayName("지하철 노선 수정")
     @Test
@@ -84,7 +86,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        ExtractableResponse<Response> response = RestAssured
+        RestAssured
                 .given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -92,13 +94,15 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
 
         // then
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("color")).isEqualTo("red");
     }
 
     /**
-     * Given 지하철 노선 생성을 요청 하고
-     * When 생성한 지하철 노선 삭제를 요청 하면
-     * Then 생성한 지하철 노선 삭제가 성공한다.
+     * Given 지하철 노선을 생성하고
+     * When 생성한 지하철 노선을 삭제하면
+     * Then 해당 지하철 노선 정보는 삭제된다
      */
     @DisplayName("지하철 노선 삭제")
     @Test
@@ -114,23 +118,5 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    /**
-     * Given 지하철 노선 생성을 요청 하고
-     * When 같은 이름으로 지하철 노선 생성을 요청 하면
-     * Then 지하철 노선 생성이 실패한다.
-     */
-    @DisplayName("중복이름으로 지하철 노선 생성")
-    @Test
-    void duplicateName() {
-        // given
-        지하철_노선_생성_요청("2호선", "green");
-
-        // when
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
-
-        // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
