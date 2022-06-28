@@ -1,16 +1,22 @@
 package nextstep.auth.context;
 
-public class Authentication {
+import java.io.Serializable;
+import java.util.List;
+
+public class Authentication implements Serializable {
     private Object principal;
+    private List<String> authorities;
 
-    public Authentication() {
-    }
-
-    public Authentication(Object principal) {
+    public Authentication(Object principal, List<String> authorities) {
         this.principal = principal;
+        this.authorities = authorities;
     }
 
     public Object getPrincipal() {
         return principal;
+    }
+
+    public List<String> getAuthorities() {
+        return authorities;
     }
 }

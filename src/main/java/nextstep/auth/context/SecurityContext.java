@@ -1,6 +1,8 @@
 package nextstep.auth.context;
 
-public class SecurityContext {
+import java.io.Serializable;
+
+public class SecurityContext implements Serializable {
     private Authentication authentication;
 
     public SecurityContext() {

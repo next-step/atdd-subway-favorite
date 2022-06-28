@@ -1,10 +1,10 @@
 package nextstep.subway.unit;
 
-import com.google.common.collect.Lists;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Path;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.SubwayMap;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SubwayMapTest {
+public class SubwayMapTest {
 
     private Station 교대역;
     private Station 강남역;

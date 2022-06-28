@@ -1,40 +1,43 @@
 package nextstep.member.domain;
 
 
+import java.util.List;
+
 public class LoginMember {
-    private Long id;
     private String email;
     private String password;
-    private Integer age;
+    private List<String> authorities;
 
     public static LoginMember of(Member member) {
-        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
+        return new LoginMember(member.getEmail(), member.getPassword(), member.getRoles());
     }
 
-    public LoginMember(Long id, String email, String password, Integer age) {
-        this.id = id;
+    public static LoginMember of(String email, List<String> authorities) {
+        return new LoginMember(email, null, authorities);
+    }
+
+    public static LoginMember guest() {
+        return new LoginMember();
+    }
+
+    public LoginMember() {
+    }
+
+    public LoginMember(String email, String password, List<String> authorities) {
         this.email = email;
         this.password = password;
-        this.age = age;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
-
-    public Long getId() {
-        return id;
+        this.authorities = authorities;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public Integer getAge() {
-        return age;
+    public List<String> getAuthorities() {
+        return authorities;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 }
