@@ -85,5 +85,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        var 인증토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        var 회원_정보 = 베어러_토큰_인증으로_내_회원_정보_조회_요청(인증토큰);
+
+        회원_정보_조회됨(회원_정보, EMAIL, AGE);
+
+        var 수정_요청 = 베어러_토큰_인증으로_내_회원_정보_수정(인증토큰, EMAIL, PASSWORD, AGE);
+        회원_정보가_수정됨(수정_요청);
+
+        베어러_토큰_인증으로_내_회원_정보_삭제_요청(인증토큰);
     }
 }
