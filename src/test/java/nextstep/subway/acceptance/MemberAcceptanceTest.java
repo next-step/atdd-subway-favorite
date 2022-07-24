@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.AbstractIntegerAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -48,8 +49,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보가_수정됨(response);
     }
+
 
     @DisplayName("회원 정보를 삭제한다.")
     @Test
@@ -61,12 +63,23 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원이_삭제됨(response);
     }
+
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        var 생성_요청 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        var 회원_정보_조회_요청 = 회원_정보_조회_요청(생성_요청);
+        회원_정보_조회됨(회원_정보_조회_요청, EMAIL, AGE);
+
+        var 수정_요청 = 회원_정보_수정_요청(생성_요청, "new" + EMAIL, "new" + PASSWORD, AGE);
+        회원_정보가_수정됨(수정_요청);
+
+        var 삭제_요청 = 회원_삭제_요청(생성_요청);
+        회원이_삭제됨(삭제_요청);
     }
 
     @DisplayName("나의 정보를 관리한다.")
