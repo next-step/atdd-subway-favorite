@@ -8,7 +8,7 @@
 - [ ] 지하철역, 노선, 구간을 변경하는 API는 관리자만 접근이 가능하도록 수정하세요. 
   - 해당 API: 생성, 수정, 삭제 API 
   - 조회 API는 권한이 필요없음
-- [ ] Form 기반 로그인과 Bearer 기반 로그인 기능을 구현하세요.
+- [x] Form 기반 로그인과 Bearer 기반 로그인 기능을 구현하세요.
   - [x] UsernamePasswordAuthenticationFilter, 
   - [x] BearerTokenAuthenticationFilter를 구현하세요.
   - AuthAcceptanceTest 테스트를 통해 기능 구현을 확인하세요.
