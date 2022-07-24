@@ -30,9 +30,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
-        ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        var 회원_정보 = 폼_로그인_후_내_회원_정보_조회_요청(EMAIL, PASSWORD);
 
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(회원_정보, EMAIL, AGE);
     }
 
     @DisplayName("Bearer Auth")
@@ -46,7 +46,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        return null;
+        return 세션_인증으로_내_회원_정보_조회_요청(email, password);
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회(String accessToken) {

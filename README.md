@@ -9,7 +9,7 @@
   - 해당 API: 생성, 수정, 삭제 API 
   - 조회 API는 권한이 필요없음
 - [ ] Form 기반 로그인과 Bearer 기반 로그인 기능을 구현하세요.
-  - [ ] UsernamePasswordAuthenticationFilter, 
+  - [x] UsernamePasswordAuthenticationFilter, 
   - [x] BearerTokenAuthenticationFilter를 구현하세요.
   - AuthAcceptanceTest 테스트를 통해 기능 구현을 확인하세요.
 요구사항 설명

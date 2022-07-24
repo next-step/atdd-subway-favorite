@@ -14,7 +14,9 @@ public class LoginMemberService {
     }
 
     public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() ->
+                new IllegalArgumentException("회원 정보가 없습니다.")
+        );
         return LoginMember.of(member);
     }
 }
