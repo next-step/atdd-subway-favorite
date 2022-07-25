@@ -28,16 +28,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "masterAdmin";
     private static final String PASSWORD = "password";
 
-    @Autowired
-    private DataLoader dataLoader;
-
     /**
      * Given 지하철역과 노선 생성을 요청 하고
      */
     @BeforeEach
     public void setUp() {
         super.setUp();
-        dataLoader.loadData();
         인증_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         강남역 = 지하철역_생성_요청(인증_토큰, "강남역").jsonPath().getLong("id");

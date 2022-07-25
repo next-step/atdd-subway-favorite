@@ -23,12 +23,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private String 인증_토큰;
 
-    @Autowired
-    private DataLoader dataLoader;
-
     @BeforeEach
     void setUp_() {
-        dataLoader.loadData();
         인증_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
