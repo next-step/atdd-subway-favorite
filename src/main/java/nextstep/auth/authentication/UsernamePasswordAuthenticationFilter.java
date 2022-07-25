@@ -13,11 +13,8 @@ import java.io.IOException;
 
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
     private final LoginMemberService loginMemberService;
-    private final ObjectMapper objectMapper;
-
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService, ObjectMapper objectMapper) {
+    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
         this.loginMemberService = loginMemberService;
-        this.objectMapper = objectMapper;
     }
 
     @Override
