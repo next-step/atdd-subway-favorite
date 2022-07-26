@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+    private AuthMemberLoader authMemberLoader;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(AuthMemberLoader authMemberLoader) {
+        this.authMemberLoader = authMemberLoader;
     }
 
     @Override
@@ -29,16 +29,16 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
 
             AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember == null) {
+            AuthMember authMember = authMemberLoader.loadUserByUsername(token.getPrincipal());
+            if (authMember == null) {
                 throw new AuthenticationException();
             }
 
-            if (!loginMember.checkPassword(token.getCredentials())) {
+            if (!authMember.checkPassword(token.getCredentials())) {
                 throw new AuthenticationException();
             }
 
-            Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+            Authentication authentication = new Authentication(authMember.getEmail(), authMember.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 

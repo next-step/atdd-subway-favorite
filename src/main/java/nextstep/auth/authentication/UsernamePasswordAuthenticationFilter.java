@@ -12,36 +12,36 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private final LoginMemberService loginMemberService;
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    private final AuthMemberLoader authMemberLoader;
+    public UsernamePasswordAuthenticationFilter(AuthMemberLoader authMemberLoader) {
+        this.authMemberLoader = authMemberLoader;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            final LoginMember loginMember = findLoginMember(request);
+            final AuthMember loginMember = findLoginMember(request);
             setAuthentication(loginMember);
         }
         return true;
     }
 
-    private LoginMember findLoginMember(HttpServletRequest request) {
+    private AuthMember findLoginMember(HttpServletRequest request) {
         final String username = request.getParameter("username");
         final String password = request.getParameter("password");
-        final LoginMember loginMember = loginMemberService.loadUserByUsername(username);
-        checkPassword(password, loginMember);
-        return loginMember;
+        final AuthMember authMember = authMemberLoader.loadUserByUsername(username);
+        checkPassword(password, authMember);
+        return authMember;
     }
 
-    private void checkPassword(String password, LoginMember loginMember) {
-        if (!loginMember.checkPassword(password)) {
+    private void checkPassword(String password, AuthMember authMemberLoader) {
+        if (!authMemberLoader.checkPassword(password)) {
             throw new AuthenticationException();
         }
     }
 
-    private void setAuthentication(LoginMember loginMember) {
+    private void setAuthentication(AuthMember loginMember) {
         final Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

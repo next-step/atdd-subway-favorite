@@ -1,6 +1,8 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthMember;
+import nextstep.auth.authentication.AuthMemberLoader;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
@@ -13,12 +15,12 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+    private AuthMemberLoader authMemberLoader;
     private JwtTokenProvider jwtTokenProvider;
     private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
-        this.loginMemberService = loginMemberService;
+    public TokenAuthenticationInterceptor(AuthMemberLoader authMemberLoader, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+        this.authMemberLoader = authMemberLoader;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
@@ -26,9 +28,9 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         TokenRequest tokenRequest = convert(request);
-        LoginMember loginMember = authenticate(tokenRequest);
+        AuthMember authMember = authenticate(tokenRequest);
 
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+        String token = jwtTokenProvider.createToken(authMember.getEmail(), authMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
@@ -39,13 +41,13 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public LoginMember authenticate(TokenRequest tokenRequest) {
+    public AuthMember authenticate(TokenRequest tokenRequest) {
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        AuthMember authMember = authMemberLoader.loadUserByUsername(principal);
 
-        validation(credentials, loginMember);
-        return loginMember;
+        validation(credentials, authMember);
+        return authMember;
     }
 
     public TokenRequest convert(HttpServletRequest request) throws IOException {
@@ -53,12 +55,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return objectMapper.readValue(content, TokenRequest.class);
     }
 
-    private void validation(String credentials, LoginMember loginMember) {
-        if (loginMember == null) {
+    private void validation(String credentials, AuthMember authMember) {
+        if (authMember == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(credentials)) {
+        if (!authMember.checkPassword(credentials)) {
             throw new AuthenticationException();
         }
     }
