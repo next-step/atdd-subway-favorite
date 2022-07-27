@@ -3,8 +3,11 @@ package nextstep.subway.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthMember;
 import nextstep.auth.authentication.AuthMemberLoader;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.converter.TokenAuthenticationConverter;
+import nextstep.auth.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +43,7 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        interceptor = new TokenAuthenticationInterceptor(authMemberLoader, jwtTokenProvider, objectMapper);
+        interceptor = new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper), authMemberLoader, jwtTokenProvider);
         request = createMockRequest();
         response = new MockHttpServletResponse();
     }
@@ -48,12 +51,12 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void convert() throws IOException {
         // given
-        TokenRequest tokenRequest = interceptor.convert(request);
+        AuthenticationToken token = interceptor.convert(request);
 
         // then
         assertAll(() -> {
-            assertThat(tokenRequest.getEmail()).isEqualTo(EMAIL);
-            assertThat(tokenRequest.getPassword()).isEqualTo(PASSWORD);
+            assertThat(token.getPrincipal()).isEqualTo(EMAIL);
+            assertThat(token.getCredentials()).isEqualTo(PASSWORD);
         });
     }
 
@@ -62,12 +65,12 @@ class TokenAuthenticationInterceptorTest {
         // given
         given(authMemberLoader.loadUserByUsername(EMAIL))
                 .willReturn(new LoginMember(EMAIL, PASSWORD, List.of(ROLE_MEMBER.name())));
-        AuthMember authMember = interceptor.authenticate(new TokenRequest(EMAIL, PASSWORD));
+        Authentication authenticate = interceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
 
         // then
         assertAll(() -> {
-            assertThat(authMember.getEmail()).isEqualTo(EMAIL);
-            assertThat(authMember.checkPassword(PASSWORD)).isTrue();
+            assertThat(authenticate.getPrincipal()).isEqualTo(EMAIL);
+            assertThat(authenticate.getAuthorities()).containsExactly(ROLE_MEMBER.name());
         });
     }
 
