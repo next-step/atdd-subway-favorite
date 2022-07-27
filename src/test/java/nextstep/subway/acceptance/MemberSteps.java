@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.utils.MockMember;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -15,8 +16,8 @@ public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    public static String 로그인_되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
+    public static String 로그인_되어_있음(MockMember member) {
+        ExtractableResponse<Response> response = 로그인_요청(member.getEmail(), member.getPassword());
         return response.jsonPath().getString("accessToken");
     }
 
@@ -33,11 +34,11 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_생성_요청(MockMember member) {
         Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        params.put("email", member.getEmail());
+        params.put("password", member.getPassword());
+        params.put("age", member.getAge()+ "");
 
         return RestAssured
                 .given().log().all()
@@ -81,9 +82,9 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
+    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(MockMember member) {
         return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
+                .auth().preemptive().basic(member.getEmail(), member.getPassword())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
@@ -91,9 +92,9 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, MockMember member) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
-        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+        assertThat(response.jsonPath().getString("email")).isEqualTo(member.getEmail());
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(member.getAge());
     }
 }
