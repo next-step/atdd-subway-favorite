@@ -29,6 +29,14 @@ public class StationSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철역_제거_요청(String location) {
+        return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
+                .when()
+                .delete(location)
+                .then().log().all()
+                .extract();
+    }
+
     private static RequestSpecification given(String accessToken) {
         return RestAssured
                 .given().log().all()
