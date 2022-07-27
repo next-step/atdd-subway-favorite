@@ -35,6 +35,20 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(String location, Map<String, String> params) {
+        return given(로그인_되어_있음(email, password))
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(location)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String location) {
+        return given(로그인_되어_있음(email, password))
+                .when().delete(location)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(ExtractableResponse<Response> createResponse) {
         return RestAssured
                 .given().log().all()
@@ -62,14 +76,6 @@ public class LineSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines/{lineId}/sections", lineId)
-                .then().log().all().extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(String location, Map<String, String> params) {
-        return given(로그인_되어_있음(email, password))
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put(location)
                 .then().log().all().extract();
     }
 
