@@ -1,6 +1,7 @@
 package nextstep.auth.interceptor;
 
 import nextstep.auth.authentication.AuthMemberLoader;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.converter.AuthenticationConverter;
@@ -15,9 +16,13 @@ public class BasicAuthenticationInterceptor extends  AuthenticationInterceptor{
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        super.preHandle(request, response, handler);
-        return false;
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        try {
+            super.preHandle(request, response, handler);
+        } catch (Exception e) {
+            return true;
+        }
+        return true;
     }
 
     @Override
