@@ -19,15 +19,19 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String token = getValidToken(request);
-        setAuthentication(token);
+        try {
+            String token = getValidToken(request);
+            setAuthentication(token);
+        } catch (AuthenticationException e) {
+            return true;
+        }
 
         return true;
     }
 
     private String getValidToken(HttpServletRequest request) {
         final String requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!requestTokenHeader.startsWith(TOKEN_TYPE)) {
+        if (requestTokenHeader == null || !requestTokenHeader.startsWith(TOKEN_TYPE)) {
             throw new AuthenticationException();
         }
         String token = requestTokenHeader.replaceFirst(TOKEN_TYPE, EMPTY);
