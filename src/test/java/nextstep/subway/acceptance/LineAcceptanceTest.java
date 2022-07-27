@@ -88,6 +88,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         params.put("color", "red");
         RestAssured
                 .given().log().all()
+                .auth().oauth2(ADMIN_ACCESS_TOKEN)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -113,6 +114,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
+                .auth().oauth2(ADMIN_ACCESS_TOKEN)
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 

@@ -76,6 +76,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // when
         String location = createResponse.header("location");
         RestAssured.given().log().all()
+                .auth().oauth2(ADMIN_ACCESS_TOKEN)
                 .when()
                 .delete(location)
                 .then().log().all()
