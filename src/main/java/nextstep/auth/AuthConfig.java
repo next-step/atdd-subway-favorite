@@ -2,12 +2,13 @@ package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthMemberLoader;
-import nextstep.auth.authentication.BasicAuthenticationFilter;
 import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
+import nextstep.auth.converter.BasicAuthenticationConverter;
 import nextstep.auth.converter.TokenAuthenticationConverter;
 import nextstep.auth.converter.UsernamePasswordAuthenticationConverter;
+import nextstep.auth.interceptor.BasicAuthenticationInterceptor;
 import nextstep.auth.interceptor.TokenAuthenticationInterceptor;
 import nextstep.auth.interceptor.UsernamePasswordAuthenticationInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
@@ -34,7 +35,7 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
         registry.addInterceptor(new UsernamePasswordAuthenticationInterceptor(new UsernamePasswordAuthenticationConverter(), authMemberLoader)).addPathPatterns("/login/form");
         registry.addInterceptor(new TokenAuthenticationInterceptor(new TokenAuthenticationConverter(objectMapper), authMemberLoader, jwtTokenProvider)).addPathPatterns("/login/token");
-        registry.addInterceptor(new BasicAuthenticationFilter(authMemberLoader));
+        registry.addInterceptor(new BasicAuthenticationInterceptor(new BasicAuthenticationConverter(),authMemberLoader));
         registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider)).excludePathPatterns("/members");
     }
 
