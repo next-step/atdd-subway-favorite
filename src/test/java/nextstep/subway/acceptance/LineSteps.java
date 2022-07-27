@@ -65,6 +65,14 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(String location, Map<String, String> params) {
+        return given(로그인_되어_있음(email, password))
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(location)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_제거_요청(Long lineId, Long stationId) {
         return given(로그인_되어_있음(email, password))
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
