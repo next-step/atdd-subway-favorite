@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.applicaion.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,8 +76,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .auth().oauth2(ADMIN_ACCESS_TOKEN)
+        secureGiven()
                 .when()
                 .delete(location)
                 .then().log().all()
@@ -89,5 +89,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
+    }
+
+    private RequestSpecification secureGiven() {
+        return RestAssured.given().log().all()
+                .auth().oauth2(ADMIN_ACCESS_TOKEN);
     }
 }
