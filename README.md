@@ -8,5 +8,5 @@
   - [ ] UsernamePasswordAuthenticationFilter 구현
   - [ ] BearerTokenAuthenticationFilter 구현
 - [ ] AuthAcceptanceTest 테스트를 통해 기능 구현을 확인하기
-- [ ] 인수 테스트를 수행하기 전 공통으로 필요한 멤버, 역할은 초기에 설정하기
+- [x] 인수 테스트를 수행하기 전 공통으로 필요한 멤버, 역할은 초기에 설정하기 - DataLoader 활용
 - [ ] API 별 권한 검증을 위해 @Secured 를 사용하기
