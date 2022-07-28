@@ -1,21 +1,21 @@
 package nextstep.auth.handler;
 
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthVerificationHandler extends AuthVerificationHandler {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public BasicAuthVerificationHandler(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthVerificationHandler(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -29,15 +29,15 @@ public class BasicAuthVerificationHandler extends AuthVerificationHandler {
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
+        User user = userDetailsService.loadUserByUsername(token.getPrincipal());
+        if (user == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!user.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(user.getPrincipal(), user.getAuthorities());
     }
 }

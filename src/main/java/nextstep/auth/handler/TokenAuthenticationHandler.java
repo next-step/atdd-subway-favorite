@@ -1,11 +1,11 @@
 package nextstep.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,25 +17,25 @@ public class TokenAuthenticationHandler extends AuthenticationHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationHandler(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        super(loginMemberService);
+    public TokenAuthenticationHandler(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    protected LoginMember preAuthentication(HttpServletRequest request) throws IOException {
+    protected User preAuthentication(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
 
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        return findLoginMember(principal, credentials);
+        return findAuthMember(principal, credentials);
     }
 
     @Override
-    protected void afterAuthentication(LoginMember loginMember, HttpServletResponse response) throws IOException {
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void afterAuthentication(User user, HttpServletResponse response) throws IOException {
+        String token = jwtTokenProvider.createToken(user.getPrincipal(), user.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

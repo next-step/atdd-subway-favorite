@@ -1,9 +1,9 @@
 package nextstep.auth.handler;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,36 +13,36 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public abstract class AuthenticationHandler implements HandlerInterceptor {
 
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    protected abstract LoginMember preAuthentication(HttpServletRequest request) throws IOException;
+    protected abstract User preAuthentication(HttpServletRequest request) throws IOException;
 
-    protected abstract void afterAuthentication(LoginMember loginMember, HttpServletResponse response) throws IOException;
+    protected abstract void afterAuthentication(User user, HttpServletResponse response) throws IOException;
 
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        LoginMember loginMember = preAuthentication(request);
-        afterAuthentication(loginMember, response);
+        User user = preAuthentication(request);
+        afterAuthentication(user, response);
 
         return false;
     }
 
-    protected LoginMember findLoginMember(String email, String password) {
-        LoginMember loginMember = loginMemberService.loadUserByUsername(email);
+    protected User findAuthMember(String email, String password) {
+        User user = userDetailsService.loadUserByUsername(email);
 
-        if (loginMember == null) {
+        if (user == null) {
             throw new AuthenticationException();
         }
 
-        if (isNotMatchPassword(password, loginMember)) {
+        if (isNotMatchPassword(password, user)) {
             throw new AuthenticationException();
         }
-        return loginMember;
+        return user;
     }
 
 
-    private boolean isNotMatchPassword(String password, LoginMember loginMember) {
-        return !loginMember.checkPassword(password);
+    private boolean isNotMatchPassword(String password, User user) {
+        return !user.checkPassword(password);
     }
 
 
