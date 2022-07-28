@@ -16,6 +16,8 @@ import static nextstep.member.domain.RoleType.ROLE_MEMBER;
 public class DataLoader {
 
     private final MemberRepository memberRepository;
+    private static String MASTER_ADMIN = "masterAdmin";
+    private static String MASTER_ADMIN_PASSWORD = "password";
 
     public DataLoader(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -23,8 +25,9 @@ public class DataLoader {
 
     @Transactional
     public void loadData() {
-        Member masterAdmin = new Member("masterAdmin",
-                "password",
+        Member masterAdmin = new Member(
+                MASTER_ADMIN,
+                MASTER_ADMIN_PASSWORD,
                 1,
                 List.of(ROLE_ADMIN.name(),
                         ROLE_MEMBER.name()));

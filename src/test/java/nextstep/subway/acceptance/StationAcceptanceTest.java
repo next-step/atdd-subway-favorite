@@ -25,13 +25,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private String 인증_토큰;
     private static final String EMAIL = "masterAdmin";
     private static final String PASSWORD = "password";
-    @Autowired
-    private DataLoader dataLoader;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        dataLoader.loadData();
         인증_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 

@@ -43,7 +43,13 @@ public class DatabaseCleanup implements InitializingBean {
     public void execute() {
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
         for (String tableName : tableNames) {
-            jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
+            if (tableName.equals("MEMBER")) {
+                jdbcTemplate.execute("DELETE FROM " + tableName + " WHERE email <> 'masterAdmin'");
+            } else if (tableName.equals("MEMBER_ROLE")) {
+                return;
+            } else {
+                jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
+            }
         }
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
     }

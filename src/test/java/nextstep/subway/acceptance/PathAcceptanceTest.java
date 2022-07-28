@@ -23,9 +23,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "masterAdmin";
     private static final String PASSWORD = "password";
     private String 인증_토큰;
-    @Autowired
-    private DataLoader dataLoader;
-
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;
@@ -44,7 +41,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        dataLoader.loadData();
         인증_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         교대역 = 지하철역_생성_요청(인증_토큰, "교대역").jsonPath().getLong("id");
