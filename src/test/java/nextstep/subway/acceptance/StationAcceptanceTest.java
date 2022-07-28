@@ -70,6 +70,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
+
         // given
         ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역");
 

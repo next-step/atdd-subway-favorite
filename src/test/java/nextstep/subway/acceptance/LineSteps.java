@@ -8,29 +8,34 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.MemberSteps.*;
+
 public class LineSteps {
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color) {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color, String accessToken) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().get("/lines")
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(ExtractableResponse<Response> createResponse) {
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(ExtractableResponse<Response> createResponse, String accessToken) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().get(createResponse.header("location"))
                 .then().log().all().extract();
     }
