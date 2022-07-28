@@ -40,4 +40,8 @@ public class LoginMember {
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
+
+    public boolean isInvalidPassword(String password) {
+        return !checkPassword(password);
+    }
 }
