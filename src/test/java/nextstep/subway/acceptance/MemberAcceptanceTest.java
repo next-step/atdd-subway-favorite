@@ -5,7 +5,7 @@ import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
-import static nextstep.subway.utils.MockMember.GUEST;
+import static nextstep.subway.fixture.MockMember.GUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;

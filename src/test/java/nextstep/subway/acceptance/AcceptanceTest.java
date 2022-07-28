@@ -2,16 +2,13 @@ package nextstep.subway.acceptance;
 
 import static java.util.Optional.*;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.utils.MockMember.ADMIN;
-import static nextstep.subway.utils.MockMember.GUEST;
+import static nextstep.subway.fixture.MockMember.ADMIN;
+import static nextstep.subway.fixture.MockMember.GUEST;
 
 import io.restassured.RestAssured;
-import java.util.Optional;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.utils.DatabaseCleanup;
-import nextstep.subway.utils.MockMember;
-import org.apache.commons.lang3.ObjectUtils;
-import org.junit.jupiter.api.BeforeAll;
+import nextstep.subway.fixture.MockMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
