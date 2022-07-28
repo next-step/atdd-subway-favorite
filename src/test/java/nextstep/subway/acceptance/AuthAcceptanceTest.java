@@ -40,6 +40,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
@@ -61,6 +63,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return null;
+        return RestAssured.given().log().all().
+                auth().oauth2(accessToken).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/members/me").
+                then().
+                log().all().
+                statusCode(HttpStatus.OK.value()).
+                extract();
     }
 }
