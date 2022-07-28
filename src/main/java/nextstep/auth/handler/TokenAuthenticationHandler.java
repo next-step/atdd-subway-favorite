@@ -1,43 +1,40 @@
-package nextstep.auth.token;
+package nextstep.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
-    private JwtTokenProvider jwtTokenProvider;
+public class TokenAuthenticationHandler extends AuthenticationHandler {
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public TokenAuthenticationHandler(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
+        super(loginMemberService);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    protected LoginMember preAuthentication(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
 
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        return findLoginMember(principal, credentials);
+    }
 
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
-
+    @Override
+    protected void afterAuthentication(LoginMember loginMember, HttpServletResponse response) throws IOException {
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
@@ -45,7 +42,5 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
-
-        return false;
     }
 }
