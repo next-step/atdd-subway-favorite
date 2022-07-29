@@ -19,20 +19,12 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if(isAlreadyLoginUser()) {
-            return true;
-        }
-
         try {
             registerAuthentication(request);
-            return true;
+            return false;
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private boolean isAlreadyLoginUser() {
-        return SecurityContextHolder.getContext().getAuthentication() != null;
     }
 
     private void registerAuthentication(HttpServletRequest request) {

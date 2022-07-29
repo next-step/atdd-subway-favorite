@@ -27,7 +27,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             registerAuthentication(token);
             return true;
         } catch (Exception e) {
-            return false;
+            return true;
         }
     }
 
