@@ -20,6 +20,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
     }
 
+    @DisplayName("Basic Auth")
+    @Test
+    void myInfoWithBasicAuthInvalidToken() {
+        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(ADMIN_EMAIL, ADMIN_PASSWORD);
+
+        회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
+    }
+
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
@@ -36,6 +44,16 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
+    }
+
+    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @Test
+    void myInfoWithBearerAuthInvalidToken() {
+        String invalidToken = "invalidToken";
+
+        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(invalidToken);
+
+        인증_예외_발생(response);
     }
 
 }

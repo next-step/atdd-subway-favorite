@@ -4,6 +4,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.NotFoundMemberException;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -29,18 +30,19 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
 
             AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember == null) {
+            try {
+                LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+
+                if (loginMember.invalidPassword(token.getCredentials())) {
+                    throw new AuthenticationException();
+                }
+
+                Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (NotFoundMemberException e) {
                 throw new AuthenticationException();
             }
-
-            if (!loginMember.checkPassword(token.getCredentials())) {
-                throw new AuthenticationException();
-            }
-
-            Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return true;
         } catch (Exception e) {

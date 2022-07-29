@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.NotFoundMemberException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +16,7 @@ public class LoginMemberService {
 
     public LoginMember loadUserByUsername(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundMemberException::new);
         return LoginMember.of(member);
     }
 }
