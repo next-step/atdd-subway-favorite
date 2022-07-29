@@ -19,6 +19,11 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            return true;
+        }
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
@@ -31,7 +36,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
             throw new AuthenticationException();
         }
 
-        Authentication authentication = new Authentication(findMember.getEmail(), findMember.getAuthorities());
+        authentication = new Authentication(findMember.getEmail(), findMember.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return true;

@@ -12,6 +12,10 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
+    protected static final String EMAIL = "admin@email.com";
+    protected static final String PASSWORD = "password";
+    protected static final Integer AGE = 20;
+
     @LocalServerPort
     int port;
 
