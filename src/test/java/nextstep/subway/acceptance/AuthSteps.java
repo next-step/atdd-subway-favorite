@@ -17,6 +17,11 @@ public class AuthSteps {
             .auth().oauth2(로그인_되어_있음("admin@email.com", "password"));
     }
 
+    public static RequestSpecification 회원_사용자_요청() {
+        return RestAssured.given().log().all()
+            .auth().oauth2(로그인_되어_있음("member@email.com", "password"));
+    }
+
     public static ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
         return RestAssured.given().log().all()
             .auth().form(email, password, new FormAuthConfig("/login/form", USERNAME_FIELD, PASSWORD_FIELD))

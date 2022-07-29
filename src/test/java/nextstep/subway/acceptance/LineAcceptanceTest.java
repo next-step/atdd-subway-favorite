@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AuthSteps.관리자_사용자_요청;
+import static nextstep.subway.acceptance.AuthSteps.회원_사용자_요청;
 import static nextstep.subway.acceptance.LineSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -116,5 +118,22 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+
+    @Test
+    @DisplayName("관리자만 접근 가능한 노선 생성을 회원이 접근하게 된다면 예외 응답을 반환한다.")
+    void validationAdmin() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "2호선");
+        params.put("color", "green");
+        ExtractableResponse<Response> response = 회원_사용자_요청()
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/lines")
+            .then().log().all().extract();
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
     }
 }

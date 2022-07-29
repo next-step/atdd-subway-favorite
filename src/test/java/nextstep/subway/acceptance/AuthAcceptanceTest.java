@@ -4,8 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -46,4 +49,17 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
+    @ParameterizedTest
+    @ValueSource(strings = {"Invalid.Token", ""})
+    @DisplayName("토큰이 유효하지 않은 경우 예외 응답을 반환한다.")
+    void validationToken(String accessToken) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
