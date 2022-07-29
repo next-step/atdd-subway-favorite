@@ -11,7 +11,9 @@ import javax.sql.DataSource;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Profile("test")
 @Service
@@ -40,9 +42,13 @@ public class DatabaseCleanup implements InitializingBean {
     }
 
     @Transactional
-    public void execute() {
+    public void execute(String... excludeTables) {
+        List<String> excludeTableList = Arrays.asList(excludeTables);
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
         for (String tableName : tableNames) {
+            if (excludeTableList.contains(tableName)) {
+                continue;
+            }
             jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
         }
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
