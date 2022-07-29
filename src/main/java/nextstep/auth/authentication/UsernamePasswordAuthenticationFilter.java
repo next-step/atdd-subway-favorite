@@ -13,7 +13,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private LoginMemberService loginMemberService;
+    private final LoginMemberService loginMemberService;
 
     public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
         this.loginMemberService = loginMemberService;
