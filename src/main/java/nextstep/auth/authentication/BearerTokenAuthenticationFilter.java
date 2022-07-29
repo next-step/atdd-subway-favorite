@@ -53,4 +53,9 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
         return true;
     }
 
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        SecurityContextHolder.clearContext();
+        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+    }
 }
