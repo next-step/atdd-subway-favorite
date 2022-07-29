@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.acceptance.StationSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
@@ -52,10 +52,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_요청("역삼역");
 
         // when
-        ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> stationResponse = 지하철역_목록_조회_요청();
 
         // then
         List<StationResponse> stations = stationResponse.jsonPath().getList(".", StationResponse.class);
@@ -75,18 +72,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        지하철역_제거_요청(location);
 
         // then
-        List<String> stationNames =
-                RestAssured.given().log().all()
-                        .when().get("/stations")
-                        .then().log().all()
-                        .extract().jsonPath().getList("name", String.class);
+        List<String> stationNames = 지하철역_목록_조회_요청().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
     }
 }
