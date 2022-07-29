@@ -14,6 +14,7 @@ import static org.apache.logging.log4j.util.Strings.EMPTY;
 public class BearerTokenAuthVerificationHandler extends AuthVerificationHandler {
 
     private static final String TOKEN_TYPE = "Bearer ";
+
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
