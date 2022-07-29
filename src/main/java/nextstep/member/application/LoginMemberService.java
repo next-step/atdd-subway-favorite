@@ -5,8 +5,6 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class LoginMemberService {
     private final MemberRepository memberRepository;

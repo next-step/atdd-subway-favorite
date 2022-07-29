@@ -46,7 +46,7 @@ public class DatabaseCleanup implements InitializingBean {
         List<String> excludeTableList = Arrays.asList(excludeTables);
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
         for (String tableName : tableNames) {
-            if (excludeTableList.contains(tableName)) {
+            if (excludeTableList.contains(tableName.toLowerCase())) {
                 continue;
             }
             jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
