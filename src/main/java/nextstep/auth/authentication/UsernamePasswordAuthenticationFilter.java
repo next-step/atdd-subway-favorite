@@ -1,6 +1,9 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
+import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +18,17 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // TODO: 구현하세요.
+        final String email = request.getParameter("email");
+        final String password = request.getParameter("password");
+
+        final LoginMember loginMember = loginMemberService.loadUserByUsername(email);
+
+        if (!loginMember.checkPassword(password)) {
+            throw new AuthenticationException();
+        }
+
+        final Authentication authentication = new Authentication(email, loginMember.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         return true;
     }
 }
