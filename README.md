@@ -42,3 +42,14 @@ public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest
 - 관리자만 접근 가능한 기능을 검증하는 인수 테스트를 만들기
 - 관리자 여부는 Header에 담기는 Token 정보를 이용
 - 토큰이 유효하지 않은 경우 에러 응답이 오는지 확인
+
+### BearerTokenAuthenticationFilter
+
+행위
+- 토큰값을 가져와 사용자 정보를 저장합니다.
+  - 토큰이 존재하지 않으면 다음 필터로 넘어갑니다.
+  - 토큰이 존재하면 해당 토큰이 유효한지 확인합니다.
+  - 토큰에서 사용자의 정보를 확인합니다.
+  - 사용자의 정보를 통해 사용자의 권한을 찾습니다.
+  - 사용자의 정보와 권한을 저장해 시큐리티 컨텍스트에 저장합니다.
+  - 다음 필터로 넘김니다.
