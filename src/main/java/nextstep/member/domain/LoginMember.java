@@ -30,6 +30,7 @@ public class LoginMember implements User {
         this.password = password;
         this.authorities = authorities;
     }
+
     @Override
     public boolean checkPassword(String password) {
         return this.password.equals(password);
@@ -40,12 +41,12 @@ public class LoginMember implements User {
         return this.email;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
+    @Override
     public List<String> getAuthorities() {
         return authorities;
     }
 
+    public String getEmail() {
+        return email;
+    }
 }
