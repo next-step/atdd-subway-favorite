@@ -19,26 +19,36 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
+        if(isAlreadyLoginUser()) {
             return true;
         }
 
+        try {
+            registerAuthentication(request);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isAlreadyLoginUser() {
+        return SecurityContextHolder.getContext().getAuthentication() != null;
+    }
+
+    private void registerAuthentication(HttpServletRequest request) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         LoginMember findMember = loginMemberService.loadUserByUsername(email);
-        if(findMember == null) {
+        if (findMember == null) {
             throw new AuthenticationException();
         }
 
-        if(!findMember.checkPassword(password)){
+        if (findMember.isInvalidPassword(password)) {
             throw new AuthenticationException();
         }
 
-        authentication = new Authentication(findMember.getEmail(), findMember.getAuthorities());
+        Authentication authentication = new Authentication(findMember.getEmail(), findMember.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return true;
     }
 }

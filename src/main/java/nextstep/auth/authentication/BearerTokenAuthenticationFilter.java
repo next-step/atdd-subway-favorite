@@ -18,26 +18,30 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
+        if(isAlreadyLoginUser()) {
             return true;
         }
 
         try {
             String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-            if (!jwtTokenProvider.validateToken(token)) {
-                throw new AuthenticationException();
-            }
-
-            String email = jwtTokenProvider.getPrincipal(token);
-            List<String> roles = jwtTokenProvider.getRoles(token);
-
-            authentication = new Authentication(email, roles);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            registerAuthentication(token);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private boolean isAlreadyLoginUser() {
+        return SecurityContextHolder.getContext().getAuthentication() != null;
+    }
+
+    private void registerAuthentication(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException();
+        }
+
+        String email = jwtTokenProvider.getPrincipal(token);
+        List<String> roles = jwtTokenProvider.getRoles(token);
+        SecurityContextHolder.getContext().setAuthentication(new Authentication(email, roles));
     }
 }
