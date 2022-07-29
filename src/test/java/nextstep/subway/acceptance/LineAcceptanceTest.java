@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.adminGiven;
+import static nextstep.subway.acceptance.MemberSteps.관리자Bearer토큰;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
@@ -86,8 +87,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        RestAssured
-                .given().log().all()
+        adminGiven(관리자Bearer토큰())
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -111,8 +111,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        ExtractableResponse<Response> response =
+                adminGiven(관리자Bearer토큰())
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 
