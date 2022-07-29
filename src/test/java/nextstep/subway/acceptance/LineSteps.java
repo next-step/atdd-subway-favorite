@@ -15,7 +15,7 @@ public class LineSteps {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
-        return 인증_사용자_요청()
+        return 관리자_사용자_요청()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
@@ -44,7 +44,7 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params) {
-        return 인증_사용자_요청()
+        return 관리자_사용자_요청()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
@@ -52,7 +52,7 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, String> params) {
-        return 인증_사용자_요청()
+        return 관리자_사용자_요청()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines/{lineId}/sections", lineId)
@@ -60,7 +60,7 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_제거_요청(Long lineId, Long stationId) {
-        return 인증_사용자_요청()
+        return 관리자_사용자_요청()
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all().extract();
     }

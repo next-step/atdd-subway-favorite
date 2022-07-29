@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.AuthSteps.인증_사용자_요청;
+import static nextstep.subway.acceptance.AuthSteps.관리자_사용자_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,7 +77,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // when
         String location = createResponse.header("location");
 
-        인증_사용자_요청()
+        관리자_사용자_요청()
             .when()
             .delete(location)
             .then().log().all()

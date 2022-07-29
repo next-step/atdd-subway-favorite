@@ -12,7 +12,7 @@ import static nextstep.subway.acceptance.MemberSteps.*;
 
 public class AuthSteps {
 
-    public static RequestSpecification 인증_사용자_요청() {
+    public static RequestSpecification 관리자_사용자_요청() {
         return RestAssured.given().log().all()
             .auth().oauth2(로그인_되어_있음("admin@email.com", "password"));
     }
