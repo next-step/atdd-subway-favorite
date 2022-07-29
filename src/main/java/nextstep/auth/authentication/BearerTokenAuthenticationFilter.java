@@ -5,7 +5,8 @@ import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
+    private static final Logger log = LoggerFactory.getLogger(BearerTokenAuthenticationFilter.class);
     private final JwtTokenProvider jwtTokenProvider;
     private final LoginMemberService loginMemberService;
 
@@ -28,10 +30,12 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
         SecurityContext securityContext = SecurityContextHolder.getContext();
 
         if (securityContext.getAuthentication() != null) {
+            log.info("User information is already saved. User principal is {}", securityContext.getAuthentication().getPrincipal());
             return true;
         }
 
         if (token.isBlank() || !jwtTokenProvider.validateToken(token)) {
+            log.info("The Token is not Valid. Token is {}", token);
             return true;
         }
 
@@ -40,12 +44,11 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
         try {
             loginMemberService.loadUserByUsername(principal);
         } catch (RuntimeException e) {
+            log.info("The Token is not Valid. Principal is {}", principal);
             throw new RuntimeException("사용자 정보가 존재하지 않습니다.");
         }
 
-        List<String> roles = jwtTokenProvider.getRoles(token);
-
-        Authentication authentication = new Authentication(principal, roles);
+        Authentication authentication = new Authentication(principal, jwtTokenProvider.getRoles(token));
         securityContext.setAuthentication(authentication);
         return true;
     }
