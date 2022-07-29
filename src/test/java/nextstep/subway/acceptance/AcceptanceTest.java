@@ -2,7 +2,6 @@ package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
 import nextstep.subway.utils.DatabaseCleanup;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +10,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
-import static nextstep.subway.acceptance.AuthSteps.ADMIN_EMAIL;
-import static nextstep.subway.acceptance.AuthSteps.ADMIN_PASSWORD;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_EMAIL;
+import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_PASSWORD;
+import static nextstep.subway.acceptance.member.MemberSteps.로그인_되어_있음;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

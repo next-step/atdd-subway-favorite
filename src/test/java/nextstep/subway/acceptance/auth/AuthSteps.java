@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
@@ -6,8 +6,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.acceptance.MemberSteps.PASSWORD_FIELD;
-import static nextstep.subway.acceptance.MemberSteps.USERNAME_FIELD;
+import static nextstep.subway.acceptance.member.MemberSteps.PASSWORD_FIELD;
+import static nextstep.subway.acceptance.member.MemberSteps.USERNAME_FIELD;
 
 public class AuthSteps {
     public static final String ADMIN_EMAIL = "admin@email.com";
