@@ -36,7 +36,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
 
         if (token.isBlank() || !jwtTokenProvider.validateToken(token)) {
             log.info("The Token is not Valid. Token is {}", token);
-            return true;
+            throw new AuthenticationException();
         }
 
         String principal = jwtTokenProvider.getPrincipal(token);
@@ -45,7 +45,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             loginMemberService.loadUserByUsername(principal);
         } catch (RuntimeException e) {
             log.info("The Token is not Valid. Principal is {}", principal);
-            throw new RuntimeException("사용자 정보가 존재하지 않습니다.");
+            throw new AuthenticationException();
         }
 
         Authentication authentication = new Authentication(principal, jwtTokenProvider.getRoles(token));
