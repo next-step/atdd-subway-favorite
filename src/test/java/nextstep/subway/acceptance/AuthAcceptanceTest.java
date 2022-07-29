@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
@@ -53,14 +54,22 @@ class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                     .auth().form(email, password, new FormAuthConfig("/login/form", "email", "password"))
-                    .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                     .get("/members/me")
                 .then().log().all()
+                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return null;
+        return RestAssured
+                .given().log().all()
+                    .auth().oauth2(accessToken)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                    .get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 }
