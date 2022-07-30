@@ -2,7 +2,13 @@ package nextstep.subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Section extends DefaultWeightedEdge {
@@ -65,6 +71,6 @@ public class Section extends DefaultWeightedEdge {
 
     public boolean hasDuplicateSection(Station upStation, Station downStation) {
         return (this.upStation == upStation && this.downStation == downStation)
-                || (this.upStation == downStation && this.downStation == upStation);
+            || (this.upStation == downStation && this.downStation == upStation);
     }
 }

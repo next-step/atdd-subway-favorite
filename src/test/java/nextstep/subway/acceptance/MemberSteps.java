@@ -26,11 +26,11 @@ public class MemberSteps {
         params.put("password", password);
 
         return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/login/token")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -40,21 +40,21 @@ public class MemberSteps {
         params.put("age", age + "");
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/members")
-                .then().log().all().extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/members")
+            .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
         return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(uri)
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
@@ -66,29 +66,29 @@ public class MemberSteps {
         params.put("age", age + "");
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
-                .then().log().all().extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put(uri)
+            .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all().extract();
+            .given().log().all()
+            .when().delete(uri)
+            .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
         return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+            .auth().preemptive().basic(username, password)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {

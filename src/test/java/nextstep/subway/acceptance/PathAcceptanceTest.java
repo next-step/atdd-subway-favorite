@@ -60,10 +60,10 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 두_역의_최단_거리_경로_조회를_요청(Long source, Long target) {
         return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-                .then().log().all().extract();
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+            .then().log().all().extract();
     }
 
     private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {

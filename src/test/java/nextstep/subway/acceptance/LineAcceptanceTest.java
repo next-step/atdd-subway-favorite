@@ -13,7 +13,9 @@ import java.util.Map;
 
 import static nextstep.subway.acceptance.AuthSteps.관리자_사용자_요청;
 import static nextstep.subway.acceptance.AuthSteps.회원_사용자_요청;
-import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_목록_조회_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")

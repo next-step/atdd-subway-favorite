@@ -1,6 +1,10 @@
 package nextstep.auth.token;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +24,12 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .claim("roles", roles)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .claim("roles", roles)
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
     }
 
     public String getPrincipal(String token) {

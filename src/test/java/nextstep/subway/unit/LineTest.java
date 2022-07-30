@@ -38,8 +38,8 @@ class LineTest {
 
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
+            .filter(it -> it.getUpStation() == 강남역)
+            .findFirst().orElseThrow(RuntimeException::new);
         assertThat(section.getDownStation()).isEqualTo(삼성역);
         assertThat(section.getDistance()).isEqualTo(5);
     }
@@ -57,8 +57,8 @@ class LineTest {
 
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
+            .filter(it -> it.getUpStation() == 강남역)
+            .findFirst().orElseThrow(RuntimeException::new);
         assertThat(section.getDownStation()).isEqualTo(삼성역);
         assertThat(section.getDistance()).isEqualTo(5);
     }
@@ -76,8 +76,8 @@ class LineTest {
 
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
+            .filter(it -> it.getUpStation() == 강남역)
+            .findFirst().orElseThrow(RuntimeException::new);
         assertThat(section.getDownStation()).isEqualTo(역삼역);
         assertThat(section.getDistance()).isEqualTo(10);
     }
@@ -95,8 +95,8 @@ class LineTest {
 
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
-                .filter(it -> it.getUpStation() == 역삼역)
-                .findFirst().orElseThrow(RuntimeException::new);
+            .filter(it -> it.getUpStation() == 역삼역)
+            .findFirst().orElseThrow(RuntimeException::new);
         assertThat(section.getDownStation()).isEqualTo(삼성역);
         assertThat(section.getDistance()).isEqualTo(5);
     }
@@ -124,7 +124,7 @@ class LineTest {
         line.addSection(강남역, 역삼역, 10);
 
         assertThatThrownBy(() -> line.addSection(강남역, 역삼역, 5))
-                .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -178,6 +178,6 @@ class LineTest {
         line.addSection(강남역, 역삼역, 10);
 
         assertThatThrownBy(() -> line.deleteSection(역삼역))
-                .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }

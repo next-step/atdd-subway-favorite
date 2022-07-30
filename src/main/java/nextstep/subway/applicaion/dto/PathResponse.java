@@ -16,8 +16,8 @@ public class PathResponse {
 
     public static PathResponse of(Path path) {
         List<StationResponse> stations = path.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
         int distance = path.extractDistance();
 
         return new PathResponse(stations, distance);

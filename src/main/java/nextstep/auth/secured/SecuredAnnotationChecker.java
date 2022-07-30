@@ -25,8 +25,8 @@ public class SecuredAnnotationChecker {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         authentication.getAuthorities().stream()
-                .filter(values::contains)
-                .findFirst()
-                .orElseThrow(() -> new RoleAuthenticationException("권한이 없습니다."));
+            .filter(values::contains)
+            .findFirst()
+            .orElseThrow(() -> new RoleAuthenticationException("권한이 없습니다."));
     }
 }

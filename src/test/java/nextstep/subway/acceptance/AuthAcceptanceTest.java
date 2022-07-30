@@ -1,7 +1,6 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
-import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
@@ -14,7 +13,9 @@ import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.AuthSteps.베어러_인증으로_내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.AuthSteps.폼_로그인_후_내_회원_정보_조회_요청;
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.베이직_인증으로_내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
