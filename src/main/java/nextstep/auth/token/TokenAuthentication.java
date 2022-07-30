@@ -3,8 +3,8 @@ package nextstep.auth.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationStrategy;
-import nextstep.auth.service.UserDetail;
 import nextstep.auth.service.UserDetailsService;
+import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,17 +29,17 @@ public class TokenAuthentication implements AuthenticationStrategy {
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        UserDetail userDetail = userDetailsService.loadUserByUsername(principal);
+        LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
 
-        if (userDetail == null) {
+        if (loginMember == null) {
             throw new AuthenticationException();
         }
 
-        if (!userDetail.checkPassword(credentials)) {
+        if (!loginMember.checkPassword(credentials)) {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(userDetail.getEmail(), userDetail.getAuthorities());
+        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
