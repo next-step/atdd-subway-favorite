@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.AdministratorInfo.*;
 import static nextstep.subway.acceptance.MemberSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -48,6 +49,16 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, ADMIN_EMAIL, ADMIN_AGE);
     }
 
+    @DisplayName("유효하지 않은 토큰으로 인한 Bearer Auth 실패.")
+    @Test
+    void myInfoWithBearerAuthFail() {
+//        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+        String invalidToken = "invalidToken";
+        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(invalidToken);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
         return RestAssured.given().log().all()
                 .auth().form(email, password
@@ -66,7 +77,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 when().
                 get("/members/me").
                 then().log().all().
-                statusCode(HttpStatus.OK.value()).
                 extract();
     }
 }

@@ -34,6 +34,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(회원생성_Response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("권한 검증 실패로 인한 회원가입 실패..")
+    @Test
+    void createMemberFail() {
+        String invalidToken = "invalidToken";
+        // when
+        ExtractableResponse<Response> response = 회원_생성_요청(invalidToken, "acsmia@gmail.com", "123", 34);
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("회원 정보를 조회한다.")
     @Test
     void getMember() {
