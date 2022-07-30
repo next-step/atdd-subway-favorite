@@ -23,7 +23,7 @@ public class TokenAuthenticationHandler extends AuthenticationHandler {
     }
 
     @Override
-    protected User preAuthentication(HttpServletRequest request) throws IOException {
+    public User preAuthentication(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
 
@@ -34,7 +34,7 @@ public class TokenAuthenticationHandler extends AuthenticationHandler {
     }
 
     @Override
-    protected void afterAuthentication(User user, HttpServletResponse response) throws IOException {
+    public void afterAuthentication(User user, HttpServletResponse response) throws IOException {
         String token = jwtTokenProvider.createToken(user.getPrincipal(), user.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 

@@ -17,7 +17,7 @@ public class UsernamePasswordAuthenticationHandler extends AuthenticationHandler
     }
 
     @Override
-    protected User preAuthentication(HttpServletRequest request) {
+    public User preAuthentication(HttpServletRequest request) {
         final String username = request.getParameter("username");
         final String password = request.getParameter("password");
 
@@ -25,7 +25,7 @@ public class UsernamePasswordAuthenticationHandler extends AuthenticationHandler
     }
 
     @Override
-    protected void afterAuthentication(User user, HttpServletResponse response) {
+    public void afterAuthentication(User user, HttpServletResponse response) {
         Authentication authentication = new Authentication(user.getPrincipal(), user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
