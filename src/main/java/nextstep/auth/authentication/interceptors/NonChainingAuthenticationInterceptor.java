@@ -1,7 +1,7 @@
 package nextstep.auth.authentication.interceptors;
 
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.token.LoginRequest;
+import nextstep.auth.authentication.AuthenticateRequest;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,16 +20,16 @@ public abstract class NonChainingAuthenticationInterceptor implements HandlerInt
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
-        final LoginRequest loginRequest = createLoginRequest(request);
-        final LoginMember loginMember = findMember(loginRequest.getEmail());
+        final AuthenticateRequest authenticateRequest = createLoginRequest(request);
+        final LoginMember loginMember = findMember(authenticateRequest.getEmail());
 
-        authenticate(loginRequest, loginMember);
+        authenticate(authenticateRequest, loginMember);
 
         afterAuthenticate(response, loginMember);
         return false;
     }
 
-    abstract LoginRequest createLoginRequest(final HttpServletRequest request) throws IOException;
+    abstract AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException;
 
     private LoginMember findMember(final String email) {
         LoginMember loginMember = loginMemberService.loadUserByUsername(email);
@@ -40,8 +40,8 @@ public abstract class NonChainingAuthenticationInterceptor implements HandlerInt
         return loginMember;
     }
 
-    private void authenticate(final LoginRequest loginRequest, final LoginMember loginMember) {
-        if (!loginMember.checkPassword(loginRequest.getPassword())) {
+    private void authenticate(final AuthenticateRequest authenticateRequest, final LoginMember loginMember) {
+        if (!loginMember.checkPassword(authenticateRequest.getPassword())) {
             throw new AuthenticationException();
         }
     }

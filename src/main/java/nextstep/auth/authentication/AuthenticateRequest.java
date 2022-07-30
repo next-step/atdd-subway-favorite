@@ -1,13 +1,13 @@
-package nextstep.auth.token;
+package nextstep.auth.authentication;
 
-public class LoginRequest {
+public class AuthenticateRequest {
     private String email;
     private String password;
 
-    public LoginRequest() {
+    public AuthenticateRequest() {
     }
 
-    public LoginRequest(String email, String password) {
+    public AuthenticateRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }

@@ -2,7 +2,7 @@ package nextstep.auth.authentication.interceptors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.LoginRequest;
+import nextstep.auth.authentication.AuthenticateRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
@@ -21,9 +21,9 @@ public class TokenAuthenticationInterceptor extends NonChainingAuthenticationInt
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    LoginRequest createLoginRequest(final HttpServletRequest request) throws IOException {
+    AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        return new ObjectMapper().readValue(content, LoginRequest.class);
+        return new ObjectMapper().readValue(content, AuthenticateRequest.class);
     }
 
     void afterAuthenticate(final HttpServletResponse response, final LoginMember loginMember) throws IOException {
