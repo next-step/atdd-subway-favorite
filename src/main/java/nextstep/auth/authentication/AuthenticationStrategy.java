@@ -5,5 +5,5 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface AuthenticationStrategy {
 
-    void authenticate(HttpServletRequest request, HttpServletResponse response, Object handler);
+    void authenticate(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
 }
