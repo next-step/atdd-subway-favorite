@@ -1,7 +1,7 @@
 package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.LoginRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -26,8 +26,8 @@ class TokenAuthenticationInterceptorTest {
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
+        request.setContent(new ObjectMapper().writeValueAsString(loginRequest).getBytes());
         return request;
     }
 

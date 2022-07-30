@@ -1,13 +1,13 @@
 package nextstep.auth.token;
 
-public class TokenRequest {
+public class LoginRequest {
     private String email;
     private String password;
 
-    public TokenRequest() {
+    public LoginRequest() {
     }
 
-    public TokenRequest(String email, String password) {
+    public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }
