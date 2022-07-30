@@ -9,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
@@ -22,21 +23,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
-
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
-
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
-
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
+        TokenRequest tokenRequest = convert(request);
+        LoginMember loginMember = authenticate(tokenRequest);
 
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
@@ -47,5 +35,26 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.getOutputStream().print(responseToClient);
 
         return false;
+    }
+
+    public TokenRequest convert(HttpServletRequest request) throws IOException {
+        String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        return new ObjectMapper().readValue(content, TokenRequest.class);
+    }
+
+    public LoginMember authenticate(TokenRequest tokenRequest) {
+        String principal = tokenRequest.getEmail();
+        String credentials = tokenRequest.getPassword();
+
+        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        if (loginMember == null) {
+            throw new AuthenticationException();
+        }
+
+        if (!loginMember.checkPassword(credentials)) {
+            throw new AuthenticationException();
+        }
+
+        return loginMemberService.loadUserByUsername(principal);
     }
 }
