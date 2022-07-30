@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.interceptors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.token.JwtTokenProvider;
@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationInterceptorNon extends NonChainingAuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends NonChainingAuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptorNon(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
         super(loginMemberService);
         this.jwtTokenProvider = jwtTokenProvider;
     }

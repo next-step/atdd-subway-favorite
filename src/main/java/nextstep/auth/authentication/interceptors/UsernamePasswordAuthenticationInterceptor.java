@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.interceptors;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
@@ -9,9 +9,9 @@ import nextstep.member.domain.LoginMember;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationInterceptorNon extends NonChainingAuthenticationInterceptor {
+public class UsernamePasswordAuthenticationInterceptor extends NonChainingAuthenticationInterceptor {
 
-    public UsernamePasswordAuthenticationInterceptorNon(LoginMemberService loginMemberService) {
+    public UsernamePasswordAuthenticationInterceptor(LoginMemberService loginMemberService) {
         super(loginMemberService);
     }
 
