@@ -31,7 +31,7 @@ public class AuthConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
         registry.addInterceptor(new UnchainedInterceptor(new UsernamePasswordAuthentication(userDetailsService))).addPathPatterns("/login/form");
-        registry.addInterceptor(new UnchainedInterceptor(new TokenAuthentication(loginMemberService, jwtTokenProvider))).addPathPatterns("/login/token");
+        registry.addInterceptor(new UnchainedInterceptor(new TokenAuthentication(userDetailsService, jwtTokenProvider))).addPathPatterns("/login/token");
         registry.addInterceptor(new ChainedInterceptor(new BasicAuthentication(loginMemberService)));
         registry.addInterceptor(new ChainedInterceptor(new BearerTokenAuthentication(jwtTokenProvider)));
     }

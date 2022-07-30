@@ -3,8 +3,8 @@ package nextstep.auth.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationStrategy;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.service.UserDetail;
+import nextstep.auth.service.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 public class TokenAuthentication implements AuthenticationStrategy {
 
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthentication(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public TokenAuthentication(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -29,17 +29,17 @@ public class TokenAuthentication implements AuthenticationStrategy {
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        UserDetail userDetail = userDetailsService.loadUserByUsername(principal);
 
-        if (loginMember == null) {
+        if (userDetail == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(credentials)) {
+        if (!userDetail.checkPassword(credentials)) {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+        String token = jwtTokenProvider.createToken(userDetail.getEmail(), userDetail.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
