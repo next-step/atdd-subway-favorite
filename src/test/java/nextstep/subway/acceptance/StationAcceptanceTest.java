@@ -78,8 +78,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         String location = createResponse.header("location");
 
         관리자_사용자_요청()
-            .when()
-            .delete(location)
+            .when().delete(location)
             .then().log().all()
             .extract();
 
@@ -89,6 +88,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .when().get("/stations")
                 .then().log().all()
                 .extract().jsonPath().getList("name", String.class);
+
         assertThat(stationNames).doesNotContain("강남역");
     }
 }

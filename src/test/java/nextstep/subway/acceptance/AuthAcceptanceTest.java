@@ -50,7 +50,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
 
     @ParameterizedTest
-    @ValueSource(strings = {"Invalid.Token", ""})
+    @ValueSource(strings = "Invalid.Token")
     @DisplayName("토큰이 유효하지 않은 경우 예외 응답을 반환한다.")
     void validationToken(String accessToken) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()

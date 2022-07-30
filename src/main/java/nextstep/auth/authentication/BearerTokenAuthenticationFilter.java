@@ -11,7 +11,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenAuthenticationFilter.class);
@@ -34,7 +33,11 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             return true;
         }
 
-        if (token.isBlank() || !jwtTokenProvider.validateToken(token)) {
+        if (token.isBlank()) {
+            return true;
+        }
+
+        if (!jwtTokenProvider.validateToken(token)) {
             log.info("The Token is not Valid. Token is {}", token);
             throw new AuthenticationException();
         }
