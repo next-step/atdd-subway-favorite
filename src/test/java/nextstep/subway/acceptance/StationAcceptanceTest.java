@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static nextstep.subway.acceptance.AuthSteps.ADMIN_토큰권한으로_호출;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,7 +76,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
+        ADMIN_토큰권한으로_호출()
                 .when()
                 .delete(location)
                 .then().log().all()
@@ -83,7 +84,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         List<String> stationNames =
-                RestAssured.given().log().all()
+                ADMIN_토큰권한으로_호출()
                         .when().get("/stations")
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
