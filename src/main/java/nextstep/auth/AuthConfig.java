@@ -5,6 +5,7 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.interceptor.ChainedInterceptor;
 import nextstep.auth.interceptor.UnchainedInterceptor;
+import nextstep.auth.service.UserDetailsService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthentication;
 import nextstep.member.application.LoginMemberService;
@@ -18,10 +19,12 @@ import java.util.List;
 public class AuthConfig implements WebMvcConfigurer {
     private LoginMemberService loginMemberService;
     private JwtTokenProvider jwtTokenProvider;
+    private UserDetailsService userDetailsService;
 
-    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
+    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.loginMemberService = loginMemberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
