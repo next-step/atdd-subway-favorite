@@ -30,6 +30,12 @@ public enum MockMember {
             .collect(Collectors.toUnmodifiableList());
     }
 
+    public List<String> getAuthorities() {
+        return roleTypes.stream()
+                .map(Enum::name)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
     private Member toMember() {
         return new Member(
             this.email,
