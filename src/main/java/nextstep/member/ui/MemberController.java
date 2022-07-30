@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.secured.Secured;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -19,6 +20,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
@@ -31,12 +33,14 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
