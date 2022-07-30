@@ -8,7 +8,6 @@ import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import nextstep.subway.fixture.MockMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import static nextstep.subway.fixture.MockMember.GUEST;
+import static nextstep.subway.utils.UserUtils.createUser;
+import static nextstep.subway.utils.UserUtils.createUserWithPassword;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -107,15 +108,6 @@ class TokenAuthenticationHandlerTest {
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
-
-    private User createUser(MockMember member) {
-        return new LoginMember(member.getEmail(), member.getPassword(), member.getAuthorities());
-    }
-
-    private User createUserWithPassword(MockMember member, String password) {
-        return new LoginMember(member.getEmail(), password, member.getAuthorities());
-    }
-
 
     @SuppressWarnings("unchecked")
     private String getAccessToken(MockHttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {

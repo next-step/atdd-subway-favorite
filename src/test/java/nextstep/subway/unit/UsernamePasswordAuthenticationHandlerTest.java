@@ -6,7 +6,6 @@ import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.handler.UsernamePasswordAuthenticationHandler;
 import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import nextstep.subway.fixture.MockMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.IOException;
-
 import static nextstep.subway.fixture.MockMember.GUEST;
+import static nextstep.subway.utils.UserUtils.createUser;
+import static nextstep.subway.utils.UserUtils.createUserWithPassword;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -31,7 +30,7 @@ class UsernamePasswordAuthenticationHandlerTest {
 
     @Test
     @DisplayName("사용자 EMAIL과 PASSWORD가 일치하면 사용자를 반환한다.")
-    void preAuthenticationTest() throws IOException {
+    void preAuthenticationTest() {
         // given
         User mockUser = createUser(GUEST);
 
@@ -92,15 +91,8 @@ class UsernamePasswordAuthenticationHandlerTest {
 
     }
 
-    private User createUser(MockMember member) {
-        return new LoginMember(member.getEmail(), member.getPassword(), member.getAuthorities());
-    }
 
-    private User createUserWithPassword(MockMember member, String password) {
-        return new LoginMember(member.getEmail(), password, member.getAuthorities());
-    }
-
-    private MockHttpServletRequest createMockRequest(MockMember member) throws IOException {
+    private MockHttpServletRequest createMockRequest(MockMember member) {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addParameter("username", member.getEmail());
         request.addParameter("password", member.getPassword());

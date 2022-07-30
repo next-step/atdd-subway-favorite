@@ -4,9 +4,6 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.handler.BearerTokenAuthVerificationHandler;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.user.User;
-import nextstep.member.domain.LoginMember;
-import nextstep.subway.fixture.MockMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.io.IOException;
 
 import static nextstep.subway.fixture.MockMember.GUEST;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
