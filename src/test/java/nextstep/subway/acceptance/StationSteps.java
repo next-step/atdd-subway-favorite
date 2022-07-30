@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AcceptanceTest.accessToken;
+import static nextstep.subway.acceptance.RestAssuredStep.given;
 
 public class StationSteps {
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String accessToken, String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+        return given(accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -24,16 +24,11 @@ public class StationSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청2(String accessToken, String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
+    public static ExtractableResponse<Response> 지하철역_목록_조회(){
         return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
+                .when().get("/stations")
                 .then().log().all()
                 .extract();
     }
+
 }

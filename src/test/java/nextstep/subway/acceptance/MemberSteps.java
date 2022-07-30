@@ -9,11 +9,12 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.RestAssuredStep.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+    public static final String ADMIN_PASSWORD_FIELD = "password";
 
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
@@ -33,14 +34,13 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_생성_요청(String accessToken, String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
+        return given(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/members")
@@ -57,7 +57,7 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(String accessToken,ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
         Map<String, String> params = new HashMap<>();
@@ -65,18 +65,16 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
+        return given(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 회원_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
+        return given(accessToken)
                 .when().delete(uri)
                 .then().log().all().extract();
     }

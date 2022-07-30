@@ -6,7 +6,7 @@ package nextstep.subway.acceptance;
  * @description
  */
 public class AdministratorInfo {
-    public static final String EMAIL = "admin@email.com";
-    public static final String PASSWORD = "password";
-    public static final Integer AGE = 34;
+    public static final String ADMIN_EMAIL = "admin@email.com";
+    public static final String ADMIN_PASSWORD = "password";
+    public static final Integer ADMIN_AGE = 34;
 }
