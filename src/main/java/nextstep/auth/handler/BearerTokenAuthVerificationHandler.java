@@ -18,7 +18,7 @@ public class BearerTokenAuthVerificationHandler extends AuthVerificationHandler 
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    protected Authentication createAuthentication(HttpServletRequest request) {
+    public Authentication createAuthentication(HttpServletRequest request) {
         final String requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (requestTokenHeader == null || !requestTokenHeader.startsWith(TOKEN_TYPE)) {
             throw new AuthenticationException();

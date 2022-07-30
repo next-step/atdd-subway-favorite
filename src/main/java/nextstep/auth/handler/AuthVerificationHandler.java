@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public abstract class AuthVerificationHandler implements HandlerInterceptor {
 
-    protected abstract Authentication createAuthentication(HttpServletRequest request);
+    public abstract Authentication createAuthentication(HttpServletRequest request);
 
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

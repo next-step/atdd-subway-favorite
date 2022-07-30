@@ -19,7 +19,7 @@ public class BasicAuthVerificationHandler extends AuthVerificationHandler {
     }
 
     @Override
-    protected Authentication createAuthentication(HttpServletRequest request) {
+    public Authentication createAuthentication(HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
