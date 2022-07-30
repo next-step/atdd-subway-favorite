@@ -17,7 +17,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     }
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+    public AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         return new AuthenticationToken(request.getParameter(USERNAME_FIELD), request.getParameter(PASSWORD_FIELD));
     }
 

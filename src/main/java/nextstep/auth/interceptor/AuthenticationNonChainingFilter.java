@@ -26,7 +26,7 @@ public abstract class AuthenticationNonChainingFilter implements HandlerIntercep
         return false;
     }
 
-    private Authentication getAuthentication(AuthenticationToken token) {
+    public Authentication getAuthentication(AuthenticationToken token) {
         UserDetails userDetails = findLoginMember(token);
         return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
     }
@@ -45,7 +45,7 @@ public abstract class AuthenticationNonChainingFilter implements HandlerIntercep
         }
     }
 
-    protected abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request);
+    public abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request);
 
     protected abstract void afterAuthentication(Authentication authentication, HttpServletResponse response);
 }

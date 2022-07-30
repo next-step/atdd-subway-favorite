@@ -29,7 +29,7 @@ public class TokenAuthenticationFilter extends AuthenticationNonChainingFilter {
     }
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+    public AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         try {
             String content = request.getReader()
                     .lines()
