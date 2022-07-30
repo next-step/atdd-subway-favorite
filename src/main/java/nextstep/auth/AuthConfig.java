@@ -1,13 +1,13 @@
 package nextstep.auth;
 
-import nextstep.auth.interceptor.BasicAuthenticationFilter;
-import nextstep.auth.interceptor.BearerTokenAuthenticationFilter;
-import nextstep.auth.interceptor.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
-import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.interceptor.BasicAuthenticationFilter;
+import nextstep.auth.interceptor.BearerTokenAuthenticationFilter;
 import nextstep.auth.interceptor.TokenAuthenticationFilter;
-import nextstep.member.application.UserDetailsService;
+import nextstep.auth.interceptor.UsernamePasswordAuthenticationFilter;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.userdetails.UserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,8 +16,8 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private UserDetailsService userDetailsService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthConfig(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;

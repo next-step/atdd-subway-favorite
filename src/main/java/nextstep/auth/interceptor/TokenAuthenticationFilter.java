@@ -10,7 +10,7 @@ import nextstep.auth.exception.TokenResponseParseException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.UserDetailsService;
+import nextstep.auth.userdetails.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
