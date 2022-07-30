@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static nextstep.subway.acceptance.MemberSteps.adminGiven;
+import static nextstep.subway.acceptance.MemberSteps.관리자Bearer토큰;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,7 +77,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
+
+        adminGiven(관리자Bearer토큰())
                 .when()
                 .delete(location)
                 .then().log().all()
