@@ -12,11 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthentication implements AuthenticationStrategy {
 
-    private LoginMemberService loginMemberService;
     private UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthentication(LoginMemberService loginMemberService, UserDetailsService userDetailsService) {
-        this.loginMemberService = loginMemberService;
+    public UsernamePasswordAuthentication(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -24,16 +22,6 @@ public class UsernamePasswordAuthentication implements AuthenticationStrategy {
     public void authenticate(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-
-        LoginMember loginMember = loginMemberService.loadUserByUsername(email);
-
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(password)) {
-            throw new AuthenticationException();
-        }
 
         UserDetail userDetail = userDetailsService.loadUserByUsername(email);
 
@@ -48,6 +36,5 @@ public class UsernamePasswordAuthentication implements AuthenticationStrategy {
         Authentication authentication = new Authentication(userDetail.getEmail(), userDetail.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
     }
 }
