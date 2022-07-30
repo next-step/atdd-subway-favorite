@@ -1,5 +1,6 @@
-package nextstep.auth.authentication;
+package nextstep.auth.interceptor;
 
+import nextstep.auth.authentication.AuthenticationStrategy;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

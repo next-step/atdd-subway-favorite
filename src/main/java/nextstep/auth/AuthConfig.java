@@ -3,6 +3,8 @@ package nextstep.auth;
 import nextstep.auth.authentication.*;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
+import nextstep.auth.interceptor.ChainedInterceptor;
+import nextstep.auth.interceptor.UnchainedInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthentication;
 import nextstep.member.application.LoginMemberService;
