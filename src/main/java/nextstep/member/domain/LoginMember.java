@@ -33,6 +33,10 @@ public class LoginMember {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public List<String> getAuthorities() {
         return authorities;
     }
