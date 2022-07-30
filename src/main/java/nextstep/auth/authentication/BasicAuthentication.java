@@ -7,6 +7,7 @@ import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthentication implements AuthenticationStrategy {
 
@@ -17,7 +18,7 @@ public class BasicAuthentication implements AuthenticationStrategy {
     }
 
     @Override
-    public void authenticate(HttpServletRequest request) {
+    public void authenticate(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 

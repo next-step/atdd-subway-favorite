@@ -16,7 +16,7 @@ public class ChainedInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
-            strategy.authenticate(request);
+            strategy.authenticate(request, response, handler);
             return true;
         } catch (Exception e) {
             return true;
