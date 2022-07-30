@@ -5,18 +5,18 @@ import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.exception.AuthenticationException;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.userdetails.UserDetails;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.NotFoundMemberException;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -24,20 +24,20 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
         AuthenticationToken token = createAuthenticationToken(request);
 
         try {
-            LoginMember loginMember = findLoginMember(token);
-            return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+            UserDetails userDetails = findUser(token);
+            return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
         } catch (NotFoundMemberException e) {
             throw new AuthenticationException();
         }
     }
 
-    private LoginMember findLoginMember(AuthenticationToken token) {
+    private UserDetails findUser(AuthenticationToken token) {
         try {
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember.invalidPassword(token.getCredentials())) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+            if (userDetails.invalidCredentials(token.getCredentials())) {
                 throw new AuthenticationException();
             }
-            return loginMember;
+            return userDetails;
         } catch (NotFoundMemberException e) {
             throw new AuthenticationException();
         }

@@ -3,7 +3,7 @@ package nextstep.auth.interceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
+import nextstep.member.application.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,13 +12,13 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        super(loginMemberService);
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        super(userDetailsService);
     }
 
     @Override
     protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
-        return createToken(request.getParameter(USERNAME_FIELD), request.getParameter(PASSWORD_FIELD));
+        return new AuthenticationToken(request.getParameter(USERNAME_FIELD), request.getParameter(PASSWORD_FIELD));
     }
 
     @Override

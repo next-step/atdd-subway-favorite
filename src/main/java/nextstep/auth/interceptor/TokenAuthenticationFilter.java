@@ -10,7 +10,7 @@ import nextstep.auth.exception.TokenResponseParseException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
+import nextstep.member.application.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +22,8 @@ public class TokenAuthenticationFilter extends AuthenticationNonChainingFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationFilter(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        super(loginMemberService);
+    public TokenAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = new ObjectMapper();
     }
@@ -35,7 +35,7 @@ public class TokenAuthenticationFilter extends AuthenticationNonChainingFilter {
                     .lines()
                     .collect(Collectors.joining(System.lineSeparator()));
             TokenRequest tokenRequest = objectMapper.readValue(content, TokenRequest.class);
-            return createToken(tokenRequest.getEmail(), tokenRequest.getPassword());
+            return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
         } catch (IOException e) {
             throw new AuthenticationException();
         }

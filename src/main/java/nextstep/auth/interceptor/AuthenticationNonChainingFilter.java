@@ -3,8 +3,8 @@ package nextstep.auth.interceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.exception.AuthenticationException;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.userdetails.UserDetails;
+import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.NotFoundMemberException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public abstract class AuthenticationNonChainingFilter implements HandlerInterceptor {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public AuthenticationNonChainingFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public AuthenticationNonChainingFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -26,24 +26,20 @@ public abstract class AuthenticationNonChainingFilter implements HandlerIntercep
         return false;
     }
 
-    protected AuthenticationToken createToken(String username, String password) {
-        return new AuthenticationToken(username, password);
-    }
-
     private Authentication getAuthentication(AuthenticationToken token) {
-        LoginMember loginMember = findLoginMember(token);
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        UserDetails userDetails = findLoginMember(token);
+        return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
     }
 
-    private LoginMember findLoginMember(AuthenticationToken token) {
+    private UserDetails findLoginMember(AuthenticationToken token) {
         try {
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
 
-            if (loginMember.invalidPassword(token.getCredentials())) {
+            if (userDetails.invalidCredentials(token.getCredentials())) {
                 throw new AuthenticationException();
             }
 
-            return loginMember;
+            return userDetails;
         } catch (NotFoundMemberException e) {
             throw new AuthenticationException();
         }
