@@ -86,6 +86,39 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return given(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password, Integer age) {
+        Map<String, String> params = Map.of(
+                "email", email,
+                "password", password,
+                "age", String.valueOf(age)
+        );
+
+        return given(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+        return given(accessToken)
+                .when().delete("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
+    }
+
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("id")).isNotNull();

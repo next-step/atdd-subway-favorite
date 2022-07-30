@@ -1,9 +1,9 @@
 package nextstep.auth.interceptor;
 
-import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.http.HttpHeaders;
 
