@@ -15,8 +15,8 @@ public class StationResponse {
 
     public static List<StationResponse> listOf(List<Station> stations) {
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     public StationResponse() {

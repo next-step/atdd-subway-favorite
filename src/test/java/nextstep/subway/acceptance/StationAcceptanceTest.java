@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static nextstep.subway.acceptance.AuthSteps.관리자_사용자_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,10 +33,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         List<String> stationNames =
-                RestAssured.given().log().all()
-                        .when().get("/stations")
-                        .then().log().all()
-                        .extract().jsonPath().getList("name", String.class);
+            RestAssured.given().log().all()
+                .when().get("/stations")
+                .then().log().all()
+                .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).containsAnyOf("강남역");
     }
 
@@ -53,9 +54,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
+            .when().get("/stations")
+            .then().log().all()
+            .extract();
 
         // then
         List<StationResponse> stations = stationResponse.jsonPath().getList(".", StationResponse.class);
@@ -75,18 +76,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+
+        관리자_사용자_요청()
+            .when().delete(location)
+            .then().log().all()
+            .extract();
 
         // then
         List<String> stationNames =
-                RestAssured.given().log().all()
-                        .when().get("/stations")
-                        .then().log().all()
-                        .extract().jsonPath().getList("name", String.class);
+            RestAssured.given().log().all()
+                .when().get("/stations")
+                .then().log().all()
+                .extract().jsonPath().getList("name", String.class);
+
         assertThat(stationNames).doesNotContain("강남역");
     }
 }

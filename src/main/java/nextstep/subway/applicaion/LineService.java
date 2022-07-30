@@ -41,8 +41,8 @@ public class LineService {
 
     public List<LineResponse> findLineResponses() {
         return lineRepository.findAll().stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -75,8 +75,8 @@ public class LineService {
 
     private List<StationResponse> createStationResponses(Line line) {
         return line.getStations().stream()
-                .map(it -> stationService.createStationResponse(it))
-                .collect(Collectors.toList());
+            .map(it -> stationService.createStationResponse(it))
+            .collect(Collectors.toList());
     }
 
     @Transactional

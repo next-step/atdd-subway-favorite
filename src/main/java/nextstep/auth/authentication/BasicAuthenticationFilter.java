@@ -47,4 +47,5 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
             return true;
         }
     }
+
 }
