@@ -49,6 +49,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("email")).isEqualTo("new" + EMAIL);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
