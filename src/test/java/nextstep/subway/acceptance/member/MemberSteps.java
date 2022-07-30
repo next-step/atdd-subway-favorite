@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
+import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_EMAIL;
+import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_PASSWORD;
 import static nextstep.subway.utils.RestAssuredUtils.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,13 +36,13 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age, String accessToken) {
+    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = Map.of(
                 "email", email,
                 "password", password,
                 "age", String.valueOf(age)
         );
-        return given(accessToken)
+        return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/members")
@@ -58,7 +60,7 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age, String accessToken) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
 
         Map<String, String> params = Map.of(
@@ -67,7 +69,7 @@ public class MemberSteps {
                 "age", String.valueOf(age)
         );
 
-        return given(accessToken)
+        return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
@@ -76,8 +78,8 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response, String accessToken) {
-        return given(accessToken)
+    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+        return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().delete(response.header("Location"))
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value())
