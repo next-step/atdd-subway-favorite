@@ -25,4 +25,20 @@ public class UserDetail {
     public static UserDetail of(Member member) {
         return new UserDetail(member.getEmail(), member.getPassword(), member.getRoles());
     }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public List<String> getAuthorities() {
+        return authorities;
+    }
 }

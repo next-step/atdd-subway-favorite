@@ -2,6 +2,8 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.service.UserDetail;
+import nextstep.auth.service.UserDetailsService;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 
@@ -11,9 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 public class UsernamePasswordAuthentication implements AuthenticationStrategy {
 
     private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthentication(LoginMemberService loginMemberService) {
+    public UsernamePasswordAuthentication(LoginMemberService loginMemberService, UserDetailsService userDetailsService) {
         this.loginMemberService = loginMemberService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -31,7 +35,17 @@ public class UsernamePasswordAuthentication implements AuthenticationStrategy {
             throw new AuthenticationException();
         }
 
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        UserDetail userDetail = userDetailsService.loadUserByUsername(email);
+
+        if (userDetail == null) {
+            throw new AuthenticationException();
+        }
+
+        if (!userDetail.checkPassword(password)) {
+            throw new AuthenticationException();
+        }
+
+        Authentication authentication = new Authentication(userDetail.getEmail(), userDetail.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
