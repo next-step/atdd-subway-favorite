@@ -8,7 +8,6 @@ import nextstep.auth.interceptor.UnchainedInterceptor;
 import nextstep.auth.service.UserDetailsService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthentication;
-import nextstep.member.application.LoginMemberService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,12 +16,10 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private LoginMemberService loginMemberService;
     private JwtTokenProvider jwtTokenProvider;
     private UserDetailsService userDetailsService;
 
-    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
-        this.loginMemberService = loginMemberService;
+    public AuthConfig(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
     }
