@@ -10,17 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.acceptance.AdministratorInfo.*;
 import static nextstep.subway.acceptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
 
+    String accessToken;
     @BeforeEach
     void authSetUp(){
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
     @DisplayName("Basic Auth")
@@ -42,11 +41,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+//        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
 
-//        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
