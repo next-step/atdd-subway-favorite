@@ -7,7 +7,6 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
-import nextstep.member.application.MemberDetailsService;
 import nextstep.member.domain.NotFoundMemberException;
 import org.apache.tomcat.util.codec.binary.Base64;
 
@@ -53,6 +52,4 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
         String credentials = splits[1];
         return new AuthenticationToken(principal, credentials);
     }
-
-
 }
