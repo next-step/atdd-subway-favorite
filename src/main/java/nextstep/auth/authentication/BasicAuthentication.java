@@ -2,8 +2,8 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.service.UserDetail;
+import nextstep.auth.service.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthentication implements AuthenticationStrategy {
 
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
 
-    public BasicAuthentication(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthentication(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -28,16 +28,16 @@ public class BasicAuthentication implements AuthenticationStrategy {
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
+        UserDetail userDetail = userDetailsService.loadUserByUsername(token.getPrincipal());
+        if (userDetail == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!userDetail.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        Authentication authentication = new Authentication(userDetail.getEmail(), userDetail.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

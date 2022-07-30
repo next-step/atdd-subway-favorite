@@ -4,8 +4,6 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.service.UserDetail;
 import nextstep.auth.service.UserDetailsService;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
