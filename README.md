@@ -28,3 +28,18 @@ public class StationController {
    }
 }
 ```
+
+### step 2. 인증 로직 리팩터링
+1. 프로그래밍 요구사항
+   1. 인증 로직(auth 패키지)에 대한 리팩터링을 해보자
+2. 요구사항 설명 
+   <br> **리팩터링 포인트** <br>
+   `XXXAuthenticationFilter` 의 구조화
+   - `AuthenticationFilter` 성격상 두 분류로 구분할 수 있음
+   - `TokenAuthenticationInterceptor` 와 `UsernamePasswordAuthenticationFilter` 는 인증 성공 후 더 이상의 Interceptor chain 을 진행하지 않고 응답을 함
+   - `BasicAuthenticationFilter` 와 `BearerTokenAuthenticationFilter` 는 인증 성공 후 다음 Interceptor chain 을 수행함
+   - 이 차이를 참고하여 각각 `추상화` 가능
+
+    <br>**auth 패키지와 member 패키지에 대한 의존 제거**
+  - 현재 auth 패키지와 member 패키지는 서로 의존하고 있음
+  - UserDetailsService 를 추상화하여 auth -> member 의존을 제거하기
