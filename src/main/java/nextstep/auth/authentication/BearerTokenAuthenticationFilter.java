@@ -31,7 +31,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
         }
 
         String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if (token.isBlank() || !jwtTokenProvider.validateToken(token)) {
+        if (!jwtTokenProvider.validateToken(token)) {
             log.info("올바르지 않은 토큰입니다.");
             throw new AuthenticationException();
         }

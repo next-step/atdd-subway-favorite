@@ -28,15 +28,21 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
             return true;
         }
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(request.getParameter("userName"));
+        LoginMember loginMember;
+        try{
+            loginMember = loginMemberService.loadUserByUsername(request.getParameter("userName"));
+        } catch (RuntimeException ex){
+            log.info("올바르지 않은 토큰입니다. (존재하지 않는 사용자 - userName : {})", request.getParameter("userName"));
+            throw new AuthenticationException();
+        }
+
         if (!loginMember.checkPassword(request.getParameter("password"))){
             log.info("패스워드가 틀렸습니다. userName : {}", loginMember.getEmail());
-            return false;
+            throw new AuthenticationException();
         }
 
         Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
         context.setAuthentication(authentication);
-
         return true;
     }
 }

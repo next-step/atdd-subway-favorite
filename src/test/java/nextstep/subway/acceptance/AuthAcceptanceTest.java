@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.authentication.AuthenticationException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -43,13 +45,28 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
+    /**
+     * Given & When 잘못된 토큰 정보로 Beerer 토큰 로그인을 하려하면
+     * Then UNAUTHROZIED 응답이 온다.
+     */
+    @DisplayName("Bearer Auth - 잘못된 토큰으로 로그인")
+    @Test
+    void BearerAuth_fail_wrongToken() {
+        // Given & When
+        String wrongToken = "wrongToken";
+
+        var response = 베어러_인증으로_내_회원_정보_조회_요청(wrongToken);
+
+        // Then
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
         return RestAssured.given().log().all()
                 .auth().form(email, password, new FormAuthConfig("/login/form", "userName", "password"))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -59,7 +76,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 }
