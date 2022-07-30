@@ -34,13 +34,14 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String accessToken, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
         params.put("age", age + "");
 
-        return given(accessToken)
+        return RestAssured
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/members")
@@ -86,6 +87,31 @@ public class MemberSteps {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 베어러_인증_내_회원_정보_수정(String accessToken, String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 베어러_인증_내_회원_정보_삭제_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
                 .extract();
     }
 

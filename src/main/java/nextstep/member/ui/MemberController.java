@@ -20,7 +20,6 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();

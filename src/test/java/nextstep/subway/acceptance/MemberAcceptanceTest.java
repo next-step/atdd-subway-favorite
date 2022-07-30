@@ -21,27 +21,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp(){
         super.setUp();
-        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
-        회원생성_Response = 회원_생성_요청(accessToken, EMAIL, PASSWORD, AGE);
+
+        회원생성_Response = 회원_생성_요청( EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
         // when
-
+        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         // then
         assertThat(회원생성_Response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("권한 검증 실패로 인한 회원가입 실패..")
-    @Test
-    void createMemberFail() {
-        String invalidToken = "invalidToken";
-        // when
-        ExtractableResponse<Response> response = 회원_생성_요청(invalidToken, "acsmia@gmail.com", "123", 34);
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("회원 정보를 조회한다.")
@@ -61,19 +51,31 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMember() {
         // given
-
+        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         // when
         ExtractableResponse<Response> response = 회원_정보_수정_요청(accessToken, 회원생성_Response, "new" + EMAIL, "new" + PASSWORD, AGE);
 
+        회원_정보_조회_요청(회원생성_Response);
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+    }
+
+    @DisplayName("권한 검증 실패로 인한 회원수정 실패..")
+    @Test
+    void createMemberFail() {
+        String invalidToken = "invalidToken";
+        // when
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(invalidToken, 회원생성_Response, "new" + EMAIL, "new" + PASSWORD, AGE);
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
         // given
-
+        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         // when
         ExtractableResponse<Response> response = 회원_삭제_요청(accessToken, 회원생성_Response);
 
@@ -84,10 +86,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+        ExtractableResponse<Response> 조회응답 = 회원_정보_조회_요청(회원생성_Response);
+        회원_정보_조회됨(조회응답, EMAIL, AGE);
+
+        ExtractableResponse<Response> 수정응답 = 회원_정보_수정_요청(accessToken, 회원생성_Response, EMAIL+"_edit", PASSWORD+"_edit", AGE);
+        assertThat(수정응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        회원_정보_조회_요청(회원생성_Response);
+
+        ExtractableResponse<Response> 삭제응답 = 회원_삭제_요청(accessToken, 회원생성_Response);
+
+        assertThat(삭제응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 수정응답 = 베어러_인증_내_회원_정보_수정(accessToken,"edit", "1", 12);
+        assertThat(수정응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        ExtractableResponse<Response> 삭제응답 = 베어러_인증_내_회원_정보_삭제_요청(accessToken);
+        assertThat(삭제응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
