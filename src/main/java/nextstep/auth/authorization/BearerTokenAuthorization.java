@@ -7,11 +7,11 @@ import nextstep.auth.token.JwtTokenProvider;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public class BearerTokenAuthentication implements AuthorizationStrategy {
+public class BearerTokenAuthorization implements AuthorizationStrategy {
 
     private JwtTokenProvider jwtTokenProvider;
 
-    public BearerTokenAuthentication(JwtTokenProvider jwtTokenProvider) {
+    public BearerTokenAuthorization(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

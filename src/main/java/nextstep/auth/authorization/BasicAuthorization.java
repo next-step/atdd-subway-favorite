@@ -1,6 +1,5 @@
 package nextstep.auth.authorization;
 
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
@@ -11,11 +10,11 @@ import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BasicAuthentication extends UserDetailTemplate implements AuthorizationStrategy {
+public class BasicAuthorization extends UserDetailTemplate implements AuthorizationStrategy {
 
     private UserDetailsService userDetailsService;
 
-    public BasicAuthentication(UserDetailsService userDetailsService) {
+    public BasicAuthorization(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
