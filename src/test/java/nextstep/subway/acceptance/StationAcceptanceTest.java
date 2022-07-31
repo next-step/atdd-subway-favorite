@@ -13,6 +13,8 @@ import java.util.List;
 
 import static nextstep.DataLoader.ADMIN_EMAIL;
 import static nextstep.DataLoader.ADMIN_PASSWORD;
+import static nextstep.DataLoader.MEMBER_EMAIL;
+import static nextstep.DataLoader.MEMBER_PASSWORD;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -99,5 +101,24 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
+    }
+
+
+    /**
+     * Given 일반 사용자가
+     * When 지하철역을 추가하면
+     * Then 지하철역역 추가에 실패한다.
+     */
+    @DisplayName("일반 사용자가 지하철 노선을 추가한다.")
+    @Test
+    void createStationFailToMemberRole() {
+        // given
+        String 일반사용자 = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
+
+        // when
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(일반사용자, "강남역");
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

@@ -140,14 +140,14 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
      * When 지하철 노선의 가운데 구간 생성을 요청하면
      * Then 노선에 구간을 추가에 실패한다.
      */
-    @DisplayName("지하철 노선에 구간을 등록")
+    @DisplayName("일반 사용자의 지하철 노선에 구간을 등록")
     @Test
     void addLineSectionFailToMemberRole() {
         // given
-        String memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
+        String 일반사용자 = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_생성_요청(memberAccessToken, 신분당선, createSectionCreateParams(양재역, 신논현역));
+        ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_생성_요청(일반사용자, 신분당선, createSectionCreateParams(양재역, 신논현역));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
