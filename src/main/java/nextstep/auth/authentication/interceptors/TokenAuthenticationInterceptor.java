@@ -1,10 +1,10 @@
 package nextstep.auth.authentication.interceptors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.authentication.AuthenticateRequest;
+import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
@@ -17,22 +17,22 @@ public class TokenAuthenticationInterceptor extends NonChainingAuthenticationInt
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider, final ObjectMapper objectMapper) {
-        super(loginMemberService);
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, final ObjectMapper objectMapper) {
+        super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
     }
 
     AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        return new ObjectMapper().readValue(content, AuthenticateRequest.class);
+        return objectMapper.readValue(content, AuthenticateRequest.class);
     }
 
     void afterAuthenticate(final HttpServletResponse response, final LoginMember loginMember) throws IOException {
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);

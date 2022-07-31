@@ -1,8 +1,8 @@
 package nextstep.auth.authentication.interceptors;
 
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticateRequest;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -12,10 +12,10 @@ import java.io.IOException;
 
 public abstract class NonChainingAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public NonChainingAuthenticationInterceptor(final LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public NonChainingAuthenticationInterceptor(final UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -32,7 +32,7 @@ public abstract class NonChainingAuthenticationInterceptor implements HandlerInt
     abstract AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException;
 
     private LoginMember findMember(final String email) {
-        LoginMember loginMember = loginMemberService.loadUserByUsername(email);
+        LoginMember loginMember = userDetailsService.loadUserByUsername(email);
 
         if (loginMember == null) {
             throw new AuthenticationException();

@@ -1,9 +1,9 @@
 package nextstep.auth.authentication.interceptors;
 
+import nextstep.auth.authentication.AuthenticateRequest;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.authentication.AuthenticateRequest;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +14,8 @@ public class UsernamePasswordAuthenticationInterceptor extends NonChainingAuthen
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
 
-    public UsernamePasswordAuthenticationInterceptor(LoginMemberService loginMemberService) {
-        super(loginMemberService);
+    public UsernamePasswordAuthenticationInterceptor(UserDetailsService userDetailsService) {
+        super(userDetailsService);
     }
 
     AuthenticateRequest createLoginRequest(final HttpServletRequest request) {

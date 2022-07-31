@@ -4,17 +4,17 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.authentication.AuthenticateRequest;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationInterceptor extends ChainingAuthenticationInterceptor {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService UserDetailsService;
 
-    public BasicAuthenticationInterceptor(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationInterceptor(UserDetailsService UserDetailsService) {
+        this.UserDetailsService = UserDetailsService;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class BasicAuthenticationInterceptor extends ChainingAuthenticationInterc
 
     @Override
     LoginMember findLoginMember(final AuthenticateRequest request) {
-        final LoginMember loginMember = loginMemberService.loadUserByUsername(request.getEmail());
+        final LoginMember loginMember = UserDetailsService.loadUserByUsername(request.getEmail());
         if (loginMember == null) {
             throw new AuthenticationException();
         }
