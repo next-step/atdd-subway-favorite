@@ -12,7 +12,6 @@ public abstract class AuthenticationChainHandler implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         try {
-            System.out.println("chain handler preHandle");
             Authentication authentication = createAuthentication(request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return true;
