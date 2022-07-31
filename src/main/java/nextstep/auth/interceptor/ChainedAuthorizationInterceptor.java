@@ -1,6 +1,6 @@
 package nextstep.auth.interceptor;
 
-import nextstep.auth.authentication.AuthenticationStrategy;
+import nextstep.auth.authorization.AuthorizationStrategy;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ChainedAuthorizationInterceptor implements HandlerInterceptor {
 
-    private AuthenticationStrategy strategy;
+    private AuthorizationStrategy strategy;
 
-    public ChainedAuthorizationInterceptor(AuthenticationStrategy strategy) {
+    public ChainedAuthorizationInterceptor(AuthorizationStrategy strategy) {
         this.strategy = strategy;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
-            strategy.authenticate(request, response, handler);
+            strategy.authorize(request);
             return true;
         } catch (Exception e) {
             return true;

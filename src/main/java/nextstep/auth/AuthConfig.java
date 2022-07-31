@@ -2,6 +2,8 @@ package nextstep.auth;
 
 import nextstep.auth.authentication.*;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
+import nextstep.auth.authorization.BasicAuthentication;
+import nextstep.auth.authorization.BearerTokenAuthentication;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.interceptor.ChainedAuthorizationInterceptor;
 import nextstep.auth.interceptor.UnchainedAuthenticationInterceptor;
