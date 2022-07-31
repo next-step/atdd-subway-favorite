@@ -21,6 +21,7 @@ public class BearerTokenAuthenticationFilter extends AuthenticationChainHandler 
 
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
+
         if(ObjectUtils.isEmpty(authCredentials)){
             throw new AuthenticationException();
         }

@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import nextstep.auth.interceptor.BasicAuthenticationFilter;
 import nextstep.auth.interceptor.BearerTokenAuthenticationFilter;
-import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
+import nextstep.auth.interceptor.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.token.JwtTokenProvider;
