@@ -1,5 +1,9 @@
 package nextstep.subway.domain;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -10,12 +14,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
-
-    public Sections() {
-    }
 
     public Sections(List<Section> sections) {
         this.sections = sections;

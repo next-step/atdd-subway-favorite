@@ -1,7 +1,10 @@
 package nextstep.subway.domain;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.List;
 
+@EqualsAndHashCode
 public class Path {
     private Sections sections;
 
