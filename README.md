@@ -8,6 +8,7 @@
 - [x] Token Interceptor 의 authenticate 에서 반환부분 수정
 - [x] 로그인 하지 않은경우 지하철 노선 확인하기
 - [x] 로그인 하지 않은경우 구간 관리 확인하기
+- [x] Member 관리 인수 테스트 작성
 
 # Step1 TODO list
 
