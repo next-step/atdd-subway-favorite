@@ -3,9 +3,9 @@ package nextstep.auth.interceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.exception.UsernameNotFoundException;
 import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
-import nextstep.member.domain.NotFoundMemberException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public abstract class AuthenticationNonChainingFilter implements HandlerIntercep
             }
 
             return userDetails;
-        } catch (NotFoundMemberException e) {
+        } catch (UsernameNotFoundException e) {
             throw new AuthenticationException();
         }
     }

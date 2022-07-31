@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.auth.exception.UsernameNotFoundException;
 import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.LoginMember;
@@ -20,7 +21,7 @@ public class MemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(NotFoundMemberException::new);
+                .orElseThrow(UsernameNotFoundException::new);
         return LoginMember.of(member);
     }
 }
