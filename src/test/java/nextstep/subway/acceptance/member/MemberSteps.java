@@ -10,6 +10,8 @@ import java.util.Map;
 
 import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_EMAIL;
 import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_PASSWORD;
+import static nextstep.subway.acceptance.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.acceptance.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.utils.RestAssuredUtils.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,7 +58,6 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(response.header("Location"))
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -91,7 +92,6 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -128,5 +128,18 @@ public class MemberSteps {
 
     public static void 인증_예외_발생(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 조회_정보_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE);
+    }
+
+    public static void 내_정보_조회_검증(String accessToken, String email, int age) {
+        ExtractableResponse<Response> response = 내_정보_조회_요청(accessToken);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 }
