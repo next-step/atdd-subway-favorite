@@ -26,7 +26,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
             registerAuthentication(token);
             return true;
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             return true;
         }
     }
