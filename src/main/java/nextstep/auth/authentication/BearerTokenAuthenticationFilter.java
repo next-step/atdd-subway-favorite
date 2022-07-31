@@ -21,14 +21,16 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
-        if(!ObjectUtils.isEmpty(authCredentials)){
-            if(!jwtTokenProvider.validateToken(authCredentials)){
-                throw new AuthenticationException();
-            }
-            Authentication authentication = new Authentication(jwtTokenProvider.getPrincipal(authCredentials)
-                    , jwtTokenProvider.getRoles(authCredentials));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if(ObjectUtils.isEmpty(authCredentials)){
+           return true;
         }
+
+        if(!jwtTokenProvider.validateToken(authCredentials)){
+            throw new AuthenticationException();
+        }
+        Authentication authentication = new Authentication(jwtTokenProvider.getPrincipal(authCredentials)
+                , jwtTokenProvider.getRoles(authCredentials));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return true;
     }
