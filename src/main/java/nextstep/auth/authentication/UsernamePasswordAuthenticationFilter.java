@@ -33,7 +33,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
             Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return true;
+            return false;
         } catch (Exception e) {
             return false;
         }
