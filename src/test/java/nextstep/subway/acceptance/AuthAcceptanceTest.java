@@ -17,11 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 
-    String accessToken;
-    @BeforeEach
-    void authSetUp(){
-        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
-    }
 
     @DisplayName("Basic Auth")
     @Test
@@ -44,7 +39,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
 //        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
 
-        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(관리자토큰);
 
         회원_정보_조회됨(response, ADMIN_EMAIL, ADMIN_AGE);
     }

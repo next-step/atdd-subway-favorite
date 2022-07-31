@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.AcceptanceTest.accessToken;
 import static nextstep.subway.acceptance.RestAssuredStep.given;
 
 public class StationSteps {

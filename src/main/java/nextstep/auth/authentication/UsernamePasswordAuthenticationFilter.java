@@ -22,7 +22,6 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // TODO: 구현하세요.
         try {
             String username = request.getParameter(USERNAME_FIELD);
             String password = request.getParameter(PASSWORD_FIELD);
