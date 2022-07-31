@@ -22,13 +22,8 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
     @Override
     protected Authentication createAuthentication(HttpServletRequest request) {
         AuthenticationToken token = createAuthenticationToken(request);
-
-        try {
-            UserDetails userDetails = findUser(token);
-            return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
-        } catch (NotFoundMemberException e) {
-            throw new AuthenticationException();
-        }
+        UserDetails userDetails = findUser(token);
+        return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
     }
 
     private UserDetails findUser(AuthenticationToken token) {
