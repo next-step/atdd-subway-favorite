@@ -20,10 +20,13 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (checkAlreadyAuthentication()) {
+            return true;
+        }
+
         String username = request.getParameter(USERNAME_FIELD);
         String password = request.getParameter(PASSWORD_FIELD);
 
-        new AuthenticationToken(username, password);
         LoginMember loginMember = loginMemberService.loadUserByUsername(username);
         if (loginMember == null) {
             throw new AuthenticationException();
@@ -37,6 +40,11 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return true;
+    }
+
+    private boolean checkAlreadyAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null;
     }
 
     private boolean isInvalidPassword(String password, LoginMember loginMember) {
