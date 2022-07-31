@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authorization;
 
 import org.apache.logging.log4j.util.Strings;
 
