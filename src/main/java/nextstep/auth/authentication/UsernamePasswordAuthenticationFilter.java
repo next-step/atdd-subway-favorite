@@ -1,17 +1,15 @@
 package nextstep.auth.authentication;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.application.LoginMemberService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@RequiredArgsConstructor
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
-
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
-    }
+    private final LoginMemberService loginMemberService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
