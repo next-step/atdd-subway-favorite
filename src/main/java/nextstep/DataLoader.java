@@ -9,12 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataLoader {
     private final MemberRepository memberRepository;
+    public static final String ADMIN_EMAIL = "superAdmin@email.com";
+    public static final String ADMIN_PASSWORD = "test";
+    public static final int ADMIN_AGE = 20;
 
     public DataLoader(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
     public void loadData() {
-        memberRepository.save(new Member("admin@email.com","password",20, List.of(RoleType.ROLE_ADMIN.name())));
+        memberRepository.save(new Member(ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_AGE, List.of(RoleType.ROLE_ADMIN.name())));
     }
 }
