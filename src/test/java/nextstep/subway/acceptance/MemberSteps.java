@@ -28,7 +28,7 @@ public class MemberSteps {
         return response.jsonPath().getString("accessToken");
     }
 
-    public static RequestSpecification adminGiven(String token) {
+    public static RequestSpecification authGiven(String token) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token);
     }
@@ -61,7 +61,7 @@ public class MemberSteps {
     }
 
     public static Long 회원_ID_조회(final ExtractableResponse<Response> response) {
-        return adminGiven(관리자Bearer토큰())
+        return authGiven(관리자Bearer토큰())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(response.header("location"))
                 .then().log().all()
@@ -69,7 +69,7 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회(final Long id) {
-        return adminGiven(관리자Bearer토큰())
+        return authGiven(관리자Bearer토큰())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/{id}", id)
                 .then().log().all()
@@ -82,7 +82,7 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return adminGiven(관리자Bearer토큰())
+        return authGiven(관리자Bearer토큰())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/members/{id}", id)
@@ -100,7 +100,7 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 회원_삭제(Long id) {
-        return adminGiven(관리자Bearer토큰())
+        return authGiven(관리자Bearer토큰())
                 .when().delete("/members/{id}", id)
                 .then().log().all().extract();
     }

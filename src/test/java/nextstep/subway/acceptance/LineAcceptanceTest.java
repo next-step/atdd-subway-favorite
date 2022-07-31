@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LineSteps.*;
-import static nextstep.subway.acceptance.MemberSteps.adminGiven;
+import static nextstep.subway.acceptance.MemberSteps.authGiven;
 import static nextstep.subway.acceptance.MemberSteps.관리자Bearer토큰;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -87,7 +87,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        adminGiven(관리자Bearer토큰())
+        authGiven(관리자Bearer토큰())
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -112,7 +112,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response =
-                adminGiven(관리자Bearer토큰())
+                authGiven(관리자Bearer토큰())
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 

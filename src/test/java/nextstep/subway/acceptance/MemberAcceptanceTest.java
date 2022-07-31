@@ -62,7 +62,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 나의_회원_정보_조회(final String email) {
-        return adminGiven(사용자Bearer토큰(email))
+        return authGiven(사용자Bearer토큰(email))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
@@ -102,7 +102,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         params.put("password", PASSWORD);
         params.put("age", AGE + "");
 
-        return adminGiven(사용자Bearer토큰(email))
+        return authGiven(사용자Bearer토큰(email))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put("/members/me")
@@ -143,7 +143,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 나의_회원_삭제_요청(final String email) {
-        return adminGiven(사용자Bearer토큰(email))
+        return authGiven(사용자Bearer토큰(email))
                 .when().delete("/members/me")
                 .then().log().all().extract();
     }
