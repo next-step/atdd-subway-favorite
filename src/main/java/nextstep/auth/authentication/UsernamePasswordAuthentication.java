@@ -2,8 +2,8 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.service.UserDetails;
 import nextstep.auth.service.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +21,7 @@ public class UsernamePasswordAuthentication implements AuthenticationStrategy {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        LoginMember loginMember = userDetailsService.loadUserByUsername(email);
+        UserDetails loginMember = userDetailsService.loadUserByUsername(email);
 
         if (loginMember == null) {
             throw new AuthenticationException();
