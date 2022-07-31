@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.token.JwtTokenProvider;
@@ -33,7 +34,6 @@ class TokenAuthenticationInterceptorTest {
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    @InjectMocks
     private TokenAuthenticationInterceptor interceptor;
 
     @Mock
@@ -42,12 +42,15 @@ class TokenAuthenticationInterceptorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
 
     @BeforeEach
     void setUp() throws IOException {
         // given
+        interceptor = new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider, objectMapper);
         request = createMockRequest();
         response = new MockHttpServletResponse();
     }

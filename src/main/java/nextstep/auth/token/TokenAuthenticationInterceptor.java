@@ -13,12 +13,14 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final LoginMemberService loginMemberService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.loginMemberService = loginMemberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
@@ -39,7 +41,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     public TokenRequest convert(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        return new ObjectMapper().readValue(content, TokenRequest.class);
+        return objectMapper.readValue(content, TokenRequest.class);
     }
 
     public LoginMember authenticate(TokenRequest tokenRequest) {
@@ -55,6 +57,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
             throw new AuthenticationException();
         }
 
-        return loginMemberService.loadUserByUsername(principal);
+        return loginMember;
     }
 }

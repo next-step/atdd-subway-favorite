@@ -4,8 +4,8 @@
 # Step1 PR 수정 TODO list
 - [x] Filter 에서 Exception을 잡을때 세부적으로 예외 catch하도록 변경
 - [x] 상수 추출하기
-- [ ] ObjectMapper를 DI받도록 변경하기
-- [ ] Token Interceptor 의 authenticate 에서 반환부분 수정
+- [x] ObjectMapper를 DI받도록 변경하기
+- [x] Token Interceptor 의 authenticate 에서 반환부분 수정
 - [ ] 로그인 하지 않은경우 지하철 노선 확인하기
 - [ ] 로그인 하지 않은경우 구간 관리 확인하기
 
