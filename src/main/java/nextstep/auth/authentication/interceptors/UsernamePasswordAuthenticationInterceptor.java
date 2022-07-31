@@ -11,13 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthenticationInterceptor extends NonChainingAuthenticationInterceptor {
 
+    private static final String EMAIL = "email";
+    private static final String PASSWORD = "password";
+
     public UsernamePasswordAuthenticationInterceptor(LoginMemberService loginMemberService) {
         super(loginMemberService);
     }
 
     AuthenticateRequest createLoginRequest(final HttpServletRequest request) {
-        final String email = request.getParameter("email");
-        final String password = request.getParameter("password");
+        final String email = request.getParameter(EMAIL);
+        final String password = request.getParameter(PASSWORD);
 
         return new AuthenticateRequest(email, password);
     }

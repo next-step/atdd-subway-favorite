@@ -43,9 +43,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(String email, MemberRequest param) {
+    public MemberResponse updateMember(String email, MemberRequest param) {
         Member member = memberRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         member.update(param.toMember());
+
+        return MemberResponse.of(member);
     }
 
     @Transactional

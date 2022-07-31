@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends NonChainingAuthenticationInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider, final ObjectMapper objectMapper) {
         super(loginMemberService);
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException {
