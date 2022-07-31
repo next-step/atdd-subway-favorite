@@ -1,10 +1,10 @@
 package nextstep.auth.authentication.interceptors;
 
+import nextstep.auth.authentication.AuthenticateRequest;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.authentication.AuthenticateRequest;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.userdetails.UserDetails;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,16 +13,16 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class ChainingAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
         try {
             final AuthenticateRequest authenticateRequest = createLoginRequest(request);
-            final LoginMember loginMember = findLoginMember(authenticateRequest);
+            final UserDetails userDetails = findUserDetails(authenticateRequest);
 
-            if (!isAuthenticated(authenticateRequest, loginMember)) {
+            if (!isAuthenticated(authenticateRequest, userDetails)) {
                 throw new AuthenticationException();
             }
 
-            afterAuthenticate(loginMember);
+            afterAuthenticate(userDetails);
             return true;
         } catch (Exception e) {
             return true;
@@ -31,12 +31,12 @@ public abstract class ChainingAuthenticationInterceptor implements HandlerInterc
 
     abstract AuthenticateRequest createLoginRequest(final HttpServletRequest request);
 
-    abstract LoginMember findLoginMember(final AuthenticateRequest authenticateRequest);
+    abstract UserDetails findUserDetails(final AuthenticateRequest authenticateRequest);
 
-    abstract boolean isAuthenticated(final AuthenticateRequest authenticateRequest, final LoginMember loginMember);
+    abstract boolean isAuthenticated(final AuthenticateRequest authenticateRequest, final UserDetails userDetails);
 
-    private void afterAuthenticate(final LoginMember loginMember) {
-        final Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+    private void afterAuthenticate(final UserDetails userDetails) {
+        final Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

@@ -4,7 +4,8 @@ import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.authentication.AuthenticateRequest;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.userdetails.UserDetails;
+import nextstep.auth.userdetails.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,14 +25,14 @@ public class BearerTokenAuthenticationInterceptor extends ChainingAuthentication
     }
 
     @Override
-    LoginMember findLoginMember(final AuthenticateRequest request) {
+    User findUserDetails(final AuthenticateRequest request) {
         final List<String> roles = jwtTokenProvider.getRoles(request.getPassword());
-        return new LoginMember(request.getEmail(), request.getPassword(), roles);
+        return new User(request.getEmail(), request.getPassword(), roles);
     }
 
     @Override
-    boolean isAuthenticated(final AuthenticateRequest authenticateRequest, final LoginMember loginMember) {
-        return jwtTokenProvider.validateToken(loginMember.getPassword());
+    boolean isAuthenticated(final AuthenticateRequest authenticateRequest, final UserDetails userDetails) {
+        return jwtTokenProvider.validateToken(userDetails.getPassword());
     }
 
 }

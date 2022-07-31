@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticateRequest;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenResponse;
+import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ public class TokenAuthenticationInterceptor extends NonChainingAuthenticationInt
         return objectMapper.readValue(content, AuthenticateRequest.class);
     }
 
-    void afterAuthenticate(final HttpServletResponse response, final LoginMember loginMember) throws IOException {
+    void afterAuthenticate(final HttpServletResponse response, final UserDetails loginMember) throws IOException {
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 

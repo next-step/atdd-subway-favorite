@@ -2,8 +2,8 @@ package nextstep.auth.authentication.interceptors;
 
 import nextstep.auth.authentication.AuthenticateRequest;
 import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,31 +21,31 @@ public abstract class NonChainingAuthenticationInterceptor implements HandlerInt
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
         final AuthenticateRequest authenticateRequest = createLoginRequest(request);
-        final LoginMember loginMember = findMember(authenticateRequest.getEmail());
+        final UserDetails userDetails = findMember(authenticateRequest.getEmail());
 
-        authenticate(authenticateRequest, loginMember);
+        authenticate(authenticateRequest, userDetails);
 
-        afterAuthenticate(response, loginMember);
+        afterAuthenticate(response, userDetails);
         return false;
     }
 
     abstract AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException;
 
-    private LoginMember findMember(final String email) {
-        LoginMember loginMember = userDetailsService.loadUserByUsername(email);
+    private UserDetails findMember(final String email) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        if (loginMember == null) {
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
-        return loginMember;
+        return userDetails;
     }
 
-    private void authenticate(final AuthenticateRequest authenticateRequest, final LoginMember loginMember) {
+    private void authenticate(final AuthenticateRequest authenticateRequest, final UserDetails loginMember) {
         if (!loginMember.checkPassword(authenticateRequest.getPassword())) {
             throw new AuthenticationException();
         }
     }
 
-    abstract void afterAuthenticate(final HttpServletResponse response, final LoginMember loginMember) throws IOException;
+    abstract void afterAuthenticate(final HttpServletResponse response, final UserDetails loginMember) throws IOException;
 
 }
