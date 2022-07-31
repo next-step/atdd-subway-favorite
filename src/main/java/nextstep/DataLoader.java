@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader {
     private MemberRepository memberRepository;
 
-    public DataLoader(MemberRepository memberRepository){
+    public DataLoader(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
