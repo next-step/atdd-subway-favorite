@@ -2,13 +2,14 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.service.UserDetailTemplate;
 import nextstep.auth.service.UserDetails;
 import nextstep.auth.service.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthentication implements AuthenticationStrategy {
+public class UsernamePasswordAuthentication extends UserDetailTemplate implements AuthenticationStrategy {
 
     private UserDetailsService userDetailsService;
 
@@ -23,13 +24,7 @@ public class UsernamePasswordAuthentication implements AuthenticationStrategy {
 
         UserDetails loginMember = userDetailsService.loadUserByUsername(email);
 
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(password)) {
-            throw new AuthenticationException();
-        }
+        validate(loginMember, password);
 
         Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
 

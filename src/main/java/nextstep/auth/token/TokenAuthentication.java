@@ -1,8 +1,8 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationStrategy;
+import nextstep.auth.service.UserDetailTemplate;
 import nextstep.auth.service.UserDetails;
 import nextstep.auth.service.UserDetailsService;
 import org.springframework.http.MediaType;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
-public class TokenAuthentication implements AuthenticationStrategy {
+public class TokenAuthentication extends UserDetailTemplate implements AuthenticationStrategy {
 
     private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
@@ -31,13 +31,7 @@ public class TokenAuthentication implements AuthenticationStrategy {
 
         UserDetails loginMember = userDetailsService.loadUserByUsername(principal);
 
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
+        validate(loginMember, credentials);
 
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
