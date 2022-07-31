@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.관리자_로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +39,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        accessToken = 관리자_로그인_되어_있음();
 
         교대역 = 지하철역_생성_요청(accessToken, "교대역").jsonPath().getLong("id");
         강남역 = 지하철역_생성_요청(accessToken, "강남역").jsonPath().getLong("id");

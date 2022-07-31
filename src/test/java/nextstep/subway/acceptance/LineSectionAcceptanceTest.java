@@ -31,14 +31,13 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        accessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
 
         강남역 = 지하철역_생성_요청(accessToken, "강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청(accessToken, "양재역").jsonPath().getLong("id");
 
         Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
         신분당선 = 지하철_노선_생성_요청(accessToken, lineCreateParams).jsonPath().getLong("id");
-
     }
 
     /**

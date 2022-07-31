@@ -15,9 +15,21 @@ public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
+    private static final String ADMIN_EMAIL = "admin@email.com";
+    private static final String USER_EMAIL = "email@email.com";
+    protected static final String PASSWORD = "password";
+
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         return response.jsonPath().getString("accessToken");
+    }
+
+    public static String 관리자_로그인_되어_있음() {
+        return 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
+    }
+
+    public static String 유저_로그인_되어_있음() {
+        return 로그인_되어_있음(USER_EMAIL, PASSWORD);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -95,5 +107,9 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 권한_없는_회원은_거부됨(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getInt("status")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
