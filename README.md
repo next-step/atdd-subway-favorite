@@ -1,6 +1,15 @@
 # 지하철 노선도 미션
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
+# Step2 TODO list
+
+- [ ] 인증 로직 리팩터링
+  - [ ] XXXAuthenticationFilter의 구조화
+    - [ ] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter 추상화
+    - [ ] BasicAuthenticationFilter와 BearerTokenAuthenticationFilter 추상화
+  - [ ] auth 패키지와 member 패키지에 대한 의존 제거
+    - [ ] UserDetailsService를 추상화 하여 auth -> member 의존을 제거하기
+
 # Step1 PR 수정 TODO list
 - [x] Filter 에서 Exception을 잡을때 세부적으로 예외 catch하도록 변경
 - [x] 상수 추출하기
