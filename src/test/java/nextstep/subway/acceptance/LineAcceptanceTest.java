@@ -14,6 +14,8 @@ import java.util.Map;
 
 import static nextstep.DataLoader.ADMIN_EMAIL;
 import static nextstep.DataLoader.ADMIN_PASSWORD;
+import static nextstep.DataLoader.MEMBER_EMAIL;
+import static nextstep.DataLoader.MEMBER_PASSWORD;
 import static nextstep.subway.acceptance.LineSteps.*;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -132,5 +134,24 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Given 일반 사용자가
+     * When 지하철 노선 생성을 요청하면,
+     * Then 지하철 노선 생성에 실패한다.
+     */
+    @DisplayName("일반사용자 지하철 노선 생성")
+    @Test
+    void addLineFailToMemberRole() {
+        // given
+        String 일반사용자 = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
+
+        // when
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(일반사용자, "2호선", "green");
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
     }
 }
