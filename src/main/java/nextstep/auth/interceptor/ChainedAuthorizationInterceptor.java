@@ -6,11 +6,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ChainedInterceptor implements HandlerInterceptor {
+public class ChainedAuthorizationInterceptor implements HandlerInterceptor {
 
     private AuthenticationStrategy strategy;
 
-    public ChainedInterceptor(AuthenticationStrategy strategy) {
+    public ChainedAuthorizationInterceptor(AuthenticationStrategy strategy) {
         this.strategy = strategy;
     }
 

@@ -6,11 +6,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UnchainedInterceptor implements HandlerInterceptor {
+public class UnchainedAuthenticationInterceptor implements HandlerInterceptor {
 
     private AuthenticationStrategy strategy;
 
-    public UnchainedInterceptor(AuthenticationStrategy strategy) {
+    public UnchainedAuthenticationInterceptor(AuthenticationStrategy strategy) {
         this.strategy = strategy;
     }
 
