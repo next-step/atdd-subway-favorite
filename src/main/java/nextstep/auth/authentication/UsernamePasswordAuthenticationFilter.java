@@ -2,6 +2,7 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.exception.AuthenticationException;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -41,7 +42,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
             Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return true;
+            return false;
         }catch (Exception e){
             return false;
         }
