@@ -5,13 +5,13 @@ import static nextstep.subway.acceptance.MemberSteps.USERNAME_FIELD;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.베이직_인증으로_내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
-import static nextstep.subway.utils.MockMember.ADMIN;
+import static nextstep.subway.fixture.MockMember.ADMIN;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.utils.MockMember;
+import nextstep.subway.fixture.MockMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

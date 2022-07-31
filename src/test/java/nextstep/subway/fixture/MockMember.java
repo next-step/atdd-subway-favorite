@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.subway.fixture;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,14 +30,18 @@ public enum MockMember {
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private Member toMember() {
+    public List<String> getAuthorities() {
+        return roleTypes.stream()
+                .map(Enum::name)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public Member toMember() {
         return new Member(
             this.email,
             this.password,
             this.age,
-            roleTypes.stream()
-                .map(Enum::name)
-                .collect(Collectors.toUnmodifiableList())
+            getAuthorities()
         );
     }
 }

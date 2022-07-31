@@ -3,7 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.utils.MockMember;
+import nextstep.subway.fixture.MockMember;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
