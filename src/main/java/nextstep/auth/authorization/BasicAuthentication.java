@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.authorization.AuthorizationStrategy;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.service.UserDetails;
@@ -9,7 +10,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class BasicAuthentication implements AuthenticationStrategy {
+public class BasicAuthentication implements AuthorizationStrategy {
 
     private UserDetailsService userDetailsService;
 
@@ -18,7 +19,7 @@ public class BasicAuthentication implements AuthenticationStrategy {
     }
 
     @Override
-    public void authenticate(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public void authorize(HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 

@@ -1,14 +1,14 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.authorization.AuthorizationStrategy;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class BearerTokenAuthentication implements AuthenticationStrategy {
+public class BearerTokenAuthentication implements AuthorizationStrategy {
 
     private JwtTokenProvider jwtTokenProvider;
 
@@ -17,7 +17,7 @@ public class BearerTokenAuthentication implements AuthenticationStrategy {
     }
 
     @Override
-    public void authenticate(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public void authorize(HttpServletRequest request) {
         String requestToken = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
         if (jwtTokenProvider.validateToken(requestToken)) {
@@ -28,6 +28,5 @@ public class BearerTokenAuthentication implements AuthenticationStrategy {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
     }
 }
