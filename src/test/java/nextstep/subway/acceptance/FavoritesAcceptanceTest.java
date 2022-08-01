@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,10 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
     private Long 역삼역;
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
-        회원_생성(ADMIN_EMAIL, PASSWORD, AGE);
+//        회원_생성(ADMIN_EMAIL, PASSWORD, AGE);
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         역삼역 = 지하철역_생성_요청("역삼역").jsonPath().getLong("id");
     }
