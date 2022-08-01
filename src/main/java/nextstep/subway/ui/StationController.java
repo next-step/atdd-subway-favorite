@@ -1,6 +1,7 @@
 package nextstep.subway.ui;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.secured.Secured;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
@@ -16,6 +17,7 @@ import java.util.List;
 public class StationController {
     private final StationService stationService;
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
