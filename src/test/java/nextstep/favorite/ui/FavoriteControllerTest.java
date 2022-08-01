@@ -19,8 +19,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static nextstep.favorite.FavoriteUnitSteps.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -81,6 +80,17 @@ class FavoriteControllerTest {
                 .findFavorites(anyString());
 
         final ResultActions result = mockMvc.perform(get("/favorites"));
+
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    void 즐겨찾기조회() throws Exception {
+        doReturn(favoriteResponse())
+                .when(favoriteService)
+                .findFavorite(anyString(), anyLong());
+
+        final ResultActions result = mockMvc.perform(get("/favorites/{id}", 1L));
 
         result.andExpect(status().isOk());
     }
