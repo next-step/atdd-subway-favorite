@@ -64,7 +64,7 @@ class TokenAuthenticationInterceptorTest {
     void authenticate() {
         // given
         given(authMemberLoader.loadUserByUsername(EMAIL))
-                .willReturn(new LoginMember(EMAIL, PASSWORD, List.of(ROLE_MEMBER.name())));
+                .willReturn(new LoginMember(1L,EMAIL, PASSWORD, List.of(ROLE_MEMBER.name())));
         Authentication authenticate = interceptor.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
 
         // then

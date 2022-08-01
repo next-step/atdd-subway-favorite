@@ -5,7 +5,8 @@ import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
-import nextstep.subway.applicaion.dto.PathResponse;
+import nextstep.subway.domain.Favorite;
+import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +21,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-class FavoriteServiceTest {
+class FavoriteServiceMockTest {
 
     private Station 교대역;
     private Station 강남역;
@@ -42,6 +44,9 @@ class FavoriteServiceTest {
 
     @Mock
     private PathService pathService;
+
+    @Mock
+    private FavoriteRepository favoriteRepository;
 
     @Mock
     private LineService lineService;
@@ -76,6 +81,7 @@ class FavoriteServiceTest {
         given(stationService.findById(1L)).willReturn(교대역);
         given(stationService.findById(4L)).willReturn(양재역);
         lenient().when(lineService.findLines()).thenReturn(List.of(이호선, 삼호선, 신분당선));
+        given(favoriteRepository.save(any())).willReturn(new Favorite(1L, 교대역, 양재역));
 
         // when
         FavoriteResponse favoriteResponse = favoriteService.addFavorite(1L, 1L, 4L);

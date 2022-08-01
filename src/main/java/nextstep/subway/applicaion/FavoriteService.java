@@ -3,11 +3,10 @@ package nextstep.subway.applicaion;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Favorite;
+import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -15,10 +14,12 @@ public class FavoriteService {
 
     private final StationService stationService;
     private final PathService pathService;
+    private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(StationService stationService, PathService pathService) {
+    public FavoriteService(StationService stationService, PathService pathService, FavoriteRepository favoriteRepository) {
         this.stationService = stationService;
         this.pathService = pathService;
+        this.favoriteRepository = favoriteRepository;
     }
 
     @Transactional
@@ -27,7 +28,7 @@ public class FavoriteService {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         pathChecker(sourceStation, targetStation);
-        Favorite favorite = new Favorite(memberId, sourceStation, targetStation);
+        Favorite favorite = favoriteRepository.save(new Favorite(memberId, sourceStation, targetStation));
 
         return new FavoriteResponse(
                 favorite.getId(),

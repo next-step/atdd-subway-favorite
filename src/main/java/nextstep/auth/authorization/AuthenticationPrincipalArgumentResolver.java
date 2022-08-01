@@ -1,5 +1,6 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.domain.LoginMember;
@@ -19,7 +20,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return LoginMember.guest();
+            throw new AuthenticationException();
         }
 
         return LoginMember.of(authentication.getPrincipal().toString(), authentication.getAuthorities());
