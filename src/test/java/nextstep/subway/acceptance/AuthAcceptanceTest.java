@@ -16,7 +16,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
         ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
         회원_정보_조회됨(response, EMAIL, AGE);
     }
