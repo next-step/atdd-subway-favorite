@@ -1,6 +1,7 @@
 package nextstep.subway.ui;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.secured.Secured;
 import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.dto.LineRequest;
 import nextstep.subway.applicaion.dto.LineResponse;
@@ -17,6 +18,7 @@ import java.util.List;
 public class LineController {
     private final LineService lineService;
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
