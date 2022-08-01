@@ -12,6 +12,14 @@ repositories {
     mavenCentral()
 }
 
+// lombok 설정 추가 시작
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+// lombok 설정 추가 끝
+
 dependencies {
     // spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -25,6 +33,14 @@ dependencies {
 
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    // lombok 라이브러리 추가 시작
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    // lombok 라이브러리 추가 끝
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
