@@ -49,6 +49,7 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> addSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
         lineService.addSection(lineId, sectionRequest);
