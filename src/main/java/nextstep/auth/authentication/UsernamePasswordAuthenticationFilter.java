@@ -27,17 +27,22 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         if (securityContext.getAuthentication() != null) {
             log.info("User information is already saved. User principal is {}", securityContext.getAuthentication().getPrincipal());
-            return true;
+            throw new AuthenticationException();
         }
 
         LoginMember loginMember = loginMemberService.loadUserByUsername(request.getParameter(USERNAME));
+
+        if (loginMember == null) {
+            throw new AuthenticationException();
+        }
+
         if (!loginMember.checkPassword(request.getParameter(PASSWORD))) {
             log.info("The password is not correct. User principal is {}", request.getParameter(USERNAME));
-            return true;
+            throw new AuthenticationException();
         }
 
         securityContext.setAuthentication(new Authentication(loginMember.getEmail(), loginMember.getAuthorities()));
-        return true;
+        response.setStatus(HttpServletResponse.SC_OK);
+        return false;
     }
-
 }
