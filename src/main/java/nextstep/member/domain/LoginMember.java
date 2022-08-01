@@ -6,16 +6,17 @@ import nextstep.auth.authentication.AuthMember;
 import java.util.List;
 
 public class LoginMember implements AuthMember {
+    private Long id;
     private String email;
     private String password;
     private List<String> authorities;
 
     public static LoginMember of(Member member) {
-        return new LoginMember(member.getEmail(), member.getPassword(), member.getRoles());
+        return new LoginMember(member.getId(), member.getEmail(), member.getPassword(), member.getRoles());
     }
 
     public static LoginMember of(String email, List<String> authorities) {
-        return new LoginMember(email, null, authorities);
+        return new LoginMember(null, email, null, authorities);
     }
 
     public static LoginMember guest() {
@@ -25,10 +26,15 @@ public class LoginMember implements AuthMember {
     public LoginMember() {
     }
 
-    public LoginMember(String email, String password, List<String> authorities) {
+    public LoginMember(Long id, String email, String password, List<String> authorities) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {
