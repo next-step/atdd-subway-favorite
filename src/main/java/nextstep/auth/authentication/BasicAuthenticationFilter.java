@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+    private final LoginMemberService loginMemberService;
 
     public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
         this.loginMemberService = loginMemberService;

@@ -24,7 +24,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(관리자_토큰, "2호선", "green");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -42,8 +42,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        지하철_노선_생성_요청("2호선", "green");
-        지하철_노선_생성_요청("3호선", "orange");
+        지하철_노선_생성_요청(관리자_토큰, "2호선", "green");
+        지하철_노선_생성_요청(관리자_토큰, "3호선", "orange");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -62,7 +62,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자_토큰, "2호선", "green");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
@@ -81,13 +81,14 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자_토큰, "2호선", "green");
 
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
         RestAssured
                 .given().log().all()
+            .auth().oauth2(관리자_토큰)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -108,11 +109,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자_토큰, "2호선", "green");
 
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
+            .auth().oauth2(관리자_토큰)
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 
