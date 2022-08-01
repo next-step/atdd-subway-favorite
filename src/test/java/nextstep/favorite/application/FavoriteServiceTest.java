@@ -98,7 +98,7 @@ class FavoriteServiceTest {
     }
 
     @Test
-    void 즐겨찾기목록실패_존재하지않음() {
+    void 즐겨찾기조회실패_존재하지않음() {
         final long id = 1L;
 
         doReturn(Optional.empty())
@@ -111,7 +111,7 @@ class FavoriteServiceTest {
     }
 
     @Test
-    void 즐겨찾기목록실패_자신의것이아님() {
+    void 즐겨찾기조회실패_자신의것이아님() {
         final Long id = 1L;
         final Favorite favorite = favorite();
 
