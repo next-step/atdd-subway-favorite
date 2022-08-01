@@ -21,8 +21,7 @@ import java.util.List;
 import static nextstep.favorite.FavoriteUnitSteps.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FavoriteController.class)
@@ -93,6 +92,13 @@ class FavoriteControllerTest {
         final ResultActions result = mockMvc.perform(get("/favorites/{id}", 1L));
 
         result.andExpect(status().isOk());
+    }
+
+    @Test
+    void 즐겨찾기삭제() throws Exception {
+        final ResultActions result = mockMvc.perform(delete("/favorites/{id}", 1L));
+
+        result.andExpect(status().isNoContent());
     }
 
     private FavoriteResponse favoriteResponse() {
