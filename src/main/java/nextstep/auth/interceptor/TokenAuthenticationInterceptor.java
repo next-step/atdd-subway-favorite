@@ -5,8 +5,8 @@ import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
+import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandle
     }
 
     @Override
-    protected LoginMember createAuthentication(HttpServletRequest request) {
+    protected UserDetails createAuthentication(HttpServletRequest request) {
         try {
             String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
@@ -32,25 +32,21 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandle
             String principal = tokenRequest.getEmail();
             String credentials = tokenRequest.getPassword();
 
-            LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
 
-            if (loginMember == null) {
+            if (userDetails.isValidPassword(credentials)) {
                 throw new AuthenticationException();
             }
 
-            if (!loginMember.checkPassword(credentials)) {
-                throw new AuthenticationException();
-            }
-
-            return loginMember;
+            return userDetails;
         } catch (Exception e) {
             throw new AuthenticationException();
         }
     }
 
     @Override
-    protected void afterHandle(LoginMember loginMember, HttpServletResponse response) {
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void afterHandle(UserDetails userDetails, HttpServletResponse response) {
+        String token = jwtTokenProvider.createToken(userDetails.getEmail(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = null;

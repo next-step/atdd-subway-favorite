@@ -4,8 +4,8 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,27 +22,23 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     }
 
     @Override
-    protected LoginMember createAuthentication(HttpServletRequest request) {
+    protected UserDetails createAuthentication(HttpServletRequest request) {
         String username = request.getParameter(USERNAME_FIELD);
         String password = request.getParameter(PASSWORD_FIELD);
 
         AuthenticationToken token = new AuthenticationToken(username, password);
 
-        LoginMember loginMember = userDetailsService.loadUserByUsername(token.getPrincipal());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
 
-        if (loginMember == null) {
+        if (userDetails.isValidPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
-
-        if (!loginMember.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
-        return loginMember;
+        return userDetails;
     }
 
     @Override
-    protected void afterHandle(LoginMember loginMember, HttpServletResponse response) {
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void afterHandle(UserDetails userDetails, HttpServletResponse response) {
+        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

@@ -1,6 +1,7 @@
 package nextstep.auth.interceptor;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.user.UserDetails;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,13 +11,18 @@ public abstract class AuthenticationNonChainHandler implements HandlerIntercepto
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
-        LoginMember loginMember = createAuthentication(request);
-        afterHandle(loginMember, response);
+        UserDetails userDetails = createAuthentication(request);
+
+        if (userDetails == null) {
+            throw new AuthenticationException();
+        }
+
+        afterHandle(userDetails, response);
         return false;
 
     }
 
-    protected abstract LoginMember createAuthentication(HttpServletRequest request);
+    protected abstract UserDetails createAuthentication(HttpServletRequest request);
 
-    protected abstract void afterHandle(LoginMember loginMember, HttpServletResponse response);
+    protected abstract void afterHandle(UserDetails userDetails, HttpServletResponse response);
 }
