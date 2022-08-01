@@ -5,7 +5,7 @@ import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.auth.user.UserDetailsService;
+import nextstep.auth.user.LoginUserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandler {
-    private final UserDetailsService userDetailsService;
+    private final LoginUserDetailsService loginUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.userDetailsService = userDetailsService;
+    public TokenAuthenticationInterceptor(LoginUserDetailsService loginUserDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.loginUserDetailsService = loginUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -32,7 +32,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandle
             String principal = tokenRequest.getEmail();
             String credentials = tokenRequest.getPassword();
 
-            LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
+            LoginMember loginMember = loginUserDetailsService.loadUserByUsername(principal);
 
             if (loginMember == null) {
                 throw new AuthenticationException();

@@ -4,7 +4,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.exception.AuthenticationException;
-import nextstep.auth.user.UserDetailsService;
+import nextstep.auth.user.LoginUserDetailsService;
 import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +15,10 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private final UserDetailsService userDetailsService;
+    private final LoginUserDetailsService loginUserDetailsService;
 
-    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public UsernamePasswordAuthenticationFilter(LoginUserDetailsService loginUserDetailsService) {
+        this.loginUserDetailsService = loginUserDetailsService;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
 
         AuthenticationToken token = new AuthenticationToken(username, password);
 
-        LoginMember loginMember = userDetailsService.loadUserByUsername(token.getPrincipal());
+        LoginMember loginMember = loginUserDetailsService.loadUserByUsername(token.getPrincipal());
 
         if (loginMember == null) {
             throw new AuthenticationException();
