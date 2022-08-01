@@ -20,12 +20,22 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
+        checkSameId(source, target);
         Station upStation = stationService.findById(source);
         Station downStation = stationService.findById(target);
+        Path path = searchPath(upStation, downStation);
+        return PathResponse.of(path);
+    }
+
+    private void checkSameId(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같을 수는 없습니다.");
+        }
+    }
+
+    public Path searchPath(Station upStation, Station downStation) {
         List<Line> lines = lineService.findLines();
         SubwayMap subwayMap = new SubwayMap(lines);
-        Path path = subwayMap.findPath(upStation, downStation);
-
-        return PathResponse.of(path);
+        return subwayMap.findPath(upStation, downStation);
     }
 }
