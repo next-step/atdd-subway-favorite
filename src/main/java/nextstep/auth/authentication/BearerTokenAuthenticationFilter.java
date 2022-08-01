@@ -44,9 +44,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
 
         String principal = jwtTokenProvider.getPrincipal(token);
 
-        try {
-            loginMemberService.loadUserByUsername(principal);
-        } catch (RuntimeException e) {
+        if (!loginMemberService.isUserExist(principal)) {
             log.info("The Token is not Valid. Principal is {}", principal);
             throw new AuthenticationException();
         }

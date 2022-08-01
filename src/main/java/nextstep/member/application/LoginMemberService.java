@@ -17,4 +17,8 @@ public class LoginMemberService {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return LoginMember.of(member);
     }
+
+    public boolean isUserExist(String email) {
+        return memberRepository.findByEmail(email).isPresent();
+    }
 }
