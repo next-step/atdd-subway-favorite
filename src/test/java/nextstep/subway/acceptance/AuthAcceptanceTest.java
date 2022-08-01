@@ -15,10 +15,6 @@ import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
-
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {
