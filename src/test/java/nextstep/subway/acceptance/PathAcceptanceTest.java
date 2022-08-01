@@ -75,7 +75,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         lineCreateParams.put("downStationId", downStation + "");
         lineCreateParams.put("distance", distance + "");
 
-        return LineSteps.지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+        return LineSteps.지하철_노선_생성_요청(관리자, lineCreateParams).jsonPath().getLong("id");
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {

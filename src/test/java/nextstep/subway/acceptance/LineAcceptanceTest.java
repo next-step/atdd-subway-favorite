@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -18,20 +17,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
     /**
-     * When 지하철 노선을 생성하면
+     * When 관리자가 지하철 노선을 생성하면
      * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
      */
-    @DisplayName("지하철 노선 생성")
+    @DisplayName("관리자가 지하철 노선 생성")
     @Test
-    void createLine() {
+    void createLine_admin() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
 
         assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
+    }
+
+    /**
+     * When 관리자가 아닌 자가 지하철 노선을 생성하면
+     * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
+     */
+    @DisplayName("관리자가 아닌 자가 지하철 노선 생성")
+    @Test
+    void createLine_member() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, "2호선", "green");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
+
+        assertThat(listResponse.jsonPath().getList("name")).doesNotContain("2호선");
     }
 
     /**
@@ -43,8 +59,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        지하철_노선_생성_요청("2호선", "green");
-        지하철_노선_생성_요청("3호선", "orange");
+        지하철_노선_생성_요청(관리자, "2호선", "green");
+        지하철_노선_생성_요청(관리자, "3호선", "orange");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -63,7 +79,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
@@ -82,7 +98,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // when
         Map<String, String> params = new HashMap<>();
@@ -108,7 +124,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // when
         ExtractableResponse<Response> response = given()

@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
@@ -11,11 +10,15 @@ import java.util.Map;
 import static nextstep.subway.acceptance.AcceptanceSteps.given;
 
 public class LineSteps {
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color) {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String token, String name, String color) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
-        return given()
+        return 지하철_노선_생성_요청(token, params);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String token, Map<String, String> params) {
+        return given(token)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
@@ -37,14 +40,6 @@ public class LineSteps {
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(Long id) {
         return given()
                 .when().get("/lines/{id}", id)
-                .then().log().all().extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params) {
-        return given()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines")
                 .then().log().all().extract();
     }
 
