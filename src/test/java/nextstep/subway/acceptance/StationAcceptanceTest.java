@@ -75,8 +75,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .auth().oauth2(관리자토큰)
+        CommonAuthRestAssured.given(관리자토큰)
                 .when()
                 .delete(location)
                 .then().log().all()

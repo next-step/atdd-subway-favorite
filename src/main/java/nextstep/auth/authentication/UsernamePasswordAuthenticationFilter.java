@@ -30,8 +30,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
             AuthenticationToken token = new AuthenticationToken(username, password);
 
-            String principal = token.getPrincipal();
-            LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
 
             if (ObjectUtils.isEmpty(loginMember)) {
                 throw new AuthenticationException();
