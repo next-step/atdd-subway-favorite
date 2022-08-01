@@ -38,4 +38,8 @@ public class Favorite {
     public Long getTarget() {
         return target;
     }
+
+    public boolean isOwner(final Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }

@@ -5,6 +5,7 @@ import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.dto.FavoriteStationResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.NotFavoriteOwnerException;
 import nextstep.member.application.MemberService;
 import nextstep.subway.applicaion.StationService;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,19 @@ public class FavoriteService {
                 .stream()
                 .map(this::createFavoriteResponse)
                 .collect(Collectors.toList());
+    }
+
+    public FavoriteResponse findFavorite(final String email, final Long id) {
+        final Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow();
+
+        final Long memberId = memberService.findMember(email).getId();
+
+        if (!favorite.isOwner(memberId)) {
+            throw new NotFavoriteOwnerException();
+        }
+
+        return createFavoriteResponse(favorite);
     }
 
 }
