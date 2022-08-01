@@ -10,10 +10,10 @@ import java.util.Map;
 import static nextstep.subway.acceptance.AcceptanceSteps.given;
 
 public class StationSteps {
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String token, String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
-        return given()
+        return given(token)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
