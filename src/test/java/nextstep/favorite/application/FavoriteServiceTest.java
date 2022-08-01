@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static nextstep.favorite.FavoriteUnitSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,6 +66,31 @@ class FavoriteServiceTest {
         assertThat(result).isNotNull();
 
         verify(favoriteRepository, times(1)).save(any(Favorite.class));
+    }
+
+    @Test
+    void 즐겨찾기조회성공() {
+        final Long id = 1L;
+        final Favorite favorite = favorite();
+
+        doReturn(new MemberResponse(memberId, email, 0))
+                .when(memberService)
+                .findMember(email);
+
+        doReturn(List.of(favorite))
+                .when(favoriteRepository)
+                .findAllByMemberId(id);
+
+        doReturn(station(source))
+                .when(stationService)
+                .findById(source);
+
+        doReturn(station(target))
+                .when(stationService)
+                .findById(target);
+
+        final List<FavoriteResponse> result = favoriteService.findFavorites(email);
+        assertThat(result).hasSize(1);
     }
 
     private Station station(final long id) {
