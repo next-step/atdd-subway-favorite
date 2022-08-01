@@ -51,3 +51,49 @@ public class StationController {
    4. 기존에 있던 인증, 인가를 담당하는 클래스를 구분해보자 (가독성을 위해 패키지 분리!)
    5. 구현체를 보면 중복되는 로직이 존재한다. 이는 변하지 않는 부분일 수 있는데 이 부분을 template method pattern 을 적용하여 분리해보자.
    6. (Optional) 범용적인 이름을 사용한 Custom Interceptor 에 좀 더 구체적인 역할을 표현할 수 있는 네이밍을 부여해보자.
+
+### step 3. 즐겨찾기 기능 구현
+1. 기능 요구사항
+   1. 요구사항 설명에서 제공되는 추가된 요구사항을 기반으로 `즐겨 찾기 기능`을 구현하자.
+   2. 추가된 요구사항을 정의한 `인수 조건`을 도출하자
+   3. 인수 조건을 검증하는 인수 테스트를 작성하자
+   4. 예외 케이스에 대한 검증도 포함
+      1. 로그인이 필요한 API 요청 시 유효하지 않은 경우 401 응답 내려주기
+2. 프로그래밍 요구사항
+   1. 인수 테스트 주도 개발 프로세스에 맞춰서 기능을 구현하자
+      1. 요구사항 설명을 참고하여 인수 조건을 정의
+      2. 인수 조건을 검증하는 인수 테스트 작성
+      3. 인수 테스트를 충족하는 기능 구현
+   2. 인수 조건은 인수 테스트 `메서드 상단에 주석`으로 작성
+      1. 뼈대 코드의 인수 테스트를 참고
+   3. 인수 테스트 이후 기능 구현은 TDD 로 진행
+      1. 도메인 레이어 테스트는 필수
+      2. 서비스 레이어 테스트는 선택
+3. 기능 구현
+   1. 즐겨 찾기 추가 기능
+      1. Method & URL: [POST] /favorites
+      2. Authorization: Bearer Token
+      3. Request: "source", "target"
+      4. Response: [201 CREATED]
+      5. Location: /favorites/{id}
+   2. 즐겨 찾기 조회 기능
+      1. Method & URL: [GET] /favorites
+      2. Authorization: Bearer Token
+      3. Request: 
+      4. Response: [200] Arrays :["id", "source", "target"]
+   3. 즐겨 찾기 삭제 기능
+      1. Method & URL : [DELETE] /favorites/{id}
+      2. Authorization: Bearer Token
+      3. Request: 
+      4. Response: [204 NO CONTENT]
+4. 사전 설계
+   1. `JPA Auditing` 기능을 도입한다.
+   2. 권한이 없는 경우 `401 Unauthorized 응답`
+      1. 내 정보 관리 / 즐겨 찾기 기능은 `로그인 된 상태`에서만 가능
+      2. `비로그인`이거나 `유효하지 않을` 경우 401 Unauthorized 응답
+   3. 즐겨찾기 예외 사항
+      1. 경로 조회의 예외 사항과 같다
+      2. 출발역과 도착역이 같은 경우 즐겨 찾기 불가능
+      3. 출발역과 도착역이 연결이 되어 있지 않은 경우 불가능
+      4. 존재하지 않은 출발역이나 도착역으로 등록 할 경우 불가능
+   4. 그 이외의 케이스는 구현하면서 정리
