@@ -29,6 +29,7 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/stations/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);

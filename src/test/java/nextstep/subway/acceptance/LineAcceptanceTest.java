@@ -151,8 +151,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-
-    private static ExtractableResponse<Response> 지하철_노선_수정_요청(String token, String color, ExtractableResponse<Response> createResponse) {
+    private ExtractableResponse<Response> 지하철_노선_수정_요청(String token, String color, ExtractableResponse<Response> createResponse) {
         Map<String, String> params = new HashMap<>();
         params.put("color", color);
         return given(token)
