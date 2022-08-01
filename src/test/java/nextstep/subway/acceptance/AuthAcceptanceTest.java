@@ -51,7 +51,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return adminGiven(accessToken)
+        return authGiven(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()

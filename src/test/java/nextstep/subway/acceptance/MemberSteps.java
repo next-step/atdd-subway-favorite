@@ -23,7 +23,12 @@ public class MemberSteps {
         return response.jsonPath().getString("accessToken");
     }
 
-    public static RequestSpecification adminGiven(String token) {
+    public static String 사용자Bearer토큰(final String email) {
+        ExtractableResponse<Response> response = 로그인_요청(email, PASSWORD);
+        return response.jsonPath().getString("accessToken");
+    }
+
+    public static RequestSpecification authGiven(String token) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token);
     }
@@ -41,7 +46,7 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_생성(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -55,37 +60,32 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured.given().log().all()
+    public static Long 회원_ID_조회(final ExtractableResponse<Response> response) {
+        return authGiven(관리자Bearer토큰())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
+                .when().get(response.header("location"))
+                .then().log().all()
+                .extract().jsonPath().getLong("id");
+    }
+
+    public static ExtractableResponse<Response> 회원_정보_조회(final Long id) {
+        return authGiven(관리자Bearer토큰())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/{id}", id)
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
-
+    public static ExtractableResponse<Response> 회원_정보_수정(Long id, String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
+        return authGiven(관리자Bearer토큰())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put(uri)
-                .then().log().all().extract();
-    }
-
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
+                .when().put("/members/{id}", id)
                 .then().log().all().extract();
     }
 
@@ -97,6 +97,12 @@ public class MemberSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_삭제(Long id) {
+        return authGiven(관리자Bearer토큰())
+                .when().delete("/members/{id}", id)
+                .then().log().all().extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {

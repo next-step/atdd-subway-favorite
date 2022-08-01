@@ -1,20 +1,23 @@
 package nextstep.member.application;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.userdetails.User;
+import nextstep.auth.userdetails.UserDetails;
+import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LoginMemberService {
-    private MemberRepository memberRepository;
+public class LoginMemberService implements UserDetailsService {
+    private final MemberRepository memberRepository;
 
     public LoginMemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
-    public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return LoginMember.of(member);
+    public UserDetails loadUserByUsername(String email) {
+        final Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return new User(member.getEmail(), member.getPassword(), member.getRoles());
     }
+
 }
