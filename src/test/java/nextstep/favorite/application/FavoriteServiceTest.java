@@ -153,6 +153,55 @@ class FavoriteServiceTest {
         assertThat(result).isNotNull();
     }
 
+    @Test
+    void 즐겨찾기삭제실패_존재하지않음() {
+        final long id = 1L;
+
+        doReturn(Optional.empty())
+                .when(favoriteRepository)
+                .findById(id);
+
+        assertThrows(
+                NoSuchElementException.class,
+                () -> favoriteService.deleteFavorite(email, id));
+    }
+
+    @Test
+    void 즐겨찾기삭제실패_자신의것이아님() {
+        final Long id = 1L;
+        final Favorite favorite = favorite();
+
+        doReturn(new MemberResponse(-1L, email, 0))
+                .when(memberService)
+                .findMember(email);
+
+        doReturn(Optional.of(favorite))
+                .when(favoriteRepository)
+                .findById(id);
+
+        assertThrows(
+                NotFavoriteOwnerException.class,
+                () -> favoriteService.deleteFavorite(email, id));
+    }
+
+    @Test
+    void 즐겨찾기삭제성공() {
+        final Long id = 1L;
+        final Favorite favorite = favorite();
+
+        doReturn(new MemberResponse(favorite.getMemberId(), email, 0))
+                .when(memberService)
+                .findMember(email);
+
+        doReturn(Optional.of(favorite))
+                .when(favoriteRepository)
+                .findById(id);
+
+        favoriteService.deleteFavorite(email, id);
+
+        verify(favoriteRepository, times(1)).deleteById(id);
+    }
+
     private Station station(final long id) {
         return new Station(id, "name", LocalDateTime.now(), LocalDateTime.now());
     }

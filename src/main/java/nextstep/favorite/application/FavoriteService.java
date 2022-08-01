@@ -67,4 +67,18 @@ public class FavoriteService {
         return createFavoriteResponse(favorite);
     }
 
+    @Transactional
+    public void deleteFavorite(final String email, final Long id) {
+        final Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow();
+
+        final Long memberId = memberService.findMember(email).getId();
+
+        if (!favorite.isOwner(memberId)) {
+            throw new NotFavoriteOwnerException();
+        }
+
+        favoriteRepository.deleteById(id);
+    }
+
 }
