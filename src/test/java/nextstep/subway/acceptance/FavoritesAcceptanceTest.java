@@ -80,13 +80,13 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
     @Test
     void getFavorites_NotLogin() {
         // given
-        final ExtractableResponse<Response> 결과 = 미로그인_즐겨찾기조회();
+        final ExtractableResponse<Response> 결과 = 미로그인_즐겨찾기목록조회();
 
         // then
         로그인되지않은요청(결과);
     }
 
-    private ExtractableResponse<Response> 미로그인_즐겨찾기조회() {
+    private ExtractableResponse<Response> 미로그인_즐겨찾기목록조회() {
         return RestAssured
                 .given().log().all()
                 .when().get("/favorites/1")
@@ -110,6 +110,40 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getList("id")).isNotEmpty();
     }
 
+    @DisplayName("로그인 안된 상태에서 즐겨찾기를 조회한다.")
+    @Test
+    void getFavorite_NotLogin() {
+        // given
+        final ExtractableResponse<Response> 결과 = 미로그인_즐겨찾기조회();
+
+        // then
+        로그인되지않은요청(결과);
+    }
+
+    private ExtractableResponse<Response> 미로그인_즐겨찾기조회() {
+        return RestAssured
+                .given().log().all()
+                .when().get("/favorites/1")
+                .then().log().all().extract();
+    }
+
+    @DisplayName("로그인 된 상태에서 즐겨찾기를 조회한다.")
+    @Test
+    void getFavorite_Login() {
+        // given
+        final long id = 즐겨찾기ID(즐겨찾기추가(강남역, 역삼역));
+
+        final ExtractableResponse<Response> 결과 = 즐겨찾기조회(id);
+
+        // then
+        즐겨찾기조회성공(결과);
+    }
+
+    private void 즐겨찾기조회성공(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getLong("id")).isNotNull();
+    }
+
     @DisplayName("로그인 안된 상태에서 즐겨찾기를 삭제한다.")
     @Test
     void deleteFavorites_NotLogin() {
@@ -127,7 +161,7 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    @DisplayName("로그인 된 상태에서 즐겨찾기를 조회한다.")
+    @DisplayName("로그인 된 상태에서 즐겨찾기를 삭제한다.")
     @Test
     void deleteFavorites_Login() {
         // given

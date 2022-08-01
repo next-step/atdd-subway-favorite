@@ -27,14 +27,14 @@ public final class FavoritesSteps {
     public static ExtractableResponse<Response> 즐겨찾기조회(final Long id) {
         return authGiven(관리자Bearer토큰())
                 .given().log().all()
-                .when().post("/favorites/{id}", id)
+                .when().get("/favorites/{id}", id)
                 .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 즐겨찾기목록조회() {
         return authGiven(관리자Bearer토큰())
                 .given().log().all()
-                .when().post("/favorites")
+                .when().get("/favorites")
                 .then().log().all().extract();
     }
 
