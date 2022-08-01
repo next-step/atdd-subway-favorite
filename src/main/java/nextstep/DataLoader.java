@@ -28,6 +28,8 @@ public class DataLoader {
         log.info("call DataLoader");
         Member admin = new Member(ADMIN_EMAIL, PASSWORD, AGE, List.of(RoleType.ROLE_ADMIN.name()));
         Member user = new Member(EMAIL, PASSWORD, AGE, List.of(RoleType.ROLE_MEMBER.name()));
-        memberRepository.saveAll(List.of(admin, user));
+        memberRepository.save(admin);
+        memberRepository.save(user);
+        //memberRepository.saveAll(List.of(admin, user));
     }
 }

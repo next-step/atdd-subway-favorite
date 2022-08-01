@@ -2,8 +2,8 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.userdetails.UserDetails;
+import nextstep.auth.userdetails.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -29,17 +29,16 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
 
             AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+            if (userDetails == null) {
                 throw new AuthenticationException();
             }
 
-            if (!loginMember.checkPassword(token.getCredentials())) {
+            if (!userDetails.isValidCredentials(token.getCredentials())) {
                 throw new AuthenticationException();
             }
 
-            Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
+            Authentication authentication = new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return true;

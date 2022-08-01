@@ -5,7 +5,7 @@
 
 - [ ] 인증 로직 리팩터링
   - [ ] XXXAuthenticationFilter의 구조화
-    - [ ] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter 추상화
+    - [x] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter 추상화
     - [ ] BasicAuthenticationFilter와 BearerTokenAuthenticationFilter 추상화
   - [ ] auth 패키지와 member 패키지에 대한 의존 제거
     - [ ] UserDetailsService를 추상화 하여 auth -> member 의존을 제거하기
