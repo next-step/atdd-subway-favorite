@@ -31,8 +31,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         // then
-        List<String> stationNames = 지하철역_목록_조회_요청().jsonPath().getList("name", String.class);
-        assertThat(stationNames).containsAnyOf("강남역");
+        ExtractableResponse<Response> findResponse = 지하철역_목록_조회_요청();
+        assertThat(findResponse.jsonPath().getList("name", String.class)).containsAnyOf("강남역");
+        assertThat(findResponse.jsonPath().getString("[0].createDate")).isNotBlank();
+        assertThat(findResponse.jsonPath().getString("[0].modifiedDate")).isNotBlank();
     }
 
     /**
