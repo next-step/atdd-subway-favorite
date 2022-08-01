@@ -37,6 +37,7 @@ public class LineController {
         return ResponseEntity.ok().body(lineResponse);
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
         lineService.updateLine(id, lineRequest);
