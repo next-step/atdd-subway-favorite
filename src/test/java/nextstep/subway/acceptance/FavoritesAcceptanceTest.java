@@ -170,12 +170,12 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 결과 = 즐겨찾기삭제(즐겨찾기ID);
 
         // then
-        즐겨찾기삭제성공(결과);
+        즐겨찾기삭제성공(결과, 즐겨찾기ID);
     }
 
-    private void 즐겨찾기삭제성공(final ExtractableResponse<Response> response) {
+    private void 즐겨찾기삭제성공(final ExtractableResponse<Response> response, final Long id) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertThat(즐겨찾기목록조회().statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(즐겨찾기조회(id).statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private void 로그인되지않은요청(final ExtractableResponse<Response> response) {
