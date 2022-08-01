@@ -133,22 +133,38 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 지하철 노선을 생성하고
-     * When 생성한 지하철 노선을 삭제하면
+     * When 관리자가 생성한 지하철 노선을 삭제하면
      * Then 해당 지하철 노선 정보는 삭제된다
      */
     @DisplayName("지하철 노선 삭제")
     @Test
-    void deleteLine() {
+    void deleteLine_admin() {
         // given
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = given()
-                .when().delete(createResponse.header("location"))
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 지하철_노선_삭제_요청(관리자, createResponse);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Given 지하철 노선을 생성하고
+     * When 관리자가 아닌자가 생성한 지하철 노선을 삭제하면
+     * Then 해당 지하철 노선 정보는 삭제된다
+     */
+    @DisplayName("지하철 노선 삭제")
+    @Test
+    void deleteLine_member() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_삭제_요청(사용자, createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 지하철_노선_수정_요청(String token, String color, ExtractableResponse<Response> createResponse) {
@@ -160,4 +176,11 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .when().put(createResponse.header("location"))
                 .then().log().all().extract();
     }
+
+    private ExtractableResponse<Response> 지하철_노선_삭제_요청(String token, ExtractableResponse<Response> createResponse) {
+        return given(token)
+                .when().delete(createResponse.header("location"))
+                .then().log().all().extract();
+    }
+
 }
