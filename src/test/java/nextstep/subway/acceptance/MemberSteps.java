@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
@@ -9,11 +8,10 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AcceptanceSteps.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
 
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
@@ -25,7 +23,7 @@ public class MemberSteps {
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all()
+        return given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
@@ -39,8 +37,7 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
+        return given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/members")
@@ -50,7 +47,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return RestAssured.given().log().all()
+        return given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
                 .then().log().all()
@@ -65,8 +62,7 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
+        return given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
@@ -75,15 +71,13 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
+        return given()
                 .when().delete(uri)
                 .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
-        return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
+        return given(username, password)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
