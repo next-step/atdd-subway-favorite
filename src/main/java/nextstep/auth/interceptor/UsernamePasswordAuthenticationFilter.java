@@ -4,9 +4,8 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.exception.AuthenticationException;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +15,10 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -29,7 +28,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
 
         AuthenticationToken token = new AuthenticationToken(username, password);
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+        LoginMember loginMember = userDetailsService.loadUserByUsername(token.getPrincipal());
 
         if (loginMember == null) {
             throw new AuthenticationException();

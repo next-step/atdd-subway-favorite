@@ -1,27 +1,24 @@
 package nextstep.auth.interceptor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandler {
-    private LoginMemberService loginMemberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -35,7 +32,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandle
             String principal = tokenRequest.getEmail();
             String credentials = tokenRequest.getPassword();
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+            LoginMember loginMember = userDetailsService.loadUserByUsername(principal);
 
             if (loginMember == null) {
                 throw new AuthenticationException();
