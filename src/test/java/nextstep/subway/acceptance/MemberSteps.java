@@ -9,15 +9,28 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.LineSteps.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
+    private static final String ADMIN_EMAIL = "admin@email.com";
+    private static final String USER_EMAIL = "email@email.com";
+    protected static final String PASSWORD = "password";
+
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         return response.jsonPath().getString("accessToken");
+    }
+
+    public static String 관리자_로그인_되어_있음() {
+        return 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
+    }
+
+    public static String 유저_로그인_되어_있음() {
+        return 로그인_되어_있음(USER_EMAIL, PASSWORD);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -95,5 +108,54 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 권한_없는_회원은_거부됨(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getInt("status")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 회원_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 회원_정보_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_조회_요청(String accessToken) {
+        return given(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(String accessToken, String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return given(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나를_삭제하는_요청(String accessToken) {
+        return given(accessToken)
+                .when().delete("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
     }
 }

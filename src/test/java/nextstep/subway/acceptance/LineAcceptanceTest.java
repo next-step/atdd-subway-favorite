@@ -11,8 +11,13 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.LineSteps.*;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.LineSteps.given;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_목록_조회_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.관리자_로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.권한_없는_회원은_거부됨;
+import static nextstep.subway.acceptance.MemberSteps.유저_로그인_되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
@@ -24,7 +29,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        accessToken = 관리자_로그인_되어_있음();
     }
 
     /**
@@ -42,6 +47,19 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
 
         assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
+    }
+
+    @DisplayName("권한이 없는 경우 지하철 노선을 생성할 수 없다")
+    @Test
+    void createLineFailWhenNoAuthority() {
+        // given
+        accessToken = 유저_로그인_되어_있음();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(accessToken, "2호선", "green");
+
+        // then
+        권한_없는_회원은_거부됨(response);
     }
 
     /**
@@ -109,6 +127,26 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("color")).isEqualTo("red");
     }
 
+    @DisplayName("권한이 없는 경우 지하철 노선을 수정할 수 없습니다")
+    @Test
+    void updateLineFailWhenNoAuthority() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(accessToken, "2호선", "green");
+        accessToken = 유저_로그인_되어_있음();
+
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("color", "red");
+        ExtractableResponse<Response> response = given(accessToken)
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(createResponse.header("location"))
+                .then().log().all().extract();
+
+        // then
+        권한_없는_회원은_거부됨(response);
+    }
+
     /**
      * Given 지하철 노선을 생성하고
      * When 생성한 지하철 노선을 삭제하면
@@ -127,5 +165,21 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("권한이 없는 경우 지하철 노선을 삭제할 수 없습니다")
+    @Test
+    void deleteLineFailWhenNoAuthority() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(accessToken, "2호선", "green");
+        accessToken = 유저_로그인_되어_있음();
+
+        // when
+        ExtractableResponse<Response> response = given(accessToken)
+                .when().delete(createResponse.header("location"))
+                .then().log().all().extract();
+
+        // then
+        권한_없는_회원은_거부됨(response);
     }
 }

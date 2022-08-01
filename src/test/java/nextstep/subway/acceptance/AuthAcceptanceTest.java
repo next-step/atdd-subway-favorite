@@ -18,33 +18,33 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBasicAuth() {
         // when
-        var response = 베이직_인증으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        var response = 베이직_인증으로_내_회원_정보_조회_요청(ADMIN_EMAIL, PASSWORD);
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
     }
 
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
         // when
-        var response = 폼_로그인_후_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        var response = 폼_로그인_후_내_회원_정보_조회_요청(ADMIN_EMAIL, PASSWORD);
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         // given
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
 
         // when
         var response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {

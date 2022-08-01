@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 import static nextstep.subway.acceptance.LineSteps.given;
+import static nextstep.subway.acceptance.MemberSteps.관리자_로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +26,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        accessToken = 관리자_로그인_되어_있음();
     }
 
     /**
