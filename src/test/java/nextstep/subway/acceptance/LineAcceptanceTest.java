@@ -35,7 +35,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     /**
      * When 관리자가 아닌 자가 지하철 노선을 생성하면
-     * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
+     * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 없다.
      */
     @DisplayName("관리자가 아닌 자가 지하철 노선 생성")
     @Test
