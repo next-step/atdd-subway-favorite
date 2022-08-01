@@ -1,11 +1,9 @@
 package nextstep.auth.interceptor;
 
-import nextstep.auth.authentication.AuthMemberLoader;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.converter.AuthenticationConverter;
 import nextstep.auth.token.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +17,8 @@ public class BearerTokenAuthenticationInterceptor extends AuthenticationIntercep
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public BearerTokenAuthenticationInterceptor(AuthenticationConverter authenticationConverter, AuthMemberLoader authMemberLoader, JwtTokenProvider jwtTokenProvider) {
-        super(authenticationConverter, authMemberLoader);
+    public BearerTokenAuthenticationInterceptor(JwtTokenProvider jwtTokenProvider) {
+        super(null, null);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
