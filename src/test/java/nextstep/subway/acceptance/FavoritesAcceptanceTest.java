@@ -12,7 +12,8 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.FavoritesSteps.*;
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.authGiven;
+import static nextstep.subway.acceptance.MemberSteps.관리자Bearer토큰;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,7 +76,7 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    @DisplayName("로그인 안된 상태에서 즐겨찾기를 조회한다.")
+    @DisplayName("로그인 안된 상태에서 즐겨찾기 목록을 조회한다.")
     @Test
     void getFavorites_NotLogin() {
         // given
@@ -92,23 +93,22 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    @DisplayName("로그인 된 상태에서 즐겨찾기를 조회한다.")
+    @DisplayName("로그인 된 상태에서 즐겨찾기 목록을 조회한다.")
     @Test
     void getFavorites_Login() {
         // given
-        final Long 즐겨찾기ID = 즐겨찾기ID(즐겨찾기추가(강남역, 역삼역));
+        즐겨찾기추가(강남역, 역삼역);
 
-        final ExtractableResponse<Response> 결과 = 즐겨찾기조회(즐겨찾기ID);
+        final ExtractableResponse<Response> 결과 = 즐겨찾기목록조회();
 
         // then
-        즐겨찾기조회성공(결과);
+        즐겨찾기목록조회성공(결과);
     }
 
-    private void 즐겨찾기조회성공(final ExtractableResponse<Response> response) {
+    private void 즐겨찾기목록조회성공(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getLong("id")).isNotNull();
+        assertThat(response.jsonPath().getList("id")).isNotEmpty();
     }
-
 
     @DisplayName("로그인 안된 상태에서 즐겨찾기를 삭제한다.")
     @Test
@@ -136,12 +136,12 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 결과 = 즐겨찾기삭제(즐겨찾기ID);
 
         // then
-        즐겨찾기삭제성공(결과, 즐겨찾기ID);
+        즐겨찾기삭제성공(결과);
     }
 
-    private void 즐겨찾기삭제성공(final ExtractableResponse<Response> response, final Long id) {
+    private void 즐겨찾기삭제성공(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertThat(즐겨찾기조회(id).statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(즐겨찾기목록조회().statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private void 로그인되지않은요청(final ExtractableResponse<Response> response) {

@@ -31,6 +31,13 @@ public final class FavoritesSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기목록조회() {
+        return authGiven(관리자Bearer토큰())
+                .given().log().all()
+                .when().post("/favorites")
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기삭제(final Long id) {
         return authGiven(관리자Bearer토큰())
                 .given().log().all()
