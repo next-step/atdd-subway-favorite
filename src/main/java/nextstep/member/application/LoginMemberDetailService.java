@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class LoginMemberService implements UserDetailsService {
+public class LoginMemberDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
-    public LoginMemberService(MemberRepository memberRepository) {
+    public LoginMemberDetailService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
     @Transactional(readOnly = true)
