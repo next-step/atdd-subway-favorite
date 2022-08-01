@@ -2,8 +2,11 @@ package nextstep.member.domain;
 
 import javax.persistence.*;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,26 +37,6 @@ public class Member {
         this.password = password;
         this.age = age;
         this.roles = roles;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
     }
 
     public void update(Member member) {
