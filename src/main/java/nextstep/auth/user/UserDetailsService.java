@@ -7,6 +7,6 @@ import nextstep.member.domain.LoginMember;
  * @project subway
  * @description
  */
-public interface LoginUserDetailsService {
+public interface UserDetailsService {
     LoginMember loadUserByUsername(String username);
 }

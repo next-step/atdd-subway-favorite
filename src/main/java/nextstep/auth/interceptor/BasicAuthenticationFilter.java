@@ -5,17 +5,17 @@ import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.exception.AuthenticationException;
-import nextstep.auth.user.LoginUserDetailsService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends AuthenticationChainHandler {
-    private final LoginUserDetailsService loginUserDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginUserDetailsService loginUserDetailsService) {
-        this.loginUserDetailsService = loginUserDetailsService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class BasicAuthenticationFilter extends AuthenticationChainHandler {
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-        LoginMember loginMember = loginUserDetailsService.loadUserByUsername(token.getPrincipal());
+        LoginMember loginMember = userDetailsService.loadUserByUsername(token.getPrincipal());
         if (loginMember == null) {
             throw new AuthenticationException();
         }
