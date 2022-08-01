@@ -24,26 +24,30 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-		Map<String, String[]> parameterMap = request.getParameterMap();
-		String userName = parameterMap.get(PRINCIPAL_NAME)[0];
-		String password = parameterMap.get(CREDENTIAL_NAME)[0];
+		try {
+			Map<String, String[]> parameterMap = request.getParameterMap();
+			String userName = parameterMap.get(PRINCIPAL_NAME)[0];
+			String password = parameterMap.get(CREDENTIAL_NAME)[0];
 
-		AuthenticationToken token = new AuthenticationToken(userName, password);
+			AuthenticationToken token = new AuthenticationToken(userName, password);
 
-		LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+			LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
 
-		if (loginMember == null) {
-			throw new AuthenticationException();
+			if (loginMember == null) {
+				throw new AuthenticationException();
+			}
+
+			if (!loginMember.checkPassword(token.getCredentials())) {
+				throw new AuthenticationException();
+			}
+
+			Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+
+			return false;
+		} catch (Exception e) {
+			return true;
 		}
-
-		if (!loginMember.checkPassword(token.getCredentials())) {
-			throw new AuthenticationException();
-		}
-
-		Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		return true;
 
 	}
 }
