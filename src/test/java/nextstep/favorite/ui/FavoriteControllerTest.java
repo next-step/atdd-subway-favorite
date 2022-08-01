@@ -6,6 +6,7 @@ import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,10 +16,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static nextstep.favorite.FavoriteUnitSteps.favoriteRequest;
-import static nextstep.favorite.FavoriteUnitSteps.memberId;
+import java.util.List;
+
+import static nextstep.favorite.FavoriteUnitSteps.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,19 +44,45 @@ class FavoriteControllerTest {
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
+    @BeforeEach
+    void setUp() {
+        doReturn(email)
+                .when(jwtTokenProvider)
+                .getPrincipal(anyString());
+
+        doReturn(List.of())
+                .when(jwtTokenProvider)
+                .getRoles(anyString());
+
+        doReturn(true)
+                .when(jwtTokenProvider)
+                .validateToken(anyString());
+    }
+
     @Test
-    void 멤버추가() throws Exception {
+    void 즐겨찾기추가() throws Exception {
         final FavoriteRequest favoriteRequest = favoriteRequest();
 
         doReturn(favoriteResponse())
                 .when(favoriteService)
-                .saveFavorite(any(), any(FavoriteRequest.class));
+                .saveFavorite(anyString(), any(FavoriteRequest.class));
 
         final ResultActions result = mockMvc.perform(post("/favorites")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(favoriteRequest)));
 
         result.andExpect(status().isCreated());
+    }
+
+    @Test
+    void 즐겨찾기목록조회() throws Exception {
+        doReturn(List.of(favoriteResponse()))
+                .when(favoriteService)
+                .findFavorites(anyString());
+
+        final ResultActions result = mockMvc.perform(get("/favorites"));
+
+        result.andExpect(status().isOk());
     }
 
     private FavoriteResponse favoriteResponse() {

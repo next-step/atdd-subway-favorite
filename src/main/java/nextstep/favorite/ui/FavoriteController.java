@@ -6,11 +6,13 @@ import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class FavoriteController {
@@ -27,6 +29,12 @@ public class FavoriteController {
 
         final FavoriteResponse response = favoriteService.saveFavorite(user.getEmail(), favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal final User user) {
+        final List<FavoriteResponse> response = favoriteService.findFavorites(user.getEmail());
+        return ResponseEntity.ok(response);
     }
 
 }
