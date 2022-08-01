@@ -21,15 +21,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
     }
 
-    @DisplayName("Basic Auth")
-    @Test
-    void myInfoWithBasicAuthInvalidToken() {
-        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(ADMIN_EMAIL, ADMIN_PASSWORD);
-
-        회원_정보_조회됨(response, ADMIN_EMAIL, AGE);
-    }
-
-    @DisplayName("Session 로그인 후 내 정보 조회")
+    @DisplayName("폼 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
         ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(ADMIN_EMAIL, ADMIN_PASSWORD);

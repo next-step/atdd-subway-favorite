@@ -18,6 +18,6 @@ public class DataLoader {
 
     public void loadData() {
         Member admin = new Member("admin@email.com", "password", 20, List.of(ROLE_ADMIN.name()));
-        memberRepository.saveAndFlush(admin);
+        memberRepository.save(admin);
     }
 }

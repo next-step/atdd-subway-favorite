@@ -47,18 +47,21 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getEmail());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getEmail(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getEmail());
         return ResponseEntity.noContent().build();

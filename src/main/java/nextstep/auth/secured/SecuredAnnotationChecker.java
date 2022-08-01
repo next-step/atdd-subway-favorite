@@ -2,6 +2,7 @@ package nextstep.auth.secured;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.exception.AuthenticationException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 public class SecuredAnnotationChecker {
+
     @Before("@annotation(nextstep.auth.secured.Secured)")
     public void checkAuthorities(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -24,6 +26,9 @@ public class SecuredAnnotationChecker {
         List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new AuthenticationException();
+        }
         authentication.getAuthorities().stream()
                 .filter(values::contains)
                 .findFirst()

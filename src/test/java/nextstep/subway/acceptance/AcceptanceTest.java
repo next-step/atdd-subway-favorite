@@ -23,13 +23,9 @@ public class AcceptanceTest {
     @Autowired
     private DatabaseCleanup databaseCleanup;
 
-    public static String adminAccessToken;
-
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-        databaseCleanup.execute("member", "member_role");
-        adminAccessToken = Optional.ofNullable(adminAccessToken)
-                .orElseGet(() -> 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD));
+        databaseCleanup.execute();
     }
 }

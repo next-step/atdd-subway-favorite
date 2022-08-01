@@ -8,6 +8,10 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
+import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_EMAIL;
+import static nextstep.subway.acceptance.auth.AuthSteps.ADMIN_PASSWORD;
+import static nextstep.subway.acceptance.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.acceptance.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.utils.RestAssuredUtils.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,13 +38,13 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age, String accessToken) {
+    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = Map.of(
                 "email", email,
                 "password", password,
                 "age", String.valueOf(age)
         );
-        return given(accessToken)
+        return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/members")
@@ -54,13 +58,44 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(response.header("Location"))
                 .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+        String uri = response.header("Location");
+
+        Map<String, String> params = Map.of(
+                "email", email,
+                "password", password,
+                "age", String.valueOf(age)
+        );
+
+        return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put(uri)
+                .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age, String accessToken) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+        return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
+                .when().delete(response.header("Location"))
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
+    }
 
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return given(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password, Integer age) {
         Map<String, String> params = Map.of(
                 "email", email,
                 "password", password,
@@ -70,15 +105,15 @@ public class MemberSteps {
         return given(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put(uri)
+                .when().put("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response, String accessToken) {
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
         return given(accessToken)
-                .when().delete(response.header("Location"))
+                .when().delete("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
@@ -93,5 +128,18 @@ public class MemberSteps {
 
     public static void 인증_예외_발생(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 조회_정보_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE);
+    }
+
+    public static void 내_정보_조회_검증(String accessToken, String email, int age) {
+        ExtractableResponse<Response> response = 내_정보_조회_요청(accessToken);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 }
