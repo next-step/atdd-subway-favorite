@@ -2,6 +2,7 @@ package nextstep.member.domain;
 
 
 import java.util.List;
+import nextstep.auth.authentication.AuthenticationException;
 
 public class LoginMember {
     private String email;
@@ -38,6 +39,9 @@ public class LoginMember {
     }
 
     public boolean checkPassword(String password) {
-        return this.password.equals(password);
+        if (!this.password.equals(password)) {
+            throw new AuthenticationException();
+        }
+        return true;
     }
 }
