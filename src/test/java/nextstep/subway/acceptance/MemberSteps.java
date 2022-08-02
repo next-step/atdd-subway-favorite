@@ -14,6 +14,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
 public class MemberSteps {
+	public static final String ADMIN_EMAIL = "admin@email.com";
+	public static final String ADMIN_PASSWORD = "password";
+	public static final Integer ADMIN_AGE = 20;
+
 	public static final String USERNAME_FIELD = "username";
 	public static final String PASSWORD_FIELD = "password";
 
