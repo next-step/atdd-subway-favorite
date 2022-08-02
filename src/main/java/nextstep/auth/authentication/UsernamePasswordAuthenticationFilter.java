@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
 
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
 
     private LoginMemberService loginMemberService;
 
@@ -23,10 +23,9 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // TODO: 구현하세요.
         try {
-            String username = request.getParameter(USERNAME_FIELD);
-            String password = request.getParameter(PASSWORD_FIELD);
+            String username = request.getParameter(USERNAME);
+            String password = request.getParameter(PASSWORD);
 
             AuthenticationToken token = new AuthenticationToken(username, password);
 
