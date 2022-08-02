@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_제거_요청;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +40,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).containsAnyOf("강남역");
+    }
+
+    @Test
+    void 지하철역_생성_권한_없음_에러() {
+        // then
+        일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
+        ExtractableResponse<Response> result = 지하철역_생성_요청(일반유저토큰, "강남역");
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -88,5 +100,22 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
+    }
+
+    @Test
+    void 지하철역_제거_권한_없음_에러() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(관리자토큰, "강남역");
+
+        // then
+        일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
+        String location = createResponse.header("location");
+        ExtractableResponse<Response> result = CommonAuthRestAssured.given(일반유저토큰)
+            .when()
+            .delete(location)
+            .then().log().all()
+            .extract();
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,6 +53,19 @@ class SectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 양재역, 정자역);
     }
 
+    @Test
+    void 지하철_노선_구간_등록_권한_없음_에러() {
+        // when
+        Long 정자역 = 지하철역_생성_요청(관리자토큰, "정자역").jsonPath().getLong("id");
+        지하철_노선에_지하철_구간_생성_요청(관리자토큰, 신분당선, createSectionCreateParams(양재역, 정자역));
+
+        // then
+        일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
+        ExtractableResponse<Response> result = 지하철_노선에_지하철_구간_생성_요청(일반유저토큰, 신분당선, createSectionCreateParams(양재역, 정자역));
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     /**
      * Given 지하철 노선에 새로운 구간 추가를 요청 하고
      * When 지하철 노선의 마지막 구간 제거를 요청 하면
@@ -71,6 +85,19 @@ class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 양재역);
+    }
+
+    @Test
+    void 지하철_노선_구간_제거_권한_없음_에러() {
+        // when
+        Long 정자역 = 지하철역_생성_요청(관리자토큰, "정자역").jsonPath().getLong("id");
+        지하철_노선에_지하철_구간_생성_요청(관리자토큰, 신분당선, createSectionCreateParams(양재역, 정자역));
+
+        // then
+        일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
+        ExtractableResponse<Response> result = 지하철_노선에_지하철_구간_제거_요청(일반유저토큰, 신분당선, 정자역);
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {

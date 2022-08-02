@@ -16,7 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 public class AcceptanceTest {
 
     private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
+    static final String MEMBER_EMAIL = "test@email.com";
+    static final String PASSWORD = "password";
 
     @LocalServerPort
     int port;
@@ -28,6 +29,7 @@ public class AcceptanceTest {
     private DataLoader dataLoader;
 
     String 관리자토큰;
+    String 일반유저토큰;
 
     @BeforeEach
     public void setUp() {
