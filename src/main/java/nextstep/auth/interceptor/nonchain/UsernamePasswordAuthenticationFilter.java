@@ -19,7 +19,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthNonChainIntercepto
     }
 
     @Override
-    protected UserDetails createAuthentication(final HttpServletRequest request) {
+    UserDetails createAuthentication(final HttpServletRequest request) {
         try {
             final String username = request.getParameter("username");
             final String password = request.getParameter("password");
@@ -37,7 +37,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthNonChainIntercepto
     }
 
     @Override
-    protected void afterHandle(final UserDetails loginMember, final HttpServletResponse response) {
+    void afterHandle(final UserDetails loginMember, final HttpServletResponse response) {
         final Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

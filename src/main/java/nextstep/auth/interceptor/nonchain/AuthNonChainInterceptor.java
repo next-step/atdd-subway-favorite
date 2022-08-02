@@ -7,7 +7,7 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.user.UserDetails;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-public abstract class AuthNonChainInterceptor implements HandlerInterceptor {
+abstract class AuthNonChainInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -21,8 +21,7 @@ public abstract class AuthNonChainInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    protected abstract UserDetails createAuthentication(HttpServletRequest request);
-
-    protected abstract void afterHandle(UserDetails userDetails, HttpServletResponse response);
+    abstract UserDetails createAuthentication(HttpServletRequest request);
+    abstract void afterHandle(UserDetails userDetails, HttpServletResponse response);
 
 }

@@ -19,7 +19,7 @@ public class BasicAuthenticationFilter extends AuthChainInterceptor {
     }
 
     @Override
-    protected Authentication createAuthentication(final HttpServletRequest request) {
+    Authentication createAuthentication(final HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 

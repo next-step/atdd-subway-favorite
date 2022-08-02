@@ -23,7 +23,7 @@ public class TokenAuthenticationInterceptor extends AuthNonChainInterceptor {
     }
 
     @Override
-    protected UserDetails createAuthentication(final HttpServletRequest request) {
+    UserDetails createAuthentication(final HttpServletRequest request) {
         try {
             String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
@@ -47,7 +47,7 @@ public class TokenAuthenticationInterceptor extends AuthNonChainInterceptor {
     }
 
     @Override
-    protected void afterHandle(final UserDetails loginMember, final HttpServletResponse response) {
+    void afterHandle(final UserDetails loginMember, final HttpServletResponse response) {
         try {
             String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
             TokenResponse tokenResponse = new TokenResponse(token);

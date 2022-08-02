@@ -17,7 +17,7 @@ public class BearerTokenAuthenticationFilter extends AuthChainInterceptor {
     }
 
     @Override
-    protected Authentication createAuthentication(final HttpServletRequest request) {
+    Authentication createAuthentication(final HttpServletRequest request) {
         //request로부터 token값을 추출한다(AuthorizationExtractor 활용)
         final String bearerToken = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
