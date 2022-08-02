@@ -15,24 +15,6 @@ public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    public static String 로그인_되어_있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return response.jsonPath().getString("accessToken");
-    }
-
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-    }
-
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);

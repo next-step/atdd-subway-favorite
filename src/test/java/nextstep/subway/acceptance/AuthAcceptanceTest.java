@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.acceptance.AuthSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.*;
 
 
