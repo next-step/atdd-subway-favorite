@@ -21,8 +21,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class FavoriteServiceMockTest {
@@ -80,5 +83,25 @@ public class FavoriteServiceMockTest {
                 () -> assertThat(favorites.get(0).getSource().getName()).isEqualTo("출발역"),
                 () -> assertThat(favorites.get(0).getTarget().getName()).isEqualTo("도착역")
         );
+    }
+
+    @DisplayName("즐겨찾기를 성공적으로 삭제한다")
+    @Test
+    public void delete_favorite_success() {
+        // given
+        Member member = new Member(1L, "email", "password", 20);
+        Station 출발역 = new Station(2L, "출발역");
+        Station 도착역 = new Station(3L, "도착역");
+        Favorite favorite = new Favorite(4L, member.getId(), 출발역, 도착역);
+
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
+        given(favoriteRepository.existsByMemberIdAndId(anyLong(), anyLong())).willReturn(true);
+
+
+        // when
+        favoriteService.deleteById(member.getEmail(), favorite.getId());
+        
+        // then
+        verify(favoriteRepository, times(1)).deleteById(anyLong());
     }
 }

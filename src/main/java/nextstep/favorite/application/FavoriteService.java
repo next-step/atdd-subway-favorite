@@ -1,6 +1,5 @@
 package nextstep.favorite.application;
 
-import io.jsonwebtoken.lang.Assert;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
@@ -53,5 +52,14 @@ public class FavoriteService {
     private Member findMemberByPrincipal(String principal) {
         return memberRepository.findByEmail(principal)
                 .orElseThrow(NoSuchElementException::new);
+    }
+
+    public void deleteById(String principal, Long favoriteId) {
+        Member findMember = findMemberByPrincipal(principal);
+
+        if(!favoriteRepository.existsByMemberIdAndId(findMember.getId(), favoriteId)) {
+            throw new IllegalArgumentException();
+        }
+        favoriteRepository.deleteById(favoriteId);
     }
 }
