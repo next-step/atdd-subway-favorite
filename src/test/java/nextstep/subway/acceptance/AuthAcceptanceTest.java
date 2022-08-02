@@ -17,16 +17,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private static final Member ADMIN = Member.createAdmin("parkuram12@gmail.com", "pass", 25);
     private static final Member USER = Member.createUser("user2@gmail.com", "user3", 23);
 
-    @Autowired
-    DataLoader dataLoader;
-
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        dataLoader.loadData();
-    }
-
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {
