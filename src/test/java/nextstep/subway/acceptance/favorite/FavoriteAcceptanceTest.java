@@ -80,7 +80,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰_발급_및_즐겨찾기_경로_추가_요청(교대역, 존재하지_않는_역);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -179,7 +179,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 토큰_발급_및_즐겨찾기_경로_삭제_요청(createResponse);
 
         // then
-        assertThat(deleteResponse).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
         // when
         ExtractableResponse<Response> response = 토큰_발급_및_즐겨찾기_경로_조회_요청(createResponse);
@@ -203,7 +203,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 토큰_발급_없이_즐겨찾기_경로_삭제_요청(createResponse);
 
         // then
-        assertThat(deleteResponse).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -225,6 +225,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 다른_사용자_토큰_발급_및_즐겨찾기_경로_삭제_요청(createResponse);
 
         // then
-        assertThat(deleteResponse).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 }

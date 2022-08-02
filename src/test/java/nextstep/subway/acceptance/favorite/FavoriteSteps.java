@@ -54,7 +54,7 @@ public class FavoriteSteps {
     public static ExtractableResponse<Response> 토큰_발급_및_즐겨찾기_경로_조회_요청(ExtractableResponse<Response> response) {
         return given(로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when()
-                .post(response.header("Location"))
+                .get(response.header("Location"))
                 .then().log().all()
                 .extract();
     }
@@ -62,7 +62,7 @@ public class FavoriteSteps {
     public static ExtractableResponse<Response> 토큰_발급_없이_즐겨찾기_경로_조회_요청(ExtractableResponse<Response> response) {
         return RestAssured.given().log().all()
                 .when()
-                .post(response.header("Location"))
+                .get(response.header("Location"))
                 .then().log().all()
                 .extract();
     }
@@ -70,7 +70,7 @@ public class FavoriteSteps {
     public static ExtractableResponse<Response> 다른_사용자_토큰_발급_및_즐겨찾기_경로_조회_요청(ExtractableResponse<Response> response) {
         return given(로그인_되어_있음(OTHER_EMAIL, OTHER_PASSWORD))
                 .when()
-                .post(response.header("Location"))
+                .get(response.header("Location"))
                 .then().log().all()
                 .extract();
     }
