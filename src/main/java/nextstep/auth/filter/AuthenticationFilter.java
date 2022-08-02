@@ -1,6 +1,7 @@
 package nextstep.auth.filter;
 
 import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.context.Authentication;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -18,15 +19,15 @@ public abstract class AuthenticationFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String email = getEmail(request);
+        Authentication authentication = getAuthentication(request);
 
+        String email = (String) authentication.getPrincipal();
         if (!loginService.isUserExist(email)) {
             throw new AuthenticationException();
         }
 
         LoginMember member = loginService.loadUserByUsername(email);
-
-        String password = getPassword(request);
+        String password = (String) authentication.getCredential();
         if (!member.checkPassword(password)) {
             throw new AuthenticationException();
         }
@@ -35,9 +36,13 @@ public abstract class AuthenticationFilter implements HandlerInterceptor {
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
-    protected abstract String getEmail(HttpServletRequest request);
-
-    protected abstract String getPassword(HttpServletRequest request);
-
+    protected abstract Authentication getAuthentication(HttpServletRequest request);
     protected abstract void execute(HttpServletResponse response, String email, List<String> authorities) throws IOException;
+
+    protected String isNotNullAndNotEmpty(String parameter) {
+        if (parameter == null || parameter.isBlank()) {
+            throw new AuthenticationException();
+        }
+        return parameter;
+    }
 }
