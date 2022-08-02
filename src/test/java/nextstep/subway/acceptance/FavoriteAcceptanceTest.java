@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.favorite.exception.NotFoundFavoriteException;
 import nextstep.subway.exception.NotFoundStationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,7 @@ import java.util.Map;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회됨;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_성공;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_실패_확인;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_성공;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_실패_확인;
@@ -113,6 +115,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_삭제_성공(deleteResponse);
+    }
+
+    @DisplayName("비정상적인 즐겨찾기 번호로 삭제 요청시 예외를 발생")
+    @Test
+    public void delete_favorite_fail_by_wrong_id() {
+        // given
+        Long 비정상적인_즐겨찾기_id = 7777L;
+
+        // when
+        var response = 즐겨찾기_삭제_요청(accessToken, "/favorites/" + 비정상적인_즐겨찾기_id);
+
+        // then
+        즐겨찾기_삭제_실패_확인(response, HttpStatus.NOT_FOUND, NotFoundFavoriteException.MESSAGE);
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {

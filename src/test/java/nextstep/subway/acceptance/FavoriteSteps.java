@@ -56,10 +56,11 @@ public class FavoriteSteps {
     }
 
     public static void 즐겨찾기_생성_실패_확인(ExtractableResponse<Response> response, HttpStatus status, String message) {
-        assertAll(
-                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(message),
-                () -> assertThat(response.jsonPath().getInt("status")).isEqualTo(status.value())
-        );
+        실패_확인(response, message, status);
+    }
+
+    public static void 즐겨찾기_삭제_실패_확인(ExtractableResponse<Response> response, HttpStatus status, String message) {
+        실패_확인(response, message, status);
     }
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
@@ -68,5 +69,12 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_삭제_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private static void 실패_확인(ExtractableResponse<Response> response, String message, HttpStatus status) {
+        assertAll(
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(message),
+                () -> assertThat(response.jsonPath().getInt("status")).isEqualTo(status.value())
+        );
     }
 }
