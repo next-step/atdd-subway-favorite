@@ -4,7 +4,6 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.user.UserDetails;
-import org.apache.catalina.User;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 

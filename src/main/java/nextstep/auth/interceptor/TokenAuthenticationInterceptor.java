@@ -1,6 +1,7 @@
 package nextstep.auth.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -23,33 +24,30 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandle
     }
 
     @Override
-    protected UserDetails createAuthentication(HttpServletRequest request) {
+    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+        String content = null;
         try {
-            String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
             TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
 
-            String principal = tokenRequest.getEmail();
-            String credentials = tokenRequest.getPassword();
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
-
-            if (userDetails.isValidPassword(credentials)) {
-                throw new AuthenticationException();
-            }
-
-            return userDetails;
+            return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
         } catch (Exception e) {
             throw new AuthenticationException();
         }
     }
 
     @Override
+    protected UserDetails getUserDetails(AuthenticationToken authenticationToken) {
+            return userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+    }
+
+    @Override
     protected void afterHandle(UserDetails userDetails, HttpServletResponse response) {
         String token = jwtTokenProvider.createToken(userDetails.getEmail(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
-
         String responseToClient = null;
+
         try {
             responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
             response.setStatus(HttpServletResponse.SC_OK);

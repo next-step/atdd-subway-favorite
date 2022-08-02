@@ -3,7 +3,6 @@ package nextstep.auth.interceptor;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
 
@@ -22,18 +21,16 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     }
 
     @Override
-    protected UserDetails createAuthentication(HttpServletRequest request) {
+    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         String username = request.getParameter(USERNAME_FIELD);
         String password = request.getParameter(PASSWORD_FIELD);
 
-        AuthenticationToken token = new AuthenticationToken(username, password);
+        return new AuthenticationToken(username, password);
+    }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
-
-        if (userDetails.isValidPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
-        return userDetails;
+    @Override
+    protected UserDetails getUserDetails(AuthenticationToken authenticationToken) {
+        return userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
     }
 
     @Override
