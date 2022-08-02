@@ -30,6 +30,17 @@ public class FavoriteSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                    .auth().oauth2(accessToken)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                    .get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_생성_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -39,5 +50,9 @@ public class FavoriteSteps {
                 () -> assertThat(response.jsonPath().getString("message")).isEqualTo(message),
                 () -> assertThat(response.jsonPath().getInt("status")).isEqualTo(status.value())
         );
+    }
+
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

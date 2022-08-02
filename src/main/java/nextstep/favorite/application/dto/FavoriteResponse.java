@@ -1,5 +1,7 @@
 package nextstep.favorite.application.dto;
 
+import nextstep.favorite.domain.Favorite;
+
 public class FavoriteResponse {
 
     private final Long id;
@@ -16,6 +18,13 @@ public class FavoriteResponse {
         this.id = id;
         this.source = source;
         this.target = target;
+    }
+
+    public static FavoriteResponse from(Favorite favorite) {
+        return new FavoriteResponse(favorite.getId(),
+                new FavoriteStationResponse(favorite.getSource()),
+                new FavoriteStationResponse(favorite.getTarget())
+        );
     }
 
     public Long getId() {

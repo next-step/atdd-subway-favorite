@@ -1,7 +1,7 @@
 package nextstep.favorite.application;
 
+import io.jsonwebtoken.lang.Assert;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.favorite.application.dto.FavoriteStationResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
@@ -9,12 +9,14 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
@@ -23,7 +25,8 @@ public class FavoriteService {
 
     public FavoriteService(FavoriteRepository favoriteRepository,
                            StationService stationService,
-                           MemberRepository memberRepository) {
+                           MemberRepository memberRepository
+    ) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
         this.memberRepository = memberRepository;
@@ -39,18 +42,12 @@ public class FavoriteService {
         return favorite.getId();
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavorites(String principal) {
         Member findMember = findMemberByPrincipal(principal);
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(findMember.getId());
-
-        List<FavoriteResponse> responseList = new ArrayList<>();
-        for (Favorite favorite : favorites) {
-            FavoriteStationResponse source = new FavoriteStationResponse(favorite.getSource());
-            FavoriteStationResponse target = new FavoriteStationResponse(favorite.getTarget());
-            responseList.add(new FavoriteResponse(favorite.getId(), source, target));
-        }
-
-        return responseList;
+        return favoriteRepository.findAllByMemberId(findMember.getId()).stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 
     private Member findMemberByPrincipal(String principal) {
