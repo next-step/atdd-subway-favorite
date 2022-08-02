@@ -1,18 +1,20 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_목록_조회_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_삭제_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_수정_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static nextstep.subway.acceptance.LineSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
@@ -31,6 +33,17 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
 
         assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
+    }
+
+    @Test
+    void 지하철_노선_생성_권한_없음_에러() {
+        // when
+        일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
+
+        // then
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(일반유저토큰, "2호선", "green");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -86,16 +99,28 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        CommonAuthRestAssured.given(관리자토큰)
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put(createResponse.header("location"))
-                .then().log().all().extract();
+        지하철_노선_수정_요청(관리자토큰, createResponse.header("location"), params);
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("color")).isEqualTo("red");
+    }
+
+    @Test
+    void 지하철_노선_수정_권한_없음_에러() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자토큰, "2호선", "green");
+
+        // when
+        일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("color", "red");
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(일반유저토큰, createResponse.header("location"), params);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -110,11 +135,22 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자토큰, "2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = CommonAuthRestAssured.given(관리자토큰)
-                .when().delete(createResponse.header("location"))
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 지하철_노선_삭제_요청(관리자토큰, createResponse.header("location"));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 지하철_노선_삭제_권한_없음_에러() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자토큰, "2호선", "green");
+
+        // when
+        일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
+        ExtractableResponse<Response> response =지하철_노선_삭제_요청(일반유저토큰, createResponse.header("location"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
