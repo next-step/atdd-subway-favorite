@@ -27,12 +27,14 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
-    public void createFavorite(String loginEmail, Long sourceId, Long targetId) {
+    public FavoriteResponse createFavorite(String loginEmail, Long sourceId, Long targetId) {
         Member loginMember = memberService.findMemberByEmail(loginEmail);
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
 
-        favoriteRepository.save(Favorite.of(loginMember, source, target));
+        Favorite savedFavorite = favoriteRepository.save(Favorite.of(loginMember, source, target));
+
+        return createFavoriteResponse(savedFavorite);
     }
 
     public List<FavoriteResponse> getFavorites(String email) {
@@ -44,8 +46,13 @@ public class FavoriteService {
                 .collect(toList());
     }
 
+    @Transactional
+    public void deleteFavorite(String email, Long favoriteId) {
+        Member findMember = memberService.findMemberByEmail(email);
+        favoriteRepository.deleteMemberFavoriteById(findMember.getId(), favoriteId);
+    }
+
     public FavoriteResponse createFavoriteResponse(Favorite favorite) {
         return FavoriteResponse.of(favorite.getId(), favorite.getSource(), favorite.getTarget());
     }
-
 }

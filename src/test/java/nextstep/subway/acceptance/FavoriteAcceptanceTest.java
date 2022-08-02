@@ -117,8 +117,18 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 삭제")
     @Test
     void deleteFavorite() {
+        // given
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
+        // given
+        ExtractableResponse<Response> addFavoriteResponse = 즐겨찾기_추가(accessToken, 강남역, 양재역);
+
+        // when
+        String location = addFavoriteResponse.header("location");
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(accessToken, location);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-
 
 }

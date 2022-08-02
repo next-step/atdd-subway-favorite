@@ -46,6 +46,12 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String location) {
+        return given(accessToken)
+                .when().delete(location)
+                .then().log().all().extract();
+    }
+
     private static RequestSpecification given(String accessToken) {
         return RestAssured
                 .given().log().all()
