@@ -19,9 +19,12 @@ public class BasicAuthenticationFilter extends AuthenticationChainHandler {
     }
 
     @Override
-    protected Authentication createAuthentication(HttpServletRequest request) {
+    protected String extractCredentials(HttpServletRequest request) {
+        return AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
+    }
 
-        String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
+    @Override
+    protected UserDetails getUserDetails(String authCredentials) {
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
         String[] splits = authHeader.split(":");
@@ -30,15 +33,11 @@ public class BasicAuthenticationFilter extends AuthenticationChainHandler {
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
-        if (userDetails == null) {
-            throw new AuthenticationException();
-        }
+        return userDetailsService.loadUserByUsername(token.getPrincipal());
+    }
 
-        if (userDetails.isValidPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
-
+    @Override
+    protected Authentication createAuthentication(UserDetails userDetails) {
         return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 }

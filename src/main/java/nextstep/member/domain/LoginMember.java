@@ -36,6 +36,11 @@ public class LoginMember implements UserDetails {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public List<String> getAuthorities() {
         return authorities;
     }

@@ -3,34 +3,34 @@ package nextstep.auth.interceptor;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.util.ObjectUtils;
+import nextstep.auth.user.UserDetails;
+import nextstep.auth.user.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BearerTokenAuthenticationFilter extends AuthenticationChainHandler {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+    private final UserDetailsService userDetailsService;
+
+    public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected Authentication createAuthentication(HttpServletRequest request) {
+    protected String extractCredentials(HttpServletRequest request) {
+        return AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+    }
 
-        String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+    @Override
+    protected UserDetails getUserDetails(String authCredentials) {
+        return userDetailsService.loadUserByUsername(jwtTokenProvider.getPrincipal(authCredentials));
+    }
 
-
-        if(ObjectUtils.isEmpty(authCredentials)){
-            throw new AuthenticationException();
-        }
-
-        if(!jwtTokenProvider.validateToken(authCredentials)){
-            throw new AuthenticationException();
-        }
-
-        return new Authentication(jwtTokenProvider.getPrincipal(authCredentials)
-                , jwtTokenProvider.getRoles(authCredentials));
+    @Override
+    protected Authentication createAuthentication(UserDetails userDetails) {
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 }

@@ -30,7 +30,7 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new UsernamePasswordAuthenticationFilter(userDetailsService)).addPathPatterns("/login/form");
         registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token");
         registry.addInterceptor(new BasicAuthenticationFilter(userDetailsService));
-        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider));
+        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider, userDetailsService));
     }
 
     @Override

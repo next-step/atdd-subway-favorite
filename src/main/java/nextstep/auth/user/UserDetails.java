@@ -13,5 +13,7 @@ public interface UserDetails {
 
     String getEmail();
 
+    String getPassword();
+
     List<String> getAuthorities();
 }

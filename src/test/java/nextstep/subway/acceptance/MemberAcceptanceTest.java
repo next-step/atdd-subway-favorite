@@ -102,7 +102,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         String 멤버토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
         ExtractableResponse<Response> 수정응답 = 베어러_인증_내_회원_정보_수정(멤버토큰,"edit", "1", 12);
         assertThat(수정응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-
+        멤버토큰 = 로그인_되어_있음("edit", "1");
         ExtractableResponse<Response> 삭제응답 = 베어러_인증_내_회원_정보_삭제_요청(멤버토큰);
         assertThat(삭제응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
