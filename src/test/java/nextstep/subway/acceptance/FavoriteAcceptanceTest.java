@@ -1,10 +1,8 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.exception.NotFoundStationException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +13,8 @@ import java.util.Map;
 
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회됨;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_성공;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_성공;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_실패_확인;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
@@ -23,7 +23,6 @@ import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철
 import static nextstep.subway.acceptance.MemberSteps.관리자_로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.유저_로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -96,7 +95,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_요청(accessToken, 교대역, 강남역);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
+        var response = 즐겨찾기_목록_조회_요청(accessToken);
 
         // then
         즐겨찾기_목록_조회됨(response);
@@ -110,16 +109,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String location = createResponse.header("Location");
 
         // when
-        ExtractableResponse<Response> deleteResponse = RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        var deleteResponse = 즐겨찾기_삭제_요청(accessToken, location);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        즐겨찾기_삭제_성공(deleteResponse);
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {

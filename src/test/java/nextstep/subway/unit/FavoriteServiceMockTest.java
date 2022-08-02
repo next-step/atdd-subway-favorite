@@ -97,7 +97,6 @@ public class FavoriteServiceMockTest {
         given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
         given(favoriteRepository.existsByMemberIdAndId(anyLong(), anyLong())).willReturn(true);
 
-
         // when
         favoriteService.deleteById(member.getEmail(), favorite.getId());
         
