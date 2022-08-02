@@ -1,20 +1,18 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철역_제거_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철역_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.subway.applicaion.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
-
-import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
-import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_제거_요청;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -34,11 +32,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         // then
-        List<String> stationNames =
-                RestAssured.given().log().all()
-                        .when().get("/stations")
-                        .then().log().all()
-                        .extract().jsonPath().getList("name", String.class);
+        List<String> stationNames = 지하철역_조회_요청().jsonPath().getList("name", String.class);
         assertThat(stationNames).containsAnyOf("강남역");
     }
 
@@ -64,10 +58,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_요청(관리자토큰,"역삼역");
 
         // when
-        ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> stationResponse = 지하철역_조회_요청();
 
         // then
         List<StationResponse> stations = stationResponse.jsonPath().getList(".", StationResponse.class);
@@ -87,18 +78,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        CommonAuthRestAssured.given(관리자토큰)
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        지하철역_제거_요청(관리자토큰, location);
 
         // then
-        List<String> stationNames =
-                RestAssured.given().log().all()
-                        .when().get("/stations")
-                        .then().log().all()
-                        .extract().jsonPath().getList("name", String.class);
+        List<String> stationNames = 지하철역_조회_요청().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
     }
 
@@ -110,11 +93,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         일반유저토큰 = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
         String location = createResponse.header("location");
-        ExtractableResponse<Response> result = CommonAuthRestAssured.given(일반유저토큰)
-            .when()
-            .delete(location)
-            .then().log().all()
-            .extract();
+        ExtractableResponse<Response> result = 지하철역_제거_요청(일반유저토큰, location);
 
         assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }

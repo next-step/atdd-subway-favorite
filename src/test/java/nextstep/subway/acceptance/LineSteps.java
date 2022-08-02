@@ -49,6 +49,20 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(String token, String location, Map<String, String> params) {
+        return CommonAuthRestAssured.given(token)
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put(location)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String token, String location) {
+        return CommonAuthRestAssured.given(token)
+            .when().delete(location)
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(String token, Long lineId, Map<String, String> params) {
         return CommonAuthRestAssured.given(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
