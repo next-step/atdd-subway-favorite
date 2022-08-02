@@ -1,10 +1,36 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 @DisplayName("즐겨찾기 관리 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
+
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+
+    private Long 강남역;
+    private Long 양재역;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+    }
 
     /**
      * Given Token 인증을 통해 로그인한다.
@@ -14,7 +40,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 경로를 추가한다.")
     @Test
     void addFavoritePath() {
+        // given
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        즐겨찾기_추가(accessToken, 강남역, 양재역);
 
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회(accessToken);
+
+        // then
+        List<Long> ids = response.jsonPath().getList("id", Long.class);
+
+        assertAll(
+                () -> assertThat(ids).hasSize(1)
+        );
     }
 
     /**
@@ -51,4 +89,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void deleteFavorite() {
 
     }
+
+
 }
