@@ -1,6 +1,7 @@
 package nextstep.auth.filter;
 
 import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.context.Authentication;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,10 +57,11 @@ class UsernamePasswordFilterMockTest {
     void getEmailTest() {
         // when
         getRequestParameterStubbing(USERNAME, userEmail);
+        getRequestParameterStubbing(PASSWORD, userPassword);
 
         // then
-        String response = filter.getEmail(request);
-        assertThat(response).isEqualTo(userEmail);
+        Authentication response = filter.getAuthentication(request);
+        assertThat(response.getPrincipal()).isEqualTo(userEmail);
     }
 
     @ParameterizedTest
@@ -69,7 +71,7 @@ class UsernamePasswordFilterMockTest {
         getRequestParameterStubbing(USERNAME, email);
 
         assertThatThrownBy(
-            () -> filter.getEmail(request)
+            () -> filter.getAuthentication(request)
         ).isInstanceOf(AuthenticationException.class);
     }
 
@@ -78,11 +80,12 @@ class UsernamePasswordFilterMockTest {
     @DisplayName("사용자 credential이 일치하는지 확인합니다.")
     void getPasswordTest() {
         // when
+        getRequestParameterStubbing(USERNAME, userEmail);
         getRequestParameterStubbing(PASSWORD, userPassword);
 
         // then
-        String response = filter.getPassword(request);
-        assertThat(response).isEqualTo(userPassword);
+        Authentication response = filter.getAuthentication(request);
+        assertThat(response.getCredential()).isEqualTo(userPassword);
     }
 
     @ParameterizedTest
@@ -90,11 +93,12 @@ class UsernamePasswordFilterMockTest {
     @DisplayName("사용자 credential이 일치하는지 않으면 예외가 발생합니다.")
     void getPasswordValidationTest(String password) {
         // when
+        getRequestParameterStubbing(USERNAME, userEmail);
         getRequestParameterStubbing(PASSWORD, password);
 
         // then
         assertThatThrownBy(
-            () -> filter.getPassword(request)
+            () -> filter.getAuthentication(request)
         ).isInstanceOf(AuthenticationException.class);
     }
 
@@ -133,6 +137,7 @@ class UsernamePasswordFilterMockTest {
     void preHandleValidationTest1() {
         // given
         getRequestParameterStubbing(USERNAME, userEmail);
+        getRequestParameterStubbing(PASSWORD, userPassword);
 
         // when
         when(loginService.isUserExist(any())).thenReturn(false);
@@ -163,7 +168,7 @@ class UsernamePasswordFilterMockTest {
         doNothing().when(response).setStatus(HttpStatus.OK.value());
     }
 
-    private OngoingStubbing<String> getRequestParameterStubbing(String username, String email) {
-        return when(request.getParameter(username)).thenReturn(email);
+    private OngoingStubbing<String> getRequestParameterStubbing(String parma, String get) {
+        return when(request.getParameter(parma)).thenReturn(get);
     }
 }

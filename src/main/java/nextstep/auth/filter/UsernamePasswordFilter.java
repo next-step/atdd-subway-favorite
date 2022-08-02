@@ -1,6 +1,5 @@
 package nextstep.auth.filter;
 
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
@@ -19,21 +18,10 @@ public class UsernamePasswordFilter extends AuthenticationFilter {
     }
 
     @Override
-    protected String getEmail(HttpServletRequest request) {
-        String username = request.getParameter(USERNAME);
-        if (username == null || username.isBlank()) {
-            throw new AuthenticationException();
-        }
-        return username;
-    }
-
-    @Override
-    protected String getPassword(HttpServletRequest request) {
-        String password = request.getParameter(PASSWORD);
-        if (password == null || password.isBlank()) {
-            throw new AuthenticationException();
-        }
-        return request.getParameter(PASSWORD);
+    protected Authentication getAuthentication(HttpServletRequest request) {
+        String username = isNotNullAndNotEmpty(request.getParameter(USERNAME));
+        String password = isNotNullAndNotEmpty(request.getParameter(PASSWORD));
+        return new Authentication(username, password);
     }
 
     @Override
