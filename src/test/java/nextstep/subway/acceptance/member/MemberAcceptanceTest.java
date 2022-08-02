@@ -108,7 +108,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> afterDeleteResponse = 회원_정보_조회_요청(createResponse);
         // then
-        assertThat(afterDeleteResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(afterDeleteResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     /**
@@ -159,6 +159,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> newResponse = 내_정보_조회_요청(newAccessToken);
         // then
-        assertThat(newResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(newResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
