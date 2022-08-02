@@ -22,7 +22,7 @@ public class Station {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
-    public Station() {
+    protected Station() {
     }
 
     public Station(String name) {
