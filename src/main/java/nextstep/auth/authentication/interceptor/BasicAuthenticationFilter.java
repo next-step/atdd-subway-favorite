@@ -10,6 +10,12 @@ import nextstep.auth.authentication.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 public class BasicAuthenticationFilter implements AuthenticationChainingFilter {
+
+    private static final String SEPARATOR = ":";
+    private static final int SEPARATOR_SIZE = 2;
+    private static final int FIRST_INDEX = 0;
+    private static final int SECOND_INDEX = 1;
+
     private final UserDetailsService userDetailsService;
 
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
@@ -21,13 +27,13 @@ public class BasicAuthenticationFilter implements AuthenticationChainingFilter {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
-        String[] splits = authHeader.split(":");
-        if (splits.length != 2) {
+        String[] splits = authHeader.split(SEPARATOR);
+        if (splits.length != SEPARATOR_SIZE) {
             throw new AuthenticationException();
         }
 
-        String principal = splits[0];
-        String credentials = splits[1];
+        String principal = splits[FIRST_INDEX];
+        String credentials = splits[SECOND_INDEX];
 
         return new AuthenticationToken(principal, credentials);
     }
