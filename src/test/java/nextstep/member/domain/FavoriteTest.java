@@ -19,7 +19,7 @@ class FavoriteTest {
 
         Member user = new Member("email@email.com", "password", 10);
 
-        user.addFavorite(Favorite.of(source, target));
+        user.addFavorite(Favorite.of(user, source, target));
 
         List<Favorite> allFavorites = user.allFavorites();
 
@@ -40,10 +40,10 @@ class FavoriteTest {
         Member user1 = new Member("email1@email.com", "password", 10);
         Member user2 = new Member("email2@email.com", "password", 15);
 
-        user1.addFavorite(Favorite.of(강남역, 양재역));
-        user1.addFavorite(Favorite.of(양재역, 정자역));
+        user1.addFavorite(Favorite.of(user1, 강남역, 양재역));
+        user1.addFavorite(Favorite.of(user1, 양재역, 정자역));
 
-        user2.addFavorite(Favorite.of(강남역, 정자역));
+        user2.addFavorite(Favorite.of(user2, 강남역, 정자역));
 
         List<Favorite> firstFavorites = user1.allFavorites();
         List<Favorite> secondFavorites = user2.allFavorites();
