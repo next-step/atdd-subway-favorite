@@ -33,7 +33,7 @@ public abstract class AuthenticationFilter implements HandlerInterceptor {
         }
 
         execute(response, email, member.getAuthorities());
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return false;
     }
 
     protected abstract Authentication getAuthentication(HttpServletRequest request);
