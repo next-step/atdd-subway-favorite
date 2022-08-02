@@ -1,11 +1,13 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,16 @@ import nextstep.subway.applicaion.dto.StationResponse;
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
 
+	private String adminAccessToken;
+	private String memberAccessToken;
+
+	@BeforeEach
+	public void setUp() {
+		super.setUp();
+		adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+		memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
+	}
+
 	/**
 	 * When 지하철역을 생성하면
 	 * Then 지하철역이 생성된다
@@ -27,14 +39,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
 	@Test
 	void createStation() {
 		// when
-		ExtractableResponse<Response> response = 지하철역_생성_요청("강남역", getAdminAccessToken());
+		ExtractableResponse<Response> response = 지하철역_생성_요청("강남역", adminAccessToken);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
 		// then
 		List<String> stationNames =
-			given(getAdminAccessToken())
+			given(adminAccessToken)
 				.when().get("/stations")
 				.then().log().all()
 				.extract().jsonPath().getList("name", String.class);
@@ -50,11 +62,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
 	@Test
 	void getStations() {
 		// given
-		지하철역_생성_요청("강남역", getAdminAccessToken());
-		지하철역_생성_요청("역삼역", getAdminAccessToken());
+		지하철역_생성_요청("강남역", adminAccessToken);
+		지하철역_생성_요청("역삼역", adminAccessToken);
 
 		// when
-		ExtractableResponse<Response> stationResponse = given(getAdminAccessToken())
+		ExtractableResponse<Response> stationResponse = given(adminAccessToken)
 			.when().get("/stations")
 			.then().log().all()
 			.extract();
@@ -73,11 +85,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
 	@Test
 	void deleteStation() {
 		// given
-		ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역", getAdminAccessToken());
+		ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역", adminAccessToken);
 
 		// when
 		String location = createResponse.header("location");
-		given(getAdminAccessToken())
+		given(adminAccessToken)
 			.when()
 			.delete(location)
 			.then().log().all()

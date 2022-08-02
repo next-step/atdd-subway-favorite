@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -25,6 +26,8 @@ class PathAcceptanceTest extends AcceptanceTest {
 	private Long 이호선;
 	private Long 신분당선;
 	private Long 삼호선;
+	private String adminAccessToken;
+	private String memberAccessToken;
 
 	/**
 	 * 교대역    --- *2호선* ---   강남역
@@ -36,17 +39,18 @@ class PathAcceptanceTest extends AcceptanceTest {
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
-
-		교대역 = 지하철역_생성_요청("교대역", getAdminAccessToken()).jsonPath().getLong("id");
-		강남역 = 지하철역_생성_요청("강남역", getAdminAccessToken()).jsonPath().getLong("id");
-		양재역 = 지하철역_생성_요청("양재역", getAdminAccessToken()).jsonPath().getLong("id");
-		남부터미널역 = 지하철역_생성_요청("남부터미널역", getAdminAccessToken()).jsonPath().getLong("id");
+		adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+		memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
+		교대역 = 지하철역_생성_요청("교대역", adminAccessToken).jsonPath().getLong("id");
+		강남역 = 지하철역_생성_요청("강남역", adminAccessToken).jsonPath().getLong("id");
+		양재역 = 지하철역_생성_요청("양재역", adminAccessToken).jsonPath().getLong("id");
+		남부터미널역 = 지하철역_생성_요청("남부터미널역", adminAccessToken).jsonPath().getLong("id");
 
 		이호선 = 지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10);
 		신분당선 = 지하철_노선_생성_요청("신분당선", "red", 강남역, 양재역, 10);
 		삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
 
-		지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3), getAdminAccessToken());
+		지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3), adminAccessToken);
 	}
 
 	@DisplayName("두 역의 최단 거리 경로를 조회한다.")
@@ -76,7 +80,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 		lineCreateParams.put("downStationId", downStation + "");
 		lineCreateParams.put("distance", distance + "");
 
-		return LineSteps.지하철_노선_생성_요청(lineCreateParams, getAdminAccessToken()).jsonPath().getLong("id");
+		return LineSteps.지하철_노선_생성_요청(lineCreateParams, adminAccessToken).jsonPath().getLong("id");
 	}
 
 	private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {

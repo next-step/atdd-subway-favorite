@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,15 @@ import io.restassured.response.Response;
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
 
-	private static final String ADMIN_EMAIL = "admin@email.com";
-	private static final String ADMIN_PASSWORD = "password";
+	private String adminAccessToken;
+	private String memberAccessToken;
+
+	@BeforeEach
+	public void setUp() {
+		super.setUp();
+		adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+		memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
+	}
 
 	/**
 	 * When Admin이 지하철 노선을 생성하면
@@ -30,7 +38,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 	void createLine() {
 
 		// when
-		ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green", getAdminAccessToken());
+		ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green", adminAccessToken);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -49,8 +57,8 @@ class LineAcceptanceTest extends AcceptanceTest {
 	void getLines() {
 		// given
 		로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
-		지하철_노선_생성_요청("2호선", "green", getAdminAccessToken());
-		지하철_노선_생성_요청("3호선", "orange", getAdminAccessToken());
+		지하철_노선_생성_요청("2호선", "green", adminAccessToken);
+		지하철_노선_생성_요청("3호선", "orange", adminAccessToken);
 
 		// when
 		ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -69,7 +77,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 	@Test
 	void getLine() {
 		// given
-		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", getAdminAccessToken());
+		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", adminAccessToken);
 
 		// when
 		ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
@@ -88,13 +96,13 @@ class LineAcceptanceTest extends AcceptanceTest {
 	@Test
 	void updateLine() {
 		// given
-		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", getAdminAccessToken());
+		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", adminAccessToken);
 
 		// when
 		Map<String, String> params = new HashMap<>();
 		params.put("color", "red");
 
-		given(getAdminAccessToken())
+		given(adminAccessToken)
 			.body(params)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().put(createResponse.header("location"))
@@ -115,11 +123,11 @@ class LineAcceptanceTest extends AcceptanceTest {
 	@Test
 	void deleteLine() {
 		// given
-		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", getAdminAccessToken());
+		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", adminAccessToken);
 
 		// when
 		ExtractableResponse<Response> response =
-			given(getAdminAccessToken())
+			given(adminAccessToken)
 				.when().delete(createResponse.header("location"))
 				.then().log().all().extract();
 

@@ -1,7 +1,5 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,17 +22,10 @@ public class AcceptanceTest {
 	@Autowired
 	private DataLoader dataLoader;
 
-	private String AdminAccessToken;
-
 	@BeforeEach
 	public void setUp() {
 		RestAssured.port = port;
 		databaseCleanup.execute();
 		dataLoader.loadData();
-		AdminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
-	}
-
-	public String getAdminAccessToken() {
-		return this.AdminAccessToken;
 	}
 }

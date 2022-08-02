@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -21,6 +22,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
 	private Long 강남역;
 	private Long 양재역;
+	private String adminAccessToken;
+	private String memberAccessToken;
 
 	/**
 	 * Given 지하철역과 노선 생성을 요청 하고
@@ -28,12 +31,13 @@ class SectionAcceptanceTest extends AcceptanceTest {
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
-
-		강남역 = 지하철역_생성_요청("강남역", getAdminAccessToken()).jsonPath().getLong("id");
-		양재역 = 지하철역_생성_요청("양재역", getAdminAccessToken()).jsonPath().getLong("id");
+		adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+		memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
+		강남역 = 지하철역_생성_요청("강남역", adminAccessToken).jsonPath().getLong("id");
+		양재역 = 지하철역_생성_요청("양재역", adminAccessToken).jsonPath().getLong("id");
 
 		Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
-		신분당선 = 지하철_노선_생성_요청(lineCreateParams, getAdminAccessToken()).jsonPath().getLong("id");
+		신분당선 = 지하철_노선_생성_요청(lineCreateParams, adminAccessToken).jsonPath().getLong("id");
 	}
 
 	/**
@@ -44,8 +48,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
 	@Test
 	void addLineSection() {
 		// when
-		Long 정자역 = 지하철역_생성_요청("정자역", getAdminAccessToken()).jsonPath().getLong("id");
-		지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), getAdminAccessToken());
+		Long 정자역 = 지하철역_생성_요청("정자역", adminAccessToken).jsonPath().getLong("id");
+		지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), adminAccessToken);
 
 		// then
 		ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
@@ -62,11 +66,11 @@ class SectionAcceptanceTest extends AcceptanceTest {
 	@Test
 	void removeLineSection() {
 		// given
-		Long 정자역 = 지하철역_생성_요청("정자역", getAdminAccessToken()).jsonPath().getLong("id");
-		지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), getAdminAccessToken());
+		Long 정자역 = 지하철역_생성_요청("정자역", adminAccessToken).jsonPath().getLong("id");
+		지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), adminAccessToken);
 
 		// when
-		지하철_노선에_지하철_구간_제거_요청(신분당선, 정자역, getAdminAccessToken());
+		지하철_노선에_지하철_구간_제거_요청(신분당선, 정자역, adminAccessToken);
 
 		// then
 		ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
