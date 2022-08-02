@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AuthSteps.auth;
 import static nextstep.subway.acceptance.LineSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -86,9 +87,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        RestAssured
-                .given().log().all()
-                .auth().oauth2(ADMIN_ACCESS_TOKEN)
+        auth(ADMIN_ACCESS_TOKEN)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -112,9 +111,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(ADMIN_ACCESS_TOKEN, "2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2(ADMIN_ACCESS_TOKEN)
+        ExtractableResponse<Response> response = auth(ADMIN_ACCESS_TOKEN)
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 

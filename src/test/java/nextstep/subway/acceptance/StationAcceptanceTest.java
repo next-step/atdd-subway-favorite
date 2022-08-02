@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static nextstep.subway.acceptance.AuthSteps.auth;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,8 +76,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .auth().oauth2(ADMIN_ACCESS_TOKEN)
+        auth(ADMIN_ACCESS_TOKEN)
                 .when()
                 .delete(location)
                 .then().log().all()
