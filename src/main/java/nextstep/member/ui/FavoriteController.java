@@ -4,10 +4,14 @@ import nextstep.auth.authentication.AuthenticationPrincipal;
 import nextstep.auth.service.LoginMember;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class FavoriteController {
@@ -24,4 +28,9 @@ public class FavoriteController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> responses = favoriteService.getFavorites(loginMember.getEmail());
+        return ResponseEntity.ok().body(responses);
+    }
 }
