@@ -22,12 +22,12 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
+        validateDuplicatedStations(source, target);
         Path path = getPath(source, target);
         return PathResponse.of(path);
     }
 
     public Path getPath(Long source, Long target) {
-        validateDuplicatedStations(source, target);
         Station upStation = stationService.findById(source);
         Station downStation = stationService.findById(target);
         List<Line> lines = lineService.findLines();
@@ -39,7 +39,7 @@ public class PathService {
         }
     }
 
-    private void validateDuplicatedStations(Long source, Long target) {
+    public void validateDuplicatedStations(Long source, Long target) {
         if (source.equals(target)) {
             throw new DuplicatedStationsException();
         }

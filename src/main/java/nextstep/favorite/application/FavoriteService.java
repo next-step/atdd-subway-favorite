@@ -30,13 +30,13 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse saveFavorite(String email, FavoriteRequest favoriteRequest) {
-        validatePath(favoriteRequest.getSource(), favoriteRequest.getTarget());
-
-        Long memberId = getMemberIdByEmail(email);
-
+        pathService.validateDuplicatedStations(favoriteRequest.getSource(), favoriteRequest.getTarget());
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
 
+        validatePath(favoriteRequest.getSource(), favoriteRequest.getTarget());
+
+        Long memberId = getMemberIdByEmail(email);
         Favorite favorite = new Favorite(memberId, source, target);
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
