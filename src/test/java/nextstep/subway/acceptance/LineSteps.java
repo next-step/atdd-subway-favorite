@@ -20,27 +20,6 @@ public class LineSteps {
         return 지하철_노선_생성_요청(params);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/lines")
-                .then().log().all().extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(ExtractableResponse<Response> createResponse) {
-        return RestAssured
-                .given().log().all()
-                .when().get(createResponse.header("location"))
-                .then().log().all().extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(Long id) {
-        return RestAssured
-                .given().log().all()
-                .when().get("/lines/{id}", id)
-                .then().log().all().extract();
-    }
-
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params) {
         return givenAdminRole()
                 .body(params)
@@ -48,6 +27,47 @@ public class LineSteps {
                 .when().post("/lines")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .when().get("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String location) {
+        return RestAssured
+                .given().log().all()
+                .when().get(location)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(Long id) {
+        return RestAssured
+                .given().log().all()
+                .when().get("/lines/{id}", id)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(String location, String name, String color) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("color", color);
+
+        return givenAdminRole()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(location)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 

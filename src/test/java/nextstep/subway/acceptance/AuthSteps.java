@@ -43,7 +43,8 @@ public class AuthSteps {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     public static void 권한검사에_실패한다(ExtractableResponse<Response> response) {
