@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.exception.NotFoundStationException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -106,10 +105,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.jsonPath().getList("$..name")).containsExactly("교대역", "강남역")
-        );
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {
