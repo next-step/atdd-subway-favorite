@@ -1,6 +1,18 @@
 # 지하철 노선도 미션
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
+# Step3 TODO list
+- [ ] 인수 조건 도출
+- [ ] 인수 테스트 작성
+- [ ] 권한이 없을 떄 권한이 필요한 API 호출 시 401 코드 응답
+  - [ ] 즐겨 찾기 기능 구현
+    - [ ] 정상적인 시작, 도착 지점을 입력하면 즐겨찾기 생성
+    - [ ] 비정상적인 시작, 도착 지점을 입력하면 예외를 발생
+    - [ ] 즐겨찾기 조회 기능
+    - [ ] 정상적인 즐겨찾기 번호를 입력하면 삭제 가능
+    - [ ] 비정상적인 즐겨찾기 번호를 입력하면 예외를 발생
+  - [ ] 내 정보 관리
+
 # Step2 PR 수정 TODO list
 - [x] Exception 메시지들 상수화
 - [x] AuthenticationChainingFilter#afterAuthentication 에서 assert 로 UserDetail 인자 검증하기
