@@ -3,6 +3,7 @@ package nextstep.favorite.application;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.NotFoundFavoriteException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.StationService;
@@ -58,7 +59,7 @@ public class FavoriteService {
         Member findMember = findMemberByPrincipal(principal);
 
         if(!favoriteRepository.existsByMemberIdAndId(findMember.getId(), favoriteId)) {
-            throw new IllegalArgumentException();
+            throw new NotFoundFavoriteException();
         }
         favoriteRepository.deleteById(favoriteId);
     }
