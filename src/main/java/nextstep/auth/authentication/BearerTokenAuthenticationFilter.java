@@ -3,6 +3,7 @@ package nextstep.auth.authentication;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.filter.LoginService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.member.application.LoginMemberService;
 import org.slf4j.Logger;
@@ -15,12 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     private static final Logger log = LoggerFactory.getLogger(BearerTokenAuthenticationFilter.class);
     private final JwtTokenProvider jwtTokenProvider;
-    private final LoginMemberService loginMemberService;
+    private final LoginService loginService;
 
 
-    public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider, LoginMemberService loginMemberService) {
+    public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider, LoginService loginService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.loginMemberService = loginMemberService;
+        this.loginService = loginService;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
 
         String principal = jwtTokenProvider.getPrincipal(token);
 
-        if (!loginMemberService.isUserExist(principal)) {
+        if (!loginService.isUserExist(principal)) {
             log.info("The Token is not Valid. Principal is {}", principal);
             throw new AuthenticationException();
         }
