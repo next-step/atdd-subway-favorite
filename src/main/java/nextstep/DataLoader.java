@@ -10,6 +10,9 @@ import java.util.List;
 @Component
 public class DataLoader {
 
+    public static final String ADMIN_EMAIL = "email@email.com";
+    public static final String ADMIN_PASSWORD = "password";
+
     private final MemberRepository memberRepository;
 
     DataLoader(MemberRepository memberRepository) {
@@ -17,7 +20,6 @@ public class DataLoader {
     }
 
     public void loadData() {
-        memberRepository.save(new Member("admin@email.com", "password", 20, List.of(RoleType.ROLE_ADMIN.name())));
-        memberRepository.save(new Member("member@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
+        memberRepository.save(new Member(ADMIN_EMAIL, ADMIN_PASSWORD, 20, List.of(RoleType.ROLE_ADMIN.name())));
     }
 }
