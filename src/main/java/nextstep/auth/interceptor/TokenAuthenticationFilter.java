@@ -19,13 +19,18 @@ import java.util.stream.Collectors;
 
 public class TokenAuthenticationFilter extends AuthenticationNonChainingFilter {
 
-    public TokenAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public TokenAuthenticationFilter(UserDetailsService userDetailsService,
+                                     JwtTokenProvider jwtTokenProvider,
+                                     ObjectMapper objectMapper)
+    {
         super(userDetailsService, jwtTokenProvider, objectMapper);
     }
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws IOException {
-        String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        String content = request.getReader().lines()
+                .collect(Collectors.joining(System.lineSeparator()));
+
         TokenRequest tokenRequest = objectMapper.readValue(content, TokenRequest.class);
         return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }

@@ -1,5 +1,6 @@
 package nextstep.auth.interceptor;
 
+import io.jsonwebtoken.lang.Assert;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
@@ -33,6 +34,7 @@ public abstract class AuthenticationChainingFilter implements HandlerInterceptor
     }
 
     private void afterAuthentication(UserDetails userDetails) {
+        Assert.notNull(userDetails);
         Authentication authentication = new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

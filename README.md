@@ -2,12 +2,12 @@
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
 # Step2 PR 수정 TODO list
-- [ ] Exception 메시지들 상수화
-- [ ] AuthenticationChainingFilter#afterAuthentication 에서 assert 로 UserDetail 인자 검증하기
-- [ ] BasicAuthenticationFilter ":" 상수로 추출
-- [ ] 전체적으로 개행을 통하 가독성 높히기
-- [ ] UserDetailsService에 @FunctionalInterface 추가하기
-- [ ] MemberService CQRS에 따라 분리해보기
+- [x] Exception 메시지들 상수화
+- [x] AuthenticationChainingFilter#afterAuthentication 에서 assert 로 UserDetail 인자 검증하기
+- [x] BasicAuthenticationFilter ":" 상수로 추출
+- [x] 전체적으로 개행을 통하 가독성 높히기
+- [x] UserDetailsService에 @FunctionalInterface 추가하기
+- [x] MemberService CQRS에 따라 분리해보기
 
 # Step2 TODO list
 - [x] 인증 로직 리팩터링

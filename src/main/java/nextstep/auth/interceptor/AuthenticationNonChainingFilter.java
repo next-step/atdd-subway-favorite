@@ -22,7 +22,10 @@ public abstract class AuthenticationNonChainingFilter implements HandlerIntercep
     protected final JwtTokenProvider jwtTokenProvider;
     protected final ObjectMapper objectMapper;
 
-    public AuthenticationNonChainingFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public AuthenticationNonChainingFilter(UserDetailsService userDetailsService,
+                                           JwtTokenProvider jwtTokenProvider,
+                                           ObjectMapper objectMapper
+    ) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
@@ -36,7 +39,6 @@ public abstract class AuthenticationNonChainingFilter implements HandlerIntercep
         return false;
     }
 
-    // AuthenticationProvider 역할
     public Authentication authenticate(AuthenticationToken tokenRequest) {
         String principal = tokenRequest.getPrincipal();
         String credentials = tokenRequest.getCredentials();

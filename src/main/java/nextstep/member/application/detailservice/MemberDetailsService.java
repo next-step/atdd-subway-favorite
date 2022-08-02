@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.member.application.detailservice;
 
 import nextstep.auth.userdetails.UserDetailsService;
 import nextstep.member.domain.LoginMember;
