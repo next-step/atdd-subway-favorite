@@ -26,13 +26,14 @@ public class Favorite {
 
     protected Favorite() { }
 
-    private Favorite(Station source, Station target) {
+    private Favorite(Member member, Station source, Station target) {
+        this.member = member;
         this.source = source;
         this.target = target;
     }
 
-    public static Favorite of(Station source, Station target) {
-        return new Favorite(source, target);
+    public static Favorite of(Member member, Station source, Station target) {
+        return new Favorite(member, source, target);
     }
 
     public void addMember(Member member) {
