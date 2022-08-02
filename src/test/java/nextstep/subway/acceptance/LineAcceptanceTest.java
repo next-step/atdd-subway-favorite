@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -11,26 +10,44 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AcceptanceSteps.given;
 import static nextstep.subway.acceptance.LineSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
     /**
-     * When 지하철 노선을 생성하면
+     * When 관리자가 지하철 노선을 생성하면
      * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
      */
-    @DisplayName("지하철 노선 생성")
+    @DisplayName("관리자가 지하철 노선 생성")
     @Test
-    void createLine() {
+    void createLine_admin() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
 
         assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
+    }
+
+    /**
+     * When 관리자가 아닌 자가 지하철 노선을 생성하면
+     * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 없다.
+     */
+    @DisplayName("관리자가 아닌 자가 지하철 노선 생성")
+    @Test
+    void createLine_member() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(사용자, "2호선", "green");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
+
+        assertThat(listResponse.jsonPath().getList("name")).doesNotContain("2호선");
     }
 
     /**
@@ -42,8 +59,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        지하철_노선_생성_요청("2호선", "green");
-        지하철_노선_생성_요청("3호선", "orange");
+        지하철_노선_생성_요청(관리자, "2호선", "green");
+        지하철_노선_생성_요청(관리자, "3호선", "orange");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -62,7 +79,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
@@ -74,26 +91,20 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 지하철 노선을 생성하고
-     * When 생성한 지하철 노선을 수정하면
+     * When 관리자가 생성한 지하철 노선을 수정하면
      * Then 해당 지하철 노선 정보는 수정된다
      */
-    @DisplayName("지하철 노선 수정")
+    @DisplayName("관리자가 지하철 노선 수정")
     @Test
-    void updateLine() {
+    void updateLine_admin() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // when
-        Map<String, String> params = new HashMap<>();
-        params.put("color", "red");
-        RestAssured
-                .given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put(createResponse.header("location"))
-                .then().log().all().extract();
+        ExtractableResponse<Response> 노선_수정_결과 = 지하철_노선_수정_요청(관리자, "red", createResponse);
 
         // then
+        assertThat(노선_수정_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("color")).isEqualTo("red");
@@ -101,22 +112,75 @@ class LineAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 지하철 노선을 생성하고
-     * When 생성한 지하철 노선을 삭제하면
+     * When 관리자가 아닌 자가 생성한 지하철 노선을 수정하면
+     * Then 해당 지하철 노선 정보는 수정되지 않는다.
+     */
+    @DisplayName("관리자가 아닌자가 지하철 노선 수정")
+    @Test
+    void updateLine_member() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
+
+        // when
+        ExtractableResponse<Response> 노선_수정_결과 = 지하철_노선_수정_요청(사용자, "red", createResponse);
+
+        // then
+        assertThat(노선_수정_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("color")).isNotEqualTo("red");
+    }
+
+    /**
+     * Given 지하철 노선을 생성하고
+     * When 관리자가 생성한 지하철 노선을 삭제하면
      * Then 해당 지하철 노선 정보는 삭제된다
      */
     @DisplayName("지하철 노선 삭제")
     @Test
-    void deleteLine() {
+    void deleteLine_admin() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().delete(createResponse.header("location"))
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 지하철_노선_삭제_요청(관리자, createResponse);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    /**
+     * Given 지하철 노선을 생성하고
+     * When 관리자가 아닌자가 생성한 지하철 노선을 삭제하면
+     * Then 해당 지하철 노선 정보는 삭제된다
+     */
+    @DisplayName("지하철 노선 삭제")
+    @Test
+    void deleteLine_member() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자, "2호선", "green");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_삭제_요청(사용자, createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse<Response> 지하철_노선_수정_요청(String token, String color, ExtractableResponse<Response> createResponse) {
+        Map<String, String> params = new HashMap<>();
+        params.put("color", color);
+        return given(token)
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(createResponse.header("location"))
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 지하철_노선_삭제_요청(String token, ExtractableResponse<Response> createResponse) {
+        return given(token)
+                .when().delete(createResponse.header("location"))
+                .then().log().all().extract();
+    }
+
 }

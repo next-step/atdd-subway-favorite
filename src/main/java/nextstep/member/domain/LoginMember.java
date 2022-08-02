@@ -1,8 +1,11 @@
 package nextstep.member.domain;
 
 
+import lombok.EqualsAndHashCode;
+
 import java.util.List;
 
+@EqualsAndHashCode
 public class LoginMember {
     private String email;
     private String password;

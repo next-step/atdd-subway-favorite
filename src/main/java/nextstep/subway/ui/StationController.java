@@ -1,5 +1,7 @@
 package nextstep.subway.ui;
 
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.secured.Secured;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
@@ -11,13 +13,11 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
 
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
-    }
-
+    @Secured("ROLE_ADMIN")
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
@@ -29,6 +29,7 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/stations/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);

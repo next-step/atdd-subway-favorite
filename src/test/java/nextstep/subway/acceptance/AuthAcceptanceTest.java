@@ -4,10 +4,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import static nextstep.subway.acceptance.AcceptanceSteps.given;
 import static nextstep.subway.acceptance.MemberSteps.*;
 
-
+@DisplayName("인증 관리 기능")
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
@@ -40,10 +43,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        return null;
+        return given(email, password, "/login/form")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return null;
+        return given(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 }
