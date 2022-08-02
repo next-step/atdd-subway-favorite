@@ -25,6 +25,21 @@ public class FavoriteSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 비로그인_즐겨찾기_추가(Long source, Long target) {
+        Map<String, Long> params = new HashMap<>();
+
+        params.put("source", source);
+        params.put("target", target);
+
+        return RestAssured
+                .given()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회(String accessToken) {
         return given(accessToken)
                 .when().get("/favorites")

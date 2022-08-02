@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.auth.authentication.AuthenticationPrincipal;
+import nextstep.auth.secured.Secured;
 import nextstep.auth.service.LoginMember;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
@@ -23,6 +24,7 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorites")
+    @Secured("ROLE_MEMBER")
     public ResponseEntity<Void> addFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
         favoriteService.createFavorite(loginMember.getEmail(), favoriteRequest.getSource(), favoriteRequest.getTarget());
         return ResponseEntity.ok().build();

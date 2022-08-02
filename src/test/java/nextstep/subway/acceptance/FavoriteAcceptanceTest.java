@@ -5,11 +5,11 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +63,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("비로그인 회원이 즐겨찾기 경로를 추가하면 예외")
     @Test
     void anonymousUserAddFavoritePathException() {
+        // given
+        // when
+        ExtractableResponse<Response> response = 비로그인_즐겨찾기_추가(강남역, 양재역);
 
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
