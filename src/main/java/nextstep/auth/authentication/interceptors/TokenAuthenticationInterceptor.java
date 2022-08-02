@@ -23,12 +23,12 @@ public class TokenAuthenticationInterceptor extends NonChainingAuthenticationInt
         this.objectMapper = objectMapper;
     }
 
-    AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException {
+    public AuthenticateRequest createLoginRequest(final HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         return objectMapper.readValue(content, AuthenticateRequest.class);
     }
 
-    void afterAuthenticate(final HttpServletResponse response, final UserDetails loginMember) throws IOException {
+    public void afterAuthenticate(final HttpServletResponse response, final UserDetails loginMember) throws IOException {
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
