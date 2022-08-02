@@ -5,7 +5,6 @@ import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.filter.LoginService;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.application.LoginMemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;

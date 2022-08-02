@@ -37,6 +37,7 @@ public abstract class AuthenticationFilter implements HandlerInterceptor {
     }
 
     protected abstract Authentication getAuthentication(HttpServletRequest request);
+
     protected abstract void execute(HttpServletResponse response, String email, List<String> authorities) throws IOException;
 
     protected String isNotNullAndNotEmpty(String parameter) {
