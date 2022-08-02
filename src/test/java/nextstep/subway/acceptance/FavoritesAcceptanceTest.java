@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.FavoritesSteps.*;
@@ -176,6 +177,30 @@ class FavoritesAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기삭제성공(final ExtractableResponse<Response> response, final Long id) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         assertThat(즐겨찾기조회(id).statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("로그인 된 상태에서 즐겨찾기 추가 및 삭제 후에 목록을 조회한다.")
+    @Test
+    void getFavoritesAfter_Login() {
+        // given
+        final Long 잠실역 = 지하철역_생성_요청("잠실역").jsonPath().getLong("id");
+
+        final long 존재하는즐겨찾기 = 즐겨찾기ID(즐겨찾기추가(강남역, 역삼역));
+        final long 삭제된즐겨찾기 = 즐겨찾기ID(즐겨찾기추가(강남역, 잠실역));
+        즐겨찾기삭제(삭제된즐겨찾기);
+
+        final ExtractableResponse<Response> 결과 = 즐겨찾기목록조회();
+
+        // then
+        즐겨찾기관리성공(결과, 존재하는즐겨찾기, 삭제된즐겨찾기);
+    }
+
+    private void 즐겨찾기관리성공(final ExtractableResponse<Response> response, final Long 존재하는즐겨찾기, final Long 삭제된즐겨찾기) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        final List<Long> idList = response.jsonPath().getList("id", Long.class);
+        assertThat(idList).hasSize(1);
+        assertThat(idList).contains(존재하는즐겨찾기);
+        assertThat(idList).doesNotContain(삭제된즐겨찾기);
     }
 
     private void 로그인되지않은요청(final ExtractableResponse<Response> response) {
