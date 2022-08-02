@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Authentication implements Serializable {
     private Object principal;
-    private Object credential;
+    private Object credentials;
     private List<String> authorities;
 
     public Authentication(Object principal, List<String> authorities) {
@@ -13,9 +13,9 @@ public class Authentication implements Serializable {
         this.authorities = authorities;
     }
 
-    public Authentication(Object principal, Object credential) {
+    public Authentication(Object principal, Object credentials) {
         this.principal = principal;
-        this.credential = credential;
+        this.credentials = credentials;
     }
 
     public Object getPrincipal() {
@@ -26,7 +26,7 @@ public class Authentication implements Serializable {
         return authorities;
     }
 
-    public Object getCredential() {
-        return credential;
+    public Object getCredentials() {
+        return credentials;
     }
 }

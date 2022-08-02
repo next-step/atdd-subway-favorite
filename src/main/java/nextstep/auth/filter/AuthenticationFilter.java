@@ -27,7 +27,7 @@ public abstract class AuthenticationFilter implements HandlerInterceptor {
         }
 
         LoginMember member = loginService.loadUserByUsername(email);
-        String password = (String) authentication.getCredential();
+        String password = (String) authentication.getCredentials();
         if (!member.checkPassword(password)) {
             throw new AuthenticationException();
         }

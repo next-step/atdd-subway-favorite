@@ -98,7 +98,7 @@ class TokenInterceptorMockTest {
 
         // then
         Authentication response = filter.getAuthentication(request);
-        assertThat(response.getCredential()).isEqualTo(userPassword);
+        assertThat(response.getCredentials()).isEqualTo(userPassword);
     }
 
     @ParameterizedTest
