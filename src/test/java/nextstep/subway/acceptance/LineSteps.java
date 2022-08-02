@@ -70,4 +70,21 @@ public class LineSteps {
 		return RestAssured.given().log().all()
 			.auth().oauth2(accessToken);
 	}
+
+	public static ExtractableResponse<Response> 지하철_노선_수정_요청(Map<String, String> params, String uri,
+		String accessToken) {
+
+		return given(accessToken)
+			.body(params)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().put(uri)
+			.then().log().all().extract();
+	}
+
+	public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String uri, String accessToken) {
+
+		return given(accessToken)
+			.when().delete(uri)
+			.then().log().all().extract();
+	}
 }

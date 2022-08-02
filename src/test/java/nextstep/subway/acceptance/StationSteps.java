@@ -22,4 +22,18 @@ public class StationSteps {
 			.then().log().all()
 			.extract();
 	}
+
+	public static ExtractableResponse<Response> 지하철역_조회(String accessToken) {
+		return given(accessToken)
+			.when().get("/stations")
+			.then().log().all()
+			.extract();
+	}
+
+	public static ExtractableResponse<Response> 지하철역_삭제(String uri, String accessToken) {
+		return given(accessToken)
+			.when().delete(uri)
+			.then().log().all()
+			.extract();
+	}
 }

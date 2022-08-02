@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -101,12 +100,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 		// when
 		Map<String, String> params = new HashMap<>();
 		params.put("color", "red");
-
-		given(adminAccessToken)
-			.body(params)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().put(createResponse.header("location"))
-			.then().log().all().extract();
+		지하철_노선_수정_요청(params, createResponse.header("location"), adminAccessToken);
 
 		// then
 		ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
@@ -126,12 +120,59 @@ class LineAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", adminAccessToken);
 
 		// when
-		ExtractableResponse<Response> response =
-			given(adminAccessToken)
-				.when().delete(createResponse.header("location"))
-				.then().log().all().extract();
+		ExtractableResponse<Response> response = 지하철_노선_삭제_요청(createResponse.header("location"), adminAccessToken);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	/**
+	 * When Member가 지하철 노선을 생성 요청하면
+	 * Then 401 응답을 받는다.
+	 */
+	@DisplayName("Member가 지하철 생성 요청")
+	@Test
+	void createLineByMember() {
+		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", memberAccessToken);
+		assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	/** Given Admin이 지하철 노선을 생성 하고
+	 *  When Member가 지하철 노선을 수정요청하면
+	 *  Then 401 응답을 받는다.
+	 */
+	@DisplayName("Member가 지하철 수정 요청")
+	@Test
+	void updateLineByMember() {
+		// given
+		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", adminAccessToken);
+
+		// when
+		Map<String, String> params = new HashMap<>();
+		params.put("color", "red");
+		ExtractableResponse<Response> response = 지하철_노선_수정_요청(params, createResponse.header("location"),
+			memberAccessToken);
+
+		//then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	/** Given Admin이 지하철 노선을 생성 하고
+	 *  When Member가 지하철 노선을 삭제요청하면
+	 *  Then 401 응답을 받는다.
+	 */
+	@DisplayName("Member가 지하철 삭제 요청")
+	@Test
+	void deleteLineByMember() {
+		// given
+		ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", adminAccessToken);
+
+		// when
+
+		ExtractableResponse<Response> response = 지하철_노선_삭제_요청(createResponse.header("location"),
+			memberAccessToken);
+
+		//then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 }
