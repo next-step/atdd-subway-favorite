@@ -25,7 +25,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청("강남역");
+        ExtractableResponse<Response> response = 지하철역_생성_요청(ADMIN_ACCESS_TOKEN, "강남역");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -48,8 +48,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        지하철역_생성_요청("강남역");
-        지하철역_생성_요청("역삼역");
+        지하철역_생성_요청(ADMIN_ACCESS_TOKEN, "강남역");
+        지하철역_생성_요청(ADMIN_ACCESS_TOKEN, "역삼역");
 
         // when
         ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
@@ -71,11 +71,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역");
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(ADMIN_ACCESS_TOKEN, "강남역");
 
         // when
         String location = createResponse.header("location");
         RestAssured.given().log().all()
+                .auth().oauth2(ADMIN_ACCESS_TOKEN)
                 .when()
                 .delete(location)
                 .then().log().all()
