@@ -23,6 +23,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 강남역;
     private Long 양재역;
+    
+    private Long 정자역;
 
     @BeforeEach
     public void setUp() {
@@ -30,6 +32,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+        정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
     }
 
     /**
@@ -79,10 +82,29 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 목록 조회")
     @Test
     void getFavorites() {
+        // given
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        
+        // given
+        즐겨찾기_추가(accessToken, 강남역, 양재역);
+        즐겨찾기_추가(accessToken, 양재역, 정자역);
+        
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회(accessToken);
 
+        // then
+        List<Long> ids = response.jsonPath().getList("id", Long.class);
+        List<String> sourceStationNames = response.jsonPath().getList("source.name", String.class);
+        List<String> targetStationNames = response.jsonPath().getList("target.name", String.class);
+
+        assertAll(
+                () -> assertThat(ids).hasSize(2),
+                () -> assertThat(sourceStationNames).containsExactly("강남역", "양재역"),
+                () -> assertThat(targetStationNames).containsExactly("양재역", "정자역")
+        );
     }
 
-    /**
+     /**
      * Given Token 인증을 통해 로그인한다.
      * Given 경로(출발역, 도착역)을 즐겨찾기로 추가하고
      * When 즐겨찾기를 삭제하면
