@@ -45,7 +45,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
         return RestAssured.given().log().all()
-                .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD_FIELD))
+                .auth().form(email, password, new FormAuthConfig("/login/form", USERNAME_FIELD, PASSWORD_FIELD))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
