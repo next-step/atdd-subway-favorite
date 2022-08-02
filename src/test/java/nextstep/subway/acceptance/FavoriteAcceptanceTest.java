@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.exception.NotFoundStationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import static nextstep.subway.acceptance.MemberSteps.관리자_로그인_되어_
 import static nextstep.subway.acceptance.MemberSteps.유저_로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -48,12 +50,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         교대역 = 지하철역_생성_요청(accessToken, "교대역").jsonPath().getLong("id");
         강남역 = 지하철역_생성_요청(accessToken, "강남역").jsonPath().getLong("id");
-        양재역 = 지하철역_생성_요청(accessToken,"양재역").jsonPath().getLong("id");
-        남부터미널역 = 지하철역_생성_요청(accessToken,"남부터미널역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청(accessToken, "양재역").jsonPath().getLong("id");
+        남부터미널역 = 지하철역_생성_요청(accessToken, "남부터미널역").jsonPath().getLong("id");
 
-        이호선 = 지하철_노선_생성_요청(accessToken,"2호선", "green").jsonPath().getLong("id");
-        삼호선 = 지하철_노선_생성_요청(accessToken,"3호선", "orange").jsonPath().getLong("id");
-        신분당선 = 지하철_노선_생성_요청(accessToken,"신분당선", "red").jsonPath().getLong("id");
+        이호선 = 지하철_노선_생성_요청(accessToken, "2호선", "green").jsonPath().getLong("id");
+        삼호선 = 지하철_노선_생성_요청(accessToken, "3호선", "orange").jsonPath().getLong("id");
+        신분당선 = 지하철_노선_생성_요청(accessToken, "신분당선", "red").jsonPath().getLong("id");
 
         지하철_노선에_지하철_구간_생성_요청(accessToken, 이호선, createSectionCreateParams(교대역, 강남역, 10));
         지하철_노선에_지하철_구간_생성_요청(accessToken, 신분당선, createSectionCreateParams(강남역, 양재역, 3));
@@ -74,16 +76,48 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                    .auth().oauth2(accessToken)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(params)
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
                 .when()
-                    .post("/favorites")
+                .post("/favorites")
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("비정상적인 시작, 도착 지점을 입력하면 예외를 발생시킨다")
+    @Test
+    public void create_favorite_fail_by_wrong_station() {
+        // given
+        Map<String, String> params = new HashMap<>();
+        params.put("source", 없는역 + "");
+        params.put("target", 강남역 + "");
+
+        accessToken = 유저_로그인_되어_있음();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when()
+                .post("/favorites")
+                .then().log().all()
+                .extract();
+
+        // then
+        즐겨찾기_생성_실패_확인(response, HttpStatus.NOT_FOUND, NotFoundStationException.MESSAGE);
+    }
+
+    public static void 즐겨찾기_생성_실패_확인(ExtractableResponse<Response> response, HttpStatus status, String message) {
+        assertAll(
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(message),
+                () -> assertThat(response.jsonPath().getInt("status")).isEqualTo(status.value())
+        );
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {
