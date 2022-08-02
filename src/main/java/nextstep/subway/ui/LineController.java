@@ -20,14 +20,14 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping
+    @PostMapping("")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<LineResponse>> showLines() {
         List<LineResponse> responses = lineService.findLineResponses();
         return ResponseEntity.ok().body(responses);
