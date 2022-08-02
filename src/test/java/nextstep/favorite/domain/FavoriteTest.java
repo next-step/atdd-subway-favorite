@@ -18,6 +18,6 @@ class FavoriteTest {
     @Test
     void owner아님() {
         final Favorite favorite = new Favorite(1L, null, null);
-        assertThat(favorite.isOwner(-1L)).isTrue();
+        assertThat(favorite.isOwner(-1L)).isFalse();
     }
 }
