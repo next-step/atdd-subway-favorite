@@ -19,6 +19,7 @@ public class StationController {
         this.stationService = stationService;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
