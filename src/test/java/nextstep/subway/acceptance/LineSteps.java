@@ -80,16 +80,19 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, String> params) {
-        return RestAssured.given().log().all()
+        return givenAdminRole()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines/{lineId}/sections", lineId)
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_제거_요청(Long lineId, Long stationId) {
-        return RestAssured.given().log().all()
+        return givenAdminRole()
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
-                .then().log().all().extract();
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 }
