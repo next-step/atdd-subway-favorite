@@ -36,10 +36,6 @@ public class Favorite {
         return new Favorite(member, source, target);
     }
 
-    public void addMember(Member member) {
-        this.member = member;
-    }
-
     public Long getId() {
         return id;
     }
