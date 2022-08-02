@@ -3,8 +3,9 @@ package nextstep.member.domain;
 
 import java.util.List;
 import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.user.UserDetails;
 
-public class LoginMember {
+public class LoginMember implements UserDetails {
     private String email;
     private String password;
     private List<String> authorities;
@@ -30,14 +31,17 @@ public class LoginMember {
         this.authorities = authorities;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public List<String> getAuthorities() {
         return authorities;
     }
 
+    @Override
     public boolean checkPassword(String password) {
         if (!this.password.equals(password)) {
             throw new AuthenticationException();
