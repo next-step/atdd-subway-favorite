@@ -46,6 +46,7 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLine(id);

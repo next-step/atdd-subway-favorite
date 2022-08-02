@@ -71,6 +71,14 @@ public class LineSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String location) {
+        return givenAdminRole()
+                .when().delete(location)
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, String> params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
