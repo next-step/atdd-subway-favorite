@@ -9,12 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import static nextstep.DataLoader.ADMIN_EMAIL;
+import static nextstep.DataLoader.PASSWORD;
+
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
-    public static final String EMAIL = "admin@email.com";
-    public static final String PASSWORD = "password";
-    public static final Integer AGE = 20;
 
     @LocalServerPort
     int port;
@@ -32,6 +32,6 @@ public class AcceptanceTest {
         RestAssured.port = port;
         databaseCleanup.execute();
         dataLoader.loadData();
-        관리자 = MemberSteps.로그인_되어_있음(EMAIL, PASSWORD);
+        관리자 = MemberSteps.로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
     }
 }
