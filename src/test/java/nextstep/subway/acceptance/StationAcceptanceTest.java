@@ -3,33 +3,20 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import nextstep.subway.applicaion.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.AuthSteps.givenAdminRole;
+import static nextstep.subway.acceptance.AuthSteps.givenUserRole;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 class StationAcceptanceTest extends AcceptanceTest {
-
-    private static String adminToken;
-    private static String userToken;
-
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        adminToken = 로그인_되어_있음("admin@email.com", "password");
-        userToken = 로그인_되어_있음("member@email.com", "password");
-    }
 
     /**
      * When 지하철역을 생성하면
@@ -85,7 +72,7 @@ class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        given(adminToken)
+        givenAdminRole()
                 .when().delete(location)
                 .then().log().all()
                 .extract();
@@ -107,16 +94,11 @@ class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        ExtractableResponse<Response> deleteResponse = given(userToken)
+        ExtractableResponse<Response> deleteResponse = givenUserRole()
                 .when().delete(location)
                 .then().log().all()
                 .extract();
 
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    private static RequestSpecification given(String token) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(token);
     }
 }
