@@ -52,9 +52,13 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         List<Long> ids = response.jsonPath().getList("id", Long.class);
+        List<String> sourceStationNames = response.jsonPath().getList("source.name", String.class);
+        List<String> targetStationNames = response.jsonPath().getList("target.name", String.class);
 
         assertAll(
-                () -> assertThat(ids).hasSize(1)
+                () -> assertThat(ids).hasSize(1),
+                () -> assertThat(sourceStationNames).containsExactly("강남역"),
+                () -> assertThat(targetStationNames).containsExactly("양재역")
         );
     }
 
