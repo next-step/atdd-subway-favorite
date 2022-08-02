@@ -2,6 +2,7 @@ package nextstep.auth.secured;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.member.domain.RoleType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -21,11 +22,11 @@ public class SecuredAnnotationChecker {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Secured secured = method.getAnnotation(Secured.class);
-        List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
+        List<RoleType> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         authentication.getAuthorities().stream()
-                .filter(values::contains)
+                .filter(auth -> values.stream().anyMatch(value -> value.name().equals(auth)))
                 .findFirst()
                 .orElseThrow(() -> new RoleAuthenticationException("권한이 없습니다."));
     }
