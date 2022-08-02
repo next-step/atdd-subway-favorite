@@ -19,6 +19,9 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
+    @Embedded
+    private Favorites favorites = new Favorites();
+
     public Member() {
     }
 
@@ -60,5 +63,14 @@ public class Member {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorite.addMember(this);
+        favorites.addFavorite(favorite);
+    }
+
+    public List<Favorite> allFavorites() {
+        return favorites.allFavorites();
     }
 }
