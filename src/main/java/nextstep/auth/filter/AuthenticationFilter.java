@@ -7,19 +7,19 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
 
-public abstract class AuthenticationFilter implements HandlerInterceptor {
+public class AuthenticationFilter implements HandlerInterceptor {
+    private final AuthenticationFilterStrategy authenticationStrategy;
     private final LoginService loginService;
 
-    public AuthenticationFilter(LoginService loginService) {
+    public AuthenticationFilter(AuthenticationFilterStrategy authenticationStrategy, LoginService loginService) {
+        this.authenticationStrategy = authenticationStrategy;
         this.loginService = loginService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Authentication authentication = getAuthentication(request);
+        Authentication authentication = authenticationStrategy.getAuthentication(request);
 
         String email = (String) authentication.getPrincipal();
         if (!loginService.isUserExist(email)) {
@@ -32,18 +32,8 @@ public abstract class AuthenticationFilter implements HandlerInterceptor {
             throw new AuthenticationException();
         }
 
-        execute(response, email, member.getAuthorities());
+        authenticationStrategy.execute(response, email, member.getAuthorities());
         return false;
     }
 
-    protected abstract Authentication getAuthentication(HttpServletRequest request);
-
-    protected abstract void execute(HttpServletResponse response, String email, List<String> authorities) throws IOException;
-
-    protected String isNotNullAndNotEmpty(String parameter) {
-        if (parameter == null || parameter.isBlank()) {
-            throw new AuthenticationException();
-        }
-        return parameter;
-    }
 }

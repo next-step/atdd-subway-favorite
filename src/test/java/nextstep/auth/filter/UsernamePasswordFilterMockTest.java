@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,10 +31,8 @@ import static org.mockito.Mockito.when;
 class UsernamePasswordFilterMockTest {
     @Mock
     private LoginService loginService;
-
-    @Autowired
+    private UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter;
     private AuthenticationFilter filter;
-
     private static final String userEmail = "admin@gmail.com";
     private static final String userPassword = "password";
     private static final String USERNAME = "username";
@@ -46,7 +43,8 @@ class UsernamePasswordFilterMockTest {
 
     @BeforeEach
     void setUp() {
-        filter = new UsernamePasswordFilter(loginService);
+        usernamePasswordAuthenticationFilter = new UsernamePasswordAuthenticationFilter();
+        filter = new AuthenticationFilter(usernamePasswordAuthenticationFilter, loginService);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         handler = mock(Object.class);
@@ -60,7 +58,7 @@ class UsernamePasswordFilterMockTest {
         getRequestParameterStubbing(PASSWORD, userPassword);
 
         // then
-        Authentication response = filter.getAuthentication(request);
+        Authentication response = usernamePasswordAuthenticationFilter.getAuthentication(request);
         assertThat(response.getPrincipal()).isEqualTo(userEmail);
     }
 
@@ -71,7 +69,7 @@ class UsernamePasswordFilterMockTest {
         getRequestParameterStubbing(USERNAME, email);
 
         assertThatThrownBy(
-            () -> filter.getAuthentication(request)
+            () -> usernamePasswordAuthenticationFilter.getAuthentication(request)
         ).isInstanceOf(AuthenticationException.class);
     }
 
@@ -84,7 +82,7 @@ class UsernamePasswordFilterMockTest {
         getRequestParameterStubbing(PASSWORD, userPassword);
 
         // then
-        Authentication response = filter.getAuthentication(request);
+        Authentication response = usernamePasswordAuthenticationFilter.getAuthentication(request);
         assertThat(response.getCredentials()).isEqualTo(userPassword);
     }
 
@@ -98,7 +96,7 @@ class UsernamePasswordFilterMockTest {
 
         // then
         assertThatThrownBy(
-            () -> filter.getAuthentication(request)
+            () -> usernamePasswordAuthenticationFilter.getAuthentication(request)
         ).isInstanceOf(AuthenticationException.class);
     }
 
@@ -110,7 +108,7 @@ class UsernamePasswordFilterMockTest {
 
         // then
         assertDoesNotThrow(
-            () -> filter.execute(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
+            () -> usernamePasswordAuthenticationFilter.execute(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
         );
     }
 

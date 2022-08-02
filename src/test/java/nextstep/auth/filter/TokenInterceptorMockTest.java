@@ -17,7 +17,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.ServletOutputStream;
@@ -37,10 +36,9 @@ import static org.mockito.Mockito.when;
 class TokenInterceptorMockTest {
     @Mock
     private LoginService loginService;
-    @Autowired
+    private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
     private AuthenticationFilter filter;
     private JwtTokenProvider provider = new JwtTokenProvider();
-
     private static final String userEmail = "admin@gmail.com";
     private static final String userPassword = "password";
     HttpServletRequest request;
@@ -51,7 +49,8 @@ class TokenInterceptorMockTest {
     void setUp() throws IllegalAccessException {
         // secret-key 설정
         FieldUtils.writeField(provider, "secretKey", "atdd-secret-key", true);
-        filter = new TokenInterceptor(loginService, provider);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(provider);
+        filter = new AuthenticationFilter(tokenAuthenticationInterceptor, loginService);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         handler = mock(Object.class);
@@ -74,7 +73,7 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // then
-        Authentication response = filter.getAuthentication(request);
+        Authentication response = tokenAuthenticationInterceptor.getAuthentication(request);
         assertThat(response.getPrincipal()).isEqualTo(userEmail);
     }
 
@@ -85,7 +84,7 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(email, userPassword));
 
         assertThatThrownBy(
-            () -> filter.getAuthentication(request)
+            () -> tokenAuthenticationInterceptor.getAuthentication(request)
         ).isInstanceOf(AuthenticationException.class);
     }
 
@@ -97,7 +96,7 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // then
-        Authentication response = filter.getAuthentication(request);
+        Authentication response = tokenAuthenticationInterceptor.getAuthentication(request);
         assertThat(response.getCredentials()).isEqualTo(userPassword);
     }
 
@@ -110,7 +109,7 @@ class TokenInterceptorMockTest {
 
         // then
         assertThatThrownBy(
-            () -> filter.getAuthentication(request)
+            () -> tokenAuthenticationInterceptor.getAuthentication(request)
         ).isInstanceOf(AuthenticationException.class);
     }
 
@@ -122,7 +121,7 @@ class TokenInterceptorMockTest {
 
         // then
         assertDoesNotThrow(
-            () -> filter.execute(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
+            () -> tokenAuthenticationInterceptor.execute(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
         );
     }
 

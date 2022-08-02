@@ -14,17 +14,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TokenInterceptor extends AuthenticationFilter {
+public class TokenAuthenticationInterceptor implements AuthenticationFilterStrategy {
     private final JwtTokenProvider provider;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public TokenInterceptor(LoginService loginService, JwtTokenProvider provider) {
-        super(loginService);
+    public TokenAuthenticationInterceptor(JwtTokenProvider provider) {
         this.provider = provider;
     }
 
     @Override
-    protected Authentication getAuthentication(HttpServletRequest request) {
+    public Authentication getAuthentication(HttpServletRequest request) {
         TokenRequest tokenRequest = getTokenRequest(request);
         String email = isNotNullAndNotEmpty(tokenRequest.getEmail());
         String password = isNotNullAndNotEmpty(tokenRequest.getPassword());
@@ -33,7 +32,7 @@ public class TokenInterceptor extends AuthenticationFilter {
 
 
     @Override
-    protected void execute(HttpServletResponse response, String email, List<String> authorities) throws IOException {
+    public void execute(HttpServletResponse response, String email, List<String> authorities) throws IOException {
         String token = provider.createToken(email, authorities);
         TokenResponse tokenResponse = new TokenResponse(token);
         String responseToClient = objectMapper.writeValueAsString(tokenResponse);
@@ -49,6 +48,13 @@ public class TokenInterceptor extends AuthenticationFilter {
         } catch (IOException e) {
             throw new AuthenticationException();
         }
+    }
+
+    private String isNotNullAndNotEmpty(String parameter) {
+        if (parameter == null || parameter.isBlank()) {
+            throw new AuthenticationException();
+        }
+        return parameter;
     }
 
 }

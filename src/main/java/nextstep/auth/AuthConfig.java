@@ -4,9 +4,10 @@ import nextstep.auth.authentication.BasicAuthenticationFilter;
 import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
+import nextstep.auth.filter.AuthenticationFilter;
 import nextstep.auth.filter.LoginService;
-import nextstep.auth.filter.TokenInterceptor;
-import nextstep.auth.filter.UsernamePasswordFilter;
+import nextstep.auth.filter.TokenAuthenticationInterceptor;
+import nextstep.auth.filter.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -27,10 +28,18 @@ public class AuthConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
-        registry.addInterceptor(new UsernamePasswordFilter(loginService)).addPathPatterns("/login/form");
-        registry.addInterceptor(new TokenInterceptor(loginService, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(usernamePasswordFilter()).addPathPatterns("/login/form");
+        registry.addInterceptor(tokenFilter()).addPathPatterns("/login/token");
         registry.addInterceptor(new BasicAuthenticationFilter(loginService));
         registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider, loginService));
+    }
+
+    private AuthenticationFilter tokenFilter() {
+        return new AuthenticationFilter(new TokenAuthenticationInterceptor(jwtTokenProvider), loginService);
+    }
+
+    private AuthenticationFilter usernamePasswordFilter() {
+        return new AuthenticationFilter(new UsernamePasswordAuthenticationFilter(), loginService);
     }
 
     @Override
