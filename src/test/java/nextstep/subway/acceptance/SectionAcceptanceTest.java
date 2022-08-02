@@ -37,7 +37,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 지하철 노선에 새로운 구간 추가를 요청 하면 Then 노선에 새로운 구간이 추가된다
+     * When 지하철 노선에 새로운 구간 추가를 요청 하면
+     * Then 노선에 새로운 구간이 추가된다
      */
     @DisplayName("지하철 노선에 구간을 등록")
     @Test
@@ -53,7 +54,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 지하철 노선에 새로운 구간 추가를 요청 하고 When 지하철 노선의 마지막 구간 제거를 요청 하면 Then 노선에 구간이 제거된다
+     * Given 지하철 노선에 새로운 구간 추가를 요청 하고
+     * When 지하철 노선의 마지막 구간 제거를 요청 하면
+     * Then 노선에 구간이 제거된다
      */
     @DisplayName("지하철 노선에 구간을 제거")
     @Test
