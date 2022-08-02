@@ -33,7 +33,6 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        System.out.println("hello");
         stationRepository.deleteById(id);
     }
 
