@@ -14,7 +14,13 @@ public class LoginMemberService {
     }
 
     public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email)
+                .orElse(null);
+
+        if (member == null) {
+            return null;
+        }
+
         return LoginMember.of(member);
     }
 }

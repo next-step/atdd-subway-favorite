@@ -24,19 +24,18 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         SecurityContext context = SecurityContextHolder.getContext();
         if (context.getAuthentication() != null) {
-            log.info("로그인이 이미 되어있습니다. userName : {}", context.getAuthentication().getPrincipal());
+            log.info("로그인이 이미 되어있습니다. userName : {}", context.getAuthentication()
+                    .getPrincipal());
             return true;
         }
 
-        LoginMember loginMember;
-        try{
-            loginMember = loginMemberService.loadUserByUsername(request.getParameter("userName"));
-        } catch (RuntimeException ex){
+        LoginMember loginMember = loginMemberService.loadUserByUsername(request.getParameter("userName"));
+        if (loginMember == null) {
             log.info("올바르지 않은 토큰입니다. (존재하지 않는 사용자 - userName : {})", request.getParameter("userName"));
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(request.getParameter("password"))){
+        if (!loginMember.checkPassword(request.getParameter("password"))) {
             log.info("패스워드가 틀렸습니다. userName : {}", loginMember.getEmail());
             throw new AuthenticationException();
         }

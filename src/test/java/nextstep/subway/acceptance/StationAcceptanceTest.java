@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.applicaion.dto.StationResponse;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 import static nextstep.subway.acceptance.AuthSteps.ADMIN_토큰권한으로_호출;
+import static nextstep.subway.acceptance.AuthSteps.MEMBER_토큰권한으로_호출;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,10 +33,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         List<String> stationNames =
-                RestAssured.given().log().all()
-                        .when().get("/stations")
-                        .then().log().all()
-                        .extract().jsonPath().getList("name", String.class);
+                MEMBER_토큰권한으로_호출()
+                        .when()
+                        .get("/stations")
+                        .then()
+                        .log()
+                        .all()
+                        .extract()
+                        .jsonPath()
+                        .getList("name", String.class);
         assertThat(stationNames).containsAnyOf("강남역");
     }
 
@@ -53,13 +58,17 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_요청("역삼역");
 
         // when
-        ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
-                .when().get("/stations")
-                .then().log().all()
+        ExtractableResponse<Response> stationResponse = MEMBER_토큰권한으로_호출()
+                .when()
+                .get("/stations")
+                .then()
+                .log()
+                .all()
                 .extract();
 
         // then
-        List<StationResponse> stations = stationResponse.jsonPath().getList(".", StationResponse.class);
+        List<StationResponse> stations = stationResponse.jsonPath()
+                .getList(".", StationResponse.class);
         assertThat(stations).hasSize(2);
     }
 
@@ -79,15 +88,22 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ADMIN_토큰권한으로_호출()
                 .when()
                 .delete(location)
-                .then().log().all()
+                .then()
+                .log()
+                .all()
                 .extract();
 
         // then
         List<String> stationNames =
                 ADMIN_토큰권한으로_호출()
-                        .when().get("/stations")
-                        .then().log().all()
-                        .extract().jsonPath().getList("name", String.class);
+                        .when()
+                        .get("/stations")
+                        .then()
+                        .log()
+                        .all()
+                        .extract()
+                        .jsonPath()
+                        .getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
     }
 }

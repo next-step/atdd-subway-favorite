@@ -17,6 +17,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     private final Logger log = LoggerFactory.getLogger(BearerTokenAuthenticationFilter.class);
     private JwtTokenProvider jwtTokenProvider;
     private LoginMemberService loginMemberService;
+
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider, LoginMemberService loginMemberService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.loginMemberService = loginMemberService;
@@ -26,25 +27,20 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         SecurityContext context = SecurityContextHolder.getContext();
         if (context.getAuthentication() != null) {
-            log.info("로그인이 이미 되어있습니다. userName : {}", context.getAuthentication().getPrincipal());
+            log.info("로그인이 이미 되어있습니다. userName : {}", context.getAuthentication()
+                    .getPrincipal());
             return true;
         }
 
         String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-        if(token.isBlank()){
-            return true;
-        }
-
         if (!jwtTokenProvider.validateToken(token)) {
             log.info("올바르지 않은 토큰입니다.");
             throw new AuthenticationException();
         }
 
         String userName = jwtTokenProvider.getPrincipal(token);
-        try{
-            loginMemberService.loadUserByUsername(userName);
-        } catch (RuntimeException ex){
-            log.info("올바르지 않은 토큰입니다. (존재하지 않는 사용자 - userName : {})", userName);
+        LoginMember loginMember = loginMemberService.loadUserByUsername(userName);
+        if (loginMember == null) {
             throw new AuthenticationException();
         }
 
