@@ -8,6 +8,7 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.NotFavoriteOwnerException;
 import nextstep.member.application.MemberService;
 import nextstep.subway.applicaion.StationService;
+import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,17 +33,20 @@ public class FavoriteService {
     public FavoriteResponse saveFavorite(final String email, final FavoriteRequest favoriteRequest) {
         final Long memberId = memberService.findMember(email).getId();
 
-        final Favorite favorite = favoriteRequest.toFavorite(memberId);
+        final Station source = stationService.findById(favoriteRequest.getSource());
+        final Station target = stationService.findById(favoriteRequest.getTarget());
+
+        final Favorite favorite = favoriteRequest.toFavorite(memberId, source.getId(), target.getId());
         final Favorite savedFavorite = favoriteRepository.save(favorite);
 
-        return createFavoriteResponse(savedFavorite);
+        return createFavoriteResponse(savedFavorite, source, target);
     }
 
-    private FavoriteResponse createFavoriteResponse(final Favorite favorite) {
+    private FavoriteResponse createFavoriteResponse(final Favorite favorite, final Station source, final Station target) {
         return new FavoriteResponse(
                 favorite.getId(),
-                new FavoriteStationResponse(stationService.findById(favorite.getSource())),
-                new FavoriteStationResponse(stationService.findById(favorite.getTarget())));
+                new FavoriteStationResponse(source),
+                new FavoriteStationResponse(target));
     }
 
     public List<FavoriteResponse> findFavorites(final String email) {
@@ -50,7 +54,7 @@ public class FavoriteService {
 
         return favoriteRepository.findAllByMemberId(memberId)
                 .stream()
-                .map(this::createFavoriteResponse)
+                .map(favorite -> createFavoriteResponse(favorite, stationService.findById(favorite.getSource()), stationService.findById(favorite.getTarget())))
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +68,7 @@ public class FavoriteService {
             throw new NotFavoriteOwnerException();
         }
 
-        return createFavoriteResponse(favorite);
+        return createFavoriteResponse(favorite, stationService.findById(favorite.getSource()), stationService.findById(favorite.getTarget()));
     }
 
     @Transactional

@@ -25,7 +25,7 @@ public class FavoriteRequest {
         return target;
     }
 
-    public Favorite toFavorite(final long memberId) {
+    public Favorite toFavorite(final long memberId, final long source, final long target) {
         return new Favorite(memberId, source, target);
     }
 }
