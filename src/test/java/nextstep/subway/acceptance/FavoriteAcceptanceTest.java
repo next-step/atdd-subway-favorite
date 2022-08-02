@@ -1,8 +1,10 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.exception.NotFoundStationException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,6 +100,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_목록_조회됨(response);
+    }
+
+    @DisplayName(" 정상적인 즐겨찾기 번호를 입력하면 삭제 가능하다")
+    @Test
+    public void delete_favorite_success() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 교대역, 강남역);
+        String location = createResponse.header("Location");
+
+        // when
+        ExtractableResponse<Response> deleteResponse = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete(location)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {
