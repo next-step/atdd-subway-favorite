@@ -1,5 +1,6 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.secured.Secured;
 import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.dto.LineRequest;
 import nextstep.subway.applicaion.dto.LineResponse;
@@ -19,6 +20,7 @@ public class LineController {
         this.lineService = lineService;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
