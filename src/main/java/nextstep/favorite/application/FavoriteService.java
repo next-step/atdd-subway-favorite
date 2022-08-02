@@ -38,8 +38,7 @@ public class FavoriteService {
         Station target = stationService.findById(favoriteRequest.getTarget());
 
         Favorite favorite = new Favorite(memberId, source, target);
-        favoriteRepository.save(favorite);
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
     public FavoriteResponse findFavorite(String email, Long id) {
