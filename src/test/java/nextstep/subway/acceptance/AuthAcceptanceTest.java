@@ -9,38 +9,38 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.acceptance.MemberAcceptanceTest.MEMBER_EMAIL;
+import static nextstep.subway.acceptance.MemberAcceptanceTest.MEMBER_PASSWORD;
 import static nextstep.subway.acceptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
 
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {
-        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(MEMBER_EMAIL, MEMBER_PASSWORD);
 
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, MEMBER_EMAIL, AGE);
     }
 
     @DisplayName("Session 로그인 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
-        ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(MEMBER_EMAIL, MEMBER_PASSWORD);
 
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, MEMBER_EMAIL, AGE);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
 
         ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
 
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, MEMBER_EMAIL, AGE);
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
