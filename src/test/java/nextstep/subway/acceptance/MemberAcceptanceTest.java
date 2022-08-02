@@ -10,16 +10,16 @@ import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
+
+    public static final String MEMBER_EMAIL = "email@email.com";
+    public static final String MEMBER_PASSWORD = "password";
     public static final int AGE = 20;
 
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
         // when
-        ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
+        ExtractableResponse<Response> response = 회원_생성_요청(MEMBER_EMAIL, MEMBER_PASSWORD, AGE);
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -28,13 +28,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void getMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(MEMBER_EMAIL, MEMBER_PASSWORD, AGE);
 
         // when
         ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, MEMBER_EMAIL, AGE);
 
     }
 
@@ -42,10 +42,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(MEMBER_EMAIL, MEMBER_PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + MEMBER_EMAIL, "new" + MEMBER_PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -55,7 +55,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(MEMBER_EMAIL, MEMBER_PASSWORD, AGE);
 
         // when
         ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
