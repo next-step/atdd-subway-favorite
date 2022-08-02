@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.DataLoader.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthSteps {
     public static RequestSpecification givenAdminRole() {
@@ -43,5 +44,9 @@ public class AuthSteps {
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static void 권한검사에_실패한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
