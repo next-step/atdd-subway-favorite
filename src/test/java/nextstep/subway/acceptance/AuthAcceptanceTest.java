@@ -47,7 +47,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                     .auth()
-                        .form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD))
+                        .form(email, password, new FormAuthConfig("/login/form", USERNAME_FIELD, PASSWORD))
                     .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                     .get("/members/me")
