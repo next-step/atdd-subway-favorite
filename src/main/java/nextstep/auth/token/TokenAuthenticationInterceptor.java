@@ -22,30 +22,34 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
+        try {
+            String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
 
-        String principal = tokenRequest.getEmail();
-        String credentials = tokenRequest.getPassword();
+            String principal = tokenRequest.getEmail();
+            String credentials = tokenRequest.getPassword();
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+            LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
 
-        if (loginMember == null) {
-            throw new AuthenticationException();
+            if (loginMember == null) {
+                throw new AuthenticationException();
+            }
+
+            if (!loginMember.checkPassword(credentials)) {
+                throw new AuthenticationException();
+            }
+
+            String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+            TokenResponse tokenResponse = new TokenResponse(token);
+
+            String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.getOutputStream().print(responseToClient);
+
+            return false;
+        } catch (Exception e) {
+            return false;
         }
-
-        if (!loginMember.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
-
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
-        TokenResponse tokenResponse = new TokenResponse(token);
-
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().print(responseToClient);
-
-        return false;
     }
 }

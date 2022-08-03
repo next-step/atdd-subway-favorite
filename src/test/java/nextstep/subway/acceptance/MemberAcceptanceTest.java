@@ -1,67 +1,64 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.DataLoader.MEMBER_EMAIL;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+
+    private static final String EMAIL = "test@test.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
 
     @DisplayName("회원가입을 한다.")
     @Test
-    void createMember() {
+    void join() {
         // when
-        ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String location = createResponse.header("location");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("회원 정보를 조회한다.")
-    @Test
-    void getMember() {
-        // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
-
-        // then
-        회원_정보_조회됨(response, EMAIL, AGE);
-
+        회원_정보_일치함(location, EMAIL, AGE);
     }
 
     @DisplayName("회원 정보를 수정한다.")
     @Test
     void updateMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String location = createResponse.header("location");
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        String newEmail = "new" + EMAIL;
+        int newAge = AGE + 1;
+        회원_정보_수정_요청(location, newEmail, PASSWORD, newAge);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_일치함(location, newEmail, newAge);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var createResponse = 회원_생성_요청(MEMBER_EMAIL, PASSWORD, AGE);
+        String location = createResponse.header("location");
 
         // when
-        ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
+        회원_삭제_요청(location);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_정보를_조회할_수_없다(location);
+    }
+
+    private void 회원_정보를_조회할_수_없다(String location) {
+        var response = 회원_정보_조회_요청(location);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("회원 정보를 관리한다.")
