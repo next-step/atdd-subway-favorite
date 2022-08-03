@@ -24,11 +24,10 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 로그인후_즐겨찾기_조회(ExtractableResponse<Response> response) {
-        String location = response.header("Location");
+    public static ExtractableResponse<Response> 로그인후_즐겨찾기_조회() {
 
         return secureGiven()
-                .when().get(location)
+                .when().get("/favorites")
                 .then().log().all()
                 .extract();
     }

@@ -9,12 +9,14 @@ import nextstep.auth.handler.UsernamePasswordAuthenticationHandler;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.user.UserDetailsService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @Configuration
+@EnableJpaAuditing
 public class AppConfig implements WebMvcConfigurer {
     private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;

@@ -1,9 +1,14 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+import nextstep.subway.domain.Favorite;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +23,9 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -36,25 +44,6 @@ public class Member {
         this.roles = roles;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
 
     public void update(Member member) {
         this.email = member.email;
