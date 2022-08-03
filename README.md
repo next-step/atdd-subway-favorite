@@ -17,4 +17,4 @@
 - [x] XXXAuthenticationFilter의 구조화
   - [x] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter
   - [x] BasicAuthenticationFilter와 BearerTokenAuthenticationFilter
-- [] auth 패키지와 member 패키지에 대한 의존 제거
+- [x] auth 패키지와 member 패키지에 대한 의존 제거

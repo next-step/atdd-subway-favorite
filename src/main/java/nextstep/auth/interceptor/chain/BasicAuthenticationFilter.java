@@ -1,21 +1,21 @@
-package nextstep.auth.authentication.chain;
+package nextstep.auth.interceptor.chain;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends ChainInterceptor {
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailService = userDetailsService;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class BasicAuthenticationFilter extends ChainInterceptor {
 
         AuthenticationToken token = getToken(authHeader);
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+        LoginMember loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
         validationLoginMember(token, loginMember);
 
         return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());

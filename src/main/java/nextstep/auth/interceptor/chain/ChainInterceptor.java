@@ -1,4 +1,4 @@
-package nextstep.auth.authentication.chain;
+package nextstep.auth.interceptor.chain;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
