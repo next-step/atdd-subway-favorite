@@ -15,6 +15,6 @@
 # 2단계 - 인증 로직 리팩터링
 ## 기능 요구사항
 - [] XXXAuthenticationFilter의 구조화
-  - [] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter
+  - [x] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter
   - [] BasicAuthenticationFilter와 BearerTokenAuthenticationFilter
 - [] auth 패키지와 member 패키지에 대한 의존 제거

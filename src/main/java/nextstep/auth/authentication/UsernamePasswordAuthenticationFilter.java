@@ -4,34 +4,29 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
+public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
     private static final String NOT_MATCH_EMAIL_PASSWORD = "이메일과 비밀번호가 일치하지 않습니다.";
 
-    private LoginMemberService loginMemberService;
-
     public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+        super(loginMemberService);
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    protected MemberInfo createPrincipal(HttpServletRequest request) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        LoginMember member = loginMemberService.loadUserByUsername(email);
-        if (!member.checkPassword(password)) {
-            throw new AuthenticationException(NOT_MATCH_EMAIL_PASSWORD);
-        }
+        return new MemberInfo(email, password);
+    }
 
-        Authentication authentication = new Authentication(email, member.getAuthorities());
+    @Override
+    protected void afterValidation(HttpServletResponse response, LoginMember loginMember) {
+        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return true;
     }
 }
