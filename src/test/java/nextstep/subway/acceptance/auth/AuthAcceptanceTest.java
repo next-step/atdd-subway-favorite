@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.utils.AdministratorInfo.*;
-import static nextstep.subway.acceptance.member.MemberSteps.*;
+import static nextstep.subway.acceptance.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

@@ -10,7 +10,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
 import static nextstep.subway.utils.AdministratorInfo.*;
-import static nextstep.subway.acceptance.member.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.step.MemberSteps.로그인_되어_있음;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
