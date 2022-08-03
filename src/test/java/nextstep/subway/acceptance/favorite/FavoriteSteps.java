@@ -15,6 +15,7 @@ import static nextstep.subway.acceptance.favorite.FavoriteAcceptanceTest.OTHER_P
 import static nextstep.subway.acceptance.member.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.utils.RestAssuredUtils.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteSteps {
 
@@ -97,5 +98,18 @@ public class FavoriteSteps {
                 .delete(response.header("Location"))
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 즐겨찾기_경로_검증(ExtractableResponse<Response> response, String sourceName, String targetName) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getLong("id")).isNotNull(),
+                () -> assertThat(response.jsonPath().getString("source.name")).isEqualTo(sourceName),
+                () -> assertThat(response.jsonPath().getString("source.createdDate")).isNotNull(),
+                () -> assertThat(response.jsonPath().getString("source.modifiedDate")).isNotNull(),
+                () -> assertThat(response.jsonPath().getString("target.name")).isEqualTo(targetName),
+                () -> assertThat(response.jsonPath().getString("target.createdDate")).isNotNull(),
+                () -> assertThat(response.jsonPath().getString("target.modifiedDate")).isNotNull()
+        );
     }
 }
