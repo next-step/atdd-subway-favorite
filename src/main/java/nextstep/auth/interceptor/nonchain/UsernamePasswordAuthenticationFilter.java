@@ -1,8 +1,8 @@
-package nextstep.auth.authentication.nonchain;
+package nextstep.auth.interceptor.nonchain;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
     private static final String NOT_MATCH_EMAIL_PASSWORD = "이메일과 비밀번호가 일치하지 않습니다.";
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        super(loginMemberService);
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        super(userDetailsService);
     }
 
     @Override

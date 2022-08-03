@@ -1,8 +1,8 @@
-package nextstep.auth.authentication.nonchain;
+package nextstep.auth.interceptor.nonchain;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -13,13 +13,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public abstract class NonChainFilter implements HandlerInterceptor {
 
-	private final LoginMemberService loginMemberService;
+	private final UserDetailsService userDetailsService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		MemberInfo info = createPrincipal(request);
-		LoginMember loginMember = loginMemberService.loadUserByUsername(info.getEmail());
+		LoginMember loginMember = userDetailsService.loadUserByUsername(info.getEmail());
 
 		validationMember(info, loginMember);
 
@@ -27,6 +27,8 @@ public abstract class NonChainFilter implements HandlerInterceptor {
 
 		return false;
 	}
+
+	protected abstract MemberInfo createPrincipal(HttpServletRequest request);
 
 	private void validationMember(MemberInfo info, LoginMember loginMember) {
 		if (loginMember == null) {
@@ -37,8 +39,6 @@ public abstract class NonChainFilter implements HandlerInterceptor {
 			throw new AuthenticationException();
 		}
 	}
-
-	protected abstract MemberInfo createPrincipal(HttpServletRequest request);
 
 	protected abstract void afterValidation(HttpServletResponse response, LoginMember loginMember) throws IOException;
 }

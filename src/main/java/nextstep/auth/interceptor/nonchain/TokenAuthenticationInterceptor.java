@@ -1,13 +1,11 @@
-package nextstep.auth.authentication.nonchain;
+package nextstep.auth.interceptor.nonchain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import nextstep.auth.authentication.nonchain.MemberInfo;
-import nextstep.auth.authentication.nonchain.NonChainFilter;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.user.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
@@ -19,8 +17,8 @@ import java.util.stream.Collectors;
 public class TokenAuthenticationInterceptor extends NonChainFilter {
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        super(loginMemberService);
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

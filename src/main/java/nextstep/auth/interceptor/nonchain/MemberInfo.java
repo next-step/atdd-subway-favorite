@@ -1,4 +1,4 @@
-package nextstep.auth.authentication.nonchain;
+package nextstep.auth.interceptor.nonchain;
 
 import lombok.Getter;
 
