@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -20,12 +20,12 @@ public class MemberService {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
-
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
-
+    @Transactional(readOnly = true)
     public MemberResponse findMember(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);

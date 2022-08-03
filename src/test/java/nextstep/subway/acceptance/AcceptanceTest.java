@@ -25,12 +25,13 @@ public class AcceptanceTest {
     @Autowired
     private DataLoader dataLoader;
 
-    public static String accessToken;
+    public static String 관리자토큰;
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
         databaseCleanup.execute();
         dataLoader.loadData();
+        관리자토큰 = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
 
     }
 }

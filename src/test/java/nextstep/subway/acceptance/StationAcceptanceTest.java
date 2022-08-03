@@ -22,12 +22,6 @@ import static nextstep.subway.acceptance.RestAssuredStep.given;
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
 
-    private String accessToken;
-    @BeforeEach
-    void authSetUp(){
-        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
-    }
-
     /**
      * When 지하철역을 생성하면
      * Then 지하철역이 생성된다
@@ -37,7 +31,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(accessToken, "강남역");
+        ExtractableResponse<Response> response = 지하철역_생성_요청(관리자토큰, "강남역");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -56,8 +50,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        지하철역_생성_요청(accessToken,"강남역");
-        지하철역_생성_요청(accessToken,"역삼역");
+        지하철역_생성_요청(관리자토큰,"강남역");
+        지하철역_생성_요청(관리자토큰,"역삼역");
 
         // when
         ExtractableResponse<Response> stationResponse = 지하철역_목록_조회();
@@ -76,11 +70,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(accessToken,"강남역");
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(관리자토큰,"강남역");
 
         // when
         String location = createResponse.header("location");
-                given(accessToken).log().all()
+                given(관리자토큰).log().all()
                 .when()
                 .delete(location)
                 .then().log().all()

@@ -22,14 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
-    String accessToken;
-
-    @BeforeEach
-    public void setUp(){
-        super.setUp();
-        accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
-
-    }
     /**
      * When 지하철 노선을 생성하면
      * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
@@ -38,7 +30,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(accessToken, "2호선", "green");
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(관리자토큰, "2호선", "green");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -56,8 +48,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        지하철_노선_생성_요청(accessToken, "2호선", "green");
-        지하철_노선_생성_요청(accessToken, "3호선", "orange");
+        지하철_노선_생성_요청(관리자토큰, "2호선", "green");
+        지하철_노선_생성_요청(관리자토큰, "3호선", "orange");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -76,7 +68,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(accessToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자토큰, "2호선", "green");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
@@ -95,12 +87,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(accessToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자토큰, "2호선", "green");
 
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-                given(accessToken)
+                given(관리자토큰)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -121,11 +113,11 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(accessToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자토큰, "2호선", "green");
 
         // when
         ExtractableResponse<Response> response =
-                given(accessToken)
+                given(관리자토큰)
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 
