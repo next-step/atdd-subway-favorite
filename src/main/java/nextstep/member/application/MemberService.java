@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.MemberUpdateRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -35,20 +36,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
-        member.update(param.toMember());
-    }
-
-    public void updateMember(String email, MemberRequest param) {
+    public void updateMember(String email, MemberUpdateRequest param) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(IllegalArgumentException::new);
-        member.update(param.toMember());
-    }
-
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+        member.update(param.getEmail(), param.getAge());
     }
 
     public void deleteMember(String email) {

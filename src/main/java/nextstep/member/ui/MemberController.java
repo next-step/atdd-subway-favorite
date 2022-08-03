@@ -4,11 +4,16 @@ import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.MemberUpdateRequest;
 import nextstep.member.domain.LoginMember;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MemberController {
@@ -19,25 +24,9 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
-    }
-
-    @GetMapping("/members/{id}")
-    public MemberResponse findMember(@PathVariable Long id) {
-        return memberService.findMember(id);
-    }
-
-    @PutMapping("/members/{id}")
-    public void updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-    }
-
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(member);
     }
 
     @GetMapping("/members/me")
@@ -46,7 +35,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public void updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public void updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberUpdateRequest param) {
         memberService.updateMember(loginMember.getEmail(), param);
     }
 
