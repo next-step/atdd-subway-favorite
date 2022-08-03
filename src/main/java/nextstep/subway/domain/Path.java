@@ -9,10 +9,6 @@ public class Path {
         this.sections = sections;
     }
 
-    public Sections getSections() {
-        return sections;
-    }
-
     public int extractDistance() {
         return sections.totalDistance();
     }
