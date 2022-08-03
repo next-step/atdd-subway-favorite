@@ -1,17 +1,23 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.chain;
 
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.AuthorizationExtractor;
+import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.context.SecurityContextMapper;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class BasicAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+@Component
+public class BasicAuthenticationFilter implements AuthenticationChainFilter {
+    private final LoginMemberService loginMemberService;
 
     public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
         this.loginMemberService = loginMemberService;
@@ -38,10 +44,7 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
                 throw new AuthenticationException();
             }
 
-            Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            SecurityContextMapper.setContext(loginMember.getEmail(), loginMember.getAuthorities());
             return true;
         } catch (Exception e) {
             return true;

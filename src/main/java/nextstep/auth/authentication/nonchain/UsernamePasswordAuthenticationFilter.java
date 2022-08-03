@@ -1,8 +1,6 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.nonchain;
 
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
-import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.context.SecurityContextMapper;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -22,9 +20,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
         String userEmail = request.getParameter("username");
         LoginMember loginUser = loginMemberService.loadUserByUsername(userEmail);
 
-        Authentication authentication = new Authentication(loginUser.getEmail(), loginUser.getAuthorities());
-        SecurityContext securityContext = new SecurityContext(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        return true;
+        SecurityContextMapper.setContext(loginUser.getEmail(), loginUser.getAuthorities());
+        return false;
     }
 }
