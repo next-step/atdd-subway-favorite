@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilter {
+
+    private static final String BEARER_DELIMITER = "Bearer ";
     private JwtTokenProvider jwtTokenProvider;
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -29,12 +31,11 @@ public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilte
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        if (authorization == null || !authorization.startsWith(BEARER_DELIMITER)) {
             throw new AuthenticationException();
         }
 
         String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-
         if (!jwtTokenProvider.validateToken(token)) {
             throw new UnauthorizedException();
         }
