@@ -16,9 +16,14 @@ public class Favorite {
     @ManyToOne
     private Station target;
 
+    public Favorite(Long memberId) {
+        this.memberId = memberId;
+    }
+
     public Long getId() {
         return id;
     }
+
 
     public Station getSource() {
         return source;

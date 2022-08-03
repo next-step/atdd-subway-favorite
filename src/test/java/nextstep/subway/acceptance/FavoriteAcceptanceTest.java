@@ -6,6 +6,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
@@ -13,6 +14,7 @@ import static nextstep.subway.acceptance.PathAcceptanceTest.createSectionCreateP
 import static nextstep.subway.acceptance.PathAcceptanceTest.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -56,8 +58,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기를_추가한다() {
         // when
-        var 즐겨찾기_요청 = 즐겨찾기_추가_요청(인증_토큰, 교대역, 양재역);
+        즐겨찾기_추가_요청(인증_토큰, 교대역, 양재역);
 
+        // then
+        추가_된_즐겨찾기를_목록에서_찾을_수_있다(교대역, 양재역);
+    }
+
+    private void 추가_된_즐겨찾기를_목록에서_찾을_수_있다(Long source, Long target) {
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(인증_토큰);
+        assertAll(() -> {
+            assertThat(즐겨찾기_조회_응답.jsonPath().getList("source.id", Long.class)).containsExactly(source);
+            assertThat(즐겨찾기_조회_응답.jsonPath().getList("target.id", Long.class)).containsExactly(target);
+        });
     }
 
     /**
