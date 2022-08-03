@@ -26,7 +26,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 	private String memberAccessToken;
 
 	/**
-	 * Given 지하철역과 노선 생성을 요청 하고
+	 * Given Admin이  지하철역과 노선 생성을 요청 하고
 	 */
 	@BeforeEach
 	public void setUp() {
@@ -41,7 +41,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * When 지하철 노선에 새로운 구간 추가를 요청 하면
+	 * When Admin이  지하철 노선에 새로운 구간 추가를 요청 하면
 	 * Then 노선에 새로운 구간이 추가된다
 	 */
 	@DisplayName("지하철 노선에 구간을 등록")
@@ -58,8 +58,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * Given 지하철 노선에 새로운 구간 추가를 요청 하고
-	 * When 지하철 노선의 마지막 구간 제거를 요청 하면
+	 * Given Admin이  지하철 노선에 새로운 구간 추가를 요청 하고
+	 * When Admin이  지하철 노선의 마지막 구간 제거를 요청 하면
 	 * Then 노선에 구간이 제거된다
 	 */
 	@DisplayName("지하철 노선에 구간을 제거")

@@ -27,7 +27,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 	private String memberAccessToken;
 
 	/**
-	 * Given 지하철역과 노선 생성을 요청 하고
+	 * Given Admin이 지하철역과 노선 생성을 요청 하고
 	 */
 	@BeforeEach
 	public void setUp() {

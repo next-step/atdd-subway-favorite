@@ -15,6 +15,7 @@ import nextstep.member.domain.LoginMember;
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
 	private static final String PRINCIPAL_NAME = "username";
 	private static final String CREDENTIAL_NAME = "password";
+	
 	private LoginMemberService loginMemberService;
 
 	public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {

@@ -55,7 +55,6 @@ class LineAcceptanceTest extends AcceptanceTest {
 	@Test
 	void getLines() {
 		// given
-		로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
 		지하철_노선_생성_요청("2호선", "green", adminAccessToken);
 		지하철_노선_생성_요청("3호선", "orange", adminAccessToken);
 
@@ -87,8 +86,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * Given Admin이 지하철 노선을 생성하고
-	 * When 생성한 지하철 Admin이 노선을 수정하면
+	 * When Admin이 생성한 지하철을 Admin이 노선을 수정하면
 	 * Then 해당 지하철 노선 정보는 수정된다
 	 */
 	@DisplayName("지하철 노선 수정")
@@ -109,8 +107,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * Given Admin이 지하철 노선을 생성하고
-	 * When 생성한 지하철 Admin이 노선을 삭제하면
+	 * When Admin이 생성한 지하철 Admin이 노선을 삭제하면
 	 * Then 해당 지하철 노선 정보는 삭제된다
 	 */
 	@DisplayName("지하철 노선 삭제")
@@ -137,8 +134,8 @@ class LineAcceptanceTest extends AcceptanceTest {
 		assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-	/** Given Admin이 지하철 노선을 생성 하고
-	 *  When Member가 지하철 노선을 수정요청하면
+	/**
+	 *  When Admin이이 생성한 노선을 Member가 지하철 노선을 수정요청하면
 	 *  Then 401 응답을 받는다.
 	 */
 	@DisplayName("Member가 지하철 수정 요청")
@@ -157,8 +154,8 @@ class LineAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-	/** Given Admin이 지하철 노선을 생성 하고
-	 *  When Member가 지하철 노선을 삭제요청하면
+	/**
+	 *  When Admin이 생성한 노선을 Member가 지하철 노선을 삭제요청하면
 	 *  Then 401 응답을 받는다.
 	 */
 	@DisplayName("Member가 지하철 삭제 요청")
