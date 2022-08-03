@@ -4,11 +4,9 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.context.SecurityContextMapper;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.user.UserDetails;
+import nextstep.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class BasicAuthenticationFilter implements AuthenticationChainFilter {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -35,16 +33,13 @@ public class BasicAuthenticationFilter implements AuthenticationChainFilter {
 
             AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+
+            if (!userDetails.checkPassword(token.getCredentials())) {
                 throw new AuthenticationException();
             }
 
-            if (!loginMember.checkPassword(token.getCredentials())) {
-                throw new AuthenticationException();
-            }
-
-            SecurityContextMapper.setContext(loginMember.getEmail(), loginMember.getAuthorities());
+            SecurityContextMapper.setContext(userDetails.getUsername(), userDetails.getAuthorities());
             return true;
         } catch (Exception e) {
             return true;

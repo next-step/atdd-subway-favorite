@@ -1,6 +1,7 @@
 package nextstep.auth.authentication.chain;
 
 
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.SecurityContextMapper;
@@ -12,13 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class BearerTokenAuthenticationFilter implements AuthenticationChainFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

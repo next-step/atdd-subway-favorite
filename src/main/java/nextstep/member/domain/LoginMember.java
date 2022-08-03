@@ -36,8 +36,4 @@ public class LoginMember {
     public List<String> getAuthorities() {
         return authorities;
     }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
 }

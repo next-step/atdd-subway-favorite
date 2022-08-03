@@ -1,26 +1,24 @@
 package nextstep.auth.authentication.nonchain;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.SecurityContextMapper;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.user.UserDetails;
+import nextstep.user.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@RequiredArgsConstructor
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
-
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
-    }
+    private final UserDetailsService userDetailsService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         String userEmail = request.getParameter("username");
-        LoginMember loginUser = loginMemberService.loadUserByUsername(userEmail);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-        SecurityContextMapper.setContext(loginUser.getEmail(), loginUser.getAuthorities());
+        SecurityContextMapper.setContext(userDetails.getUsername(), userDetails.getAuthorities());
         return false;
     }
 }

@@ -1,12 +1,13 @@
 package nextstep.auth.authentication.nonchain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.user.UserDetails;
+import nextstep.user.UserDetailsService;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,14 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
-    private JwtTokenProvider jwtTokenProvider;
-
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -31,17 +28,13 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
 
-        if (loginMember == null) {
+        if (!userDetails.checkPassword(credentials)) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
-
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+        String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
