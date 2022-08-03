@@ -20,19 +20,23 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        var username = request.getParameter(USERNAME_FIELD);
-        var password = request.getParameter(PASSWORD_FIELD);
+        try {
+            var username = request.getParameter(USERNAME_FIELD);
+            var password = request.getParameter(PASSWORD_FIELD);
 
-        var loginMember = loginMemberService.loadUserByUsername(username);
+            var loginMember = loginMemberService.loadUserByUsername(username);
 
-        if (!loginMember.checkPassword(password)) {
-            throw new AuthenticationException();
+            if (!loginMember.checkPassword(password)) {
+                throw new AuthenticationException();
+            }
+
+            var authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return true;
+        } catch (Exception e) {
+            return true;
         }
-
-        var authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return true;
     }
 }
