@@ -41,7 +41,6 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
             Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             return true;
         } catch (Exception e) {
             return true;
