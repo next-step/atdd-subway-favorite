@@ -5,7 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.DataLoader.MEMBER_EMAIL;
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_일치함;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
