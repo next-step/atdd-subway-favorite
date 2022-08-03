@@ -29,7 +29,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String credentials = tokenRequest.getPassword();
 
         LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
-
         if (!loginMember.checkPassword(credentials)) {
             throw new AuthenticationException();
         }

@@ -34,7 +34,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return true;
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             return true;
         }
     }

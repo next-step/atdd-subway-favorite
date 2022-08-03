@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthenticationFilter implements HandlerInterceptor {
+    private static final int AUTH_HEADER_LENGTH = 2;
+
     private LoginMemberService loginMemberService;
 
     public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
@@ -24,16 +26,16 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
             String authHeader = new String(Base64.decodeBase64(authCredentials));
 
             String[] splits = authHeader.split(":");
+            if (splits.length != AUTH_HEADER_LENGTH) {
+                throw new AuthenticationException();
+            }
+
             String principal = splits[0];
             String credentials = splits[1];
 
             AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
             LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember == null) {
-                throw new AuthenticationException();
-            }
-
             if (!loginMember.checkPassword(token.getCredentials())) {
                 throw new AuthenticationException();
             }
@@ -43,7 +45,7 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return true;
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             return true;
         }
     }
