@@ -22,8 +22,8 @@ public class DataLoader {
 
     private Member admin() {
         return new Member(
-                "admin@subway.go.kr",
-                "1q2w3e4r!",
+                "admin@email.com",
+                "password",
                 20,
                 List.of(
                         RoleType.ROLE_MEMBER.name(),
@@ -34,8 +34,8 @@ public class DataLoader {
 
     private Member member() {
         return new Member(
-                "user@subway.go.kr",
-                "qhdks!12",
+                "user@email.com",
+                "password",
                 22,
                 List.of(RoleType.ROLE_MEMBER.name())
         );
