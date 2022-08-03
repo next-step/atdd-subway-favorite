@@ -59,10 +59,6 @@ class TokenInterceptorMockTest {
     private MockHttpServletRequest createMockRequest(TokenRequest tokenRequest) throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
-        Base64 encoder = new Base64(0, new byte[0]);
-        String userPass = "user1:password1";
-        String encodedUserPass = encoder.encodeToString(userPass.getBytes());
-        request.addHeader("Authorization", "BASIC " + encodedUserPass);
         return request;
     }
 
@@ -121,7 +117,7 @@ class TokenInterceptorMockTest {
 
         // then
         assertDoesNotThrow(
-            () -> tokenAuthenticationInterceptor.execute(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
+            () -> tokenAuthenticationInterceptor.responseOk(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
         );
     }
 
@@ -132,7 +128,6 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // when
-        when(loginService.isUserExist(any())).thenReturn(true);
         when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name())));
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
@@ -149,7 +144,6 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // when
-        when(loginService.isUserExist(any())).thenReturn(false);
 
         assertThatThrownBy(
             () -> filter.preHandle(request, response, handler)
@@ -162,7 +156,6 @@ class TokenInterceptorMockTest {
         // given
         String password = "not Equals Password";
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
-        when(loginService.isUserExist(any())).thenReturn(true);
 
         // when
         when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, password, List.of(RoleType.ROLE_ADMIN.name())));

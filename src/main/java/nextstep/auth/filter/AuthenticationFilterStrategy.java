@@ -10,5 +10,6 @@ import java.util.List;
 public interface AuthenticationFilterStrategy {
     Authentication getAuthentication(HttpServletRequest request);
 
-    void execute(HttpServletResponse response, String email, List<String> authorities) throws IOException;
+    void responseOk(HttpServletResponse response, String email, List<String> authorities) throws IOException;
+
 }

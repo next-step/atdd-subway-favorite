@@ -16,15 +16,16 @@ public class UsernamePasswordAuthenticationFilter implements AuthenticationFilte
 
     @Override
     public Authentication getAuthentication(HttpServletRequest request) {
-        String username = isNotNullAndNotEmpty(request.getParameter(USERNAME));
-        String password = isNotNullAndNotEmpty(request.getParameter(PASSWORD));
-        return new Authentication(username, password);
+        return new Authentication(
+            isNotNullAndNotEmpty(request.getParameter(USERNAME)),
+            isNotNullAndNotEmpty(request.getParameter(PASSWORD))
+        );
     }
 
     @Override
-    public void execute(HttpServletResponse response, String email, List<String> authorities) {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(new Authentication(email, authorities));
+    public void responseOk(HttpServletResponse response, String email, List<String> authorities) {
+        SecurityContextHolder.getContext()
+            .setAuthentication(new Authentication(email, authorities));
         response.setStatus(HttpStatus.OK.value());
     }
 

@@ -108,7 +108,7 @@ class UsernamePasswordFilterMockTest {
 
         // then
         assertDoesNotThrow(
-            () -> usernamePasswordAuthenticationFilter.execute(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
+            () -> usernamePasswordAuthenticationFilter.responseOk(response, "admin@email.com", List.of(RoleType.ROLE_ADMIN.name()))
         );
     }
 
@@ -120,7 +120,6 @@ class UsernamePasswordFilterMockTest {
         getRequestParameterStubbing(PASSWORD, userPassword);
 
         // when
-        when(loginService.isUserExist(any())).thenReturn(true);
         when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name())));
         setResponseStatus();
 
@@ -137,9 +136,7 @@ class UsernamePasswordFilterMockTest {
         getRequestParameterStubbing(USERNAME, userEmail);
         getRequestParameterStubbing(PASSWORD, userPassword);
 
-        // when
-        when(loginService.isUserExist(any())).thenReturn(false);
-
+        // when & then
         assertThatThrownBy(
             () -> filter.preHandle(request, response, handler)
         ).isInstanceOf(AuthenticationException.class);
@@ -152,7 +149,6 @@ class UsernamePasswordFilterMockTest {
         String password = "not equals password";
         getRequestParameterStubbing(USERNAME, userEmail);
         getRequestParameterStubbing(PASSWORD, userPassword);
-        when(loginService.isUserExist(any())).thenReturn(true);
 
         // when
         when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, password, List.of(RoleType.ROLE_ADMIN.name())));

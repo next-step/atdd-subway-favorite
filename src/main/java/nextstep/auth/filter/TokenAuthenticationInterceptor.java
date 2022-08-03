@@ -25,17 +25,17 @@ public class TokenAuthenticationInterceptor implements AuthenticationFilterStrat
     @Override
     public Authentication getAuthentication(HttpServletRequest request) {
         TokenRequest tokenRequest = getTokenRequest(request);
-        String email = isNotNullAndNotEmpty(tokenRequest.getEmail());
-        String password = isNotNullAndNotEmpty(tokenRequest.getPassword());
-        return new Authentication(email, password);
+        return new Authentication(
+            isNotNullAndNotEmpty(tokenRequest.getEmail()),
+            isNotNullAndNotEmpty(tokenRequest.getPassword())
+        );
     }
 
 
     @Override
-    public void execute(HttpServletResponse response, String email, List<String> authorities) throws IOException {
+    public void responseOk(HttpServletResponse response, String email, List<String> authorities) throws IOException {
         String token = provider.createToken(email, authorities);
-        TokenResponse tokenResponse = new TokenResponse(token);
-        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(new TokenResponse(token));
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
