@@ -20,4 +20,19 @@ public class StationSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 지하철역_조회_요청() {
+        return RestAssured.given().log().all()
+            .when().get("/stations")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_제거_요청(String token, String location) {
+        return CommonAuthRestAssured.given(token)
+            .when()
+            .delete(location)
+            .then().log().all()
+            .extract();
+    }
 }
