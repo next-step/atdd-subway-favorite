@@ -2,7 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.utils.AccountUtils;
+import nextstep.subway.utils.AccountFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,8 +33,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        adminToken = MemberSteps.로그인_되어_있음(AccountUtils.ADMIN_EMAIL, AccountUtils.ADMIN_PASSWORD);
-        userToken = MemberSteps.로그인_되어_있음(AccountUtils.USER_EMAIL, AccountUtils.USER_PASSWORD);
+        adminToken = MemberSteps.로그인_되어_있음(AccountFixture.ADMIN_EMAIL, AccountFixture.ADMIN_PASSWORD);
+        userToken = MemberSteps.로그인_되어_있음(AccountFixture.USER_EMAIL, AccountFixture.USER_PASSWORD);
 
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");

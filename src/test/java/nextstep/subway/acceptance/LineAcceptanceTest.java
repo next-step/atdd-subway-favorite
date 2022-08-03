@@ -1,14 +1,12 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.utils.AccountUtils;
+import nextstep.subway.utils.AccountFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +24,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        adminToken = MemberSteps.로그인_되어_있음(AccountUtils.ADMIN_EMAIL, AccountUtils.ADMIN_PASSWORD);
-        userToken = MemberSteps.로그인_되어_있음(AccountUtils.USER_EMAIL, AccountUtils.USER_PASSWORD);
+        adminToken = MemberSteps.로그인_되어_있음(AccountFixture.ADMIN_EMAIL, AccountFixture.ADMIN_PASSWORD);
+        userToken = MemberSteps.로그인_되어_있음(AccountFixture.USER_EMAIL, AccountFixture.USER_PASSWORD);
     }
 
     /**
