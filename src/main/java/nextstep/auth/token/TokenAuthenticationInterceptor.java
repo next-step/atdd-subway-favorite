@@ -27,7 +27,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -50,12 +50,12 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         return objectMapper.readValue(content, TokenRequest.class);
     }
 
-    private void validation(String crredentials, LoginMember loginMember) {
+    private void validation(String credentials, LoginMember loginMember) {
         if (loginMember == null) {
             throw new AuthenticationException();
         }
 
-        if(!loginMember.checkPassword(crredentials)) {
+        if(!loginMember.checkPassword(credentials)) {
             throw new AuthenticationException();
         }
     }
