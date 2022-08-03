@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.RoleType;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,12 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class BearerFilterTest {
+class BearerAuthenticationFilterMockTest {
     HttpServletRequest request;
     BearerFilter bearerFilter;
     LoginService loginService;
-
     JwtTokenProvider provider;
+    AuthorizationFilter authorizationFilter;
     String TOKEN;
     private static final String PRINCIPAL = "email@email.com";
     private static final String CREDENTIALS = "password";
@@ -37,9 +39,10 @@ class BearerFilterTest {
     void setUp() throws IOException, IllegalAccessException {
         provider = getProvider();
         loginService = mock(LoginService.class);
-        bearerFilter = new BearerFilter(provider, loginService);
-        request = createMockRequest();
         TOKEN = provider.createToken(PRINCIPAL, AUTHORITIES);
+        request = createMockRequest();
+        bearerFilter = new BearerFilter(provider, loginService);
+        authorizationFilter = new AuthorizationFilter(bearerFilter);
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
@@ -143,4 +146,14 @@ class BearerFilterTest {
         return provider;
     }
 
+    @Test
+    @DisplayName("prehadle을 실행합니다.")
+    void preHandleTest() throws Exception {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        Object handler = mock(Object.class);
+
+        when(loginService.isUserExist(PRINCIPAL)).thenReturn(true);
+
+        authorizationFilter.preHandle(request, response, handler);
+    }
 }

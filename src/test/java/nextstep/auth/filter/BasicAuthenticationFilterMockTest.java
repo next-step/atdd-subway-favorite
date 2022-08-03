@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,11 +23,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BasicFilterTest {
+class BasicAuthenticationFilterMockTest {
 
     HttpServletRequest request;
     BasicFilter basicFilter;
     LoginService loginService;
+    AuthorizationFilter authorizationFilter;
 
     private static final String PRINCIPAL = "user1";
     private static final String CREDENTIALS = "password1";
@@ -39,13 +41,14 @@ class BasicFilterTest {
         request = createMockRequest();
         loginService = mock(LoginService.class);
         basicFilter = new BasicFilter(loginService);
+        authorizationFilter = new AuthorizationFilter(basicFilter);
     }
 
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         Base64 encoder = new Base64(0, new byte[0]);
-        String encodedUserPass = encoder.encodeToString(BasicFilterTest.TOKEN.getBytes());
+        String encodedUserPass = encoder.encodeToString(BasicAuthenticationFilterMockTest.TOKEN.getBytes());
         request.addHeader("Authorization", "BASIC " + encodedUserPass);
         return request;
     }
@@ -151,5 +154,16 @@ class BasicFilterTest {
             () -> assertThat(authentication.getPrincipal()).isEqualTo(PRINCIPAL),
             () -> assertThat(authentication.getAuthorities()).containsExactly(RoleType.ROLE_ADMIN.name())
         );
+    }
+
+    @Test
+    @DisplayName("prehadle을 실행합니다.")
+    void preHandleTest() throws Exception {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        Object handler = mock(Object.class);
+
+        when(loginService.loadUserByUsername(PRINCIPAL)).thenReturn(new LoginMember(PRINCIPAL, CREDENTIALS, null));
+
+        authorizationFilter.preHandle(request, response, handler);
     }
 }
