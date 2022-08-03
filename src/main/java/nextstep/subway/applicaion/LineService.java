@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -35,14 +35,14 @@ public class LineService {
         return LineResponse.of(line);
     }
 
-    public List<Line> findLines() {
-        return lineRepository.findAll();
-    }
-
     public List<LineResponse> findLineResponses() {
         return lineRepository.findAll().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<Line> findLines() {
+        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -50,7 +50,8 @@ public class LineService {
     }
 
     public Line findById(Long id) {
-        return lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @Transactional
@@ -73,17 +74,17 @@ public class LineService {
         line.addSection(upStation, downStation, sectionRequest.getDistance());
     }
 
-    private List<StationResponse> createStationResponses(Line line) {
-        return line.getStations().stream()
-                .map(it -> stationService.createStationResponse(it))
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         Line line = findById(lineId);
         Station station = stationService.findById(stationId);
 
         line.deleteSection(station);
+    }
+
+    private List<StationResponse> createStationResponses(Line line) {
+        return line.getStations().stream()
+                .map(stationService::createStationResponse)
+                .collect(Collectors.toList());
     }
 }

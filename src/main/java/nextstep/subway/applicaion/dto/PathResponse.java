@@ -9,11 +9,6 @@ public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
 
-    public PathResponse(List<StationResponse> stations, int distance) {
-        this.stations = stations;
-        this.distance = distance;
-    }
-
     public static PathResponse of(Path path) {
         List<StationResponse> stations = path.getStations().stream()
                 .map(StationResponse::of)
@@ -21,6 +16,11 @@ public class PathResponse {
         int distance = path.extractDistance();
 
         return new PathResponse(stations, distance);
+    }
+
+    private PathResponse(List<StationResponse> stations, int distance) {
+        this.stations = stations;
+        this.distance = distance;
     }
 
     public List<StationResponse> getStations() {
