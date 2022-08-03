@@ -1,15 +1,12 @@
 package nextstep.subway.applicaion;
 
 import nextstep.subway.applicaion.dto.PathResponse;
-import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Path;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.SubwayMap;
 import nextstep.subway.exception.DuplicatedStationsException;
 import nextstep.subway.exception.NotConnectSectionException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PathService {
@@ -40,11 +37,10 @@ public class PathService {
         }
     }
 
-    public void validatePath(Long source, Long target) {
-        Station upStation = stationService.findById(source);
-        Station downStation = stationService.findById(target);
-        SubwayMap subwayMap = getSubwayMap();
-        subwayMap.validatePath(upStation, downStation);
+    public void validatePath(Station upStation, Station downStation) {
+        if (getSubwayMap().getGraphPath(upStation, downStation) == null) {
+            throw new NotConnectSectionException();
+        }
     }
 
     private SubwayMap getSubwayMap() {

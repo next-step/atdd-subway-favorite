@@ -16,10 +16,12 @@ public class SubwayMap {
     }
 
     public Path findPath(Station source, Station target) {
-        SimpleDirectedWeightedGraph<Station, SectionEdge> graph = getGraph();
-
         // 다익스트라 최단 경로 찾기
-        GraphPath<Station, SectionEdge> result = getPath(graph, source, target);
+        GraphPath<Station, SectionEdge> result = getGraphPath(source, target);
+
+        if (result == null) {
+            throw new NotConnectSectionException();
+        }
 
         List<Section> sections = result.getEdgeList().stream()
                 .map(it -> it.getSection())
@@ -28,15 +30,9 @@ public class SubwayMap {
         return new Path(new Sections(sections));
     }
 
-    public void validatePath(Station source, Station target) {
-        try {
-            getPath(getGraph(), source, target);
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("sink")) {
-                throw new NotConnectSectionException();
-            }
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    public GraphPath<Station, SectionEdge> getGraphPath(Station source, Station target) {
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(getGraph());
+        return dijkstraShortestPath.getPath(source, target);
     }
 
     private SimpleDirectedWeightedGraph<Station, SectionEdge> getGraph() {
@@ -68,11 +64,6 @@ public class SubwayMap {
                     graph.setEdgeWeight(sectionEdge, it.getDistance());
                 });
         return graph;
-    }
-
-    private GraphPath<Station, SectionEdge> getPath(SimpleDirectedWeightedGraph<Station, SectionEdge> graph, Station source, Station target) {
-        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(source, target);
     }
 
 }

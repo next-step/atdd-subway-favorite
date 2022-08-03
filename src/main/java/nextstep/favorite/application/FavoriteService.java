@@ -34,7 +34,7 @@ public class FavoriteService {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
 
-        pathService.validatePath(favoriteRequest.getSource(), favoriteRequest.getTarget());
+        pathService.validatePath(source, target);
 
         Long memberId = getMemberIdByEmail(email);
         Favorite favorite = new Favorite(memberId, source, target);

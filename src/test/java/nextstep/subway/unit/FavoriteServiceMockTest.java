@@ -10,8 +10,6 @@ import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.StationService;
-import nextstep.subway.domain.Path;
-import nextstep.subway.domain.Sections;
 import nextstep.subway.domain.Station;
 import nextstep.subway.exception.DuplicatedStationsException;
 import nextstep.subway.exception.NotConnectSectionException;
@@ -24,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,7 +85,7 @@ class FavoriteServiceMockTest {
         when(stationService.findById(양재역.getId())).thenReturn(양재역);
         when(memberService.findMember(사용자.getEmail())).thenReturn(사용자);
         when(favoriteRepository.save(any(Favorite.class))).thenReturn(즐겨찾기);
-        doNothing().when(pathService).validatePath(강남역.getId(), 양재역.getId());
+        doNothing().when(pathService).validatePath(강남역, 양재역);
 
         // when
         FavoriteResponse response = favoriteService.saveFavorite(사용자.getEmail(), new FavoriteRequest(강남역.getId(), 양재역.getId()));
@@ -128,7 +125,7 @@ class FavoriteServiceMockTest {
         when(stationService.findById(강남역.getId())).thenReturn(강남역);
         when(stationService.findById(양재역.getId())).thenReturn(양재역);
         doThrow(NotConnectSectionException.class)
-                .when(pathService).validatePath(강남역.getId(), 양재역.getId());
+                .when(pathService).validatePath(강남역, 양재역);
 
         // then
         assertThatThrownBy(() -> favoriteService.saveFavorite(사용자.getEmail(), new FavoriteRequest(강남역.getId(), 양재역.getId())))

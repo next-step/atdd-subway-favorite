@@ -13,7 +13,6 @@ import static nextstep.subway.acceptance.member.MemberSteps.회원_생성_요청
 import static nextstep.subway.acceptance.path.PathSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.station.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("즐겨찾기 관련")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -24,6 +23,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;
+    private Long 서울역;
+    private Long 시청역;
 
     @BeforeEach
     public void setUp() {
@@ -32,8 +33,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+        서울역 = 지하철역_생성_요청("서울역").jsonPath().getLong("id");
+        시청역 = 지하철역_생성_요청("시청역").jsonPath().getLong("id");
 
         지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10);
+        지하철_노선_생성_요청("1호선", "blue", 서울역, 시청역, 7);
     }
 
     /**
@@ -100,7 +104,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void addFavoriteNonConnectStations() {
         // when
-        ExtractableResponse<Response> response = 토큰_발급_및_즐겨찾기_경로_추가_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 토큰_발급_및_즐겨찾기_경로_추가_요청(교대역, 서울역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
