@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.utils;
 
 /**
  * @author a1101466 on 2022/07/30

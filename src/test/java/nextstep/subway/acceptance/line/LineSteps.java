@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.line;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.RestAssuredStep.given;
+import static nextstep.subway.utils.RestAssuredStep.given;
 
 public class LineSteps {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(String accessToken,String name, String color) {

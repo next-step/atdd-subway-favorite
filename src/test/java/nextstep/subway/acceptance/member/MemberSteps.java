@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.member;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.RestAssuredStep.given;
+import static nextstep.subway.utils.RestAssuredStep.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {

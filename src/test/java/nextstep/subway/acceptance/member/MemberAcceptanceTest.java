@@ -1,15 +1,16 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.member;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.AdministratorInfo.ADMIN_EMAIL;
-import static nextstep.subway.acceptance.AdministratorInfo.ADMIN_PASSWORD;
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.utils.AdministratorInfo.ADMIN_EMAIL;
+import static nextstep.subway.utils.AdministratorInfo.ADMIN_PASSWORD;
+import static nextstep.subway.acceptance.member.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {

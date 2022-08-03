@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.utils;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
