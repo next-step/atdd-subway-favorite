@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 public interface AuthorizationStrategy {
     String getToken(HttpServletRequest request);
 
+    boolean validToken(String token);
+
     Authentication getAuthentication(String token);
 
-    Authentication getAuthentication(Authentication user);
+    Authentication getAuthentication(Authentication authentication);
 
     boolean validUser(Authentication authentication);
-
-    void saveSecurityContext(Authentication authentication);
 }

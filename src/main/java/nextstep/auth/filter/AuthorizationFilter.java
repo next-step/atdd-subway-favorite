@@ -2,6 +2,7 @@ package nextstep.auth.filter;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,10 @@ public class AuthorizationFilter implements HandlerInterceptor {
             return true;
         }
 
+        if (!strategy.validToken(token)) {
+            throw new AuthenticationException();
+        }
+
         Authentication user = strategy.getAuthentication(token);
 
         // token을 이용해 사용자의 정보가 유효한지 확인합니다.
@@ -34,8 +39,11 @@ public class AuthorizationFilter implements HandlerInterceptor {
         Authentication authentication = strategy.getAuthentication(user);
 
         // SecurityContext에 사용자 정보와 권한을 저장합니다.
-        strategy.saveSecurityContext(authentication);
-
+        setSecurityContext(authentication);
         return true;
+    }
+
+    private void setSecurityContext(Authentication authentication) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
