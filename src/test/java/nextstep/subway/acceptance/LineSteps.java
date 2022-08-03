@@ -13,9 +13,7 @@ public class LineSteps {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
+        return RestGivenWithOauth2.from(accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
@@ -44,9 +42,7 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params, String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
+        return RestGivenWithOauth2.from(accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
@@ -54,8 +50,7 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, String> params, String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+        return RestGivenWithOauth2.from(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines/{lineId}/sections", lineId)
@@ -63,8 +58,7 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_제거_요청(Long lineId, Long stationId, String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+        return RestGivenWithOauth2.from(accessToken)
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all().extract();
     }
