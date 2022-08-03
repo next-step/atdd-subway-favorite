@@ -6,8 +6,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.PathAcceptanceTest.createSectionCreateParams;
@@ -75,8 +74,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 즐겨찾기에 새로운 즐겨찾기 추가를 요청하고
      * When 추가 된 즐겨찾기를 제거를 요청하면
-     * Then 즐겨찾기가 목록에서 삭제된다
+     * Then 즐겨찾기가 삭제된다
      */
+    @Test
+    void 즐겨찾기를_삭제() {
+        // given
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(인증_토큰, 교대역, 양재역);
+
+        // when
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(인증_토큰, 즐겨찾기_추가_응답);
+
+        // then
+        즐겨찾기가_삭제_된다(즐겨찾기_삭제_응답);
+    }
 
     /**
      * Given 로그인을 하지 않은 사용자가
@@ -114,5 +124,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 인증_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(401);
+    }
+
+    private void 즐겨찾기가_삭제_된다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(204);
     }
 }

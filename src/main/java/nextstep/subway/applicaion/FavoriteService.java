@@ -60,4 +60,17 @@ public class FavoriteService {
     private void pathChecker(Station sourceStation, Station targetStation) {
         pathService.searchPath(sourceStation, targetStation);
     }
+
+    @Transactional
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+        isFavorites(favorites, favoriteId);
+        favoriteRepository.deleteById(favoriteId);
+    }
+
+    private void isFavorites(List<Favorite> favorites, Long favoriteId) {
+        favorites.stream()
+                .filter(favorite -> favorite.getId().equals(favoriteId))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("해당 즐겨찾기는 삭제할 수 없습니다."));
+    }
 }
