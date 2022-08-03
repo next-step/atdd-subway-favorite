@@ -1,19 +1,24 @@
 package nextstep.member.application.dto;
 
 import nextstep.member.domain.Member;
+import nextstep.member.domain.RoleType;
+
+import java.util.List;
 
 public class MemberRequest {
     private String email;
     private String password;
     private Integer age;
+    private boolean admin;
 
     public MemberRequest() {
     }
 
-    public MemberRequest(String email, String password, Integer age) {
+    public MemberRequest(String email, String password, Integer age, boolean admin) {
         this.email = email;
         this.password = password;
         this.age = age;
+        this.admin = admin;
     }
 
     public String getEmail() {
@@ -28,7 +33,14 @@ public class MemberRequest {
         return age;
     }
 
+    public Boolean isAdmin() {
+        return admin;
+    }
+
     public Member toMember() {
+        if (admin) {
+            return new Member(email, password, age, List.of(RoleType.ROLE_MEMBER.name(), RoleType.ROLE_ADMIN.name()));
+        }
         return new Member(email, password, age);
     }
 }
