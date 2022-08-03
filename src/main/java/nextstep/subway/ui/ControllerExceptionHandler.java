@@ -1,7 +1,9 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.authentication.AuthenticationException;
 import org.slf4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +19,12 @@ public class ControllerExceptionHandler {
     public ResponseEntity<Void> handleNoSuchElementException(NoSuchElementException e) {
         log.error("handleNoSuchElementException: ", e);
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Void> handleAuthenticationException(AuthenticationException e) {
+        log.error("handleAuthenticationException: ", e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

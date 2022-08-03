@@ -18,9 +18,7 @@ public abstract class ChainingAuthenticationInterceptor implements HandlerInterc
             final AuthenticateRequest authenticateRequest = createLoginRequest(request);
             final UserDetails userDetails = findUserDetails(authenticateRequest);
 
-            if (!isAuthenticated(authenticateRequest, userDetails)) {
-                throw new AuthenticationException();
-            }
+            authenticate(authenticateRequest, userDetails);
 
             afterAuthenticate(userDetails);
             return true;
@@ -32,6 +30,12 @@ public abstract class ChainingAuthenticationInterceptor implements HandlerInterc
     abstract AuthenticateRequest createLoginRequest(final HttpServletRequest request);
 
     abstract UserDetails findUserDetails(final AuthenticateRequest authenticateRequest);
+
+    private void authenticate(final AuthenticateRequest authenticateRequest, final UserDetails userDetails) {
+        if (!isAuthenticated(authenticateRequest, userDetails)) {
+            throw new AuthenticationException();
+        }
+    }
 
     abstract boolean isAuthenticated(final AuthenticateRequest authenticateRequest, final UserDetails userDetails);
 
