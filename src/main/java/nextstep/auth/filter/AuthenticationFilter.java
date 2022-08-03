@@ -19,15 +19,15 @@ public class AuthenticationFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Authentication authentication = strategy.getAuthentication(request);
+        Authentication user = strategy.getAuthentication(request);
 
-        LoginMember member = getMember(authentication);
+        Authentication authentication = getAuthentication(user);
 
-        strategy.responseOk(response, member.getEmail(), member.getAuthorities());
+        strategy.responseOk(response, (String) authentication.getPrincipal(), authentication.getAuthorities());
         return false;
     }
 
-    private LoginMember getMember(Authentication authentication) {
+    private Authentication getAuthentication(Authentication authentication) {
         String email = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
@@ -37,7 +37,7 @@ public class AuthenticationFilter implements HandlerInterceptor {
             throw new AuthenticationException();
         }
 
-        return member;
+        return new Authentication(member.getEmail(), member.getAuthorities());
     }
 
 }
