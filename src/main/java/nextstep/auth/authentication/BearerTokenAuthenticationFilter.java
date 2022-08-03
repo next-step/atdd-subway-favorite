@@ -1,13 +1,13 @@
 package nextstep.auth.authentication;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
@@ -22,10 +22,9 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     }
 
     public void setAuthentication(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
+        String bearerToken = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
-        if (authorization != null && authorization.startsWith("Bearer ")) {
-            String bearerToken = authorization.substring("Bearer ".length());
+        if (bearerToken != Strings.EMPTY) {
             validatation(bearerToken);
 
             Authentication authentication = new Authentication(
