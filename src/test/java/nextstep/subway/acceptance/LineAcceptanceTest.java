@@ -74,14 +74,16 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-//        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", accessToken);
 
         // when
-//        ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse, accessToken);
 
         // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-//        assertThat(response.jsonPath().getString("name")).isEqualTo("2호선");
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("name")).isEqualTo("2호선");
     }
 
     /**
@@ -123,15 +125,18 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-//        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", accessToken);
 
         // when
-//        ExtractableResponse<Response> response = RestAssured
-//                .given().log().all()
-//                .when().delete(createResponse.header("location"))
-//                .then().log().all().extract();
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(createResponse.header("location"))
+                .then().log().all().extract();
 
         // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
