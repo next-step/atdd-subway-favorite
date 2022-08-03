@@ -1,6 +1,10 @@
 package nextstep.auth.token;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,22 +32,33 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public List<String> getRoles(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
-    }
-
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token);
 
-            return !claims.getBody().getExpiration().before(new Date());
+            Date expiration = claims.getBody().getExpiration();
+            return expiration.after(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public String getPrincipal(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public List<String> getRoles(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("roles", List.class);
     }
 }
 

@@ -9,6 +9,7 @@ import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthenticationInterceptor;
 import nextstep.member.application.LoginMemberService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -16,8 +17,8 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private LoginMemberService loginMemberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final LoginMemberService loginMemberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
         this.loginMemberService = loginMemberService;
@@ -34,7 +35,7 @@ public class AuthConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addArgumentResolvers(List argumentResolvers) {
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new AuthenticationPrincipalArgumentResolver());
     }
 }
