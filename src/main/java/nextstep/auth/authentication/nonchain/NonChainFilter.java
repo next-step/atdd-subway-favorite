@@ -1,6 +1,7 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.nonchain;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;

@@ -1,9 +1,12 @@
-package nextstep.auth.token;
+package nextstep.auth.authentication.nonchain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import nextstep.auth.authentication.MemberInfo;
-import nextstep.auth.authentication.NonChainFilter;
+import nextstep.auth.authentication.nonchain.MemberInfo;
+import nextstep.auth.authentication.nonchain.NonChainFilter;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
