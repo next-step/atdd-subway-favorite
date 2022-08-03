@@ -2,7 +2,6 @@ package nextstep.auth.filter;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 
