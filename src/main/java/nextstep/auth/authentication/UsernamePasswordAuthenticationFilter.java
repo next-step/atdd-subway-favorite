@@ -4,23 +4,22 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
+public class UsernamePasswordAuthenticationFilter extends LoginFilter {
 
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
-    private LoginMemberService loginMemberService;
 
     public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+        super(loginMemberService);
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public void login(HttpServletRequest request, HttpServletResponse response) {
         final String principal = request.getParameter(USERNAME_FIELD);
         final String credentials = request.getParameter(PASSWORD_FIELD);
 
@@ -36,9 +35,9 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
         }
 
         Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return true;
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
 }
