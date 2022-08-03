@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.RoleType;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
