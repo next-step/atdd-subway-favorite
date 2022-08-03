@@ -1,10 +1,11 @@
 package nextstep.auth;
 
-import nextstep.auth.authentication.BasicAuthenticationFilter;
-import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.filter.AuthenticationFilter;
+import nextstep.auth.filter.AuthorizationFilter;
+import nextstep.auth.filter.BasicFilter;
+import nextstep.auth.filter.BearerFilter;
 import nextstep.auth.filter.LoginService;
 import nextstep.auth.filter.TokenAuthenticationInterceptor;
 import nextstep.auth.filter.UsernamePasswordAuthenticationFilter;
@@ -30,8 +31,22 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
         registry.addInterceptor(usernamePasswordFilter()).addPathPatterns("/login/form");
         registry.addInterceptor(tokenFilter()).addPathPatterns("/login/token");
-        registry.addInterceptor(new BasicAuthenticationFilter(loginService));
-        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider, loginService));
+        registry.addInterceptor(basicFilter());
+        registry.addInterceptor(bearerFilter());
+    }
+
+
+    @Override
+    public void addArgumentResolvers(List argumentResolvers) {
+        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver());
+    }
+
+    private AuthorizationFilter bearerFilter() {
+        return new AuthorizationFilter(new BearerFilter(jwtTokenProvider, loginService));
+    }
+
+    private AuthorizationFilter basicFilter() {
+        return new AuthorizationFilter(new BasicFilter(loginService));
     }
 
     private AuthenticationFilter tokenFilter() {
@@ -42,8 +57,4 @@ public class AuthConfig implements WebMvcConfigurer {
         return new AuthenticationFilter(new UsernamePasswordAuthenticationFilter(), loginService);
     }
 
-    @Override
-    public void addArgumentResolvers(List argumentResolvers) {
-        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver());
-    }
 }
