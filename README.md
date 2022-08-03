@@ -111,10 +111,8 @@ public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest
 인가 필터에서는 이용하려는 리소스에 권한이 있는지 확인합니다. 성공 후 다음 Interceptor chain을 수행합니다.
 인가 필터에서는 BasicAuthenticationFilter와 BearerTokenAuthenticationFilter가 포함됩니다.
 
-### 인증 필터 동작
+### 인가 필터 동작
 
 1. request header에서 Authentications 키 값에 저장된 토큰이 유효한지 검사합니다.
-2. 토큰에서 사용자 principal을 이용해 사용자의 정보를 찾습니다.
-3. 사용자 credential이 일치하는지 확인합니다.
+2. 토큰을 이용해 사용자의 정보를 찾습니다.
 4. SecurityContext에 사용자 정보와 권한을 저장합니다.
-5. 다음 인터셉터 체인을 진행합니다.
