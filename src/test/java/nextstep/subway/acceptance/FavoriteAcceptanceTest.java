@@ -65,7 +65,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 추가_된_즐겨찾기를_목록에서_찾을_수_있다(Long source, Long target) {
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(인증_토큰);
+        var 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(인증_토큰);
         assertAll(() -> {
             assertThat(즐겨찾기_조회_응답.jsonPath().getList("source.id", Long.class)).containsExactly(source);
             assertThat(즐겨찾기_조회_응답.jsonPath().getList("target.id", Long.class)).containsExactly(target);
@@ -97,6 +97,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨찾기를 조회하면
      * Then 실패한다
      */
+    @Test
+    void 로그인을_하지_않은_사용자가_즐겨찾기를_조회시_예외를_일으킨다() {
+        // when
+        var 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(빈_토큰);
+
+        // then
+        인증_실패(즐겨찾기_조회_응답);
+    }
 
     /**
      * Given 로그인을 하지 않은 사용자가
