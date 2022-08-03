@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-    private LineService lineService;
+    private final LineService lineService;
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
@@ -28,22 +28,19 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> showLines() {
-        List<LineResponse> responses = lineService.findLineResponses();
-        return ResponseEntity.ok().body(responses);
+    public List<LineResponse> showLines() {
+        return lineService.findLineResponses();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> getLine(@PathVariable Long id) {
-        LineResponse lineResponse = lineService.findLineResponseById(id);
-        return ResponseEntity.ok().body(lineResponse);
+    public LineResponse getLine(@PathVariable Long id) {
+        return lineService.findLineResponseById(id);
     }
 
     @Secured("ROLE_ADMIN")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
+    public void updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
         lineService.updateLine(id, lineRequest);
-        return ResponseEntity.ok().build();
     }
 
     @Secured("ROLE_ADMIN")
@@ -55,15 +52,14 @@ public class LineController {
 
     @Secured("ROLE_ADMIN")
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> addSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public void addSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
         lineService.addSection(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
     }
 
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.deleteSection(lineId, stationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
