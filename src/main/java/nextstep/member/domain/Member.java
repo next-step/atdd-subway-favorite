@@ -2,6 +2,7 @@ package nextstep.member.domain;
 
 import lombok.Getter;
 import nextstep.subway.domain.Favorite;
+import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,5 +50,9 @@ public class Member {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
+    }
+
+    public void addFavorite(Station sourceStation, Station targetStation) {
+        this.favorites.add(new Favorite(sourceStation, targetStation, this));
     }
 }

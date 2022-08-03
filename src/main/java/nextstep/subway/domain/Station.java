@@ -22,4 +22,9 @@ public class Station extends BaseTimeEntity {
         this.name = name;
     }
 
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
 }
