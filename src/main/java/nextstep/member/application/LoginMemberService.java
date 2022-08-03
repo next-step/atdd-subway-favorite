@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -15,7 +16,7 @@ public class LoginMemberService {
 
     public LoginMember loadUserByUsername(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(AuthenticationException::new);
         return LoginMember.of(member);
     }
 }
