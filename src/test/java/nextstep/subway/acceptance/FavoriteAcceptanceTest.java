@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.FavoriteSteps.권한_없음;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회됨;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_성공;
@@ -128,6 +129,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_삭제_실패_확인(response, HttpStatus.NOT_FOUND, NotFoundFavoriteException.MESSAGE);
+    }
+
+    @DisplayName("권한이 없는 상태에서 즐겨찾기 관리 예외")
+    @Test
+    void manage_favorite_unauthorized_exception() {
+        //given
+        accessToken = "invalid token";
+
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 교대역, 강남역);
+        권한_없음(즐겨찾기_생성_응답);
+
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(accessToken);
+        권한_없음(즐겨찾기_목록_조회_응답);
+
+        ExtractableResponse<Response> 즐겨찾기_목록_삭제_응답 = 즐겨찾기_삭제_요청(accessToken, "/favorites/1");
+        권한_없음(즐겨찾기_목록_삭제_응답);
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {
