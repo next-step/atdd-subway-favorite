@@ -3,25 +3,35 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.DataLoader;
 import nextstep.subway.applicaion.dto.StationResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
-import static nextstep.subway.acceptance.MemberSteps.관리자_생성_요청;
+import static nextstep.DataLoader.ADMIN_EMAIL;
+import static nextstep.DataLoader.ADMIN_PASSWORD;
+import static nextstep.subway.acceptance.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
 
+    @Autowired
+    private DataLoader dataLoader;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        dataLoader.loadData();
+    }
 
     /**
      * When 지하철역을 생성하면
@@ -32,8 +42,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
 
         // when
         ExtractableResponse<Response> response = 지하철역_생성_요청("강남역", accessToken);
@@ -60,8 +69,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
 
         지하철역_생성_요청("강남역", accessToken);
         지하철역_생성_요청("역삼역", accessToken);
@@ -86,10 +94,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
-
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역", accessToken);
 
         // when

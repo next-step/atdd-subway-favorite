@@ -3,24 +3,37 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.DataLoader;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.DataLoader.ADMIN_EMAIL;
+import static nextstep.DataLoader.ADMIN_PASSWORD;
 import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.acceptance.MemberSteps.관리자_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+
+    @Autowired
+    private DataLoader dataLoader;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        dataLoader.loadData();
+    }
 
     /**
      * When 지하철 노선을 생성하면
@@ -30,8 +43,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green", accessToken);
@@ -52,8 +64,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         지하철_노선_생성_요청("2호선", "green", accessToken);
         지하철_노선_생성_요청("3호선", "orange", accessToken);
 
@@ -74,8 +85,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", accessToken);
 
         // when
@@ -95,8 +105,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", accessToken);
 
         // when
@@ -125,8 +134,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        final ExtractableResponse<Response> 관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green", accessToken);
 
         // when

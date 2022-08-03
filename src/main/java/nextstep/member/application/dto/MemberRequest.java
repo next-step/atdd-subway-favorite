@@ -14,6 +14,13 @@ public class MemberRequest {
     public MemberRequest() {
     }
 
+    public MemberRequest(String email, String password, Integer age, boolean admin) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.admin = admin;
+    }
+
     public String getEmail() {
         return email;
     }

@@ -4,49 +4,56 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.DataLoader;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.DataLoader.*;
+import static nextstep.subway.acceptance.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.acceptance.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.acceptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+
+    @Autowired
+    private DataLoader dataLoader;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        dataLoader.loadData();
+    }
 
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(MEMBER_EMAIL, MEMBER_PASSWORD);
 
-        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
-
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, MEMBER_EMAIL, MEMBER_AGE);
     }
 
     @DisplayName("폼 로그인 후 내 정보 조회")
     @Test
     void myInfoWithForm() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(MEMBER_EMAIL, MEMBER_PASSWORD);
 
-        ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(EMAIL, PASSWORD);
-
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, MEMBER_EMAIL, MEMBER_AGE);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        String accessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
 
         ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
 
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(response, MEMBER_EMAIL, MEMBER_AGE);
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {

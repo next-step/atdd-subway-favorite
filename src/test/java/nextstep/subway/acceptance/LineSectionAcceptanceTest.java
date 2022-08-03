@@ -2,28 +2,29 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.DataLoader.ADMIN_EMAIL;
+import static nextstep.DataLoader.ADMIN_PASSWORD;
 import static nextstep.subway.acceptance.LineSteps.*;
-import static nextstep.subway.acceptance.MemberSteps.관리자_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관리 기능")
 class LineSectionAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
 
+    @Autowired
+    private DataLoader dataLoader;
     private Long 신분당선;
-
     private Long 강남역;
     private Long 양재역;
 
@@ -36,9 +37,9 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+        dataLoader.loadData();
 
-        관리자 = 관리자_생성_요청(EMAIL, PASSWORD, AGE);
-        adminAccessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+        adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
 
         강남역 = 지하철역_생성_요청("강남역", adminAccessToken).jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역", adminAccessToken).jsonPath().getLong("id");
