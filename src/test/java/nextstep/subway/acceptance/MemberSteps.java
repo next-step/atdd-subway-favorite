@@ -1,8 +1,10 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.AuthenticationSpecification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -11,6 +13,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("NonAsciiCharacters")
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
@@ -82,13 +85,36 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
-        return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
+        return authSpecification().preemptive().basic(username, password)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+
+
+    public static ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
+        return authSpecification().form(email, password, new FormAuthConfig("/login/form", USERNAME_FIELD, PASSWORD_FIELD))
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
+        return authSpecification().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    private static AuthenticationSpecification authSpecification() {
+        return RestAssured.given().log().all().auth();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
