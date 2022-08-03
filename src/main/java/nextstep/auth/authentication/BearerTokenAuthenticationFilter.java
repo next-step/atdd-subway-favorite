@@ -1,6 +1,5 @@
 package nextstep.auth.authentication;
 
-import antlr.StringUtils;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
@@ -8,9 +7,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
+public class BearerTokenAuthenticationFilter extends AuthenticationFilter {
     private JwtTokenProvider jwtTokenProvider;
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -18,7 +16,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    protected boolean authenticate(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String accessToken = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         if (authentication != null && Strings.isBlank(accessToken)) {
