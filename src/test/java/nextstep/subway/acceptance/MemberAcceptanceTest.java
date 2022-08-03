@@ -62,7 +62,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     private void 회원_정보를_조회할_수_없다(String location) {
         var response = 회원_정보_조회_요청(location);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("회원 정보를 관리한다.")

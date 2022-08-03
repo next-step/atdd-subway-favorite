@@ -7,13 +7,8 @@ public class MemberRequest {
     private String password;
     private Integer age;
 
-    public MemberRequest() {
-    }
-
-    public MemberRequest(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
+    public Member toMember() {
+        return new Member(email, password, age);
     }
 
     public String getEmail() {
@@ -26,9 +21,5 @@ public class MemberRequest {
 
     public Integer getAge() {
         return age;
-    }
-
-    public Member toMember() {
-        return new Member(email, password, age);
     }
 }

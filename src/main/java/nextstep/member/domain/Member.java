@@ -12,14 +12,11 @@ public class Member {
     private String password;
     private Integer age;
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "MEMBER_ROLE",
-            joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
-    )
+    @CollectionTable(name = "MEMBER_ROLE", joinColumns = @JoinColumn(name = "id", referencedColumnName = "id"))
     @Column(name = "role")
     private List<String> roles;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
@@ -34,6 +31,12 @@ public class Member {
         this.password = password;
         this.age = age;
         this.roles = roles;
+    }
+
+    public void update(Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
     }
 
     public Long getId() {
@@ -54,11 +57,5 @@ public class Member {
 
     public List<String> getRoles() {
         return roles;
-    }
-
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
     }
 }

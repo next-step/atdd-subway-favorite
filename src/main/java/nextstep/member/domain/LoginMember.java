@@ -20,13 +20,17 @@ public class LoginMember {
         return new LoginMember();
     }
 
-    public LoginMember() {
+    private LoginMember() {
     }
 
-    public LoginMember(String email, String password, List<String> authorities) {
+    private LoginMember(String email, String password, List<String> authorities) {
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 
     public String getEmail() {
@@ -35,9 +39,5 @@ public class LoginMember {
 
     public List<String> getAuthorities() {
         return authorities;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
     }
 }
