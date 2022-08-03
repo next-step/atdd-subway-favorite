@@ -1,5 +1,9 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.chain;
 
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.AuthorizationExtractor;
+import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
