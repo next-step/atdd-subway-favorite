@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -65,8 +66,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response, String accessToken) {
         String uri = response.header("Location");
 
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+        return getOauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
                 .then().log().all()
@@ -81,9 +81,7 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
+        return getOauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
@@ -92,11 +90,15 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response, String accessToken) {
         String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
+        return getOauth2(accessToken)
                 .when().delete(uri)
                 .then().log().all().extract();
+    }
+
+    private static RequestSpecification getOauth2(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken);
     }
 
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
