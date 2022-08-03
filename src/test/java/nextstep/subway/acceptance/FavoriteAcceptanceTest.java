@@ -117,10 +117,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 로그인을 하지 않은 사용자가
-     * When 즐겨찾기를 삭제하면
+     * Given 로그인한 사용자가 즐겨찾기를 추가한다
+     * When 로그인을 하지 않은 사용자가 즐겨찾기를 삭제하면
      * Then 실패한다
      */
+    @Test
+    void 로그인을_하지_않은_사용자가_즐겨찾기를_삭제시_예외를_일으킨다() {
+        // given
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(인증_토큰, 교대역, 양재역);
+
+        // when
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(빈_토큰, 즐겨찾기_추가_응답);
+
+        // then
+        인증_실패(즐겨찾기_삭제_응답);
+    }
 
     private void 인증_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(401);
