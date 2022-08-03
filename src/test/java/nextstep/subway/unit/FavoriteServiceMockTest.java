@@ -86,9 +86,9 @@ class FavoriteServiceMockTest {
         // given
         when(stationService.findById(강남역.getId())).thenReturn(강남역);
         when(stationService.findById(양재역.getId())).thenReturn(양재역);
-        when(pathService.getPath(1L, 2L)).thenReturn(new Path(new Sections(List.of())));
         when(memberService.findMember(사용자.getEmail())).thenReturn(사용자);
         when(favoriteRepository.save(any(Favorite.class))).thenReturn(즐겨찾기);
+        doNothing().when(pathService).validatePath(강남역.getId(), 양재역.getId());
 
         // when
         FavoriteResponse response = favoriteService.saveFavorite(사용자.getEmail(), new FavoriteRequest(강남역.getId(), 양재역.getId()));
@@ -102,8 +102,7 @@ class FavoriteServiceMockTest {
     void saveFavoriteDuplicatedStations() {
         // given
         doThrow(DuplicatedStationsException.class)
-                .when(pathService)
-                .validateDuplicatedStations(강남역.getId(), 강남역.getId());
+                .when(pathService).validateDuplicatedStations(강남역.getId(), 강남역.getId());
 
         // then
         assertThatThrownBy(() -> favoriteService.saveFavorite(사용자.getEmail(), new FavoriteRequest(강남역.getId(), 강남역.getId())))
@@ -128,7 +127,8 @@ class FavoriteServiceMockTest {
         // given
         when(stationService.findById(강남역.getId())).thenReturn(강남역);
         when(stationService.findById(양재역.getId())).thenReturn(양재역);
-        when(pathService.getPath(1L, 2L)).thenThrow(NotConnectSectionException.class);
+        doThrow(NotConnectSectionException.class)
+                .when(pathService).validatePath(강남역.getId(), 양재역.getId());
 
         // then
         assertThatThrownBy(() -> favoriteService.saveFavorite(사용자.getEmail(), new FavoriteRequest(강남역.getId(), 양재역.getId())))

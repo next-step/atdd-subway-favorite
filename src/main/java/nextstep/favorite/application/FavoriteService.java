@@ -34,7 +34,7 @@ public class FavoriteService {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
 
-        validatePath(favoriteRequest.getSource(), favoriteRequest.getTarget());
+        pathService.validatePath(favoriteRequest.getSource(), favoriteRequest.getTarget());
 
         Long memberId = getMemberIdByEmail(email);
         Favorite favorite = new Favorite(memberId, source, target);
@@ -75,7 +75,4 @@ public class FavoriteService {
                 .orElseThrow(FavoriteNotFoundException::new);
     }
 
-    private void validatePath(Long source, Long target) {
-        pathService.getPath(source, target);
-    }
 }

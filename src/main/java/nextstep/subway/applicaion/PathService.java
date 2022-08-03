@@ -30,18 +30,24 @@ public class PathService {
     public Path getPath(Long source, Long target) {
         Station upStation = stationService.findById(source);
         Station downStation = stationService.findById(target);
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-        try {
-            return subwayMap.findPath(upStation, downStation);
-        } catch (IllegalArgumentException e) {
-            throw new NotConnectSectionException();
-        }
+        SubwayMap subwayMap = getSubwayMap();
+        return subwayMap.findPath(upStation, downStation);
     }
 
     public void validateDuplicatedStations(Long source, Long target) {
         if (source.equals(target)) {
             throw new DuplicatedStationsException();
         }
+    }
+
+    public void validatePath(Long source, Long target) {
+        Station upStation = stationService.findById(source);
+        Station downStation = stationService.findById(target);
+        SubwayMap subwayMap = getSubwayMap();
+        subwayMap.validatePath(upStation, downStation);
+    }
+
+    private SubwayMap getSubwayMap() {
+        return new SubwayMap(lineService.findLines());
     }
 }
