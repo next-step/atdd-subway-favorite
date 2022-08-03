@@ -21,7 +21,7 @@ public class AuthorizationFilter implements HandlerInterceptor {
 
         String token = strategy.getToken(request);
 
-        if (token == null) {
+        if (token == null || token.isBlank()) {
             return true;
         }
 
