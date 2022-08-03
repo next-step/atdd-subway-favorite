@@ -47,6 +47,6 @@ public class AuthSteps {
     }
 
     public static void 권한검사에_실패한다(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 }

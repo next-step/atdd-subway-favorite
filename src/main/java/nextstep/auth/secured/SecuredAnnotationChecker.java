@@ -21,12 +21,13 @@ public class SecuredAnnotationChecker {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Secured secured = method.getAnnotation(Secured.class);
-        List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
+        List<String> allowedRoles = Arrays.stream(secured.value())
+                .collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         authentication.getAuthorities().stream()
-                .filter(values::contains)
+                .filter(allowedRoles::contains)
                 .findFirst()
-                .orElseThrow(() -> new RoleAuthenticationException("권한이 없습니다."));
+                .orElseThrow(RoleAuthenticationException::new);
     }
 }
