@@ -77,4 +77,8 @@ public class FavoriteSteps {
                 () -> assertThat(response.jsonPath().getInt("status")).isEqualTo(status.value())
         );
     }
+
+    public static void 권한_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

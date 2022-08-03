@@ -5,7 +5,11 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.exception.UnauthorizedException;
+import nextstep.auth.secured.Secured;
 import nextstep.auth.userdetails.UserDetails;
+import org.springframework.http.MediaType;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +28,9 @@ public abstract class AuthenticationChainingFilter implements HandlerInterceptor
             UserDetails userDetails = findUserDetails(token);
             afterAuthentication(userDetails);
             return true;
+        } catch (UnauthorizedException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
         } catch (AuthenticationException e) {
             return true;
         }

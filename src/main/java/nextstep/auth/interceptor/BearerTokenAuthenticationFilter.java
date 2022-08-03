@@ -4,8 +4,10 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
+import nextstep.auth.exception.UnauthorizedException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.userdetails.User;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -26,10 +28,15 @@ public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilte
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new AuthenticationException();
+        }
+
         String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthenticationException();
+            throw new UnauthorizedException();
         }
 
         String principal = jwtTokenProvider.getPrincipal(token);

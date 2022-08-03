@@ -1,8 +1,10 @@
 package nextstep.subway.acceptance;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.acceptance.MemberSteps.관리자_로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.나를_삭제하는_요청;
 import static nextstep.subway.acceptance.MemberSteps.나의_정보_수정_요청;
 import static nextstep.subway.acceptance.MemberSteps.나의_정보_조회_요청;

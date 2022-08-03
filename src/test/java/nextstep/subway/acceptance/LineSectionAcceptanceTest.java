@@ -1,7 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,10 +8,13 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_조회_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_제거_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_역_순서_확인;
 import static nextstep.subway.acceptance.MemberSteps.관리자_로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.권한_없는_회원은_거부됨;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.유저_로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +55,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(accessToken, 신분당선, createSectionCreateParams(양재역, 정자역));
 
         // then
-        var response = 지하철_노선_조회_요청(신분당선);
+        var response = 지하철_노선_조회_요청(accessToken, 신분당선);
         지하철_역_순서_확인(response, 강남역, 양재역, 정자역);
     }
 
@@ -84,7 +85,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(accessToken, 신분당선, createSectionCreateParams(강남역, 정자역));
 
         // then
-        var response = 지하철_노선_조회_요청(신분당선);
+        var response = 지하철_노선_조회_요청(accessToken, 신분당선);
         지하철_역_순서_확인(response, 강남역, 정자역, 양재역);
     }
 
@@ -118,7 +119,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_제거_요청(accessToken, 신분당선, 정자역);
 
         // then
-        var response = 지하철_노선_조회_요청(신분당선);
+        var response = 지하철_노선_조회_요청(accessToken, 신분당선);
         지하철_역_순서_확인(response, 강남역, 양재역);
     }
 
@@ -153,7 +154,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_제거_요청(accessToken, 신분당선, 양재역);
 
         // then
-        var response = 지하철_노선_조회_요청(신분당선);
+        var response = 지하철_노선_조회_요청(accessToken, 신분당선);
         지하철_역_순서_확인(response, 강남역, 정자역);
     }
 
