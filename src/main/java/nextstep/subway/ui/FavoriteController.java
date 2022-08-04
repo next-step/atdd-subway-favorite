@@ -1,6 +1,8 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.secured.Secured;
+import nextstep.member.domain.LoginMember;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -25,8 +27,10 @@ public class FavoriteController {
 
     @PostMapping
     @Secured({"ROLE_ADMIN","ROLE_MEMBER"})
-    public ResponseEntity<FavoriteResponse> createFavorite(@RequestBody FavoriteRequest favoriteRequest) {
-        FavoriteResponse favorite = favoriteService.saveFavorite(favoriteRequest);
+    public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                                           @RequestBody FavoriteRequest favoriteRequest) {
+
+        FavoriteResponse favorite = favoriteService.saveFavorite(favoriteRequest, loginMember);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
 }

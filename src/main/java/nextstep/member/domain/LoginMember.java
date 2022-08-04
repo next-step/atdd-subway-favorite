@@ -1,10 +1,12 @@
 package nextstep.member.domain;
 
 
+import lombok.ToString;
 import nextstep.auth.user.UserDetails;
 
 import java.util.List;
 
+@ToString
 public class LoginMember implements UserDetails {
     private String email;
     private String password;

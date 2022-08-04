@@ -2,6 +2,7 @@ package nextstep.subway.domain;
 
 import lombok.Getter;
 import lombok.ToString;
+import nextstep.member.domain.Member;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -22,6 +23,10 @@ public class Favorite{
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "source_station_id")
     private Station sourceStation;
 
@@ -35,7 +40,8 @@ public class Favorite{
 
     public Favorite() {}
 
-    public Favorite(Station sourceStation, Station targetStation, LocalDateTime modifiedDate) {
+    public Favorite(Member member, Station sourceStation, Station targetStation, LocalDateTime modifiedDate) {
+        this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.modifiedDate = modifiedDate;
