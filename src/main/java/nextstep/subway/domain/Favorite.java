@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.member.domain.Member;
 
 import javax.persistence.*;
 
@@ -25,15 +24,13 @@ public class Favorite {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @Builder
-    public Favorite(Station source, Station target, Member member) {
+    public Favorite(Station source, Station target, Long memberId) {
         this.source = source;
         this.target = target;
-        this.member = member;
+        this.memberId = memberId;
     }
 
 }

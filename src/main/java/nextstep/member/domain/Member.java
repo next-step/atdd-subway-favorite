@@ -25,9 +25,6 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
-
     public Member() {
     }
 
@@ -52,7 +49,4 @@ public class Member {
         this.age = member.age;
     }
 
-    public void addFavorite(Station sourceStation, Station targetStation) {
-        this.favorites.add(new Favorite(sourceStation, targetStation, this));
-    }
 }

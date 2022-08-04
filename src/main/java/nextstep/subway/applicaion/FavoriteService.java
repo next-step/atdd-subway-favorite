@@ -35,7 +35,7 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.save(Favorite.builder()
                 .source(sourceStation)
                 .target(targetStation)
-                .member(member)
+                .memberId(member.getId())
                 .build());
 
         return FavoriteResponse.of(favorite);
@@ -45,7 +45,7 @@ public class FavoriteService {
     public List<FavoriteResponse> getFavorites(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
 
-        return member.getFavorites().stream()
+        return favoriteRepository.findByMemberId(member.getId()).stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toUnmodifiableList());
     }
@@ -55,7 +55,7 @@ public class FavoriteService {
     public void deleteFavorite(String email, Long id) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
 
-        Favorite favorite = favoriteRepository.findByIdAndMember(id, member)
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 찾을 수 없어요"));
 
         favoriteRepository.delete(favorite);
