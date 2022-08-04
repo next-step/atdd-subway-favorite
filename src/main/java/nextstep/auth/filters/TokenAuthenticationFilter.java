@@ -1,12 +1,12 @@
-package nextstep.auth.interceptors;
+package nextstep.auth.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.UserDetails;
+import nextstep.auth.user.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationInterceptor extends AuthenticationProvidingInterceptor {
+public class TokenAuthenticationFilter extends AuthenticationRespondingFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        super(loginMemberService);
+    public TokenAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -33,8 +33,8 @@ public class TokenAuthenticationInterceptor extends AuthenticationProvidingInter
     }
 
     @Override
-    protected void authenticate(LoginMember loginMember, HttpServletResponse response) throws IOException {
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void authenticate(UserDetails userDetails, HttpServletResponse response) throws IOException {
+        String token = jwtTokenProvider.createToken(userDetails.getEmail(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

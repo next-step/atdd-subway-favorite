@@ -1,18 +1,18 @@
-package nextstep.auth.interceptors;
+package nextstep.auth.filters;
 
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.UserDetails;
+import nextstep.auth.user.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter extends AuthenticationProvidingInterceptor {
+public class UsernamePasswordAuthenticationFilter extends AuthenticationRespondingFilter {
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        super(loginMemberService);
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        super(userDetailsService);
     }
 
     @Override
@@ -23,8 +23,8 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationProvidin
     }
 
     @Override
-    public void authenticate(LoginMember loginMember, HttpServletResponse response) {
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+    public void authenticate(UserDetails userDetails, HttpServletResponse response) {
+        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
