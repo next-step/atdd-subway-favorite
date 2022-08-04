@@ -4,8 +4,7 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
-import nextstep.auth.user.UserDetails;
-import nextstep.auth.user.UserDetailsService;
+import nextstep.auth.filters.provider.AuthenticationProvider;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 public class BasicAuthenticationFilter extends AuthenticationSavingFilter<AuthenticationToken> {
     private static final int AUTH_HEADER_LENGTH = 2;
 
-    private final UserDetailsService userDetailsService;
-
-    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public BasicAuthenticationFilter(AuthenticationProvider<AuthenticationToken> authenticationProvider) {
+        super(authenticationProvider);
     }
 
     @Override
@@ -33,14 +30,5 @@ public class BasicAuthenticationFilter extends AuthenticationSavingFilter<Authen
         String credentials = splits[1];
 
         return new AuthenticationToken(principal, credentials);
-    }
-
-    @Override
-    protected UserDetails validate(AuthenticationToken token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
-        if (!userDetails.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
-        return userDetails;
     }
 }

@@ -2,11 +2,11 @@ package nextstep.auth.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.filters.provider.AuthenticationProvider;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.auth.user.UserDetails;
-import nextstep.auth.user.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class TokenAuthenticationFilter extends AuthenticationRespondingFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
-        super(userDetailsService);
+    public TokenAuthenticationFilter(AuthenticationProvider<AuthenticationToken> authenticationProvider, JwtTokenProvider jwtTokenProvider) {
+        super(authenticationProvider);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

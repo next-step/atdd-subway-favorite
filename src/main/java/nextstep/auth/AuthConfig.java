@@ -6,6 +6,8 @@ import nextstep.auth.filters.BasicAuthenticationFilter;
 import nextstep.auth.filters.BearerTokenAuthenticationFilter;
 import nextstep.auth.filters.TokenAuthenticationFilter;
 import nextstep.auth.filters.UsernamePasswordAuthenticationFilter;
+import nextstep.auth.filters.provider.DefaultAuthenticationProvider;
+import nextstep.auth.filters.provider.JwtAuthenticationProvider;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.member.application.LoginMemberService;
 import org.springframework.context.annotation.Configuration;
@@ -17,21 +19,23 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private final LoginMemberService loginMemberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final DefaultAuthenticationProvider defaultAuthenticationProvider;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
-    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public AuthConfig(JwtTokenProvider jwtTokenProvider, DefaultAuthenticationProvider defaultAuthenticationProvider, JwtAuthenticationProvider jwtAuthenticationProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.defaultAuthenticationProvider = defaultAuthenticationProvider;
+        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
-        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(loginMemberService)).addPathPatterns("/login/form");
-        registry.addInterceptor(new TokenAuthenticationFilter(loginMemberService, jwtTokenProvider)).addPathPatterns("/login/token");
-        registry.addInterceptor(new BasicAuthenticationFilter(loginMemberService));
-        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider));
+        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(defaultAuthenticationProvider)).addPathPatterns("/login/form");
+        registry.addInterceptor(new TokenAuthenticationFilter(defaultAuthenticationProvider, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(new BasicAuthenticationFilter(defaultAuthenticationProvider));
+        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtAuthenticationProvider));
     }
 
     @Override
