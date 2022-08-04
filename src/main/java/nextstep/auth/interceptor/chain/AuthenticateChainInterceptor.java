@@ -6,7 +6,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-abstract class AuthChainInterceptor implements HandlerInterceptor {
+abstract class AuthenticateChainInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {

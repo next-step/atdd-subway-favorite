@@ -12,7 +12,7 @@ import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
 import org.springframework.http.MediaType;
 
-public class TokenAuthenticationInterceptor extends AuthNonChainInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticateNonChainInterceptor {
 
     private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;

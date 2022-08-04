@@ -8,7 +8,7 @@ import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 
-public class BearerTokenAuthenticationFilter extends AuthChainInterceptor {
+public class BearerTokenAuthenticationFilter extends AuthenticateChainInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
 

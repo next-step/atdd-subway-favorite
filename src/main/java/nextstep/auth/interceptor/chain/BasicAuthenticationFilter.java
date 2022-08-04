@@ -10,7 +10,7 @@ import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
-public class BasicAuthenticationFilter extends AuthChainInterceptor {
+public class BasicAuthenticationFilter extends AuthenticateChainInterceptor {
 
     private final UserDetailsService userDetailsService;
 
