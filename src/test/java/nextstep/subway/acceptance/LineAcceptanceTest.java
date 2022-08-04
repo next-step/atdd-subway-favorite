@@ -10,8 +10,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.LineSteps.지하철_노선_목록_조회_요청;
-import static nextstep.subway.acceptance.LineSteps.지하철_노선_조회_요청;
+import static nextstep.subway.acceptance.LineSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
@@ -87,7 +86,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
         MemberSteps
-                .givenOAuth2(getToken())
+                .givenAdminLogin()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -112,15 +111,11 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = MemberSteps
-                .givenOAuth2(getToken())
+                .givenAdminLogin()
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    private ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color) {
-        return LineSteps.지하철_노선_생성_요청(getToken(), name, color);
     }
 }

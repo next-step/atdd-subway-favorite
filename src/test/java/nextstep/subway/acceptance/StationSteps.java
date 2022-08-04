@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StationSteps {
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String token, String name) {
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
-        return MemberSteps.givenOAuth2(token)
+        return MemberSteps.givenAdminLogin()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
