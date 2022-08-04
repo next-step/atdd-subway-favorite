@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
@@ -75,8 +74,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        AuthSteps
-                .given(getToken())
+        MemberSteps
+                .givenOAuth2(getToken())
                 .delete(location)
                 .then().log().all()
                 .extract();

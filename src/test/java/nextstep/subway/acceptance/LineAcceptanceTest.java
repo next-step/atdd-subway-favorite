@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -87,8 +86,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        AuthSteps
-                .given(getToken())
+        MemberSteps
+                .givenOAuth2(getToken())
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -112,8 +111,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = AuthSteps
-                .given(getToken())
+        ExtractableResponse<Response> response = MemberSteps
+                .givenOAuth2(getToken())
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 
