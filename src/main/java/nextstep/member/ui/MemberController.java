@@ -5,7 +5,7 @@ import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.MemberUpdateRequest;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,18 +30,18 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public MemberResponse findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        return memberService.findMember(loginMember.getEmail());
+    public MemberResponse findMemberOfMine(@AuthenticationPrincipal User user) {
+        return memberService.findMember(user.getEmail());
     }
 
     @PutMapping("/members/me")
-    public void updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberUpdateRequest param) {
-        memberService.updateMember(loginMember.getEmail(), param);
+    public void updateMemberOfMine(@AuthenticationPrincipal User user, @RequestBody MemberUpdateRequest param) {
+        memberService.updateMember(user.getEmail(), param);
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember.getEmail());
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal User user) {
+        memberService.deleteMember(user.getEmail());
         return ResponseEntity.noContent().build();
     }
 }
