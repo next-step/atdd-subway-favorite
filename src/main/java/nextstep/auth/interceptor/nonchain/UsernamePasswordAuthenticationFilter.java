@@ -2,8 +2,8 @@ package nextstep.auth.interceptor.nonchain;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,8 +24,8 @@ public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
     }
 
     @Override
-    protected void afterValidation(HttpServletResponse response, LoginMember loginMember) {
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void afterValidation(HttpServletResponse response, UserDetails userDetails) {
+        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

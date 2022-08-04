@@ -2,8 +2,8 @@ package nextstep.auth.interceptor.nonchain;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,26 +19,26 @@ public abstract class NonChainFilter implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		MemberInfo info = createPrincipal(request);
-		LoginMember loginMember = userDetailsService.loadUserByUsername(info.getEmail());
+		UserDetails userDetails = userDetailsService.loadUserByUsername(info.getEmail());
 
-		validationMember(info, loginMember);
+		validationMember(info, userDetails);
 
-		afterValidation(response, loginMember);
+		afterValidation(response, userDetails);
 
 		return false;
 	}
 
 	protected abstract MemberInfo createPrincipal(HttpServletRequest request);
 
-	private void validationMember(MemberInfo info, LoginMember loginMember) {
-		if (loginMember == null) {
+	private void validationMember(MemberInfo info, UserDetails userDetails) {
+		if (userDetails == null) {
 			throw new AuthenticationException();
 		}
 
-		if (!loginMember.checkPassword(info.getPassword())) {
+		if (!userDetails.checkPassword(info.getPassword())) {
 			throw new AuthenticationException();
 		}
 	}
 
-	protected abstract void afterValidation(HttpServletResponse response, LoginMember loginMember) throws IOException;
+	protected abstract void afterValidation(HttpServletResponse response, UserDetails userDetails) throws IOException;
 }

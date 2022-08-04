@@ -5,8 +5,8 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +25,10 @@ public class BasicAuthenticationFilter extends ChainInterceptor {
 
         AuthenticationToken token = getToken(authHeader);
 
-        LoginMember loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
-        validationLoginMember(token, loginMember);
+        UserDetails userDetails = userDetailService.loadUserByUsername(token.getPrincipal());
+        validationLoginMember(token, userDetails);
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
     private AuthenticationToken getToken(String authHeader) {
@@ -39,12 +39,12 @@ public class BasicAuthenticationFilter extends ChainInterceptor {
         return new AuthenticationToken(principal, credentials);
     }
 
-    private void validationLoginMember(AuthenticationToken token, LoginMember loginMember) {
-        if (loginMember == null) {
+    private void validationLoginMember(AuthenticationToken token, UserDetails userDetails) {
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
     }

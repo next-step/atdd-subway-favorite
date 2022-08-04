@@ -5,8 +5,8 @@ import lombok.SneakyThrows;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
+import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +35,8 @@ public class TokenAuthenticationInterceptor extends NonChainFilter {
     }
 
     @Override
-    protected void afterValidation(HttpServletResponse response, LoginMember loginMember) throws IOException {
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void afterValidation(HttpServletResponse response, UserDetails userDetails) throws IOException {
+        String token = jwtTokenProvider.createToken(userDetails.getEmail(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
         createResponse(response, tokenResponse);
     }
