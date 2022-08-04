@@ -42,10 +42,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         super.setUp();
         adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
 
-        교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
-        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
-        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
-        남부터미널역 = 지하철역_생성_요청("남부터미널역").jsonPath().getLong("id");
+        교대역 = 지하철역_생성_요청(adminAccessToken,"교대역").jsonPath().getLong("id");
+        강남역 = 지하철역_생성_요청(adminAccessToken,"강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청(adminAccessToken,"양재역").jsonPath().getLong("id");
+        남부터미널역 = 지하철역_생성_요청(adminAccessToken,"남부터미널역").jsonPath().getLong("id");
 
         이호선 = 지하철_노선_생성_요청(adminAccessToken,"2호선", "green", 교대역, 강남역, 10);
         신분당선 = 지하철_노선_생성_요청(adminAccessToken, "신분당선", "red", 강남역, 양재역, 10);

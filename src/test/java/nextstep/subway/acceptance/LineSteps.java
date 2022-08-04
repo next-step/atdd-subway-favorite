@@ -22,7 +22,7 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
-    private static RequestSpecification afterTokenLogin(String token) {
+    public static RequestSpecification afterTokenLogin(String token) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(token);
