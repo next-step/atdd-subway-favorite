@@ -1,17 +1,17 @@
 package nextstep.auth.authentication;
 
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -19,10 +19,10 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
         try {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
-            LoginMember loginMember = loginMemberService.loadUserByUsername(username);
-            SaveAuthentication saveAuthentication = new SaveAuthentication(username, password, loginMember);
+            User user = userDetailsService.loadUserByUsername(username);
+            SaveAuthentication saveAuthentication = new SaveAuthentication(username, password, user);
             saveAuthentication.execute();
-            return true;
+            return false;
         } catch (Exception e) {
             return true;
         }
