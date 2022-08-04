@@ -4,6 +4,7 @@ import nextstep.auth.UserDetails;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.token.TokenRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,26 +13,15 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
 
-    private final UserDetailsService userDetailsService;
-
     public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+        super(userDetailsService);
     }
 
     @Override
-    protected UserDetails convert(HttpServletRequest request) {
+    protected TokenRequest convert(HttpServletRequest request) {
         String principal = request.getParameter(USERNAME_FIELD);
         String credentials = request.getParameter(PASSWORD_FIELD);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
-
-        if (userDetails == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!userDetails.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
-        return userDetails;
+        return new TokenRequest(principal, credentials);
     }
 
     @Override
