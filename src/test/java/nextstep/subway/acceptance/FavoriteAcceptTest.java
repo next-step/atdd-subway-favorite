@@ -57,16 +57,10 @@ class FavoriteAcceptTest extends AcceptanceTest {
     @Test
     @DisplayName("로그인 하지 않으면 즐겨찾기 생성에 실패한다.")
     void createFavoriteAuthFail() {
-        ExtractableResponse<Response> response = RestAssured.given()
-                .body(Map.of(
-                        "source", 교대역,
-                        "target", 양재역
-                ))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        // when
+        ExtractableResponse<Response> response = 미로그인후_즐겨찾기_생성(교대역, 양재역);
 
+        // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_UNAUTHORIZED);
     }
 

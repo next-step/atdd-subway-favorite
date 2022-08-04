@@ -24,6 +24,18 @@ public class FavoriteSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 미로그인후_즐겨찾기_생성(long source, long target) {
+        return RestAssured.given()
+                .body(Map.of(
+                        "source", source,
+                        "target", target
+                ))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 로그인후_즐겨찾기_조회() {
 
         return secureGiven()
