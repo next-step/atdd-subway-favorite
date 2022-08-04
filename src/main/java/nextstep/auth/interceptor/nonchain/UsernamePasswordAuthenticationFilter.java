@@ -8,7 +8,7 @@ import nextstep.auth.user.UserDetailsService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
+public class UsernamePasswordAuthenticationFilter extends AuthenticationChainInterceptor {
     private static final String NOT_MATCH_EMAIL_PASSWORD = "이메일과 비밀번호가 일치하지 않습니다.";
 
     public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {

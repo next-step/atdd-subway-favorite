@@ -9,7 +9,7 @@ import nextstep.auth.token.JwtTokenProvider;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public class BearerTokenAuthenticationFilter extends ChainInterceptor {
+public class BearerTokenAuthenticationFilter extends AuthenticationChainInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {

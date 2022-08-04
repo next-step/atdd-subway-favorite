@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationInterceptor extends NonChainFilter {
+public class TokenAuthenticationInterceptor extends AuthenticationChainInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {

@@ -11,7 +11,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BasicAuthenticationFilter extends ChainInterceptor {
+public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
     private UserDetailsService userDetailService;
 
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public abstract class NonChainFilter implements HandlerInterceptor {
+public abstract class AuthenticationChainInterceptor implements HandlerInterceptor {
 
 	private final UserDetailsService userDetailsService;
 
