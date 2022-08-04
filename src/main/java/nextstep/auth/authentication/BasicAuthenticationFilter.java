@@ -3,20 +3,19 @@ package nextstep.auth.authentication;
 import nextstep.auth.UserDetails;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected void authenticate(HttpServletRequest request) {
+    protected Authentication authenticate(HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
@@ -35,8 +34,6 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
             throw new AuthenticationException();
         }
 
-        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 }
