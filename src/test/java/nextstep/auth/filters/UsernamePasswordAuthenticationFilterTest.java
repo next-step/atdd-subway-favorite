@@ -1,4 +1,4 @@
-package nextstep.auth.interceptors;
+package nextstep.auth.filters;
 
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.member.application.LoginMemberService;
@@ -21,7 +21,7 @@ class UsernamePasswordAuthenticationFilterTest {
 
     @Autowired
     private LoginMemberService loginMemberService;
-    private AuthenticationProvidingInterceptor authenticationInterceptor;
+    private AuthenticationRespondingFilter authenticationInterceptor;
 
     @BeforeEach
     void setUp() {

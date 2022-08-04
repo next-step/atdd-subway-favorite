@@ -1,4 +1,4 @@
-package nextstep.auth.interceptors;
+package nextstep.auth.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.DataLoader;
@@ -7,8 +7,9 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
+import nextstep.auth.user.UserDetails;
 import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.User;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.RoleType;
 import nextstep.subway.utils.DatabaseCleanup;
@@ -29,7 +30,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class TokenAuthenticationInterceptorTest {
+class TokenAuthenticationFilterTest {
     @Autowired
     private DatabaseCleanup databaseCleanup;
     @Autowired
@@ -38,13 +39,13 @@ class TokenAuthenticationInterceptorTest {
     private LoginMemberService loginMemberService;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-    private AuthenticationProvidingInterceptor authenticationInterceptor;
+    private AuthenticationRespondingFilter authenticationInterceptor;
 
     @BeforeEach
     void setUp() {
         databaseCleanup.execute();
         dataLoader.loadData();
-        authenticationInterceptor = new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider);
+        authenticationInterceptor = new TokenAuthenticationFilter(loginMemberService, jwtTokenProvider);
     }
 
     @Test
@@ -91,11 +92,11 @@ class TokenAuthenticationInterceptorTest {
     @Test
     void authenticate() throws IOException {
         // given
-        LoginMember loginMember = LoginMember.of(new Member(MEMBER_EMAIL, PASSWORD, 23, List.of(RoleType.ROLE_MEMBER.name())));
+        UserDetails userDetails = User.of(new Member(MEMBER_EMAIL, PASSWORD, 23, List.of(RoleType.ROLE_MEMBER.name())));
         MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
 
         // when
-        authenticationInterceptor.authenticate(loginMember, httpServletResponse);
+        authenticationInterceptor.authenticate(userDetails, httpServletResponse);
 
         // then
         TokenResponse tokenResponse = new ObjectMapper().readValue(httpServletResponse.getContentAsString(), TokenResponse.class);
