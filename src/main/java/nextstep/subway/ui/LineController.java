@@ -1,5 +1,6 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.secured.Secured;
 import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.dto.LineRequest;
 import nextstep.subway.applicaion.dto.LineResponse;
@@ -19,6 +20,7 @@ public class LineController {
         this.lineService = lineService;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
@@ -37,24 +39,28 @@ public class LineController {
         return ResponseEntity.ok().body(lineResponse);
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
         lineService.updateLine(id, lineRequest);
         return ResponseEntity.ok().build();
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id) {
         lineService.deleteLine(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> addSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
         lineService.addSection(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.deleteSection(lineId, stationId);
