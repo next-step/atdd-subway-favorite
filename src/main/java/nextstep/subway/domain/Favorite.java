@@ -51,4 +51,8 @@ public class Favorite{
     public void createdDt(){
         this.createdDate = LocalDateTime.now();
     }
+
+    public boolean isValidAuth(Member member){
+        return this.member.getId().equals(member.getId());
+    }
 }

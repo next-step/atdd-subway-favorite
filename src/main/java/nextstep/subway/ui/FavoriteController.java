@@ -40,9 +40,17 @@ public class FavoriteController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Secured({"ROLE_ADMIN","ROLE_MEMBER"})
     public ResponseEntity<List<FavoriteResponse>> showStations(@AuthenticationPrincipal LoginMember loginMember) {
-//        favoriteService.getFavoriteList(loginMember);
         return ResponseEntity.ok().body(favoriteService.getFavoriteList(loginMember));
+    }
+
+    @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN","ROLE_MEMBER"})
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                               @PathVariable Long id) {
+        favoriteService.deleteFavoriteById(loginMember, id);
+        return ResponseEntity.noContent().build();
     }
 
 }

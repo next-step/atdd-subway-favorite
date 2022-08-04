@@ -13,7 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.step.LineSteps.*;
+import static nextstep.subway.acceptance.step.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.step.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.step.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.utils.AdministratorInfo.ADMIN_EMAIL;
+import static nextstep.subway.utils.AdministratorInfo.ADMIN_PASSWORD;
 import static nextstep.subway.utils.RestAssuredStep.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,6 +31,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 구일역;
     private Long 구로역;
     private Long 신도림역;
+
+    private String email;
+    private String password;
+    private int age;
 
     /**
      * Given 지하철역과 노선 생성을 요청 하고
@@ -47,6 +55,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(관리자토큰, 신분당선, createSectionCreateParams(개봉역, 구일역));
         지하철_노선에_지하철_구간_생성_요청(관리자토큰, 신분당선, createSectionCreateParams(구일역, 구로역));
         지하철_노선에_지하철_구간_생성_요청(관리자토큰, 신분당선, createSectionCreateParams(구로역, 신도림역));
+
+        email    = "acsmia@gmail.com";
+        password = "20";
+        age      = 20;
     }
 
     /**
@@ -77,11 +89,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         Map<String, Long> params = createFavoriteRequestParam(9L, 10L);
         ExtractableResponse<Response> response = 즐겨찾기_등록_요청(관리자토큰, params);
 
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
-                () -> assertThat(response.jsonPath().getString("message")).contains("등록된 지하철역으로 요청하셔야 합니다.")
-        );
-
+        assertAllHttpStatusAndMessage(response, HttpStatus.NOT_FOUND.value(), "등록된 지하철역으로 요청하셔야 합니다.");
     }
 
     /**
@@ -108,8 +116,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * when 로그인한 사용자가 즐겨찾기 목록을 삭제하면
      * then 해당 즐겨찾기가 삭제된다.
      */
-    @DisplayName("즐겨찾기 목록을 삭제한다..")
+    @DisplayName("즐겨찾기 목록을 삭제한다.")
+    @Test
     void deleteFavoriteAfterLogin() {
+        Map<String, Long> params = createFavoriteRequestParam(구일역, 신도림역);
+        Long favoriteId = 즐겨찾기_등록_요청(관리자토큰, params).jsonPath().getLong("id");
+
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(관리자토큰, favoriteId);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * when 본인의 것이 아닌 즐겨찾기 제거요청
+     * then 해당 즐겨찾기가 삭제가 실패한다.
+     */
+    @DisplayName("본인의 것이 아닌 즐겨찾기 삭제요청시 실패한다.")
+    @Test
+    void deleteFavoritefail() {
+        Map<String, Long> params = createFavoriteRequestParam(구일역, 신도림역);
+        Long favoriteId = 즐겨찾기_등록_요청(관리자토큰, params).jsonPath().getLong("id");
+        회원_생성_요청(email, password, age);
+        String 이용자토큰 = 로그인_되어_있음(email, password);
+
+        assertThat(즐겨찾기_삭제_요청(이용자토큰, favoriteId).statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_등록_요청(String 관리자토큰, Map<String, Long> params){
@@ -120,11 +150,25 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String 관리자토큰, Long favoriteId){
+        return given(관리자토큰)
+                .when().delete("/favorites/{id}", favoriteId)
+                .then().log().all()
+                .extract();
+    }
+
     private Map<String, Long> createFavoriteRequestParam(Long sourceId, Long targetId){
         Map<String, Long> params = new HashMap<>();
         params.put("source", sourceId);
         params.put("target", targetId);
         return params;
+    }
+
+    private void assertAllHttpStatusAndMessage(ExtractableResponse<Response> response, int httpStatus, String message){
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(httpStatus),
+                () -> assertThat(response.jsonPath().getString("message")).contains(message)
+        );
     }
 
 }
