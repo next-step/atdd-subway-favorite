@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.AcceptanceTestSteps.given;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_제거_요청;
 import static org.assertj.core.api.Assertions.assertThat;
