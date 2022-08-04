@@ -4,11 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import org.apache.http.HttpHeaders;
+import javax.servlet.http.HttpServletRequest;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.AuthorizationExtractor;
-import nextstep.auth.authentication.AuthorizationType;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class BasicAuthenticationFilterTest {
+public class UsernamePasswordAuthenticationFilterTest {
+	private static final String PRINCIPAL_NAME = "username";
+	private static final String CREDENTIAL_NAME = "password";
 	private static final String EMAIL = "email@email.com";
 	private static final String PASSWORD = "password";
 	private static final int AGE = 20;
@@ -37,25 +38,24 @@ public class BasicAuthenticationFilterTest {
 	private MemberRepository memberRepository;
 	@Autowired
 	private LoginMemberService loginMemberService;
-	String authHeader;
+	HttpServletRequest request;
 
 	@BeforeEach
 	void setUp() {
 		loginMemberService = new LoginMemberService(memberRepository);
-		MockHttpServletRequest request = createMockRequest();
-		String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-		authHeader = new String(org.apache.tomcat.util.codec.binary.Base64.decodeBase64(authCredentials));
-
+		request = createMockRequest();
 	}
 
 	@Test
 	void convert() {
 		//when
-		String[] splits = authHeader.split(":");
+		Map<String, String[]> parameterMap = request.getParameterMap();
+		String userName = parameterMap.get(PRINCIPAL_NAME)[0];
+		String password = parameterMap.get(CREDENTIAL_NAME)[0];
 
 		//then
-		Assertions.assertThat(splits[0]).isEqualTo(EMAIL);
-		Assertions.assertThat(splits[1]).isEqualTo(PASSWORD);
+		Assertions.assertThat(userName).isEqualTo(EMAIL);
+		Assertions.assertThat(password).isEqualTo(PASSWORD);
 	}
 
 	@Test
@@ -63,12 +63,12 @@ public class BasicAuthenticationFilterTest {
 		//given
 		when(memberRepository.findByEmail(EMAIL))
 			.thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE, ROLES)));
-		String[] splits = authHeader.split(":");
-		String principal = splits[0];
-		String credentials = splits[1];
+		Map<String, String[]> parameterMap = request.getParameterMap();
+		String userName = parameterMap.get(PRINCIPAL_NAME)[0];
+		String password = parameterMap.get(CREDENTIAL_NAME)[0];
 
 		//when
-		AuthenticationToken token = new AuthenticationToken(principal, credentials);
+		AuthenticationToken token = new AuthenticationToken(userName, password);
 		LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
 
 		//then
@@ -76,10 +76,10 @@ public class BasicAuthenticationFilterTest {
 	}
 
 	private MockHttpServletRequest createMockRequest() {
-		String headerValue = String.format("%s:%s", EMAIL, PASSWORD);
+
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString(
-			headerValue.getBytes()));
+		request.addParameter(PRINCIPAL_NAME, EMAIL);
+		request.addParameter(CREDENTIAL_NAME, PASSWORD);
 
 		return request;
 	}
