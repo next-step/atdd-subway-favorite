@@ -2,7 +2,7 @@ package nextstep.auth.authorization;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.MemberDetails;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -16,12 +16,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public MemberDetails resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return LoginMember.guest();
+            return MemberDetails.guest();
         }
 
-        return LoginMember.of(authentication.getPrincipal().toString(), authentication.getAuthorities());
+        return MemberDetails.of(authentication.getPrincipal().toString(), authentication.getAuthorities());
     }
 }
