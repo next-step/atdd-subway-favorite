@@ -1,15 +1,13 @@
 package nextstep.subway.unit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.BasicAuthenticationFilter;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenAuthenticationInterceptor;
-import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.MemberDetailsService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberDetails;
 import nextstep.member.domain.RoleType;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,51 +17,42 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TokenAuthenticationInterceptorTest {
+public class BasicAuthenticationFilterTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
-    public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    MockHttpServletRequest request;
-    MockHttpServletResponse response;
+    private MockHttpServletRequest request;
+    private MockHttpServletResponse response;
 
     @InjectMocks
-    private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
+    private BasicAuthenticationFilter basicAuthenticationFilter;
 
     @Mock
     private MemberDetailsService memberDetailsService;
 
-    @Mock
-    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
-    void setUp() throws IOException {
-        jwtTokenProvider = new JwtTokenProvider();
-        jwtTokenProvider.setSecretKey("atdd-secret-key");
-        jwtTokenProvider.setValidityInMilliseconds(3600000);
-
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(memberDetailsService, jwtTokenProvider);
+    void setUp() {
+        basicAuthenticationFilter = new BasicAuthenticationFilter(memberDetailsService);
         request = createMockRequest();
         response = new MockHttpServletResponse();
-
-
     }
 
     @Test
-    void convert() throws Exception {
+    void convert() {
         //when
-        AuthenticationToken token = tokenAuthenticationInterceptor.convert(request);
+        AuthenticationToken token = basicAuthenticationFilter.convert(request);
 
         //then
         assertThat(token.getPrincipal()).isEqualTo(EMAIL);
         assertThat(token.getCredentials()).isEqualTo(PASSWORD);
+
     }
 
     @Test
@@ -72,25 +61,34 @@ class TokenAuthenticationInterceptorTest {
         MemberDetails memberDetails = MemberDetails.of(new Member(EMAIL, PASSWORD, 17, List.of(RoleType.ROLE_MEMBER.name())));
         when(memberDetailsService.loadUserByUsername(EMAIL))
                 .thenReturn(memberDetails);
-        AuthenticationToken token = new AuthenticationToken(EMAIL, PASSWORD);
-
         //when
-        Authentication authentication = tokenAuthenticationInterceptor.authenticate(token);
+        Authentication authentication = basicAuthenticationFilter.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
 
         //then
         assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
         assertThat(authentication.getAuthorities()).isEqualTo(List.of(RoleType.ROLE_MEMBER.name()));
+
     }
 
     @Test
-    void preHandle() throws IOException {
+    void preHandle() {
+        //given
+        MemberDetails memberDetails = MemberDetails.of(new Member(EMAIL, PASSWORD, 17, List.of(RoleType.ROLE_MEMBER.name())));
+        when(memberDetailsService.loadUserByUsername(EMAIL))
+                .thenReturn(memberDetails);
+
+        //when
+        boolean result = basicAuthenticationFilter.preHandle(request, response, null);
+
+        //then
+        assertThat(result).isTrue();
+
     }
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
+    private MockHttpServletRequest createMockRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
+        String encodedBasicAuth = new String(Base64.encodeBase64(String.format("%s:%s", EMAIL, PASSWORD).getBytes()));
+        request.addHeader("Authorization", "basic " + encodedBasicAuth);
         return request;
     }
-
 }
