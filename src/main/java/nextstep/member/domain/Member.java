@@ -1,9 +1,15 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+import nextstep.subway.domain.Favorite;
+import nextstep.subway.domain.Station;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,29 +42,11 @@ public class Member {
         this.roles = roles;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
 
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
     }
+
 }

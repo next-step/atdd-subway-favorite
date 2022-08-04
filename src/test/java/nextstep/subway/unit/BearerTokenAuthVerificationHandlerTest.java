@@ -43,7 +43,7 @@ class BearerTokenAuthVerificationHandlerTest {
     }
 
 
-    @ParameterizedTest(name = "[argumentsWithNames] 다른 타입의 토큰을 전달하면 인증정보 생성에 실패한다.")
+    @ParameterizedTest(name = "[{argumentsWithNames}] 다른 타입의 토큰을 전달하면 인증정보 생성에 실패한다.")
     @ValueSource(strings = {"Basic", "Digest", "HOBA", "Mutual"})
     void createAuthenticationFailTest(String tokenType) {
         BearerTokenAuthVerificationHandler handler = new BearerTokenAuthVerificationHandler(jwtTokenProvider);
