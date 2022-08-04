@@ -85,12 +85,22 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given 즐겨찾기를 등록한다.
      * when 로그인한 사용자가 즐겨찾기 목록을 조회하면
      * then 등록된 즐겨찾기 목록이 조회된다.
      */
     @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
     void getFavoriteListAfterLogin() {
+
+        Map<String, Long> params = createFavoriteRequestParam(구일역, 신도림역);
+        즐겨찾기_등록_요청(관리자토큰, params);
+        Map<String, Long> params2 = createFavoriteRequestParam(오류역, 개봉역);
+        즐겨찾기_등록_요청(관리자토큰, params2);
+
+        given(관리자토큰)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     /**

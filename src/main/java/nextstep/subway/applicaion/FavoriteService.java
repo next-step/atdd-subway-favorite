@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,6 +39,16 @@ public class FavoriteService {
         Station targetStation  = getStation(favoriteRequest.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation, LocalDateTime.now()));
         return FavoriteResponse.of(favorite);
+    }
+
+    public List<FavoriteResponse> getFavoriteList(LoginMember loginMember){
+        System.out.println("get favorite 시작");
+        Member member = memberRepository.findByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new NotExistElementException("등록된 멤버를 찾을 수 없습니다."));
+        return favoriteRepository.findByMemberId(member.getId()).stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
+
     }
 
     private Station getStation(Long StationId){
