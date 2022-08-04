@@ -7,7 +7,7 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthenticationInterceptor;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.authentication.AuthenticationManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,20 +16,20 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private LoginMemberService loginMemberService;
+    private AuthenticationManager authenticationManager;
     private JwtTokenProvider jwtTokenProvider;
 
-    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public AuthConfig(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+        this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
-        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(loginMemberService)).addPathPatterns("/login/form");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider)).addPathPatterns("/login/token");
-        registry.addInterceptor(new BasicAuthenticationFilter(loginMemberService));
+        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(authenticationManager)).addPathPatterns("/login/form");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(authenticationManager, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(new BasicAuthenticationFilter(authenticationManager));
         registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider))
                 .excludePathPatterns(
                         "/login/form",

@@ -1,6 +1,5 @@
 package nextstep.auth.authentication;
 
-import nextstep.member.application.LoginMemberService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,10 +8,10 @@ import java.io.IOException;
 
 public abstract class LoginFilter implements HandlerInterceptor {
 
-    protected LoginMemberService loginMemberService;
+    protected AuthenticationManager authenticationManager;
 
-    public LoginFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public LoginFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override

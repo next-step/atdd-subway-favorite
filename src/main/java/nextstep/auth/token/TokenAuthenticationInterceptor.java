@@ -1,10 +1,9 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.LoginFilter;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.authentication.AuthenticationManager;
+import nextstep.auth.context.Authentication;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +14,8 @@ import java.util.stream.Collectors;
 public class TokenAuthenticationInterceptor extends LoginFilter {
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        super(loginMemberService);
+    public TokenAuthenticationInterceptor(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+        super(authenticationManager);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -28,17 +27,9 @@ public class TokenAuthenticationInterceptor extends LoginFilter {
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        final Authentication authentication = authenticationManager.load(principal, credentials);
 
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
-
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+        String token = jwtTokenProvider.createToken(authentication.getPrincipal().toString(), authentication.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

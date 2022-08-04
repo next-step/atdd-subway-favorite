@@ -2,18 +2,16 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends AuthenticationFilter {
 
-    private LoginMemberService loginMemberService;
+    private AuthenticationManager authenticationManager;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -26,18 +24,7 @@ public class BasicAuthenticationFilter extends AuthenticationFilter {
         String credentials = splits[1];
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
-
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
-
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
+        Authentication authentication = authenticationManager.load(token.getPrincipal(), token.getCredentials());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return true;
     }
