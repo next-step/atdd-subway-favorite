@@ -1,17 +1,12 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+public class BearerTokenAuthenticationFilter extends ChainingFilter {
     private JwtTokenProvider jwtTokenProvider;
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -19,25 +14,25 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-            AuthenticationToken token = new AuthenticationToken(authCredentials, authCredentials);
+    public AuthenticationToken convert(HttpServletRequest request) {
+        String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
-            if (!jwtTokenProvider.validateToken(token.getPrincipal())) {
-                throw new AuthenticationException();
-            }
-
-            String principal = jwtTokenProvider.getPrincipal(token.getPrincipal());
-            List<String> roles = jwtTokenProvider.getRoles(token.getPrincipal());
-
-            Authentication authentication = new Authentication(principal, roles);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            return true;
-        } catch (Exception e) {
-            return true;
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException();
         }
+
+        String principal = jwtTokenProvider.getPrincipal(token);
+
+        return new AuthenticationToken(principal, token);
     }
+
+    @Override
+    public Authentication authenticate(AuthenticationToken token) {
+        String principal = token.getPrincipal();
+        String credentials = token.getCredentials();
+        List<String> roles = jwtTokenProvider.getRoles(credentials);
+        return new Authentication(principal, roles);
+    }
+
+
 }
