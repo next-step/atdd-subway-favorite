@@ -75,8 +75,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .when()
+        AuthSteps
+                .given(getToken())
                 .delete(location)
                 .then().log().all()
                 .extract();
@@ -88,5 +88,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
+    }
+
+    private ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+        return StationSteps.지하철역_생성_요청(getToken(), name);
     }
 }

@@ -152,4 +152,8 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 지하철_노선에_지하철_구간_제거_요청(Long lineId, Long stationId) {
         return LineSteps.지하철_노선에_지하철_구간_제거_요청(getToken(), lineId, stationId);
     }
+
+    private ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+        return StationSteps.지하철역_생성_요청(getToken(), name);
+    }
 }

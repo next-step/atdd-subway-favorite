@@ -85,4 +85,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         params.put("distance", distance + "");
         return params;
     }
+
+    private ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+        return StationSteps.지하철역_생성_요청(getToken(), name);
+    }
 }

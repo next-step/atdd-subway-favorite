@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LineSteps.*;
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관리 기능")
@@ -94,5 +93,9 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, String> params) {
         return LineSteps.지하철_노선에_지하철_구간_생성_요청(getToken(), lineId, params);
+    }
+
+    private ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+        return StationSteps.지하철역_생성_요청(getToken(), name);
     }
 }
