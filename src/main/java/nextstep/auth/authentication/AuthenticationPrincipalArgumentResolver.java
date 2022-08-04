@@ -3,7 +3,7 @@ package nextstep.auth.authentication;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.service.UserDetails;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.service.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

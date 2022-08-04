@@ -1,6 +1,4 @@
-package nextstep.member.domain;
-
-import nextstep.auth.service.UserDetails;
+package nextstep.auth.service;
 
 import java.util.List;
 
@@ -9,25 +7,25 @@ public class LoginMember implements UserDetails {
     private String password;
     private List<String> authorities;
 
-    public static LoginMember of(Member member) {
-        return new LoginMember(member.getEmail(), member.getPassword(), member.getRoles());
+    private LoginMember() {
     }
 
-    public static LoginMember of(String email, List<String> authorities) {
-        return new LoginMember(email, null, authorities);
+    private LoginMember(String email, String password, List<String> authorities) {
+        this.email = email;
+        this.password = password;
+        this.authorities = authorities;
     }
 
     public static LoginMember guest() {
         return new LoginMember();
     }
 
-    public LoginMember() {
+    public static LoginMember of(String email, List<String> authorities) {
+        return new LoginMember(email, null, authorities);
     }
 
-    public LoginMember(String email, String password, List<String> authorities) {
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
+    public static LoginMember of(String email, String password, List<String> authorities) {
+        return new LoginMember(email, password, authorities);
     }
 
     @Override

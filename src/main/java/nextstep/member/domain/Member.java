@@ -61,4 +61,5 @@ public class Member {
         this.password = member.password;
         this.age = member.age;
     }
+
 }
