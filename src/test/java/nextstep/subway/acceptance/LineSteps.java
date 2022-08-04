@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LineSteps extends AcceptanceTestSteps {
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String token, String name, String color) {
+    public static ExtractableResponse<Response> 관리자로_지하철_노선_생성_요청(String token, String name, String color) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
@@ -37,7 +37,7 @@ public class LineSteps extends AcceptanceTestSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String token, Map<String, String> params) {
+    public static ExtractableResponse<Response> 관리자로_지하철_노선_생성_요청(String token, Map<String, String> params) {
         return given(token)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +45,7 @@ public class LineSteps extends AcceptanceTestSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(String token, String location) {
+    public static ExtractableResponse<Response> 관리자로_지하철_노선_수정_요청(String token, String location) {
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
         return given(token)
@@ -55,14 +55,14 @@ public class LineSteps extends AcceptanceTestSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String token, String location) {
+    public static ExtractableResponse<Response> 관리자로_지하철_노선_삭제_요청(String token, String location) {
         ExtractableResponse<Response> response = given(token)
                 .when().delete(location)
                 .then().log().all().extract();
         return response;
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(String token, Long lineId, Map<String, String> params) {
+    public static ExtractableResponse<Response> 관리자로_지하철_노선에_지하철_구간_생성_요청(String token, Long lineId, Map<String, String> params) {
         return given(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
@@ -70,7 +70,7 @@ public class LineSteps extends AcceptanceTestSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_제거_요청(String token, Long lineId, Long stationId) {
+    public static ExtractableResponse<Response> 관리자로_지하철_노선에_지하철_구간_제거_요청(String token, Long lineId, Long stationId) {
         return given(token)
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all().extract();
