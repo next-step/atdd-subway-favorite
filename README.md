@@ -2,8 +2,8 @@
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
 # Step3 PR 수정 TODO list
-- [ ] 사용하지 않는 AuthExceptionHandler 제거
-- [ ] jdk 1.4에 등장한 assert 로 변경
+- [x] 사용하지 않는 AuthExceptionHandler 제거
+- [x] jdk 1.4에 등장한 assert 로 변경
 - [ ] Member를 root로 하는 Favorite 삭제 관리
 
 # Step3 TODO list

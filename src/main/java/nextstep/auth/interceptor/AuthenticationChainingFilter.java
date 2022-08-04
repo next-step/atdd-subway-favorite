@@ -1,15 +1,11 @@
 package nextstep.auth.interceptor;
 
-import io.jsonwebtoken.lang.Assert;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.exception.UnauthorizedException;
-import nextstep.auth.secured.Secured;
 import nextstep.auth.userdetails.UserDetails;
-import org.springframework.http.MediaType;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +15,7 @@ public abstract class AuthenticationChainingFilter implements HandlerInterceptor
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(isAlreadyLoginUser()) {
+        if (isAlreadyLoginUser()) {
             return true;
         }
 
@@ -41,11 +37,12 @@ public abstract class AuthenticationChainingFilter implements HandlerInterceptor
     }
 
     private void afterAuthentication(UserDetails userDetails) {
-        Assert.notNull(userDetails);
+        assert userDetails != null;
         Authentication authentication = new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     protected abstract AuthenticationToken convert(HttpServletRequest request);
+
     protected abstract UserDetails findUserDetails(AuthenticationToken token);
 }
