@@ -134,14 +134,14 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("일반 사용자가 노선 제거 요청")
     @Test
-    void deleteSectionWithMember() throws Exception {
+    void deleteSectionWithMember() {
 
         // given
         Long 정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
         지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역));
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_제거_요청(adminAccessToken, 신분당선, 정자역);
+        ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_제거_요청(memberAccessToken, 신분당선, 정자역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
