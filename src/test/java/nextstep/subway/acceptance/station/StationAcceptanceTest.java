@@ -29,6 +29,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.jsonPath().getString("createdDate")).isNotBlank();
+        assertThat(response.jsonPath().getString("modifiedDate")).isNotBlank();
 
         // then
         List<String> stationNames = 지하철역_목록_조회_요청().jsonPath().getList("name", String.class);

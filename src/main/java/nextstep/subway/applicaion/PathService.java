@@ -1,13 +1,12 @@
 package nextstep.subway.applicaion;
 
 import nextstep.subway.applicaion.dto.PathResponse;
-import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Path;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.SubwayMap;
+import nextstep.subway.exception.DuplicatedStationsException;
+import nextstep.subway.exception.NotConnectSectionException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PathService {
@@ -20,12 +19,31 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
+        validateDuplicatedStations(source, target);
+        Path path = getPath(source, target);
+        return PathResponse.of(path);
+    }
+
+    public Path getPath(Long source, Long target) {
         Station upStation = stationService.findById(source);
         Station downStation = stationService.findById(target);
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-        Path path = subwayMap.findPath(upStation, downStation);
+        SubwayMap subwayMap = getSubwayMap();
+        return subwayMap.findPath(upStation, downStation);
+    }
 
-        return PathResponse.of(path);
+    public void validateDuplicatedStations(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new DuplicatedStationsException();
+        }
+    }
+
+    public void validatePath(Station upStation, Station downStation) {
+        if (getSubwayMap().getGraphPath(upStation, downStation) == null) {
+            throw new NotConnectSectionException();
+        }
+    }
+
+    private SubwayMap getSubwayMap() {
+        return new SubwayMap(lineService.findLines());
     }
 }
