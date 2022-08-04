@@ -38,7 +38,7 @@ public class FavoriteService {
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
 
-        Favorite favorite = favoriteRepository.save(new Favorite(findMember.getId(), sourceStation, targetStation));
+        Favorite favorite = favoriteRepository.save(new Favorite(findMember, sourceStation, targetStation));
         return favorite.getId();
     }
 

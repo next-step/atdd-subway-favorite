@@ -20,11 +20,11 @@ public class FavoriteTest {
         Station 도착역 = new Station(3L, "도착역");
 
         // when
-        Favorite favorite = new Favorite(member.getId(), 출발역, 도착역);
+        Favorite favorite = new Favorite(member, 출발역, 도착역);
 
         // then
         assertAll(
-                () -> assertThat(favorite.getMemberId()).isEqualTo(member.getId()),
+                () -> assertThat(favorite.getMember()).isEqualTo(member),
                 () -> assertThat(favorite.getSource()).isEqualTo(출발역),
                 () -> assertThat(favorite.getTarget()).isEqualTo(도착역)
         );

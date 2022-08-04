@@ -56,7 +56,7 @@ public class FavoriteServiceMockTest {
         member = new Member(1L, "email", "password", 20);
         출발역 = new Station(2L, "출발역");
         도착역 = new Station(3L, "도착역");
-        favorite = new Favorite(4L, member.getId(), 출발역, 도착역);
+        favorite = new Favorite(4L, member, 출발역, 도착역);
     }
 
     @DisplayName("즐겨찾기를 신규로 등록한다")

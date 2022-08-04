@@ -1,6 +1,9 @@
 package nextstep.member.domain;
 
+import nextstep.favorite.domain.Favorite;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,6 +21,9 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
