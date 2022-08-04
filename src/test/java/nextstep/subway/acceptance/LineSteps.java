@@ -71,4 +71,10 @@ public class LineSteps {
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String token, String location) {
+        return afterTokenLogin(token)
+            .when().delete(location)
+            .then().log().all().extract();
+    }
 }

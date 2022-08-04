@@ -151,4 +151,20 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    @DisplayName("일반 사용자가 지하철 노선 삭제시 에러 발생")
+    @Test
+    void deleteLineWithMember() {
+
+        // given
+        String location = 지하철_노선_생성_요청(adminAccessToken, "2호선", "green").header("location");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_삭제_요청(memberAccessToken, location);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+     }
+
+
 }
