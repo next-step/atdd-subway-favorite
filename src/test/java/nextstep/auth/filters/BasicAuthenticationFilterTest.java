@@ -5,21 +5,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UsernamePasswordAuthenticationFilterTest {
+class BasicAuthenticationFilterTest {
 
     private static final String EMAIL = "test@test.com";
     private static final String PASSWORD = "password";
 
-    private AuthenticationRespondingFilter authFilter = new UsernamePasswordAuthenticationFilter(null);
+    private final AuthenticationSavingFilter<AuthenticationToken> authFilter =
+            new BasicAuthenticationFilter(null);
 
     @Test
-    void convert() throws IOException {
+    void convert() {
         // given
-        HttpServletRequest request = formAuthHttpRequest(EMAIL, PASSWORD);
+        HttpServletRequest request = basicAuthHttpRequest(EMAIL, PASSWORD);
 
         // when
         AuthenticationToken token = authFilter.convert(request);
@@ -29,10 +30,11 @@ class UsernamePasswordAuthenticationFilterTest {
         assertThat(token.getCredentials()).isEqualTo(PASSWORD);
     }
 
-    private MockHttpServletRequest formAuthHttpRequest(String email, String password) {
+    private MockHttpServletRequest basicAuthHttpRequest(String email, String password) {
+        String encodedBasicAuth = Base64.getEncoder()
+                .encodeToString(String.format("%s:%s", email, password).getBytes());
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setParameter("username", email);
-        request.setParameter("password", password);
+        request.addHeader("Authorization", "Basic " + encodedBasicAuth);
         return request;
     }
 }
