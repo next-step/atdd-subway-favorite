@@ -13,7 +13,7 @@ import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import org.springframework.http.MediaType;
 
-public class TokenAuthenticationFilter implements AuthenticationNotChainingFilter {
+public class TokenAuthenticationFilter extends AuthenticationNotChainingFilter {
     private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -24,7 +24,9 @@ public class TokenAuthenticationFilter implements AuthenticationNotChainingFilte
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws Exception {
-        String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        String content = request.getReader().lines()
+            .collect(Collectors.joining(System.lineSeparator()));
+
         TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
         return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }

@@ -10,7 +10,7 @@ import nextstep.auth.authentication.user.UserDetails;
 import nextstep.auth.authentication.user.User;
 import nextstep.auth.token.JwtTokenProvider;
 
-public class BearerTokenAuthenticationFilter implements AuthenticationChainingFilter {
+public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 

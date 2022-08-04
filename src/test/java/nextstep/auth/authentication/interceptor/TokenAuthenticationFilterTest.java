@@ -1,4 +1,4 @@
-package nextstep.subway.unit;
+package nextstep.auth.authentication.interceptor;
 
 import static nextstep.member.domain.RoleType.ROLE_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.interceptor.TokenAuthenticationFilter;
 import nextstep.auth.authentication.user.User;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;

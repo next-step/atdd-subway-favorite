@@ -9,7 +9,7 @@ import nextstep.auth.authentication.user.UserDetails;
 import nextstep.auth.authentication.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
-public class BasicAuthenticationFilter implements AuthenticationChainingFilter {
+public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
 
     private static final String SEPARATOR = ":";
     private static final int SEPARATOR_SIZE = 2;

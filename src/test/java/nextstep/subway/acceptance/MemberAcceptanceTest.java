@@ -1,13 +1,19 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static nextstep.subway.acceptance.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.http.MediaType;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -67,10 +73,27 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        // given
+        ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> result = 회원_정보_조회_요청(response);
+
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_조회됨(result, EMAIL, AGE);
     }
 
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String token = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = CommonAuthRestAssured.given(token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }

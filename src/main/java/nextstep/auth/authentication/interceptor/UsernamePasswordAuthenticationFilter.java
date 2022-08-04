@@ -8,10 +8,10 @@ import nextstep.auth.authentication.user.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 
-public class UsernamePasswordAuthenticationFilter implements AuthenticationNotChainingFilter {
+public class UsernamePasswordAuthenticationFilter extends AuthenticationNotChainingFilter {
 
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     private final UserDetailsService userDetailsService;
 
