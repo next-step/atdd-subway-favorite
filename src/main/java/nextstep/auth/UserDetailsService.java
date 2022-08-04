@@ -1,4 +1,4 @@
-package nextstep.user;
+package nextstep.auth;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.member.domain.Member;
@@ -13,8 +13,8 @@ public class UserDetailsService  {
         this.memberRepository = memberRepository;
     }
 
-    public UserDetails loadUserByUsername(String username)  {
+    public CustomUserDetails loadUserByUsername(String username)  {
         Member findMember = memberRepository.findByEmail(username).orElseThrow(AuthenticationException::new);
-        return UserDetails.from(findMember);
+        return CustomUserDetails.from(findMember);
     }
 }

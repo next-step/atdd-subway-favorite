@@ -1,12 +1,12 @@
 package nextstep.auth.authentication.chain;
 
+import nextstep.auth.CustomUserDetails;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.SecurityContextMapper;
-import nextstep.user.UserDetails;
-import nextstep.user.UserDetailsService;
+import nextstep.auth.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +33,7 @@ public class BasicAuthenticationFilter implements AuthenticationChainFilter {
 
             AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+            CustomUserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
 
             if (!userDetails.checkPassword(token.getCredentials())) {
                 throw new AuthenticationException();

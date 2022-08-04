@@ -2,12 +2,12 @@ package nextstep.auth.authentication.nonchain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.CustomUserDetails;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.user.UserDetails;
-import nextstep.user.UserDetailsService;
+import nextstep.auth.UserDetailsService;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -28,7 +28,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
+        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(principal);
 
         if (!userDetails.checkPassword(credentials)) {
             throw new AuthenticationException();
