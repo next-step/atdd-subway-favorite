@@ -1,17 +1,18 @@
 package nextstep.favorite.exception;
 
 import nextstep.common.ErrorResponse;
-import org.springframework.http.HttpStatus;
+import nextstep.favorite.ui.FavoriteController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+import java.util.NoSuchElementException;
+
+@RestControllerAdvice(assignableTypes = {FavoriteController.class})
 public class FavoriteExceptionHandler {
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> notFoundExceptionHandler(NotFoundFavoriteException e) {
-        ErrorResponse response = ErrorResponse.of(HttpStatus.NOT_FOUND, e);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    @ExceptionHandler({NotFoundFavoriteException.class, NoSuchElementException.class})
+    public ResponseEntity<ErrorResponse> notFoundExceptionHandler(Exception e) {
+        return ResponseEntity.noContent().build();
     }
 }

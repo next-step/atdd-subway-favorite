@@ -2,7 +2,6 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.favorite.exception.NotFoundFavoriteException;
 import nextstep.subway.exception.NotFoundStationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -128,7 +127,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var response = 즐겨찾기_삭제_요청(accessToken, "/favorites/" + 비정상적인_즐겨찾기_id);
 
         // then
-        즐겨찾기_삭제_실패_확인(response, HttpStatus.NOT_FOUND, NotFoundFavoriteException.MESSAGE);
+        즐겨찾기_삭제_실패_확인(response);
     }
 
     @DisplayName("권한이 없는 상태에서 즐겨찾기 관리 예외")

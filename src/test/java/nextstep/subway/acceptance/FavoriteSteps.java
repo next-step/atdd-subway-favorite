@@ -59,8 +59,8 @@ public class FavoriteSteps {
         실패_확인(response, message, status);
     }
 
-    public static void 즐겨찾기_삭제_실패_확인(ExtractableResponse<Response> response, HttpStatus status, String message) {
-        실패_확인(response, message, status);
+    public static void 즐겨찾기_삭제_실패_확인(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
