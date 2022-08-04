@@ -3,12 +3,11 @@ package nextstep.auth.authentication;
 import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class BasicAuthenticationFilter implements HandlerInterceptor {
+public class BasicAuthenticationFilter extends KeepProceedAuthenticationFilter {
     private UserDetailsService userDetailsService;
 
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
@@ -26,11 +25,15 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
             String credentials = splits[1];
 
             User user = userDetailsService.loadUserByUsername(principal);
+
+            ValidateUser validate = new ValidateUser();
+            validate.execute(credentials, user);
+
             SaveAuthentication saveAuthentication = new SaveAuthentication(principal, credentials, user);
             saveAuthentication.execute();
-            return true;
+            return proceed();
         } catch (Exception e) {
-            return true;
+            return proceed();
         }
     }
 }

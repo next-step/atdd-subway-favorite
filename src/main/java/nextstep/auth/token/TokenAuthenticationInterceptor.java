@@ -1,18 +1,20 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.NoMoreProceedAuthenticationFilter;
+import nextstep.auth.authentication.ValidateUser;
 import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetailsService;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationInterceptor implements HandlerInterceptor {
+public class TokenAuthenticationInterceptor extends NoMoreProceedAuthenticationFilter {
+
     private UserDetailsService userDetailsService;
+
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
@@ -30,13 +32,8 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
 
         User user = userDetailsService.loadUserByUsername(principal);
 
-        if (user == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!user.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
+        ValidateUser validate = new ValidateUser();
+        validate.execute(credentials, user);
 
         String token = jwtTokenProvider.createToken(user.getEmail(), user.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
@@ -46,6 +43,6 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
 
-        return false;
+        return proceed();
     }
 }
