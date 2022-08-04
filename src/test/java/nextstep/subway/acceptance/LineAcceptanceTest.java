@@ -23,15 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
 
-    private String adminAccessToken;
-    private String memberAccessToken;
-
-    @BeforeEach
-    void beforeEach(){
-        super.setUp();
-        adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
-        memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
-    }
     /**
      * When 지하철 노선을 생성하면
      * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
@@ -140,13 +131,10 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(adminAccessToken, "2호선", "green");
+        String location = 지하철_노선_생성_요청(adminAccessToken, "2호선", "green").header("location");
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().delete(createResponse.header("location"))
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 지하철_노선_삭제_요청(adminAccessToken, location);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());

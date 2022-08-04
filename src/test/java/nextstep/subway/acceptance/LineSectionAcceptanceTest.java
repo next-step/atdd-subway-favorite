@@ -24,18 +24,12 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     private Long 강남역;
     private Long 양재역;
 
-    private String adminAccessToken;
-    private String memberAccessToken;
-
     /**
      * Given 지하철역과 노선 생성을 요청 하고
      */
     @BeforeEach
     public void setUp() {
         super.setUp();
-        adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
-        memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
-
         강남역 = 지하철역_생성_요청(adminAccessToken, "강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청(adminAccessToken, "양재역").jsonPath().getLong("id");
 

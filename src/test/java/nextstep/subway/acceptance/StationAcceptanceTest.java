@@ -24,14 +24,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.comparable;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-    private String adminAccessToken;
-    private String memberAccessToken;
 
-    @BeforeEach
-    void beforeEach(){
-        adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
-        memberAccessToken = 로그인_되어_있음(MEMBER_EMAIL, PASSWORD);
-    }
 
     /**
      * When 지하철역을 생성하면

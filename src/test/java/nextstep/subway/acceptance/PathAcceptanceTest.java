@@ -28,8 +28,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     private Long 신분당선;
     private Long 삼호선;
 
-    private String adminAccessToken;
-
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |
@@ -40,7 +38,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
 
         교대역 = 지하철역_생성_요청(adminAccessToken,"교대역").jsonPath().getLong("id");
         강남역 = 지하철역_생성_요청(adminAccessToken,"강남역").jsonPath().getLong("id");

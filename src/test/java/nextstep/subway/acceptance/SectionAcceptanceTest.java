@@ -25,16 +25,12 @@ class SectionAcceptanceTest extends AcceptanceTest {
     private Long 강남역;
     private Long 양재역;
 
-    private String adminAccessToken;
-
     /**
      * Given 지하철역과 노선 생성을 요청 하고
      */
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        adminAccessToken = 로그인_되어_있음(ADMIN_EMAIL, PASSWORD);
 
         강남역 = 지하철역_생성_요청(adminAccessToken, "강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청(adminAccessToken, "양재역").jsonPath().getLong("id");
@@ -43,7 +39,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_생성_요청(adminAccessToken, lineCreateParams).jsonPath().getLong("id");
     }
 
-    /**
+    /*
      * When 지하철 노선에 새로운 구간 추가를 요청 하면
      * Then 노선에 새로운 구간이 추가된다
      */
