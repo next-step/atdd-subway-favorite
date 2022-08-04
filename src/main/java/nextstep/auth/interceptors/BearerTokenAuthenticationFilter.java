@@ -1,5 +1,8 @@
-package nextstep.auth.authentication;
+package nextstep.auth.interceptors;
 
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.AuthorizationExtractor;
+import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
