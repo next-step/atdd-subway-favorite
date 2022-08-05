@@ -1,5 +1,8 @@
 package nextstep.auth.authentication;
 
+import lombok.Getter;
+
+@Getter
 public class AuthenticationToken {
     private String principal;
     private String credentials;
@@ -7,13 +10,5 @@ public class AuthenticationToken {
     public AuthenticationToken(String principal, String credentials) {
         this.principal = principal;
         this.credentials = credentials;
-    }
-
-    public String getPrincipal() {
-        return principal;
-    }
-
-    public String getCredentials() {
-        return credentials;
     }
 }
