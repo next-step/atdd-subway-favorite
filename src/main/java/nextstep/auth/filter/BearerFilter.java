@@ -24,12 +24,6 @@ public class BearerFilter implements AuthorizationStrategy {
     }
 
     @Override
-    public Authentication getAuthentication(String token) {
-        return new Authentication(provider.getPrincipal(token), provider.getRoles(token));
-    }
-
-
-    @Override
     public Authentication extractAuthentication(String token) {
         if (!validToken(token)) {
             throw new AuthenticationException();
@@ -42,6 +36,10 @@ public class BearerFilter implements AuthorizationStrategy {
         }
 
         return authentication;
+    }
+
+    public Authentication getAuthentication(String token) {
+        return new Authentication(provider.getPrincipal(token), provider.getRoles(token));
     }
 
     public boolean validToken(String token) {

@@ -136,7 +136,7 @@ class BasicAuthenticationFilterMockTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         Object handler = mock(Object.class);
 
-        when(userDetailService.loadUserByUsername(PRINCIPAL)).thenReturn(User.of(PRINCIPAL, CREDENTIALS, null));
+        when(userDetailService.loadUserByUsername(PRINCIPAL)).thenReturn(MEMBER);
 
         authorizationFilter.preHandle(request, response, handler);
     }

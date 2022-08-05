@@ -25,14 +25,6 @@ public class BasicFilter implements AuthorizationStrategy {
     }
 
     @Override
-    public Authentication getAuthentication(String token) {
-        String[] splits = token.split(COLON);
-        String principal = splits[0];
-        String credentials = splits[1];
-        return new Authentication(principal, credentials);
-    }
-
-    @Override
     public Authentication extractAuthentication(String token) {
         if (!validToken(token)) {
             throw new AuthenticationException();
@@ -46,6 +38,13 @@ public class BasicFilter implements AuthorizationStrategy {
         }
 
         return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+    }
+
+    public Authentication getAuthentication(String token) {
+        String[] splits = token.split(COLON);
+        String principal = splits[0];
+        String credentials = splits[1];
+        return new Authentication(principal, credentials);
     }
 
     public boolean validToken(String token) {

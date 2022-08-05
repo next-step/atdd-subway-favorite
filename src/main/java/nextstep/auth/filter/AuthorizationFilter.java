@@ -16,7 +16,7 @@ public class AuthorizationFilter implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = strategy.getToken(request);
 
         if (token == null || token.isBlank()) {
