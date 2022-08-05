@@ -1,14 +1,12 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.filter.nonchain;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.provider.AuthenticationProvider;
 import nextstep.auth.authentication.provider.ProviderManager;
 import nextstep.auth.authentication.provider.ProviderType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

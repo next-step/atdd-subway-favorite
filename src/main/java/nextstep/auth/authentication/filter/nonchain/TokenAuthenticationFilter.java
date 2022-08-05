@@ -1,7 +1,8 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.filter.nonchain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.provider.AuthenticationProvider;
 import nextstep.auth.authentication.provider.ProviderManager;
 import nextstep.auth.authentication.provider.ProviderType;
