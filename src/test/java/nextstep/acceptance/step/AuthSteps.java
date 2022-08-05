@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.common.DataLoader.*;
+import static nextstep.common.dataloader.DataLoader.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthSteps {

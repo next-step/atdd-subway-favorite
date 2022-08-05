@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.acceptance.step.LineSteps.지하철_노선_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 기능")
@@ -170,7 +169,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 요청에_실패한다(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isIn(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 즐겨찾기_정보가_일치한다(Long... favorites) {

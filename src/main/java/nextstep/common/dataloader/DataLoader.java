@@ -1,4 +1,4 @@
-package nextstep.common;
+package nextstep.common.dataloader;
 
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;

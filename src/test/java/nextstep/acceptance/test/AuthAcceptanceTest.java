@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.common.DataLoader.ADMIN_EMAIL;
-import static nextstep.common.DataLoader.AGE;
-import static nextstep.common.DataLoader.MEMBER_EMAIL;
-import static nextstep.common.DataLoader.PASSWORD;
+import static nextstep.common.dataloader.DataLoader.ADMIN_EMAIL;
+import static nextstep.common.dataloader.DataLoader.AGE;
+import static nextstep.common.dataloader.DataLoader.MEMBER_EMAIL;
+import static nextstep.common.dataloader.DataLoader.PASSWORD;
 import static nextstep.acceptance.step.AuthSteps.로그인_되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 

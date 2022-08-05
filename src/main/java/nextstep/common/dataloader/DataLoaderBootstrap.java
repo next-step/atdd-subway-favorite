@@ -1,4 +1,4 @@
-package nextstep.common;
+package nextstep.common.dataloader;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
