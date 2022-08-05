@@ -1,6 +1,8 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,13 +12,15 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.FavoriteSteps.createFavoritesCreateParams;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 기능")
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 교대역;
     private Long 강남역;
@@ -51,12 +55,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기() {
         // when
-        var response = AuthSteps.givenUserRole()
-                .body(createFavoritesCreateParams(강남역, 남부터미널역))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        var response = 즐겨찾기_생성_요청(교대역, 강남역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -66,12 +65,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_예외1() {
         // when
-        var response = RestAssured.given().log().all()
-                .body(createFavoritesCreateParams(교대역, 강남역))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        var response = 로그인_없이_즐겨찾기_생성_요청();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -84,22 +78,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 존재하지_않는_역 = 9999999L;
 
         // when
-        var response = AuthSteps.givenUserRole()
-                .body(createFavoritesCreateParams(교대역, 존재하지_않는_역))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        var response = 즐겨찾기_생성_요청(강남역, 존재하지_않는_역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private Map<String, String> createFavoritesCreateParams(Long source, Long target) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source + "");
-        params.put("target", target + "");
-        return params;
+    private ExtractableResponse<Response> 로그인_없이_즐겨찾기_생성_요청() {
+        return RestAssured.given().log().all()
+                .body(createFavoritesCreateParams(교대역, 강남역))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
