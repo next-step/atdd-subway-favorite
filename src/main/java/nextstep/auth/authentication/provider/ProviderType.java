@@ -8,4 +8,8 @@ public enum ProviderType {
     public boolean isUserPasswordType() {
         return this == USER_PASSWORD;
     }
+
+    public boolean isJwtTokenType() {
+        return this == JWT_TOKEN;
+    }
 }

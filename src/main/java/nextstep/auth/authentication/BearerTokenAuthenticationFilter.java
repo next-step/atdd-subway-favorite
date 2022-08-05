@@ -1,37 +1,33 @@
 package nextstep.auth.authentication;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.authentication.provider.AuthenticationProvider;
+import nextstep.auth.authentication.provider.ProviderManager;
+import nextstep.auth.authentication.provider.ProviderType;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.io.IOException;
 
 @RequiredArgsConstructor
-public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
-    private final JwtTokenProvider jwtTokenProvider;
+public class BearerTokenAuthenticationFilter extends AuthenticationChainFilter {
+
+    private final ProviderManager providerManager;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    protected AuthenticationToken createToken(HttpServletRequest request) throws IOException {
         try {
             String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-            AuthenticationToken token = new AuthenticationToken(authCredentials, authCredentials);
-            if (!jwtTokenProvider.validateToken(token.getPrincipal())) {
-                throw new AuthenticationException();
-            }
-
-            String principal = jwtTokenProvider.getPrincipal(token.getPrincipal());
-            List<String> roles = jwtTokenProvider.getRoles(token.getPrincipal());
-
-            Authentication authentication = new Authentication(principal, roles);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return true;
+            return new AuthenticationToken(authCredentials, authCredentials);
         } catch (Exception e) {
-            return true;
+            return null;
         }
     }
+
+    @Override
+    protected Authentication authenticate(AuthenticationToken token) {
+        AuthenticationProvider authenticationProvider = providerManager.getAuthenticationProvider(ProviderType.JWT_TOKEN);
+        return authenticationProvider.authenticate(token);
+    }
+
 }
