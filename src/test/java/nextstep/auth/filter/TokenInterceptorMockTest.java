@@ -64,7 +64,7 @@ class TokenInterceptorMockTest {
 
     @Test
     @DisplayName("사용자 principal을 이용해 사용자의 정보를 찾습니다.")
-    void getEmailTest() throws IOException {
+    void getEmail() throws IOException {
         // when
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
@@ -76,7 +76,7 @@ class TokenInterceptorMockTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("사용자 principal을 이용해 사용자의 정보를 찾지 못하면 예외가 발생합니다.")
-    void getEmailValidationTest(String email) throws IOException {
+    void getEmail_notFoundUser(String email) throws IOException {
         request = createMockRequest(new TokenRequest(email, userPassword));
 
         assertThatThrownBy(
@@ -87,7 +87,7 @@ class TokenInterceptorMockTest {
 
     @Test
     @DisplayName("사용자 credential이 일치하는지 확인합니다.")
-    void getPasswordTest() throws IOException {
+    void getPassword() throws IOException {
         // when
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
@@ -99,7 +99,7 @@ class TokenInterceptorMockTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("사용자 credential이 일치하는지 않으면 예외가 발생합니다.")
-    void getPasswordValidationTest(String password) throws IOException {
+    void getPassword_incorrectPassword(String password) throws IOException {
         // when
         request = createMockRequest(new TokenRequest(userEmail, password));
 
@@ -111,7 +111,7 @@ class TokenInterceptorMockTest {
 
     @Test
     @DisplayName("사용자 정보를 컨텍스트에 담고, Response Status OK 응답을 보냅니다.")
-    void setResponseStatusTest() throws IOException {
+    void setResponseStatus() throws IOException {
         // when
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
@@ -139,7 +139,7 @@ class TokenInterceptorMockTest {
 
     @Test
     @DisplayName("사용자가 존재하지 않으면 예외가 발생한다.")
-    void preHandleValidationTest1() throws IOException {
+    void preHandle_notFoundUser() throws IOException {
         // given
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
@@ -152,7 +152,7 @@ class TokenInterceptorMockTest {
 
     @Test
     @DisplayName("비밀번호가 일치하지 않으면 예외가 발생한다.")
-    void preHandleValidationTest2() throws IOException {
+    void preHandle_incorrectPassword() throws IOException {
         // given
         String password = "not Equals Password";
         request = createMockRequest(new TokenRequest(userEmail, userPassword));

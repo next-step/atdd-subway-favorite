@@ -67,7 +67,7 @@ class UsernamePasswordFilterMockTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("사용자 principal을 이용해 사용자의 정보를 찾지 못하면 예외가 발생합니다.")
-    void getEmailValidationTest(String email) {
+    void getEmail_notFoundUser(String email) {
         getRequestParameterStubbing(USERNAME, email);
 
         assertThatThrownBy(
@@ -78,7 +78,7 @@ class UsernamePasswordFilterMockTest {
 
     @Test
     @DisplayName("사용자 credential이 일치하는지 확인합니다.")
-    void getPasswordTest() {
+    void getPassword() {
         // when
         getRequestParameterStubbing(USERNAME, userEmail);
         getRequestParameterStubbing(PASSWORD, userPassword);
@@ -91,7 +91,7 @@ class UsernamePasswordFilterMockTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("사용자 credential이 일치하는지 않으면 예외가 발생합니다.")
-    void getPasswordValidationTest(String password) {
+    void getPassword_incorrectPassword(String password) {
         // when
         getRequestParameterStubbing(USERNAME, userEmail);
         getRequestParameterStubbing(PASSWORD, password);
@@ -104,9 +104,9 @@ class UsernamePasswordFilterMockTest {
 
     @Test
     @DisplayName("사용자 정보를 컨텍스트에 담고, Response Status OK 응답을 보냅니다.")
-    void setResponseStatusTest() {
+    void setResponseStatus() {
         // when
-        setResponseStatus();
+        doNothing().when(response).setStatus(HttpStatus.OK.value());
 
         // then
         assertDoesNotThrow(
@@ -123,7 +123,7 @@ class UsernamePasswordFilterMockTest {
 
         // when
         when(userDetailService.loadUserByUsername(any())).thenReturn(USER);
-        setResponseStatus();
+        doNothing().when(response).setStatus(HttpStatus.OK.value());
 
         // then
         assertDoesNotThrow(
@@ -133,7 +133,7 @@ class UsernamePasswordFilterMockTest {
 
     @Test
     @DisplayName("사용자가 존재하지 않으면 예외가 발생한다.")
-    void preHandleValidationTest1() {
+    void preHandle_notFoundUser() {
         // given
         getRequestParameterStubbing(USERNAME, userEmail);
         getRequestParameterStubbing(PASSWORD, userPassword);
@@ -146,7 +146,7 @@ class UsernamePasswordFilterMockTest {
 
     @Test
     @DisplayName("비밀번호가 일치하지 않으면 예외가 발생한다.")
-    void preHandleValidationTest2() {
+    void preHandle_incorrectPassword() {
         // given
         String password = "not equals password";
         getRequestParameterStubbing(USERNAME, userEmail);
@@ -158,10 +158,6 @@ class UsernamePasswordFilterMockTest {
         assertThatThrownBy(
             () -> filter.preHandle(request, response, handler)
         ).isInstanceOf(AuthenticationException.class);
-    }
-
-    private void setResponseStatus() {
-        doNothing().when(response).setStatus(HttpStatus.OK.value());
     }
 
     private OngoingStubbing<String> getRequestParameterStubbing(String parma, String get) {

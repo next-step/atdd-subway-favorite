@@ -73,7 +73,7 @@ class BearerAuthenticationFilterMockTest {
 
     @Test
     @DisplayName("토큰이 유효한지 검사합니다.")
-    void validTokenValidation() {
+    void validToken_setInvalidToken() {
         // given
         String invalidToken = PRINCIPAL + CREDENTIALS;
 
@@ -85,7 +85,7 @@ class BearerAuthenticationFilterMockTest {
 
     @Test
     @DisplayName("인증 정보를 가져옵니다.")
-    void getAuthentication1() {
+    void getAuthentication_getUserInfo() {
 
         // when & then
         Authentication authentication = assertDoesNotThrow(
@@ -110,7 +110,7 @@ class BearerAuthenticationFilterMockTest {
 
     @Test
     @DisplayName("사용자의 정보가 존재하지 않는다면 false를 반환합니다.")
-    void validUserValidation1() {
+    void validUser_notFountUser() {
         // given
         Authentication authentication = new Authentication(PRINCIPAL, CREDENTIALS);
 
@@ -122,15 +122,6 @@ class BearerAuthenticationFilterMockTest {
         assertThat(result).isFalse();
     }
 
-    private JwtTokenProvider getProvider() throws IllegalAccessException {
-        JwtTokenProvider provider = new JwtTokenProvider();
-        // secret-key 설정
-        FieldUtils.writeField(provider, "secretKey", "atdd-secret-key", true);
-        FieldUtils.writeField(provider, "validityInMilliseconds", 3600000, true);
-
-        return provider;
-    }
-
     @Test
     @DisplayName("prehadle을 실행합니다.")
     void preHandleTest() throws Exception {
@@ -140,5 +131,14 @@ class BearerAuthenticationFilterMockTest {
         when(userDetailService.isUserExist(PRINCIPAL)).thenReturn(true);
 
         authorizationFilter.preHandle(request, response, handler);
+    }
+
+    private JwtTokenProvider getProvider() throws IllegalAccessException {
+        JwtTokenProvider provider = new JwtTokenProvider();
+        // secret-key 설정
+        FieldUtils.writeField(provider, "secretKey", "atdd-secret-key", true);
+        FieldUtils.writeField(provider, "validityInMilliseconds", 3600000, true);
+
+        return provider;
     }
 }

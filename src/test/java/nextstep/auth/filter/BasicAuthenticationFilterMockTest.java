@@ -47,7 +47,7 @@ class BasicAuthenticationFilterMockTest {
     }
 
 
-    private MockHttpServletRequest createMockRequest() throws IOException {
+    private MockHttpServletRequest createMockRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         Base64 encoder = new Base64(0, new byte[0]);
         String encodedUserPass = encoder.encodeToString(BasicAuthenticationFilterMockTest.TOKEN.getBytes());
@@ -75,7 +75,7 @@ class BasicAuthenticationFilterMockTest {
 
     @Test
     @DisplayName("토큰이 유효한지 검사합니다.")
-    void validTokenValidation() {
+    void validToken_setInvalidToken() {
         // given
         String invalidToken = PRINCIPAL + CREDENTIALS;
 
@@ -86,7 +86,7 @@ class BasicAuthenticationFilterMockTest {
 
     @Test
     @DisplayName("인증 정보를 가져옵니다.")
-    void getAuthentication1() {
+    void getAuthentication() {
 
         // when & then
         Authentication authentication = assertDoesNotThrow(
@@ -109,7 +109,7 @@ class BasicAuthenticationFilterMockTest {
 
     @Test
     @DisplayName("사용자의 정보가 존재하지 않는다면 false를 반환합니다.")
-    void validUserValidation1() {
+    void validUser_notFoundUser() {
         // given
         Authentication authentication = null;
 
@@ -120,7 +120,7 @@ class BasicAuthenticationFilterMockTest {
 
     @Test
     @DisplayName("비밀번호가 틀리면 false를 반환합니다.")
-    void validUserValidation2() {
+    void validUser_incorrectPassword() {
         // given
         String otherPassword = "otherPassword";
         Authentication authentication = new Authentication(PRINCIPAL, otherPassword);
