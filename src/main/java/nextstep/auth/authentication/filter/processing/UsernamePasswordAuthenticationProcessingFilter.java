@@ -2,9 +2,9 @@ package nextstep.auth.authentication.filter.processing;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,10 +14,10 @@ public class UsernamePasswordAuthenticationProcessingFilter extends Authenticati
 
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthenticationProcessingFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public UsernamePasswordAuthenticationProcessingFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -30,13 +30,13 @@ public class UsernamePasswordAuthenticationProcessingFilter extends Authenticati
 
     @Override
     protected Authentication authenticate(AuthenticationToken authenticationToken) {
-        var loginMember = loginMemberService.loadUserByUsername(authenticationToken.getPrincipal());
+        var userDetails = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
-        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+        if (!userDetails.getPassword().equals(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getUsername(), userDetails.getAuthorities());
     }
 
     @Override

@@ -2,11 +2,11 @@ package nextstep.auth.authentication.filter.processing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,14 +28,14 @@ class TokenAuthenticationProcessingFilterTest {
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
     private TokenAuthenticationProcessingFilter filter;
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        loginMemberService = mock(LoginMemberService.class);
+        userDetailsService = mock(UserDetailsService.class);
         jwtTokenProvider = mock(JwtTokenProvider.class);
-        filter = new TokenAuthenticationProcessingFilter(loginMemberService, jwtTokenProvider);
+        filter = new TokenAuthenticationProcessingFilter(userDetailsService, jwtTokenProvider);
     }
 
     @Test
@@ -50,7 +50,7 @@ class TokenAuthenticationProcessingFilterTest {
 
     @Test
     void authenticate() {
-        when(loginMemberService.loadUserByUsername(EMAIL))
+        when(userDetailsService.loadUserByUsername(EMAIL))
                 .thenReturn(new LoginMember(EMAIL, PASSWORD, List.of("ROLE_ADMIN")));
 
         var authentication = filter.authenticate(new AuthenticationToken(EMAIL, PASSWORD));

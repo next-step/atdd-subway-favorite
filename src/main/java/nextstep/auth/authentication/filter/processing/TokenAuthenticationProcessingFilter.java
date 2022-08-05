@@ -3,12 +3,11 @@ package nextstep.auth.authentication.filter.processing;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +16,11 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationProcessingFilter(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public TokenAuthenticationProcessingFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -40,17 +39,17 @@ public class TokenAuthenticationProcessingFilter extends AuthenticationProcessin
     @Override
     protected Authentication authenticate(AuthenticationToken authenticationToken) {
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(authenticationToken.getPrincipal());
+        var userDetails = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
-        if (loginMember == null) {
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+        if (!userDetails.getPassword().equals(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getUsername(), userDetails.getAuthorities());
     }
 
     @Override

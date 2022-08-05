@@ -1,9 +1,9 @@
 package nextstep.auth.authentication.filter.processing;
 
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,12 +24,12 @@ class UsernamePasswordAuthenticationProcessingFilterTest {
     private static final String PASSWORD = "password";
 
     private UsernamePasswordAuthenticationProcessingFilter filter;
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
 
     @BeforeEach
     void setUp() {
-        loginMemberService = mock(LoginMemberService.class);
-        filter = new UsernamePasswordAuthenticationProcessingFilter(loginMemberService);
+        userDetailsService = mock(UserDetailsService.class);
+        filter = new UsernamePasswordAuthenticationProcessingFilter(userDetailsService);
     }
 
 
@@ -45,7 +45,7 @@ class UsernamePasswordAuthenticationProcessingFilterTest {
 
     @Test
     void authenticate() {
-        when(loginMemberService.loadUserByUsername(EMAIL))
+        when(userDetailsService.loadUserByUsername(EMAIL))
                 .thenReturn(new LoginMember(EMAIL, PASSWORD, List.of("ROLE_ADMIN")));
 
         var authentication = filter.authenticate(new AuthenticationToken(EMAIL, PASSWORD));

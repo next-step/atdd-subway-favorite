@@ -1,21 +1,17 @@
 package nextstep.auth.authentication.filter.checking;
 
-import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.AuthorizationExtractor;
-import nextstep.auth.authentication.AuthorizationType;
+import nextstep.auth.authentication.*;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.LoginMemberService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class BasicAuthenticationFilter extends AuthenticationCheckingFilter {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -32,16 +28,16 @@ public class BasicAuthenticationFilter extends AuthenticationCheckingFilter {
 
     @Override
     protected Authentication authenticate(AuthenticationToken authenticationToken) {
-        var loginMember = loginMemberService.loadUserByUsername(authenticationToken.getPrincipal());
+        var userDetails = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
-        if (loginMember == null) {
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+        if (!userDetails.getPassword().equals(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getUsername(), userDetails.getAuthorities());
     }
 }
