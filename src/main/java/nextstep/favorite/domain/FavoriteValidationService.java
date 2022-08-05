@@ -1,6 +1,7 @@
 package nextstep.favorite.domain;
 
-import nextstep.auth.secured.RoleAuthenticationException;
+import nextstep.favorite.domain.exception.CantAddFavoriteException;
+import nextstep.favorite.domain.exception.NotMyFavoriteException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,20 +17,24 @@ public class FavoriteValidationService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public void validateDuplicate(Long memberId, Long source, Long target) {
+    public void validateAddedFavorite(Long memberId, Long source, Long target) {
+        if (source.equals(target)) {
+            throw new CantAddFavoriteException("즐겨찾기와 출발점과 종점이 같을 수 없습니다.");
+        }
+
         List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
 
         favorites.stream()
                 .filter(it -> it.match(source, target))
                 .findAny()
                 .ifPresent(it -> {
-                    throw new IllegalArgumentException();
+                    throw new CantAddFavoriteException("이미 존재하는 즐겨찾기입니다.");
                 });
     }
 
     public void validateOwner(Favorite favorite, Long memberId) {
         if (!favorite.belongsTo(memberId)) {
-            throw new RoleAuthenticationException();
+            throw new NotMyFavoriteException("내 즐겨찾기가 아닙니다.");
         }
     }
 }
