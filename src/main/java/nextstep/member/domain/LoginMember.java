@@ -1,9 +1,11 @@
 package nextstep.member.domain;
 
 
+import nextstep.auth.authentication.UserDetails;
+
 import java.util.List;
 
-public class LoginMember {
+public class LoginMember implements UserDetails {
     private String email;
     private String password;
     private List<String> authorities;
@@ -31,6 +33,16 @@ public class LoginMember {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     public List<String> getAuthorities() {
