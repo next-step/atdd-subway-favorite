@@ -63,14 +63,7 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
-        isFavorites(favorites, favoriteId);
-        favoriteRepository.deleteById(favoriteId);
-    }
-
-    private void isFavorites(List<Favorite> favorites, Long favoriteId) {
-        favorites.stream()
-                .filter(favorite -> favorite.getId().equals(favoriteId))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("해당 즐겨찾기는 삭제할 수 없습니다."));
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId).orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 찾을 수 없습니다."));
+        favoriteRepository.delete(favorite);
     }
 }
