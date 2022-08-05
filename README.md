@@ -7,7 +7,14 @@
   - [x] UsernamePasswordAuthenticationFilter 구현
   - [x] BearerTokenAuthenticationFilter 구현
   - [x] AuthAcceptanceTest 테스트를 통해 구현 확인
-- [] 지하철역, 노선, 구간을 변경하는 API는 관리자만 이용 가능하도록 수정
+- [x] 지하철역, 노선, 구간을 변경하는 API는 관리자만 이용 가능하도록 수정
   - Token을 이용한 로그인을 통해 관리자 여부를 판단
   - 해당 API: 생성, 수정, 삭제 API
   - 조회 API는 권한이 필요없음
+
+# 2단계 - 인증 로직 리팩터링
+## 기능 요구사항
+- [x] XXXAuthenticationFilter의 구조화
+  - [x] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter
+  - [x] BasicAuthenticationFilter와 BearerTokenAuthenticationFilter
+- [x] auth 패키지와 member 패키지에 대한 의존 제거

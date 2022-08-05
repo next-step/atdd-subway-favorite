@@ -1,5 +1,7 @@
 package nextstep.auth.secured;
 
+import nextstep.member.domain.RoleType;
+
 import java.lang.annotation.*;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
@@ -7,5 +9,5 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface Secured {
-    String[] value();
+    RoleType[] value();
 }

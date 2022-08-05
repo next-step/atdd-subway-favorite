@@ -1,15 +1,15 @@
-package nextstep.auth.authentication;
+package nextstep.auth.interceptor.chain;
 
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.AuthorizationExtractor;
+import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
+public class BearerTokenAuthenticationFilter extends AuthenticationChainInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -17,17 +17,18 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
+    protected Authentication createAuthentication(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
-        if (!jwtTokenProvider.validateToken(token)) {
-            return true;
-        }
+        validationToken(token);
 
-        Authentication authentication = createAuthentication(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return true;
+        return createAuthentication(token);
+    }
+
+    private void validationToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException();
+        }
     }
 
     private Authentication createAuthentication(String token) {
