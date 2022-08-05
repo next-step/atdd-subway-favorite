@@ -3,14 +3,11 @@ package nextstep.subway.applicaion;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import nextstep.member.domain.User;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.User;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
-import nextstep.subway.common.exception.CustomException;
-import nextstep.subway.common.exception.StationErrorMessage;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -36,9 +33,7 @@ public class FavoriteService {
     Station sourceStation = stationService.findById(favoriteRequest.getSource());
     Station targetStation = stationService.findById(favoriteRequest.getTarget());
 
-    if (sourceStation.equals(targetStation)) {
-      throw new CustomException(StationErrorMessage.STATION_DUPLICATION);
-    }
+    sourceStation.isStationEquals(targetStation);
 
     MemberResponse member = memberService.findMember(user.getEmail());
 
@@ -47,13 +42,15 @@ public class FavoriteService {
   }
 
   public List<FavoriteResponse> getFavorite(User user) {
-    MemberResponse member = memberService.findMember(user.getEmail());
-
-    List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+    List<Favorite> favorites = favoriteRepository.findByMemberId(getMemberResponse(user.getEmail()).getId());
 
     return favorites.stream()
         .map(FavoriteResponse::of)
         .collect(toList());
+  }
+
+  private MemberResponse getMemberResponse(String email) {
+    return memberService.findMember(email);
   }
 
   @Transactional
