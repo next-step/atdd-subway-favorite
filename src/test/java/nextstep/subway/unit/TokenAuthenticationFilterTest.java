@@ -6,7 +6,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.interceptor.TokenAuthenticationFilter;
 import nextstep.auth.token.TokenRequest;
-import nextstep.member.application.MemberDetailsService;
+import nextstep.member.application.detailservice.MemberDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

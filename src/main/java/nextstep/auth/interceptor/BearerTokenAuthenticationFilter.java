@@ -4,13 +4,17 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
+import nextstep.auth.exception.UnauthorizedException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.userdetails.User;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilter {
+
+    private static final String BEARER_DELIMITER = "Bearer ";
     private JwtTokenProvider jwtTokenProvider;
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -26,10 +30,14 @@ public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilte
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-
-        if (!jwtTokenProvider.validateToken(token)) {
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorization == null || !authorization.startsWith(BEARER_DELIMITER)) {
             throw new AuthenticationException();
+        }
+
+        String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new UnauthorizedException();
         }
 
         String principal = jwtTokenProvider.getPrincipal(token);

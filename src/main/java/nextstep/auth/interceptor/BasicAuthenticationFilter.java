@@ -15,6 +15,7 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
     private static final int PRINCIPAL_INDEX = 0;
     private static final int CREDENTIALS_INDEX = 1;
     private static final int USER_INFO_SIZE = 2;
+    private static final String DELIMITER = ":";
 
     private UserDetailsService userDetailsService;
 
@@ -40,7 +41,7 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
-        String[] splits = authHeader.split(":");
+        String[] splits = authHeader.split(DELIMITER);
         if(isInValidSize(splits)) {
             throw new AuthenticationException();
         }

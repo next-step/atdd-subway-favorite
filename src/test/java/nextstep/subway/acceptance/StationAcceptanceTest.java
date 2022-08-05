@@ -45,7 +45,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         List<String> stationNames =
-                RestAssured.given().log().all()
+                given(accessToken)
                         .when().get("/stations")
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
@@ -65,7 +65,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_생성_요청(accessToken, "역삼역");
 
         // when
-        ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
+        ExtractableResponse<Response> stationResponse = given(accessToken)
                 .when().get("/stations")
                 .then().log().all()
                 .extract();
@@ -96,7 +96,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         List<String> stationNames =
-                RestAssured.given().log().all()
+                given(accessToken)
                         .when().get("/stations")
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
