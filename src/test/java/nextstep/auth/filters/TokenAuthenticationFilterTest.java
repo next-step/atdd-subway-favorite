@@ -3,6 +3,7 @@ package nextstep.auth.filters;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.filters.converter.TokenAuthenticationConverter;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = {JwtTokenProvider.class})
+@SpringBootTest(classes = {JwtTokenProvider.class, TokenAuthenticationConverter.class})
 class TokenAuthenticationFilterTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -32,12 +33,14 @@ class TokenAuthenticationFilterTest {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private TokenAuthenticationConverter authenticationConverter;
 
     private TokenAuthenticationFilter authenticationFilter;
 
     @BeforeEach
     void setUp() {
-        authenticationFilter = new TokenAuthenticationFilter(null, jwtTokenProvider);
+        authenticationFilter = new TokenAuthenticationFilter(null, jwtTokenProvider, authenticationConverter);
     }
 
     @Test
