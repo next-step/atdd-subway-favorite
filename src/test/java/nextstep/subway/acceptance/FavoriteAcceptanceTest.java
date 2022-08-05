@@ -75,13 +75,27 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_예외2() {
         // given
-        Long 존재하지_않는_역 = 9999999L;
+        Long 존재하지_않는_역 = Long.MAX_VALUE;
 
         // when
         var response = 즐겨찾기_생성_요청(강남역, 존재하지_않는_역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("즐겨찾기를 중복으로 할 수 없다.")
+    @Test
+    void 즐겨찾기_예외3() {
+        // given
+        var response = 즐겨찾기_생성_요청(교대역, 강남역);
+
+        // when
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        var duplicateResponse = 즐겨찾기_생성_요청(교대역, 강남역);
+
+        // then
+        assertThat(duplicateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 로그인_없이_즐겨찾기_생성_요청() {
