@@ -18,12 +18,19 @@ public class AuthorizationFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
         String token = strategy.getToken(request);
 
         if (token == null || token.isBlank()) {
             return true;
         }
+
+        Authentication authentication = extractAuthentication(token);
+
+        setSecurityContext(authentication);
+        return true;
+    }
+
+    private Authentication extractAuthentication(String token) {
 
         if (!strategy.validToken(token)) {
             throw new AuthenticationException();
@@ -35,10 +42,7 @@ public class AuthorizationFilter implements HandlerInterceptor {
             throw new AuthenticationException();
         }
 
-        Authentication authentication = strategy.getAuthentication(user);
-
-        setSecurityContext(authentication);
-        return true;
+        return strategy.getAuthentication(user);
     }
 
     private void setSecurityContext(Authentication authentication) {
