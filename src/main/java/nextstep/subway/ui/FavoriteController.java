@@ -36,6 +36,6 @@ public class FavoriteController {
     @Secured(value = {RoleType.ROLE_ADMIN, RoleType.ROLE_MEMBER})
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal final UserDetails userDetails) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(favoriteService.getFavorites(userDetails));
     }
 }
