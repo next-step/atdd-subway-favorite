@@ -12,8 +12,10 @@ import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final MemberRepository memberRepository;
@@ -26,6 +28,7 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(final UserDetails userDetails, final FavoriteRequest favoriteRequest) {
         final Member member = getMember(userDetails);
 
@@ -55,6 +58,26 @@ public class FavoriteService {
             .map(favorite -> new FavoriteResponse(favorite.getId(), getFavoriteStation(favorite.getSource()),
                 getFavoriteStation(favorite.getTarget())))
             .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void removeFavorites(final UserDetails userDetails, final long id) {
+        final Member member = getMember(userDetails);
+
+        final List<Favorite> favorites = favoriteRepository.findAllByMember(member);
+        if (isNotOwn(id, favorites)) {
+            throw new NotFoundException("멤버의 즐겨찾기 id가 아닙니다.");
+        }
+
+        final Favorite favorite = favoriteRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("즐겨찾기 정보를 찾을 수 없습니다."));
+
+        favoriteRepository.delete(favorite);
+    }
+
+    private boolean isNotOwn(final long id, final List<Favorite> favorites) {
+        return favorites.stream()
+            .noneMatch(favorite -> favorite.getId().equals(id));
     }
 
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.List;
 import nextstep.auth.user.User;
 import nextstep.member.domain.Member;
@@ -12,6 +13,7 @@ import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +64,7 @@ class FavoriteServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 전체 조회")
-    void getStation() {
+    void getFavorite() {
         //given
         favoriteService.createFavorite(user, favoriteRequest);
 
@@ -71,6 +73,35 @@ class FavoriteServiceTest {
 
         //then
         assertThat(favorites).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제 시 멤버의 즐겨찾기가 아닌경우 예외")
+    void notMemberFavoriteException() {
+        //given
+        favoriteService.createFavorite(user, favoriteRequest);
+        final User userDetails = User.of("member@email.com", "password", List.of(RoleType.ROLE_MEMBER.name()));
+
+        //then
+        assertThatExceptionOfType(RuntimeException.class)
+            .isThrownBy(() -> favoriteService.removeFavorites(userDetails, 1))
+            .withMessage("멤버의 즐겨찾기 id가 아닙니다.");
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제 시 멤버의 즐겨찾기가 아닌경우 예외")
+    void removeFavorite() {
+        //given
+        final FavoriteResponse favorite = favoriteService.createFavorite(user, favoriteRequest);
+
+        //then
+        favoriteService.removeFavorites(user, favorite.getId());
+
+        favoriteRepository.flush();
+
+        final List<FavoriteResponse> favorites = favoriteService.getFavorites(user);
+
+        assertThat(favorites).hasSize(0);
     }
 
 }
