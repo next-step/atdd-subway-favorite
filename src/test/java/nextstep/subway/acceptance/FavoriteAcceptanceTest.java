@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AuthSteps.권한검사에_실패한다;
+import static nextstep.subway.acceptance.AuthSteps.로그인이_필요하다;
 import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
@@ -52,40 +54,42 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("로그인하면 즐겨찾기를 추가할 수 있다.")
     @Test
-    void 즐겨찾기() {
+    void 즐겨찾기_생성() {
         // when
-        var response = 즐겨찾기_생성_요청(교대역, 강남역);
+        var createResponse = 즐겨찾기_생성_요청(교대역, 강남역);
+        Long 즐겨찾기1번 = createResponse.jsonPath().getLong("id");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        즐겨찾기_정보가_일치한다(즐겨찾기1번);
     }
 
-    @DisplayName("로그인없이 즐겨찾기 할 수 없다.")
+    @DisplayName("로그인없이 즐겨찾기를 추가할 수 없다.")
     @Test
-    void 즐겨찾기_예외1() {
+    void 즐겨찾기_생성_예외1() {
         // when
-        var response = 로그인_없이_즐겨찾기_생성_요청();
+        var createResponse = 로그인_없이_즐겨찾기_생성_요청();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인이_필요하다(createResponse);
     }
 
-    @DisplayName("존재하지 않는 역을 즐겨찾기 할 수 없다.")
+    @DisplayName("존재하지 않는 역을 즐겨찾기 추가할 수 없다.")
     @Test
-    void 즐겨찾기_예외2() {
+    void 즐겨찾기_생성_예외2() {
         // given
         Long 존재하지_않는_역 = Long.MAX_VALUE;
 
         // when
-        var response = 즐겨찾기_생성_요청(강남역, 존재하지_않는_역);
+        var createResponse = 즐겨찾기_생성_요청(강남역, 존재하지_않는_역);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        요청에_실패한다(createResponse);
     }
 
-    @DisplayName("즐겨찾기를 중복으로 할 수 없다.")
+    @DisplayName("즐겨찾기를 중복으로 추가할 수 없다.")
     @Test
-    void 즐겨찾기_예외3() {
+    void 즐겨찾기_생성_예외3() {
         // given
         var response = 즐겨찾기_생성_요청(교대역, 강남역);
 
@@ -94,7 +98,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var duplicateResponse = 즐겨찾기_생성_요청(교대역, 강남역);
 
         // then
-        assertThat(duplicateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        요청에_실패한다(duplicateResponse);
     }
 
     @DisplayName("로그인하면 즐겨찾기를 조회할 수 있다.")
@@ -104,13 +108,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 즐겨찾기1번 = 즐겨찾기_생성_요청(교대역, 강남역).jsonPath().getLong("id");
         Long 즐겨찾기2번 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
 
-        // when
-        var response = 즐겨찾기_조회_요청();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("id", Long.class))
-                .containsExactlyInAnyOrder(즐겨찾기1번, 즐겨찾기2번);
+        // when + then
+        즐겨찾기_정보가_일치한다(즐겨찾기1번, 즐겨찾기2번);
     }
 
     @DisplayName("로그인하면 즐겨찾기를 삭제할 수 있다.")
@@ -125,11 +124,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
-        var response = 즐겨찾기_조회_요청();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("id", Long.class))
-                .containsExactlyInAnyOrder(즐겨찾기2번);
+        즐겨찾기_정보가_일치한다(즐겨찾기2번);
     }
 
     @DisplayName("다른 유저의 즐겨찾기를 삭제할 수 없다.")
@@ -139,10 +134,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 다른_유저_즐겨찾기 = 즐겨찾기_생성_요청_관리자(교대역, 강남역).jsonPath().getLong("id");
 
         // when
-        var deleteResponse = 즐겨찾기_삭제_요청(다른_유저_즐겨찾기);
+        var invalidDeleteResponse = 즐겨찾기_삭제_요청(다른_유저_즐겨찾기);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        권한검사에_실패한다(invalidDeleteResponse);
     }
 
     @DisplayName("존재하지 않는 즐겨찾기를 삭제할 수 없다.")
@@ -152,10 +147,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 존재하지_않는_즐겨찾기 = Long.MAX_VALUE;
 
         // when
-        var deleteResponse = 즐겨찾기_삭제_요청(존재하지_않는_즐겨찾기);
+        var invalidDeleteResponse = 즐겨찾기_삭제_요청(존재하지_않는_즐겨찾기);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        요청에_실패한다(invalidDeleteResponse);
     }
 
     private ExtractableResponse<Response> 로그인_없이_즐겨찾기_생성_요청() {
@@ -173,5 +168,17 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         params.put("downStationId", downStationId + "");
         params.put("distance", distance + "");
         return params;
+    }
+
+    private void 요청에_실패한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 즐겨찾기_정보가_일치한다(Long... favorites) {
+        var response = 즐겨찾기_조회_요청();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("id", Long.class))
+                .containsExactlyInAnyOrder(favorites);
     }
 }
