@@ -26,6 +26,10 @@ public class Favorite {
         this.memberId = memberId;
     }
 
+    public boolean match(Long source, Long target) {
+        return this.source.equals(source) && this.target.equals(target);
+    }
+
     public Long getId() {
         return id;
     }
