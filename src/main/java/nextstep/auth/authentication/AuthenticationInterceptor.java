@@ -21,14 +21,15 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 		Exception {
 		AuthenticationToken authenticationToken = convert(request);
 		Authentication authentication = authenticate(authenticationToken);
-		return HandlerInterceptor.super.preHandle(request, response, handler);
+		return afterAuthenticate(authentication, response);
 	}
 
-	public AuthenticationToken convert(HttpServletRequest request) {
+	public AuthenticationToken convert(HttpServletRequest request) throws Exception {
 		return new AuthenticationToken();
 	}
 
-	public boolean afterAuthenticate(Authentication authentication) {
+	public boolean afterAuthenticate(Authentication authentication, HttpServletResponse response) throws
+		Exception {
 		return true;
 	}
 
