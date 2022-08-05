@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AuthSteps.given;
+import static nextstep.subway.acceptance.AuthSteps.베어러_인증으로_내_회원_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
@@ -94,4 +95,13 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static void 회원_정보_수정_완료(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 회원_정보_삭제_완료(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
 }
