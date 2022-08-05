@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.given;
 import java.util.List;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationType;
-import nextstep.auth.authentication.user.User;
+import nextstep.member.domain.User;
 import nextstep.auth.authentication.user.UserDetails;
 import nextstep.auth.authentication.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
