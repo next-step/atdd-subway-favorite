@@ -1,5 +1,7 @@
 package nextstep.subway.applicaion;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.auth.user.UserDetails;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -26,17 +28,34 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(final UserDetails userDetails, final FavoriteRequest favoriteRequest) {
-        final Member member = memberRepository.findByEmail(userDetails.getEmail())
-            .orElseThrow(() -> new NotFoundException("해당 유저를 찾을 수 없습니다."));
+        final Member member = getMember(userDetails);
 
         final Favorite save = favoriteRepository.save(new Favorite(member, favoriteRequest.getSource(), favoriteRequest.getTarget()));
-        final Station sourceStation = stationService.findById(save.getSource());
-        final Station targetStation = stationService.findById(save.getTarget());
 
-        final StationResponse source = stationService.createStationResponse(sourceStation);
-        final StationResponse target = stationService.createStationResponse(targetStation);
+        final StationResponse source = getFavoriteStation(save.getSource());
+        final StationResponse target = getFavoriteStation(save.getTarget());
 
         return new FavoriteResponse(save.getId(), source, target);
+    }
+
+    private StationResponse getFavoriteStation(final Long save) {
+        return StationResponse.of(stationService.findById(save));
+    }
+
+    private Member getMember(final UserDetails userDetails) {
+        return memberRepository.findByEmail(userDetails.getEmail())
+            .orElseThrow(() -> new NotFoundException("해당 유저를 찾을 수 없습니다."));
+    }
+
+    public List<FavoriteResponse> getFavorites(final UserDetails userDetails) {
+        final Member member = getMember(userDetails);
+
+        final List<Favorite> favorites = favoriteRepository.findAllByMember(member);
+
+        return favorites.stream()
+            .map(favorite -> new FavoriteResponse(favorite.getId(), getFavoriteStation(favorite.getSource()),
+                getFavoriteStation(favorite.getTarget())))
+            .collect(Collectors.toList());
     }
 
 }
