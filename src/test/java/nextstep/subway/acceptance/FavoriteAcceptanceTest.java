@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기 등록")
     void createFavorite() {
-        final ExtractableResponse<Response> response = 즐겨찾기_등록();
+        final ExtractableResponse<Response> response = 즐겨찾기_등록(favoriteParams());
         final long sourceId = response.jsonPath().getLong("source.id");
         final long targetId = response.jsonPath().getLong("target.id");
 
@@ -47,9 +48,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기 등록 시 없는 역 등록할 경우 예외")
+    void createFavoriteException() {
+        final ExtractableResponse<Response> response = 즐겨찾기_등록(Map.of(
+            "source", Long.MAX_VALUE,
+            "target", Long.MAX_VALUE
+        ));
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
     @DisplayName("즐겨찾기 조회")
     void getFavorite() {
-        즐겨찾기_등록();
+        //given
+        즐겨찾기_등록(favoriteParams());
+
+        //when
+        final ExtractableResponse<Response> response = 즐겨찾기_조회();
+
+        //then
+        final List<String> sources = response.jsonPath().getList("source.name", String.class);
+        final List<String> targets = response.jsonPath().getList("target.name", String.class);
+        assertThat(sources).hasSize(1);
+        assertThat(targets).hasSize(1);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회() {
@@ -59,9 +81,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_등록() {
+    private ExtractableResponse<Response> 즐겨찾기_등록(Map<String, Long> params) {
         return AuthCommon.given(관리자_토큰)
-            .body(favoriteParams())
+            .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/favorites")
             .then().log().all()
