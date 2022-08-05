@@ -10,11 +10,11 @@ import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BasicFilter implements AuthorizationStrategy {
+public class BasicAuthorizationFilter implements AuthorizationStrategy {
     private static final String COLON = ":";
     private final UserDetailService userDetailService;
 
-    public BasicFilter(UserDetailService userDetailService) {
+    public BasicAuthorizationFilter(UserDetailService userDetailService) {
         this.userDetailService = userDetailService;
     }
 

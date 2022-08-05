@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 class BasicAuthenticationFilterMockTest {
 
     HttpServletRequest request;
-    BasicFilter basicFilter;
+    BasicAuthorizationFilter basicFilter;
     UserDetailService userDetailService;
     AuthorizationFilter authorizationFilter;
 
@@ -42,7 +42,7 @@ class BasicAuthenticationFilterMockTest {
     void setUp() throws IOException {
         request = createMockRequest();
         userDetailService = mock(UserDetailService.class);
-        basicFilter = new BasicFilter(userDetailService);
+        basicFilter = new BasicAuthorizationFilter(userDetailService);
         authorizationFilter = new AuthorizationFilter(basicFilter);
     }
 

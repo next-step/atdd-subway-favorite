@@ -4,9 +4,9 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.filter.AuthenticationFilter;
 import nextstep.auth.filter.AuthorizationFilter;
-import nextstep.auth.filter.BasicFilter;
-import nextstep.auth.filter.BearerFilter;
-import nextstep.auth.filter.TokenAuthenticationInterceptor;
+import nextstep.auth.filter.BasicAuthorizationFilter;
+import nextstep.auth.filter.BearerAuthorizationFilter;
+import nextstep.auth.filter.TokenAuthenticationFilter;
 import nextstep.auth.filter.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.member.UserDetailService;
 import nextstep.auth.token.JwtTokenProvider;
@@ -42,15 +42,15 @@ public class AuthConfig implements WebMvcConfigurer {
     }
 
     private AuthorizationFilter bearerFilter() {
-        return new AuthorizationFilter(new BearerFilter(jwtTokenProvider, userDetailService));
+        return new AuthorizationFilter(new BearerAuthorizationFilter(jwtTokenProvider, userDetailService));
     }
 
     private AuthorizationFilter basicFilter() {
-        return new AuthorizationFilter(new BasicFilter(userDetailService));
+        return new AuthorizationFilter(new BasicAuthorizationFilter(userDetailService));
     }
 
     private AuthenticationFilter tokenFilter() {
-        return new AuthenticationFilter(new TokenAuthenticationInterceptor(jwtTokenProvider), userDetailService);
+        return new AuthenticationFilter(new TokenAuthenticationFilter(jwtTokenProvider), userDetailService);
     }
 
     private AuthenticationFilter usernamePasswordFilter() {

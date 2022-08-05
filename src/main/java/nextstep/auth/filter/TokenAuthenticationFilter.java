@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationInterceptor implements AuthenticationFilterStrategy {
+public class TokenAuthenticationFilter implements AuthenticationFilterStrategy {
     private final JwtTokenProvider provider;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public TokenAuthenticationInterceptor(JwtTokenProvider provider) {
+    public TokenAuthenticationFilter(JwtTokenProvider provider) {
         this.provider = provider;
     }
 
