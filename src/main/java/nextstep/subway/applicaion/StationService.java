@@ -30,6 +30,10 @@ public class StationService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
+    public List<Station> findByIds(List<Long> stationIds) {
+        return stationRepository.findByIdIn(stationIds);
+    }
+
     public List<StationResponse> findAllStations() {
         return stationRepository.findAll().stream()
                 .map(StationResponse::of)
@@ -39,9 +43,5 @@ public class StationService {
     @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    public StationResponse createStationResponse(Station station) {
-        return StationResponse.of(station);
     }
 }
