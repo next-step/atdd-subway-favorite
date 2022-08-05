@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -27,7 +28,8 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal User user, @RequestBody FavoriteRequest request) {
+    public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal User user,
+                                                           @RequestBody @Valid FavoriteRequest request) {
         FavoriteResponse favorite = favoriteService.createFavorite(user, request);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
