@@ -3,10 +3,11 @@ package nextstep.subway.applicaion.dto;
 public class FavoriteResponse {
 
     private final long id;
-    private final long source;
-    private final long target;
+    private final StationResponse source;
+    private final StationResponse target;
 
-    public FavoriteResponse(final long id, final long source, final long target) {
+
+    public FavoriteResponse(final long id, final StationResponse source, final StationResponse target) {
         this.id = id;
         this.source = source;
         this.target = target;
@@ -16,11 +17,11 @@ public class FavoriteResponse {
         return id;
     }
 
-    public long getSource() {
+    public StationResponse getSource() {
         return source;
     }
 
-    public long getTarget() {
+    public StationResponse getTarget() {
         return target;
     }
 
