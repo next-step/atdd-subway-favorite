@@ -1,7 +1,9 @@
 package nextstep.auth.filter;
 
 import nextstep.auth.context.Authentication;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.member.User;
+import nextstep.auth.member.UserDetailService;
+import nextstep.auth.member.UserDetails;
 import nextstep.member.domain.RoleType;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +28,7 @@ class BasicAuthenticationFilterMockTest {
 
     HttpServletRequest request;
     BasicFilter basicFilter;
-    LoginService loginService;
+    UserDetailService userDetailService;
     AuthorizationFilter authorizationFilter;
 
     private static final String PRINCIPAL = "user1";
@@ -34,13 +36,13 @@ class BasicAuthenticationFilterMockTest {
     private static final List<String> AUTHORITIES = List.of(RoleType.ROLE_ADMIN.name());
     private static final String COLON = ":";
     private static final String TOKEN = PRINCIPAL + COLON + CREDENTIALS;
-    private static final LoginMember MEMBER = new LoginMember(PRINCIPAL, CREDENTIALS, AUTHORITIES);
+    private static final UserDetails MEMBER = User.of(PRINCIPAL, CREDENTIALS, AUTHORITIES);
 
     @BeforeEach
     void setUp() throws IOException {
         request = createMockRequest();
-        loginService = mock(LoginService.class);
-        basicFilter = new BasicFilter(loginService);
+        userDetailService = mock(UserDetailService.class);
+        basicFilter = new BasicFilter(userDetailService);
         authorizationFilter = new AuthorizationFilter(basicFilter);
     }
 
@@ -134,7 +136,7 @@ class BasicAuthenticationFilterMockTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         Object handler = mock(Object.class);
 
-        when(loginService.loadUserByUsername(PRINCIPAL)).thenReturn(new LoginMember(PRINCIPAL, CREDENTIALS, null));
+        when(userDetailService.loadUserByUsername(PRINCIPAL)).thenReturn(User.of(PRINCIPAL, CREDENTIALS, null));
 
         authorizationFilter.preHandle(request, response, handler);
     }

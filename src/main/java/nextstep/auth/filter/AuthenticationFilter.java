@@ -2,6 +2,8 @@ package nextstep.auth.filter;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.member.UserDetailService;
+import nextstep.auth.member.UserDetails;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -10,11 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AuthenticationFilter implements HandlerInterceptor {
     private final AuthenticationFilterStrategy strategy;
-    private final LoginService loginService;
+    private final UserDetailService userDetailService;
 
-    public AuthenticationFilter(AuthenticationFilterStrategy strategy, LoginService loginService) {
+    public AuthenticationFilter(AuthenticationFilterStrategy strategy, UserDetailService userDetailService) {
         this.strategy = strategy;
-        this.loginService = loginService;
+        this.userDetailService = userDetailService;
     }
 
     @Override
@@ -31,13 +33,13 @@ public class AuthenticationFilter implements HandlerInterceptor {
         String email = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        LoginMember member = loginService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailService.loadUserByUsername(email);
 
-        if (member == null || !member.checkPassword(password)) {
+        if (userDetails == null || !userDetails.checkPassword(password)) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(member.getEmail(), member.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
 }

@@ -2,6 +2,7 @@ package nextstep.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.member.UserDetailService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.domain.RoleType;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
 class BearerAuthenticationFilterMockTest {
     HttpServletRequest request;
     BearerFilter bearerFilter;
-    LoginService loginService;
+    UserDetailService userDetailService;
     JwtTokenProvider provider;
     AuthorizationFilter authorizationFilter;
     String TOKEN;
@@ -36,10 +37,10 @@ class BearerAuthenticationFilterMockTest {
     @BeforeEach
     void setUp() throws IOException, IllegalAccessException {
         provider = getProvider();
-        loginService = mock(LoginService.class);
+        userDetailService = mock(UserDetailService.class);
         TOKEN = provider.createToken(PRINCIPAL, AUTHORITIES);
         request = createMockRequest();
-        bearerFilter = new BearerFilter(provider, loginService);
+        bearerFilter = new BearerFilter(provider, userDetailService);
         authorizationFilter = new AuthorizationFilter(bearerFilter);
     }
 
@@ -100,7 +101,7 @@ class BearerAuthenticationFilterMockTest {
         Authentication authentication = new Authentication(PRINCIPAL, CREDENTIALS);
 
         // when
-        when(loginService.isUserExist(PRINCIPAL)).thenReturn(true);
+        when(userDetailService.isUserExist(PRINCIPAL)).thenReturn(true);
 
         // then
         boolean result = bearerFilter.validUser(authentication);
@@ -114,7 +115,7 @@ class BearerAuthenticationFilterMockTest {
         Authentication authentication = new Authentication(PRINCIPAL, CREDENTIALS);
 
         // when
-        when(loginService.isUserExist(PRINCIPAL)).thenReturn(false);
+        when(userDetailService.isUserExist(PRINCIPAL)).thenReturn(false);
 
         // then
         boolean result = bearerFilter.validUser(authentication);
@@ -136,7 +137,7 @@ class BearerAuthenticationFilterMockTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         Object handler = mock(Object.class);
 
-        when(loginService.isUserExist(PRINCIPAL)).thenReturn(true);
+        when(userDetailService.isUserExist(PRINCIPAL)).thenReturn(true);
 
         authorizationFilter.preHandle(request, response, handler);
     }

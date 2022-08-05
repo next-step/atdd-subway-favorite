@@ -4,17 +4,18 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.member.UserDetailService;
 import nextstep.auth.token.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BearerFilter implements AuthorizationStrategy {
     private final JwtTokenProvider provider;
-    private final LoginService loginService;
+    private final UserDetailService userDetailService;
 
-    public BearerFilter(JwtTokenProvider provider, LoginService loginService) {
+    public BearerFilter(JwtTokenProvider provider, UserDetailService userDetailService) {
         this.provider = provider;
-        this.loginService = loginService;
+        this.userDetailService = userDetailService;
     }
 
     @Override
@@ -48,6 +49,6 @@ public class BearerFilter implements AuthorizationStrategy {
     }
 
     public boolean validUser(Authentication authentication) {
-        return loginService.isUserExist((String) authentication.getPrincipal());
+        return userDetailService.isUserExist((String) authentication.getPrincipal());
     }
 }

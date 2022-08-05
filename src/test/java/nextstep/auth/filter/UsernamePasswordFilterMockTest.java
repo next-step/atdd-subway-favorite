@@ -2,6 +2,8 @@ package nextstep.auth.filter;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.member.User;
+import nextstep.auth.member.UserDetailService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,11 +32,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UsernamePasswordFilterMockTest {
     @Mock
-    private LoginService loginService;
+    private UserDetailService userDetailService;
     private UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter;
     private AuthenticationFilter filter;
     private static final String userEmail = "admin@gmail.com";
     private static final String userPassword = "password";
+    public static final User USER = User.of(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name()));
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     HttpServletRequest request;
@@ -44,7 +47,7 @@ class UsernamePasswordFilterMockTest {
     @BeforeEach
     void setUp() {
         usernamePasswordAuthenticationFilter = new UsernamePasswordAuthenticationFilter();
-        filter = new AuthenticationFilter(usernamePasswordAuthenticationFilter, loginService);
+        filter = new AuthenticationFilter(usernamePasswordAuthenticationFilter, userDetailService);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         handler = mock(Object.class);
@@ -120,7 +123,7 @@ class UsernamePasswordFilterMockTest {
         getRequestParameterStubbing(PASSWORD, userPassword);
 
         // when
-        when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name())));
+        when(userDetailService.loadUserByUsername(any())).thenReturn(USER);
         setResponseStatus();
 
         // then
@@ -148,10 +151,10 @@ class UsernamePasswordFilterMockTest {
         // given
         String password = "not equals password";
         getRequestParameterStubbing(USERNAME, userEmail);
-        getRequestParameterStubbing(PASSWORD, userPassword);
+        getRequestParameterStubbing(PASSWORD, password);
 
         // when
-        when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, password, List.of(RoleType.ROLE_ADMIN.name())));
+        when(userDetailService.loadUserByUsername(any())).thenReturn(USER);
 
         assertThatThrownBy(
             () -> filter.preHandle(request, response, handler)

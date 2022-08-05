@@ -36,4 +36,9 @@ public class User implements UserDetails {
     public List<String> getAuthorities() {
         return authorities;
     }
+
+    @Override
+    public boolean checkPassword(String credentials) {
+        return this.password.equals(credentials);
+    }
 }

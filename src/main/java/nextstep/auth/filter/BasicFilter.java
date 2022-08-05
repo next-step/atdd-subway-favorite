@@ -4,17 +4,18 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.member.UserDetailService;
+import nextstep.auth.member.UserDetails;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicFilter implements AuthorizationStrategy {
     private static final String COLON = ":";
-    private final LoginService loginService;
+    private final UserDetailService userDetailService;
 
-    public BasicFilter(LoginService loginService) {
-        this.loginService = loginService;
+    public BasicFilter(UserDetailService userDetailService) {
+        this.userDetailService = userDetailService;
     }
 
     @Override
@@ -38,20 +39,20 @@ public class BasicFilter implements AuthorizationStrategy {
         }
 
         Authentication user = getAuthentication(token);
-        LoginMember member = loginService.loadUserByUsername((String) user.getPrincipal());
+        UserDetails userDetails = userDetailService.loadUserByUsername((String) user.getPrincipal());
 
-        if (!validUser(user, member)) {
+        if (!validUser(user, userDetails)) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(member.getEmail(), member.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
     public boolean validToken(String token) {
         return token.contains(COLON);
     }
 
-    public boolean validUser(Authentication user, LoginMember member) {
+    public boolean validUser(Authentication user, UserDetails member) {
         return user != null && member.checkPassword((String) user.getCredentials());
     }
 }

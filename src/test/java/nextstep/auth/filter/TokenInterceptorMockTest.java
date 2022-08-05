@@ -3,9 +3,10 @@ package nextstep.auth.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
+import nextstep.auth.member.User;
+import nextstep.auth.member.UserDetailService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.RoleType;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TokenInterceptorMockTest {
     @Mock
-    private LoginService loginService;
+    private UserDetailService userDetailService;
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
     private AuthenticationFilter filter;
     private JwtTokenProvider provider = new JwtTokenProvider();
@@ -49,7 +50,7 @@ class TokenInterceptorMockTest {
         // secret-key 설정
         FieldUtils.writeField(provider, "secretKey", "atdd-secret-key", true);
         tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(provider);
-        filter = new AuthenticationFilter(tokenAuthenticationInterceptor, loginService);
+        filter = new AuthenticationFilter(tokenAuthenticationInterceptor, userDetailService);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         handler = mock(Object.class);
@@ -127,7 +128,7 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // when
-        when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name())));
+        when(userDetailService.loadUserByUsername(any())).thenReturn(User.of(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name())));
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
         // then
@@ -157,7 +158,7 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // when
-        when(loginService.loadUserByUsername(any())).thenReturn(new LoginMember(userEmail, password, List.of(RoleType.ROLE_ADMIN.name())));
+        when(userDetailService.loadUserByUsername(any())).thenReturn(User.of(userEmail, password, List.of(RoleType.ROLE_ADMIN.name())));
 
         assertThatThrownBy(
             () -> filter.preHandle(request, response, handler)
