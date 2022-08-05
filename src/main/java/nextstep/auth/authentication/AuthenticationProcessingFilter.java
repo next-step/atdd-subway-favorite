@@ -6,6 +6,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public abstract class AuthenticationProcessingFilter implements HandlerInterceptor {
 
@@ -19,8 +20,10 @@ public abstract class AuthenticationProcessingFilter implements HandlerIntercept
         return false;
     }
 
-    protected abstract AuthenticationToken convert(HttpServletRequest request);
+    protected abstract AuthenticationToken convert(HttpServletRequest request) throws IOException;
 
     protected abstract Authentication authenticate(AuthenticationToken authenticationToken);
+
+    protected abstract void processing(Authentication authentication, HttpServletResponse response) throws Exception;
 
 }

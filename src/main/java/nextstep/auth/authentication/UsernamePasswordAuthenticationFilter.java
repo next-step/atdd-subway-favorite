@@ -1,9 +1,12 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class UsernamePasswordAuthenticationFilter extends AuthenticationProcessingFilter {
 
@@ -16,7 +19,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationProcessi
     }
 
     @Override
-    protected AuthenticationToken convert(HttpServletRequest request) {
+    protected AuthenticationToken convert(HttpServletRequest request) throws IOException {
         var username = request.getParameter(USERNAME_FIELD);
         var password = request.getParameter(PASSWORD_FIELD);
 
@@ -32,5 +35,10 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationProcessi
         }
 
         return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+    }
+
+    @Override
+    protected void processing(Authentication authentication, HttpServletResponse response) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

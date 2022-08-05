@@ -1,8 +1,7 @@
 package nextstep.auth.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,6 +54,15 @@ class UsernamePasswordAuthenticationFilterTest {
                 () -> assertThat(authentication.getPrincipal()).isEqualTo(EMAIL),
                 () -> assertThat(authentication.getAuthorities()).containsExactly("ROLE_ADMIN")
         );
+    }
+
+    @Test
+    void processing() {
+        filter.processing(new Authentication(EMAIL, List.of("ROLE_ADMIN")), new MockHttpServletResponse());
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
+        assertThat(authentication.getAuthorities()).containsExactly("ROLE_ADMIN");
     }
 
     @Test
