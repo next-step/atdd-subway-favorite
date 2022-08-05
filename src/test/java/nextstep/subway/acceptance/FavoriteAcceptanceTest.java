@@ -2,12 +2,12 @@ package nextstep.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,6 +59,22 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기 등록 시 권한이 없는 경우")
+    void notAuthenticate() {
+        final ExtractableResponse<Response> response = RestAssured.given()
+            .body(Map.of(
+                "source", 1L,
+                "target", 2L
+            ))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/favorites")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
     @DisplayName("즐겨찾기 조회")
     void getFavorite() {
         //given
@@ -72,6 +88,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         final List<String> targets = response.jsonPath().getList("target.name", String.class);
         assertThat(sources).hasSize(1);
         assertThat(targets).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제")
+    void removeFavorite() {
+        //given
+        final long 즐겨찾기ID = 즐겨찾기_등록(favoriteParams()).jsonPath().getLong("id");
+
+        //when
+        final ExtractableResponse<Response> response = 즐겨찾기_삭제(즐겨찾기ID);
+
+        final ExtractableResponse<Response> 즐겨찾기_조회 = 즐겨찾기_조회();
+        final List<Object> root = 즐겨찾기_조회.jsonPath().getList("");
+
+        //then
+        assertThat(root).isEmpty();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제(long id) {
+        return AuthCommon.given(관리자_토큰)
+            .when().delete("/favorites/" + id)
+            .then().log().all()
+            .extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회() {
@@ -105,4 +145,5 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         params.put("distance", 6 + "");
         return params;
     }
+
 }
