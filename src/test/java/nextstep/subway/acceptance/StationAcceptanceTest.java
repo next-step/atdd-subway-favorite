@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.applicaion.dto.StationResponse;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -11,10 +12,12 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철역_제거_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
+
 
     /**
      * When 지하철역을 생성하면
@@ -25,7 +28,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청("강남역");
+        ExtractableResponse<Response> response = 지하철역_생성_요청(adminAccessToken, "강남역");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -40,6 +43,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * when 일반 사용자가 역을 생성한다
+     * then 401 에러가 발생한다
+     */
+    @DisplayName("일반사용자가 역을 생성할 경우 에러")
+    @Test
+    void createStationWithMember() {
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_생성_요청(memberAccessToken, "강남역");
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+     }
+    /**
      * Given 2개의 지하철역을 생성하고
      * When 지하철역 목록을 조회하면
      * Then 2개의 지하철역을 응답 받는다
@@ -48,8 +64,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        지하철역_생성_요청("강남역");
-        지하철역_생성_요청("역삼역");
+        지하철역_생성_요청(adminAccessToken, "강남역");
+        지하철역_생성_요청(adminAccessToken, "역삼역");
 
         // when
         ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
@@ -71,15 +87,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역");
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(adminAccessToken, "강남역");
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        지하철역_제거_요청(adminAccessToken, location);
 
         // then
         List<String> stationNames =
@@ -89,4 +101,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
     }
+
+    /**
+     * when 일반 사용자가 역을 제거 한다
+     * then 401 에러가 발생한다.
+     */
+    @DisplayName("일반 사용자가 역을 제거할 경우 에러")
+    @Test
+    void deleteStationWithMember() {
+
+        //when
+        String location = 지하철역_생성_요청(adminAccessToken, "강남역").header("location");
+        ExtractableResponse<Response> response = 지하철역_제거_요청(memberAccessToken, location);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+     }
 }
