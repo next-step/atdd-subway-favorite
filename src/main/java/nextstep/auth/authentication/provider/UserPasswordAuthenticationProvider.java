@@ -21,10 +21,14 @@ public class UserPasswordAuthenticationProvider implements AuthenticationProvide
 
     @Override
     public Authentication authenticate(AuthenticationToken token) {
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        try {
+            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+            if (!loginMember.checkPassword(token.getCredentials())) {
+                throw new AuthenticationException();
+            }
+            return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        } catch (RuntimeException e) {
             throw new AuthenticationException();
         }
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
     }
 }

@@ -11,7 +11,6 @@ public abstract class AuthenticationNonChainFilter implements HandlerInterceptor
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("testing = " );
         AuthenticationToken token = createToken(request);
         Authentication authenticate = authenticate(token);
 
