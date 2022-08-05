@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationFilter extends AuthenticationRespondingFilter {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationFilter(AuthenticationProvider<AuthenticationToken> authenticationProvider, JwtTokenProvider jwtTokenProvider) {
@@ -25,7 +27,7 @@ public class TokenAuthenticationFilter extends AuthenticationRespondingFilter {
     @Override
     protected AuthenticationToken convert(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
+        TokenRequest tokenRequest = OBJECT_MAPPER.readValue(content, TokenRequest.class);
 
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
@@ -34,10 +36,10 @@ public class TokenAuthenticationFilter extends AuthenticationRespondingFilter {
 
     @Override
     protected void authenticate(UserDetails userDetails, HttpServletResponse response) throws IOException {
-        String token = jwtTokenProvider.createToken(userDetails.getEmail(), userDetails.getAuthorities());
+        String token = jwtTokenProvider.createToken(userDetails.getPrincipal(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = OBJECT_MAPPER.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);

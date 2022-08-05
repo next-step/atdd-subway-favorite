@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthenticationFilter extends AuthenticationRespondingFilter {
+    private static final String USERNAME_FIELD_NAME = "username";
+    private static final String PASSWORD_FIELD_NAME = "password";
 
     public UsernamePasswordAuthenticationFilter(AuthenticationProvider<AuthenticationToken> authenticationProvider) {
         super(authenticationProvider);
@@ -17,14 +19,14 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationRespondi
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) {
-        String principal = request.getParameter("username");
-        String credentials = request.getParameter("password");
+        String principal = request.getParameter(USERNAME_FIELD_NAME);
+        String credentials = request.getParameter(PASSWORD_FIELD_NAME);
         return new AuthenticationToken(principal, credentials);
     }
 
     @Override
     public void authenticate(UserDetails userDetails, HttpServletResponse response) {
-        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+        Authentication authentication = new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

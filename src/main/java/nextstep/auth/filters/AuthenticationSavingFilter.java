@@ -33,7 +33,7 @@ public abstract class AuthenticationSavingFilter<T> implements HandlerIntercepto
     protected abstract T convert(HttpServletRequest request);
 
     protected void authenticate(UserDetails userDetails) {
-        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+        Authentication authentication = new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

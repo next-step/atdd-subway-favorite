@@ -31,7 +31,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getEmail() {
+    public String getPrincipal() {
         return email;
     }
 

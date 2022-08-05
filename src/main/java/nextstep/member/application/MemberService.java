@@ -18,7 +18,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
+        Member member = memberRepository.save(request.toEntity());
         return MemberResponse.of(member);
     }
 

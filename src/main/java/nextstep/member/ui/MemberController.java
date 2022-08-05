@@ -31,17 +31,17 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public MemberResponse findMemberOfMine(@AuthenticationPrincipal User user) {
-        return memberService.findMember(user.getEmail());
+        return memberService.findMember(user.getPrincipal());
     }
 
     @PutMapping("/members/me")
     public void updateMemberOfMine(@AuthenticationPrincipal User user, @RequestBody MemberUpdateRequest param) {
-        memberService.updateMember(user.getEmail(), param);
+        memberService.updateMember(user.getPrincipal(), param);
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal User user) {
-        memberService.deleteMember(user.getEmail());
+        memberService.deleteMember(user.getPrincipal());
         return ResponseEntity.noContent().build();
     }
 }

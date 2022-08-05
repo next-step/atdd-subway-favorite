@@ -17,8 +17,8 @@ public class LoginMemberService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email)
+    public UserDetails loadUserByPrincipal(String principal) {
+        Member member = memberRepository.findByEmail(principal)
                 .orElseThrow(AuthenticationException::new);
         return User.of(member);
     }

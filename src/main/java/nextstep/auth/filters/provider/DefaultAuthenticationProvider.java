@@ -16,7 +16,7 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider<Aut
 
     @Override
     public UserDetails provide(AuthenticationToken token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+        UserDetails userDetails = userDetailsService.loadUserByPrincipal(token.getPrincipal());
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }

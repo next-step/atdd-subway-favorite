@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = {JwtTokenProvider.class})
 class TokenAuthenticationFilterTest {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String EMAIL = "test@test.com";
     private static final String PASSWORD = "password";
 
@@ -63,14 +64,14 @@ class TokenAuthenticationFilterTest {
 
         // then
         String responseString = response.getContentAsString();
-        TokenResponse tokenResponse = new ObjectMapper().readValue(responseString, TokenResponse.class);
+        TokenResponse tokenResponse = OBJECT_MAPPER.readValue(responseString, TokenResponse.class);
         assertThat(tokenResponse.getAccessToken()).isNotNull();
     }
 
     private MockHttpServletRequest bearerAuthHttpRequest(String email, String password) throws JsonProcessingException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(email, password);
-        String payload = new ObjectMapper().writeValueAsString(tokenRequest);
+        String payload = OBJECT_MAPPER.writeValueAsString(tokenRequest);
         request.setContent(payload.getBytes(StandardCharsets.UTF_8));
         return request;
     }

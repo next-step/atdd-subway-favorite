@@ -10,6 +10,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends AuthenticationSavingFilter<AuthenticationToken> {
+    private static final String DELIMITER = ":";
     private static final int AUTH_HEADER_LENGTH = 2;
 
     public BasicAuthenticationFilter(AuthenticationProvider<AuthenticationToken> authenticationProvider) {
@@ -21,7 +22,7 @@ public class BasicAuthenticationFilter extends AuthenticationSavingFilter<Authen
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
-        String[] splits = authHeader.split(":");
+        String[] splits = authHeader.split(DELIMITER);
         if (splits.length != AUTH_HEADER_LENGTH) {
             throw new AuthenticationException();
         }
