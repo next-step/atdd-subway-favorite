@@ -26,11 +26,11 @@ class PathAcceptanceTest extends AcceptanceTest {
     private Long 삼호선;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
+     * 교대역    --- *2호선(10)* ---   강남역
      * |                        |
-     * *3호선*                   *신분당선*
+     * *3호선(2)*                   *신분당선(10)*
      * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 남부터미널역  --- *3호선(3)* ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -51,11 +51,13 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
     void findPathByDistance() {
-        // when
-        ExtractableResponse<Response> response = 두_역의_최단_거리_경로_조회를_요청(교대역, 양재역);
+        경로_조회_정보가_일치한다(두_역의_최단_거리_경로_조회를_요청(교대역, 양재역), 5, 교대역, 남부터미널역, 양재역);
+        경로_조회_정보가_일치한다(두_역의_최단_거리_경로_조회를_요청(강남역, 남부터미널역), 12, 강남역, 교대역, 남부터미널역);
+    }
 
-        // then
-        assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(교대역, 남부터미널역, 양재역);
+    private void 경로_조회_정보가_일치한다(ExtractableResponse<Response> response, int distance, Long... stationIds) {
+        assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationIds);
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(distance);
     }
 
     private ExtractableResponse<Response> 두_역의_최단_거리_경로_조회를_요청(Long source, Long target) {
@@ -63,7 +65,8 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
     }
 
     private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {

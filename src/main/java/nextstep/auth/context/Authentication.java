@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Authentication implements Serializable {
-    private Object principal;
-    private List<String> authorities;
+    private final Object principal;
+    private final List<String> authorities;
 
     public Authentication(Object principal, List<String> authorities) {
         this.principal = principal;

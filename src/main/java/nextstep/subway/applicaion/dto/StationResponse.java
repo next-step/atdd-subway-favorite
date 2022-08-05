@@ -19,9 +19,6 @@ public class StationResponse {
                 .collect(Collectors.toList());
     }
 
-    public StationResponse() {
-    }
-
     public StationResponse(Long id, String name) {
         this.id = id;
         this.name = name;

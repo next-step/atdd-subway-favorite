@@ -29,8 +29,8 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static void 회원_정보_일치함(String location, String email, int age) {
-        var response = 회원_정보_조회_요청(location);
+    public static void 내_정보_일치함(String accessToken, String email, int age) {
+        var response = 내_정보_조회_요청(accessToken);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("id")).isNotNull();
@@ -38,34 +38,36 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(String location) {
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(location)
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(String location, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String newEmail, Integer newAge) {
         Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        params.put("email", newEmail);
+        params.put("age", newAge + "");
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().put(location)
+                .when().put("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(String location) {
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
-                .when().delete(location)
+                .auth().oauth2(accessToken)
+                .when().delete("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
