@@ -31,14 +31,12 @@ public class AuthorizationFilter implements HandlerInterceptor {
 
         Authentication user = strategy.getAuthentication(token);
 
-        // token을 이용해 사용자의 정보가 유효한지 확인합니다.
         if (!strategy.validUser(user)) {
             throw new AuthenticationException();
         }
 
         Authentication authentication = strategy.getAuthentication(user);
 
-        // SecurityContext에 사용자 정보와 권한을 저장합니다.
         setSecurityContext(authentication);
         return true;
     }
