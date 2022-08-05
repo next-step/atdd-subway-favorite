@@ -30,6 +30,10 @@ public class Favorite {
         return this.source.equals(source) && this.target.equals(target);
     }
 
+    public boolean belongsTo(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
+
     public Long getId() {
         return id;
     }

@@ -31,7 +31,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public MemberResponse findMemberOfMine(@AuthenticationPrincipal User user) {
-        return memberService.findMember(user.getPrincipal());
+        return memberService.findMemberResponse(user.getPrincipal());
     }
 
     @PutMapping("/members/me")

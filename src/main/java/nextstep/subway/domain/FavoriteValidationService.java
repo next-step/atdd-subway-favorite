@@ -1,5 +1,6 @@
 package nextstep.subway.domain;
 
+import nextstep.auth.secured.RoleAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,5 +25,11 @@ public class FavoriteValidationService {
                 .ifPresent(it -> {
                     throw new IllegalArgumentException();
                 });
+    }
+
+    public void validateOwner(Favorite favorite, Long memberId) {
+        if (!favorite.belongsTo(memberId)) {
+            throw new RoleAuthenticationException();
+        }
     }
 }

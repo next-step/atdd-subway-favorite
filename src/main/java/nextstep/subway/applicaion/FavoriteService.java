@@ -2,6 +2,7 @@ package nextstep.subway.applicaion;
 
 import nextstep.auth.user.User;
 import nextstep.member.application.MemberService;
+import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class FavoriteService {
     private final MemberService memberService;
     private final StationService stationService;
@@ -33,31 +34,27 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    @Transactional
     public FavoriteResponse createFavorite(User user, FavoriteRequest request) {
-        Long memberId = memberService.findMember(user.getPrincipal()).getId();
+        Member member = memberService.findMember(user.getPrincipal());
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
 
-        favoriteValidationService.validateDuplicate(memberId, source.getId(), target.getId());
+        favoriteValidationService.validateDuplicate(member.getId(), source.getId(), target.getId());
 
         Favorite favorite = request.toEntity();
-        favorite.toMember(memberId);
+        favorite.toMember(member.getId());
         favoriteRepository.save(favorite);
         return new FavoriteResponse(favorite, source, target);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(User user) {
-        Long memberId = memberService.findMember(user.getPrincipal()).getId();
-        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
+        Member member = memberService.findMember(user.getPrincipal());
+        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
         List<Station> favoriteStations = findFavoriteStations(favorites);
 
         return favorites.stream()
-                .map(it -> {
-                    Station source = findStationById(favoriteStations, it.getSource());
-                    Station target = findStationById(favoriteStations, it.getTarget());
-                    return new FavoriteResponse(it, source, target);
-                })
+                .map(it -> createFavoriteResponse(it, favoriteStations))
                 .collect(Collectors.toList());
     }
 
@@ -72,11 +69,26 @@ public class FavoriteService {
         return stationService.findByIds(stationIds);
     }
 
-    private Station findStationById(List<Station> stations, Long id) {
+    private FavoriteResponse createFavoriteResponse(Favorite favorite, List<Station> favoriteStations) {
+        Station source = filterStationsById(favoriteStations, favorite.getSource());
+        Station target = filterStationsById(favoriteStations, favorite.getTarget());
+        return new FavoriteResponse(favorite, source, target);
+    }
+
+    private Station filterStationsById(List<Station> stations, Long id) {
         return stations.stream()
                 .filter(it -> it.matchId(id))
                 .findAny()
                 .orElseThrow();
     }
 
+    public void deleteFavorite(User user, Long id) {
+        Member member = memberService.findMember(user.getPrincipal());
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+
+        favoriteValidationService.validateOwner(favorite, member.getId());
+
+        favoriteRepository.delete(favorite);
+    }
 }

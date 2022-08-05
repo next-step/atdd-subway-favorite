@@ -23,14 +23,13 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id)
+    public Member findMember(String email) {
+        return memberRepository.findByEmail(email)
                 .orElseThrow(IllegalArgumentException::new);
-        return MemberResponse.of(member);
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findMember(String email) {
+    public MemberResponse findMemberResponse(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(IllegalArgumentException::new);
         return MemberResponse.of(member);
