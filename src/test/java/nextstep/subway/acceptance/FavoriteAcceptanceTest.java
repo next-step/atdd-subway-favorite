@@ -113,6 +113,51 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .containsExactlyInAnyOrder(즐겨찾기1번, 즐겨찾기2번);
     }
 
+    @DisplayName("로그인하면 즐겨찾기를 삭제할 수 있다.")
+    @Test
+    void 즐겨찾기_삭제() {
+        // given
+        Long 즐겨찾기1번 = 즐겨찾기_생성_요청(교대역, 강남역).jsonPath().getLong("id");
+        Long 즐겨찾기2번 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
+
+        // when
+        var deleteResponse = 즐겨찾기_삭제_요청(즐겨찾기1번);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        var response = 즐겨찾기_조회_요청();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("id", Long.class))
+                .containsExactlyInAnyOrder(즐겨찾기2번);
+    }
+
+    @DisplayName("다른 유저의 즐겨찾기를 삭제할 수 없다.")
+    @Test
+    void 즐겨찾기_삭제_예외() {
+        // given
+        Long 다른_유저_즐겨찾기 = 즐겨찾기_생성_요청_관리자(교대역, 강남역).jsonPath().getLong("id");
+
+        // when
+        var deleteResponse = 즐겨찾기_삭제_요청(다른_유저_즐겨찾기);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    @DisplayName("존재하지 않는 즐겨찾기를 삭제할 수 없다.")
+    @Test
+    void 즐겨찾기_삭제_예외2() {
+        // given
+        Long 존재하지_않는_즐겨찾기 = Long.MAX_VALUE;
+
+        // when
+        var deleteResponse = 즐겨찾기_삭제_요청(존재하지_않는_즐겨찾기);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private ExtractableResponse<Response> 로그인_없이_즐겨찾기_생성_요청() {
         return RestAssured.given().log().all()
                 .body(createFavoritesCreateParams(교대역, 강남역))
