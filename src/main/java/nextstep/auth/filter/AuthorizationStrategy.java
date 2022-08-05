@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface AuthorizationStrategy {
     String getToken(HttpServletRequest request);
+
     Authentication getAuthentication(String token);
+
     Authentication extractAuthentication(String token);
 }

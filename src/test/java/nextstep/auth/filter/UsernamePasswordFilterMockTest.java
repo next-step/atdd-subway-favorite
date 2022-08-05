@@ -4,7 +4,6 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.member.User;
 import nextstep.auth.member.UserDetailService;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
