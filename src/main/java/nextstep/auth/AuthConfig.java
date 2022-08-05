@@ -1,6 +1,6 @@
 package nextstep.auth;
 
-import nextstep.auth.authentication.BasicAuthenticationFilter;
+import nextstep.auth.authentication.filter.checking.BasicAuthenticationFilter;
 import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
 import nextstep.auth.authentication.filter.processing.UsernamePasswordAuthenticationProcessingFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
