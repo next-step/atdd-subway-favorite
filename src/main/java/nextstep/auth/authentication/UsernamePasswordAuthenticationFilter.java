@@ -1,14 +1,11 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
+public class UsernamePasswordAuthenticationFilter extends AuthenticationProcessingFilter {
 
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
@@ -19,24 +16,21 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            var username = request.getParameter(USERNAME_FIELD);
-            var password = request.getParameter(PASSWORD_FIELD);
+    protected AuthenticationToken convert(HttpServletRequest request) {
+        var username = request.getParameter(USERNAME_FIELD);
+        var password = request.getParameter(PASSWORD_FIELD);
 
-            var loginMember = loginMemberService.loadUserByUsername(username);
+        return new AuthenticationToken(username, password);
+    }
 
-            if (!loginMember.checkPassword(password)) {
-                throw new AuthenticationException();
-            }
+    @Override
+    protected Authentication authenticate(AuthenticationToken authenticationToken) {
+        var loginMember = loginMemberService.loadUserByUsername(authenticationToken.getPrincipal());
 
-            var authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            return true;
-        } catch (Exception e) {
-            return true;
+        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+            throw new AuthenticationException();
         }
+
+        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
     }
 }
