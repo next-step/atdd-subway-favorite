@@ -1,6 +1,7 @@
 package nextstep.favorite.application;
 
 import nextstep.auth.user.User;
+import nextstep.favorite.domain.exception.FavoriteNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import nextstep.favorite.application.dto.FavoriteRequest;
@@ -40,7 +41,7 @@ public class FavoriteService {
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
 
-        favoriteValidationService.validateDuplicate(member.getId(), source.getId(), target.getId());
+        favoriteValidationService.validateAddedFavorite(member.getId(), source.getId(), target.getId());
 
         Favorite favorite = request.toEntity();
         favorite.toMember(member.getId());
@@ -86,7 +87,7 @@ public class FavoriteService {
     public void deleteFavorite(User user, Long id) {
         Member member = memberService.findMember(user.getPrincipal());
         Favorite favorite = favoriteRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(FavoriteNotFoundException::new);
 
         favoriteValidationService.validateOwner(favorite, member.getId());
 

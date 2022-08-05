@@ -3,7 +3,6 @@ package nextstep.acceptance.test;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.acceptance.step.AuthSteps;
 import nextstep.acceptance.step.FavoriteSteps;
 import nextstep.acceptance.step.LineSteps;
 import nextstep.acceptance.step.StationSteps;
@@ -16,6 +15,8 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.acceptance.step.AuthSteps.권한검사에_실패한다;
+import static nextstep.acceptance.step.AuthSteps.로그인이_필요하다;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 기능")
@@ -69,7 +70,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var createResponse = 로그인_없이_즐겨찾기_생성_요청();
 
         // then
-        AuthSteps.로그인이_필요하다(createResponse);
+        로그인이_필요하다(createResponse);
     }
 
     @DisplayName("존재하지 않는 역을 즐겨찾기 추가할 수 없다.")
@@ -135,7 +136,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var invalidDeleteResponse = FavoriteSteps.즐겨찾기_삭제_요청(다른_유저_즐겨찾기);
 
         // then
-        AuthSteps.권한검사에_실패한다(invalidDeleteResponse);
+        권한검사에_실패한다(invalidDeleteResponse);
     }
 
     @DisplayName("존재하지 않는 즐겨찾기를 삭제할 수 없다.")

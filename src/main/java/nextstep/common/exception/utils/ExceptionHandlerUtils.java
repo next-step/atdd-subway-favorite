@@ -1,5 +1,7 @@
-package nextstep.common.exception;
+package nextstep.common.exception.utils;
 
+import nextstep.common.exception.code.ErrorCode;
+import nextstep.common.exception.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 
 public class ExceptionHandlerUtils {

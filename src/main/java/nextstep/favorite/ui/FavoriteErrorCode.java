@@ -1,6 +1,6 @@
 package nextstep.favorite.ui;
 
-import nextstep.common.exception.ErrorCode;
+import nextstep.common.exception.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum FavoriteErrorCode implements ErrorCode {

@@ -38,10 +38,6 @@ public class Favorite {
         return id;
     }
 
-    public Long getMemberId() {
-        return memberId;
-    }
-
     public Long getSource() {
         return source;
     }

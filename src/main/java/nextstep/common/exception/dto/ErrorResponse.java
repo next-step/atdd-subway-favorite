@@ -1,4 +1,4 @@
-package nextstep.common.exception;
+package nextstep.common.exception.dto;
 
 public class ErrorResponse {
     private final String code;

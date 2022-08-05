@@ -1,9 +1,12 @@
-package nextstep.common.exception;
+package nextstep.common.exception.code;
 
 import org.springframework.http.HttpStatus;
 
 public enum CommonErrorCode implements ErrorCode {
-    ENTITY_NOT_FOUND(HttpStatus.BAD_REQUEST);
+    ENTITY_NOT_FOUND(HttpStatus.BAD_REQUEST),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED),
+    FORBIDDEN(HttpStatus.FORBIDDEN),
+    INVALID_PARAMETER(HttpStatus.BAD_REQUEST);
 
     private final HttpStatus status;
 
