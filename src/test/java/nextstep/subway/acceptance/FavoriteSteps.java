@@ -18,6 +18,14 @@ public class FavoriteSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청() {
+        return AuthSteps.givenUserRole()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static Map<String, String> createFavoritesCreateParams(Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source + "");

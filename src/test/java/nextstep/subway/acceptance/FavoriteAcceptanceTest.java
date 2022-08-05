@@ -12,8 +12,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.FavoriteSteps.createFavoritesCreateParams;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성;
@@ -96,6 +95,22 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(duplicateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("로그인하면 즐겨찾기를 조회할 수 있다.")
+    @Test
+    void 즐겨찾기_조회() {
+        // given
+        Long 즐겨찾기1번 = 즐겨찾기_생성_요청(교대역, 강남역).jsonPath().getLong("id");
+        Long 즐겨찾기2번 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
+
+        // when
+        var response = 즐겨찾기_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("id", Long.class))
+                .containsExactlyInAnyOrder(즐겨찾기1번, 즐겨찾기2번);
     }
 
     private ExtractableResponse<Response> 로그인_없이_즐겨찾기_생성_요청() {
