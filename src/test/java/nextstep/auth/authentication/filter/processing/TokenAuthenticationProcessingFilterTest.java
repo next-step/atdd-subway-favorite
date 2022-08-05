@@ -1,8 +1,11 @@
 package nextstep.auth.authentication.filter.processing;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,20 +21,22 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class UsernamePasswordAuthenticationFilterTest {
+class TokenAuthenticationProcessingFilterTest {
 
-    private static final String EMAIL = "admin@email.com";
+    private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
+    public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-    private UsernamePasswordAuthenticationFilter filter;
+    private TokenAuthenticationProcessingFilter filter;
     private LoginMemberService loginMemberService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
         loginMemberService = mock(LoginMemberService.class);
-        filter = new UsernamePasswordAuthenticationFilter(loginMemberService);
+        jwtTokenProvider = mock(JwtTokenProvider.class);
+        filter = new TokenAuthenticationProcessingFilter(loginMemberService, jwtTokenProvider);
     }
-
 
     @Test
     void convert() throws IOException {
@@ -50,27 +55,30 @@ class UsernamePasswordAuthenticationFilterTest {
 
         var authentication = filter.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
 
-
         assertAll(
                 () -> assertThat(authentication.getPrincipal()).isEqualTo(EMAIL),
                 () -> assertThat(authentication.getAuthorities()).containsExactly("ROLE_ADMIN")
         );
+
     }
 
     @Test
-    void processing() {
-        filter.processing(new Authentication(EMAIL, List.of("ROLE_ADMIN")), new MockHttpServletResponse());
+    void processing() throws Exception {
+        var roles = List.of("ROLE_ADMIN");
+        var response = new MockHttpServletResponse();
+        when(jwtTokenProvider.createToken(EMAIL, roles)).thenReturn(JWT_TOKEN);
 
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authentication.getAuthorities()).containsExactly("ROLE_ADMIN");
+        filter.processing(new Authentication(EMAIL, List.of("ROLE_ADMIN")), response);
+
+        var expectedResponse = new ObjectMapper().writeValueAsString(new TokenResponse(JWT_TOKEN));
+        System.out.println(expectedResponse);
+        assertThat(response.getContentAsString()).isEqualTo(expectedResponse);
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setParameter("username", EMAIL);
-        request.setParameter("password", PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
-
 }

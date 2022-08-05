@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationInterceptor extends AuthenticationProcessingFilter {
+public class TokenAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
     private final LoginMemberService loginMemberService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationProcessingFilter(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
         this.loginMemberService = loginMemberService;
         this.jwtTokenProvider = jwtTokenProvider;
     }

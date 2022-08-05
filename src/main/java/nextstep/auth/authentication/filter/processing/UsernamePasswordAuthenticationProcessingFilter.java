@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class UsernamePasswordAuthenticationFilter extends AuthenticationProcessingFilter {
+public class UsernamePasswordAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
     private final LoginMemberService loginMemberService;
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
+    public UsernamePasswordAuthenticationProcessingFilter(LoginMemberService loginMemberService) {
         this.loginMemberService = loginMemberService;
     }
 
