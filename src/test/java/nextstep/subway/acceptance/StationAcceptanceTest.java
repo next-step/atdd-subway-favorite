@@ -75,8 +75,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .when()
+        MemberSteps
+                .givenAdminLogin()
                 .delete(location)
                 .then().log().all()
                 .extract();

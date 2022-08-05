@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LoginMemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public LoginMemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
