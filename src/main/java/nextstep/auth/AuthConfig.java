@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import nextstep.auth.authentication.filter.checking.BasicAuthenticationFilter;
 import nextstep.auth.authentication.filter.checking.BearerTokenAuthenticationFilter;
-import nextstep.auth.authentication.filter.processing.UsernamePasswordAuthenticationProcessingFilter;
+import nextstep.auth.authentication.filter.processing.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.token.JwtTokenProvider;
@@ -27,7 +27,7 @@ public class AuthConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
-        registry.addInterceptor(new UsernamePasswordAuthenticationProcessingFilter(loginMemberService)).addPathPatterns("/login/form");
+        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(loginMemberService)).addPathPatterns("/login/form");
         registry.addInterceptor(new TokenAuthenticationProcessingFilter(loginMemberService, jwtTokenProvider)).addPathPatterns("/login/token");
         registry.addInterceptor(new BasicAuthenticationFilter(loginMemberService));
         registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider));

@@ -18,18 +18,18 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class UsernamePasswordAuthenticationProcessingFilterTest {
+class UsernamePasswordAuthenticationFilterTest {
 
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
 
-    private UsernamePasswordAuthenticationProcessingFilter filter;
+    private UsernamePasswordAuthenticationFilter filter;
     private UserDetailsService userDetailsService;
 
     @BeforeEach
     void setUp() {
         userDetailsService = mock(UserDetailsService.class);
-        filter = new UsernamePasswordAuthenticationProcessingFilter(userDetailsService);
+        filter = new UsernamePasswordAuthenticationFilter(userDetailsService);
     }
 
 

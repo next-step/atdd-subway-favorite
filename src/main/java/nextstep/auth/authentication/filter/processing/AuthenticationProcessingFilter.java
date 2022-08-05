@@ -1,33 +1,10 @@
 package nextstep.auth.authentication.filter.processing;
 
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.context.Authentication;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.auth.authentication.filter.AuthenticationFilter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-public abstract class AuthenticationProcessingFilter implements HandlerInterceptor {
-
+public abstract class AuthenticationProcessingFilter extends AuthenticationFilter {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        try {
-            var authenticationToken = convert(request);
-            var authentication = authenticate(authenticationToken);
-
-            processing(authentication, response);
-
-        } catch (Exception e) {
-            return false;
-        }
+    protected boolean proceed() {
         return false;
     }
-
-    protected abstract AuthenticationToken convert(HttpServletRequest request) throws IOException;
-
-    protected abstract Authentication authenticate(AuthenticationToken authenticationToken);
-
-    protected abstract void processing(Authentication authentication, HttpServletResponse response) throws Exception;
-
 }

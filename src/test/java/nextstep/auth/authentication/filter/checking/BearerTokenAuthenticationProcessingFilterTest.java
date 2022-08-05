@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class BearerTokenAuthenticationFilterTest {
+class BearerTokenAuthenticationProcessingFilterTest {
 
     private static final String EMAIL = "email@email.com";
     private static final List<String> ROLES = List.of("ROLE_ADMIN");
