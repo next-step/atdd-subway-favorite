@@ -36,16 +36,27 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 등록")
     void createFavorite() {
         final ExtractableResponse<Response> response = 즐겨찾기_등록();
-        final long id = response.jsonPath().getLong("id");
-        final long sourceId = response.jsonPath().getLong("source");
-        final long targetId = response.jsonPath().getLong("target");
+        final long sourceId = response.jsonPath().getLong("source.id");
+        final long targetId = response.jsonPath().getLong("target.id");
 
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(id).isEqualTo(1L),
             () -> assertThat(sourceId).isEqualTo(강남역),
             () -> assertThat(targetId).isEqualTo(양재역)
         );
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회")
+    void getFavorite() {
+        즐겨찾기_등록();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회() {
+        return AuthCommon.given(관리자_토큰)
+            .when().get("/favorites")
+            .then().log().all()
+            .extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_등록() {
