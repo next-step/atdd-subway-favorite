@@ -48,6 +48,7 @@ public class FavoriteServiceMockTest {
   private User user;
   private Member member;
   private Favorite favorite;
+  private FavoriteRequest favoriteRequest;
 
   @BeforeEach
   public void setUp() {
@@ -57,6 +58,7 @@ public class FavoriteServiceMockTest {
     user = new User(MEMBER_EMAIL, PASSWORD, List.of(RoleType.ROLE_MEMBER.name()));
     member = new Member(MEMBER_EMAIL, PASSWORD, 20);
     favorite = new Favorite(강남역, 역삼역, member.getId());
+    favoriteRequest = new FavoriteRequest(강남역.getId(), 역삼역.getId());
   }
 
   @Test
@@ -68,10 +70,10 @@ public class FavoriteServiceMockTest {
     when(memberService.findMember(user.getEmail())).thenReturn(memberResponse);
     when(favoriteRepository.save(any())).thenReturn(favorite);
 
-    FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 역삼역.getId());
     FavoriteResponse favoriteResponse = favoriteService.saveFavorite(favoriteRequest, user);
 
     assertThat(favoriteResponse.getSource().getName()).isEqualTo("강남역");
+    assertThat(favoriteResponse.getTarget().getName()).isEqualTo("역삼역");
   }
 
   @Test
