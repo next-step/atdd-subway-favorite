@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,6 +34,7 @@ class BasicAuthenticationFilterMockTest {
     private static final List<String> AUTHORITIES = List.of(RoleType.ROLE_ADMIN.name());
     private static final String COLON = ":";
     private static final String TOKEN = PRINCIPAL + COLON + CREDENTIALS;
+    private static final LoginMember MEMBER = new LoginMember(PRINCIPAL, CREDENTIALS, AUTHORITIES);
 
     @BeforeEach
     void setUp() throws IOException {
@@ -100,11 +100,8 @@ class BasicAuthenticationFilterMockTest {
         // given
         Authentication authentication = new Authentication(PRINCIPAL, CREDENTIALS);
 
-        // when
-        when(loginService.loadUserByUsername(PRINCIPAL)).thenReturn(new LoginMember(PRINCIPAL, CREDENTIALS, null));
-
         // then
-        boolean result = basicFilter.validUser(authentication);
+        boolean result = basicFilter.validUser(authentication, MEMBER);
         assertThat(result).isTrue();
     }
 
@@ -112,13 +109,10 @@ class BasicAuthenticationFilterMockTest {
     @DisplayName("사용자의 정보가 존재하지 않는다면 false를 반환합니다.")
     void validUserValidation1() {
         // given
-        Authentication authentication = new Authentication(PRINCIPAL, CREDENTIALS);
-
-        // when
-        when(loginService.loadUserByUsername(PRINCIPAL)).thenReturn(null);
+        Authentication authentication = null;
 
         // then
-        boolean result = basicFilter.validUser(authentication);
+        boolean result = basicFilter.validUser(authentication, MEMBER);
         assertThat(result).isFalse();
     }
 
@@ -127,33 +121,11 @@ class BasicAuthenticationFilterMockTest {
     void validUserValidation2() {
         // given
         String otherPassword = "otherPassword";
-        Authentication authentication = new Authentication(PRINCIPAL, CREDENTIALS);
-
-        // when
-        when(loginService.loadUserByUsername(PRINCIPAL)).thenReturn(new LoginMember(PRINCIPAL, otherPassword, null));
+        Authentication authentication = new Authentication(PRINCIPAL, otherPassword);
 
         // then
-        boolean result = basicFilter.validUser(authentication);
+        boolean result = basicFilter.validUser(authentication, MEMBER);
         assertThat(result).isFalse();
-    }
-
-
-    @Test
-    @DisplayName("인증 정보를 통해 권할을 가져옵니다.")
-    void getAuthentication2() {
-        // given
-        Authentication user = new Authentication(PRINCIPAL, CREDENTIALS);
-
-        // when
-        when(loginService.loadUserByUsername(PRINCIPAL)).thenReturn(new LoginMember(PRINCIPAL, CREDENTIALS, AUTHORITIES));
-
-        // then
-        Authentication authentication = basicFilter.getAuthentication(user);
-
-        assertAll(
-            () -> assertThat(authentication.getPrincipal()).isEqualTo(PRINCIPAL),
-            () -> assertThat(authentication.getAuthorities()).containsExactly(RoleType.ROLE_ADMIN.name())
-        );
     }
 
     @Test

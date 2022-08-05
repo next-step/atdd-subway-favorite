@@ -1,5 +1,6 @@
 package nextstep.auth.filter;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
@@ -22,24 +23,31 @@ public class BearerFilter implements AuthorizationStrategy {
     }
 
     @Override
-    public boolean validToken(String token) {
-        return provider.validateToken(token);
-    }
-
-    @Override
     public Authentication getAuthentication(String token) {
         return new Authentication(provider.getPrincipal(token), provider.getRoles(token));
     }
 
+
     @Override
-    public Authentication getAuthentication(Authentication authentication) {
+    public Authentication extractAuthentication(String token) {
+        if (!validToken(token)) {
+            throw new AuthenticationException();
+        }
+
+        Authentication authentication = getAuthentication(token);
+
+        if (!validUser(authentication)) {
+            throw new AuthenticationException();
+        }
+
         return authentication;
     }
 
-    @Override
-    public boolean validUser(Authentication authentication) {
-        String principal = (String) authentication.getPrincipal();
-        return loginService.isUserExist(principal);
+    public boolean validToken(String token) {
+        return provider.validateToken(token);
     }
 
+    public boolean validUser(Authentication authentication) {
+        return loginService.isUserExist((String) authentication.getPrincipal());
+    }
 }

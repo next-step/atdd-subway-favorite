@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -120,20 +119,6 @@ class BearerAuthenticationFilterMockTest {
         // then
         boolean result = bearerFilter.validUser(authentication);
         assertThat(result).isFalse();
-    }
-
-    @Test
-    @DisplayName("인증 정보를 통해 권할을 가져옵니다.")
-    void getAuthentication2() {
-        // given
-        Authentication user = new Authentication(PRINCIPAL, AUTHORITIES);
-        // then
-        Authentication authentication = bearerFilter.getAuthentication(user);
-
-        assertAll(
-            () -> assertThat(authentication.getPrincipal()).isEqualTo(PRINCIPAL),
-            () -> assertThat(authentication.getAuthorities()).containsExactly(RoleType.ROLE_ADMIN.name())
-        );
     }
 
     private JwtTokenProvider getProvider() throws IllegalAccessException {

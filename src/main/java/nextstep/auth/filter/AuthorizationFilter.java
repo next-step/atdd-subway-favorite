@@ -1,6 +1,5 @@
 package nextstep.auth.filter;
 
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -24,25 +23,10 @@ public class AuthorizationFilter implements HandlerInterceptor {
             return true;
         }
 
-        Authentication authentication = extractAuthentication(token);
+        Authentication authentication = strategy.extractAuthentication(token);
 
         setSecurityContext(authentication);
         return true;
-    }
-
-    private Authentication extractAuthentication(String token) {
-
-        if (!strategy.validToken(token)) {
-            throw new AuthenticationException();
-        }
-
-        Authentication user = strategy.getAuthentication(token);
-
-        if (!strategy.validUser(user)) {
-            throw new AuthenticationException();
-        }
-
-        return strategy.getAuthentication(user);
     }
 
     private void setSecurityContext(Authentication authentication) {

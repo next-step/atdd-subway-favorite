@@ -1,5 +1,6 @@
 package nextstep.auth.filter;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
@@ -23,11 +24,6 @@ public class BasicFilter implements AuthorizationStrategy {
     }
 
     @Override
-    public boolean validToken(String token) {
-        return token.contains(COLON);
-    }
-
-    @Override
     public Authentication getAuthentication(String token) {
         String[] splits = token.split(COLON);
         String principal = splits[0];
@@ -36,20 +32,26 @@ public class BasicFilter implements AuthorizationStrategy {
     }
 
     @Override
-    public Authentication getAuthentication(Authentication authentication) {
-        String principal = (String) authentication.getPrincipal();
-        LoginMember member = loginService.loadUserByUsername(principal);
+    public Authentication extractAuthentication(String token) {
+        if (!validToken(token)) {
+            throw new AuthenticationException();
+        }
+
+        Authentication user = getAuthentication(token);
+        LoginMember member = loginService.loadUserByUsername((String) user.getPrincipal());
+
+        if (!validUser(user, member)) {
+            throw new AuthenticationException();
+        }
+
         return new Authentication(member.getEmail(), member.getAuthorities());
     }
 
-    @Override
-    public boolean validUser(Authentication authentication) {
-        String principal = (String) authentication.getPrincipal();
-        String credentials = (String) authentication.getCredentials();
-
-        LoginMember member = loginService.loadUserByUsername(principal);
-
-        return member != null && member.checkPassword(credentials);
+    public boolean validToken(String token) {
+        return token.contains(COLON);
     }
 
+    public boolean validUser(Authentication user, LoginMember member) {
+        return user != null && member.checkPassword((String) user.getCredentials());
+    }
 }
