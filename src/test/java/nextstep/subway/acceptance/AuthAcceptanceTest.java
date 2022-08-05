@@ -35,12 +35,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
         인증정보가_잘못됨(response);
     }
 
-    @DisplayName("Session 로그인 후 내 정보 조회")
+    @DisplayName("Session 로그인 성공 후 내 정보 조회")
     @Test
     void myInfoWithSession() {
-        ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response = 폼_로그인_요청_후_내_회원_정보_조회_요청(EMAIL, PASSWORD);
 
         회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("Session 로그인 실패 후 내 정보 조회")
+    @Test
+    void myInfoWithSession_wrongEmail() {
+        ExtractableResponse<Response> response = 폼_로그인_요청_후_내_회원_정보_조회_요청(WRONG_EMAIL, PASSWORD);
+
+        권한이_없음(response);
     }
 
     @DisplayName("Bearer Auth")
@@ -61,12 +69,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         인증정보가_잘못됨(response);
     }
 
-    private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
+    private ExtractableResponse<Response> 폼_로그인_요청_후_내_회원_정보_조회_요청(String email, String password) {
         return given(email, password, "/login/form")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -79,6 +86,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 인증정보가_잘못됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 권한이_없음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
