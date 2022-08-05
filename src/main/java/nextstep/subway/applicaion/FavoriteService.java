@@ -10,7 +10,6 @@ import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
-import nextstep.subway.domain.Station;
 import nextstep.subway.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
