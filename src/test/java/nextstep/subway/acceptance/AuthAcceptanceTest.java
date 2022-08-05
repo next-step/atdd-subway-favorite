@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
-import static nextstep.subway.acceptance.StationSteps.지하철역_삭제_요청;
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.acceptance.StationSteps.관리자로_지하철역_삭제_요청;
+import static nextstep.subway.acceptance.StationSteps.관리자로_지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -85,7 +85,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
         //When
-        ExtractableResponse<Response> response = 지하철역_생성_요청(accessToken, "마곡역");
+        ExtractableResponse<Response> response = 관리자로_지하철역_생성_요청(accessToken, "마곡역");
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -101,13 +101,29 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void enterDeleteUrlOnlyAdmin() {
         //Given
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(accessToken, "마곡역");
+        ExtractableResponse<Response> createResponse = 관리자로_지하철역_생성_요청(accessToken, "마곡역");
 
         //When
-        ExtractableResponse<Response> response = 지하철역_삭제_요청(accessToken, createResponse.header("location"));
+        ExtractableResponse<Response> response = 관리자로_지하철역_삭제_요청(accessToken, createResponse.header("location"));
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * When : 잘못된 아이디 패스워드로 로그인을 시도하면
+     * Then : 로그인이 되지 않는다.
+     */
+
+    @DisplayName("잘못된 아이디, 패스워드")
+    @Test
+    void inputInvalidIdPw() {
+        //When
+        ExtractableResponse<Response> response = 아이디_또는_패스워드가_잘못됨(EMAIL, MEMBER_PASSWORD);
+
+        //Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+
     }
 
     /**
@@ -139,7 +155,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         String accessToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
 
         //When
-        ExtractableResponse<Response> response = 지하철역_생성_요청(accessToken, "마곡역");
+        ExtractableResponse<Response> response = 관리자로_지하철역_생성_요청(accessToken, "마곡역");
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -155,11 +171,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void doNotDeleteStationForMember() {
         //Given
         String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(accessToken, "마곡역");
+        ExtractableResponse<Response> createResponse = 관리자로_지하철역_생성_요청(accessToken, "마곡역");
         String memberToken = 로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
 
         //When
-        ExtractableResponse<Response> response = 지하철역_삭제_요청(memberToken, createResponse.header("location"));
+        ExtractableResponse<Response> response = 관리자로_지하철역_삭제_요청(memberToken, createResponse.header("location"));
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
