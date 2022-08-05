@@ -7,7 +7,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.authentication.user.UserDetails;
-import nextstep.auth.authentication.user.User;
+import nextstep.member.domain.User;
 import nextstep.auth.token.JwtTokenProvider;
 
 public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilter {

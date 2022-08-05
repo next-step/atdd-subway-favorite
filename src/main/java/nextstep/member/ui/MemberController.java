@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
 import java.net.URI;
-import nextstep.auth.authentication.user.User;
+import nextstep.member.domain.User;
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
