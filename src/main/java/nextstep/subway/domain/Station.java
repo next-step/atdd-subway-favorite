@@ -1,9 +1,12 @@
 package nextstep.subway.domain;
 
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 public class Station {
@@ -11,6 +14,12 @@ public class Station {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
+
+    @CreatedDate
+    private LocalDateTime createdDate;
 
     public Station() {
     }
@@ -26,4 +35,13 @@ public class Station {
     public String getName() {
         return name;
     }
+
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
 }
