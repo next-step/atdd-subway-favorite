@@ -2,7 +2,6 @@ package nextstep.auth.user;
 
 import java.util.List;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.member.domain.Member;
 
 public class User implements UserDetails {
 
@@ -10,8 +9,8 @@ public class User implements UserDetails {
     private String password;
     private List<String> authorities;
 
-    public static User of(Member member) {
-        return new User(member.getEmail(), member.getPassword(), member.getRoles());
+    public static User of(final String email, final String password, final List<String> roles) {
+        return new User(email, password, roles);
     }
 
     public static User of(String email, List<String> authorities) {
