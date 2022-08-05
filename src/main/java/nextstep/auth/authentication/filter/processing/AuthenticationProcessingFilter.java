@@ -1,7 +1,7 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.filter.processing;
 
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ public abstract class AuthenticationProcessingFilter implements HandlerIntercept
         var authenticationToken = convert(request);
         var authentication = authenticate(authenticationToken);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        processing(authentication, response);
 
         return false;
     }

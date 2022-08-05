@@ -1,5 +1,7 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.filter.processing;
 
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;

@@ -1,5 +1,6 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.filter.processing;
 
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
@@ -59,17 +60,6 @@ class UsernamePasswordAuthenticationFilterTest {
     @Test
     void processing() {
         filter.processing(new Authentication(EMAIL, List.of("ROLE_ADMIN")), new MockHttpServletResponse());
-
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authentication.getAuthorities()).containsExactly("ROLE_ADMIN");
-    }
-
-    @Test
-    void preHandle() throws Exception {
-        when(loginMemberService.loadUserByUsername(EMAIL))
-                .thenReturn(new LoginMember(EMAIL, PASSWORD, List.of("ROLE_ADMIN")));
-        filter.preHandle(createMockRequest(), new MockHttpServletResponse(), null);
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
