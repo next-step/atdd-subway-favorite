@@ -3,16 +3,16 @@ package nextstep.auth.authentication.provider;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetails;
+import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class UserPasswordAuthenticationProvider implements AuthenticationProvider {
 
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public boolean supports(ProviderType providerType) {
@@ -22,11 +22,11 @@ public class UserPasswordAuthenticationProvider implements AuthenticationProvide
     @Override
     public Authentication authenticate(AuthenticationToken token) {
         try {
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (!loginMember.checkPassword(token.getCredentials())) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+            if (!userDetails.checkPassword(token.getCredentials())) {
                 throw new AuthenticationException();
             }
-            return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+            return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
         } catch (RuntimeException e) {
             throw new AuthenticationException();
         }

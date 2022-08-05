@@ -1,12 +1,12 @@
 package nextstep.member.domain;
 
-
 import lombok.EqualsAndHashCode;
+import nextstep.auth.authentication.UserDetails;
 
 import java.util.List;
 
 @EqualsAndHashCode
-public class LoginMember {
+public class LoginMember implements UserDetails {
     private String email;
     private String password;
     private List<String> authorities;
