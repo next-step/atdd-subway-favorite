@@ -18,10 +18,6 @@ public class LoginMember implements UserDetails {
         return new LoginMember(email, null, authorities);
     }
 
-    public static LoginMember guest() {
-        return new LoginMember();
-    }
-
     public LoginMember() {
     }
 
@@ -29,10 +25,6 @@ public class LoginMember implements UserDetails {
         this.email = email;
         this.password = password;
         this.authorities = authorities;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     @Override
@@ -45,11 +37,8 @@ public class LoginMember implements UserDetails {
         return password;
     }
 
+    @Override
     public List<String> getAuthorities() {
         return authorities;
-    }
-
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
     }
 }

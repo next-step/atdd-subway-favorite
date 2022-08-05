@@ -1,8 +1,8 @@
 package nextstep.auth.authentication.filter.checking;
 
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.SimpleUser;
 import nextstep.auth.authentication.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -43,7 +43,7 @@ class BasicAuthenticationFilterTest {
     @Test
     void authenticate() {
         when(userDetailsService.loadUserByUsername(EMAIL))
-                .thenReturn(new LoginMember(EMAIL, PASSWORD, List.of("ROLE_ADMIN")));
+                .thenReturn(new SimpleUser(EMAIL, PASSWORD, List.of("ROLE_ADMIN")));
 
         var authentication = filter.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
 

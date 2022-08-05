@@ -2,12 +2,12 @@ package nextstep.auth.authentication.filter.processing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.SimpleUser;
 import nextstep.auth.authentication.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -51,7 +51,7 @@ class TokenAuthenticationProcessingFilterTest {
     @Test
     void authenticate() {
         when(userDetailsService.loadUserByUsername(EMAIL))
-                .thenReturn(new LoginMember(EMAIL, PASSWORD, List.of("ROLE_ADMIN")));
+                .thenReturn(new SimpleUser(EMAIL, PASSWORD, List.of("ROLE_ADMIN")));
 
         var authentication = filter.authenticate(new AuthenticationToken(EMAIL, PASSWORD));
 
