@@ -1,6 +1,10 @@
 package nextstep.subway.applicaion;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import nextstep.auth.user.UserDetails;
 import nextstep.member.domain.Member;
@@ -10,6 +14,7 @@ import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
+import nextstep.subway.domain.Station;
 import nextstep.subway.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,10 +59,29 @@ public class FavoriteService {
 
         final List<Favorite> favorites = favoriteRepository.findAllByMember(member);
 
+        final Map<Long, Station> stations = favoriteStations(favorites);
+
         return favorites.stream()
-            .map(favorite -> new FavoriteResponse(favorite.getId(), getFavoriteStation(favorite.getSource()),
-                getFavoriteStation(favorite.getTarget())))
+            .map(favorite -> new FavoriteResponse(favorite.getId(),
+                    StationResponse.of(stations.get(favorite.getSource())),
+                    StationResponse.of(stations.get(favorite.getTarget()))
+                )
+            )
             .collect(Collectors.toList());
+    }
+
+    private Map<Long, Station> favoriteStations(final List<Favorite> favorites) {
+        return stationService.findAllStations(extractStationId(favorites)).stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
+    }
+
+    private Set<Long> extractStationId(final List<Favorite> favorites) {
+        Set<Long> ids = new HashSet<>();
+        for (Favorite favorite : favorites) {
+            ids.add(favorite.getSource());
+            ids.add(favorite.getTarget());
+        }
+        return ids;
     }
 
     @Transactional

@@ -1,14 +1,15 @@
 package nextstep.subway.applicaion;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,8 +28,12 @@ public class StationService {
 
     public List<StationResponse> findAllStations() {
         return stationRepository.findAll().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    public List<Station> findAllStations(final Set<Long> ids) {
+        return new ArrayList<>(stationRepository.findAllById(ids));
     }
 
     @Transactional
@@ -38,8 +43,8 @@ public class StationService {
 
     public StationResponse createStationResponse(Station station) {
         return new StationResponse(
-                station.getId(),
-                station.getName(), station.getModifiedDate(), station.getCreatedDate()
+            station.getId(),
+            station.getName(), station.getModifiedDate(), station.getCreatedDate()
         );
     }
 
