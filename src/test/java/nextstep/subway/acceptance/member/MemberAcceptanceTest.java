@@ -12,6 +12,7 @@ import static nextstep.subway.utils.AdministratorInfo.ADMIN_EMAIL;
 import static nextstep.subway.utils.AdministratorInfo.ADMIN_PASSWORD;
 import static nextstep.subway.acceptance.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.utils.RestAssuredStep.*;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -55,7 +56,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         회원_정보_조회_요청(회원생성_Response);
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(response);
 
     }
 
@@ -66,7 +67,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = 회원_정보_수정_요청(invalidToken, 회원생성_Response, "new" + EMAIL, "new" + PASSWORD, AGE);
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        검증_UNAUTHORIZED(response);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
@@ -78,7 +79,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원_삭제_요청(관리자토큰, 회원생성_Response);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        검증_NO_CONTENT(response);
     }
 
     @DisplayName("회원 정보를 관리한다.")
@@ -88,13 +89,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(조회응답, EMAIL, AGE);
 
         ExtractableResponse<Response> 수정응답 = 회원_정보_수정_요청(관리자토큰, 회원생성_Response, EMAIL+"_edit", PASSWORD+"_edit", AGE);
-        assertThat(수정응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(수정응답);
 
         회원_정보_조회_요청(회원생성_Response);
 
         ExtractableResponse<Response> 삭제응답 = 회원_삭제_요청(관리자토큰, 회원생성_Response);
 
-        assertThat(삭제응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        검증_NO_CONTENT(삭제응답);
     }
 
     @DisplayName("나의 정보를 관리한다.")
@@ -102,9 +103,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         String 멤버토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
         ExtractableResponse<Response> 수정응답 = 베어러_인증_내_회원_정보_수정(멤버토큰,"edit", "1", 12);
-        assertThat(수정응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(수정응답);
         멤버토큰 = 로그인_되어_있음("edit", "1");
         ExtractableResponse<Response> 삭제응답 = 베어러_인증_내_회원_정보_삭제_요청(멤버토큰);
-        assertThat(삭제응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        검증_NO_CONTENT(삭제응답);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_목록_조회_요청;
 import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_조회_요청;
-import static nextstep.subway.utils.RestAssuredStep.given;
+import static nextstep.subway.utils.RestAssuredStep.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
@@ -52,7 +52,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(response);
         assertThat(response.jsonPath().getList("name")).contains("2호선", "3호선");
     }
 
@@ -71,7 +71,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(response);
         assertThat(response.jsonPath().getString("name")).isEqualTo("2호선");
     }
 
@@ -97,7 +97,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(response);
         assertThat(response.jsonPath().getString("color")).isEqualTo("red");
     }
 
@@ -119,6 +119,6 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        검증_NO_CONTENT(response);
     }
 }

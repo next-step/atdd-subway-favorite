@@ -16,9 +16,7 @@ import static nextstep.subway.acceptance.step.LineSteps.*;
 import static nextstep.subway.acceptance.step.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.step.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.step.StationSteps.지하철역_생성_요청;
-import static nextstep.subway.utils.AdministratorInfo.ADMIN_EMAIL;
-import static nextstep.subway.utils.AdministratorInfo.ADMIN_PASSWORD;
-import static nextstep.subway.utils.RestAssuredStep.given;
+import static nextstep.subway.utils.RestAssuredStep.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -124,7 +122,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(관리자토큰, favoriteId);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        검증_NO_CONTENT(response);
     }
 
     /**
@@ -139,19 +137,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(email, password, age);
         String 이용자토큰 = 로그인_되어_있음(email, password);
 
-        assertThat(즐겨찾기_삭제_요청(이용자토큰, favoriteId).statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        검증_UNAUTHORIZED(즐겨찾기_삭제_요청(이용자토큰, favoriteId));
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_등록_요청(String 관리자토큰, Map<String, Long> params){
-        return given(관리자토큰)
+    private ExtractableResponse<Response> 즐겨찾기_등록_요청(String 토큰, Map<String, Long> params){
+        return given(토큰)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String 관리자토큰, Long favoriteId){
-        return given(관리자토큰)
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String 토큰, Long favoriteId){
+        return given(토큰)
                 .when().delete("/favorites/{id}", favoriteId)
                 .then().log().all()
                 .extract();
