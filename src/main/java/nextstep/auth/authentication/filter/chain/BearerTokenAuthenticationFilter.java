@@ -10,7 +10,6 @@ import nextstep.auth.authentication.provider.ProviderType;
 import nextstep.auth.context.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 @RequiredArgsConstructor
 public class BearerTokenAuthenticationFilter extends AuthenticationChainFilter {
@@ -18,13 +17,9 @@ public class BearerTokenAuthenticationFilter extends AuthenticationChainFilter {
     private final ProviderManager providerManager;
 
     @Override
-    protected AuthenticationToken createToken(HttpServletRequest request) throws IOException {
-        try {
-            String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-            return new AuthenticationToken(authCredentials, authCredentials);
-        } catch (Exception e) {
-            return null;
-        }
+    protected AuthenticationToken createToken(HttpServletRequest request) {
+        String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+        return new AuthenticationToken(authCredentials, authCredentials);
     }
 
     @Override
