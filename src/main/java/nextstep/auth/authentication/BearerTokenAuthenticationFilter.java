@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.authentication.exception.BearerAuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
@@ -21,7 +22,7 @@ public class BearerTokenAuthenticationFilter extends InterceptorChainingFilter {
         String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthenticationException();
+            throw new BearerAuthenticationException();
         }
 
         String principal = jwtTokenProvider.getPrincipal(token);

@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.authentication.exception.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.user.UserDetails;

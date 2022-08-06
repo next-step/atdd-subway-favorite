@@ -22,23 +22,26 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().get("/lines")
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(ExtractableResponse<Response> createResponse) {
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, ExtractableResponse<Response> createResponse) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().get(createResponse.header("location"))
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(Long id) {
+    public static ExtractableResponse<Response> 지하철_노선_조회_요청(String accessToken, Long id) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().get("/lines/{id}", id)
                 .then().log().all().extract();
     }

@@ -34,6 +34,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         List<String> stationNames =
                 RestAssured.given().log().all()
+                        .auth().oauth2(관리자_token)
                         .when().get("/stations")
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
@@ -54,6 +55,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
+                .auth().oauth2(관리자_token)
                 .when().get("/stations")
                 .then().log().all()
                 .extract();
@@ -73,6 +75,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void deleteStation() {
         // given
         ExtractableResponse<Response> createResponse = 지하철역_생성_요청(관리자_token, "강남역");
+        System.out.println("!!!!!!!!!");
+        System.out.println(관리자_token);
 
         // when
         String location = createResponse.header("location");
@@ -86,6 +90,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // then
         List<String> stationNames =
                 RestAssured.given().log().all()
+                        .auth().oauth2(관리자_token)
                         .when().get("/stations")
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);

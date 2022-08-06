@@ -1,7 +1,7 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.exception.AuthenticationException;
 import nextstep.auth.authentication.InterceptorNoChainingFilter;
 import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
