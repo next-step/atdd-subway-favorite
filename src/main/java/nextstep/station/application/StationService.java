@@ -13,21 +13,23 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class StationService {
+    private final StationInspector stationInspector;
     private final StationRepository stationRepository;
 
-    public StationService(StationRepository stationRepository) {
+    public StationService(StationInspector stationInspector, StationRepository stationRepository) {
+        this.stationInspector = stationInspector;
         this.stationRepository = stationRepository;
     }
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.save(new Station(stationRequest.getName()));
+        Station station = stationRepository.save(stationRequest.toEntity());
         return StationResponse.of(station);
     }
 
     public Station findById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(StationNotFoundException::new);
     }
 
     public List<Station> findByIds(List<Long> stationIds) {
