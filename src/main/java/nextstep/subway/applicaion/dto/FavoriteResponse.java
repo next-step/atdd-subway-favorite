@@ -1,5 +1,8 @@
 package nextstep.subway.applicaion.dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class FavoriteResponse {
     private Long id;
     private StationResponse source;
