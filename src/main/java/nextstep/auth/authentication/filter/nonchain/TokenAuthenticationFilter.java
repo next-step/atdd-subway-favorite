@@ -20,13 +20,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends AuthenticationNonChainFilter {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     private final ProviderManager providerManager;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected AuthenticationToken createToken(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
+        TokenRequest tokenRequest = objectMapper.readValue(content, TokenRequest.class);
 
         return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
