@@ -2,7 +2,7 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.User;
 
 public class SaveAuthentication {
 
@@ -10,26 +10,26 @@ public class SaveAuthentication {
 
     private final String credentials;
 
-    private final LoginMember loginMember;
+    private final User user;
 
-    public SaveAuthentication(String principal, String credentials, LoginMember loginMember) {
+    public SaveAuthentication(String principal, String credentials, User user) {
         this.principal = principal;
         this.credentials = credentials;
-        this.loginMember = loginMember;
+        this.user = user;
     }
 
     public void execute() {
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-        if (loginMember == null) {
+        if (user == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!user.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        Authentication authentication = new Authentication(user.getEmail(), user.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

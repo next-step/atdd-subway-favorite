@@ -3,13 +3,13 @@ package nextstep.auth.authentication;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
+public class BearerTokenAuthenticationFilter extends KeepProceedAuthenticationFilter {
+
     private JwtTokenProvider jwtTokenProvider;
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
@@ -28,12 +28,10 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             List<String> roles = jwtTokenProvider.getRoles(token);
 
             Authentication authentication = new Authentication(principal, roles);
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            return true;
+            return proceed();
         } catch (Exception e) {
-            return true;
+            return proceed();
         }
     }
 }

@@ -1,30 +1,31 @@
 package nextstep.auth.authentication;
 
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+public class UsernamePasswordAuthenticationFilter extends NoMoreProceedAuthenticationFilter {
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    private UserDetailsService userDetailsService;
+
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            LoginMember loginMember = loginMemberService.loadUserByUsername(username);
-            SaveAuthentication saveAuthentication = new SaveAuthentication(username, password, loginMember);
-            saveAuthentication.execute();
-            return true;
-        } catch (Exception e) {
-            return true;
-        }
+
+        String principal = request.getParameter("username");
+        String credentials = request.getParameter("password");
+
+        Authenticate authenticate = new Authenticate(userDetailsService);
+        User user = authenticate.execute(principal, credentials);
+
+        SaveAuthentication saveAuthentication = new SaveAuthentication(principal, credentials, user);
+        saveAuthentication.execute();
+
+        return proceed();
     }
 }

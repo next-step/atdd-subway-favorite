@@ -1,18 +1,17 @@
 package nextstep.auth.authentication;
 
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class BasicAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+public class BasicAuthenticationFilter extends KeepProceedAuthenticationFilter {
+    private UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -25,12 +24,14 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
             String principal = splits[0];
             String credentials = splits[1];
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
-            SaveAuthentication saveAuthentication = new SaveAuthentication(principal, credentials, loginMember);
+            Authenticate authenticate = new Authenticate(userDetailsService);
+            User user = authenticate.execute(principal, credentials);
+
+            SaveAuthentication saveAuthentication = new SaveAuthentication(principal, credentials, user);
             saveAuthentication.execute();
-            return true;
+            return proceed();
         } catch (Exception e) {
-            return true;
+            return proceed();
         }
     }
 }
