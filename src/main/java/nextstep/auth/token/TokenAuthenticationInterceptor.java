@@ -1,8 +1,8 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.authentication.Authenticate;
 import nextstep.auth.authentication.NoMoreProceedAuthenticationFilter;
-import nextstep.auth.authentication.ValidateUser;
 import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetailsService;
 import org.springframework.http.MediaType;
@@ -30,10 +30,8 @@ public class TokenAuthenticationInterceptor extends NoMoreProceedAuthenticationF
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        User user = userDetailsService.loadUserByUsername(principal);
-
-        ValidateUser validate = new ValidateUser();
-        validate.execute(credentials, user);
+        Authenticate authenticate = new Authenticate(userDetailsService);
+        User user = authenticate.execute(principal, credentials);
 
         String token = jwtTokenProvider.createToken(user.getEmail(), user.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);

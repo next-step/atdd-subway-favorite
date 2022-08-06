@@ -24,10 +24,8 @@ public class BasicAuthenticationFilter extends KeepProceedAuthenticationFilter {
             String principal = splits[0];
             String credentials = splits[1];
 
-            User user = userDetailsService.loadUserByUsername(principal);
-
-            ValidateUser validate = new ValidateUser();
-            validate.execute(credentials, user);
+            Authenticate authenticate = new Authenticate(userDetailsService);
+            User user = authenticate.execute(principal, credentials);
 
             SaveAuthentication saveAuthentication = new SaveAuthentication(principal, credentials, user);
             saveAuthentication.execute();

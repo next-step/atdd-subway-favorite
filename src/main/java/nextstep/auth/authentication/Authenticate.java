@@ -13,15 +13,8 @@ public class Authenticate {
 
     public User execute(String principal, String credentials) {
         User user = userDetailsService.loadUserByUsername(principal);
-
-        if (user == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!user.checkPassword(credentials)) {
-            throw new AuthenticationException();
-        }
-
+        ValidateUser validateUser = new ValidateUser();
+        validateUser.execute(credentials, user);
         return user;
     }
 }
