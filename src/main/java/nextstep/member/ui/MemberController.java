@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class MemberController {
     private final MemberService memberService;
@@ -24,7 +26,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(member);
     }
@@ -35,7 +37,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public void updateMemberOfMine(@AuthenticationPrincipal User user, @RequestBody MemberUpdateRequest param) {
+    public void updateMemberOfMine(@AuthenticationPrincipal User user, @RequestBody @Valid MemberUpdateRequest param) {
         memberService.updateMember(user.getPrincipal(), param);
     }
 

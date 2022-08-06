@@ -5,6 +5,7 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.MemberUpdateRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,24 +25,26 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findMember(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+        return findByEmail(email);
     }
 
     @Transactional(readOnly = true)
     public MemberResponse findMemberResponse(String email) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+        Member member = findByEmail(email);
         return MemberResponse.of(member);
     }
 
     public void updateMember(String email, MemberUpdateRequest param) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+        Member member = findByEmail(email);
         member.update(param.getEmail(), param.getAge());
     }
 
     public void deleteMember(String email) {
         memberRepository.deleteByEmail(email);
+    }
+
+    private Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
     }
 }
