@@ -30,8 +30,12 @@ public class UsernamePasswordAuthenticationFilter2 extends AuthenticationInterce
 
 	@Override
 	public boolean afterAuthenticate(Authentication authentication, HttpServletResponse response) {
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return false;
+		try {
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			return false;
+		} catch (Exception e) {
+			return true;
+		}
 	}
 
 }

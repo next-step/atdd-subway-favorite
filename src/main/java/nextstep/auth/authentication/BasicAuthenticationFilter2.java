@@ -1,9 +1,12 @@
 package nextstep.auth.authentication;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 
+import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.service.CustomUserDetails;
 
 public class BasicAuthenticationFilter2 extends AuthenticationInterceptor {
@@ -25,4 +28,16 @@ public class BasicAuthenticationFilter2 extends AuthenticationInterceptor {
 		return new AuthenticationToken(principal, credentials);
 	}
 
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
+		Exception {
+		try {
+			AuthenticationToken authenticationToken = convert(request);
+			Authentication authentication = super.authenticate(authenticationToken);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			return true;
+		} catch (Exception e) {
+			return true;
+		}
+	}
 }

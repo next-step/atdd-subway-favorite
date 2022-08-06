@@ -14,17 +14,13 @@ import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.service.CustomUserDetails;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthenticationInterceptor2;
-import nextstep.member.application.LoginMemberService;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-	private LoginMemberService loginMemberService;
 	private JwtTokenProvider jwtTokenProvider;
 	private CustomUserDetails customUserDetails;
 
-	public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider,
-		CustomUserDetails customUserDetails) {
-		this.loginMemberService = loginMemberService;
+	public AuthConfig(JwtTokenProvider jwtTokenProvider, CustomUserDetails customUserDetails) {
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.customUserDetails = customUserDetails;
 	}
