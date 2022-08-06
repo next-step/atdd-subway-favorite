@@ -10,6 +10,7 @@ import nextstep.member.domain.MemberRepository;
 
 @Service
 public class CustomUserDetailsService implements CustomUserDetails {
+
 	private MemberRepository memberRepository;
 
 	public CustomUserDetailsService(MemberRepository memberRepository) {
