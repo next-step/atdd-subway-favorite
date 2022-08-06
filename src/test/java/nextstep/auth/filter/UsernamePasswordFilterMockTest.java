@@ -2,7 +2,7 @@ package nextstep.auth.filter;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.member.User;
+import nextstep.auth.member.LoginMember;
 import nextstep.auth.member.UserDetailService;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ class UsernamePasswordFilterMockTest {
     private AuthenticationFilter filter;
     private static final String userEmail = "admin@gmail.com";
     private static final String userPassword = "password";
-    public static final User USER = User.of(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name()));
+    public static final LoginMember USER = LoginMember.of(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name()));
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     HttpServletRequest request;

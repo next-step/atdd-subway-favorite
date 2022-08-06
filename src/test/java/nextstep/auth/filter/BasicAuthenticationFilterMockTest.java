@@ -1,7 +1,7 @@
 package nextstep.auth.filter;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.member.User;
+import nextstep.auth.member.LoginMember;
 import nextstep.auth.member.UserDetailService;
 import nextstep.auth.member.UserDetails;
 import nextstep.member.domain.RoleType;
@@ -36,7 +36,7 @@ class BasicAuthenticationFilterMockTest {
     private static final List<String> AUTHORITIES = List.of(RoleType.ROLE_ADMIN.name());
     private static final String COLON = ":";
     private static final String TOKEN = PRINCIPAL + COLON + CREDENTIALS;
-    private static final UserDetails MEMBER = User.of(PRINCIPAL, CREDENTIALS, AUTHORITIES);
+    private static final UserDetails MEMBER = LoginMember.of(PRINCIPAL, CREDENTIALS, AUTHORITIES);
 
     @BeforeEach
     void setUp() throws IOException {

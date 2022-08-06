@@ -3,7 +3,7 @@ package nextstep.auth.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.member.User;
+import nextstep.auth.member.LoginMember;
 import nextstep.auth.member.UserDetailService;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
@@ -128,7 +128,7 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // when
-        when(userDetailService.loadUserByUsername(any())).thenReturn(User.of(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name())));
+        when(userDetailService.loadUserByUsername(any())).thenReturn(LoginMember.of(userEmail, userPassword, List.of(RoleType.ROLE_ADMIN.name())));
         when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
 
         // then
@@ -158,7 +158,7 @@ class TokenInterceptorMockTest {
         request = createMockRequest(new TokenRequest(userEmail, userPassword));
 
         // when
-        when(userDetailService.loadUserByUsername(any())).thenReturn(User.of(userEmail, password, List.of(RoleType.ROLE_ADMIN.name())));
+        when(userDetailService.loadUserByUsername(any())).thenReturn(LoginMember.of(userEmail, password, List.of(RoleType.ROLE_ADMIN.name())));
 
         assertThatThrownBy(
             () -> filter.preHandle(request, response, handler)
