@@ -30,10 +30,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 구로역;
     private Long 신도림역;
 
-    private String email;
-    private String password;
-    private int age;
-
     /**
      * Given 지하철역과 노선 생성을 요청 하고
      */
@@ -54,9 +50,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(관리자토큰, 신분당선, createSectionCreateParams(구일역, 구로역));
         지하철_노선에_지하철_구간_생성_요청(관리자토큰, 신분당선, createSectionCreateParams(구로역, 신도림역));
 
-        email    = "acsmia@gmail.com";
-        password = "20";
-        age      = 20;
     }
 
     /**
@@ -134,10 +127,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void deleteFavoritefail() {
         Map<String, Long> params = createFavoriteRequestParam(구일역, 신도림역);
         Long favoriteId = 즐겨찾기_등록_요청(관리자토큰, params).jsonPath().getLong("id");
-        회원_생성_요청(email, password, age);
-        String 이용자토큰 = 로그인_되어_있음(email, password);
 
-        검증_UNAUTHORIZED(즐겨찾기_삭제_요청(이용자토큰, favoriteId));
+        검증_UNAUTHORIZED(즐겨찾기_삭제_요청(일반사용자토큰, favoriteId));
     }
 
     private ExtractableResponse<Response> 즐겨찾기_등록_요청(String 토큰, Map<String, Long> params){
