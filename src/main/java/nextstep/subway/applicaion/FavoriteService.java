@@ -64,20 +64,10 @@ public class FavoriteService {
     public void removeFavorites(final UserDetails userDetails, final long id) {
         final Member member = getMember(userDetails);
 
-        final List<Favorite> favorites = favoriteRepository.findAllByMember(member);
-        if (isNotOwn(id, favorites)) {
-            throw new NotFoundException("멤버의 즐겨찾기 id가 아닙니다.");
-        }
-
-        final Favorite favorite = favoriteRepository.findById(id)
+        final Favorite favorite = favoriteRepository.findByIdAndMember(id, member)
             .orElseThrow(() -> new NotFoundException("즐겨찾기 정보를 찾을 수 없습니다."));
 
         favoriteRepository.delete(favorite);
-    }
-
-    private boolean isNotOwn(final long id, final List<Favorite> favorites) {
-        return favorites.stream()
-            .noneMatch(favorite -> favorite.getId().equals(id));
     }
 
 }

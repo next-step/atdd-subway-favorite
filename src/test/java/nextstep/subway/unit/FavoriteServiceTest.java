@@ -13,9 +13,7 @@ import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
-import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,7 +83,7 @@ class FavoriteServiceTest {
         //then
         assertThatExceptionOfType(RuntimeException.class)
             .isThrownBy(() -> favoriteService.removeFavorites(userDetails, 1))
-            .withMessage("멤버의 즐겨찾기 id가 아닙니다.");
+            .withMessage("즐겨찾기 정보를 찾을 수 없습니다.");
     }
 
     @Test
