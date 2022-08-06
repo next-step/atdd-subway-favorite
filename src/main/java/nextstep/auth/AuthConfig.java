@@ -1,13 +1,15 @@
 package nextstep.auth;
 
-import nextstep.auth.authentication.BasicAuthenticationFilter;
-import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
-import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
+import nextstep.auth.filter.AuthenticationFilter;
+import nextstep.auth.filter.AuthorizationFilter;
+import nextstep.auth.filter.BasicAuthorizationStrategy;
+import nextstep.auth.filter.BearerAuthorizationStrategy;
+import nextstep.auth.filter.TokenAuthenticationStrategy;
+import nextstep.auth.filter.UsernamePasswordAuthenticationStrategy;
+import nextstep.auth.member.UserDetailService;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenAuthenticationInterceptor;
-import nextstep.member.application.LoginMemberService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,25 +18,43 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private LoginMemberService loginMemberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final UserDetailService userDetailService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public AuthConfig(UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailService = userDetailService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
-        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(loginMemberService)).addPathPatterns("/login/form");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider)).addPathPatterns("/login/token");
-        registry.addInterceptor(new BasicAuthenticationFilter(loginMemberService));
-        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider, loginMemberService));
+        registry.addInterceptor(usernamePasswordFilter()).addPathPatterns("/login/form");
+        registry.addInterceptor(tokenFilter()).addPathPatterns("/login/token");
+        registry.addInterceptor(basicFilter());
+        registry.addInterceptor(bearerFilter());
     }
+
 
     @Override
     public void addArgumentResolvers(List argumentResolvers) {
         argumentResolvers.add(new AuthenticationPrincipalArgumentResolver());
     }
+
+    private AuthorizationFilter bearerFilter() {
+        return new AuthorizationFilter(new BearerAuthorizationStrategy(jwtTokenProvider, userDetailService));
+    }
+
+    private AuthorizationFilter basicFilter() {
+        return new AuthorizationFilter(new BasicAuthorizationStrategy(userDetailService));
+    }
+
+    private AuthenticationFilter tokenFilter() {
+        return new AuthenticationFilter(new TokenAuthenticationStrategy(jwtTokenProvider), userDetailService);
+    }
+
+    private AuthenticationFilter usernamePasswordFilter() {
+        return new AuthenticationFilter(new UsernamePasswordAuthenticationStrategy(), userDetailService);
+    }
+
 }
