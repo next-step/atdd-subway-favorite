@@ -72,7 +72,7 @@ class TokenAuthenticationInterceptorNextTest {
 	}
 
 	@Test
-	void preHandle() {
+	void afterAuthenticate() {
 		//given
 		when(jwtTokenProvider.createToken(EMAIL, ROLES))
 			.thenReturn(JWT_TOKEN);
