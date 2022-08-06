@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import nextstep.auth.authentication.BasicAuthenticationFilter;
 import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
-import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
+import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter2;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.service.CustomUserDetails;
@@ -32,7 +32,7 @@ public class AuthConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new SecurityContextPersistenceFilter());
-		registry.addInterceptor(new UsernamePasswordAuthenticationFilter(loginMemberService))
+		registry.addInterceptor(new UsernamePasswordAuthenticationFilter2(customUserDetails))
 			.addPathPatterns("/login/form");
 		registry.addInterceptor(new TokenAuthenticationInterceptor2(customUserDetails, jwtTokenProvider))
 			.addPathPatterns("/login/token");
