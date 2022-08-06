@@ -19,10 +19,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import nextstep.auth.domain.AuthUser;
+import nextstep.auth.service.CustomUserDetails;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
@@ -41,11 +42,11 @@ class TokenAuthenticationInterceptorTest {
 	@Mock
 	private JwtTokenProvider jwtTokenProvider;
 	@Autowired
-	private LoginMemberService loginMemberService;
+	private CustomUserDetails customUserDetails;
 
 	@BeforeEach
 	void setUp() throws IOException {
-		loginMemberService = new LoginMemberService(memberRepository);
+		customUserDetails = new CustomUserDetailsService(memberRepository);
 		MockHttpServletRequest request = createMockRequest();
 		String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 		tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
@@ -64,23 +65,23 @@ class TokenAuthenticationInterceptorTest {
 			.thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE, ROLES)));
 
 		//when
-		LoginMember loginMember = loginMemberService.loadUserByUsername(tokenRequest.getEmail());
+		AuthUser authUser = customUserDetails.loadUserByUsername(tokenRequest.getEmail());
 
 		//then
-		assertThat(loginMember.checkPassword(PASSWORD)).isTrue();
+		assertThat(authUser.isValidPassword(PASSWORD)).isTrue();
 	}
 
 	@Test
-	void preHandle() {
+	void afterAuthenticate() {
 		//given
 		when(jwtTokenProvider.createToken(EMAIL, ROLES))
 			.thenReturn(JWT_TOKEN);
 		when(memberRepository.findByEmail(EMAIL))
 			.thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE, ROLES)));
-		LoginMember loginMember = loginMemberService.loadUserByUsername(tokenRequest.getEmail());
+		AuthUser authUser = customUserDetails.loadUserByUsername(tokenRequest.getEmail());
 
 		//when
-		String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+		String token = jwtTokenProvider.createToken(authUser.getUserName(), authUser.getAuthorities());
 
 		//then
 		assertThat(token).isEqualTo(JWT_TOKEN);

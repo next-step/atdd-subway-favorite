@@ -1,4 +1,4 @@
-package nextstep.subway.unit.auth;
+package nextstep.subway.unit.auth.archive;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.http.HttpHeaders;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,14 +21,14 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
-import nextstep.auth.domain.AuthUser;
-import nextstep.auth.service.CustomUserDetails;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.LoginMemberService;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
+@Deprecated
 @ExtendWith(MockitoExtension.class)
-public class BasicAuthenticationFilterNextTest {
+public class BasicAuthenticationFilterTestOld {
 	private static final String EMAIL = "email@email.com";
 	private static final String PASSWORD = "password";
 	private static final int AGE = 20;
@@ -36,12 +37,12 @@ public class BasicAuthenticationFilterNextTest {
 	@Mock
 	private MemberRepository memberRepository;
 	@Autowired
-	private CustomUserDetails customUserDetails;
+	private LoginMemberService loginMemberService;
 	String authHeader;
 
 	@BeforeEach
 	void setUp() {
-		customUserDetails = new CustomUserDetailsService(memberRepository);
+		loginMemberService = new LoginMemberService(memberRepository);
 		MockHttpServletRequest request = createMockRequest();
 		String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
 		authHeader = new String(org.apache.tomcat.util.codec.binary.Base64.decodeBase64(authCredentials));
@@ -54,8 +55,8 @@ public class BasicAuthenticationFilterNextTest {
 		String[] splits = authHeader.split(":");
 
 		//then
-		assertThat(splits[0]).isEqualTo(EMAIL);
-		assertThat(splits[1]).isEqualTo(PASSWORD);
+		Assertions.assertThat(splits[0]).isEqualTo(EMAIL);
+		Assertions.assertThat(splits[1]).isEqualTo(PASSWORD);
 	}
 
 	@Test
@@ -69,10 +70,10 @@ public class BasicAuthenticationFilterNextTest {
 
 		//when
 		AuthenticationToken token = new AuthenticationToken(principal, credentials);
-		AuthUser authUser = customUserDetails.loadUserByUsername(token.getPrincipal());
+		LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
 
 		//then
-		assertThat(authUser.isValidPassword(PASSWORD)).isTrue();
+		assertThat(loginMember.checkPassword(PASSWORD)).isTrue();
 	}
 
 	private MockHttpServletRequest createMockRequest() {

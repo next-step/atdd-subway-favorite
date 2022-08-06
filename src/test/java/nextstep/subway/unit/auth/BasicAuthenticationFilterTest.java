@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.http.HttpHeaders;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +20,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.AuthUser;
+import nextstep.auth.service.CustomUserDetails;
+import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
@@ -36,12 +36,12 @@ public class BasicAuthenticationFilterTest {
 	@Mock
 	private MemberRepository memberRepository;
 	@Autowired
-	private LoginMemberService loginMemberService;
+	private CustomUserDetails customUserDetails;
 	String authHeader;
 
 	@BeforeEach
 	void setUp() {
-		loginMemberService = new LoginMemberService(memberRepository);
+		customUserDetails = new CustomUserDetailsService(memberRepository);
 		MockHttpServletRequest request = createMockRequest();
 		String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
 		authHeader = new String(org.apache.tomcat.util.codec.binary.Base64.decodeBase64(authCredentials));
@@ -54,8 +54,8 @@ public class BasicAuthenticationFilterTest {
 		String[] splits = authHeader.split(":");
 
 		//then
-		Assertions.assertThat(splits[0]).isEqualTo(EMAIL);
-		Assertions.assertThat(splits[1]).isEqualTo(PASSWORD);
+		assertThat(splits[0]).isEqualTo(EMAIL);
+		assertThat(splits[1]).isEqualTo(PASSWORD);
 	}
 
 	@Test
@@ -69,10 +69,10 @@ public class BasicAuthenticationFilterTest {
 
 		//when
 		AuthenticationToken token = new AuthenticationToken(principal, credentials);
-		LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+		AuthUser authUser = customUserDetails.loadUserByUsername(token.getPrincipal());
 
 		//then
-		assertThat(loginMember.checkPassword(PASSWORD)).isTrue();
+		assertThat(authUser.isValidPassword(PASSWORD)).isTrue();
 	}
 
 	private MockHttpServletRequest createMockRequest() {

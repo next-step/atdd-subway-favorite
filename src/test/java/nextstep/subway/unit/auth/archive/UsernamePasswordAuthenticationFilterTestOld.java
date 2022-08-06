@@ -1,4 +1,4 @@
-package nextstep.subway.unit.auth;
+package nextstep.subway.unit.auth.archive;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,14 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.domain.AuthUser;
-import nextstep.auth.service.CustomUserDetails;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.LoginMemberService;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
+@Deprecated
 @ExtendWith(MockitoExtension.class)
-public class UsernamePasswordAuthenticationFilterNextTest {
+public class UsernamePasswordAuthenticationFilterTestOld {
 	private static final String PRINCIPAL_NAME = "username";
 	private static final String CREDENTIAL_NAME = "password";
 	private static final String EMAIL = "email@email.com";
@@ -38,12 +38,12 @@ public class UsernamePasswordAuthenticationFilterNextTest {
 	@Mock
 	private MemberRepository memberRepository;
 	@Autowired
-	private CustomUserDetails customUserDetails;
+	private LoginMemberService loginMemberService;
 	HttpServletRequest request;
 
 	@BeforeEach
 	void setUp() {
-		customUserDetails = new CustomUserDetailsService(memberRepository);
+		loginMemberService = new LoginMemberService(memberRepository);
 		request = createMockRequest();
 	}
 
@@ -70,10 +70,10 @@ public class UsernamePasswordAuthenticationFilterNextTest {
 
 		//when
 		AuthenticationToken token = new AuthenticationToken(userName, password);
-		AuthUser authUser = customUserDetails.loadUserByUsername(token.getPrincipal());
+		LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
 
 		//then
-		assertThat(authUser.isValidPassword(PASSWORD)).isTrue();
+		assertThat(loginMember.checkPassword(PASSWORD)).isTrue();
 	}
 
 	private MockHttpServletRequest createMockRequest() {

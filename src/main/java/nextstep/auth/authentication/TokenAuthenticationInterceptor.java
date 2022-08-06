@@ -1,4 +1,4 @@
-package nextstep.auth.token;
+package nextstep.auth.authentication;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -10,16 +10,17 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import nextstep.auth.authentication.AuthenticationInterceptor;
-import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.service.CustomUserDetails;
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.TokenResponse;
 
-public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
+public class TokenAuthenticationInterceptor extends AuthenticationInterceptor {
 
 	private JwtTokenProvider jwtTokenProvider;
 
-	public TokenAuthenticationInterceptor2(CustomUserDetails customUserDetails, JwtTokenProvider jwtTokenProvider) {
+	public TokenAuthenticationInterceptor(CustomUserDetails customUserDetails, JwtTokenProvider jwtTokenProvider) {
 		super(customUserDetails);
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
@@ -34,7 +35,7 @@ public class TokenAuthenticationInterceptor2 extends AuthenticationInterceptor {
 	@Override
 	public boolean afterAuthenticate(Authentication authentication, HttpServletResponse response) throws
 		Exception {
-		
+
 		String token = jwtTokenProvider.createToken((String)authentication.getPrincipal(),
 			authentication.getAuthorities());
 

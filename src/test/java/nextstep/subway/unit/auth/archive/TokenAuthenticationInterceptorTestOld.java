@@ -1,4 +1,4 @@
-package nextstep.subway.unit.auth;
+package nextstep.subway.unit.auth.archive;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -19,16 +19,16 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import nextstep.auth.domain.AuthUser;
-import nextstep.auth.service.CustomUserDetails;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
-import nextstep.member.application.CustomUserDetailsService;
+import nextstep.member.application.LoginMemberService;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
+@Deprecated
 @ExtendWith(MockitoExtension.class)
-class TokenAuthenticationInterceptorNextTest {
+class TokenAuthenticationInterceptorTestOld {
 	private static final String EMAIL = "email@email.com";
 	private static final String PASSWORD = "password";
 	private static final int AGE = 20;
@@ -42,11 +42,11 @@ class TokenAuthenticationInterceptorNextTest {
 	@Mock
 	private JwtTokenProvider jwtTokenProvider;
 	@Autowired
-	private CustomUserDetails customUserDetails;
+	private LoginMemberService loginMemberService;
 
 	@BeforeEach
 	void setUp() throws IOException {
-		customUserDetails = new CustomUserDetailsService(memberRepository);
+		loginMemberService = new LoginMemberService(memberRepository);
 		MockHttpServletRequest request = createMockRequest();
 		String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 		tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
@@ -65,23 +65,23 @@ class TokenAuthenticationInterceptorNextTest {
 			.thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE, ROLES)));
 
 		//when
-		AuthUser authUser = customUserDetails.loadUserByUsername(tokenRequest.getEmail());
+		LoginMember loginMember = loginMemberService.loadUserByUsername(tokenRequest.getEmail());
 
 		//then
-		assertThat(authUser.isValidPassword(PASSWORD)).isTrue();
+		assertThat(loginMember.checkPassword(PASSWORD)).isTrue();
 	}
 
 	@Test
-	void afterAuthenticate() {
+	void preHandle() {
 		//given
 		when(jwtTokenProvider.createToken(EMAIL, ROLES))
 			.thenReturn(JWT_TOKEN);
 		when(memberRepository.findByEmail(EMAIL))
 			.thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE, ROLES)));
-		AuthUser authUser = customUserDetails.loadUserByUsername(tokenRequest.getEmail());
+		LoginMember loginMember = loginMemberService.loadUserByUsername(tokenRequest.getEmail());
 
 		//when
-		String token = jwtTokenProvider.createToken(authUser.getUserName(), authUser.getAuthorities());
+		String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
 
 		//then
 		assertThat(token).isEqualTo(JWT_TOKEN);

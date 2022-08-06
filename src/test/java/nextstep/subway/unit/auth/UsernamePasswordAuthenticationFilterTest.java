@@ -20,8 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.AuthUser;
+import nextstep.auth.service.CustomUserDetails;
+import nextstep.member.application.CustomUserDetailsService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
@@ -37,12 +38,12 @@ public class UsernamePasswordAuthenticationFilterTest {
 	@Mock
 	private MemberRepository memberRepository;
 	@Autowired
-	private LoginMemberService loginMemberService;
+	private CustomUserDetails customUserDetails;
 	HttpServletRequest request;
 
 	@BeforeEach
 	void setUp() {
-		loginMemberService = new LoginMemberService(memberRepository);
+		customUserDetails = new CustomUserDetailsService(memberRepository);
 		request = createMockRequest();
 	}
 
@@ -69,10 +70,10 @@ public class UsernamePasswordAuthenticationFilterTest {
 
 		//when
 		AuthenticationToken token = new AuthenticationToken(userName, password);
-		LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+		AuthUser authUser = customUserDetails.loadUserByUsername(token.getPrincipal());
 
 		//then
-		assertThat(loginMember.checkPassword(PASSWORD)).isTrue();
+		assertThat(authUser.isValidPassword(PASSWORD)).isTrue();
 	}
 
 	private MockHttpServletRequest createMockRequest() {
