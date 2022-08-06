@@ -48,6 +48,13 @@ public class FavoriteService {
 				.collect(Collectors.toList());
 	}
 
+	public void deleteFavorite(Long id, String email) {
+		Member member = findMemberWithEmail(email);
+		Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
+				.orElseThrow(NoSuchElementException::new);
+		favoriteRepository.delete(favorite);
+	}
+
 	private Member findMemberWithEmail(String email) {
 		return memberRepository.findByEmail(email)
 				.orElseThrow(NoSuchElementException::new);
