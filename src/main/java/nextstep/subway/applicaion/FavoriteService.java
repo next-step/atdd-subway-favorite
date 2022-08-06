@@ -11,8 +11,8 @@ import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -20,13 +20,14 @@ import java.util.stream.Collectors;
 @Service
 @Getter
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class FavoriteService {
 
 	private final StationRepository stationRepository;
 	private final MemberRepository memberRepository;
 	private final FavoriteRepository favoriteRepository;
 
+	@Transactional
 	public Long save(String email, PostFavoriteRequest request) {
 		Member member = findMemberWithEmail(email);
 
@@ -48,6 +49,7 @@ public class FavoriteService {
 				.collect(Collectors.toList());
 	}
 
+	@Transactional
 	public void deleteFavorite(Long id, String email) {
 		Member member = findMemberWithEmail(email);
 		Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
