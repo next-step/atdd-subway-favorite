@@ -1,18 +1,17 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authorization.extractor;
 
 import org.apache.logging.log4j.util.Strings;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
-public class AuthorizationExtractor {
+public abstract class AuthorizationExtractor {
+
     public static final String AUTHORIZATION = "Authorization";
     public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
 
-    private AuthorizationExtractor() {
-    }
-
-    public static String extract(HttpServletRequest request, AuthorizationType type) {
+    public String extract(HttpServletRequest request) {
+        AuthorizationType type = findAuthorizationType();
         String typeToLowerCase = type.toLowerCase();
         int typeLength = typeToLowerCase.length();
 
@@ -32,4 +31,6 @@ public class AuthorizationExtractor {
 
         return Strings.EMPTY;
     }
+
+    protected abstract AuthorizationType findAuthorizationType();
 }

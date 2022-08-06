@@ -7,6 +7,8 @@ import nextstep.auth.authentication.filter.nonchain.TokenAuthenticationFilter;
 import nextstep.auth.authentication.filter.nonchain.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.authentication.provider.ProviderManager;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
+import nextstep.auth.authorization.extractor.BasicAuthorizationExtractor;
+import nextstep.auth.authorization.extractor.BearerAuthorizationExtractor;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +31,8 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
         registry.addInterceptor(new UsernamePasswordAuthenticationFilter(providerManager)).addPathPatterns(LOGIN_FORM);
         registry.addInterceptor(new TokenAuthenticationFilter(providerManager, jwtTokenProvider)).addPathPatterns(LOGIN_TOKEN);
-        registry.addInterceptor(new BasicAuthenticationFilter(providerManager)).excludePathPatterns(LOGIN_FORM, LOGIN_TOKEN);
-        registry.addInterceptor(new BearerTokenAuthenticationFilter(providerManager)).excludePathPatterns(LOGIN_FORM, LOGIN_TOKEN);
+        registry.addInterceptor(new BasicAuthenticationFilter(providerManager, new BasicAuthorizationExtractor())).excludePathPatterns(LOGIN_FORM, LOGIN_TOKEN);
+        registry.addInterceptor(new BearerTokenAuthenticationFilter(providerManager, new BearerAuthorizationExtractor())).excludePathPatterns(LOGIN_FORM, LOGIN_TOKEN);
     }
 
     @Override
