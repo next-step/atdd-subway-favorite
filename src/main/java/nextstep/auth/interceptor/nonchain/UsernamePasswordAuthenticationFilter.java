@@ -10,7 +10,7 @@ import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
 
-public class UsernamePasswordAuthenticationFilter extends AuthenticateNonChainInterceptor {
+public class UsernamePasswordAuthenticationFilter extends AuthorizationNonChainInterceptor {
 
     private final UserDetailsService userDetailsService;
 
