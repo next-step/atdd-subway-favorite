@@ -7,14 +7,14 @@ public class AuthenticationToken {
     private String credentials;
 
     public AuthenticationToken(String principal, String credentials) {
-        if (hasNotTest(principal) || hasNotTest(credentials)) {
+        if (hasNotText(principal) || hasNotText(credentials)) {
             throw new IllegalArgumentException();
         }
         this.principal = principal;
         this.credentials = credentials;
     }
 
-    private boolean hasNotTest(String value) {
+    private boolean hasNotText(String value) {
         return !StringUtils.hasText(value);
     }
 
