@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 class UsernamePasswordFilterMockTest {
     @Mock
     private UserDetailService userDetailService;
-    private UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter;
+    private UsernamePasswordAuthenticationStrategy usernamePasswordAuthenticationFilter;
     private AuthenticationFilter filter;
     private static final String userEmail = "admin@gmail.com";
     private static final String userPassword = "password";
@@ -45,7 +45,7 @@ class UsernamePasswordFilterMockTest {
 
     @BeforeEach
     void setUp() {
-        usernamePasswordAuthenticationFilter = new UsernamePasswordAuthenticationFilter();
+        usernamePasswordAuthenticationFilter = new UsernamePasswordAuthenticationStrategy();
         filter = new AuthenticationFilter(usernamePasswordAuthenticationFilter, userDetailService);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);

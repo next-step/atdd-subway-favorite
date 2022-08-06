@@ -4,10 +4,10 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.filter.AuthenticationFilter;
 import nextstep.auth.filter.AuthorizationFilter;
-import nextstep.auth.filter.BasicAuthorizationFilter;
-import nextstep.auth.filter.BearerAuthorizationFilter;
-import nextstep.auth.filter.TokenAuthenticationFilter;
-import nextstep.auth.filter.UsernamePasswordAuthenticationFilter;
+import nextstep.auth.filter.BasicAuthorizationStrategy;
+import nextstep.auth.filter.BearerAuthorizationStrategy;
+import nextstep.auth.filter.TokenAuthenticationStrategy;
+import nextstep.auth.filter.UsernamePasswordAuthenticationStrategy;
 import nextstep.auth.member.UserDetailService;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
@@ -42,19 +42,19 @@ public class AuthConfig implements WebMvcConfigurer {
     }
 
     private AuthorizationFilter bearerFilter() {
-        return new AuthorizationFilter(new BearerAuthorizationFilter(jwtTokenProvider, userDetailService));
+        return new AuthorizationFilter(new BearerAuthorizationStrategy(jwtTokenProvider, userDetailService));
     }
 
     private AuthorizationFilter basicFilter() {
-        return new AuthorizationFilter(new BasicAuthorizationFilter(userDetailService));
+        return new AuthorizationFilter(new BasicAuthorizationStrategy(userDetailService));
     }
 
     private AuthenticationFilter tokenFilter() {
-        return new AuthenticationFilter(new TokenAuthenticationFilter(jwtTokenProvider), userDetailService);
+        return new AuthenticationFilter(new TokenAuthenticationStrategy(jwtTokenProvider), userDetailService);
     }
 
     private AuthenticationFilter usernamePasswordFilter() {
-        return new AuthenticationFilter(new UsernamePasswordAuthenticationFilter(), userDetailService);
+        return new AuthenticationFilter(new UsernamePasswordAuthenticationStrategy(), userDetailService);
     }
 
 }

@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class AuthenticationFilter implements HandlerInterceptor {
-    private final AuthenticationFilterStrategy strategy;
+    private final AuthenticationStrategy strategy;
     private final UserDetailService userDetailService;
 
-    public AuthenticationFilter(AuthenticationFilterStrategy strategy, UserDetailService userDetailService) {
+    public AuthenticationFilter(AuthenticationStrategy strategy, UserDetailService userDetailService) {
         this.strategy = strategy;
         this.userDetailService = userDetailService;
     }

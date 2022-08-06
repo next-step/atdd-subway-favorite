@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 class BearerAuthenticationFilterMockTest {
     HttpServletRequest request;
-    BearerAuthorizationFilter bearerFilter;
+    BearerAuthorizationStrategy bearerFilter;
     UserDetailService userDetailService;
     JwtTokenProvider provider;
     AuthorizationFilter authorizationFilter;
@@ -40,7 +40,7 @@ class BearerAuthenticationFilterMockTest {
         userDetailService = mock(UserDetailService.class);
         TOKEN = provider.createToken(PRINCIPAL, AUTHORITIES);
         request = createMockRequest();
-        bearerFilter = new BearerAuthorizationFilter(provider, userDetailService);
+        bearerFilter = new BearerAuthorizationStrategy(provider, userDetailService);
         authorizationFilter = new AuthorizationFilter(bearerFilter);
     }
 

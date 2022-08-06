@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public interface AuthenticationFilterStrategy {
+public interface AuthenticationStrategy {
     Authentication getAuthentication(HttpServletRequest request);
 
     void responseOk(HttpServletResponse response, String email, List<String> authorities) throws IOException;

@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 class TokenInterceptorMockTest {
     @Mock
     private UserDetailService userDetailService;
-    private TokenAuthenticationFilter tokenAuthenticationInterceptor;
+    private TokenAuthenticationStrategy tokenAuthenticationInterceptor;
     private AuthenticationFilter filter;
     private JwtTokenProvider provider = new JwtTokenProvider();
     private static final String userEmail = "admin@gmail.com";
@@ -49,7 +49,7 @@ class TokenInterceptorMockTest {
     void setUp() throws IllegalAccessException {
         // secret-key 설정
         FieldUtils.writeField(provider, "secretKey", "atdd-secret-key", true);
-        tokenAuthenticationInterceptor = new TokenAuthenticationFilter(provider);
+        tokenAuthenticationInterceptor = new TokenAuthenticationStrategy(provider);
         filter = new AuthenticationFilter(tokenAuthenticationInterceptor, userDetailService);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
