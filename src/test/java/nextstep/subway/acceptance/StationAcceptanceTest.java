@@ -75,8 +75,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void deleteStation() {
         // given
         ExtractableResponse<Response> createResponse = 지하철역_생성_요청(관리자_token, "강남역");
-        System.out.println("!!!!!!!!!");
-        System.out.println(관리자_token);
 
         // when
         String location = createResponse.header("location");

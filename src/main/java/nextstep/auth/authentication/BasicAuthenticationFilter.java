@@ -46,8 +46,6 @@ public class BasicAuthenticationFilter extends InterceptorChainingFilter {
     @Override
     protected void setAuthentication(UserDetails userDetails) {
         Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
-        System.out.println("???");
-        System.out.println(authentication.getPrincipal());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
