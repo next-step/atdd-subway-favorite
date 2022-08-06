@@ -5,17 +5,17 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.user.UserDetails;
+import nextstep.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends ChainFilter {
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -32,15 +32,15 @@ public class BasicAuthenticationFilter extends ChainFilter {
 
     @Override
     public Authentication authenticate(AuthenticationToken token) {
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 }

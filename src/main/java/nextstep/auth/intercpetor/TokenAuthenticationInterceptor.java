@@ -8,8 +8,8 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.user.UserDetails;
+import nextstep.user.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends NonChainFilter {
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -43,17 +43,17 @@ public class TokenAuthenticationInterceptor extends NonChainFilter {
         String principal = token.getPrincipal();
         String credentials = token.getCredentials();
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
 
-        if (loginMember == null) {
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(credentials)) {
+        if (!userDetails.checkPassword(credentials)) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
     @Override

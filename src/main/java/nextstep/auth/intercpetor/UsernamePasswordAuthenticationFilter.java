@@ -6,8 +6,8 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.user.UserDetails;
+import nextstep.user.UserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,15 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
     private final Logger log = LoggerFactory.getLogger(UsernamePasswordAuthenticationFilter.class);
-    private LoginMemberService loginMemberService;
+    private UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     private final static String USERNAME = "userName";
     private final static String PASSWORD = "password";
-    
+
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws Exception {
         String userName = request.getParameter(USERNAME);
@@ -42,18 +42,18 @@ public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
             throw new AuthenticationException();
         }
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+        if (userDetails == null) {
             log.info("올바르지 않은 토큰입니다. (존재하지 않는 사용자 - userName : {})", token.getPrincipal());
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
-            log.info("패스워드가 틀렸습니다. userName : {}", loginMember.getEmail());
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            log.info("패스워드가 틀렸습니다. userName : {}", userDetails.getEmail());
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
     @Override
