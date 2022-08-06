@@ -6,7 +6,7 @@ import nextstep.station.domain.Station;
 import java.util.List;
 
 public class Path {
-    private Sections sections;
+    private final Sections sections;
 
     public Path(Sections sections) {
         this.sections = sections;

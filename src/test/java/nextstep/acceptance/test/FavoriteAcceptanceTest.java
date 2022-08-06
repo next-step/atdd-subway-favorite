@@ -3,7 +3,6 @@ package nextstep.acceptance.test;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.acceptance.step.FavoriteSteps;
 import nextstep.acceptance.step.LineSteps;
 import nextstep.acceptance.step.StationSteps;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +16,7 @@ import java.util.Map;
 
 import static nextstep.acceptance.step.AuthSteps.권한검사에_실패한다;
 import static nextstep.acceptance.step.AuthSteps.로그인이_필요하다;
+import static nextstep.acceptance.step.FavoriteSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 기능")
@@ -55,7 +55,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_생성() {
         // when
-        var createResponse = FavoriteSteps.즐겨찾기_생성_요청(교대역, 강남역);
+        var createResponse = 즐겨찾기_생성_요청(교대역, 강남역);
         Long 즐겨찾기1번 = createResponse.jsonPath().getLong("id");
 
         // then
@@ -80,7 +80,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 존재하지_않는_역 = Long.MAX_VALUE;
 
         // when
-        var createResponse = FavoriteSteps.즐겨찾기_생성_요청(강남역, 존재하지_않는_역);
+        var createResponse = 즐겨찾기_생성_요청(강남역, 존재하지_않는_역);
 
         // then
         요청에_실패한다(createResponse);
@@ -90,11 +90,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_생성_예외3() {
         // given
-        var response = FavoriteSteps.즐겨찾기_생성_요청(교대역, 강남역);
+        var response = 즐겨찾기_생성_요청(교대역, 강남역);
 
         // when
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        var duplicateResponse = FavoriteSteps.즐겨찾기_생성_요청(교대역, 강남역);
+        var duplicateResponse = 즐겨찾기_생성_요청(교대역, 강남역);
 
         // then
         요청에_실패한다(duplicateResponse);
@@ -104,8 +104,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_조회() {
         // given
-        Long 즐겨찾기1번 = FavoriteSteps.즐겨찾기_생성_요청(교대역, 강남역).jsonPath().getLong("id");
-        Long 즐겨찾기2번 = FavoriteSteps.즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
+        Long 즐겨찾기1번 = 즐겨찾기_생성_요청(교대역, 강남역).jsonPath().getLong("id");
+        Long 즐겨찾기2번 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
 
         // when + then
         즐겨찾기_정보가_일치한다(즐겨찾기1번, 즐겨찾기2번);
@@ -115,11 +115,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_삭제() {
         // given
-        Long 즐겨찾기1번 = FavoriteSteps.즐겨찾기_생성_요청(교대역, 강남역).jsonPath().getLong("id");
-        Long 즐겨찾기2번 = FavoriteSteps.즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
+        Long 즐겨찾기1번 = 즐겨찾기_생성_요청(교대역, 강남역).jsonPath().getLong("id");
+        Long 즐겨찾기2번 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
 
         // when
-        var deleteResponse = FavoriteSteps.즐겨찾기_삭제_요청(즐겨찾기1번);
+        var deleteResponse = 즐겨찾기_삭제_요청(즐겨찾기1번);
 
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -130,10 +130,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_삭제_예외() {
         // given
-        Long 다른_유저_즐겨찾기 = FavoriteSteps.즐겨찾기_생성_요청_관리자(교대역, 강남역).jsonPath().getLong("id");
+        Long 다른_유저_즐겨찾기 = 즐겨찾기_생성_요청_관리자(교대역, 강남역).jsonPath().getLong("id");
 
         // when
-        var invalidDeleteResponse = FavoriteSteps.즐겨찾기_삭제_요청(다른_유저_즐겨찾기);
+        var invalidDeleteResponse = 즐겨찾기_삭제_요청(다른_유저_즐겨찾기);
 
         // then
         권한검사에_실패한다(invalidDeleteResponse);
@@ -146,7 +146,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 존재하지_않는_즐겨찾기 = Long.MAX_VALUE;
 
         // when
-        var invalidDeleteResponse = FavoriteSteps.즐겨찾기_삭제_요청(존재하지_않는_즐겨찾기);
+        var invalidDeleteResponse = 즐겨찾기_삭제_요청(존재하지_않는_즐겨찾기);
 
         // then
         요청에_실패한다(invalidDeleteResponse);
@@ -154,7 +154,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 로그인_없이_즐겨찾기_생성_요청() {
         return RestAssured.given().log().all()
-                .body(FavoriteSteps.createFavoritesCreateParams(교대역, 강남역))
+                .body(createFavoritesCreateParams(교대역, 강남역))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all()
@@ -174,7 +174,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_정보가_일치한다(Long... favorites) {
-        var response = FavoriteSteps.즐겨찾기_조회_요청();
+        var response = 즐겨찾기_조회_요청();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList("id", Long.class))

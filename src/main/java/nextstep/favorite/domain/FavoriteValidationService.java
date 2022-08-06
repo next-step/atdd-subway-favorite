@@ -19,7 +19,7 @@ public class FavoriteValidationService {
 
     public void validateAddedFavorite(Long memberId, Long source, Long target) {
         if (source.equals(target)) {
-            throw new CantAddFavoriteException("즐겨찾기와 출발점과 종점이 같을 수 없습니다.");
+            throw new CantAddFavoriteException("즐겨찾기의 출발점과 종점이 같을 수 없습니다.");
         }
 
         List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);

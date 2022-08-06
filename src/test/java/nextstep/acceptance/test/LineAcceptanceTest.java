@@ -2,7 +2,6 @@ package nextstep.acceptance.test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.acceptance.step.LineSteps;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -12,8 +11,7 @@ import java.util.Map;
 
 import static nextstep.acceptance.step.AuthSteps.givenUserRole;
 import static nextstep.acceptance.step.AuthSteps.권한검사에_실패한다;
-import static nextstep.acceptance.step.LineSteps.지하철_노선_생성_요청;
-import static nextstep.acceptance.step.LineSteps.지하철_노선_조회_요청;
+import static nextstep.acceptance.step.LineSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
@@ -23,7 +21,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        LineSteps.지하철_노선_생성_요청("2호선", "green");
+        지하철_노선_생성_요청("2호선", "green");
 
         // then
         지하철_노선이_존재한다("2호선");
@@ -43,8 +41,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // when
-        LineSteps.지하철_노선_생성_요청("2호선", "green");
-        LineSteps.지하철_노선_생성_요청("3호선", "orange");
+        지하철_노선_생성_요청("2호선", "green");
+        지하철_노선_생성_요청("3호선", "orange");
 
         // then
         지하철_노선이_존재한다("2호선", "3호선");
@@ -54,7 +52,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // when
-        var createResponse = LineSteps.지하철_노선_생성_요청("2호선", "green");
+        var createResponse = 지하철_노선_생성_요청("2호선", "green");
         String location = createResponse.header("location");
 
         // then
@@ -65,11 +63,11 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        var createResponse = LineSteps.지하철_노선_생성_요청("2호선", "green");
+        var createResponse = 지하철_노선_생성_요청("2호선", "green");
         String location = createResponse.header("location");
 
         // when
-        LineSteps.지하철_노선_수정_요청(location, "3호선", "orange");
+        지하철_노선_수정_요청(location, "3호선", "orange");
 
         // then
         노선_정보가_일치한다(location, "3호선", "orange");
@@ -79,7 +77,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine_Exception() {
         // given
-        var createResponse = LineSteps.지하철_노선_생성_요청("2호선", "green");
+        var createResponse = 지하철_노선_생성_요청("2호선", "green");
         String location = createResponse.header("location");
 
         // when
@@ -93,11 +91,11 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        var createResponse = LineSteps.지하철_노선_생성_요청("2호선", "green");
+        var createResponse = 지하철_노선_생성_요청("2호선", "green");
         String location = createResponse.header("location");
 
         // when
-        LineSteps.지하철_노선_삭제_요청(location);
+        지하철_노선_삭제_요청(location);
 
         // then
         지하철_노선이_존재하지_않는다("2호선");
@@ -107,7 +105,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine_Exception() {
         // given
-        var createResponse = LineSteps.지하철_노선_생성_요청("2호선", "green");
+        var createResponse = 지하철_노선_생성_요청("2호선", "green");
         String location = createResponse.header("location");
 
         // when
@@ -131,7 +129,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private void 노선_정보가_일치한다(String location, String stationName, String stationColor) {
-        var response = LineSteps.지하철_노선_조회_요청(location);
+        var response = 지하철_노선_조회_요청(location);
 
         assertThat(response.jsonPath().getString("name")).isEqualTo(stationName);
         assertThat(response.jsonPath().getString("color")).isEqualTo(stationColor);
@@ -159,13 +157,13 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_노선이_존재한다(String... lineNames) {
-        var listResponse = LineSteps.지하철_노선_목록_조회_요청();
+        var listResponse = 지하철_노선_목록_조회_요청();
 
         assertThat(listResponse.jsonPath().getList("name")).contains(lineNames);
     }
 
     private void 지하철_노선이_존재하지_않는다(String lineName) {
-        var listResponse = LineSteps.지하철_노선_목록_조회_요청();
+        var listResponse = 지하철_노선_목록_조회_요청();
 
         assertThat(listResponse.jsonPath().getList("name")).doesNotContain(lineName);
     }

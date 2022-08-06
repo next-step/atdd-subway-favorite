@@ -41,6 +41,10 @@ public class Line {
         sections.delete(station);
     }
 
+    public boolean contains(Station station) {
+        return getStations().contains(station);
+    }
+
     public List<Station> getStations() {
         return sections.getStations();
     }
