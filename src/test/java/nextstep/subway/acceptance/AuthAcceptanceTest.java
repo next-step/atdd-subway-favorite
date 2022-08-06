@@ -13,9 +13,9 @@ import static nextstep.subway.acceptance.MemberSteps.*;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+    private static final String EMAIL = "admin@nextstep.com";
+    private static final String PASSWORD = "12345";
+    private static final Integer AGE = 25;
 
     @DisplayName("Basic Auth")
     @Test
@@ -41,16 +41,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, EMAIL, AGE);
-    }
-
-    private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        return RestAssured.given().log().all()
-                .auth().form(email, password, new FormAuthConfig("/login/session", USERNAME_FIELD, PASSWORD))
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {

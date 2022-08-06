@@ -22,21 +22,19 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         try {
-            Map<String, String[]> paramMap = request.getParameterMap();
-            String userName = paramMap.get(USERNAME)[0];
-            String password = paramMap.get(PASSWORD)[0];
+            var userName = request.getParameter(USERNAME);
+            var password = request.getParameter(PASSWORD);
 
-            AuthenticationToken token = new AuthenticationToken(userName, password);
-
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+            LoginMember loginMember = loginMemberService.loadUserByUsername(userName);
 
             if (loginMember == null) {
                 throw new AuthenticationException();
             }
 
-            checkPassword(loginMember, token.getPrincipal());
+            checkPassword(loginMember, password);
 
             Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+            
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return true;
