@@ -61,17 +61,21 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기 등록 시 권한이 없는 경우")
     void notAuthenticate() {
+        //when
+        final ExtractableResponse<Response> response = 즐겨찾기_권한_없이_등록();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_권한_없이_등록() {
         final ExtractableResponse<Response> response = RestAssured.given()
-            .body(Map.of(
-                "source", 1L,
-                "target", 2L
-            ))
+            .body(favoriteParams())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/favorites")
             .then().log().all()
             .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        return response;
     }
 
     @Test
