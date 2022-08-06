@@ -37,4 +37,14 @@ public class FavoriteSteps extends AcceptanceTestSteps{
 				.log().all()
 				.extract();
 	}
+
+	public static ExtractableResponse<Response> 로그인을_한_채로_조회를_요청한다(String token) {
+		return given(token)
+				.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+				.when()
+				.get("/favorite")
+				.then()
+				.log().all()
+				.extract();
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.FavoriteSteps.로그인_상태에서_즐겨찾기에_추가한다;
 import static nextstep.subway.acceptance.FavoriteSteps.로그인_안_한_상태로_즐겨찾기에_추가한다;
+import static nextstep.subway.acceptance.FavoriteSteps.로그인을_한_채로_조회를_요청한다;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,21 +28,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * When 로그인한 상태로 즐겨찾기를 저장하면
-	 * Then 성공한다.
+	 * Given 로그인한 상태로 즐겨찾기를 저장하고
+	 * When 반환을 요청하면
+	 * Then 반환된다.
 	 */
 	@DisplayName("로그인을 한 채로 즐겨찾기를 요청하면 성공한다.")
 	@Test
-	void saveFavorite() {
-		//when
-		ExtractableResponse<Response> 응답 = 로그인_상태에서_즐겨찾기에_추가한다(관리자, 광교역, 광교중앙역);
+	void saveAndGetFavorite() {
+		//given
+		로그인한_상태로_즐겨찾기가_추가됨();
 
 		//then
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		ExtractableResponse<Response> 응답 = 로그인을_한_채로_조회를_요청한다(관리자);
+
+		//then
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
 	/**
-	 * When 로그인을 안 한 상태로 즐겨찾기를 저장하면
+	 * When 로그인을 안 한 상태로 즐겨자기를 저장하면
 	 * Then 실패한다.
 	 */
 	@DisplayName("로그인을 안 한 채로 즐겨찾기를 요청하면 실패한다.")
@@ -54,5 +59,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-
+	private ExtractableResponse<Response> 로그인한_상태로_즐겨찾기가_추가됨() {
+		ExtractableResponse<Response> 응답 = 로그인_상태에서_즐겨찾기에_추가한다(관리자, 광교역, 광교중앙역);
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		return 응답;
+	}
 }
