@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/favorite")
+@RequestMapping("/favorites")
 @RequiredArgsConstructor
 public class FavoriteController {
 
@@ -31,7 +31,7 @@ public class FavoriteController {
 	@Secured(value = {RoleType.ROLE_ADMIN, RoleType.ROLE_MEMBER})
 	public ResponseEntity<Void> save(@AuthenticationPrincipal LoginMember loginMember, @RequestBody PostFavoriteRequest request) {
 		Long id = favoriteService.save(loginMember.getEmail(), request);
-		return ResponseEntity.created(URI.create("/favorite/" + id)).build();
+		return ResponseEntity.created(URI.create("/favorites/" + id)).build();
 	}
 
 	@GetMapping

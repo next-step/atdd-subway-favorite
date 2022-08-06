@@ -17,7 +17,7 @@ public class FavoriteSteps extends AcceptanceTestSteps{
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(params)
 				.when()
-				.post("/favorite")
+				.post("/favorites")
 				.then()
 				.log().all()
 				.extract();
@@ -32,7 +32,7 @@ public class FavoriteSteps extends AcceptanceTestSteps{
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(params)
 				.when()
-				.post("/favorite")
+				.post("/favorites")
 				.then()
 				.log().all()
 				.extract();
@@ -42,7 +42,7 @@ public class FavoriteSteps extends AcceptanceTestSteps{
 		return given(token)
 				.contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)
 				.when()
-				.get("/favorite")
+				.get("/favorites")
 				.then()
 				.log().all()
 				.extract();
