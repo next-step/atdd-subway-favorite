@@ -14,7 +14,11 @@ import java.util.Map;
 
 import static nextstep.acceptance.step.AuthSteps.givenUserRole;
 import static nextstep.acceptance.step.AuthSteps.권한검사에_실패한다;
-import static nextstep.acceptance.step.LineSteps.*;
+import static nextstep.acceptance.step.LineSteps.createSectionCreateParams;
+import static nextstep.acceptance.step.LineSteps.지하철_노선_생성_요청;
+import static nextstep.acceptance.step.LineSteps.지하철_노선_조회_요청;
+import static nextstep.acceptance.step.LineSteps.지하철_노선에_지하철_구간_생성_요청;
+import static nextstep.acceptance.step.LineSteps.지하철_노선에_지하철_구간_제거_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관리 기능")
@@ -154,13 +158,5 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         lineCreateParams.put("downStationId", downStationId + "");
         lineCreateParams.put("distance", 10 + "");
         return lineCreateParams;
-    }
-
-    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId) {
-        Map<String, String> params = new HashMap<>();
-        params.put("upStationId", upStationId + "");
-        params.put("downStationId", downStationId + "");
-        params.put("distance", 6 + "");
-        return params;
     }
 }

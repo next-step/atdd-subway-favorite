@@ -3,9 +3,9 @@ package nextstep.acceptance.test;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.acceptance.step.StationSteps;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -13,6 +13,9 @@ import java.util.Map;
 
 import static nextstep.acceptance.step.AuthSteps.givenUserRole;
 import static nextstep.acceptance.step.AuthSteps.권한검사에_실패한다;
+import static nextstep.acceptance.step.LineSteps.*;
+import static nextstep.acceptance.step.StationSteps.지하철역_생성;
+import static nextstep.acceptance.step.StationSteps.지하철역_제거;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
@@ -25,7 +28,7 @@ class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        StationSteps.지하철역_생성(강남역);
+        지하철역_생성(강남역);
 
         // then
         지하철역들이_존재한다(강남역);
@@ -45,8 +48,8 @@ class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // when
-        StationSteps.지하철역_생성(강남역);
-        StationSteps.지하철역_생성(역삼역);
+        지하철역_생성(강남역);
+        지하철역_생성(역삼역);
 
         // then
         지하철역들이_존재한다(강남역, 역삼역);
@@ -56,10 +59,10 @@ class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        var createResponse = StationSteps.지하철역_생성(강남역);
+        var createResponse = 지하철역_생성(강남역);
 
         // when
-        StationSteps.지하철역_제거(createResponse.header("location"));
+        지하철역_제거(createResponse.header("location"));
 
         // then
         지하철역이_존재하지_않는다(강남역);
@@ -69,7 +72,7 @@ class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation_Exception() {
         // given
-        var createResponse = StationSteps.지하철역_생성(강남역);
+        var createResponse = 지하철역_생성(강남역);
 
         // when
         var deleteResponse = 일반사용자_권한으로_지하철역_제거(createResponse.header("location"));

@@ -28,7 +28,6 @@ public class StationSteps {
         return givenAdminRole()
                 .when().delete(location)
                 .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
     }
 }
