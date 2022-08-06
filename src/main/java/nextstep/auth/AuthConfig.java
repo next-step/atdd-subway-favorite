@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import nextstep.auth.authentication.BasicAuthenticationFilter;
+import nextstep.auth.authentication.BasicAuthenticationFilter2;
 import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
 import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter2;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
@@ -36,7 +36,7 @@ public class AuthConfig implements WebMvcConfigurer {
 			.addPathPatterns("/login/form");
 		registry.addInterceptor(new TokenAuthenticationInterceptor2(customUserDetails, jwtTokenProvider))
 			.addPathPatterns("/login/token");
-		registry.addInterceptor(new BasicAuthenticationFilter(loginMemberService));
+		registry.addInterceptor(new BasicAuthenticationFilter2(customUserDetails));
 		registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider));
 	}
 

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import nextstep.auth.context.Authentication;
+import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.domain.AuthUser;
 import nextstep.auth.service.CustomUserDetails;
 
@@ -30,6 +31,7 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 
 	public boolean afterAuthenticate(Authentication authentication, HttpServletResponse response) throws
 		Exception {
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return true;
 	}
 
