@@ -46,7 +46,7 @@ public class DatabaseCleanup implements InitializingBean {
             if (tableName.equals("MEMBER")) {
                 jdbcTemplate.execute("DELETE FROM " + tableName + " WHERE email <> 'masterAdmin'");
             } else if (tableName.equals("MEMBER_ROLE")) {
-                return;
+
             } else {
                 jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
             }

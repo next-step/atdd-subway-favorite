@@ -19,8 +19,8 @@ public class BearerTokenAuthenticationInterceptor extends AuthenticationIntercep
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public BearerTokenAuthenticationInterceptor(AuthenticationConverter authenticationConverter, AuthMemberLoader authMemberLoader, JwtTokenProvider jwtTokenProvider) {
-        super(authenticationConverter, authMemberLoader);
+    public BearerTokenAuthenticationInterceptor(JwtTokenProvider jwtTokenProvider) {
+        super(null, null);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

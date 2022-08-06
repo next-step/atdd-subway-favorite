@@ -48,9 +48,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_생성_요청(인증_토큰, "양재역").jsonPath().getLong("id");
         남부터미널역 = 지하철역_생성_요청(인증_토큰, "남부터미널역").jsonPath().getLong("id");
 
-        이호선 = 지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10);
-        신분당선 = 지하철_노선_생성_요청("신분당선", "red", 강남역, 양재역, 10);
-        삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
+        이호선 = 지하철_노선_생성_요청(인증_토큰, "2호선", "green", 교대역, 강남역, 10);
+        신분당선 = 지하철_노선_생성_요청(인증_토큰, "신분당선", "red", 강남역, 양재역, 10);
+        삼호선 = 지하철_노선_생성_요청(인증_토큰, "3호선", "orange", 교대역, 남부터미널역, 2);
 
         지하철_노선에_지하철_구간_생성_요청(인증_토큰, 삼호선, createSectionCreateParams(남부터미널역, 양재역, 3));
     }
@@ -73,7 +73,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
+    public static Long 지하철_노선_생성_요청(String accessToken, String name, String color, Long upStation, Long downStation, int distance) {
         Map<String, String> lineCreateParams;
         lineCreateParams = new HashMap<>();
         lineCreateParams.put("name", name);
@@ -82,10 +82,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         lineCreateParams.put("downStationId", downStation + "");
         lineCreateParams.put("distance", distance + "");
 
-        return LineSteps.지하철_노선_생성_요청(인증_토큰, lineCreateParams).jsonPath().getLong("id");
+        return LineSteps.지하철_노선_생성_요청(accessToken, lineCreateParams).jsonPath().getLong("id");
     }
 
-    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
+    public static Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
         Map<String, String> params = new HashMap<>();
         params.put("upStationId", upStationId + "");
         params.put("downStationId", downStationId + "");

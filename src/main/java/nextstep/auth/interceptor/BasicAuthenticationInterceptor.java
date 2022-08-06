@@ -1,7 +1,6 @@
 package nextstep.auth.interceptor;
 
 import nextstep.auth.authentication.AuthMemberLoader;
-import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.converter.AuthenticationConverter;
