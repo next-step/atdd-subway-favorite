@@ -2,9 +2,11 @@ package nextstep.line.application;
 
 import nextstep.line.application.dto.LineRequest;
 import nextstep.line.application.dto.LineResponse;
+import nextstep.line.application.dto.LineUpdateRequest;
 import nextstep.line.application.dto.SectionRequest;
 import nextstep.line.domain.Line;
 import nextstep.line.domain.LineRepository;
+import nextstep.line.domain.exception.LineNotFoundException;
 import nextstep.station.domain.Station;
 import nextstep.station.application.StationService;
 import org.springframework.stereotype.Service;
@@ -51,11 +53,11 @@ public class LineService {
 
     public Line findById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(LineNotFoundException::new);
     }
 
     @Transactional
-    public void updateLine(Long id, LineRequest lineRequest) {
+    public void updateLine(Long id, LineUpdateRequest lineRequest) {
         Line line = findById(id);
         line.update(lineRequest.getName(), lineRequest.getColor());
     }

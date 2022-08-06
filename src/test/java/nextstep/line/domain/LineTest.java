@@ -1,5 +1,7 @@
 package nextstep.line.domain;
 
+import nextstep.line.domain.exception.CantAddSectionException;
+import nextstep.line.domain.exception.CantDeleteSectionException;
 import nextstep.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -122,7 +124,7 @@ class LineTest {
         line.addSection(강남역, 역삼역, 10);
 
         assertThatThrownBy(() -> line.addSection(강남역, 역삼역, 5))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CantAddSectionException.class);
     }
 
     @Test
@@ -176,6 +178,6 @@ class LineTest {
         line.addSection(강남역, 역삼역, 10);
 
         assertThatThrownBy(() -> line.deleteSection(역삼역))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CantDeleteSectionException.class);
     }
 }

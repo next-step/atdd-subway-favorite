@@ -4,10 +4,12 @@ import nextstep.auth.secured.Secured;
 import nextstep.line.application.LineService;
 import nextstep.line.application.dto.LineRequest;
 import nextstep.line.application.dto.LineResponse;
+import nextstep.line.application.dto.LineUpdateRequest;
 import nextstep.line.application.dto.SectionRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class LineController {
 
     @Secured("ROLE_ADMIN")
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -39,8 +41,8 @@ public class LineController {
 
     @Secured("ROLE_ADMIN")
     @PutMapping("/{id}")
-    public void updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
-        lineService.updateLine(id, lineRequest);
+    public void updateLine(@PathVariable Long id, @RequestBody @Valid LineUpdateRequest request) {
+        lineService.updateLine(id, request);
     }
 
     @Secured("ROLE_ADMIN")
@@ -52,7 +54,7 @@ public class LineController {
 
     @Secured("ROLE_ADMIN")
     @PostMapping("/{lineId}/sections")
-    public void addSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+    public void addSection(@PathVariable Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
         lineService.addSection(lineId, sectionRequest);
     }
 

@@ -1,9 +1,12 @@
 package nextstep.line.domain;
 
 import nextstep.station.domain.Station;
-import org.springframework.util.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
@@ -26,12 +29,8 @@ public class Line {
     }
 
     public void update(String name, String color) {
-        if (StringUtils.hasText(name)) {
-            this.name = name;
-        }
-        if (StringUtils.hasText(color)) {
-            this.color = color;
-        }
+        this.name = name;
+        this.color = color;
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {

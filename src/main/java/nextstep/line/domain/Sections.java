@@ -1,5 +1,7 @@
 package nextstep.line.domain;
 
+import nextstep.line.domain.exception.CantAddSectionException;
+import nextstep.line.domain.exception.CantDeleteSectionException;
 import nextstep.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -39,7 +41,7 @@ public class Sections {
 
     public void delete(Station station) {
         if (sections.size() <= 1) {
-            throw new IllegalArgumentException();
+            throw new CantDeleteSectionException("구간이 둘 이상일때만 삭제할 수 있습니다.");
         }
 
         Optional<Section> upSection = findSectionAsUpStation(station);
@@ -92,7 +94,7 @@ public class Sections {
                 .filter(it -> it.hasDuplicateSection(section.getUpStation(), section.getDownStation()))
                 .findFirst()
                 .ifPresent(it -> {
-                    throw new IllegalArgumentException();
+                    throw new CantAddSectionException("이미 노선에 포함된 구간입니다.");
                 });
     }
 
@@ -138,7 +140,7 @@ public class Sections {
                 upSection.getDistance() + downSection.getDistance()
         );
 
-        this.sections.add(newSection);
+        sections.add(newSection);
     }
 
     private Station findFirstUpStation() {

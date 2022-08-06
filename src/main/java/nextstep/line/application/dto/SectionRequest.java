@@ -1,8 +1,16 @@
 package nextstep.line.application.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class SectionRequest {
+    @NotNull
+    @Min(1)
     private Long upStationId;
+    @NotNull
+    @Min(1)
     private Long downStationId;
+    @Min(1)
     private int distance;
 
     public SectionRequest() {
