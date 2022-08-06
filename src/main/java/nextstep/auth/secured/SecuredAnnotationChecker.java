@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 public class SecuredAnnotationChecker {
+
+    public static final String ROLE_AUTHENTICATION_EX = "권한이 없습니다.";
+
     @Before("@annotation(nextstep.auth.secured.Secured)")
     public void checkAuthorities(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -25,9 +28,14 @@ public class SecuredAnnotationChecker {
         List<RoleType> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            throw new RoleAuthenticationException(ROLE_AUTHENTICATION_EX);
+        }
+
         authentication.getAuthorities().stream()
                 .filter(auth -> values.stream().anyMatch(value -> value.name().equals(auth)))
                 .findFirst()
-                .orElseThrow(() -> new RoleAuthenticationException("권한이 없습니다."));
+                .orElseThrow(() -> new RoleAuthenticationException(ROLE_AUTHENTICATION_EX));
     }
 }
