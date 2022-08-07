@@ -92,7 +92,7 @@ class TokenAuthenticationInterceptorTest {
         return request;
     }
 
-    private MockHttpServletResponse createMockResponse() throws IOException {
+    private MockHttpServletResponse createMockResponse() {
         return new MockHttpServletResponse();
     }
 
