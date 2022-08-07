@@ -42,8 +42,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites() {
-        List<Favorite> all = favoriteRepository.findAll();
-        return all.stream()
+        return favoriteRepository.findAll().stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }

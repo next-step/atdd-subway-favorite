@@ -29,12 +29,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         //given
-        지하철역_생성_요청("교대역", ACCESS_TOKEN);
-        지하철역_생성_요청("남부터미널역", ACCESS_TOKEN);
-        지하철역_생성_요청("양재역", ACCESS_TOKEN);
+        long 교대역 = 지하철역_생성_요청("교대역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 남부터미널역 = 지하철역_생성_요청("남부터미널역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
 
         //when
-        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(1L, 3L);
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(교대역, 양재역);
 
         //then
         assertThat(createdResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -42,6 +42,33 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청();
         assertThat(getResponse.jsonPath().getList("source.name", String.class).get(0)).isEqualTo("교대역");
         assertThat(getResponse.jsonPath().getList("target.name", String.class).get(0)).isEqualTo("양재역");
+    }
+
+
+    /**
+     * Given 역과 즐겨찾기를 추가해놓고
+     * When 즐겨찾기를 조회하면
+     * Then 추가된 즐겨찾기 역들을 확인할 수 있다
+     */
+    @DisplayName("즐겨찾기 조회")
+    @Test
+    void showFavorites() {
+        //given
+        long 교대역 = 지하철역_생성_요청("교대역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 남부터미널역 = 지하철역_생성_요청("남부터미널역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
+        ;
+
+        즐겨찾기_생성_요청(교대역, 양재역);
+
+        //when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        assertThat(response.jsonPath().getList("source.name", String.class).get(0)).isEqualTo("교대역");
+        assertThat(response.jsonPath().getList("target.name", String.class).get(0)).isEqualTo("양재역");
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(long source, long target) {
