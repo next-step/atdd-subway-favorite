@@ -1,6 +1,23 @@
 # 지하철 노선도 미션
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
+--- 
+
+## 2단계 미션
+
+### 요구사항
+
+- xxxAuthenticationFilter 의 구조화
+  - 추상화를 통해 리팩터링
+- auth 패키지와 member 패키지에 대한 순환 의존 제거
+  - 현재 auth 패키지와 member 패키지는 서로 의존하고 있음
+  - UserDetailsService 를 추상화하여 auth -> member 의존 제거하기
+
+### TodoList
+- [X] Chain Filter 추상화
+- [X] Non-Chain Filter 추상화
+- [X] auth, member 패키지 간의 순환 의존 제거
+
 ---
 
 ## 1단계 미션

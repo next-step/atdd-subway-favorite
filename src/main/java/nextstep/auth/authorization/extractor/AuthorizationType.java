@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authorization.extractor;
 
 public enum AuthorizationType {
     BASIC,

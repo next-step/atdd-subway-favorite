@@ -2,6 +2,7 @@ package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.secured.Secured;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -41,6 +42,7 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getEmail());
