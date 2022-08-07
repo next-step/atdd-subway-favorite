@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps extends AcceptanceTestSteps{
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
-
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         return response.jsonPath().getString("accessToken");

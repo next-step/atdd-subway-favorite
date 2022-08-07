@@ -28,8 +28,9 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             }
 
             String principal = jwtTokenProvider.getPrincipal(token.getPrincipal());
+            List<String> roles = jwtTokenProvider.getRoles(token.getPrincipal());
 
-            Authentication authentication = new Authentication(principal, new ArrayList<>());
+            Authentication authentication = new Authentication(principal, roles);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 

@@ -10,22 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static nextstep.subway.acceptance.MemberSteps.*;
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-    }
 
     @DisplayName("Basic Auth")
     @Test
