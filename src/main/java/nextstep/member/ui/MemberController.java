@@ -4,7 +4,7 @@ import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.user.UserDetails;
+import nextstep.auth.authentication.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

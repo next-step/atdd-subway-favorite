@@ -6,7 +6,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.user.UserDetails;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.user.UserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

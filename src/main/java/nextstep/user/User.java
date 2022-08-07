@@ -1,5 +1,7 @@
 package nextstep.user;
 
+import nextstep.auth.authentication.UserDetails;
+
 import java.util.List;
 
 public class User implements UserDetails {

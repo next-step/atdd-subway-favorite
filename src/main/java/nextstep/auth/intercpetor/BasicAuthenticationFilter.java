@@ -5,7 +5,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.user.UserDetails;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
