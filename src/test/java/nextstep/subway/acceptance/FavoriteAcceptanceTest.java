@@ -57,6 +57,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(createdResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
     }
 
 
