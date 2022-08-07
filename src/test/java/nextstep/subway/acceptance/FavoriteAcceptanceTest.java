@@ -11,20 +11,28 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("즐겨찾기 관리 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String ROOT_PATH = "/favorites";
 
 
     /**
+     * Given 역을 미리 추가해놓고
      * When 즐겨찾기를 추가하면
      * Then 즐겨찾기 조회 시 추가된 즐겨찾기 역들을 확인할 수 있다
      */
     @DisplayName("즐겨찾기 추가")
     @Test
     void createFavorite() {
+        //given
+        지하철역_생성_요청("교대역", ACCESS_TOKEN);
+        지하철역_생성_요청("남부터미널역", ACCESS_TOKEN);
+        지하철역_생성_요청("양재역", ACCESS_TOKEN);
+
         //when
         ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(1L, 3L);
 

@@ -10,11 +10,11 @@ public class Favorite {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "station_id")
+    @JoinColumn(name = "station_id", insertable = false, updatable = false)
     private Station source;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "station_id")
+    @JoinColumn(name = "station_id", insertable = false, updatable = false)
     private Station target;
 
     public Favorite() {
