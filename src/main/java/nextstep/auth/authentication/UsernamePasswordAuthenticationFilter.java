@@ -37,7 +37,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
 		return new AuthenticationToken(userName, password);
 	}
 
-	protected void afterAuthenticate(Authentication authentication) {
+	private void afterAuthenticate(Authentication authentication) {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
