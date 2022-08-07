@@ -86,15 +86,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
 
 
-        Long 즐겨찾기 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getList("id", Long.class).get(0);
+        Long 즐겨찾기 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
 
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_삭제_요청(즐겨찾기);
+        ExtractableResponse<Response> deletedResponse = 즐겨찾기_목록_삭제_요청(즐겨찾기);
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(deletedResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
-        assertThat(response.jsonPath().getList("")).isEmpty();
+        ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청();
+        assertThat(getResponse.jsonPath().getList("")).isEmpty();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(long source, long target) {

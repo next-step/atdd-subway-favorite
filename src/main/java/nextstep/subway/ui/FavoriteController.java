@@ -36,6 +36,7 @@ public class FavoriteController {
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFavorite(@PathVariable("id") Long id) {
+        favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }
 
