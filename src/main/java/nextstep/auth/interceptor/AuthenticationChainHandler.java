@@ -15,7 +15,7 @@ public abstract class AuthenticationChainHandler implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) throws Exception {
+        Object handler) {
         try {
             String authCredentials = extractCredentials(request);
             validAuthCredentials(authCredentials);
@@ -43,17 +43,10 @@ public abstract class AuthenticationChainHandler implements HandlerInterceptor {
 
     private void validUserDetails(UserDetails userDetails) {
         isNullUserDetails(userDetails);
-        isValidPassword(userDetails);
     }
 
     private void isNullUserDetails(UserDetails userDetails) {
         if(userDetails == null) {
-            throw new AuthenticationException();
-        }
-    }
-
-    private void isValidPassword(UserDetails userDetails) {
-        if(userDetails.isValidPassword(userDetails.getPassword())) {
             throw new AuthenticationException();
         }
     }
