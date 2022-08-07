@@ -1,12 +1,16 @@
 package nextstep.subway.applicaion;
 
 import nextstep.subway.applicaion.dto.FavoriteRequest;
+import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,6 +26,7 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @Transactional
     public Favorite saveFavorite(FavoriteRequest favoriteRequest) {
         Long sourceId = favoriteRequest.getSource();
         Long targetId = favoriteRequest.getTarget();
@@ -34,5 +39,12 @@ public class FavoriteService {
     private Station findStation(Long id) {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다. : " + id));
+    }
+
+    public List<FavoriteResponse> findFavorites() {
+        List<Favorite> all = favoriteRepository.findAll();
+        return all.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }

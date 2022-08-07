@@ -4,7 +4,6 @@ import nextstep.auth.secured.Secured;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
-import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Favorite;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +30,7 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> showFavorites() {
-        FavoriteResponse fakeFavorite =
-                new FavoriteResponse(1L, new StationResponse(1L, "교대역"), new StationResponse(3L, "양재역"));
-        return ResponseEntity.ok().body(List.of(fakeFavorite));
+        return ResponseEntity.ok().body(favoriteService.findFavorites());
     }
 
 }
