@@ -1,30 +1,19 @@
 package nextstep.auth.authentication.nonchain;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.User;
-import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.provider.AuthenticationProvider;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextMapper;
-import nextstep.auth.UserDetailsService;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private final UserDetailsService userDetailsService;
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
-        AuthenticationToken authenticationToken = convert(request);
-
-        Authentication authenticate = authenticate(authenticationToken);
-
-        SecurityContextMapper.setContext(authenticate.getPrincipal().toString(), authenticate.getAuthorities());
-        return false;
-    }
+public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChainFilter {
+    @Qualifier("defaultAuthenticationProvider")
+    private final AuthenticationProvider<AuthenticationToken> authenticationProvider;
 
     public AuthenticationToken convert(HttpServletRequest request) {
         String userEmail = request.getParameter("username");
@@ -32,13 +21,13 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
         return new AuthenticationToken(userEmail, password);
     }
 
-    public Authentication authenticate(AuthenticationToken authenticationToken) {
-        User user = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+    @Override
+    public Authentication authentication(AuthenticationToken authenticationToken) {
+        return authenticationProvider.authenticate(authenticationToken);
+    }
 
-        if(!user.checkPassword(authenticationToken.getCredentials())) {
-            throw new AuthenticationException();
-        }
-
-        return new Authentication(user.getUsername(),user.getAuthorities());
+    @Override
+    public void afterProcessing(Authentication authenticate, HttpServletResponse response) throws Exception {
+        SecurityContextMapper.setContext(authenticate.getPrincipal().toString(), authenticate.getAuthorities());
     }
 }
