@@ -1,11 +1,12 @@
 package nextstep.subway.unit;
 
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.authentication.chain.BearerTokenAuthenticationFilter;
+import nextstep.auth.authentication.provider.JwtAuthenticationProvider;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.token.JwtTokenProvider;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.Test;
@@ -17,29 +18,36 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class BearerTokenAuthenticationFilterTest {
+class BearerTokenAuthenticationFilterTest {
 
     private static final Member USER = Member.createUser("user2@gmail.com", "user3", 23);
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMkBnbWFpbC5jb20iLCJpYXQiOjE2NTk4Njc3NDgsImV4cCI6MTY1OTg3MTM0OCwicm9sZXMiOlsiUk9MRV9NRU1CRVIiXX0.UKyCYJqiIszwNd_9VCOpEaOeiRabG2OGKzSXfYjc2-0";
 
     @Mock
-    JwtTokenProvider jwtTokenProvider;
+    JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @InjectMocks
     BearerTokenAuthenticationFilter bearerTokenAuthenticationFilter;
 
     @Test
-    void preHandle() {
-        when(jwtTokenProvider.validateToken(anyString())).thenReturn(Boolean.TRUE);
-        when(jwtTokenProvider.getPrincipal(anyString())).thenReturn(USER.getEmail());
-        when(jwtTokenProvider.getRoles(anyString())).thenReturn(USER.getRoles());
+    void convert() {
+        AuthenticationToken authenticationToken = bearerTokenAuthenticationFilter.convert(createMockRequest());
 
-        boolean isChain = bearerTokenAuthenticationFilter.preHandle(createRequest(), createResponse(), new Object());
+        assertThat(authenticationToken.getCredentials()).isEqualTo(JWT_TOKEN);
+    }
+
+    @Test
+    void preHandle() throws Exception {
+        //given
+        when(jwtAuthenticationProvider.authenticate(any()))
+                .thenReturn(new Authentication(USER.getEmail(), USER.getRoles()));
+
+        boolean isChain = bearerTokenAuthenticationFilter.preHandle(createMockRequest(), createMockResponse(), new Object());
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
 
@@ -48,25 +56,23 @@ public class BearerTokenAuthenticationFilterTest {
         assertThat(authentication.getAuthorities()).contains(RoleType.ROLE_MEMBER.name());
     }
 
-
     @Test
-    void authenticate() {
-        when(jwtTokenProvider.getPrincipal(anyString())).thenReturn(USER.getEmail());
-        when(jwtTokenProvider.getRoles(anyString())).thenReturn(USER.getRoles());
+    void authentication() {
+        when(jwtAuthenticationProvider.authenticate(any())).thenReturn(new Authentication(USER.getEmail(), USER.getRoles()));
 
-        Authentication authentication = bearerTokenAuthenticationFilter.authenticate(JWT_TOKEN);
+        Authentication authentication = bearerTokenAuthenticationFilter.authentication(new AuthenticationToken(USER.getEmail(), USER.getPassword()));
 
         assertThat(authentication.getPrincipal()).isEqualTo(USER.getEmail());
         assertThat(authentication.getAuthorities()).contains(RoleType.ROLE_MEMBER.name());
     }
 
-    private MockHttpServletRequest createRequest() {
+    private MockHttpServletRequest createMockRequest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", AuthorizationType.BEARER.toLowerCase() + JWT_TOKEN);
         return request;
     }
 
-    private MockHttpServletResponse createResponse() {
+    private MockHttpServletResponse createMockResponse(){
         return new MockHttpServletResponse();
     }
 
