@@ -10,10 +10,10 @@ import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.domain.AuthUser;
 import nextstep.auth.service.CustomUserDetails;
 
-public abstract class AuthenticationInterceptor implements HandlerInterceptor {
+public abstract class AuthenticationChainInterceptor implements HandlerInterceptor {
 	private CustomUserDetails customUserDetails;
 
-	public AuthenticationInterceptor(CustomUserDetails customUserDetails) {
+	public AuthenticationChainInterceptor(CustomUserDetails customUserDetails) {
 		this.customUserDetails = customUserDetails;
 	}
 
@@ -25,17 +25,17 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
 		return afterAuthenticate(authentication, response);
 	}
 
-	public AuthenticationToken convert(HttpServletRequest request) throws Exception {
+	AuthenticationToken convert(HttpServletRequest request) throws Exception {
 		return new AuthenticationToken();
 	}
 
-	public boolean afterAuthenticate(Authentication authentication, HttpServletResponse response) throws
+	boolean afterAuthenticate(Authentication authentication, HttpServletResponse response) throws
 		Exception {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		return true;
 	}
 
-	public Authentication authenticate(AuthenticationToken authenticationToken) {
+	Authentication authenticate(AuthenticationToken authenticationToken) {
 		AuthUser authUser = customUserDetails.loadUserByUsername(authenticationToken.getPrincipal());
 		if (authUser == null) {
 			throw new AuthenticationException();
