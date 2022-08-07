@@ -2,7 +2,7 @@ package nextstep.auth.domain;
 
 import java.util.List;
 
-public interface AuthUser {
+public interface CustomUser {
 	String getUserName();
 
 	String getPassword();

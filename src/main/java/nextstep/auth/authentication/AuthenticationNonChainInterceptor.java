@@ -3,7 +3,7 @@ package nextstep.auth.authentication;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.domain.AuthUser;
+import nextstep.auth.domain.CustomUser;
 import nextstep.auth.service.CustomUserDetails;
 
 public abstract class AuthenticationNonChainInterceptor implements HandlerInterceptor {
@@ -14,14 +14,14 @@ public abstract class AuthenticationNonChainInterceptor implements HandlerInterc
 	}
 
 	public Authentication authenticate(AuthenticationToken authenticationToken) {
-		AuthUser authUser = customUserDetails.loadUserByUsername(authenticationToken.getPrincipal());
-		if (authUser == null) {
+		CustomUser customUser = customUserDetails.loadUserByEmail(authenticationToken.getPrincipal());
+		if (customUser == null) {
 			throw new AuthenticationException();
 		}
-		if (!authUser.isValidPassword(authenticationToken.getCredentials())) {
+		if (!customUser.isValidPassword(authenticationToken.getCredentials())) {
 			throw new AuthenticationException();
 		}
-		return new Authentication(authenticationToken.getPrincipal(), authUser.getAuthorities());
+		return new Authentication(authenticationToken.getPrincipal(), customUser.getAuthorities());
 	}
 
 }

@@ -2,9 +2,9 @@ package nextstep.member.domain;
 
 import java.util.List;
 
-import nextstep.auth.domain.AuthUser;
+import nextstep.auth.domain.CustomUser;
 
-public class CustomAuthUser implements AuthUser {
+public class CustomAuthUser implements CustomUser {
 	private String email;
 	private String password;
 	private List<String> authorities;

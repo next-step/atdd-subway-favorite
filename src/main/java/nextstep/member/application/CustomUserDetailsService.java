@@ -2,7 +2,7 @@ package nextstep.member.application;
 
 import org.springframework.stereotype.Service;
 
-import nextstep.auth.domain.AuthUser;
+import nextstep.auth.domain.CustomUser;
 import nextstep.auth.service.CustomUserDetails;
 import nextstep.member.domain.CustomAuthUser;
 import nextstep.member.domain.Member;
@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements CustomUserDetails {
 	}
 
 	@Override
-	public AuthUser loadUserByUsername(String email) {
+	public CustomUser loadUserByEmail(String email) {
 		Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
 		return CustomAuthUser.of(member);
 	}

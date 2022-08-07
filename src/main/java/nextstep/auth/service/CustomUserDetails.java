@@ -2,9 +2,9 @@ package nextstep.auth.service;
 
 import org.springframework.stereotype.Service;
 
-import nextstep.auth.domain.AuthUser;
+import nextstep.auth.domain.CustomUser;
 
 @Service
 public interface CustomUserDetails {
-	AuthUser loadUserByUsername(String email);
+	CustomUser loadUserByEmail(String email);
 }
