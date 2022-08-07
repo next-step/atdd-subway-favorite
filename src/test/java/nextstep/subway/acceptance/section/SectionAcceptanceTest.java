@@ -1,7 +1,8 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.section;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,12 +11,10 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.AdministratorInfo.ADMIN_EMAIL;
-import static nextstep.subway.acceptance.AdministratorInfo.ADMIN_PASSWORD;
-import static nextstep.subway.acceptance.LineSteps.*;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.acceptance.step.LineSteps.*;
+import static nextstep.subway.acceptance.step.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.utils.RestAssuredStep.*;
 
 @DisplayName("지하철 구간 관리 기능")
 class SectionAcceptanceTest extends AcceptanceTest {
@@ -49,7 +48,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(response);
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 양재역, 정자역);
     }
 
@@ -70,7 +69,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        검증_STATUS_OK(response);
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 양재역);
     }
 

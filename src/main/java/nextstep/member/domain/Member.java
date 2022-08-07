@@ -1,9 +1,12 @@
 package nextstep.member.domain;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@ToString
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

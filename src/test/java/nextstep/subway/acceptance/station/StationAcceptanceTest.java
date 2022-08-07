@@ -1,23 +1,19 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.station;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.AcceptanceTest;
 import nextstep.subway.applicaion.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.subway.acceptance.AdministratorInfo.ADMIN_EMAIL;
-import static nextstep.subway.acceptance.AdministratorInfo.ADMIN_PASSWORD;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
-import static nextstep.subway.acceptance.StationSteps.지하철역_목록_조회;
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.acceptance.step.StationSteps.지하철역_목록_조회;
+import static nextstep.subway.acceptance.step.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static nextstep.subway.acceptance.RestAssuredStep.given;
+import static nextstep.subway.utils.RestAssuredStep.given;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {

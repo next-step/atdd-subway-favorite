@@ -1,16 +1,17 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.acceptance.AdministratorInfo.*;
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.utils.AdministratorInfo.*;
+import static nextstep.subway.acceptance.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

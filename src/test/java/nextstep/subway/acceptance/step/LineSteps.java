@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.step;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.RestAssuredStep.given;
+import static nextstep.subway.utils.RestAssuredStep.given;
 
 public class LineSteps {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(String accessToken,String name, String color) {
@@ -63,5 +63,24 @@ public class LineSteps {
         return given(accessToken)
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
                 .then().log().all().extract();
+    }
+
+    public static Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
+        Map<String, String> lineCreateParams;
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", "신분당선");
+        lineCreateParams.put("color", "bg-red-600");
+        lineCreateParams.put("upStationId", upStationId + "");
+        lineCreateParams.put("downStationId", downStationId + "");
+        lineCreateParams.put("distance", 10 + "");
+        return lineCreateParams;
+    }
+
+    public static Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("upStationId", upStationId + "");
+        params.put("downStationId", downStationId + "");
+        params.put("distance", 6 + "");
+        return params;
     }
 }
