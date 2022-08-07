@@ -1,8 +1,6 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.authentication.exception.BearerAuthenticationException;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetails;
@@ -29,11 +27,5 @@ public class BearerTokenAuthenticationFilter extends InterceptorChainingFilter {
         List<String> roles = jwtTokenProvider.getRoles(token);
 
         return User.of(principal, roles);
-    }
-
-    @Override
-    protected void setAuthentication(UserDetails userDetails) {
-        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

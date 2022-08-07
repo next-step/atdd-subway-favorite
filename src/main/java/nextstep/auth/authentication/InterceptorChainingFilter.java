@@ -2,6 +2,7 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.authentication.exception.AuthenticationException;
 import nextstep.auth.authentication.exception.BearerAuthenticationException;
+import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.user.UserDetails;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -35,5 +36,8 @@ public abstract class InterceptorChainingFilter implements HandlerInterceptor {
 
     protected abstract UserDetails getUserDetails(HttpServletRequest request);
 
-    protected abstract void setAuthentication(UserDetails userDetails);
+    protected void setAuthentication(UserDetails userDetails) {
+        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 }

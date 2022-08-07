@@ -1,8 +1,6 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.authentication.exception.AuthenticationException;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.user.UserDetails;
 import nextstep.auth.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -41,11 +39,5 @@ public class BasicAuthenticationFilter extends InterceptorChainingFilter {
         String credentials = splits[1];
 
         return new AuthenticationToken(principal, credentials);
-    }
-
-    @Override
-    protected void setAuthentication(UserDetails userDetails) {
-        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
