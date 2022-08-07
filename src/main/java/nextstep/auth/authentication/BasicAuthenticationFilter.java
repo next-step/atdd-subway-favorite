@@ -4,48 +4,50 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.CustomUser;
+import nextstep.auth.service.CustomUserDetails;
 
-public class BasicAuthenticationFilter implements HandlerInterceptor {
-	private LoginMemberService loginMemberService;
+public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
 
-	public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-		this.loginMemberService = loginMemberService;
+	private CustomUserDetails customUserDetails;
+
+	public BasicAuthenticationFilter(CustomUserDetails customUserDetails) {
+		this.customUserDetails = customUserDetails;
 	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		try {
-			String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-			String authHeader = new String(Base64.decodeBase64(authCredentials));
-
-			String[] splits = authHeader.split(":");
-			String principal = splits[0];
-			String credentials = splits[1];
-
-			AuthenticationToken token = new AuthenticationToken(principal, credentials);
-
-			LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-			if (loginMember == null) {
-				throw new AuthenticationException();
-			}
-
-			if (!loginMember.checkPassword(token.getCredentials())) {
-				throw new AuthenticationException();
-			}
-
-			Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
+			AuthenticationToken authenticationToken = convert(request);
+			Authentication authentication = authenticate(authenticationToken);
+			super.afterAuthenticate(authentication);
 			return true;
 		} catch (Exception e) {
 			return true;
 		}
+	}
+
+	private AuthenticationToken convert(HttpServletRequest request) {
+		String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
+		String authHeader = new String(Base64.decodeBase64(authCredentials));
+
+		String[] splits = authHeader.split(":");
+		String principal = splits[0];
+		String credentials = splits[1];
+
+		return new AuthenticationToken(principal, credentials);
+	}
+
+	private Authentication authenticate(AuthenticationToken authenticationToken) {
+		CustomUser customUser = customUserDetails.loadUserByEmail(authenticationToken.getPrincipal());
+		if (customUser == null) {
+			throw new AuthenticationException();
+		}
+		if (!customUser.isValidPassword(authenticationToken.getCredentials())) {
+			throw new AuthenticationException();
+		}
+		return new Authentication(authenticationToken.getPrincipal(), customUser.getAuthorities());
 	}
 }

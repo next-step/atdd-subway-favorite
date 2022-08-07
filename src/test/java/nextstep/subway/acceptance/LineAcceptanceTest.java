@@ -135,7 +135,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 *  When Admin이이 생성한 노선을 Member가 지하철 노선을 수정요청하면
+	 *  When Admin이 생성한 노선을 Member가 지하철 노선을 수정요청하면
 	 *  Then 401 응답을 받는다.
 	 */
 	@DisplayName("Member가 지하철 수정 요청")
