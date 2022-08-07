@@ -34,7 +34,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
 
             return true;
         } catch (Exception e) {
-            return false;
+            return true;
         }
     }
 

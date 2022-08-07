@@ -5,12 +5,10 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
@@ -39,7 +37,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
             return true;
         } catch (Exception e) {
-            return false;
+            return true;
         }
     }
 
