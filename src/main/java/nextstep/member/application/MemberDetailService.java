@@ -2,7 +2,7 @@ package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.user.UserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.login.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
