@@ -5,6 +5,7 @@ import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
+import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextMapper;
 import nextstep.auth.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -24,25 +25,34 @@ public class BasicAuthenticationFilter implements AuthenticationChainFilter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         try {
-            String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-            String authHeader = new String(Base64.decodeBase64(authCredentials));
+            AuthenticationToken token = convert(request);
 
-            String[] splits = authHeader.split(":");
-            String principal = splits[0];
-            String credentials = splits[1];
+            Authentication authentication = authenticate(token);
 
-            AuthenticationToken token = new AuthenticationToken(principal, credentials);
-
-            User userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
-
-            if (!userDetails.checkPassword(token.getCredentials())) {
-                throw new AuthenticationException();
-            }
-
-            SecurityContextMapper.setContext(userDetails.getUsername(), userDetails.getAuthorities());
+            SecurityContextMapper.setContext(authentication.getPrincipal().toString(), authentication.getAuthorities());
             return true;
         } catch (Exception e) {
             return true;
         }
+    }
+
+    public AuthenticationToken convert(HttpServletRequest request) {
+        String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
+        String authHeader = new String(Base64.decodeBase64(authCredentials));
+
+        String[] splits = authHeader.split(":");
+        String principal = splits[0];
+        String credentials = splits[1];
+        return new AuthenticationToken(principal, credentials);
+    }
+
+    public Authentication authenticate(AuthenticationToken authenticationToken) {
+        User user = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
+
+        if (!user.checkPassword(authenticationToken.getCredentials())) {
+            throw new AuthenticationException();
+        }
+
+        return new Authentication(user.getUsername(), user.getAuthorities());
     }
 }
