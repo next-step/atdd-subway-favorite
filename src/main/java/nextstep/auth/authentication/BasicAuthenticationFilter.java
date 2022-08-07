@@ -1,50 +1,43 @@
 package nextstep.auth.authentication;
 
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.authentication.exception.AuthenticationException;
+import nextstep.auth.user.UserDetails;
+import nextstep.auth.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class BasicAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+public class BasicAuthenticationFilter extends InterceptorChainingFilter {
+    private final UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-            String authHeader = new String(Base64.decodeBase64(authCredentials));
+    protected UserDetails getUserDetails(HttpServletRequest request) {
+        AuthenticationToken token = getToken(request);
 
-            String[] splits = authHeader.split(":");
-            String principal = splits[0];
-            String credentials = splits[1];
+        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
 
-            AuthenticationToken token = new AuthenticationToken(principal, credentials);
-
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember == null) {
-                throw new AuthenticationException();
-            }
-
-            if (!loginMember.checkPassword(token.getCredentials())) {
-                throw new AuthenticationException();
-            }
-
-            Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            return true;
-        } catch (Exception e) {
-            return true;
+        if (userDetails == null || !userDetails.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
         }
+
+        return userDetails;
+    }
+
+    private AuthenticationToken getToken(HttpServletRequest request) {
+        String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
+        String authHeader = new String(Base64.decodeBase64(authCredentials));
+
+        String[] splits = authHeader.split(":");
+        if (splits.length < 2) {
+            throw new IndexOutOfBoundsException();
+        }
+        String principal = splits[0];
+        String credentials = splits[1];
+
+        return new AuthenticationToken(principal, credentials);
     }
 }

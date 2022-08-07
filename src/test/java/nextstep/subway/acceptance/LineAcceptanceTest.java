@@ -28,7 +28,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
+        ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청(관리자_token);
 
         assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
     }
@@ -46,7 +46,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_요청(관리자_token, "3호선", "orange");
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(관리자_token);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -65,7 +65,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(관리자_token, "2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(관리자_token, createResponse);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -95,7 +95,7 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
 
         // then
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(관리자_token, createResponse);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("color")).isEqualTo("red");
     }

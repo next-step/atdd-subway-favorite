@@ -1,45 +1,44 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.authentication.exception.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
+import nextstep.auth.user.UserDetails;
+import nextstep.auth.user.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
+public class UsernamePasswordAuthenticationFilter extends InterceptorNoChainingFilter {
 
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
 
-    private LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            final String email = request.getParameter(USERNAME);
-            final String password = request.getParameter(PASSWORD);
+    protected UserDetails getUserDetails(HttpServletRequest request) {
+        final String email = request.getParameter(USERNAME);
+        final String password = request.getParameter(PASSWORD);
 
-            AuthenticationToken token = new AuthenticationToken(email, password);
+        AuthenticationToken token = new AuthenticationToken(email, password);
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
 
-            if (!loginMember.checkPassword(token.getCredentials())) {
-                throw new AuthenticationException();
-            }
-
-            Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        } catch (Exception ignore) {
+        if (userDetails == null || !userDetails.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
         }
 
-        return true;
+        return userDetails;
+    }
+
+    @Override
+    protected void setAuthentication(UserDetails userDetails, HttpServletResponse response) {
+        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

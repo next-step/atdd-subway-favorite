@@ -52,15 +52,16 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByDistance() {
         // when
-        ExtractableResponse<Response> response = 두_역의_최단_거리_경로_조회를_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 두_역의_최단_거리_경로_조회를_요청(관리자_token, 교대역, 양재역);
 
         // then
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(교대역, 남부터미널역, 양재역);
     }
 
-    private ExtractableResponse<Response> 두_역의_최단_거리_경로_조회를_요청(Long source, Long target) {
+    private ExtractableResponse<Response> 두_역의_최단_거리_경로_조회를_요청(String accessToken, Long source, Long target) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all().extract();
