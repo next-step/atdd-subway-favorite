@@ -9,14 +9,14 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.service.CustomUserDetails;
 
-public class BasicAuthenticationFilter extends AuthenticationInterceptor {
+public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
 
 	public BasicAuthenticationFilter(CustomUserDetails customUserDetails) {
 		super(customUserDetails);
 	}
 
 	@Override
-	public AuthenticationToken convert(HttpServletRequest request) throws Exception {
+	AuthenticationToken convert(HttpServletRequest request) {
 		String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
 		String authHeader = new String(Base64.decodeBase64(authCredentials));
 

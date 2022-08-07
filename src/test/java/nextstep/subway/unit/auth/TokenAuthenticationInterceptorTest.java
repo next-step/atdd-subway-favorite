@@ -1,16 +1,10 @@
 package nextstep.subway.unit.auth;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,12 +13,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import nextstep.auth.domain.AuthUser;
+import nextstep.auth.authentication.TokenAuthenticationInterceptor;
 import nextstep.auth.service.CustomUserDetails;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.CustomUserDetailsService;
-import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,50 +28,52 @@ class TokenAuthenticationInterceptorTest {
 	private static final List<String> ROLES = Arrays.asList("ROLE_ADMIN");
 	public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
 
-	TokenRequest tokenRequest;
-
 	@Mock
 	private MemberRepository memberRepository;
 	@Mock
 	private JwtTokenProvider jwtTokenProvider;
-	@Autowired
+	@Mock
 	private CustomUserDetails customUserDetails;
+	@Autowired
+	private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
 	@BeforeEach
-	void setUp() throws IOException {
+	void setUp() {
 		customUserDetails = new CustomUserDetailsService(memberRepository);
-		MockHttpServletRequest request = createMockRequest();
-		String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-		tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
+		tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(customUserDetails, jwtTokenProvider);
+	}
+
+	/*
+	@Test
+	void convert() throws IOException {
+
+		AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
+		assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
+		assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
 	}
 
 	@Test
-	void convert() {
-		assertThat(tokenRequest.getEmail()).isEqualTo(EMAIL);
-		assertThat(tokenRequest.getPassword()).isEqualTo(PASSWORD);
-	}
-
-	@Test
-	void authenticate() {
+	void authenticate() throws IOException {
 		//given
+		AuthenticationToken authenticationToken = tokenAuthenticationInterceptor.convert(createMockRequest());
 		when(memberRepository.findByEmail(EMAIL))
 			.thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE, ROLES)));
 
 		//when
-		AuthUser authUser = customUserDetails.loadUserByUsername(tokenRequest.getEmail());
+		Authentication authentication = tokenAuthenticationInterceptor.authenticate(authenticationToken);
 
 		//then
-		assertThat(authUser.isValidPassword(PASSWORD)).isTrue();
+		assertThat(authentication.getPrincipal()).isEqualTo(EMAIL);
+		assertThat(authentication.getAuthorities()).isEqualTo(ROLES);
 	}
 
 	@Test
-	void afterAuthenticate() {
+	void afterAuthenticate() throws IOException {
 		//given
-		when(jwtTokenProvider.createToken(EMAIL, ROLES))
-			.thenReturn(JWT_TOKEN);
+		when(jwtTokenProvider.createToken(EMAIL, ROLES)).thenReturn(JWT_TOKEN);
 		when(memberRepository.findByEmail(EMAIL))
 			.thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE, ROLES)));
-		AuthUser authUser = customUserDetails.loadUserByUsername(tokenRequest.getEmail());
+		AuthUser authUser = customUserDetails.loadUserByUsername(createTokenRequest().getEmail());
 
 		//when
 		String token = jwtTokenProvider.createToken(authUser.getUserName(), authUser.getAuthorities());
@@ -87,6 +82,11 @@ class TokenAuthenticationInterceptorTest {
 		assertThat(token).isEqualTo(JWT_TOKEN);
 	}
 
+	private TokenRequest createTokenRequest() throws IOException {
+		String content = createMockRequest().getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+		return new ObjectMapper().readValue(content, TokenRequest.class);
+	}
+*/
 	private MockHttpServletRequest createMockRequest() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
