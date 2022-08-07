@@ -93,14 +93,7 @@ class TokenAuthenticationInterceptorTest {
     }
 
     private MockHttpServletResponse createMockResponse() throws IOException {
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().print(JWT_TOKEN);
-        return response;
-
+        return new MockHttpServletResponse();
     }
-
-
 
 }
