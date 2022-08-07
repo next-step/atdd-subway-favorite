@@ -20,12 +20,14 @@ public abstract class ChainFilter implements HandlerInterceptor {
             SecurityContextHolder.getContext()
                     .setAuthentication(authentication);
             return true;
-        } catch (AuthenticationException e) {
+        } catch (AuthenticationException e1) {
+            return true;
+        } catch (ArrayIndexOutOfBoundsException e2) {
             return true;
         }
     }
 
-    public abstract AuthenticationToken convert(HttpServletRequest request) throws AuthenticationException;
+    public abstract AuthenticationToken convert(HttpServletRequest request) throws AuthenticationException, ArrayIndexOutOfBoundsException;
 
     public abstract Authentication authenticate(AuthenticationToken token) throws AuthenticationException;
 }
