@@ -33,52 +33,34 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
+    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age, String token) {
+        Map<String, Object> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/members")
-                .then().log().all().extract();
+        return AcceptanceTest.post("/members", token, params);
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response, String token) {
         String uri = response.header("Location");
-
-        return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+        return AcceptanceTest.get(uri, token);
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age, String token) {
         String uri = response.header("Location");
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
-                .then().log().all().extract();
+        return AcceptanceTest.put(uri, token, params);
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response, String token) {
         String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all().extract();
+        return AcceptanceTest.delete(uri, token);
     }
 
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {

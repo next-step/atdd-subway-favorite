@@ -16,6 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AuthSteps.*;
+import static nextstep.subway.acceptance.AuthSteps.MEMBER_PASSWORD;
+
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
@@ -28,11 +31,16 @@ public class AcceptanceTest {
     @Autowired
     private DataLoader dataLoader;
 
+    public String adminAccessToken;
+    public String memberAccessToken;
+
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
         databaseCleanup.execute();
         dataLoader.loadData();
+        adminAccessToken = MemberSteps.로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+        memberAccessToken = MemberSteps.로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
     }
 
     public static ExtractableResponse<Response> get(final String url, final String token) {
