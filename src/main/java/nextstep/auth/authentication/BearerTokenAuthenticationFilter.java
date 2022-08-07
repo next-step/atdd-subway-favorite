@@ -1,37 +1,27 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+public class BearerTokenAuthenticationFilter extends AbstractValidateAuthenticationFilter<JwtTokenProvider> {
 
     public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+        super(jwtTokenProvider);
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
-        try {
-            String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-            if(!jwtTokenProvider.validateToken(token)) {
-                throw new AuthenticationException();
-            }
-
-            String email = jwtTokenProvider.getPrincipal(token);
-            List<String> roles = jwtTokenProvider.getRoles(token);
-            SecurityContextHolder.getContext().setAuthentication((new Authentication(email, roles)));
-            return true;
-        } catch (Exception e) {
-            return true;
+    protected Authentication getAuthenticationToken(HttpServletRequest request) {
+        String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+        if(!this.t.validateToken(token)) {
+            throw new AuthenticationException();
         }
+
+        String email = this.t.getPrincipal(token);
+        List<String> roles = this.t.getRoles(token);
+
+        return new Authentication(email, roles);
     }
 }

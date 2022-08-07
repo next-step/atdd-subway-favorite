@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,44 +22,30 @@ import java.util.Objects;
  * Interceptor 란?
  * 디스패처 서블릿이 컨트롤러를 호출하기 전/후 요청과 응답을 참조하거나 가공할 수 있는 기능을 의미한다.
  */
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+public class UsernamePasswordAuthenticationFilter extends AbstractCreateAuthenticationFilter {
 
     public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+        super(loginMemberService);
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         Object email = request.getParameter("username");
         Object password = request.getParameter("password");
         if(!isExistAuthentication(email, password)) {
             throw new AuthenticationException();
         }
-        return userAndPasswordAuthentication(String.valueOf(email), String.valueOf(password));
+        return new AuthenticationToken(String.valueOf(email), String.valueOf(password));
+    }
+
+    @Override
+    protected String returnAuthenticationToken(String principal, List<String> authorities) {
+        SecurityContextHolder.getContext().setAuthentication(new Authentication(principal, authorities));
+        return "";
     }
 
     private boolean isExistAuthentication(Object email, Object password) {
         return Objects.nonNull(email) && Objects.nonNull(password);
     }
 
-    private boolean userAndPasswordAuthentication(String email, String password) {
-
-        try {
-            LoginMember loginMember = loginMemberService.loadUserByUsername(String.valueOf(email));
-
-            if(loginMember == null) {
-                throw new AuthenticationException();
-            }
-
-            if (!loginMember.checkPassword(String.valueOf(password))) {
-                throw new AuthenticationException();
-            }
-
-            SecurityContextHolder.getContext().setAuthentication((new Authentication(loginMember.getEmail(), loginMember.getAuthorities())));
-            return false;
-        } catch (Exception e) {
-            return true;
-        }
-    }
 }
