@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 public class BasicAuthenticationFilter extends ChainFilter {
 
     private final String SPLIT_DIVISION_STRING = ":";
+    private final int PRINCIPAL_INDEX = 0;
+    private final int CREDENTIALS_INDEX = 1;
 
     private UserDetailsService userDetailsService;
 
@@ -27,8 +29,8 @@ public class BasicAuthenticationFilter extends ChainFilter {
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
         String[] splits = authHeader.split(SPLIT_DIVISION_STRING);
-        String principal = splits[0];
-        String credentials = splits[1];
+        String principal = splits[PRINCIPAL_INDEX];
+        String credentials = splits[CREDENTIALS_INDEX];
 
         return new AuthenticationToken(principal, credentials);
     }

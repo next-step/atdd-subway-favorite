@@ -1,6 +1,7 @@
 package nextstep.auth.intercpetor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,14 +17,14 @@ public abstract class NonChainFilter implements HandlerInterceptor {
             Authentication authentication = authenticate(token);
             afterAuthenticated(authentication, response);
             return false;
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             return false;
         }
     }
 
     public abstract AuthenticationToken convert(HttpServletRequest request) throws Exception;
 
-    public abstract Authentication authenticate(AuthenticationToken token);
+    public abstract Authentication authenticate(AuthenticationToken token) throws AuthenticationException;
 
     public abstract void afterAuthenticated(Authentication authentication, HttpServletResponse response) throws JsonProcessingException, Exception;
 }

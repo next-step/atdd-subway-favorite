@@ -1,5 +1,6 @@
 package nextstep.auth.intercpetor;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
@@ -19,12 +20,12 @@ public abstract class ChainFilter implements HandlerInterceptor {
             SecurityContextHolder.getContext()
                     .setAuthentication(authentication);
             return true;
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             return true;
         }
     }
 
-    public abstract AuthenticationToken convert(HttpServletRequest request);
+    public abstract AuthenticationToken convert(HttpServletRequest request) throws AuthenticationException;
 
-    public abstract Authentication authenticate(AuthenticationToken token);
+    public abstract Authentication authenticate(AuthenticationToken token) throws AuthenticationException;
 }
