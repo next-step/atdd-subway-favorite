@@ -42,9 +42,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 역을 미리 추가해놓고
      * When 즐겨찾기를 추가 시 인증되지 않으면
-     * Then 에러가 발생한다
+     * Then 응답 401을 받는다
      */
-    @DisplayName("즐겨찾기 추가 시 미 인증 에러")
+    @DisplayName("즐겨찾기 추가 시 인증되지 않으면 응답 401")
     @Test
     void createFavoriteAuthenticateException() {
         //given
@@ -65,9 +65,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 역을 미리 추가해놓고
      * When 권한이 없는 계정으로 즐겨찾기를 추가 시
-     * Then 에러가 발생한다
+     * Then 응답 401을 받는다
      */
-    @DisplayName("즐겨찾기 추가 시 권한이 없을 때")
+    @DisplayName("즐겨찾기 추가 시 권한이 없을 때 응답 401")
     @Test
     void createFavoriteUnauthorizedException() {
         //given
@@ -141,9 +141,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 역과 즐겨찾기를 추가해놓고
      * When 즐겨찾기를 삭제 시 인증되지 않으면
-     * Then 에러가 발생한다
+     * Then 응답 401을 받는다
      */
-    @DisplayName("즐겨찾기 삭제")
+    @DisplayName("즐겨찾기 삭제 시 인증되지 않으면 응답 401")
     @Test
     void deleteFavoriteAuthenticationException() {
         //given
@@ -157,6 +157,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         //when
         final String weirdToken = "abcd";
         ExtractableResponse<Response> deletedResponse = 즐겨찾기_목록_삭제_요청(즐겨찾기, weirdToken);
+
+        //then
+        assertThat(deletedResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 역과 즐겨찾기를 추가해놓고
+     * When 즐겨찾기를 삭제 시 권한이 없으면
+     * Then 응답 401을 받는다
+     */
+    @DisplayName("즐겨찾기 삭제 시 권한이 없으면 응답 401")
+    @Test
+    void deleteFavoriteUnauthorizedException() {
+        //given
+        long 교대역 = 지하철역_생성_요청("교대역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 남부터미널역 = 지하철역_생성_요청("남부터미널역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
+
+
+        Long 즐겨찾기 = 즐겨찾기_생성_요청(교대역, 양재역, ACCESS_TOKEN).jsonPath().getLong("id");
+
+        //when
+        String accessToken = 로그인_되어_있음("member@email.com", "password");
+        ExtractableResponse<Response> deletedResponse = 즐겨찾기_목록_삭제_요청(즐겨찾기, accessToken);
 
         //then
         assertThat(deletedResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
