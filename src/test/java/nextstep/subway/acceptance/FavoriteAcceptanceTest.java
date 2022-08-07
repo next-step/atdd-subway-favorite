@@ -1,25 +1,18 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("즐겨찾기 관리 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
-
-    private static final String ROOT_PATH = "/favorites";
-
 
     /**
      * Given 역을 미리 추가해놓고
@@ -35,7 +28,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
 
         //when
-        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(교대역, 양재역);
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(교대역, 양재역, ACCESS_TOKEN);
 
         //then
         assertThat(createdResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -60,7 +53,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
 
 
-        즐겨찾기_생성_요청(교대역, 양재역);
+        즐겨찾기_생성_요청(교대역, 양재역, ACCESS_TOKEN);
 
         //when
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
@@ -86,10 +79,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
 
 
-        Long 즐겨찾기 = 즐겨찾기_생성_요청(교대역, 양재역).jsonPath().getLong("id");
+        Long 즐겨찾기 = 즐겨찾기_생성_요청(교대역, 양재역, ACCESS_TOKEN).jsonPath().getLong("id");
 
         //when
-        ExtractableResponse<Response> deletedResponse = 즐겨찾기_목록_삭제_요청(즐겨찾기);
+        ExtractableResponse<Response> deletedResponse = 즐겨찾기_목록_삭제_요청(즐겨찾기, ACCESS_TOKEN);
 
         //then
         assertThat(deletedResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -98,28 +91,4 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(getResponse.jsonPath().getList("")).isEmpty();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(long source, long target) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source + "");
-        params.put("target", target + "");
-        return RestGivenWithOauth2.from(ACCESS_TOKEN)
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post(ROOT_PATH)
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get(ROOT_PATH)
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_목록_삭제_요청(long id) {
-        return RestGivenWithOauth2.from(ACCESS_TOKEN)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete(ROOT_PATH + "/" + id)
-                .then().log().all().extract();
-    }
 }
