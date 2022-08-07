@@ -11,7 +11,7 @@ public abstract class AuthenticationNonChainHandler implements HandlerIntercepto
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) throws Exception {
+        Object handler) {
         AuthenticationToken authenticationToken = getAuthenticationToken(request);
 
         UserDetails userDetails = getUserDetails(authenticationToken);
@@ -23,7 +23,7 @@ public abstract class AuthenticationNonChainHandler implements HandlerIntercepto
 
     private void validUserDetails(UserDetails userDetails, String password) {
         isNullUserDetails(userDetails);
-        isValidatePassword(userDetails, password);
+        isEqualsPassword(userDetails, password);
     }
 
     private void isNullUserDetails(UserDetails userDetails) {
@@ -32,16 +32,16 @@ public abstract class AuthenticationNonChainHandler implements HandlerIntercepto
         }
     }
 
-    private void isValidatePassword(UserDetails userDetails, String password) {
-        if(userDetails.isValidPassword(password)) {
+    private void isEqualsPassword(UserDetails userDetails, String password) {
+        if(!userDetails.isEqualsPassword(password)) {
             throw new AuthenticationException();
         }
     }
 
-    protected abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request);
+    public abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request);
 
-    protected abstract UserDetails getUserDetails(AuthenticationToken authenticationToken);
+    public abstract UserDetails getUserDetails(AuthenticationToken authenticationToken);
 
-    protected abstract void afterHandle(UserDetails userDetails, HttpServletResponse response);
+    public abstract void afterHandle(UserDetails userDetails, HttpServletResponse response);
 
 }

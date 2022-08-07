@@ -22,7 +22,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandle
     private final ObjectMapper objectMapper;
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+    public AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         try {
             String content = request.getReader().lines()
                 .collect(Collectors.joining(System.lineSeparator()));
@@ -35,12 +35,12 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainHandle
     }
 
     @Override
-    protected UserDetails getUserDetails(AuthenticationToken authenticationToken) {
+    public UserDetails getUserDetails(AuthenticationToken authenticationToken) {
         return userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
     }
 
     @Override
-    protected void afterHandle(UserDetails userDetails, HttpServletResponse response) {
+    public void afterHandle(UserDetails userDetails, HttpServletResponse response) {
         String token = jwtTokenProvider.createToken(userDetails.getEmail(),
             userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);

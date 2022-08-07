@@ -3,11 +3,11 @@ package nextstep.auth.user;
 import java.util.List;
 
 public interface UserDetails {
-    public boolean isValidPassword(String password);
+    boolean isEqualsPassword(String password);
 
-    public String getEmail();
+    String getEmail();
 
-    public String getPassword();
+    String getPassword();
 
-    public List<String> getAuthorities();
+    List<String> getAuthorities();
 }

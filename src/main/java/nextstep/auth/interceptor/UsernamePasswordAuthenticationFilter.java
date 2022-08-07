@@ -17,17 +17,17 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+    public AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         return new AuthenticationToken(request.getParameter(USERNAME_FIELD), request.getParameter(PASSWORD_FIELD));
     }
 
     @Override
-    protected UserDetails getUserDetails(AuthenticationToken authenticationToken) {
+    public UserDetails getUserDetails(AuthenticationToken authenticationToken) {
         return userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
     }
 
     @Override
-    protected void afterHandle(UserDetails userDetails, HttpServletResponse response) {
+    public void afterHandle(UserDetails userDetails, HttpServletResponse response) {
         Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
