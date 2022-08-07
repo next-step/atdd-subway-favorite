@@ -16,14 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
     private final Logger log = LoggerFactory.getLogger(UsernamePasswordAuthenticationFilter.class);
+
+    private final static String USERNAME = "userName";
+    private final static String PASSWORD = "password";
+
     private UserDetailsService userDetailsService;
 
     public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
-
-    private final static String USERNAME = "userName";
-    private final static String PASSWORD = "password";
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws Exception {

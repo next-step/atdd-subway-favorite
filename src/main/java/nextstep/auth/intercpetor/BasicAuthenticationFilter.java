@@ -12,6 +12,9 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import javax.servlet.http.HttpServletRequest;
 
 public class BasicAuthenticationFilter extends ChainFilter {
+
+    private final String SPLIT_DIVISION_STRING = ":";
+
     private UserDetailsService userDetailsService;
 
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
@@ -23,7 +26,7 @@ public class BasicAuthenticationFilter extends ChainFilter {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
-        String[] splits = authHeader.split(":");
+        String[] splits = authHeader.split(SPLIT_DIVISION_STRING);
         String principal = splits[0];
         String credentials = splits[1];
 
