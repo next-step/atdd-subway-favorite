@@ -2,42 +2,31 @@ package nextstep.auth.authentication.chain;
 
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
+import nextstep.auth.authentication.provider.JwtAuthenticationProvider;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextMapper;
-import nextstep.auth.token.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class BearerTokenAuthenticationFilter implements AuthenticationChainFilter {
+public class BearerTokenAuthenticationFilter extends AuthenticationChainFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    @Qualifier("jwtAuthenticationProvider")
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public AuthenticationToken convert(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-
-        if(!jwtTokenProvider.validateToken(token)) {
-            throw new AuthenticationException();
-        }
-
-        Authentication authenticate = authenticate(token);
-
-        SecurityContextMapper.setContext(authenticate.getPrincipal().toString(), authenticate.getAuthorities() );
-
-        return true;
+        return new AuthenticationToken(null, token);
     }
 
-    public Authentication authenticate(String token) {
-        String userName = jwtTokenProvider.getPrincipal(token);
-        List<String> roles = jwtTokenProvider.getRoles(token);
-        return new Authentication(userName, roles);
+    @Override
+    public Authentication authentication(AuthenticationToken authenticationToken) {
+        return jwtAuthenticationProvider.authenticate(authenticationToken);
     }
 }
