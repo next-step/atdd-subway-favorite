@@ -6,17 +6,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.domain.AuthUser;
 import nextstep.auth.service.CustomUserDetails;
 
 public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
 
+	private CustomUserDetails customUserDetails;
+
 	public BasicAuthenticationFilter(CustomUserDetails customUserDetails) {
-		super(customUserDetails);
+		this.customUserDetails = customUserDetails;
 	}
 
 	@Override
-	AuthenticationToken convert(HttpServletRequest request) {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+		try {
+			AuthenticationToken authenticationToken = convert(request);
+			Authentication authentication = authenticate(authenticationToken);
+			super.afterAuthenticate(authentication);
+			return true;
+		} catch (Exception e) {
+			return true;
+		}
+	}
+
+	private AuthenticationToken convert(HttpServletRequest request) {
 		String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
 		String authHeader = new String(Base64.decodeBase64(authCredentials));
 
@@ -27,15 +40,14 @@ public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
 		return new AuthenticationToken(principal, credentials);
 	}
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-		try {
-			AuthenticationToken authenticationToken = convert(request);
-			Authentication authentication = super.authenticate(authenticationToken);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			return true;
-		} catch (Exception e) {
-			return true;
+	private Authentication authenticate(AuthenticationToken authenticationToken) {
+		AuthUser authUser = customUserDetails.loadUserByUsername(authenticationToken.getPrincipal());
+		if (authUser == null) {
+			throw new AuthenticationException();
 		}
+		if (!authUser.isValidPassword(authenticationToken.getCredentials())) {
+			throw new AuthenticationException();
+		}
+		return new Authentication(authenticationToken.getPrincipal(), authUser.getAuthorities());
 	}
 }

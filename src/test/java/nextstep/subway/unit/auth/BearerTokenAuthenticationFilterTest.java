@@ -1,11 +1,7 @@
 package nextstep.subway.unit.auth;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,21 +27,22 @@ public class BearerTokenAuthenticationFilterTest {
 		accessToken = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 	}
 
-	@Test
-	void convert() {
-		when(jwtTokenProvider.validateToken(JWT_TOKEN)).thenReturn(true);
+	/*
+		@Test
+		void convert() {
+			when(jwtTokenProvider.validateToken(JWT_TOKEN)).thenReturn(true);
 
-		assertThat(accessToken).isEqualTo(JWT_TOKEN);
-		assertThat(jwtTokenProvider.validateToken(accessToken)).isTrue();
-	}
+			assertThat(accessToken).isEqualTo(JWT_TOKEN);
+			assertThat(jwtTokenProvider.validateToken(accessToken)).isTrue();
+		}
 
-	@Test
-	void authenticate() {
-		when(jwtTokenProvider.getPrincipal(JWT_TOKEN)).thenReturn(EMAIL);
+		@Test
+		void authenticate() {
+			when(jwtTokenProvider.getPrincipal(JWT_TOKEN)).thenReturn(EMAIL);
 
-		assertThat(jwtTokenProvider.getPrincipal(accessToken)).isEqualTo(EMAIL);
-	}
-
+			assertThat(jwtTokenProvider.getPrincipal(accessToken)).isEqualTo(EMAIL);
+		}
+	*/
 	private MockHttpServletRequest createMockRequest() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + JWT_TOKEN);
