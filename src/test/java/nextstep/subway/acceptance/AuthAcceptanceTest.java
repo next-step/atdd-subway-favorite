@@ -4,14 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.authentication.AuthenticationException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.베이직_인증으로_내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -58,24 +59,37 @@ class AuthAcceptanceTest extends AcceptanceTest {
         var response = 베어러_인증으로_내_회원_정보_조회_요청(wrongToken);
 
         // Then
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        Assertions.assertThat(response.statusCode())
+                .isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        return RestAssured.given().log().all()
-                .auth().form(email, password, new FormAuthConfig("/login/form", "userName", "password"))
+        return RestAssured.given()
+                .log()
+                .all()
+                .auth()
+                .form(email, password, new FormAuthConfig("/login/form", "userName", "password"))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
+                .when()
+                .get("/members/me")
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+        return RestAssured.given()
+                .log()
+                .all()
+                .auth()
+                .oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
+                .when()
+                .get("/members/me")
+                .then()
+                .log()
+                .all()
                 .extract();
     }
 }

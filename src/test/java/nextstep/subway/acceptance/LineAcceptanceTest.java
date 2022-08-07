@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AuthSteps.ADMIN_토큰권한으로_호출;
-import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_목록_조회_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
@@ -30,7 +32,8 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
 
-        assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
+        assertThat(listResponse.jsonPath()
+                .getList("name")).contains("2호선");
     }
 
     /**
@@ -50,7 +53,8 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("name")).contains("2호선", "3호선");
+        assertThat(response.jsonPath()
+                .getList("name")).contains("2호선", "3호선");
     }
 
     /**
@@ -69,7 +73,8 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getString("name")).isEqualTo("2호선");
+        assertThat(response.jsonPath()
+                .getString("name")).isEqualTo("2호선");
     }
 
     /**
@@ -89,13 +94,18 @@ class LineAcceptanceTest extends AcceptanceTest {
         ADMIN_토큰권한으로_호출()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put(createResponse.header("location"))
-                .then().log().all().extract();
+                .when()
+                .put(createResponse.header("location"))
+                .then()
+                .log()
+                .all()
+                .extract();
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getString("color")).isEqualTo("red");
+        assertThat(response.jsonPath()
+                .getString("color")).isEqualTo("red");
     }
 
     /**
@@ -111,8 +121,12 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = ADMIN_토큰권한으로_호출()
-                .when().delete(createResponse.header("location"))
-                .then().log().all().extract();
+                .when()
+                .delete(createResponse.header("location"))
+                .then()
+                .log()
+                .all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
