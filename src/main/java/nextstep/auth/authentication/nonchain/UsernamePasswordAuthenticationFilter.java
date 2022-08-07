@@ -1,7 +1,8 @@
 package nextstep.auth.authentication.nonchain;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.CustomUserDetails;
+import nextstep.auth.User;
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.SecurityContextMapper;
 import nextstep.auth.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,9 +17,15 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         String userEmail = request.getParameter("username");
-        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+        String password = request.getParameter("password");
+        User userDetails = userDetailsService.loadUserByUsername(userEmail);
+
+        if(!userDetails.checkPassword(password)) {
+            throw new AuthenticationException();
+        }
 
         SecurityContextMapper.setContext(userDetails.getUsername(), userDetails.getAuthorities());
         return false;
     }
+
 }

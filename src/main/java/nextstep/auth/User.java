@@ -6,7 +6,7 @@ import nextstep.member.domain.Member;
 import java.util.List;
 
 @AllArgsConstructor
-public class CustomUserDetails implements UserDetails{
+public class User implements UserDetails{
 
     private String username;
     private String password;
@@ -16,7 +16,6 @@ public class CustomUserDetails implements UserDetails{
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
-
     @Override
     public String getUsername() {
         return this.username;
@@ -32,7 +31,7 @@ public class CustomUserDetails implements UserDetails{
         return this.authorities;
     }
 
-    public static CustomUserDetails from(Member member) {
-        return new CustomUserDetails(member.getEmail(), member.getPassword(), member.getRoles());
+    public static User from(Member member) {
+        return new User(member.getEmail(), member.getPassword(), member.getRoles());
     }
 }

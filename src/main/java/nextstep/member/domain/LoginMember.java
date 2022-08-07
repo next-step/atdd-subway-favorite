@@ -46,4 +46,5 @@ public class LoginMember implements UserDetails {
     public List<String> getAuthorities() {
         return authorities;
     }
+
 }

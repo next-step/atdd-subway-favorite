@@ -1,6 +1,6 @@
 package nextstep.auth.authentication.chain;
 
-import nextstep.auth.CustomUserDetails;
+import nextstep.auth.User;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
@@ -33,7 +33,7 @@ public class BasicAuthenticationFilter implements AuthenticationChainFilter {
 
             AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-            CustomUserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+            User userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
 
             if (!userDetails.checkPassword(token.getCredentials())) {
                 throw new AuthenticationException();

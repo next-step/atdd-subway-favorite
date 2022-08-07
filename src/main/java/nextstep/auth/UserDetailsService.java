@@ -13,8 +13,8 @@ public class UserDetailsService  {
         this.memberRepository = memberRepository;
     }
 
-    public CustomUserDetails loadUserByUsername(String username)  {
+    public User loadUserByUsername(String username)  {
         Member findMember = memberRepository.findByEmail(username).orElseThrow(AuthenticationException::new);
-        return CustomUserDetails.from(findMember);
+        return User.from(findMember);
     }
 }
