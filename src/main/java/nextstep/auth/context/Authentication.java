@@ -1,5 +1,7 @@
 package nextstep.auth.context;
 
+import nextstep.member.domain.LoginMember;
+
 import java.io.Serializable;
 import java.util.List;
 
