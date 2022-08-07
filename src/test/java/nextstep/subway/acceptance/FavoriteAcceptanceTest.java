@@ -38,6 +38,27 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(getResponse.jsonPath().getList("target.name", String.class).get(0)).isEqualTo("양재역");
     }
 
+    /**
+     * Given 역을 미리 추가해놓고
+     * When 즐겨찾기를 추가 시 인증되지 않으면
+     * Then 에러가 발생한다
+     */
+    @DisplayName("즐겨찾기 추가 시 미 인증 에러")
+    @Test
+    void createFavoriteUnauthorizedException() {
+        //given
+        long 교대역 = 지하철역_생성_요청("교대역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 남부터미널역 = 지하철역_생성_요청("남부터미널역", ACCESS_TOKEN).jsonPath().getLong("id");
+        long 양재역 = 지하철역_생성_요청("양재역", ACCESS_TOKEN).jsonPath().getLong("id");
+
+        //when
+        final String weirdToken = "abcd";
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(교대역, 양재역, weirdToken);
+
+        //then
+        assertThat(createdResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 
     /**
      * Given 역과 즐겨찾기를 추가해놓고
