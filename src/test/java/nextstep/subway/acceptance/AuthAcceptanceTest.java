@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,21 +54,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .params(params)
-                .when().post("/login/form")
-                .then().log().all()
-                .extract();
-
-        String sessionId = response.sessionId();
-
         return RestAssured.given().log().all()
+                .auth().form(email, password, new FormAuthConfig("/login/form", "email", "password"))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .cookie("JSESSIONID", sessionId)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
