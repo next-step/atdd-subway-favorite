@@ -33,4 +33,10 @@ public class FavoriteController {
         return ResponseEntity.ok().body(favoriteService.findFavorites());
     }
 
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFavorite(@PathVariable("id") Long id) {
+        return ResponseEntity.noContent().build();
+    }
+
 }
