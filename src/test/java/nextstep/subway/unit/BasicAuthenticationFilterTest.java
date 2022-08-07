@@ -1,9 +1,8 @@
 package nextstep.subway.unit;
 
-import nextstep.auth.User;
-import nextstep.auth.UserDetailsService;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.chain.BasicAuthenticationFilter;
+import nextstep.auth.authentication.provider.AuthenticationProvider;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
@@ -18,15 +17,16 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BasicAuthenticationFilterTest {
 
     @Mock
-    UserDetailsService userDetailsService;
+    AuthenticationProvider<AuthenticationToken> authenticationProvider;
 
     @InjectMocks
     BasicAuthenticationFilter basicAuthenticationFilter;
@@ -36,19 +36,15 @@ class BasicAuthenticationFilterTest {
     private static final Member ADMIN = Member.createAdmin("parkuram12@gmail.com", "pass", 25);
 
     @Test
-    void preHandle() {
+    void preHandle() throws Exception {
         //given
-        when(userDetailsService.loadUserByUsername(anyString()))
-                .thenReturn(new User(ADMIN.getEmail(), ADMIN.getPassword(), ADMIN.getRoles()));
-        MockHttpServletRequest request = createMockRequest();
-        MockHttpServletResponse response = createMockResponse();
+        when(authenticationProvider.authenticate(any()))
+                .thenReturn(new Authentication(ADMIN.getEmail(), ADMIN.getRoles()));
 
-        //when
-        boolean isChain = basicAuthenticationFilter.preHandle(request, response, new Object());
+        boolean isChain = basicAuthenticationFilter.preHandle(createMockRequest(), createMockResponse(), new Object());
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
 
-        //then
         assertThat(isChain).isTrue();
         assertThat(authentication.getPrincipal()).isEqualTo(ADMIN.getEmail());
         assertThat(authentication.getAuthorities()).contains(RoleType.ROLE_ADMIN.name());
@@ -70,11 +66,11 @@ class BasicAuthenticationFilterTest {
     @Test
     void authenticate() {
         //given
-        when(userDetailsService.loadUserByUsername(anyString()))
-                .thenReturn(new User(ADMIN.getEmail(), ADMIN.getPassword(), ADMIN.getRoles()));
+        when(authenticationProvider.authenticate(any()))
+                .thenReturn(new Authentication(ADMIN.getEmail(), ADMIN.getRoles()));
 
         //when
-        Authentication authentication = basicAuthenticationFilter.authenticate(
+        Authentication authentication = basicAuthenticationFilter.authentication(
                 new AuthenticationToken(
                         ADMIN.getEmail(),
                         ADMIN.getPassword()
@@ -92,7 +88,7 @@ class BasicAuthenticationFilterTest {
         return request;
     }
 
-    private MockHttpServletResponse createMockResponse() {
+    private MockHttpServletResponse createMockResponse(){
         return new MockHttpServletResponse();
     }
 
