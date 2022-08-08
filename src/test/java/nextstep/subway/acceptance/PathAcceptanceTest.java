@@ -8,10 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.*;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,25 +61,5 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source, target)
                 .then().log().all().extract();
-    }
-
-    private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
-        Map<String, String> lineCreateParams;
-        lineCreateParams = new HashMap<>();
-        lineCreateParams.put("name", name);
-        lineCreateParams.put("color", color);
-        lineCreateParams.put("upStationId", upStation + "");
-        lineCreateParams.put("downStationId", downStation + "");
-        lineCreateParams.put("distance", distance + "");
-
-        return LineSteps.지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
-    }
-
-    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
-        Map<String, String> params = new HashMap<>();
-        params.put("upStationId", upStationId + "");
-        params.put("downStationId", downStationId + "");
-        params.put("distance", distance + "");
-        return params;
     }
 }
