@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
@@ -43,6 +43,18 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
+    @DisplayName("Bearer Auth With Invalid Token")
+    @Test
+    void myInfoWithBearerAuthUsingInvalidToken() {
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD) + 1;
+
+        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
+        System.out.println("====");
+        System.out.println(response.jsonPath().getString("."));
+//        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.jsonPath().getString("path")).isEqualTo("/members/me");
+    }
+
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
         return RestAssured
                 .given().log().all()
@@ -59,7 +71,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 }
