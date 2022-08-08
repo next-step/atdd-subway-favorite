@@ -18,3 +18,10 @@
   - [x] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter
   - [x] BasicAuthenticationFilter와 BearerTokenAuthenticationFilter
 - [x] auth 패키지와 member 패키지에 대한 의존 제거
+
+# 3단계 - 즐겨찾기 기능 구현
+## 기능 요구사항
+- [x] 즐겨찾기 기능 구현
+  - [x] 생성
+  - [x] 조회
+  - [x] 삭제
