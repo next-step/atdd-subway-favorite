@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AuthSteps.ADMIN_토큰권한으로_호출;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회;
+import static nextstep.subway.acceptance.FavoriteSteps.로그인후_즐겨찾기_삭제;
+import static nextstep.subway.acceptance.FavoriteSteps.로그인후_즐겨찾기_생성;
+import static nextstep.subway.acceptance.FavoriteSteps.로그인후_즐겨찾기_조회;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,10 +44,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void getFavorites() {
         // When
-        var createdResponse = 즐겨찾기_생성(강남역, 양재역);
+        var createdResponse = 로그인후_즐겨찾기_생성(강남역, 양재역);
 
         // Then
-        var getResponse = 즐겨찾기_조회();
+        var getResponse = 로그인후_즐겨찾기_조회();
         assertThat(createdResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(getResponse.jsonPath()
@@ -65,13 +65,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorites() {
         // Given
-        var createResponse = 즐겨찾기_생성(강남역, 양재역);
+        var createResponse = 로그인후_즐겨찾기_생성(강남역, 양재역);
 
         // When
-        var deleteResponse = 즐겨찾기_삭제(createResponse);
+        var deleteResponse = 로그인후_즐겨찾기_삭제(createResponse);
 
         // Then
-        var getResponse = 즐겨찾기_조회();
+        var getResponse = 로그인후_즐겨찾기_조회();
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(getResponse.jsonPath()
@@ -157,7 +157,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void saveFavorites_fail_not_exist_station() {
         // When
-        var createResponse = 즐겨찾기_생성(999L, 강남역);
+        var createResponse = 로그인후_즐겨찾기_생성(999L, 강남역);
 
         // Then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

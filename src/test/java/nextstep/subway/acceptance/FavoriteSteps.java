@@ -11,7 +11,7 @@ import static nextstep.subway.acceptance.AuthSteps.ADMIN_토큰권한으로_호�
 
 public class FavoriteSteps {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성(Long source, Long target) {
+    public static ExtractableResponse<Response> 로그인후_즐겨찾기_생성(Long source, Long target) {
         Map<String, Long> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
@@ -27,7 +27,7 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_조회() {
+    public static ExtractableResponse<Response> 로그인후_즐겨찾기_조회() {
         return ADMIN_토큰권한으로_호출()
                 .when()
                 .get("/favorites")
@@ -37,7 +37,7 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 로그인후_즐겨찾기_삭제(ExtractableResponse<Response> response) {
         return ADMIN_토큰권한으로_호출()
                 .when()
                 .delete(response.header("Location"))
