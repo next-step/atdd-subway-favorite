@@ -1,5 +1,7 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.secured.Secured;
+import nextstep.member.domain.RoleType;
 import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.dto.LineRequest;
 import nextstep.subway.applicaion.dto.LineResponse;
@@ -19,42 +21,49 @@ public class LineController {
         this.lineService = lineService;
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    @Secured(value = {"ROLE_ADMIN", "ROLE_MEMBER"})
     @GetMapping
     public ResponseEntity<List<LineResponse>> showLines() {
         List<LineResponse> responses = lineService.findLineResponses();
         return ResponseEntity.ok().body(responses);
     }
 
+    @Secured(value = {"ROLE_ADMIN", "ROLE_MEMBER"})
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> getLine(@PathVariable Long id) {
         LineResponse lineResponse = lineService.findLineResponseById(id);
         return ResponseEntity.ok().body(lineResponse);
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineRequest) {
         lineService.updateLine(id, lineRequest);
         return ResponseEntity.ok().build();
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id) {
         lineService.deleteLine(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> addSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
         lineService.addSection(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.deleteSection(lineId, stationId);

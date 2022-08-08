@@ -1,5 +1,6 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.secured.Secured;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
@@ -18,17 +19,20 @@ public class StationController {
         this.stationService = stationService;
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
+    @Secured(value = {"ROLE_ADMIN", "ROLE_MEMBER"})
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @DeleteMapping("/stations/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
