@@ -6,6 +6,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public abstract class NonChainInterceptor implements HandlerInterceptor {
     @Override
@@ -20,10 +21,10 @@ public abstract class NonChainInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    protected abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request);
+    protected abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request) throws IOException;
 
     protected abstract Authentication getAuthentication(AuthenticationToken authenticationToken);
 
-    protected abstract void doAuthentication(Authentication authentication, HttpServletResponse response);
-    
+    protected abstract void doAuthentication(Authentication authentication, HttpServletResponse response) throws IOException;
+
 }
