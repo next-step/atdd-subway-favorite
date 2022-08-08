@@ -62,6 +62,21 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("출발역과 도착역이 동일한 즐겨찾기 등록 실패")
+    @Test
+    void createFavoriteFailsForSameStations() {
+        var createResponse = 즐겨찾기_등록(교대역, 교대역);
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("존재하지 않는 역에 대한 즐겨찾기 등록 실패")
+    @Test
+    void createFavoriteFailsForStationNotExist() {
+        var 존재하지_않는_역 = 123123L;
+        var createResponse = 즐겨찾기_등록(교대역, 존재하지_않는_역);
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_등록(Long source, Long target) {
         var body = new HashMap<>();
         body.put("source", source);
