@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class FavoriteServiceTest {
@@ -75,6 +77,26 @@ class FavoriteServiceTest {
 
         assertThrows(IllegalArgumentException.class,
                 () -> favoriteService.createFavorite(userId, source.getId(), target.getId()));
+    }
+
+    @DisplayName("즐겨찾기 조회")
+    @Test
+    void getFavorites() {
+        var userId = 123L;
+        var favorites = List.of(
+                new Favorite(1L, userId, createStation(1L, "강남역"), createStation(2L, "양재역"))
+        );
+        when(favoriteRepository.findAllByUserId(userId))
+                .thenReturn(favorites);
+
+        var result = favoriteService.getFavorites(userId);
+
+        assertAll(
+                () -> assertThat(result).hasSize(1),
+                () -> assertThat(result.get(0).getId()).isEqualTo(favorites.get(0).getId()),
+                () -> assertThat(result.get(0).getTarget().getId()).isEqualTo(favorites.get(0).getTarget().getId()),
+                () -> assertThat(result.get(0).getSource().getId()).isEqualTo(favorites.get(0).getSource().getId())
+        );
     }
 
     private Station createStation(Long id, String name) {

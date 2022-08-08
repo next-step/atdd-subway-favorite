@@ -8,7 +8,9 @@ import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,6 +36,13 @@ public class FavoriteService {
         var favorite = favoriteRepository.save(Favorite.of(userId, sourceStation, targetStation));
 
         return FavoriteResponse.of(favorite);
+    }
+
+    public List<FavoriteResponse> getFavorites(Long userId) {
+        return favoriteRepository.findAllByUserId(userId)
+                .stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     private Station getStation(Long stationId) {
