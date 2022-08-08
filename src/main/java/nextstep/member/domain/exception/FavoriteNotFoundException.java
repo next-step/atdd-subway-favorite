@@ -1,4 +1,4 @@
-package nextstep.favorite.domain.exception;
+package nextstep.member.domain.exception;
 
 import nextstep.common.exception.exception.EntityNotFoundException;
 

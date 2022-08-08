@@ -1,7 +1,7 @@
-package nextstep.favorite.domain;
+package nextstep.member.domain;
 
-import nextstep.favorite.domain.exception.CantAddFavoriteException;
-import nextstep.favorite.domain.exception.NotMyFavoriteException;
+import nextstep.member.domain.exception.CantAddFavoriteException;
+import nextstep.member.domain.exception.NotMyFavoriteException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,7 +1,7 @@
-package nextstep.favorite.application.dto;
+package nextstep.member.application.dto;
 
 import nextstep.common.EntitySupplier;
-import nextstep.favorite.domain.Favorite;
+import nextstep.member.domain.Favorite;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

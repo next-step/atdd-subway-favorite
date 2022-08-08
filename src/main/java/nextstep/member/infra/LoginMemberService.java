@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.member.infra;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.user.UserDetails;

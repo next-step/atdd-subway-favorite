@@ -1,9 +1,9 @@
-package nextstep.favorite.ui;
+package nextstep.member.ui;
 
 import nextstep.common.exception.dto.ErrorResponse;
 import nextstep.common.exception.utils.ExceptionHandlerUtils;
-import nextstep.favorite.domain.exception.CantAddFavoriteException;
-import nextstep.favorite.domain.exception.NotMyFavoriteException;
+import nextstep.member.domain.exception.CantAddFavoriteException;
+import nextstep.member.domain.exception.NotMyFavoriteException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

@@ -1,4 +1,4 @@
-package nextstep.favorite.domain.exception;
+package nextstep.member.domain.exception;
 
 public class NotMyFavoriteException extends RuntimeException {
     public NotMyFavoriteException(String message) {

@@ -1,4 +1,4 @@
-package nextstep.favorite.domain;
+package nextstep.member.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

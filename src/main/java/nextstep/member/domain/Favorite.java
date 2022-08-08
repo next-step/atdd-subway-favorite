@@ -1,4 +1,4 @@
-package nextstep.favorite.domain;
+package nextstep.member.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

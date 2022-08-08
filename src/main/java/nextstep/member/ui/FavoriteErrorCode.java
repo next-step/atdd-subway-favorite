@@ -1,4 +1,4 @@
-package nextstep.favorite.ui;
+package nextstep.member.ui;
 
 import nextstep.common.exception.code.ErrorCode;
 import org.springframework.http.HttpStatus;

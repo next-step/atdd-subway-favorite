@@ -1,6 +1,6 @@
-package nextstep.favorite.application.dto;
+package nextstep.member.application.dto;
 
-import nextstep.favorite.domain.Favorite;
+import nextstep.member.domain.Favorite;
 import nextstep.station.domain.Station;
 import nextstep.station.application.dto.StationResponse;
 

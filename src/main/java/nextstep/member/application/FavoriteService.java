@@ -1,16 +1,15 @@
-package nextstep.favorite.application;
+package nextstep.member.application;
 
 import nextstep.auth.user.User;
-import nextstep.favorite.domain.exception.FavoriteNotFoundException;
-import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
+import nextstep.member.domain.Favorite;
+import nextstep.member.domain.FavoriteRepository;
+import nextstep.member.domain.FavoriteValidationService;
 import nextstep.member.domain.Member;
-import nextstep.favorite.application.dto.FavoriteRequest;
-import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.favorite.domain.FavoriteValidationService;
-import nextstep.station.domain.Station;
+import nextstep.member.domain.exception.FavoriteNotFoundException;
 import nextstep.station.application.StationService;
+import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
