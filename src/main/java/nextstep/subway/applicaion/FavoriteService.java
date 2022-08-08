@@ -32,4 +32,11 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
         return FavoriteResponse.from(favorite);
     }
+
+    public FavoriteResponse findById(LoginMember loginMember, Long id) {
+        Member member = memberService.findMember(loginMember.getEmail());
+        return favoriteRepository.findByIdAndMemberId(id, member.getId())
+                .map(FavoriteResponse::from)
+                .orElse(FavoriteResponse.empty());
+    }
 }

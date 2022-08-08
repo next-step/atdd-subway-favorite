@@ -77,6 +77,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_조회됨(ExtractableResponse<Response> response, Long source, Long target) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("source.id", Long.class)).containsOnly(source, target);
+        assertThat(response.jsonPath().getLong("source.id")).isEqualTo(source);
+        assertThat(response.jsonPath().getLong("target.id")).isEqualTo(target);
     }
 }
