@@ -1,9 +1,9 @@
 package nextstep.auth.authentication.filter.nonChain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.application.UserDetailService;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetailService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;

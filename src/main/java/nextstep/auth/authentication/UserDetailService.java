@@ -1,4 +1,4 @@
-package nextstep.auth.application;
+package nextstep.auth.authentication;
 
 import nextstep.member.domain.LoginMember;
 

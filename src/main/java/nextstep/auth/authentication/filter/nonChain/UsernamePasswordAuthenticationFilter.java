@@ -1,8 +1,8 @@
 package nextstep.auth.authentication.filter.nonChain;
 
-import nextstep.auth.application.UserDetailService;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.UserDetailService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.domain.LoginMember;

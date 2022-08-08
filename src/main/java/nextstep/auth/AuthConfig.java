@@ -1,6 +1,6 @@
 package nextstep.auth;
 
-import nextstep.auth.application.UserDetailService;
+import nextstep.auth.authentication.UserDetailService;
 import nextstep.auth.authentication.filter.chain.BasicAuthenticationFilter;
 import nextstep.auth.authentication.filter.chain.BearerTokenAuthenticationFilter;
 import nextstep.auth.authentication.filter.nonChain.TokenAuthenticationInterceptor;
