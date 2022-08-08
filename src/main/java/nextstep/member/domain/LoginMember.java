@@ -23,10 +23,6 @@ public class LoginMember implements UserDetails {
         return new LoginMember(email, null, authorities);
     }
 
-    public static LoginMember guest() {
-        return new LoginMember();
-    }
-
     @Override
     public boolean checkPassword(String password) {
         return this.password.equals(password);
