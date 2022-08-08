@@ -22,6 +22,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 남부터미널역;
     private Long 양재역;
 
+    private String 잘못된_토큰 = "wrong";
+
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -33,37 +35,63 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * when: 즐겨찾기 생성 요청을 하면
-     * then: 즐겨찾기가 추가되고
-     * then: 해당 즐겨찾기 정보를 조회할 수 있다.
+     * then: 즐겨찾기가 생성됨
+     *
+     * when: 생성한 즐겨찾기를 조회 요청하면
+     * then: 해당 즐겨찾기 정보가 조회됨
+     *
+     * given: 즐겨찾기를 하나 더 생성 요청하고
+     * when: 즐겨찾기 목록을 조회 요청하면
+     * then: 즐겨찾기 목록이 조회됨
+     *
+     * when: 생성한 즐겨찾기를 삭제 요청하면
+     * then: 해당 즐겨찾기가 삭제됨
+     * then: 해당 즐겨찾기를 찾을 수 없음
      */
     @Test
-    @DisplayName("즐겨찾기 생성")
-    void createFavorite() {
+    @DisplayName("유저가 즐겨찾기를 관리한다.")
+    void userManageFavorites() {
         // when
         var 생성_요청_결과 = 즐겨찾기_생성_요청(사용자, 교대역, 양재역);
-
         // then
         즐겨찾기_생성됨(생성_요청_결과);
+
+        // when
         var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(사용자, 생성_요청_결과);
+        // then
         즐겨찾기_조회됨(즐겨찾기_조회_정보, 교대역, 양재역);
     }
 
     /**
-     * given: 즐겨찾기 생성하고
-     * when: 생성한 즐겨찾기를 조회하면
-     * then: 해당 즐겨찾기 정보를 조회할 수 있다.
+     * given: 즐겨찾기를 생성하고,
+     *
+     * when: 즐겨찾기 생성 요청을 하면
+     * then: 권한이 없음
+     *
+     * when: 생성되어있는 즐겨찾기를 조회 요청하면
+     * then: 권한이 없음
+     *
+     * when: 즐겨찾기 목록을 조회 요청하면
+     * then: 권한이 없음
+     *
+     * when: 생성한 즐겨찾기를 삭제 요청하면
+     * then: 권한이 없음
      */
     @Test
-    @DisplayName("즐겨찾기 단건 조회")
-    void showFavorite() {
+    @DisplayName("사용자, 관리자가 아닌 경우 즐겨찾기를 관리할 수 없다.")
+    void invalidUserManageFavorites() {
         // given
-        var 생성_요청_결과 = 즐겨찾기_생성_요청(사용자, 교대역, 양재역);
+        var 생성된_즐겨찾기_결과 = 즐겨찾기_생성_요청(사용자, 교대역, 양재역);
 
         // when
-        var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(사용자, 생성_요청_결과);
-
+        var 생성_요청_결과 = 즐겨찾기_생성_요청(잘못된_토큰, 교대역, 양재역);
         // then
-        즐겨찾기_조회됨(즐겨찾기_조회_정보, 교대역, 양재역);
+        권한이_없음(생성_요청_결과);
+
+        // when
+        var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(잘못된_토큰, 생성된_즐겨찾기_결과);
+        // then
+        권한이_없음(즐겨찾기_조회_정보);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
@@ -97,5 +125,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getLong("source.id")).isEqualTo(source);
         assertThat(response.jsonPath().getLong("target.id")).isEqualTo(target);
+    }
+
+    private void 권한이_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
