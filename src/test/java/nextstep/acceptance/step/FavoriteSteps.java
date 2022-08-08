@@ -18,15 +18,6 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청_관리자(Long source, Long target) {
-        return AuthSteps.givenAdminRole()
-                .body(createFavoritesCreateParams(source, target))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
     public static ExtractableResponse<Response> 즐겨찾기_조회_요청() {
         return AuthSteps.givenUserRole()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -39,6 +30,14 @@ public class FavoriteSteps {
         return AuthSteps.givenUserRole()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/favorites/{id}", id)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String location) {
+        return AuthSteps.givenUserRole()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(location)
                 .then().log().all()
                 .extract();
     }
