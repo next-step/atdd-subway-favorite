@@ -53,7 +53,7 @@ public class LineService {
 
     public Line findById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(LineNotFoundException::new);
+                .orElseThrow(() -> new LineNotFoundException(id));
     }
 
     @Transactional

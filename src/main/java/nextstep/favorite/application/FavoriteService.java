@@ -87,7 +87,7 @@ public class FavoriteService {
     public void deleteFavorite(User user, Long id) {
         Member member = memberService.findMember(user.getPrincipal());
         Favorite favorite = favoriteRepository.findById(id)
-                .orElseThrow(FavoriteNotFoundException::new);
+                .orElseThrow(() -> new FavoriteNotFoundException(id));
 
         favoriteValidationService.validateOwner(favorite, member.getId());
 

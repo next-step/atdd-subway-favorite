@@ -45,6 +45,6 @@ public class MemberService {
 
     private Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(email));
     }
 }
