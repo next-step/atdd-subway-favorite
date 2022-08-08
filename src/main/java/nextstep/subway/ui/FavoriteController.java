@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.secured.Secured;
 import nextstep.member.domain.LoginMember;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -27,6 +28,7 @@ public class FavoriteController {
 	}
 
 	@PostMapping("/favorite")
+	@Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
 	public ResponseEntity<Void> registerFavorite(
 		@AuthenticationPrincipal LoginMember loginMember,
 		@RequestBody FavoriteRequest favoriteRequest) {
@@ -36,6 +38,7 @@ public class FavoriteController {
 	}
 
 	@DeleteMapping("/favorite/{favoriteId}")
+	@Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
 	public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
 		@PathVariable Long favoriteId) {
 		favoriteService.deleteFavorite(loginMember.getEmail(), favoriteId);
@@ -43,6 +46,7 @@ public class FavoriteController {
 	}
 
 	@GetMapping("/favorite")
+	@Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
 	public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
 		return ResponseEntity.ok().body(favoriteService.getFavorites(loginMember.getEmail()));
 	}

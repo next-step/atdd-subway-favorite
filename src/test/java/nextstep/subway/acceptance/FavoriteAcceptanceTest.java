@@ -123,7 +123,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		//then
 		assertThat(즐겨찾기_삭제(favoriteId, member2AccessToken).statusCode())
-			.isEqualTo(HttpStatus.BAD_REQUEST.value());
+			.isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 }

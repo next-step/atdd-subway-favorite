@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
+import nextstep.subway.exception.IllegalUserException;
+
 @Embeddable
 public class Favorites {
 	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -72,6 +74,6 @@ public class Favorites {
 			.stream()
 			.filter(favorite -> favorite.isSameFavorite(favoriteId))
 			.findFirst()
-			.orElseThrow(IllegalArgumentException::new);
+			.orElseThrow(IllegalUserException::new);
 	}
 }
