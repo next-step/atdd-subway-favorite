@@ -48,6 +48,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회됨(즐겨찾기_조회_정보, 교대역, 양재역);
     }
 
+    /**
+     * given: 즐겨찾기 생성하고
+     * when: 생성한 즐겨찾기를 조회하면
+     * then: 해당 즐겨찾기 정보를 조회할 수 있다.
+     */
+    @Test
+    @DisplayName("즐겨찾기 단건 조회")
+    void showFavorite() {
+        // given
+        var 생성_요청_결과 = 즐겨찾기_생성_요청(사용자, 교대역, 양재역);
+
+        // when
+        var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(사용자, 생성_요청_결과);
+
+        // then
+        즐겨찾기_조회됨(즐겨찾기_조회_정보, 교대역, 양재역);
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", String.valueOf(source));
