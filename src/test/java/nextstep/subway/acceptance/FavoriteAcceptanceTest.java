@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AuthSteps.ADMIN_토큰권한으로_호출;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회;
@@ -146,5 +147,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * When 즐겨찾기를 생성할 때, 없는 지하철역 값을 전달하면
+     * Then 오류가 발생한다.
+     */
+    @DisplayName("즐겨찾기 생성시 없는 지하철역 값을 전달한다")
+    @Test
+    void saveFavorites_fail_not_exist_station() {
+        // When
+        var createResponse = 즐겨찾기_생성(999L, 강남역);
+
+        // Then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * When 즐겨찾기를 삭제할 때, 없는 지하철역 값을 전달하면
+     * Then 오류가 발생한다.
+     */
+    @DisplayName("즐겨찾기 삭제시 없는 지하철역 값을 전달한다")
+    @Test
+    void Favorites_fail_not_exist_station() {
+        // When
+        var response = ADMIN_토큰권한으로_호출()
+                .when()
+                .delete("/favorites/9999")
+                .then()
+                .log()
+                .all()
+                .extract();
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
