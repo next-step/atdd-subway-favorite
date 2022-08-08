@@ -101,8 +101,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회() {
-        return RestAssured
-                .given()
+        return MemberSteps
+                .givenAdminLogin()
                 .when().log().all()
                     .get("/favorites")
                 .then().log().all()
