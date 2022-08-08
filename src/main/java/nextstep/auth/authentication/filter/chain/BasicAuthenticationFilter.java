@@ -3,7 +3,6 @@ package nextstep.auth.authentication.filter.chain;
 import nextstep.auth.authentication.*;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,16 +29,16 @@ public class BasicAuthenticationFilter extends ChainInterceptor {
 
     @Override
     protected Authentication getAuthentication(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = userDetailService.loadUserByUsername(authenticationToken.getPrincipal());
-        if (loginMember == null) {
+        UserDetails userDetails = userDetailService.loadUserByUsername(authenticationToken.getPrincipal());
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+        if (!userDetails.checkPassword(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
     @Override

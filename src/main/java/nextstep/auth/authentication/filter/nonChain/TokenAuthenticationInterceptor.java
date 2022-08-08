@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.UserDetailService;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,17 +37,17 @@ public class TokenAuthenticationInterceptor extends NonChainInterceptor {
 
     @Override
     protected Authentication getAuthentication(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = userDetailService.loadUserByUsername(authenticationToken.getPrincipal());
+        UserDetails userDetails = userDetailService.loadUserByUsername(authenticationToken.getPrincipal());
 
-        if (loginMember == null) {
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+        if (!userDetails.checkPassword(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
     @Override

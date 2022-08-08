@@ -3,9 +3,9 @@ package nextstep.auth.authentication.filter.nonChain;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.UserDetailService;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,17 +32,17 @@ public class UsernamePasswordAuthenticationFilter extends NonChainInterceptor {
 
     @Override
     protected Authentication getAuthentication(AuthenticationToken authenticationToken) {
-        LoginMember loginMember = userDetailService.loadUserByUsername(authenticationToken.getPrincipal());
+        UserDetails userDetails = userDetailService.loadUserByUsername(authenticationToken.getPrincipal());
 
-        if (loginMember == null) {
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(authenticationToken.getCredentials())) {
+        if (!userDetails.checkPassword(authenticationToken.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 
     @Override
