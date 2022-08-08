@@ -15,7 +15,7 @@ import static nextstep.member.domain.exception.CantAddFavoriteException.INVALID_
 
 @Embeddable
 public class Favorites {
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinColumn(name = "member_id")
     private List<Favorite> favorites = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class Favorites {
                     throw new CantAddFavoriteException(ALREADY_ADDED);
                 });
 
-        favorites.add(new Favorite(source, target));
+        favorites.add(favorite);
     }
 
     public void delete(Long id) {
@@ -48,7 +48,7 @@ public class Favorites {
                 .orElseThrow();
     }
 
-    public List<Favorite> getFavorites() {
+    List<Favorite> getFavorites() {
         return Collections.unmodifiableList(favorites);
     }
 }
