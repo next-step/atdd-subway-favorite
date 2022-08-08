@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("즐겨찾기 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    private Long 강남역;
-    private Long 양재역;
+    private Long 강남역_stationId;
+    private Long 양재역_stationId;
 
     /**
      * Given 지하철역과 노선 생성을 요청 하고
@@ -29,9 +29,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_생성_요청("강남역").jsonPath()
+        강남역_stationId = 지하철역_생성_요청("강남역").jsonPath()
                 .getLong("id");
-        양재역 = 지하철역_생성_요청("양재역").jsonPath()
+        양재역_stationId = 지하철역_생성_요청("양재역").jsonPath()
                 .getLong("id");
     }
 
@@ -44,16 +44,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void getFavorites() {
         // When
-        var createdResponse = 로그인후_즐겨찾기_생성(강남역, 양재역);
+        var createdResponse = 로그인후_즐겨찾기_생성(강남역_stationId, 양재역_stationId);
 
         // Then
         var getResponse = 로그인후_즐겨찾기_조회();
         assertThat(createdResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(getResponse.jsonPath()
-                .getList("source.id", Long.class)).contains(강남역);
+                .getList("source.id", Long.class)).contains(강남역_stationId);
         assertThat(getResponse.jsonPath()
-                .getList("target.id", Long.class)).contains(양재역);
+                .getList("target.id", Long.class)).contains(양재역_stationId);
     }
 
     /**
@@ -65,7 +65,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorites() {
         // Given
-        var createResponse = 로그인후_즐겨찾기_생성(강남역, 양재역);
+        var createResponse = 로그인후_즐겨찾기_생성(강남역_stationId, 양재역_stationId);
 
         // When
         var deleteResponse = 로그인후_즐겨찾기_삭제(createResponse);
@@ -87,8 +87,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void saveFavorites_fail_not_login() {
         // When
         Map<String, Long> params = new HashMap<>();
-        params.put("source", 강남역);
-        params.put("target", 양재역);
+        params.put("source", 강남역_stationId);
+        params.put("target", 양재역_stationId);
         var response = RestAssured.given()
                 .log()
                 .all()
@@ -157,7 +157,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void saveFavorites_fail_not_exist_station() {
         // When
-        var createResponse = 로그인후_즐겨찾기_생성(999L, 강남역);
+        var createResponse = 로그인후_즐겨찾기_생성(999L, 강남역_stationId);
 
         // Then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
