@@ -1,13 +1,15 @@
 package nextstep.auth;
 
-import nextstep.auth.authentication.BasicAuthenticationFilter;
-import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
-import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.nonchain.UsernamePasswordAuthenticationFilter;
+import nextstep.auth.authentication.chain.AuthenticationChainFilter;
+import nextstep.auth.authentication.provider.AuthenticationProvider;
 import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenAuthenticationInterceptor;
-import nextstep.member.application.LoginMemberService;
+import nextstep.auth.authentication.nonchain.TokenAuthenticationInterceptor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,22 +17,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class AuthConfig implements WebMvcConfigurer {
-    private LoginMemberService loginMemberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final List<AuthenticationChainFilter> chainFilters;
 
-    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    @Qualifier("defaultAuthenticationProvider")
+    private final AuthenticationProvider<AuthenticationToken> authenticationProvider;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
-        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(loginMemberService)).addPathPatterns("/login/form");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider)).addPathPatterns("/login/token");
-        registry.addInterceptor(new BasicAuthenticationFilter(loginMemberService));
-        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider));
+        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(authenticationProvider)).addPathPatterns("/login/form");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(jwtTokenProvider, authenticationProvider)).addPathPatterns("/login/token");
+        chainFilters.forEach(registry::addInterceptor);
     }
 
     @Override
