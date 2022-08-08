@@ -29,8 +29,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         교대역 = 지하철역_생성_요청(관리자, "교대역").jsonPath().getLong("id");
-        남부터미널역 = 지하철역_생성_요청(관리자, "교대역").jsonPath().getLong("id");
-        양재역 = 지하철역_생성_요청(관리자, "교대역").jsonPath().getLong("id");
+        남부터미널역 = 지하철역_생성_요청(관리자, "남부터미널역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청(관리자, "양재역").jsonPath().getLong("id");
     }
 
     /**
@@ -60,6 +60,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(사용자, 생성_요청_결과);
         // then
         즐겨찾기_조회됨(즐겨찾기_조회_정보, 교대역, 양재역);
+
+        // given
+        즐겨찾기_생성_요청(사용자, 남부터미널역, 양재역);
+        // when
+        var 즐겨찾기_목록_조회_정보 = 즐겨찾기_목록_조회_요청(사용자);
+        // then
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_정보, 2);
     }
 
     /**
@@ -92,6 +99,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(잘못된_토큰, 생성된_즐겨찾기_결과);
         // then
         권한이_없음(즐겨찾기_조회_정보);
+
+        // when
+        var 즐겨찾기_목록_조회_정보 = 즐겨찾기_목록_조회_요청(잘못된_토큰);
+        // then
+        권한이_없음(즐겨찾기_목록_조회_정보);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
@@ -117,6 +129,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return given(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -125,6 +145,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getLong("source.id")).isEqualTo(source);
         assertThat(response.jsonPath().getLong("target.id")).isEqualTo(target);
+    }
+
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, int favoriteCount) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("id", Long.class).size()).isEqualTo(favoriteCount);
     }
 
     private void 권한이_없음(ExtractableResponse<Response> response) {
