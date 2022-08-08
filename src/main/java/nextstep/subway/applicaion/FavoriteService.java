@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.member.application.SubwayMemberDetailsService;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Favorites;
 import nextstep.subway.domain.SubwayMember;
@@ -28,19 +29,19 @@ public class FavoriteService {
 	}
 
 	@Transactional
-	public void registerFavorite(String memberEmail, long source, long target) {
-
+	public long registerFavorite(String memberEmail, long source, long target) {
 		long memberId = getMemberId(memberEmail);
 		Favorites favorites = new Favorites(favoriteRepository.findByMemberId(memberId));
-		favorites.addFavorite(memberId, getStationId(source), getStationId(target));
-		favoriteRepository.saveAll(favorites.getValues());
+		favorites.validationAddable(memberId, getStationId(source), getStationId(target));
+		Favorite favorite = favoriteRepository.save(new Favorite(memberId, source, target));
+		return favorite.getId();
 	}
 
 	@Transactional
 	public void deleteFavorite(String memberEmail, long favoriteId) {
-
 		Favorites favorites = new Favorites(favoriteRepository.findByMemberId(getMemberId(memberEmail)));
 		favoriteRepository.delete(favorites.getFavoriteById(favoriteId));
+		
 	}
 
 	public List<FavoriteResponse> getFavorites(String memberEmail) {

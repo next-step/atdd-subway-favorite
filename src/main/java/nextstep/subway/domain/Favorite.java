@@ -1,5 +1,7 @@
 package nextstep.subway.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -53,5 +55,21 @@ public class Favorite {
 
 	public long getTargetStationId() {
 		return targetStationId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Favorite favorite = (Favorite)o;
+		return memberId == favorite.memberId && sourceStationId == favorite.sourceStationId
+			&& targetStationId == favorite.targetStationId && Objects.equals(id, favorite.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, memberId, sourceStationId, targetStationId);
 	}
 }
