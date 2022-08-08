@@ -49,11 +49,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 등록")
     @Test
     void createFavorite() {
+        // when
         var createResponse = 즐겨찾기_등록(교대역, 양재역);
 
+        // then
         var favoriteResponse = 즐겨찾기_조회();
         var favorites = favoriteResponse.jsonPath().getList(".", FavoriteResponse.class);
-
         assertAll(
                 () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(favorites).hasSize(1),
@@ -69,7 +70,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 동일한 즐겨찾기 등록 실패")
     @Test
     void createFavoriteFailsForSameStations() {
+        // when
         var createResponse = 즐겨찾기_등록(교대역, 교대역);
+
+        // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -80,9 +84,50 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 역에 대한 즐겨찾기 등록 실패")
     @Test
     void createFavoriteFailsForStationNotExist() {
+        // when
         var 존재하지_않는_역 = 123123L;
         var createResponse = 즐겨찾기_등록(교대역, 존재하지_않는_역);
+
+        // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * given 사용자의 즐겨찾기를 등록하고
+     * when 등록된 즐겨찾기를 삭제하면
+     * then 삭제된 즐겨찾기가 조회되지 않는다
+     */
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void removeFavorite() {
+        // given
+        var favoriteId = 즐겨찾기_등록(교대역, 양재역).jsonPath().getLong("id");
+
+        // when
+        var deleteResponse = 즐겨찾기_삭제(favoriteId);
+
+        // then
+        var favoriteResponse = 즐겨찾기_조회();
+        var favorites = favoriteResponse.jsonPath().getList(".", FavoriteResponse.class);
+        assertAll(
+                () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(favorites).isEmpty()
+        );
+    }
+
+    /**
+     * when 등록되지 않은 ID로 즐겨찾기를 삭제하면
+     * then 에러가 발생한다
+     */
+    @DisplayName("존재하지 않는 즐겨찾기 삭제 실패")
+    @Test
+    void removeFavoriteFailsForIdNotExist() {
+        // when
+        var favoriteIdNotExist = 123123L;
+        var deleteResponse = 즐겨찾기_삭제(favoriteIdNotExist);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_등록(Long source, Long target) {
@@ -106,6 +151,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when().log().all()
                     .get("/favorites")
                 .then().log().all()
+                    .extract();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제(Long favoriteId) {
+        return MemberSteps
+                .givenAdminLogin()
+                    .pathParam("id", favoriteId)
+                .when()
+                    .delete("/favorites/{id}")
+                .then()
                     .extract();
     }
 }
