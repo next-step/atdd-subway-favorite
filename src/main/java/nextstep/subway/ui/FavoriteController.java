@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,5 +32,12 @@ public class FavoriteController {
     public ResponseEntity<FavoriteResponse> createLine(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
         FavoriteResponse favoriteResponse = favoriteService.findById(loginMember, id);
         return ResponseEntity.ok().body(favoriteResponse);
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> createLine(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAll(loginMember);
+        return ResponseEntity.ok().body(favoriteResponses);
     }
 }

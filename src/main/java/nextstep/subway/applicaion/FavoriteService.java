@@ -12,6 +12,9 @@ import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -38,5 +41,13 @@ public class FavoriteService {
         return favoriteRepository.findByIdAndMemberId(id, member.getId())
                 .map(FavoriteResponse::from)
                 .orElse(FavoriteResponse.empty());
+    }
+
+    public List<FavoriteResponse> findAll(LoginMember loginMember) {
+        Member member = memberService.findMember(loginMember.getEmail());
+        return favoriteRepository.findAllByMemberId(member.getId())
+                .stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toUnmodifiableList());
     }
 }
