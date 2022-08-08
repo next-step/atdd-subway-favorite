@@ -24,7 +24,7 @@ public class AcceptanceTest {
     @Autowired
     private DataLoader dataLoader;
 
-    private String 관리자;
+    String 관리자;
 
     @BeforeEach
     public void setUp() {
