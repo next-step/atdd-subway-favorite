@@ -55,7 +55,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         return given(accessToken)
                 .body(params)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();

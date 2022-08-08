@@ -34,4 +34,16 @@ public class Favorite {
         }
         return new Favorite(memberId, sourceStation, targetStation);
     }
+
+    public Long id() {
+        return id;
+    }
+
+    public Station sourceStation() {
+        return sourceStation;
+    }
+
+    public Station targetStation() {
+        return targetStation;
+    }
 }
