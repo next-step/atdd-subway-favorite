@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -33,6 +34,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
+    @DisplayName("Session 로그인 실패 - 비밀번호 불일치")
+    @Test
+    void myInfoWithInconsistencyPassword() {
+        ExtractableResponse<Response> response = 폼_로그인_후_내_회원_정보_조회_요청(EMAIL, PASSWORD + "_bad");
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
@@ -50,7 +58,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .when()
                 .get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
@@ -63,4 +70,5 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
+
 }

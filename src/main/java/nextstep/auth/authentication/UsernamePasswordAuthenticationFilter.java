@@ -30,8 +30,8 @@ public class UsernamePasswordAuthenticationFilter extends AbstractCreateAuthenti
 
     @Override
     protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
-        Object email = request.getParameter("username");
-        Object password = request.getParameter("password");
+        String email = request.getParameter("username");
+        String password = request.getParameter("password");
         if(!isExistAuthentication(email, password)) {
             throw new AuthenticationException();
         }
