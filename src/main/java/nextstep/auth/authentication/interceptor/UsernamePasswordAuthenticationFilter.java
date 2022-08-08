@@ -8,10 +8,10 @@ import nextstep.auth.authentication.user.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 
-public class UsernamePasswordAuthenticationFilter implements AuthenticationNotChainingFilter {
+public class UsernamePasswordAuthenticationFilter extends AuthenticationNotChainingFilter {
 
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     private final UserDetailsService userDetailsService;
 
@@ -20,19 +20,19 @@ public class UsernamePasswordAuthenticationFilter implements AuthenticationNotCh
     }
 
     @Override
-    public AuthenticationToken convert(HttpServletRequest request) {
+    AuthenticationToken convert(HttpServletRequest request) {
         String username = request.getParameter(USERNAME);
         String password = request.getParameter(PASSWORD);
         return new AuthenticationToken(username, password);
     }
 
     @Override
-    public UserDetails createUserDetails(AuthenticationToken token) {
+    UserDetails createUserDetails(AuthenticationToken token) {
         return userDetailsService.loadUserByUsername(token.getPrincipal());
     }
 
     @Override
-    public void afterAuthentication(Authentication authenticate, HttpServletResponse response) {
+    void afterAuthentication(Authentication authenticate, HttpServletResponse response) {
         Authentication authentication = new Authentication(authenticate.getPrincipal(), authenticate.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

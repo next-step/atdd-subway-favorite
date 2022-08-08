@@ -8,10 +8,10 @@ import nextstep.auth.authentication.user.UserDetails;
 import nextstep.auth.context.Authentication;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-public interface AuthenticationNotChainingFilter extends HandlerInterceptor {
+public abstract class AuthenticationNotChainingFilter implements HandlerInterceptor {
 
   @Override
-  default boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     AuthenticationToken token = convert(request);
     Authentication authenticate = authenticate(createUserDetails(token), token);
     afterAuthentication(authenticate, response);
@@ -19,7 +19,7 @@ public interface AuthenticationNotChainingFilter extends HandlerInterceptor {
     return false;
   }
 
-  default Authentication authenticate(UserDetails userDetails, AuthenticationToken token) {
+  private Authentication authenticate(UserDetails userDetails, AuthenticationToken token) {
     if (userDetails == null) {
       throw new AuthenticationException();
     }
@@ -31,7 +31,7 @@ public interface AuthenticationNotChainingFilter extends HandlerInterceptor {
     return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
   }
 
-  AuthenticationToken convert(HttpServletRequest request) throws Exception;
-  UserDetails createUserDetails(AuthenticationToken token);
-  void afterAuthentication(Authentication authenticate, HttpServletResponse response) throws Exception;
+  abstract AuthenticationToken convert(HttpServletRequest request) throws Exception;
+  abstract UserDetails createUserDetails(AuthenticationToken token);
+  abstract void afterAuthentication(Authentication authenticate, HttpServletResponse response) throws Exception;
 }

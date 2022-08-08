@@ -9,7 +9,7 @@ import nextstep.auth.authentication.user.UserDetails;
 import nextstep.auth.authentication.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
-public class BasicAuthenticationFilter implements AuthenticationChainingFilter {
+public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
 
     private static final String SEPARATOR = ":";
     private static final int SEPARATOR_SIZE = 2;
@@ -23,7 +23,7 @@ public class BasicAuthenticationFilter implements AuthenticationChainingFilter {
     }
 
     @Override
-    public AuthenticationToken convert(HttpServletRequest request) {
+    AuthenticationToken convert(HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
@@ -39,7 +39,7 @@ public class BasicAuthenticationFilter implements AuthenticationChainingFilter {
     }
 
     @Override
-    public UserDetails createUserDetails(AuthenticationToken token) {
+    UserDetails createUserDetails(AuthenticationToken token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
         if (userDetails == null) {
             throw new AuthenticationException();

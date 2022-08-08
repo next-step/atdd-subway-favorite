@@ -9,10 +9,10 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-public interface AuthenticationChainingFilter extends HandlerInterceptor {
+public abstract class AuthenticationChainingFilter implements HandlerInterceptor {
 
   @Override
-  default boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     if (SecurityContextHolder.getContext().getAuthentication() != null) {
       return true;
     }
@@ -31,6 +31,6 @@ public interface AuthenticationChainingFilter extends HandlerInterceptor {
     }
   }
 
-  AuthenticationToken convert(HttpServletRequest request);
-  UserDetails createUserDetails(AuthenticationToken token);
+  abstract AuthenticationToken convert(HttpServletRequest request);
+  abstract UserDetails createUserDetails(AuthenticationToken token);
 }

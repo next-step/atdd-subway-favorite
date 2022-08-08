@@ -91,6 +91,33 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_회원_정보_조회_요청(String token) {
+        return CommonAuthRestAssured.given(token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_회원_정보_수정_요청(String token, String email, String password, Integer age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return CommonAuthRestAssured.given(token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put("/members/me")
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_회원_삭제_요청(String token) {
+        return CommonAuthRestAssured.given(token)
+            .when().delete("/members/me")
+            .then().log().all().extract();
+    }
+
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
