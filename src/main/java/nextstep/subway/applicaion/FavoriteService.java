@@ -45,6 +45,16 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void removeFavorite(Long userId, Long favoriteId) {
+        var favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(IllegalArgumentException::new);
+        if (!Objects.equals(favorite.getUserId(), userId)) {
+            throw new IllegalArgumentException();
+        }
+        favoriteRepository.deleteById(favoriteId);
+    }
+
     private Station getStation(Long stationId) {
         return stationRepository.findById(stationId).orElseThrow(IllegalArgumentException::new);
     }

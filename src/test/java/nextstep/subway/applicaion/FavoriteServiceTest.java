@@ -99,6 +99,38 @@ class FavoriteServiceTest {
         );
     }
 
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void removeFavorite() {
+        var favorite = new Favorite(1L, 123L, createStation(1L, "강남역"), createStation(2L, "양재역"));
+        when(favoriteRepository.findById(favorite.getId()))
+                .thenReturn(Optional.of(favorite));
+
+        favoriteService.removeFavorite(favorite.getUserId(), favorite.getId());
+
+        verify(favoriteRepository, times(1)).deleteById(favorite.getId());
+    }
+
+    @DisplayName("유저가 소유하지 않은 즐겨찾기 삭제 시도시 예외 발생")
+    @Test
+    void removeFavoriteFailsWhenUserIsNotMatch() {
+        var userId = 987L;
+        var favorite = new Favorite(1L, 123L, createStation(1L, "강남역"), createStation(2L, "양재역"));
+
+        assertThrows(IllegalArgumentException.class, () -> favoriteService.removeFavorite(userId, favorite.getId()));
+    }
+
+    @DisplayName("존재하지 않는 즐겨찾기 삭제시 예외 발생")
+    @Test
+    void removeFavoriteFailsForIdNotExist() {
+        var userId = 123L;
+        var favoriteIdNotExist = 123123L;
+        when(favoriteRepository.findById(favoriteIdNotExist))
+                .thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> favoriteService.removeFavorite(userId, favoriteIdNotExist));
+    }
+
     private Station createStation(Long id, String name) {
         var station = new Station(name);
         ReflectionTestUtils.setField(station, "id", id);
