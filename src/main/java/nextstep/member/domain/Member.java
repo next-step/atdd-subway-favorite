@@ -1,6 +1,19 @@
 package nextstep.member.domain;
 
-import javax.persistence.*;
+import nextstep.subway.domain.Favorite;
+
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,6 +31,9 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member", orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<Favorite>();
 
     public Member() {
     }
@@ -54,6 +70,10 @@ public class Member {
 
     public List<String> getRoles() {
         return roles;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
     }
 
     public void update(Member member) {

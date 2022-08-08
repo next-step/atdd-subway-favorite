@@ -5,7 +5,6 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
-import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,10 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class FavoriteService {
-    private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
-        this.favoriteRepository = favoriteRepository;
+    public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
     }
@@ -30,7 +27,7 @@ public class FavoriteService {
     public List<FavoriteResponse> getFavorites(String email) {
         Member member = findMemberByEmail(email);
 
-        return favoriteRepository.findByMemberId(member.getId())
+        return member.getFavorites()
                 .stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
@@ -45,17 +42,27 @@ public class FavoriteService {
         Station target = stationRepository.findById(request.getTarget())
                 .orElseThrow(() -> new IllegalArgumentException("Target Station이 존재하지 않습니다."));
 
-        Favorite favorite = favoriteRepository.save(new Favorite(source, target, member.getId()));
-        return FavoriteResponse.from(favorite);
+        Favorite favorite = new Favorite(source, target, member);
+        member.getFavorites()
+                .add(favorite);
+        Member saveMember = memberRepository.save(member);
+
+        Favorite saveFavorite = saveMember.getFavorites()
+                .get(saveMember.getFavorites()
+                        .size() - 1);
+        return FavoriteResponse.from(saveFavorite);
     }
 
     @Transactional
     public void deleteFavorite(String email, Long favoriteId) {
         Member member = findMemberByEmail(email);
-
-        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, member.getId())
+        Favorite favorite = member.getFavorites()
+                .stream()
+                .filter(fa -> favoriteId.equals(fa.getId()))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Favorite 이 존재하지 않습니다."));
-        favoriteRepository.delete(favorite);
+        member.getFavorites()
+                .remove(favorite);
     }
 
     private Member findMemberByEmail(String email) {
