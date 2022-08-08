@@ -104,4 +104,56 @@ class LineAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+
+    /**
+     * When 일반사용자로 지하철 노선을 생성 요청하면
+     * Then 지하철 노선이 생성되지 않는다
+     */
+    @DisplayName("일반사용자로 지하철 노선 생성 할 수 없음")
+    @Test
+    void canNotcreateLineWithMemberToken() {
+        // when
+        ExtractableResponse<Response> response = 관리자로_지하철_노선_생성_요청(일반사용자, "2호선", "green");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+    }
+
+    /**
+     * Given 지하철 노선을 생성하고
+     * When 일반사용자로 생성한 지하철 노선을 수정하면
+     * Then 해당 지하철 노선 정보는 수정되지 않는다.
+     */
+    @DisplayName("일반사용자로 지하철 노선을 수정할 수 없음")
+    @Test
+    void canNotUpdateLineWithMemberToken() {
+        // given
+        ExtractableResponse<Response> createResponse = 관리자로_지하철_노선_생성_요청(관리자, "2호선", "green");
+
+        // when
+        ExtractableResponse<Response> response = 관리자로_지하철_노선_수정_요청(일반사용자, createResponse.header("location"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 지하철 노선을 생성하고
+     * When 일반사용자로 생성한 지하철 노선을 삭제하면
+     * Then 해당 지하철 노선 정보는 삭제되지 않는다
+     */
+    @DisplayName("일반사용자로 지하철 노선을 삭제할 수 없음")
+    @Test
+    void canNotDeleteLineWithMemberToken() {
+        // given
+        ExtractableResponse<Response> createResponse = 관리자로_지하철_노선_생성_요청(관리자, "2호선", "green");
+
+        // when
+        ExtractableResponse<Response> response = 관리자로_지하철_노선_삭제_요청(일반사용자, createResponse.header("location"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
