@@ -4,10 +4,7 @@ import nextstep.auth.user.User;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Favorite;
-import nextstep.member.domain.FavoriteRepository;
-import nextstep.member.domain.FavoriteValidationService;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.exception.FavoriteNotFoundException;
 import nextstep.station.application.StationService;
 import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -22,36 +19,26 @@ import java.util.stream.Collectors;
 public class FavoriteService {
     private final MemberService memberService;
     private final StationService stationService;
-    private final FavoriteValidationService favoriteValidationService;
-    private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(MemberService memberService,
-                           StationService stationService,
-                           FavoriteValidationService favoriteValidationService,
-                           FavoriteRepository favoriteRepository) {
+    public FavoriteService(MemberService memberService, StationService stationService) {
         this.memberService = memberService;
         this.stationService = stationService;
-        this.favoriteValidationService = favoriteValidationService;
-        this.favoriteRepository = favoriteRepository;
     }
 
-    public FavoriteResponse createFavorite(User user, FavoriteRequest request) {
+    public Long createFavorite(User user, FavoriteRequest request) {
         Member member = memberService.findMember(user.getPrincipal());
-        Station source = stationService.findById(request.getSource());
-        Station target = stationService.findById(request.getTarget());
+        Station sourceStation = stationService.findById(request.getSource());
+        Station targetStation = stationService.findById(request.getTarget());
 
-        favoriteValidationService.validateAddedFavorite(member.getId(), source.getId(), target.getId());
-
-        Favorite favorite = request.toEntity();
-        favorite.toMember(member.getId());
-        favoriteRepository.save(favorite);
-        return new FavoriteResponse(favorite, source, target);
+        member.addFavorite(request.toEntity());
+        memberService.saveAndFlush(member);
+        return member.getFavoriteByStationIds(sourceStation.getId(), targetStation.getId()).getId();
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(User user) {
         Member member = memberService.findMember(user.getPrincipal());
-        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+        List<Favorite> favorites = member.getFavorites();
         List<Station> favoriteStations = findFavoriteStations(favorites);
 
         return favorites.stream()
@@ -85,11 +72,6 @@ public class FavoriteService {
 
     public void deleteFavorite(User user, Long id) {
         Member member = memberService.findMember(user.getPrincipal());
-        Favorite favorite = favoriteRepository.findById(id)
-                .orElseThrow(() -> new FavoriteNotFoundException(id));
-
-        favoriteValidationService.validateOwner(favorite, member.getId());
-
-        favoriteRepository.delete(favorite);
+        member.deleteFavorite(id);
     }
 }

@@ -28,10 +28,10 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal User user,
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal User user,
                                                            @RequestBody @Valid FavoriteRequest request) {
-        FavoriteResponse favorite = favoriteService.createFavorite(user, request);
-        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
+        Long favoriteId = favoriteService.createFavorite(user, request);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
     }
 
     @GetMapping

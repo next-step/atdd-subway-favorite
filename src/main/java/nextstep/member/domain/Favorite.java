@@ -10,7 +10,6 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long memberId;
     private Long source;
     private Long target;
 
@@ -22,16 +21,12 @@ public class Favorite {
         this.target = target;
     }
 
-    public void toMember(Long memberId) {
-        this.memberId = memberId;
+    public boolean matchId(Long id) {
+        return this.id.equals(id);
     }
 
     public boolean match(Long source, Long target) {
         return this.source.equals(source) && this.target.equals(target);
-    }
-
-    public boolean belongsTo(Long memberId) {
-        return this.memberId.equals(memberId);
     }
 
     public Long getId() {

@@ -47,4 +47,8 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException(email));
     }
+
+    void saveAndFlush(Member member) {
+        memberRepository.saveAndFlush(member);
+    }
 }
