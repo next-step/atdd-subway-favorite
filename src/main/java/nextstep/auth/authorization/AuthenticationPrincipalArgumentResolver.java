@@ -2,7 +2,7 @@ package nextstep.auth.authorization;
 
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.user.UserDetails;
-import nextstep.member.domain.User;
+import nextstep.auth.authentication.user.User;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.core.MethodParameter;

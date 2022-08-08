@@ -23,7 +23,7 @@ public class TokenAuthenticationFilter extends AuthenticationNotChainingFilter {
     }
 
     @Override
-    public AuthenticationToken convert(HttpServletRequest request) throws Exception {
+    AuthenticationToken convert(HttpServletRequest request) throws Exception {
         String content = request.getReader().lines()
             .collect(Collectors.joining(System.lineSeparator()));
 
@@ -32,12 +32,12 @@ public class TokenAuthenticationFilter extends AuthenticationNotChainingFilter {
     }
 
     @Override
-    public UserDetails createUserDetails(AuthenticationToken token) {
+    UserDetails createUserDetails(AuthenticationToken token) {
         return userDetailsService.loadUserByUsername(token.getPrincipal());
     }
 
     @Override
-    public void afterAuthentication(Authentication authenticate, HttpServletResponse response) throws Exception {
+    void afterAuthentication(Authentication authenticate, HttpServletResponse response) throws Exception {
         String token = jwtTokenProvider.createToken(String.valueOf(authenticate.getPrincipal()), authenticate.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 

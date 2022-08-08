@@ -2,23 +2,20 @@ package nextstep.auth.authentication.interceptor;
 
 import static nextstep.member.domain.RoleType.ROLE_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.authentication.user.UserDetails;
-import nextstep.auth.authentication.user.UserDetailsService;
 import nextstep.auth.token.JwtTokenProvider;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 @ExtendWith(MockitoExtension.class)
 class BearerTokenAuthenticationFilterTest {
@@ -31,23 +28,6 @@ class BearerTokenAuthenticationFilterTest {
 
   @Mock
   private JwtTokenProvider jwtTokenProvider;
-
-  private MockHttpServletRequest request;
-  private MockHttpServletResponse response;
-
-  @BeforeEach
-  void setUp() {
-    request = createMockRequest();
-    response = new MockHttpServletResponse();
-  }
-
-  @Test
-  void convert() {
-    AuthenticationToken authenticationToken = bearerTokenAuthenticationFilter.convert(request);
-
-    assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-    assertThat(authenticationToken.getCredentials()).isEqualTo(EMAIL);
-  }
 
   @Test
   void createUserDetails() {
@@ -64,15 +44,9 @@ class BearerTokenAuthenticationFilterTest {
   }
 
   @Test
-  void preHandle() throws Exception {
-    boolean result = bearerTokenAuthenticationFilter.preHandle(request, response, null);
+  void createUserDetails_비밀번호_같지_않음_에러() {
+    given(jwtTokenProvider.validateToken(anyString())).willReturn(false);
 
-    assertThat(result).isTrue();
-  }
-
-  private MockHttpServletRequest createMockRequest() {
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.addHeader("Authorization", AuthorizationType.BEARER + " " + EMAIL);
-    return request;
+    assertThatThrownBy(() -> bearerTokenAuthenticationFilter.createUserDetails(new AuthenticationToken(EMAIL, PASSWORD + "123"))).isInstanceOf(AuthenticationException.class);
   }
 }

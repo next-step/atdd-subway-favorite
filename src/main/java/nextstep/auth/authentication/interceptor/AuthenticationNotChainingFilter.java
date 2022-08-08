@@ -19,7 +19,7 @@ public abstract class AuthenticationNotChainingFilter implements HandlerIntercep
     return false;
   }
 
-  public Authentication authenticate(UserDetails userDetails, AuthenticationToken token) {
+  private Authentication authenticate(UserDetails userDetails, AuthenticationToken token) {
     if (userDetails == null) {
       throw new AuthenticationException();
     }
@@ -31,7 +31,7 @@ public abstract class AuthenticationNotChainingFilter implements HandlerIntercep
     return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
   }
 
-  public abstract AuthenticationToken convert(HttpServletRequest request) throws Exception;
-  public abstract UserDetails createUserDetails(AuthenticationToken token);
-  public abstract void afterAuthentication(Authentication authenticate, HttpServletResponse response) throws Exception;
+  abstract AuthenticationToken convert(HttpServletRequest request) throws Exception;
+  abstract UserDetails createUserDetails(AuthenticationToken token);
+  abstract void afterAuthentication(Authentication authenticate, HttpServletResponse response) throws Exception;
 }

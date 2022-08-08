@@ -23,7 +23,7 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
     }
 
     @Override
-    public AuthenticationToken convert(HttpServletRequest request) {
+    AuthenticationToken convert(HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
@@ -39,7 +39,7 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
     }
 
     @Override
-    public UserDetails createUserDetails(AuthenticationToken token) {
+    UserDetails createUserDetails(AuthenticationToken token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
         if (userDetails == null) {
             throw new AuthenticationException();

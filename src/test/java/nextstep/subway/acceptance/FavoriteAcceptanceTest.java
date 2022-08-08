@@ -3,6 +3,8 @@ package nextstep.subway.acceptance;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,6 +19,9 @@ import org.springframework.http.HttpStatus;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
+  public static final String EMAIL = "email@email.com";
+  public static final String PASSWORD = "password";
+  public static final int AGE = 20;
 
   private Long 강남역;
   private Long 양재역;
@@ -37,22 +42,69 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   void 즐겨찾기_생성() {
     // when
     ExtractableResponse<Response> response = 즐겨찾기_생성_요청(관리자토큰, 강남역, 양재역);
+    String source = response.jsonPath().getString("source.name");
+    String target = response.jsonPath().getString("target.name");
 
     assertAll(
-        () -> assertEquals(response.statusCode(), HttpStatus.CREATED.value())
+        () -> assertEquals(response.statusCode(), HttpStatus.CREATED.value()),
+        () -> assertThat(source).isEqualTo("강남역"),
+        () -> assertThat(target).isEqualTo("양재역")
     );
 
     // then
     ExtractableResponse<Response> result = 즐겨찾기_조회_요청(관리자토큰);
 
-    List<String> source = result.jsonPath().getList("source.name");
-    List<String> target = result.jsonPath().getList("target.name");
+    List<String> sourceNames = result.jsonPath().getList("source.name");
+    List<String> targetNames = result.jsonPath().getList("target.name");
 
     assertAll(
         () -> assertEquals(result.statusCode(), HttpStatus.OK.value()),
-        () -> assertThat(source).containsExactly("강남역"),
-        () -> assertThat(target).containsExactly("양재역")
+        () -> assertThat(sourceNames).containsExactly("강남역"),
+        () -> assertThat(targetNames).containsExactly("양재역")
     );
+  }
+
+  /**
+   * Given 로그인 후
+   * When 로그인 회원 즐겨찾기 등록
+   * Then 로그인 회원 등록한 즐겨찾기 조회 됨
+   * When 로그인 회원 즐겨찾기 삭제
+   * Then 즐겨찾기 삭제 됨
+   */
+  @Test
+  void 로그인_하고_즐겨찾기_생성_후_즐겨찾기_조회() {
+    // given
+    회원_생성_요청(EMAIL, PASSWORD, AGE);
+    String 로그인토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+
+    // when
+    ExtractableResponse<Response> 즐겨찾기생성 = 즐겨찾기_생성_요청(로그인토큰, 강남역, 양재역);
+    String source = 즐겨찾기생성.jsonPath().getString("source.name");
+    String target = 즐겨찾기생성.jsonPath().getString("target.name");
+
+    assertAll(
+        () -> assertEquals(즐겨찾기생성.statusCode(), HttpStatus.CREATED.value()),
+        () -> assertThat(source).isEqualTo("강남역"),
+        () -> assertThat(target).isEqualTo("양재역")
+    );
+
+    // then
+    ExtractableResponse<Response> 즐겨찾기조회 = 즐겨찾기_조회_요청(로그인토큰);
+
+    List<String> sourceNames = 즐겨찾기조회.jsonPath().getList("source.name");
+    List<String> targetNames = 즐겨찾기조회.jsonPath().getList("target.name");
+
+    assertAll(
+        () -> assertEquals(즐겨찾기조회.statusCode(), HttpStatus.OK.value()),
+        () -> assertThat(sourceNames).containsExactly("강남역"),
+        () -> assertThat(targetNames).containsExactly("양재역")
+    );
+
+    // when
+    ExtractableResponse<Response> 즐겨찾기삭제 = 즐겨찾기_삭제_요청(로그인토큰, 즐겨찾기생성);
+
+    // then
+    assertThat(즐겨찾기삭제.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
   }
 
   /**

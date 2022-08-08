@@ -4,10 +4,11 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.User;
+import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.subway.common.exception.CustomException;
+import nextstep.subway.common.exception.StationErrorMessage;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -29,28 +30,34 @@ public class FavoriteService {
   }
 
   @Transactional
-  public FavoriteResponse saveFavorite(FavoriteRequest favoriteRequest, User user) {
+  public FavoriteResponse saveFavorite(FavoriteRequest favoriteRequest, String email) {
     Station sourceStation = stationService.findById(favoriteRequest.getSource());
     Station targetStation = stationService.findById(favoriteRequest.getTarget());
 
-    sourceStation.isStationEquals(targetStation);
+    isStationEquals(sourceStation, targetStation);
 
-    MemberResponse member = memberService.findMember(user.getEmail());
+    Member member = getMember(email);
 
     Favorite favorite = favoriteRepository.save(new Favorite(sourceStation, targetStation, member.getId()));
     return FavoriteResponse.of(favorite);
   }
 
-  public List<FavoriteResponse> getFavorite(User user) {
-    List<Favorite> favorites = favoriteRepository.findByMemberId(getMemberResponse(user.getEmail()).getId());
+  private void isStationEquals(Station source, Station target) {
+    if (source.equals(target)) {
+      throw new CustomException(StationErrorMessage.STATION_DUPLICATION);
+    }
+  }
+
+  public List<FavoriteResponse> getFavorite(String email) {
+    List<Favorite> favorites = favoriteRepository.findByMemberId(getMember(email).getId());
 
     return favorites.stream()
         .map(FavoriteResponse::of)
         .collect(toList());
   }
 
-  private MemberResponse getMemberResponse(String email) {
-    return memberService.findMember(email);
+  private Member getMember(String email) {
+    return memberService.findByEmail(email);
   }
 
   @Transactional

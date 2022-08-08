@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.List;
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.secured.Secured;
-import nextstep.member.domain.User;
+import nextstep.auth.authentication.user.User;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -28,14 +28,14 @@ public class FavoriteController {
   @PostMapping("/favorites")
   @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
   public ResponseEntity<FavoriteResponse> saveFavorite(@RequestBody FavoriteRequest favoriteRequest, @AuthenticationPrincipal User user) {
-    FavoriteResponse favoriteResponse = favoriteService.saveFavorite(favoriteRequest, user);
+    FavoriteResponse favoriteResponse = favoriteService.saveFavorite(favoriteRequest, user.getEmail());
     return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).body(favoriteResponse);
   }
 
   @GetMapping("/favorites")
   @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
   public ResponseEntity<List<FavoriteResponse>> getFavorite(@AuthenticationPrincipal User user) {
-    List<FavoriteResponse> favorites = favoriteService.getFavorite(user);
+    List<FavoriteResponse> favorites = favoriteService.getFavorite(user.getEmail());
     return ResponseEntity.ok().body(favorites);
   }
 

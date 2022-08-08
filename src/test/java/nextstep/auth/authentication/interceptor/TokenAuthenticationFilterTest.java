@@ -2,6 +2,7 @@ package nextstep.auth.authentication.interceptor;
 
 import static nextstep.member.domain.RoleType.ROLE_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -9,9 +10,8 @@ import static org.mockito.BDDMockito.given;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.member.domain.User;
-import nextstep.auth.context.Authentication;
+import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.user.User;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.member.application.LoginMemberService;
@@ -49,24 +49,6 @@ class TokenAuthenticationFilterTest {
     }
 
     @Test
-    void convert() throws Exception {
-        AuthenticationToken authenticationToken = tokenAuthenticationFilter.convert(request);
-
-        assertThat(authenticationToken.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticationToken.getCredentials()).isEqualTo(PASSWORD);
-    }
-
-    @Test
-    void authenticate() {
-        User user = new User(EMAIL, PASSWORD, List.of(ROLE_MEMBER.name()));
-
-        Authentication authenticate = tokenAuthenticationFilter.authenticate(user, new AuthenticationToken(EMAIL, PASSWORD));
-
-        assertThat(authenticate.getPrincipal()).isEqualTo(EMAIL);
-        assertThat(authenticate.getAuthorities()).isEqualTo(List.of(ROLE_MEMBER.name()));
-    }
-
-    @Test
     void preHandle() throws Exception {
         User user = new User(EMAIL, PASSWORD, List.of(ROLE_MEMBER.name()));
         given(loginMemberService.loadUserByUsername(EMAIL)).willReturn(user);
@@ -77,11 +59,18 @@ class TokenAuthenticationFilterTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void preHandle_비밀번호_같지_않음_에러() {
+        User user = new User(EMAIL, PASSWORD + "123", List.of(ROLE_MEMBER.name()));
+        given(loginMemberService.loadUserByUsername(EMAIL)).willReturn(user);
+
+        assertThatThrownBy(() -> tokenAuthenticationFilter.preHandle(request, response, null)).isInstanceOf(AuthenticationException.class);
+    }
+
     private MockHttpServletRequest createMockRequest() throws IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
     }
-
 }

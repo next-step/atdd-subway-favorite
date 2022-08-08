@@ -31,6 +31,6 @@ public abstract class AuthenticationChainingFilter implements HandlerInterceptor
     }
   }
 
-  public abstract AuthenticationToken convert(HttpServletRequest request);
-  public abstract UserDetails createUserDetails(AuthenticationToken token);
+  abstract AuthenticationToken convert(HttpServletRequest request);
+  abstract UserDetails createUserDetails(AuthenticationToken token);
 }

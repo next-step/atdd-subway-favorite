@@ -1,7 +1,6 @@
-package nextstep.member.domain;
+package nextstep.auth.authentication.user;
 
 import java.util.List;
-import nextstep.auth.authentication.user.UserDetails;
 
 public class User implements UserDetails {
 

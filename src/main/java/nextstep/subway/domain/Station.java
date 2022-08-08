@@ -4,8 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import nextstep.subway.common.exception.CustomException;
-import nextstep.subway.common.exception.StationErrorMessage;
 
 @Entity
 public class Station extends BaseTimeEntity {
@@ -24,12 +22,6 @@ public class Station extends BaseTimeEntity {
     public Station(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public void isStationEquals(Station target) {
-        if (this.equals(target)) {
-            throw new CustomException(StationErrorMessage.STATION_DUPLICATION);
-        }
     }
 
     public Long getId() {

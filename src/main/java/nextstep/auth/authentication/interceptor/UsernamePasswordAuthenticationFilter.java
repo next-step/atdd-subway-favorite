@@ -20,19 +20,19 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNotChain
     }
 
     @Override
-    public AuthenticationToken convert(HttpServletRequest request) {
+    AuthenticationToken convert(HttpServletRequest request) {
         String username = request.getParameter(USERNAME);
         String password = request.getParameter(PASSWORD);
         return new AuthenticationToken(username, password);
     }
 
     @Override
-    public UserDetails createUserDetails(AuthenticationToken token) {
+    UserDetails createUserDetails(AuthenticationToken token) {
         return userDetailsService.loadUserByUsername(token.getPrincipal());
     }
 
     @Override
-    public void afterAuthentication(Authentication authenticate, HttpServletResponse response) {
+    void afterAuthentication(Authentication authenticate, HttpServletResponse response) {
         Authentication authentication = new Authentication(authenticate.getPrincipal(), authenticate.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

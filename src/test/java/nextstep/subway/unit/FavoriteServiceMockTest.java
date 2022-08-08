@@ -9,8 +9,6 @@ import java.util.List;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.RoleType;
-import nextstep.member.domain.User;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -45,7 +43,6 @@ public class FavoriteServiceMockTest {
   private Station 강남역;
   private Station 역삼역;
 
-  private User user;
   private Member member;
   private Favorite favorite;
   private FavoriteRequest favoriteRequest;
@@ -55,7 +52,6 @@ public class FavoriteServiceMockTest {
     강남역 = new Station(10L, "강남역");
     역삼역 = new Station(11L, "역삼역");
 
-    user = new User(MEMBER_EMAIL, PASSWORD, List.of(RoleType.ROLE_MEMBER.name()));
     member = new Member(MEMBER_EMAIL, PASSWORD, 20);
     favorite = new Favorite(강남역, 역삼역, member.getId());
     favoriteRequest = new FavoriteRequest(강남역.getId(), 역삼역.getId());
@@ -66,11 +62,10 @@ public class FavoriteServiceMockTest {
     when(stationService.findById(강남역.getId())).thenReturn(강남역);
     when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
 
-    MemberResponse memberResponse = MemberResponse.of(member);
-    when(memberService.findMember(user.getEmail())).thenReturn(memberResponse);
+    when(memberService.findByEmail(MEMBER_EMAIL)).thenReturn(member);
     when(favoriteRepository.save(any())).thenReturn(favorite);
 
-    FavoriteResponse favoriteResponse = favoriteService.saveFavorite(favoriteRequest, user);
+    FavoriteResponse favoriteResponse = favoriteService.saveFavorite(favoriteRequest, MEMBER_EMAIL);
 
     assertThat(favoriteResponse.getSource().getName()).isEqualTo("강남역");
     assertThat(favoriteResponse.getTarget().getName()).isEqualTo("역삼역");
@@ -81,16 +76,15 @@ public class FavoriteServiceMockTest {
     when(stationService.findById(강남역.getId())).thenReturn(강남역);
 
     FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 강남역.getId());
-    assertThatThrownBy(() -> favoriteService.saveFavorite(favoriteRequest, user)).isInstanceOf(CustomException.class);
+    assertThatThrownBy(() -> favoriteService.saveFavorite(favoriteRequest, MEMBER_EMAIL)).isInstanceOf(CustomException.class);
   }
 
   @Test
   void 즐겨찾기_조회() {
-    MemberResponse memberResponse = MemberResponse.of(member);
-    when(memberService.findMember(user.getEmail())).thenReturn(memberResponse);
+    when(memberService.findByEmail(MEMBER_EMAIL)).thenReturn(member);
     when(favoriteRepository.findByMemberId(any())).thenReturn(List.of(favorite));
 
-    List<FavoriteResponse> favorites = favoriteService.getFavorite(user);
+    List<FavoriteResponse> favorites = favoriteService.getFavorite(MEMBER_EMAIL);
 
     assertThat(favorites.get(0).getSource().getName()).isEqualTo("강남역");
   }
