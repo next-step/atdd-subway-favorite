@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.member.domain.LoginMember;
 import nextstep.subway.applicaion.FavoriteService;
+import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 
 @RestController
@@ -23,9 +26,11 @@ public class FavoriteController {
 	}
 
 	@PostMapping("/favorite")
-	public ResponseEntity<Void> registerFavorite(@RequestParam Long source,
-		@RequestParam Long target) {
-		favoriteService.registerFavorite(source, target);
+	public ResponseEntity<Void> registerFavorite(
+		@AuthenticationPrincipal LoginMember loginMember,
+		@RequestBody FavoriteRequest favoriteRequest) {
+		favoriteService.registerFavorite(loginMember.getEmail(), favoriteRequest.getSource(),
+			favoriteRequest.getTarget());
 		return ResponseEntity.ok().build();
 	}
 
