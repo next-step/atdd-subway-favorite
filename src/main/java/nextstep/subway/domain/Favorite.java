@@ -31,6 +31,10 @@ public class Favorite {
 		return (this.sourceStationId == sourceId && this.targetStationId == targetId);
 	}
 
+	public boolean isSameFavorite(long favoriteId) {
+		return this.id == favoriteId;
+	}
+
 	public boolean isNotSameMember(long memberId) {
 		return this.memberId != memberId;
 	}

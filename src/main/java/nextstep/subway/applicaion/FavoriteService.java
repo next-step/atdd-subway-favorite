@@ -36,8 +36,11 @@ public class FavoriteService {
 		favoriteRepository.saveAll(favorites.getValues());
 	}
 
-	public void deleteFavorite(long favoriteId) {
+	@Transactional
+	public void deleteFavorite(String memberEmail, long favoriteId) {
 
+		Favorites favorites = new Favorites(favoriteRepository.findByMemberId(getMemberId(memberEmail)));
+		favoriteRepository.delete(favorites.getFavoriteById(favoriteId));
 	}
 
 	public List<FavoriteResponse> getFavorites(String memberEmail) {

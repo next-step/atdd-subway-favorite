@@ -26,7 +26,7 @@ public class Favorites {
 	}
 
 	public Favorites() {
-		
+
 	}
 
 	public void addFavorite(long memberId, long source, long target) {
@@ -53,17 +53,25 @@ public class Favorites {
 		return Collections.unmodifiableList(this.values);
 	}
 
-	public boolean isExistsSameFavorite(long source, long target) {
+	private boolean isExistsSameFavorite(long source, long target) {
 		return this.values
 			.stream()
 			.anyMatch(value -> value.isSameFavorite(source, target));
 	}
 
-	public void checkContainOtherMembers(long memberId) {
+	private void checkContainOtherMembers(long memberId) {
 		if (this.values
 			.stream()
 			.anyMatch(value -> value.isNotSameMember(memberId))) {
 			throw new IllegalArgumentException();
 		}
+	}
+
+	public Favorite getFavoriteById(long favoriteId) {
+		return this.values
+			.stream()
+			.filter(favorite -> favorite.isSameFavorite(favoriteId))
+			.findFirst()
+			.orElseThrow(IllegalArgumentException::new);
 	}
 }
