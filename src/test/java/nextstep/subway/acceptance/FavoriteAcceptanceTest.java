@@ -62,6 +62,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    /**
+     * when 동일한 출발역, 도착역에 대해 즐겨찾기를 등록하면
+     * then 즐겨찾기 등록이 실패한다
+     */
     @DisplayName("출발역과 도착역이 동일한 즐겨찾기 등록 실패")
     @Test
     void createFavoriteFailsForSameStations() {
@@ -69,6 +73,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    /**
+     * when 존재하지 않는 역에 대해 즐겨찾기를 등록하면
+     * then 즐겨찾기 등록이 실패한다
+     */
     @DisplayName("존재하지 않는 역에 대한 즐겨찾기 등록 실패")
     @Test
     void createFavoriteFailsForStationNotExist() {
