@@ -101,10 +101,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void removeFavorite() {
         // given
-        var favoriteId = 즐겨찾기_등록(교대역, 양재역).jsonPath().getLong("id");
+        var favoriteId = 즐겨찾기_등록(교대역, 양재역)
+                .header("Location")
+                .split("/favorites/")[1];
 
         // when
-        var deleteResponse = 즐겨찾기_삭제(favoriteId);
+        var deleteResponse = 즐겨찾기_삭제(Long.valueOf(favoriteId));
 
         // then
         var favoriteResponse = 즐겨찾기_조회();
@@ -124,7 +126,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void removeFavoriteFailsWhenUserNotMatch() {
         // given
-        var favoriteId = 즐겨찾기_등록(교대역, 양재역).jsonPath().getLong("id");
+        var favoriteId = 즐겨찾기_등록(교대역, 양재역)
+                .header("Location")
+                .split("/favorites/")[1];
 
         // when
         var deleteResponse = MemberSteps
