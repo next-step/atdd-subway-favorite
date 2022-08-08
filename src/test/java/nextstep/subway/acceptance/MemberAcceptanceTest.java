@@ -83,10 +83,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 생성_요청 = 회원_생성_요청("nextstep@naver.com", "1234", 20);
 
         ExtractableResponse<Response> 수정_요청 = 회원_정보_수정_요청(생성_요청, "nextstep@google.com", "google", 30);
-        assertThat(수정_요청.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_수정_완료(수정_요청);
 
         ExtractableResponse<Response> 삭제_요청 = 회원_삭제_요청(생성_요청);
-        assertThat(삭제_요청.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_정보_삭제_완료(삭제_요청);
     }
 
     @DisplayName("나의 정보를 관리한다.")
@@ -96,9 +96,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(회원_정보, EMAIL, AGE);
 
         ExtractableResponse<Response> 수정_요청 = 베어러_토큰_인증으로_내_회원_정보_수정(인증_토큰, EMAIL, PASSWORD, AGE);
-        assertThat(수정_요청.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_수정_완료(수정_요청);
 
         ExtractableResponse<Response> 삭제_요청 = 베어러_토큰_인증으로_내_회원_정보_삭제_요청(인증_토큰);
-        assertThat(삭제_요청.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_정보_삭제_완료(삭제_요청);
     }
+
 }

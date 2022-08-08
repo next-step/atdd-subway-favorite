@@ -2,7 +2,6 @@ package nextstep.member.domain;
 
 import javax.persistence.*;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 
 @Entity
