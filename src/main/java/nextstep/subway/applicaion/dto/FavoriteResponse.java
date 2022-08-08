@@ -25,7 +25,7 @@ public class FavoriteResponse {
         return target;
     }
 
-    public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), FavoriteStationDto.of(favorite.getSource()), FavoriteStationDto.of(favorite.getTarget()));
+    public static FavoriteResponse from(Favorite favorite) {
+        return new FavoriteResponse(favorite.getId(), FavoriteStationDto.from(favorite.getSource()), FavoriteStationDto.from(favorite.getTarget()));
     }
 }

@@ -32,7 +32,7 @@ public class FavoriteService {
 
         return favoriteRepository.findByMemberId(member.getId())
                 .stream()
-                .map(FavoriteResponse::of)
+                .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -46,7 +46,7 @@ public class FavoriteService {
                 .orElseThrow(() -> new IllegalArgumentException("Target Station이 존재하지 않습니다."));
 
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member.getId()));
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.from(favorite);
     }
 
     @Transactional

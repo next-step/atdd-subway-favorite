@@ -33,7 +33,7 @@ public class FavoriteStationDto {
         return modifiedDate;
     }
 
-    public static FavoriteStationDto of(Station station) {
+    public static FavoriteStationDto from(Station station) {
         return new FavoriteStationDto(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
     }
 }
