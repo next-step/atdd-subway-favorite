@@ -116,6 +116,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * given 사용자의 즐겨찾기를 등록하고
+     * when 다른 사용자의 ID로 즐겨찾기를 삭제하면
+     * then 에러가 발생한다
+     */
+    @DisplayName("보유하지 않은 즐겨찾기 삭제 실패")
+    @Test
+    void removeFavoriteFailsWhenUserNotMatch() {
+        // given
+        var favoriteId = 즐겨찾기_등록(교대역, 양재역).jsonPath().getLong("id");
+
+        // when
+        var deleteResponse = MemberSteps
+                .givenAdminLogin("user@email.com", "password")
+                    .pathParam("id", favoriteId)
+                .when()
+                    .delete("/favorites/{id}")
+                .then()
+                    .extract();;
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    /**
      * when 등록되지 않은 ID로 즐겨찾기를 삭제하면
      * then 에러가 발생한다
      */
