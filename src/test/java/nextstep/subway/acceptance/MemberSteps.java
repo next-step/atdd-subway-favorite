@@ -18,9 +18,10 @@ public class MemberSteps {
 	public static final String ADMIN_PASSWORD = "password";
 	public static final Integer ADMIN_AGE = 20;
 
-	public static final String MEMBER_EMAIL = "member@email.com";
+	public static final String MEMBER_EMAIL = "member1@email.com";
 	public static final String MEMBER_PASSWORD = "password";
-
+	public static final String MEMBER_EMAIL2 = "member2@email.com";
+	public static final String MEMBER_PASSWORD2 = "password";
 	public static final String USERNAME_FIELD = "username";
 	public static final String PASSWORD_FIELD = "password";
 

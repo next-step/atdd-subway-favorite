@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -25,21 +24,21 @@ public class FavoriteSteps {
 			.body(params)
 			.when().post(BASE_URI)
 			.then().log().all()
-			.statusCode(HttpStatus.OK.value()).extract();
+			.statusCode(HttpStatus.CREATED.value()).extract();
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_삭제(ExtractableResponse<Response> response, String accessToken) {
+	public static ExtractableResponse<Response> 즐겨찾기_삭제(long favoriteId, String accessToken) {
 		return given(accessToken)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.delete(response.header("Location"))
+			.delete(BASE_URI + "/" + favoriteId)
 			.then().log().all()
-			.statusCode(HttpStatus.OK.value()).extract();
+			.extract();
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_조회(ExtractableResponse<Response> response) {
-		return RestAssured.given().log().all()
+	public static ExtractableResponse<Response> 즐겨찾기_조회(String adminAccessToken) {
+		return given(adminAccessToken)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().get(response.header("Location"))
+			.when().get(BASE_URI)
 			.then().log().all()
 			.extract();
 	}
