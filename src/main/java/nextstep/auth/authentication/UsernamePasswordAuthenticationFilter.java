@@ -1,8 +1,8 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -13,10 +13,10 @@ import java.util.Map;
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
     private static final String USER_NAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
-    private LoginMemberService loginMemberService;
+    private UserDetailService userDetailService;
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public UsernamePasswordAuthenticationFilter(UserDetailService userDetailService) {
+        this.userDetailService = userDetailService;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
             AuthenticationToken token = new AuthenticationToken(userName, password);
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+            LoginMember loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
 
             if (loginMember == null) {
                 throw new AuthenticationException();

@@ -1,8 +1,8 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.application.UserDetailService;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+    private UserDetailService userDetailService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        this.loginMemberService = loginMemberService;
+    public TokenAuthenticationInterceptor(UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailService = userDetailService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -30,7 +30,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
             String principal = tokenRequest.getEmail();
             String credentials = tokenRequest.getPassword();
 
-            LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+            LoginMember loginMember = userDetailService.loadUserByUsername(principal);
 
             if (loginMember == null) {
                 throw new AuthenticationException();
