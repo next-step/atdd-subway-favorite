@@ -74,17 +74,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		String location = response.header("Location");
 
 		//when
-		ExtractableResponse<Response> 응답 = given(관리자)
+		ExtractableResponse<Response> 응답 = 즐겨찾기를_삭제한다(location);
+
+		//then
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기를_삭제한다(String location) {
+		return given(관리자)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.when()
 				.delete(location)
 				.then()
 				.log().all()
 				.extract();
-
-		//then
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
+
 	private ExtractableResponse<Response> 로그인한_상태로_즐겨찾기가_추가됨() {
 		ExtractableResponse<Response> 응답 = 로그인_상태에서_즐겨찾기에_추가한다(관리자, 광교역, 광교중앙역);
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
