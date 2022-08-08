@@ -1,5 +1,7 @@
 package nextstep.member.domain;
 
+import nextstep.auth.user.UserDetails;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -12,7 +14,7 @@ import javax.persistence.JoinColumn;
 import java.util.List;
 
 @Entity
-public class Member {
+public class Member implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,6 +48,21 @@ public class Member {
         this.age = age;
     }
 
+    @Override
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    @Override
+    public String getPrincipal() {
+        return email;
+    }
+
+    @Override
+    public List<String> getAuthorities() {
+        return roles;
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,15 +71,7 @@ public class Member {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer getAge() {
         return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
     }
 }
