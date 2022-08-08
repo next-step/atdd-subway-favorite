@@ -5,6 +5,7 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.MemberUpdateRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,31 +19,36 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
+        Member member = memberRepository.save(request.toEntity());
         return MemberResponse.of(member);
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
-        return MemberResponse.of(member);
+    public Member findMember(String email) {
+        return findByEmail(email);
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findMember(String email) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+    public MemberResponse findMemberResponse(String email) {
+        Member member = findByEmail(email);
         return MemberResponse.of(member);
     }
 
     public void updateMember(String email, MemberUpdateRequest param) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+        Member member = findByEmail(email);
         member.update(param.getEmail(), param.getAge());
     }
 
     public void deleteMember(String email) {
         memberRepository.deleteByEmail(email);
+    }
+
+    private Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
+    }
+
+    void saveAndFlush(Member member) {
+        memberRepository.saveAndFlush(member);
     }
 }

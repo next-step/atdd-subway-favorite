@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class MemberController {
     private final MemberService memberService;
@@ -24,24 +26,24 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createMember(@RequestBody @Valid MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(member);
     }
 
     @GetMapping("/members/me")
     public MemberResponse findMemberOfMine(@AuthenticationPrincipal User user) {
-        return memberService.findMember(user.getEmail());
+        return memberService.findMemberResponse(user.getPrincipal());
     }
 
     @PutMapping("/members/me")
-    public void updateMemberOfMine(@AuthenticationPrincipal User user, @RequestBody MemberUpdateRequest param) {
-        memberService.updateMember(user.getEmail(), param);
+    public void updateMemberOfMine(@AuthenticationPrincipal User user, @RequestBody @Valid MemberUpdateRequest param) {
+        memberService.updateMember(user.getPrincipal(), param);
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal User user) {
-        memberService.deleteMember(user.getEmail());
+        memberService.deleteMember(user.getPrincipal());
         return ResponseEntity.noContent().build();
     }
 }

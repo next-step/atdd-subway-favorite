@@ -3,9 +3,9 @@ package nextstep.member.application.dto;
 import nextstep.member.domain.Member;
 
 public class MemberResponse {
-    private Long id;
-    private String email;
-    private Integer age;
+    private final Long id;
+    private final String email;
+    private final Integer age;
 
     public static MemberResponse of(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());

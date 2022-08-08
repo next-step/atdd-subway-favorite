@@ -5,7 +5,7 @@ import java.util.List;
 public interface UserDetails {
     boolean checkPassword(String password);
 
-    String getEmail();
+    String getPrincipal();
 
     List<String> getAuthorities();
 }
