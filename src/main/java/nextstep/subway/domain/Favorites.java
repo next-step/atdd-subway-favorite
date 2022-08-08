@@ -1,12 +1,21 @@
 package nextstep.subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
+@Embeddable
 public class Favorites {
-	private final List<Favorite> values;
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+	@JoinColumn(name = "member_id")
+	private List<Favorite> values = new ArrayList<>();
 
 	public Favorites(List<Favorite> values) {
 		if (CollectionUtils.isEmpty(values)) {
@@ -14,6 +23,10 @@ public class Favorites {
 			return;
 		}
 		this.values = values;
+	}
+
+	public Favorites() {
+		
 	}
 
 	public void addFavorite(long memberId, long source, long target) {
@@ -37,7 +50,7 @@ public class Favorites {
 	}
 
 	public List<Favorite> getValues() {
-		return values;
+		return Collections.unmodifiableList(this.values);
 	}
 
 	public boolean isExistsSameFavorite(long source, long target) {
