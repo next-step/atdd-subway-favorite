@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static nextstep.member.domain.exception.CantAddFavoriteException.ALREADY_ADDED;
+import static nextstep.member.domain.exception.CantAddFavoriteException.INVALID_SOURCE_AND_TARGET;
+
 @Embeddable
 public class Favorites {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -21,14 +24,14 @@ public class Favorites {
         Long target = favorite.getTarget();
 
         if (source.equals(target)) {
-            throw new CantAddFavoriteException("즐겨찾기의 출발점과 종점이 같을 수 없습니다.");
+            throw new CantAddFavoriteException(INVALID_SOURCE_AND_TARGET);
         }
 
         favorites.stream()
                 .filter(it -> it.match(source, target))
                 .findAny()
                 .ifPresent(it -> {
-                    throw new CantAddFavoriteException("이미 존재하는 즐겨찾기입니다.");
+                    throw new CantAddFavoriteException(ALREADY_ADDED);
                 });
 
         favorites.add(new Favorite(source, target));

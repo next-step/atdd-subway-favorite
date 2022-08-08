@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static nextstep.line.domain.exception.CantAddSectionException.ALREADY_INCLUDED_SECTION;
+import static nextstep.line.domain.exception.CantDeleteSectionException.NOT_ENOUGH_SECTION;
+
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -41,7 +44,7 @@ public class Sections {
 
     public void delete(Station station) {
         if (sections.size() <= 1) {
-            throw new CantDeleteSectionException("구간이 둘 이상일때만 삭제할 수 있습니다.");
+            throw new CantDeleteSectionException(NOT_ENOUGH_SECTION);
         }
 
         Optional<Section> upSection = findSectionAsUpStation(station);
@@ -94,7 +97,7 @@ public class Sections {
                 .filter(it -> it.hasDuplicateSection(section.getUpStation(), section.getDownStation()))
                 .findFirst()
                 .ifPresent(it -> {
-                    throw new CantAddSectionException("이미 노선에 포함된 구간입니다.");
+                    throw new CantAddSectionException(ALREADY_INCLUDED_SECTION);
                 });
     }
 

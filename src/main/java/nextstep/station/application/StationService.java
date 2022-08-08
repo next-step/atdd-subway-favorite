@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.station.domain.exception.CantDeleteStationException.BELONGS_TO_LINE;
+
 @Service
 @Transactional(readOnly = true)
 public class StationService {
@@ -49,7 +51,7 @@ public class StationService {
     public void deleteStationById(Long id) {
         Station station = findById(id);
         if (stationInspector.belongsToLine(station)) {
-            throw new CantDeleteStationException("노선에 포함된 지하철역을 삭제할 수 없습니다.");
+            throw new CantDeleteStationException(BELONGS_TO_LINE);
         }
         stationRepository.delete(station);
     }
