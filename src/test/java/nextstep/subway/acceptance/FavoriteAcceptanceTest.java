@@ -51,22 +51,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("유저가 즐겨찾기를 관리한다.")
     void userManageFavorites() {
-        // when
         var 생성_요청_결과 = 즐겨찾기_생성_요청(사용자, 교대역, 양재역);
-        // then
         즐겨찾기_생성됨(생성_요청_결과);
 
-        // when
         var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(사용자, 생성_요청_결과);
-        // then
         즐겨찾기_조회됨(즐겨찾기_조회_정보, 교대역, 양재역);
 
-        // given
         즐겨찾기_생성_요청(사용자, 남부터미널역, 양재역);
-        // when
         var 즐겨찾기_목록_조회_정보 = 즐겨찾기_목록_조회_요청(사용자);
-        // then
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_정보, 2);
+
+        var 즐겨찾기_삭제_결과 = 즐겨찾기_삭제_요청(사용자, 생성_요청_결과);
+        즐겨찾기_삭제됨(즐겨찾기_삭제_결과);
+        var 삭제된_즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(사용자, 생성_요청_결과);
+        찾을수없음(삭제된_즐겨찾기_조회_정보);
     }
 
     /**
@@ -90,20 +88,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         var 생성된_즐겨찾기_결과 = 즐겨찾기_생성_요청(사용자, 교대역, 양재역);
 
-        // when
         var 생성_요청_결과 = 즐겨찾기_생성_요청(잘못된_토큰, 교대역, 양재역);
-        // then
         권한이_없음(생성_요청_결과);
 
-        // when
         var 즐겨찾기_조회_정보 = 즐겨찾기_조회_요청(잘못된_토큰, 생성된_즐겨찾기_결과);
-        // then
         권한이_없음(즐겨찾기_조회_정보);
 
-        // when
         var 즐겨찾기_목록_조회_정보 = 즐겨찾기_목록_조회_요청(잘못된_토큰);
-        // then
         권한이_없음(즐겨찾기_목록_조회_정보);
+
+        var 즐겨찾기_삭제_결과 = 즐겨찾기_삭제_요청(잘못된_토큰, 생성된_즐겨찾기_결과);
+        권한이_없음(즐겨찾기_삭제_결과);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
@@ -137,6 +132,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+
+        return given(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -150,6 +154,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, int favoriteCount) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList("id", Long.class).size()).isEqualTo(favoriteCount);
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 찾을수없음(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getList("id", Long.class).size()).isEqualTo(0);
     }
 
     private void 권한이_없음(ExtractableResponse<Response> response) {
