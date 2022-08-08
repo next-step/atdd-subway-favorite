@@ -1,7 +1,7 @@
 package nextstep.subway.applicaion;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,33 +18,51 @@ public class FavoriteService {
 
 	private FavoriteRepository favoriteRepository;
 	private SubwayMemberDetails subwayMemberDetails;
+	private StationService stationService;
 
-	public FavoriteService(FavoriteRepository favoriteRepository, SubwayMemberDetailsService subwayMemberDetails) {
+	public FavoriteService(FavoriteRepository favoriteRepository, SubwayMemberDetailsService subwayMemberDetails,
+		StationService stationService) {
 		this.favoriteRepository = favoriteRepository;
 		this.subwayMemberDetails = subwayMemberDetails;
+		this.stationService = stationService;
 	}
 
 	@Transactional
 	public void registerFavorite(String memberEmail, long source, long target) {
 
 		long memberId = getMemberId(memberEmail);
-		
 		Favorites favorites = new Favorites(favoriteRepository.findByMemberId(memberId));
-		favorites.addFavorite(memberId, source, target);
+		favorites.addFavorite(memberId, getStationId(source), getStationId(target));
 		favoriteRepository.saveAll(favorites.getValues());
-
 	}
 
 	public void deleteFavorite(long favoriteId) {
 
 	}
 
-	public List<FavoriteResponse> getFavorites() {
-		return Arrays.asList(new FavoriteResponse());
+	public List<FavoriteResponse> getFavorites(String memberEmail) {
+		long memberId = getMemberId(memberEmail);
+		Favorites favorites = new Favorites(favoriteRepository.findByMemberId(memberId));
+		return createFavoriteResponse(favorites);
 	}
 
 	private long getMemberId(String memberEmail) {
 		SubwayMember subwayMember = subwayMemberDetails.getMemberIdByEmail(memberEmail);
 		return subwayMember.getMemberId();
 	}
+
+	private long getStationId(long stationId) {
+		return stationService.findById(stationId)
+			.getId();
+	}
+
+	private List<FavoriteResponse> createFavoriteResponse(Favorites favorites) {
+		return favorites.getValues()
+			.stream()
+			.map(favorite -> new FavoriteResponse(favorite.getId(),
+				stationService.createStationResponse(stationService.findById(favorite.getSourceStationId()))
+				, stationService.createStationResponse(stationService.findById(favorite.getTargetStationId()))))
+			.collect(Collectors.toList());
+	}
+
 }

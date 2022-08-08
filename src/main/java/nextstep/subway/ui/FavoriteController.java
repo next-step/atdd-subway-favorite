@@ -1,5 +1,6 @@
 package nextstep.subway.ui;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class FavoriteController {
 		@RequestBody FavoriteRequest favoriteRequest) {
 		favoriteService.registerFavorite(loginMember.getEmail(), favoriteRequest.getSource(),
 			favoriteRequest.getTarget());
-		return ResponseEntity.ok().build();
+		return ResponseEntity.created(URI.create("/favorite")).build();
 	}
 
 	@DeleteMapping("/favorite/{favoriteId}")
@@ -41,8 +42,8 @@ public class FavoriteController {
 	}
 
 	@GetMapping("/favorite")
-	public ResponseEntity<List<FavoriteResponse>> getFavorites() {
-		return ResponseEntity.ok().body(favoriteService.getFavorites());
+	public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+		return ResponseEntity.ok().body(favoriteService.getFavorites(loginMember.getEmail()));
 	}
 
 }
