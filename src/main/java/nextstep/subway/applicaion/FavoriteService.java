@@ -14,7 +14,6 @@ import nextstep.subway.domain.Favorites;
 import nextstep.subway.domain.SubwayMember;
 
 @Service
-@Transactional(readOnly = true)
 public class FavoriteService {
 
 	private FavoriteRepository favoriteRepository;
@@ -41,9 +40,9 @@ public class FavoriteService {
 	public void deleteFavorite(String memberEmail, long favoriteId) {
 		Favorites favorites = new Favorites(favoriteRepository.findByMemberId(getMemberId(memberEmail)));
 		favoriteRepository.delete(favorites.getFavoriteById(favoriteId));
-		
 	}
 
+	@Transactional(readOnly = true)
 	public List<FavoriteResponse> getFavorites(String memberEmail) {
 		long memberId = getMemberId(memberEmail);
 		Favorites favorites = new Favorites(favoriteRepository.findByMemberId(memberId));
