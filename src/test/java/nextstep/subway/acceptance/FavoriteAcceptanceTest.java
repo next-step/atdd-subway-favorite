@@ -59,6 +59,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		Assertions.assertThat(즐겨찾기조회.jsonPath().getList("source.id", Long.class))
 			.hasSize(2)
 			.containsExactly(강남역, 삼성역);
+		Assertions.assertThat(즐겨찾기조회.jsonPath().getList("target.id", Long.class))
+			.hasSize(2)
+			.containsExactly(양재역, 양재역);
 	}
 
 	/**
@@ -94,11 +97,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기_삭제_권한있는_경우")
 	void removeFavoriteByMember() {
 		//given
-		즐겨찾기_등록(강남역, 양재역, member1AccessToken);
+		ExtractableResponse<Response> 등록응답 = 즐겨찾기_등록(강남역, 양재역, member1AccessToken);
 
 		//when
-		Long favoriteId = 즐겨찾기_조회(member1AccessToken).jsonPath().getList("id", Long.class).get(0);
-		즐겨찾기_삭제(favoriteId, member1AccessToken);
+		즐겨찾기_삭제(등록응답, member1AccessToken);
 
 		//then
 		ExtractableResponse<Response> 즐겨찾기조회2 = 즐겨찾기_조회(member1AccessToken);
@@ -116,14 +118,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기_삭제_권한없는_경우")
 	void removeFavoriteByGuest() {
 		//given
-		즐겨찾기_등록(강남역, 양재역, member1AccessToken);
+		ExtractableResponse<Response> 등록응답 = 즐겨찾기_등록(강남역, 양재역, member1AccessToken);
 
 		//when
-		Long favoriteId = 즐겨찾기_조회(member1AccessToken).jsonPath().getList("id", Long.class).get(0);
+		ExtractableResponse<Response> 삭제응답 = 즐겨찾기_삭제(등록응답, member2AccessToken);
 
 		//then
-		assertThat(즐겨찾기_삭제(favoriteId, member2AccessToken).statusCode())
-			.isEqualTo(HttpStatus.UNAUTHORIZED.value());
+		assertThat(삭제응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 }

@@ -24,13 +24,15 @@ public class FavoriteSteps {
 			.body(params)
 			.when().post(BASE_URI)
 			.then().log().all()
-			.statusCode(HttpStatus.CREATED.value()).extract();
+			.statusCode(HttpStatus.CREATED.value()).extract()
+			;
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_삭제(long favoriteId, String accessToken) {
+	public static ExtractableResponse<Response> 즐겨찾기_삭제(ExtractableResponse<Response> createResponse,
+		String accessToken) {
 		return given(accessToken)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.delete(BASE_URI + "/" + favoriteId)
+			.delete(createResponse.header("location"))
 			.then().log().all()
 			.extract();
 	}
