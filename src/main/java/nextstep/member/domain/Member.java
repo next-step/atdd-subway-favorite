@@ -62,6 +62,10 @@ public class Member {
         return roles;
     }
 
+    public boolean isSameId(Long memberId) {
+        return id == memberId;
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;

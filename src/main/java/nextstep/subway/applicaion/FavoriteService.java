@@ -9,6 +9,8 @@ import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
+import nextstep.subway.exception.NotDeleteFavoriteException;
+import nextstep.subway.exception.NotFoundFavoriteException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,5 +51,15 @@ public class FavoriteService {
                 .stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Transactional
+    public void delete(LoginMember loginMember, Long id) {
+        Member member = memberService.findMember(loginMember.getEmail());
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(NotFoundFavoriteException::new);
+        if (favorite.isNotOwner(member)) {
+            throw new NotDeleteFavoriteException(member.getId());
+        }
+        favoriteRepository.delete(favorite);
     }
 }

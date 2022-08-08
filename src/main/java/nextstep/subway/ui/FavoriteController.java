@@ -40,4 +40,11 @@ public class FavoriteController {
         List<FavoriteResponse> favoriteResponses = favoriteService.findAll(loginMember);
         return ResponseEntity.ok().body(favoriteResponses);
     }
+
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+        favoriteService.delete(loginMember, id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -2,6 +2,7 @@ package nextstep.subway.domain;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import nextstep.member.domain.Member;
 
 import javax.persistence.*;
 
@@ -22,17 +23,26 @@ public class Favorite {
     @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
-    private Favorite(Long memberId, Station sourceStation, Station targetStation) {
+    private Favorite(Long id, Long memberId, Station sourceStation, Station targetStation) {
+        this.id = id;
         this.memberId = memberId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }
 
     public static Favorite create(Long memberId, Station sourceStation, Station targetStation) {
+        return create(null, memberId, sourceStation, targetStation);
+    }
+
+    public static Favorite create(Long id, Long memberId, Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException();
         }
-        return new Favorite(memberId, sourceStation, targetStation);
+        return new Favorite(id, memberId, sourceStation, targetStation);
+    }
+
+    public boolean isNotOwner(Member member) {
+        return !member.isSameId(memberId);
     }
 
     public Long id() {
