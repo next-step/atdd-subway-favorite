@@ -50,9 +50,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * and 구간이 생성되어 있다
      * and 사용자가 로그인되어 있다
      * when 즐겨찾기를 추가한다.
-     * then 즐겨찾기 조회시 추가한 즐겨찾기가 조회된다.
+     * then 201이 응답된다.
      */
-    @DisplayName("즐겨찾기 생성 인수테스트")
+    @DisplayName("즐겨찾기 생성 요청 테스트")
     @Test
     void createFavoriteTest() {
         //given
@@ -60,13 +60,34 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
-        ExtractableResponse<Response> result = 즐겨찾기_조회_요청(memberAccessToken);
 
         //then
-        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(result.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
-        assertThat(result.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    /**
+     * given 역이 생성되어 있다
+     * and 노선이 생성되어 있다
+     * and 구간이 생성되어 있다
+     * and 사용자가 로그인되어 있다
+     * when 즐겨찾기를 추가한다.
+     * then 즐겨찾기 조회시 추가한 즐겨찾기가 조회된다.
+     */
+    @DisplayName("즐겨찾기 생성 인수테스트")
+    @Test
+    void createFavoriteAndGetFavoriteTest() {
+        //given
+        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
+        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
 
+        //when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(memberAccessToken);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
+        assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
+    }
+
+    
 }
