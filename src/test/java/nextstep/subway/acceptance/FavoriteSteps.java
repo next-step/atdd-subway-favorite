@@ -11,9 +11,7 @@ import static nextstep.subway.acceptance.AcceptanceTestSteps.given;
 
 public class FavoriteSteps {
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long source, Long target) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", "" + source);
-        params.put("target", "" + target);
+        Map<String, String> params = createParams(source, target);
         return given(token)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -22,9 +20,7 @@ public class FavoriteSteps {
     }
 
     public static ExtractableResponse<Response> 토큰없이_즐겨찾기_생성_요청(Long source, Long target) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", "" + source);
-        params.put("target", "" + target);
+        Map<String, String> params = createParams(source, target);
         return given()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -60,5 +56,12 @@ public class FavoriteSteps {
                 .when().delete(location)
                 .then().log().all()
                 .extract();
+    }
+
+    private static Map<String, String> createParams(Long source, Long target) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", "" + source);
+        params.put("target", "" + target);
+        return params;
     }
 }
