@@ -23,22 +23,17 @@ public class Favorite {
     @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
-    private Favorite(Long id, Long memberId, Station sourceStation, Station targetStation) {
-        this.id = id;
+    private Favorite(Long memberId, Station sourceStation, Station targetStation) {
         this.memberId = memberId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }
 
     public static Favorite create(Long memberId, Station sourceStation, Station targetStation) {
-        return create(null, memberId, sourceStation, targetStation);
-    }
-
-    public static Favorite create(Long id, Long memberId, Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException();
         }
-        return new Favorite(id, memberId, sourceStation, targetStation);
+        return new Favorite(memberId, sourceStation, targetStation);
     }
 
     public boolean isNotOwner(Member member) {
