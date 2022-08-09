@@ -9,8 +9,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
-import static nextstep.subway.acceptance.FavoriteStep.즐겨찾기_생성_요청;
-import static nextstep.subway.acceptance.FavoriteStep.즐겨찾기_조회_요청;
+import static nextstep.subway.acceptance.FavoriteStep.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.PathAcceptanceTest.createSectionCreateParams;
 import static nextstep.subway.acceptance.PathAcceptanceTest.지하철_노선_생성_요청;
@@ -88,6 +87,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
         assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
     }
-
     
+    /**
+     * given 역이 생성되어 있다
+     * and 노선이 생성되어 있다
+     * and 구간이 생성되어 있다
+     * and 사용자가 로그인되어 있다
+     * and 즐겨찾기가 추가되어 있다.
+     * when 즐겨찾기를 삭제한다.
+     * then no content가 응답된다.
+     */
+    @DisplayName("즐겨찾기 삭제 테스트")
+    @Test
+    void deleteFavoriteTest() {
+        //given
+        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
+        long 즐겨찾기 = 즐겨찾기_생성_요청(memberAccessToken, favoriteParam).jsonPath().getLong("id");
+
+        //when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(memberAccessToken, 즐겨찾기);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+
 }
