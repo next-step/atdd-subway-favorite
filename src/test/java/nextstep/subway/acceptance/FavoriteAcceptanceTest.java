@@ -33,8 +33,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
         분당역 = 지하철역_생성_요청("분당역").jsonPath().getLong("id");
         신림역 = 지하철역_생성_요청("신림역").jsonPath().getLong("id");
-        즐겨찾는_구간 = 즐겨찾기_등록_요청(회원_사용자_요청(), 분당역, 신림역).jsonPath().getString("id");
+        즐겨찾는_구간 = 즐겨찾기_ID(즐겨찾기_등록_요청(회원_사용자_요청(), 분당역, 신림역));
     }
+
+
 
     /**
      * Given : 로그인한 사용자가
@@ -120,7 +122,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(로그인한_사용자_즐겨찾기_등록.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         // then
-        String 즐겨찾기 = 로그인한_사용자_즐겨찾기_등록.jsonPath().getString("id");
+        String 즐겨찾기 = 즐겨찾기_ID(로그인한_사용자_즐겨찾기_등록);
         ExtractableResponse<Response> 로그인한_사용자_즐겨찾기_삭제 = 즐겨찾기_삭제_요청(로그인한_사용자, 즐겨찾기);
         assertThat(로그인한_사용자_즐겨찾기_삭제.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
@@ -158,16 +160,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         params.put("target", target + "");
 
         return specification
-            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().post("/favorites")
-            .then().log().all()
-            .extract();
+            .then().log().all().extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회_요청(RequestSpecification specification) {
         return specification
-            .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/favorites")
             .then().log().all().extract();
     }
@@ -175,5 +175,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(RequestSpecification specification, String id) {
         return specification.when().delete("/favorites/{id}", id)
             .then().log().all().extract();
+    }
+
+    private String 즐겨찾기_ID(ExtractableResponse<Response> 즐겨찾기_등록_요청) {
+        return 즐겨찾기_등록_요청.header("Location").split("/favorites/")[1];
     }
 }
