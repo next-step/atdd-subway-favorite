@@ -168,7 +168,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-	private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
+	public static Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
 		Map<String, String> lineCreateParams;
 		lineCreateParams = new HashMap<>();
 		lineCreateParams.put("name", "신분당선");
