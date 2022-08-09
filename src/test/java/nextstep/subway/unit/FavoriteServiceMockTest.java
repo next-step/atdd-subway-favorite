@@ -33,14 +33,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceMockTest {
 
-    public static final LoginMember LOGIN_MEMBER = new LoginMember("user@email.com", "password", List.of(RoleType.ROLE_MEMBER.name()));
-    public static final Member MEMBER = new Member(1L, "user@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name()));
-    public static final long 강남역_ID = 1L;
-    public static final long 역삼역_ID = 2L;
-    public static final Station 강남역 = new Station("강남역");
-    public static final Station 역삼역 = new Station("역삼역");
-    public static final Favorite 즐겨찾기 = new Favorite(1L, MEMBER.getId(), 강남역, 역삼역);
-    public static final Favorite 다른_회원의_즐겨찾기 = new Favorite(1L, 999L, 강남역, 역삼역);
+    private static final LoginMember LOGIN_MEMBER = new LoginMember("user@email.com", "password", List.of(RoleType.ROLE_MEMBER.name()));
+    private static final Member MEMBER = new Member(1L, "user@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name()));
+    private static final long 강남역_ID = 1L;
+    private static final long 역삼역_ID = 2L;
+    private static final Station 강남역 = new Station(강남역_ID,"강남역");
+    private static final Station 역삼역 = new Station(역삼역_ID,"역삼역");
+    private static final Favorite 즐겨찾기 = new Favorite(1L, MEMBER.getId(), 강남역, 역삼역);
+    private static final Favorite 다른_회원의_즐겨찾기 = new Favorite(1L, 999L, 강남역, 역삼역);
     @Mock
     FavoriteRepository favoriteRepository;
     @Mock
