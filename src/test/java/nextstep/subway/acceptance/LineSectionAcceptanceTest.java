@@ -55,7 +55,9 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given
+     * give 일반 사용자가 로그인 되어 있다.
+     * when 일반 사용자의 토큰으로 지하철 노선에 구간 생성을 요청한다.
+     * Then Unauthorized 에러가 발생한다.
      */
     @DisplayName("일반 사용자가 노선에 구간 등록 요청")
     @Test
