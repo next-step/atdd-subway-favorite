@@ -87,7 +87,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
         assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
     }
-    
+
     /**
      * given 역이 생성되어 있다
      * and 노선이 생성되어 있다
@@ -102,7 +102,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void deleteFavoriteTest() {
         //given
         Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
-        long 즐겨찾기 = 즐겨찾기_생성_요청(memberAccessToken, favoriteParam).jsonPath().getLong("id");
+        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
 
         //when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(memberAccessToken, 즐겨찾기);
@@ -111,5 +112,46 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("사용자가 저장한 즐겨찾기가 아닌 즐겨찾기를 삭제할때 에러 발생 테스트")
+    @Test
+    void deleteNotMemberMatchFavoriteTest() {
+        //given
+        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
+        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
+
+        //when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(adminAccessToken, 즐겨찾기);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+    }
+
+    /**
+     * given 역이 생성되어 있다
+     * and 노선이 생성되어 있다
+     * and 구간이 생성되어 있다
+     * and 사용자가 로그인되어 있다
+     * and 즐겨찾기가 추가되어 있다.
+     * when 즐겨찾기를 삭제한다.
+     * and 즐겨찾기를 조회한다.
+     * then Bad Request가 응답된다.
+     */
+    @DisplayName("즐겨찾기 삭제 테스트")
+    @Test
+    void deleteNonExistFavorite() {
+        //given
+        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
+        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
+        즐겨찾기_삭제_요청(memberAccessToken, 즐겨찾기);
+
+        //when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(memberAccessToken, 즐겨찾기);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
 }

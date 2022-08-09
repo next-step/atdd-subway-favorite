@@ -16,6 +16,14 @@ public class FavoriteStep {
             .then().log().all().extract();
     }
 
+    protected static ExtractableResponse<Response> 즐겨찾기_조회_요청(String token, Long favoriteId) {
+        return AcceptanceStep.oAuthRequest(token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/favorites/{id}", favoriteId)
+            .then().log().all().extract();
+    }
+
     protected static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Map<String, String> favoriteParam) {
         return AcceptanceStep.oAuthRequest(token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
