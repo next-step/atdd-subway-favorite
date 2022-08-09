@@ -10,7 +10,7 @@ class FavoriteTest {
 
     @DisplayName("회원의 즐겨찾기인지 확인하는 테스트")
     @ParameterizedTest
-    @CsvSource(value = {"1:true, 2:false"}, delimiter = ':')
+    @CsvSource(value = {"1:true", "2:false"}, delimiter = ':')
     void isMembersFavoriteTest(Long memberId, boolean expected) {
         //given
         Long fixedMemberId = 1L;
