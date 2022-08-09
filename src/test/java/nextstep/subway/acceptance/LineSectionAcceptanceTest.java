@@ -11,10 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LineSteps.*;
-import static nextstep.subway.acceptance.MemberSteps.ADMIN_EMAIL;
-import static nextstep.subway.acceptance.MemberSteps.MEMBER_EMAIL;
-import static nextstep.subway.acceptance.MemberSteps.PASSWORD;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +19,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     private Long 신분당선;
     private Long 강남역;
     private Long 양재역;
+
 
     /**
      * Given 지하철역과 노선 생성을 요청 하고
@@ -34,6 +31,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_생성_요청(adminAccessToken, "양재역").jsonPath().getLong("id");
 
         Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
+
         신분당선 = 지하철_노선_생성_요청(adminAccessToken, lineCreateParams).jsonPath().getLong("id");
     }
 
@@ -46,7 +44,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     void addLineSection() {
         // when
         Long 정자역 = 지하철역_생성_요청(adminAccessToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역, 3));
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
@@ -66,11 +64,11 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         //when
         Long 정자역 = 지하철역_생성_요청(adminAccessToken, "정자역").jsonPath().getLong("id");
         ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_생성_요청(memberAccessToken, 신분당선,
-            createSectionCreateParams(양재역, 정자역));
+            createSectionCreateParams(양재역, 정자역, 3));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-     }
+    }
 
     /**
      * When 지하철 노선 가운데에 새로운 구간 추가를 요청 하면
@@ -81,7 +79,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     void addLineSectionMiddle() {
         // when
         Long 정자역 = 지하철역_생성_요청(adminAccessToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(강남역, 정자역));
+        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(강남역, 정자역, 3));
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
@@ -97,7 +95,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addSectionAlreadyIncluded() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(강남역, 양재역));
+        ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(강남역, 양재역, 3));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -113,7 +111,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     void removeLineSection() {
         // given
         Long 정자역 = 지하철역_생성_요청(adminAccessToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역, 3));
 
         // when
         지하철_노선에_지하철_구간_제거_요청(adminAccessToken, 신분당선, 정자역);
@@ -134,7 +132,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // given
         Long 정자역 = 지하철역_생성_요청(adminAccessToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역, 3));
 
         // when
         ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_제거_요청(memberAccessToken, 신분당선, 정자역);
@@ -154,7 +152,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     void removeLineSectionInMiddle() {
         // given
         Long 정자역 = 지하철역_생성_요청(adminAccessToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        지하철_노선에_지하철_구간_생성_요청(adminAccessToken, 신분당선, createSectionCreateParams(양재역, 정자역, 3));
 
         // when
         지하철_노선에_지하철_구간_제거_요청(adminAccessToken, 신분당선, 양재역);
@@ -176,7 +174,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         return lineCreateParams;
     }
 
-    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId) {
+    private static Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int i) {
         Map<String, String> params = new HashMap<>();
         params.put("upStationId", upStationId + "");
         params.put("downStationId", downStationId + "");
