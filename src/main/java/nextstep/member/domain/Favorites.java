@@ -21,7 +21,16 @@ public class Favorites {
     List<Favorite> value = new ArrayList<>();
 
     public void addFavorite(Favorite favorite) {
+        checkDuplicateFavorite(favorite);
         value.add(favorite);
+    }
+
+    private void checkDuplicateFavorite(Favorite favorite) {
+        value.stream().filter(f -> f.equals(favorite))
+             .findAny()
+             .ifPresent(f -> {
+                    throw  new IllegalArgumentException("이미 등록된 즐겨찾기 입니다.");
+                });
     }
 
 }
