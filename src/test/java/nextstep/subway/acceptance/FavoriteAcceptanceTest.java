@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -155,6 +156,52 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * when 인증되지 않은 사용자가 즐겨찾기 경로를 등록하면
+     * then 예외가 발생한다
+     */
+    @DisplayName("생성 API 인증 테스트")
+    @Test
+    void createFavoriteWithAuth() {
+        // when
+        var body = new HashMap<>();
+        body.put("source", 교대역);
+        body.put("target", 강남역);
+
+        var response = RestAssured.
+                given()
+                .body(body)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .post("/favorites")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * when 인증되지 않은 사용자가 즐겨찾기 경로를 삭제하면
+     * then 예외가 발생한다
+     */
+    @DisplayName("삭제 API 인증 테스트")
+    @Test
+    void deleteFavoriteWithAuth() {
+        // when
+        var favoriteId = 123L;
+        var response = RestAssured
+                .given()
+                    .pathParam("id", favoriteId)
+                .when()
+                    .delete("/favorites/{id}")
+                .then()
+                    .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_등록(Long source, Long target) {
