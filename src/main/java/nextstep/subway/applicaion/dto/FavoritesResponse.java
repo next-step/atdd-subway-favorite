@@ -2,6 +2,7 @@ package nextstep.subway.applicaion.dto;
 
 import nextstep.subway.domain.Favorite;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesResponse {
@@ -12,6 +13,6 @@ public class FavoritesResponse {
     }
 
     public List<FavoriteResponse> getFavorites() {
-        return favorites;
+        return new ArrayList<>(favorites);
     }
 }
