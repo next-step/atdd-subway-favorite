@@ -20,4 +20,11 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_조회(String path, String token) {
+        return BearerRestAssured.given(token)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .when().get(path)
+                                .then().log().all().extract();
+    }
+
 }
