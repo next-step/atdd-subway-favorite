@@ -6,10 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Map;
 
+import static nextstep.subway.acceptance.FavoriteStep.즐겨찾기_생성_요청;
+import static nextstep.subway.acceptance.FavoriteStep.즐겨찾기_조회_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.PathAcceptanceTest.createSectionCreateParams;
 import static nextstep.subway.acceptance.PathAcceptanceTest.지하철_노선_생성_요청;
@@ -58,24 +59,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
 
         //when
-        ExtractableResponse<Response> response = AcceptanceStep.oAuthRequest(memberAccessToken)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(favoriteParam)
-            .when()
-            .post("/favorites")
-            .then().log().all().extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
-        ExtractableResponse<Response> result = AcceptanceStep.oAuthRequest(memberAccessToken)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/favorites")
-            .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        ExtractableResponse<Response> result = 즐겨찾기_조회_요청(memberAccessToken);
 
         //then
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(result.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
         assertThat(result.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
     }
+
+
 }
