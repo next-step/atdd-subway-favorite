@@ -7,6 +7,11 @@ public class Favorite {
     private Long targetId;
 
     public Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
+
+        if (sourceId.equals(targetId)) {
+            throw new IllegalArgumentException();
+        }
+
         this.id = id;
         this.memberId = memberId;
         this.sourceId = sourceId;
