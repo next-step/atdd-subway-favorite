@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -132,7 +131,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         var deleteResponse = MemberSteps
-                .givenAdminLogin("user@email.com", "password")
+                .givenLogin("user@email.com", "password")
                     .pathParam("id", favoriteId)
                 .when()
                     .delete("/favorites/{id}")
@@ -140,7 +139,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                     .extract();;
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     /**
@@ -155,7 +154,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var deleteResponse = 즐겨찾기_삭제(favoriteIdNotExist);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_등록(Long source, Long target) {
@@ -164,7 +163,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         body.put("target", target);
 
         return MemberSteps
-                .givenAdminLogin()
+                .givenLogin()
                     .body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().log().all()
@@ -175,7 +174,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 즐겨찾기_조회() {
         return MemberSteps
-                .givenAdminLogin()
+                .givenLogin()
                 .when().log().all()
                     .get("/favorites")
                 .then().log().all()
@@ -184,7 +183,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 즐겨찾기_삭제(Long favoriteId) {
         return MemberSteps
-                .givenAdminLogin()
+                .givenLogin()
                     .pathParam("id", favoriteId)
                 .when()
                     .delete("/favorites/{id}")

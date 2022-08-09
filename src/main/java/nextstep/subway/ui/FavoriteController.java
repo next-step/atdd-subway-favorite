@@ -4,7 +4,7 @@ import nextstep.auth.authentication.UserDetails;
 import nextstep.auth.authorization.AuthenticationPrincipal;
 import nextstep.auth.secured.Secured;
 import nextstep.member.application.MemberService;
-import nextstep.subway.applicaion.FavoriteService;
+import nextstep.subway.applicaion.favorite.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class FavoriteController {
         this.memberService = memberService;
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_NORMAL"})
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     @PostMapping
     public ResponseEntity<Void> createFavorite(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -39,7 +39,7 @@ public class FavoriteController {
                 .build();
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_NORMAL"})
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal UserDetails userDetails) {
         var userId = getUserId(userDetails);
@@ -47,7 +47,7 @@ public class FavoriteController {
         return ResponseEntity.ok(favorites);
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_NORMAL"})
+    @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeFavorite(
             @AuthenticationPrincipal UserDetails userDetails,

@@ -86,7 +86,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
         MemberSteps
-                .givenAdminLogin()
+                .givenLogin()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -111,7 +111,7 @@ class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = MemberSteps
-                .givenAdminLogin()
+                .givenLogin()
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 

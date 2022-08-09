@@ -1,6 +1,8 @@
-package nextstep.subway.applicaion;
+package nextstep.subway.applicaion.favorite;
 
 import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.subway.applicaion.favorite.exception.InvalidFavoriteOwnerException;
+import nextstep.subway.applicaion.favorite.exception.InvalidFavoriteStationException;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -27,7 +29,7 @@ public class FavoriteService {
     @Transactional
     public FavoriteResponse createFavorite(Long userId, Long source, Long target) {
         if (Objects.equals(source, target)) {
-            throw new IllegalArgumentException("출발역과 도착역이 동일합니다");
+            throw new InvalidFavoriteStationException();
         }
 
         var sourceStation = getStation(source);
@@ -49,13 +51,14 @@ public class FavoriteService {
     public void removeFavorite(Long userId, Long favoriteId) {
         var favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(IllegalArgumentException::new);
+
         if (!Objects.equals(favorite.getUserId(), userId)) {
-            throw new IllegalArgumentException();
+            throw new InvalidFavoriteOwnerException();
         }
         favoriteRepository.deleteById(favoriteId);
     }
 
     private Station getStation(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(IllegalArgumentException::new);
+        return stationRepository.findById(stationId).orElseThrow(InvalidFavoriteStationException::new);
     }
 }

@@ -98,7 +98,7 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static RequestSpecification givenAdminLogin(String id, String password) {
+    public static RequestSpecification givenLogin(String id, String password) {
         var token = 로그인_되어_있음(id, password);
         return RestAssured
                 .given().log().all()
@@ -106,7 +106,7 @@ public class MemberSteps {
                 .oauth2(token);
     }
 
-    public static RequestSpecification givenAdminLogin() {
-        return givenAdminLogin("admin@email.com", "password");
+    public static RequestSpecification givenLogin() {
+        return givenLogin("admin@email.com", "password");
     }
 }

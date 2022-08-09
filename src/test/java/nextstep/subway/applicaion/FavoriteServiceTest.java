@@ -1,5 +1,8 @@
 package nextstep.subway.applicaion;
 
+import nextstep.subway.applicaion.favorite.FavoriteService;
+import nextstep.subway.applicaion.favorite.exception.InvalidFavoriteOwnerException;
+import nextstep.subway.applicaion.favorite.exception.InvalidFavoriteStationException;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -62,7 +65,7 @@ class FavoriteServiceTest {
         var userId = 123L;
         var source = createStation(1L, "출발역");
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidFavoriteStationException.class,
                 () -> favoriteService.createFavorite(userId, source.getId(), source.getId()));
     }
 
@@ -77,7 +80,7 @@ class FavoriteServiceTest {
         when(stationRepository.findById(target.getId()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidFavoriteStationException.class,
                 () -> favoriteService.createFavorite(userId, source.getId(), target.getId()));
     }
 
@@ -118,8 +121,10 @@ class FavoriteServiceTest {
     void removeFavoriteFailsWhenUserIsNotMatch() {
         var userId = 987L;
         var favorite = new Favorite(1L, 123L, createStation(1L, "강남역"), createStation(2L, "양재역"));
+        when(favoriteRepository.findById(favorite.getId()))
+                .thenReturn(Optional.of(favorite));
 
-        assertThrows(IllegalArgumentException.class, () -> favoriteService.removeFavorite(userId, favorite.getId()));
+        assertThrows(InvalidFavoriteOwnerException.class, () -> favoriteService.removeFavorite(userId, favorite.getId()));
     }
 
     @DisplayName("존재하지 않는 즐겨찾기 삭제시 예외 발생")
