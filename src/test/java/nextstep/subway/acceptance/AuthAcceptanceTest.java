@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import javax.print.attribute.standard.Media;
 
 import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
