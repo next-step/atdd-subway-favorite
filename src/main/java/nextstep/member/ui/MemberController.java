@@ -12,7 +12,7 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -44,13 +44,13 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserDetails loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getEmail());
+        MemberResponse member = memberService.findMember(Long.valueOf(loginMember.getEmail()));
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal UserDetails loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember.getEmail(), param);
+        memberService.updateMember(Long.valueOf(loginMember.getEmail()), param);
         return ResponseEntity.ok().build();
     }
 
@@ -60,4 +60,3 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 }
-
