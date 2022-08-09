@@ -37,10 +37,10 @@ class FavoriteServiceMockTest {
     public static final Member MEMBER = new Member(1L, "user@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name()));
     public static final long 강남역_ID = 1L;
     public static final long 역삼역_ID = 2L;
-    public static final Favorite 즐겨찾기 = new Favorite(1L, MEMBER.getId(), 강남역_ID, 역삼역_ID);
-    public static final Favorite 다른_회원의_즐겨찾기 = new Favorite(1L, 999L, 강남역_ID, 역삼역_ID);
     public static final Station 강남역 = new Station("강남역");
     public static final Station 역삼역 = new Station("역삼역");
+    public static final Favorite 즐겨찾기 = new Favorite(1L, MEMBER.getId(), 강남역, 역삼역);
+    public static final Favorite 다른_회원의_즐겨찾기 = new Favorite(1L, 999L, 강남역, 역삼역);
     @Mock
     FavoriteRepository favoriteRepository;
     @Mock
@@ -79,8 +79,6 @@ class FavoriteServiceMockTest {
     void findFavorites() {
         // when
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(MEMBER));
-        when(stationRepository.findById(강남역_ID)).thenReturn(Optional.of(강남역));
-        when(stationRepository.findById(역삼역_ID)).thenReturn(Optional.of(역삼역));
         when(favoriteRepository.findAllByMemberId(MEMBER.getId())).thenReturn(List.of(즐겨찾기));
 
         // then
