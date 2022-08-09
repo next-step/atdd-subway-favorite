@@ -8,7 +8,7 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.user.UserDetails;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.user.UserDetailsService;
 import org.springframework.http.MediaType;
 
@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends NonChainFilter {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -62,7 +65,7 @@ public class TokenAuthenticationInterceptor extends NonChainFilter {
                 .toString(), authentication.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream()

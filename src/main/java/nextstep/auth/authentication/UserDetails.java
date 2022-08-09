@@ -1,4 +1,4 @@
-package nextstep.user;
+package nextstep.auth.authentication;
 
 import java.util.List;
 

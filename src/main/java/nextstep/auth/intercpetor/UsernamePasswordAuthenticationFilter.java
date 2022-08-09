@@ -6,7 +6,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.user.UserDetails;
+import nextstep.auth.authentication.UserDetails;
 import nextstep.user.UserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 
 public class UsernamePasswordAuthenticationFilter extends NonChainFilter {
     private final Logger log = LoggerFactory.getLogger(UsernamePasswordAuthenticationFilter.class);
+
+    private final static String USERNAME = "userName";
+    private final static String PASSWORD = "password";
+
     private UserDetailsService userDetailsService;
 
     public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
-
-    private final static String USERNAME = "userName";
-    private final static String PASSWORD = "password";
 
     @Override
     public AuthenticationToken convert(HttpServletRequest request) throws Exception {
