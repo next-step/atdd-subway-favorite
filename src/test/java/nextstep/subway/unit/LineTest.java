@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,7 +40,7 @@ class LineTest {
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
                 .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
+                .findFirst().orElseThrow(NoSuchElementException::new);
         assertThat(section.getDownStation()).isEqualTo(삼성역);
         assertThat(section.getDistance()).isEqualTo(5);
     }
@@ -58,7 +59,7 @@ class LineTest {
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
                 .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
+                .findFirst().orElseThrow(NoSuchElementException::new);
         assertThat(section.getDownStation()).isEqualTo(삼성역);
         assertThat(section.getDistance()).isEqualTo(5);
     }
@@ -77,7 +78,7 @@ class LineTest {
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
                 .filter(it -> it.getUpStation() == 강남역)
-                .findFirst().orElseThrow(RuntimeException::new);
+                .findFirst().orElseThrow(NoSuchElementException::new);
         assertThat(section.getDownStation()).isEqualTo(역삼역);
         assertThat(section.getDistance()).isEqualTo(10);
     }
@@ -96,7 +97,7 @@ class LineTest {
         assertThat(line.getSections().size()).isEqualTo(2);
         Section section = line.getSections().stream()
                 .filter(it -> it.getUpStation() == 역삼역)
-                .findFirst().orElseThrow(RuntimeException::new);
+                .findFirst().orElseThrow(NoSuchElementException::new);
         assertThat(section.getDownStation()).isEqualTo(삼성역);
         assertThat(section.getDistance()).isEqualTo(5);
     }
