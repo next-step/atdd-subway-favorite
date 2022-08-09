@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FavoritesTest {
 
@@ -26,7 +27,7 @@ class FavoritesTest {
     }
 
     @Test
-    void 이미_등록된_즐겨찾기_추가() {
+    void 중복된_즐겨찾기_추가() {
         //given
         Member user = new Member("parkuram12@gmail.com", "pass", 25);
         Favorite favorite = new Favorite(user, 1L, 2L);
@@ -36,7 +37,9 @@ class FavoritesTest {
         favorites.addFavorite(favorite);
 
         //then
-        assertThat(favorites.getValue()).hasSize(1);
+        assertThatThrownBy( () -> favorites.addFavorite(favorite))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 등록된 즐겨찾기 입니다.");
     }
 
 }
