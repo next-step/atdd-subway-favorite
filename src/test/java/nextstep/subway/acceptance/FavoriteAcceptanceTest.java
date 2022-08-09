@@ -154,4 +154,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("로그인하지 않은 상태에서 즐겨찾기 생성 테스트")
+    @Test
+    void createFavoriteWithoutLogin() {
+        //given //when
+        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
+        ExtractableResponse<Response> response = 로그인하지_않고_즐겨찾기_생성_요청(favoriteParam);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("로그인 하지 않은 상태에서 즐겨찾기 삭제 테스트")
+    @Test
+    void deleteFavoriteWithoutLogin() {
+        //given
+        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
+        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
+
+        //when
+        ExtractableResponse<Response> response = 로그인하지_않고_즐겨찾기_삭제_요청(즐겨찾기);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }
