@@ -1,25 +1,45 @@
 package nextstep.subway.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class Favorite {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long memberId;
-    private Long sourceId;
-    private Long targetId;
 
-    public Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "source_id")
+    private Station source;
 
-        if (sourceId.equals(targetId)) {
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "target_id")
+    private Station target;
+
+    protected Favorite() {/*no-op*/}
+
+    public Favorite(Long id, Long memberId, Station source, Station target) {
+
+        if (source.equals(target)) {
             throw new IllegalArgumentException();
         }
 
         this.id = id;
         this.memberId = memberId;
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+        this.source = source;
+        this.target = target;
     }
 
-    public Favorite(Long memberId, Long sourceId, Long targetId) {
-        this(null, memberId, sourceId, targetId);
+    public Favorite(Long memberId, Station source, Station target) {
+        this(null, memberId, source, target);
     }
 
     public Long getId() {
@@ -30,11 +50,11 @@ public class Favorite {
         return memberId;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public Station getSource() {
+        return source;
     }
 
-    public Long getTargetId() {
-        return targetId;
+    public Station getTarget() {
+        return target;
     }
 }

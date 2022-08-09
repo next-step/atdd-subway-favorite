@@ -36,8 +36,8 @@ public class FavoriteService {
         Member member = getMember(loginMember);
         Station source = getStation(request.getSource());
         Station target = getStation(request.getTarget());
-        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), request.getSource(), request.getTarget()));
-        return new FavoriteResponse(favorite.getId(), getStationResponse(source), getStationResponse(target));
+        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
+        return new FavoriteResponse(favorite.getId(), getStationResponse(favorite.getSource()), getStationResponse(favorite.getTarget()));
     }
 
 
@@ -48,11 +48,7 @@ public class FavoriteService {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return new FavoritesResponse(
             favorites.stream().map(
-                favorite -> {
-                    Station source = getStation(favorite.getSourceId());
-                    Station target = getStation(favorite.getTargetId());
-                    return new FavoriteResponse(favorite.getId(), getStationResponse(source), getStationResponse(target));
-                }
+                favorite -> new FavoriteResponse(favorite.getId(), getStationResponse(favorite.getSource()), getStationResponse(favorite.getTarget()))
             ).collect(Collectors.toList())
         );
     }
