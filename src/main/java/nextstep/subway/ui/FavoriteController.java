@@ -30,21 +30,21 @@ public class FavoriteController {
     }
 
     @PostMapping
-    @Secured("ROLE_USER")
+    @Secured("ROLE_MEMBER")
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
         FavoriteResponse response = favoriteService.saveFavorite(loginMember, request);
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
     }
 
     @GetMapping
-    @Secured("ROLE_USER")
+    @Secured("ROLE_MEMBER")
     public ResponseEntity<FavoritesResponse> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         favoriteService.findFavorites(loginMember);
         return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/{id}")
-    @Secured("ROLE_USER")
+    @Secured("ROLE_MEMBER")
     public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable long id) {
         favoriteService.deleteFavorite(loginMember, id);
         return ResponseEntity.noContent().build();
