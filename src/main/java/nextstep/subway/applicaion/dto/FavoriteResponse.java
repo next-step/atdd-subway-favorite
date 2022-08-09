@@ -19,8 +19,4 @@ public class FavoriteResponse {
                 .target(StationResponse.of(favorite.targetStation()))
                 .build();
     }
-
-    public static FavoriteResponse empty() {
-        return FavoriteResponse.builder().build();
-    }
 }

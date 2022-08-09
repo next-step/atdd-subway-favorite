@@ -42,7 +42,7 @@ public class FavoriteService {
         Member member = memberService.findMember(loginMember.getEmail());
         return favoriteRepository.findByIdAndMemberId(id, member.getId())
                 .map(FavoriteResponse::from)
-                .orElse(FavoriteResponse.empty());
+                .orElseThrow(NotFoundFavoriteException::new);
     }
 
     public List<FavoriteResponse> findAll(LoginMember loginMember) {

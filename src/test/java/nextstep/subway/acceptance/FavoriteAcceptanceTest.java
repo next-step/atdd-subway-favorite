@@ -161,7 +161,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 찾을수없음(ExtractableResponse<Response> response) {
-        assertThat(response.jsonPath().getList("id", Long.class).size()).isEqualTo(0);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private void 권한이_없음(ExtractableResponse<Response> response) {
