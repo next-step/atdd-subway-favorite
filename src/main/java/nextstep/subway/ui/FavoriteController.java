@@ -47,6 +47,17 @@ public class FavoriteController {
         return ResponseEntity.ok(favorites);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_NORMAL"})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removeFavorite(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id
+    ) {
+        var userId = getUserId(userDetails);
+        favoriteService.removeFavorite(userId, id);
+        return ResponseEntity.noContent().build();
+    }
+
     private Long getUserId(UserDetails userDetails) {
         return memberService.findMember(userDetails.getUsername()).getId();
     }

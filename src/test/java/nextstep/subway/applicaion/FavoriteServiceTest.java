@@ -42,6 +42,8 @@ class FavoriteServiceTest {
                 .thenReturn(Optional.of(source));
         when(stationRepository.findById(target.getId()))
                 .thenReturn(Optional.of(target));
+        when(favoriteRepository.save(any(Favorite.class)))
+                .thenAnswer(args -> args.getArgument(0));
 
         favoriteService.createFavorite(userId, source.getId(), target.getId());
 
