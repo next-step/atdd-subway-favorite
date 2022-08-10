@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.AuthSteps.given;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
@@ -29,9 +30,17 @@ public class FavoriteSteps {
             .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+
         return given(accessToken)
-            .when().delete("/favorites/{favoriteId}", favoriteId)
+            .when().delete(uri)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_안하고_즐겨찾기_조회_요청() {
+        return given("")
+            .when().get("/favorites")
             .then().log().all().extract();
     }
 
