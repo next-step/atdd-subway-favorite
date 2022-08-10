@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class FavoriteSteps {
 
+    private static final String FAVORITE_PATH = "/favorites";
     public static ExtractableResponse<Response> 즐겨찾기_등록(Long source, Long target, String token) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source + "");
@@ -16,7 +17,7 @@ public class FavoriteSteps {
         return BearerRestAssured.given(token)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
+                .when().post(FAVORITE_PATH)
                 .then().log().all().extract();
     }
 
@@ -24,6 +25,13 @@ public class FavoriteSteps {
         return BearerRestAssured.given(token)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .when().get(path)
+                                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(String path, String token) {
+        return BearerRestAssured.given(token)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .when().delete(path)
                                 .then().log().all().extract();
     }
 
