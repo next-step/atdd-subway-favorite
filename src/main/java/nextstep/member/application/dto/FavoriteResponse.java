@@ -15,7 +15,10 @@ public class FavoriteResponse {
     private StationResponse target;
     private StationResponse source;
 
-    public static FavoriteResponse of(Long id, Station target, Station source) {
-        return new FavoriteResponse(id, StationResponse.of(target), StationResponse.of(source));
+    public static FavoriteResponse of(FavoriteDto favoriteDto) {
+        return new FavoriteResponse(favoriteDto.getId(),
+                StationResponse.of(favoriteDto.getTarget()),
+                StationResponse.of(favoriteDto.getSource())
+        );
     }
 }
