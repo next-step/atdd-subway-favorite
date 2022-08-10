@@ -74,15 +74,34 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /*
      * when 두개의 역을 즐겨찾기로 등록하면
      * then 201 상태코드와 LocationHeader 를 응답받는다.
+     *
+     * when LocationHeader 경로로 즐겨찾기를 조회하면
+     * then 저장된 즐겨찾기 정보를 조회할 수 있다.
      */
     @Test
     void 즐겨찾기_등록_검증() {
-        //when 두개의 역을 즐겨찾기로 등록하면
+        //when
         ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), userToken);
 
-        //then 201 상태코드와 LocationHeader 를 응답받는다.
-        assertThat(즐겨찾기_등록_결과.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(즐겨찾기_등록_결과.header("Location")).isNotNull();
+        //then
+        즐겨찾기_등록_검증(즐겨찾기_등록_결과);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), userToken);
+
+        //then
+        즐겨찾기_조회_검증(즐겨찾기_조회_결과);
+    }
+
+    private void 즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("target.name")).isEqualTo("강남역");
+        assertThat(response.jsonPath().getString("source.name")).isEqualTo("남부터미널역");
+    }
+
+    private void 즐겨찾기_등록_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotNull();
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {
