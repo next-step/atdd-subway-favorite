@@ -37,7 +37,7 @@ public class FavoriteService {
         Station source = getStation(request.getSource());
         Station target = getStation(request.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
-        return new FavoriteResponse(favorite.getId(), getStationResponse(favorite.getSource()), getStationResponse(favorite.getTarget()));
+        return getFavoriteResponse(favorite);
     }
 
 
@@ -47,11 +47,10 @@ public class FavoriteService {
 
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return new FavoritesResponse(
-            favorites.stream().map(
-                favorite -> new FavoriteResponse(favorite.getId(), getStationResponse(favorite.getSource()), getStationResponse(favorite.getTarget()))
-            ).collect(Collectors.toList())
+            favorites.stream().map(this::getFavoriteResponse).collect(Collectors.toList())
         );
     }
+
 
     @Transactional
     public void deleteFavorite(LoginMember loginMember, long id) {
@@ -71,6 +70,10 @@ public class FavoriteService {
 
     private Station getStation(long id) {
         return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
+    private FavoriteResponse getFavoriteResponse(Favorite favorite) {
+        return new FavoriteResponse(favorite.getId(), getStationResponse(favorite.getSource()), getStationResponse(favorite.getTarget()));
     }
 
     private StationResponse getStationResponse(Station station) {
