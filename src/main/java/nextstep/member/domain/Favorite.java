@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,6 +22,7 @@ import java.util.Objects;
 public class Favorite {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -36,6 +39,10 @@ public class Favorite {
         this.targetId = targetId;
     }
 
+    public static Favorite of(Member member, Long sourceId, Long targetId) {
+        return  new Favorite(member, sourceId, targetId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,5 +54,11 @@ public class Favorite {
     @Override
     public int hashCode() {
         return Objects.hash(member, sourceId, targetId);
+    }
+
+    public void validFavorite() {
+        if (this.sourceId.equals(this.targetId)) {
+            throw new IllegalArgumentException("등록할 경로가 잘못 되었습니다.");
+        }
     }
 }
