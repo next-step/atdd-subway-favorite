@@ -26,7 +26,7 @@ public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChain
 
     @Override
     protected void authenticate(UserDetails userDetails, HttpServletResponse response) {
-        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+        Authentication authentication = new Authentication(userDetails.getUserId(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

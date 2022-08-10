@@ -18,7 +18,7 @@ public abstract class AuthenticationNonChainingFilter implements HandlerIntercep
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         try {
             TokenRequest tokenRequest = convert(request);
             UserDetails userDetails = userDetailsService.loadUserByUsername(tokenRequest.getEmail());
