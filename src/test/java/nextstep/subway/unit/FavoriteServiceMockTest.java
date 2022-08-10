@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,8 +40,6 @@ class FavoriteServiceMockTest {
     private static final long 역삼역_ID = 2L;
     private static final Station 강남역 = new Station(강남역_ID, "강남역");
     private static final Station 역삼역 = new Station(역삼역_ID, "역삼역");
-    private static final Favorite 즐겨찾기 = new Favorite(1L, MEMBER.getId(), 강남역, 역삼역);
-    private static final Favorite 다른_회원의_즐겨찾기 = new Favorite(3L, 999L, 강남역, 역삼역);
     @Mock
     FavoriteRepository favoriteRepository;
     @Mock
@@ -61,12 +60,16 @@ class FavoriteServiceMockTest {
     void saveFavorite() {
         // given
         FavoriteRequest 요청 = new FavoriteRequest(강남역_ID, 역삼역_ID);
+        Favorite 즐겨찾기 = mock(Favorite.class);
 
         // when
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(MEMBER));
         when(stationRepository.findById(강남역_ID)).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(역삼역_ID)).thenReturn(Optional.of(역삼역));
         when(favoriteRepository.save(any())).thenReturn(즐겨찾기);
+        when(즐겨찾기.getId()).thenReturn(1L);
+        when(즐겨찾기.getSource()).thenReturn(강남역);
+        when(즐겨찾기.getTarget()).thenReturn(역삼역);
 
         // then
         assertDoesNotThrow(
@@ -77,9 +80,15 @@ class FavoriteServiceMockTest {
     @Test
     @DisplayName("로그인한 사용자의 정보를 가져와 사용자의 즐겨찾기 목록을 조회합니다.")
     void findFavorites() {
+        Favorite 즐겨찾기 = mock(Favorite.class);
+
         // when
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(MEMBER));
         when(favoriteRepository.findAllByMemberId(MEMBER.getId())).thenReturn(List.of(즐겨찾기));
+        when(즐겨찾기.getId()).thenReturn(1L);
+        when(즐겨찾기.getSource()).thenReturn(강남역);
+        when(즐겨찾기.getTarget()).thenReturn(역삼역);
+
 
         // then
         FavoritesResponse favorites = favoriteService.findFavorites(LOGIN_MEMBER);
@@ -89,10 +98,14 @@ class FavoriteServiceMockTest {
     @Test
     @DisplayName("로그인한 사용자의 정보와 즐겨찾기의 식별자를 가져와 즐겨찾기를 삭제합니다.")
     void deleteFavorite() {
+        Favorite 즐겨찾기 = mock(Favorite.class);
+
         // when
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(MEMBER));
-        when(favoriteRepository.findById(즐겨찾기.getId())).thenReturn(Optional.of(즐겨찾기));
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(즐겨찾기));
         doNothing().when(favoriteRepository).delete(즐겨찾기);
+        when(즐겨찾기.getId()).thenReturn(1L);
+        when(즐겨찾기.getMemberId()).thenReturn(1L);
 
         // then
         assertDoesNotThrow(
@@ -103,13 +116,19 @@ class FavoriteServiceMockTest {
     @Test
     @DisplayName("등록한 사용자가 아닌 경우 Unauthorized 예외가 발생합니다.")
     void deleteFavorite_invalid_memberId() {
+        // given
+        long 다른_회원_ID = 111L;
+        long 즐겨찾기_ID = 1L;
+        Favorite 다른_회원의_즐겨찾기 = mock(Favorite.class);
+
         // when
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(MEMBER));
-        when(favoriteRepository.findById(즐겨찾기.getId())).thenReturn(Optional.of(다른_회원의_즐겨찾기));
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(다른_회원의_즐겨찾기));
+        when(다른_회원의_즐겨찾기.getMemberId()).thenReturn(다른_회원_ID);
 
         // then
         assertThatThrownBy(
-            () -> favoriteService.deleteFavorite(LOGIN_MEMBER, 즐겨찾기.getId())
+            () -> favoriteService.deleteFavorite(LOGIN_MEMBER, 즐겨찾기_ID)
         ).isInstanceOf(AuthenticationException.class);
     }
 }

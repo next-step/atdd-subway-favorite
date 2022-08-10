@@ -28,7 +28,7 @@ public class Favorite {
 
     protected Favorite() {/*no-op*/}
 
-    public Favorite(Long id, Long memberId, Station source, Station target) {
+    private Favorite(Long id, Long memberId, Station source, Station target) {
 
         if (source.equals(target)) {
             throw new InvalidDataException();
