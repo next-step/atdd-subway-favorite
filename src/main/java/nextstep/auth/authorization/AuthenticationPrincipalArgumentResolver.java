@@ -23,6 +23,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             return User.guest();
         }
 
-        return User.of(authentication.getPrincipal().toString(), authentication.getAuthorities());
+        return User.of((Long) authentication.getPrincipal(), authentication.getAuthorities());
     }
 }

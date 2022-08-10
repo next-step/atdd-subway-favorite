@@ -21,7 +21,7 @@ public class BearerTokenAuthenticationFilter extends AuthenticationChainingFilte
             throw new AuthenticationException();
         }
 
-        String principal = jwtTokenProvider.getPrincipal(token);
+        Long principal = jwtTokenProvider.getPrincipal(token);
         List<String> authorities = jwtTokenProvider.getRoles(token);
 
         return new Authentication(principal, authorities);
