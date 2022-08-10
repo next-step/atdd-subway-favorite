@@ -5,6 +5,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberDetails;
 import nextstep.member.domain.MemberRepository;
@@ -37,7 +38,7 @@ public class FavoriteService {
 
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
 
-        return FavoriteResponse.of(favorite);
+        return new FavoriteResponse(favorite);
 
     }
 
@@ -53,7 +54,7 @@ public class FavoriteService {
         Member member = getMember(memberDetails);
         List<Favorite> favorites = getFavorites(member.getId());
         return favorites.stream()
-                .map(FavoriteResponse::of)
+                .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -67,22 +68,22 @@ public class FavoriteService {
 
     private Favorite getFavorite(Long memberId, Long sourceId, Long targetId) {
         return favoriteRepository.findByMemberIdAndSourceIdAndTargetId(memberId, sourceId, targetId)
-                .orElseThrow(() -> new IllegalArgumentException("CAN_NOT_FIND_FAVORITE"));
+                .orElseThrow(() -> new FavoriteException("CAN_NOT_FIND_FAVORITE"));
     }
 
     private List<Favorite> getFavorites(Long memberId) {
         return favoriteRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("CAN_NOT_FIND_FAVORITES_INFORMATION"));
+                .orElseThrow(() -> new FavoriteException("CAN_NOT_FIND_FAVORITES_INFORMATION"));
     }
 
     private Member getMember(MemberDetails memberDetails) {
         return memberRepository.findByEmail(memberDetails.getPrincipal())
-                .orElseThrow(() -> new IllegalArgumentException("CAN_NOT_FIND_MEMBER"));
+                .orElseThrow(() -> new FavoriteException("CAN_NOT_FIND_MEMBER"));
     }
 
     private Station getStation(Long stationId) {
         return stationRepository.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("CAN_NOT_FIND_STATION"));
+                .orElseThrow(() -> new FavoriteException("CAN_NOT_FIND_STATION"));
     }
 
     private void checkRegistUser(Long memberId, Favorite favorite) {
