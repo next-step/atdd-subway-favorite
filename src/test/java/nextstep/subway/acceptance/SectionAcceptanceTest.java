@@ -92,7 +92,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 일반_사용자_구간_제거_응답 = 일반_사용자_구간_제거_요청(신분당선, 정자역);
 
         // then
-        assertThat(일반_사용자_구간_제거_응답.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(일반_사용자_구간_제거_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("지하철 노선 구간 추가 - 유효하지 않은 권한으로 요청 테스트")
@@ -103,7 +103,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> 일반_사용자_구간_추가_응답 = 일반_사용자_구간_추가_요청(신분당선, createSectionCreateParams(양재역, 정자역));
-        assertThat(일반_사용자_구간_추가_응답.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(일반_사용자_구간_추가_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 일반_사용자_구간_추가_요청(Long lineId, Map<String, String> params) {

@@ -135,7 +135,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 일반_사용자_지하철_노선_삭제(createResponse.header("location"), userToken);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("지하철 노선 생성 - 유효하지 않은 권한으로 요청 테스트")
@@ -145,7 +145,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 일반_사용자_지하철_노선_생성("2호선", "green");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("지하철 노선 수정 - 유효하지 않은 권한으로 요청 테스트")
@@ -160,7 +160,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> updateResponse = 일반_사용자_지하철_노선_수정(createResponse.header("location"), params);
 
         // then
-        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 
