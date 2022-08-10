@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.MemberErrorMessage;
 import nextstep.subway.domain.Station;
+import nextstep.subway.domain.SubwayErrorMessage;
 import nextstep.subway.utils.AccountFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +29,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     Station 서초역;
     Station 남부터미널역;
 
-    Station 수원역;
-    Station 영통역;
-
     Long 이호선_ID;
     Long 삼호선_ID;
     Long 분당선_ID;
@@ -53,26 +51,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         adminToken = MemberSteps.로그인_되어_있음(AccountFixture.ADMIN_EMAIL, AccountFixture.ADMIN_PASSWORD);
         subscribeMemberToken = MemberSteps.로그인_되어_있음(AccountFixture.SUBSCRIPTION_EMAIL, AccountFixture.SUBSCRIPTION_PASSWORD);
 
-
         강남역 = StationSteps.지하철역_생성_요청("강남역").as(Station.class);
         교대역 = StationSteps.지하철역_생성_요청("교대역").as(Station.class);
         서초역 = StationSteps.지하철역_생성_요청("서초역").as(Station.class);
         남부터미널역 = StationSteps.지하철역_생성_요청("남부터미널역").as(Station.class);
 
-        수원역 = StationSteps.지하철역_생성_요청("수원역").as(Station.class);
-        영통역 = StationSteps.지하철역_생성_요청("영통역").as(Station.class);
-
         이호선_ID = LineSteps.지하철_노선_생성_요청("이호선", "green", adminToken).jsonPath().getLong("id");
         삼호선_ID = LineSteps.지하철_노선_생성_요청("삼호선", "orange", adminToken).jsonPath().getLong("id");
         분당선_ID = LineSteps.지하철_노선_생성_요청("분당선", "yellow", adminToken).jsonPath().getLong("id");
 
-        LineSteps.지하철_노선에_지하철_구간_생성_요청(이호선_ID, createSectionCreateParams(강남역.getId(), 교대역.getId(), 10), userToken);
-        LineSteps.지하철_노선에_지하철_구간_생성_요청(이호선_ID, createSectionCreateParams(교대역.getId(), 남부터미널역.getId(), 5), userToken);
+        LineSteps.지하철_노선에_지하철_구간_생성_요청(이호선_ID, createSectionCreateParams(강남역.getId(), 교대역.getId(), 10), adminToken);
+        LineSteps.지하철_노선에_지하철_구간_생성_요청(이호선_ID, createSectionCreateParams(교대역.getId(), 남부터미널역.getId(), 5), adminToken);
 
-        LineSteps.지하철_노선에_지하철_구간_생성_요청(삼호선_ID, createSectionCreateParams(강남역.getId(), 서초역.getId(), 3), userToken);
-        LineSteps.지하철_노선에_지하철_구간_생성_요청(삼호선_ID, createSectionCreateParams(서초역.getId(), 남부터미널역.getId(), 4), userToken);
+        LineSteps.지하철_노선에_지하철_구간_생성_요청(삼호선_ID, createSectionCreateParams(강남역.getId(), 서초역.getId(), 3), adminToken);
+        LineSteps.지하철_노선에_지하철_구간_생성_요청(삼호선_ID, createSectionCreateParams(서초역.getId(), 남부터미널역.getId(), 4), adminToken);
 
-        LineSteps.지하철_노선에_지하철_구간_생성_요청(분당선_ID, createSectionCreateParams(수원역.getId(), 영통역.getId(), 10), userToken);
     }
 
     /*
@@ -136,8 +129,60 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), userToken);
 
         //then
-        권한이_없는_유저로_즐겨찾기_조회_검증(즐겨찾기_조회_결과);
+        권한이_없는_유저_즐겨찾기_응답_검증(즐겨찾기_조회_결과);
     }
+
+    /* given 정기 구독 멤버가 즐겨찾기를 등록하고
+     * when  멤버 권한으로 즐겨찾기를 삭제한다.
+     * then  멤버 권한 유저는 즐겨찾기 리소스에 접근이 불가능 하므로 401 상태코드와 에러 메시지를 응답 받는다.
+     */
+    @Test
+    void 권한이_없는_유저가_즐겨찾기_삭제() {
+        //when
+        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), subscribeMemberToken);
+
+        //then
+        즐겨찾기_등록_검증(즐겨찾기_등록_결과);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_삭제(즐겨찾기_등록_결과.header("Location"), userToken);
+
+        //then
+        권한이_없는_유저_즐겨찾기_응답_검증(즐겨찾기_조회_결과);
+    }
+
+
+    /* when 멤버 권한 유저가 즐겨찾기를 등록한다.
+     * then  멤버 권한 유저는 즐겨찾기 리소스에 접근이 불가능 하므로 401 상태코드와 에러 메시지를 응답 받는다.
+     */
+    @Test
+    void 권한이_없는_유저가_즐겨찾기_등록() {
+        //when
+        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), userToken);
+
+        //then
+        권한이_없는_유저_즐겨찾기_응답_검증(즐겨찾기_등록_결과);
+    }
+
+    /*
+     * when 정기 구독 멤버가 등록되지 않은 역을 즐겨찾기로 등록한다
+     * then 등록되지 않은 역은 등록할 수 없기 때문에 400 상태코드와 역이 존재하지 않는다는 메세지를 응답받는다.
+     */
+    @Test
+    void 등록되지_않은_지하철역을_즐겨찾기로_등록() {
+        //when
+        Long 등록되지_않은_지하철역_ID = 200L;
+        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(등록되지_않은_지하철역_ID, 남부터미널역.getId(), subscribeMemberToken);
+
+        //then
+        등록되지_않은_역을_즐겨찾기로_등록_검증(즐겨찾기_등록_결과);
+    }
+
+    private void 등록되지_않은_역을_즐겨찾기로_등록_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).contains(SubwayErrorMessage.NOT_FOUND_STATION.getMessage());
+    }
+
 
     private void 즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -155,7 +200,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("message")).hasToString(MemberErrorMessage.NOT_FOUND_FAVORITE.getMessage());
     }
 
-    private void 권한이_없는_유저로_즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
+    private void 권한이_없는_유저_즐겨찾기_응답_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         assertThat(response.jsonPath().getString("message")).hasToString(MemberErrorMessage.UNAUTHORIZED.getMessage());
     }
