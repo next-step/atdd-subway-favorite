@@ -1,5 +1,7 @@
 package nextstep.auth.secured;
 
+import java.util.Objects;
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.aspectj.lang.JoinPoint;
@@ -24,6 +26,9 @@ public class SecuredAnnotationChecker {
         List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(Objects.isNull(authentication)) throw new RoleAuthenticationException("권한이 없습니다.");
+
         authentication.getAuthorities().stream()
                 .filter(values::contains)
                 .findFirst()
