@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LoginMemberService implements UserDetailsService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public LoginMemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -17,6 +17,6 @@ public class LoginMemberService implements UserDetailsService {
     @Override
     public User loadUserByUsername(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return User.of(member.getId().toString(), member.getPassword(), member.getRoles());
+        return User.of(member.getId(), member.getPassword(), member.getRoles());
     }
 }

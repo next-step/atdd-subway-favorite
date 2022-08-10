@@ -34,6 +34,6 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
             throw new AuthenticationException();
         }
 
-        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+        return new Authentication(userDetails.getUserId(), userDetails.getAuthorities());
     }
 }

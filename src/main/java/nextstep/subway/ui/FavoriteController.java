@@ -29,21 +29,21 @@ public class FavoriteController {
     @Secured({"ROLE_ADMIN","ROLE_MEMBER"})
     @PostMapping("/favorites")
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal User user, @RequestBody FavoriteRequest request) {
-        Long favoriteId = favoriteService.createFavorite(Long.valueOf(user.getEmail()), request.getSource(), request.getTarget());
+        Long favoriteId = favoriteService.createFavorite(user.getUserId(), request.getSource(), request.getTarget());
         return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
     }
 
     @Secured({"ROLE_ADMIN","ROLE_MEMBER"})
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal User user, @PathVariable Long id) {
-        favoriteService.deleteFavorite(Long.valueOf(user.getEmail()), id);
+        favoriteService.deleteFavorite(user.getUserId(), id);
         return ResponseEntity.noContent().build();
     }
 
     @Secured({"ROLE_ADMIN","ROLE_MEMBER"})
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal User user) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(Long.valueOf(user.getEmail()));
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(user.getUserId());
         return ResponseEntity.ok(favorites);
     }
 }

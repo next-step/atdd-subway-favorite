@@ -44,19 +44,19 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserDetails loginMember) {
-        MemberResponse member = memberService.findMember(Long.valueOf(loginMember.getEmail()));
+        MemberResponse member = memberService.findMember(loginMember.getUserId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal UserDetails loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(Long.valueOf(loginMember.getEmail()), param);
+        memberService.updateMember(loginMember.getUserId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal UserDetails loginMember) {
-        memberService.deleteMember(loginMember.getEmail());
+        memberService.deleteMember(loginMember.getUserId());
         return ResponseEntity.noContent().build();
     }
 }

@@ -27,7 +27,7 @@ public class TokenAuthenticationInterceptor extends AuthenticationNonChainingFil
 
     @Override
     protected void authenticate(UserDetails userDetails, HttpServletResponse response) throws IOException {
-        String token = jwtTokenProvider.createToken(userDetails.getEmail(), userDetails.getAuthorities());
+        String token = jwtTokenProvider.createToken(userDetails.getUserId(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

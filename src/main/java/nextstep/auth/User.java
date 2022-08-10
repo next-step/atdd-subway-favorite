@@ -3,16 +3,16 @@ package nextstep.auth;
 import java.util.List;
 
 public class User implements UserDetails {
-    private String email;
+    private Long userId;
     private String password;
     private List<String> authorities;
 
-    public static User of(String email, String password, List<String> roles) {
-        return new User(email, password, roles);
+    public static User of(Long userId, String password, List<String> roles) {
+        return new User(userId, password, roles);
     }
 
-    public static User of(String email, List<String> authorities) {
-        return new User(email, null, authorities);
+    public static User of(Long userId, List<String> authorities) {
+        return new User(userId, null, authorities);
     }
 
     public static User guest() {
@@ -22,15 +22,15 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String email, String password, List<String> authorities) {
-        this.email = email;
+    public User(Long userId, String password, List<String> authorities) {
+        this.userId = userId;
         this.password = password;
         this.authorities = authorities;
     }
 
     @Override
-    public String getEmail() {
-        return email;
+    public Long getUserId() {
+        return userId;
     }
 
     @Override
