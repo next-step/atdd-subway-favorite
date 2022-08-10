@@ -24,14 +24,14 @@ public class Favorite extends BaseTimeEntity {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    public Favorite() {
-
-    }
-
     public Favorite(Member member, Station source, Station target) {
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    protected Favorite() {
+
     }
 
     public Long getId() {
@@ -42,24 +42,12 @@ public class Favorite extends BaseTimeEntity {
         return member;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
     public Station getTarget() {
         return target;
     }
 
-    public void setTarget(Station target) {
-        this.target = target;
-    }
-
     public Station getSource() {
         return source;
-    }
-
-    public void setSource(Station source) {
-        this.source = source;
     }
 
 }
