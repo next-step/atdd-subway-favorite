@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.domain.MemberErrorMessage;
 import nextstep.subway.domain.Station;
 import nextstep.subway.utils.AccountFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     String userToken;
     String adminToken;
+    String subscribeMemberToken;
 
     Station 강남역;
     Station 교대역;
@@ -49,6 +51,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
         userToken = MemberSteps.로그인_되어_있음(AccountFixture.USER_EMAIL, AccountFixture.USER_PASSWORD);
         adminToken = MemberSteps.로그인_되어_있음(AccountFixture.ADMIN_EMAIL, AccountFixture.ADMIN_PASSWORD);
+        subscribeMemberToken = MemberSteps.로그인_되어_있음(AccountFixture.SUBSCRIPTION_EMAIL, AccountFixture.SUBSCRIPTION_PASSWORD);
+
 
         강남역 = StationSteps.지하철역_생성_요청("강남역").as(Station.class);
         교대역 = StationSteps.지하철역_생성_요청("교대역").as(Station.class);
@@ -72,7 +76,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /*
-     * when 두개의 역을 즐겨찾기로 등록하면
+     * when 정기 구독 멤버가 두개의 역을 즐겨찾기로 등록하면
      * then 201 상태코드와 LocationHeader 를 응답받는다.
      *
      * when LocationHeader 경로로 즐겨찾기를 조회하면
@@ -81,39 +85,58 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_등록_검증() {
         //when
-        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), userToken);
+        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), subscribeMemberToken);
 
         //then
         즐겨찾기_등록_검증(즐겨찾기_등록_결과);
 
         //when
-        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), userToken);
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
 
         //then
         즐겨찾기_조회_검증(즐겨찾기_조회_결과);
     }
 
     /*
-     * when 즐겨찾기를 등록한다
+     * when 정기 구독 멤버가 즐겨찾기를 등록한다
      * then 즐겨찾기 등록 결과를 검증한다.
-     * when 즐겨찾기를 삭제한다.
+     * when 정기 구독 멤버가 즐겨찾기를 삭제한다.
      * and  삭제된 아이디의 즐겨찾기를 조회한다.
      * then 400 상태코드와 즐겨찾기가 존재하지 않는다는 메세지를 응답받는다.
      */
     @Test
     void 즐겨찾기_삭제_검증() {
         //when
-        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), userToken);
+        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), subscribeMemberToken);
 
         //then
         즐겨찾기_등록_검증(즐겨찾기_등록_결과);
 
         //when
-        즐겨찾기_삭제(즐겨찾기_등록_결과.header("Location"), userToken);
-        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), userToken);
+        즐겨찾기_삭제(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
 
         //then
         즐겨찾기_삭제_검증(즐겨찾기_조회_결과);
+    }
+
+    /* given 정기 구독 멤버가 즐겨찾기를 등록하고
+     * when  멤버 권한으로 즐겨찾기를 조회한다.
+     * then  멤버 권한 유저는 즐겨찾기 리소스에 접근이 불가능 하므로 401 상태코드와 에러 메시지를 응답 받는다.
+     */
+    @Test
+    void 권한이_없는_유저가_즐겨찾기_조회() {
+        //when
+        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), subscribeMemberToken);
+
+        //then
+        즐겨찾기_등록_검증(즐겨찾기_등록_결과);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), userToken);
+
+        //then
+        권한이_없는_유저로_즐겨찾기_조회_검증(즐겨찾기_조회_결과);
     }
 
     private void 즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
@@ -129,7 +152,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_삭제_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.jsonPath().getString("message")).hasToString("즐겨찾기를 찾을 수 없습니다.");
+        assertThat(response.jsonPath().getString("message")).hasToString(MemberErrorMessage.NOT_FOUND_FAVORITE.getMessage());
+    }
+
+    private void 권한이_없는_유저로_즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.jsonPath().getString("message")).hasToString(MemberErrorMessage.UNAUTHORIZED.getMessage());
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {
