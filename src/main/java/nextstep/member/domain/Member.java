@@ -34,6 +34,10 @@ public class Member {
         return new Member(email, password, age, List.of(RoleType.ROLE_MEMBER.name()));
     }
 
+    public static Member createSubscription(String email, String password, Integer age) {
+        return new Member(email, password, age, List.of(RoleType.ROLE_MEMBER.name(), RoleType.ROLE_SUBSCRIPTION_MEMBER.name()));
+    }
+
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
