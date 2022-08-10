@@ -1,17 +1,17 @@
 package nextstep.favorite.application;
 
 import nextstep.auth.authentication.AuthenticationException;
+import nextstep.favorite.adapter.FavoriteRepository;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.dto.MemberFavoriteResponse;
 import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.FavoriteException;
+import nextstep.member.adapter.MemberRepository;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberDetails;
-import nextstep.member.domain.MemberRepository;
+import nextstep.subway.adapter.StationRepository;
 import nextstep.subway.domain.Station;
-import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

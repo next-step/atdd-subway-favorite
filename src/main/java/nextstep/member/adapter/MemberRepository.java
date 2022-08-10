@@ -1,5 +1,6 @@
-package nextstep.member.domain;
+package nextstep.member.adapter;
 
+import nextstep.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

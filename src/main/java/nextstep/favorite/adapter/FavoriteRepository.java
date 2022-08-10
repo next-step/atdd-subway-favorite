@@ -1,5 +1,6 @@
-package nextstep.favorite.domain;
+package nextstep.favorite.adapter;
 
+import nextstep.favorite.domain.Favorite;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

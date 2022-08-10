@@ -1,8 +1,8 @@
 package nextstep;
 
 import com.google.common.collect.Lists;
+import nextstep.member.adapter.MemberRepository;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
 import org.springframework.stereotype.Component;
 
