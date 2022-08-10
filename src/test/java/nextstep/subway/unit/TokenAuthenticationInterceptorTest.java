@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TokenAuthenticationInterceptorTest {
+    private static final Long USER_ID = 10L;
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     public static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
@@ -43,8 +44,8 @@ class TokenAuthenticationInterceptorTest {
 
     @BeforeEach
     void init() {
-        when(jwtTokenProvider.createToken(EMAIL, List.of(ROLE_MEMBER.name()))).thenReturn(JWT_TOKEN);
-        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new User(EMAIL, PASSWORD, List.of(ROLE_MEMBER.name())));
+        when(jwtTokenProvider.createToken(USER_ID, List.of(ROLE_MEMBER.name()))).thenReturn(JWT_TOKEN);
+        when(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(new User(USER_ID, PASSWORD, List.of(ROLE_MEMBER.name())));
 
         response = new MockHttpServletResponse();
     }
