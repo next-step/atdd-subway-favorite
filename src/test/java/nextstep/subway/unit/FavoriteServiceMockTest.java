@@ -70,28 +70,20 @@ public class FavoriteServiceMockTest {
         when(memberService.findMember(EMAIL))
             .thenReturn(new MemberResponse(1L, EMAIL, 20));
         when(favoriteRepository.save(any()))
-            .thenReturn(new Favorite(1L, 강남역.getId(), 역삼역.getId()));
-        when(favoriteRepository.findById(any()))
-            .thenReturn(Optional.of(new Favorite(1L, 강남역.getId(), 역삼역.getId())));
+            .thenReturn(new Favorite(1L, 강남역, 역삼역));
 
-        FavoriteResponse response = favoriteService.saveFavorite(EMAIL, new FavoriteRequest(강남역.getId(), 역삼역.getId()));
+        Favorite favorite = favoriteService.saveFavorite(EMAIL, new FavoriteRequest(강남역.getId(), 역삼역.getId()));
 
-        Favorite favorite = favoriteRepository.findById(response.getId()).get();
-
-        assertThat(favorite).isEqualTo(new Favorite(response.getId(), 1L,  강남역.getId(), 역삼역.getId()));
+        assertThat(favorite).isEqualTo(new Favorite(1L,  강남역, 역삼역));
     }
 
     @Test
     @DisplayName("즐겨찾기 목록을 조회합니다.")
     void findFavorites() {
-        when(stationService.findById(강남역.getId()))
-            .thenReturn(강남역);
-        when(stationService.findById(역삼역.getId()))
-            .thenReturn(역삼역);
         when(memberService.findMember(EMAIL))
             .thenReturn(new MemberResponse(1L, EMAIL, 20));
         when(favoriteRepository.findByMemberId(any()))
-            .thenReturn(List.of(new Favorite(1L, 강남역.getId(), 역삼역.getId())));
+            .thenReturn(List.of(new Favorite(1L, 강남역, 역삼역)));
 
         FavoriteResponse favoriteResponse = favoriteService.findFavorites(EMAIL).get(0);
 
@@ -101,9 +93,9 @@ public class FavoriteServiceMockTest {
 
     @Test
     @DisplayName("즐겨찾기 삭제 테스트")
-    void delteFavorite() {
+    void deleteFavorite() {
         when(favoriteRepository.findById(any()))
-            .thenReturn(Optional.of(new Favorite(1L, 강남역.getId(), 역삼역.getId())));
+            .thenReturn(Optional.of(new Favorite(1L, 강남역, 역삼역)));
         when(memberService.findMember(EMAIL))
             .thenReturn(new MemberResponse(1L, EMAIL, 20));
 
@@ -112,9 +104,9 @@ public class FavoriteServiceMockTest {
 
     @Test
     @DisplayName("즐겨찾기 삭제할때 자신꺼가 아닐때 에러를 반환합니다.")
-    void delteFavoriteException() {
+    void deleteFavoriteException() {
         when(favoriteRepository.findById(any()))
-            .thenReturn(Optional.of(new Favorite(2L, 강남역.getId(), 역삼역.getId())));
+            .thenReturn(Optional.of(new Favorite(2L, 강남역, 역삼역)));
         when(memberService.findMember(EMAIL))
             .thenReturn(new MemberResponse(1L, EMAIL, 20));
 
