@@ -19,8 +19,4 @@ public class ControllerExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(RoleAuthenticationException.class)
-    public ResponseEntity<Void> roleAuthenticationException(RoleAuthenticationException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
 }
