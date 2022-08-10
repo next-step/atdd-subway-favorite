@@ -1,6 +1,7 @@
 package nextstep.favorite.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
@@ -24,30 +25,22 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
 
     @Transactional
-    public FavoriteResponse saveFavorite(String email, FavoriteRequest favoriteRequest) {
+    public Favorite saveFavorite(String email, FavoriteRequest favoriteRequest) {
         Long memberId = memberService.findMember(email).getId();
 
-        Favorite favorite = new Favorite(memberId, favoriteRequest.getSource(), favoriteRequest.getTarget());
-        Favorite saveFavorite = favoriteRepository.save(favorite);
+        Station sourceStation = stationService.findById(favoriteRequest.getSource());
+        Station targetStation = stationService.findById(favoriteRequest.getTarget());
 
-        return createFavoriteResponse(saveFavorite);
-    }
+        Favorite favorite = new Favorite(memberId, sourceStation, targetStation);
 
-    private FavoriteResponse createFavoriteResponse(Favorite favorite) {
-        Station source = stationService.findById(favorite.getSource());
-        Station target = stationService.findById(favorite.getTarget());
-
-        return new FavoriteResponse(
-            favorite.getId(),
-            new FavoriteStationResponse(source.getId(), source.getName()),
-            new FavoriteStationResponse(target.getId(), target.getName()));
+        return favoriteRepository.save(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(String email) {
         Long memberId = memberService.findMember(email).getId();
 
         return favoriteRepository.findByMemberId(memberId).stream()
-            .map(favorite -> createFavoriteResponse(favorite))
+            .map(FavoriteResponse::of)
             .collect(Collectors.toList());
     }
 
