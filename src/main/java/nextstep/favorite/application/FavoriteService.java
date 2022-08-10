@@ -3,6 +3,7 @@ package nextstep.favorite.application;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.application.dto.MemberFavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.FavoriteException;
@@ -42,13 +43,20 @@ public class FavoriteService {
 
     }
 
-    public FavoriteResponse getFavorite(MemberDetails memberDetails, FavoriteRequest favoriteRequest) {
+    /*
+        public FavoriteResponse getFavorite(MemberDetails memberDetails, FavoriteRequest favoriteRequest) {
+            Member member = getMember(memberDetails);
+            Favorite favorite = getFavorite(member.getId(), favoriteRequest.getSource(), favoriteRequest.getTarget());
+
+            return new FavoriteResponse(favorite.getId());
+        }
+    */
+    public MemberFavoriteResponse getFavorite(MemberDetails memberDetails, FavoriteRequest favoriteRequest) {
         Member member = getMember(memberDetails);
         Favorite favorite = getFavorite(member.getId(), favoriteRequest.getSource(), favoriteRequest.getTarget());
 
-        return new FavoriteResponse(favorite.getId());
+        return new MemberFavoriteResponse(favorite.getId());
     }
-
 
     public List<FavoriteResponse> getFavorites(MemberDetails memberDetails) {
         Member member = getMember(memberDetails);

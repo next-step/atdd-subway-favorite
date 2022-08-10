@@ -5,6 +5,7 @@ import nextstep.auth.secured.Secured;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.application.dto.MemberFavoriteResponse;
 import nextstep.member.domain.MemberDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +30,18 @@ public class FavoriteController {
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
     }
 
+    /*
+        @GetMapping("/favorite")
+        @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
+        public ResponseEntity<FavoriteResponse> getFavorite(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody FavoriteRequest request) {
+            FavoriteResponse response = favoriteService.getFavorite(memberDetails, request);
+            return ResponseEntity.ok().body(response);
+        }
+    */
     @GetMapping("/favorite")
     @Secured({"ROLE_ADMIN", "ROLE_MEMBER"})
-    public ResponseEntity<FavoriteResponse> getFavorite(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody FavoriteRequest request) {
-        FavoriteResponse response = favoriteService.getFavorite(memberDetails, request);
+    public ResponseEntity<MemberFavoriteResponse> getMemberFavorite(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody FavoriteRequest request) {
+        MemberFavoriteResponse response = favoriteService.getFavorite(memberDetails, request);
         return ResponseEntity.ok().body(response);
     }
 
