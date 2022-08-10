@@ -1,5 +1,6 @@
 package nextstep.favorite.domain;
 
+import nextstep.favorite.util.BaseTimeEntity;
 import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
 

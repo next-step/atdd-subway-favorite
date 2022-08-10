@@ -1,6 +1,6 @@
 package nextstep.subway.domain;
 
-import nextstep.favorite.domain.BaseTimeEntity;
+import nextstep.favorite.util.BaseTimeEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
