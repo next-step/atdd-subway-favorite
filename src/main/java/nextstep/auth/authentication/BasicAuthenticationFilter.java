@@ -23,14 +23,12 @@ public class BasicAuthenticationFilter extends AuthenticationChainingFilter {
         String principal = splits[0];
         String credentials = splits[1];
 
-        AuthenticationToken token = new AuthenticationToken(principal, credentials);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(token.getPrincipal());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
         if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!userDetails.checkPassword(token.getCredentials())) {
+        if (!userDetails.checkPassword(credentials)) {
             throw new AuthenticationException();
         }
 
