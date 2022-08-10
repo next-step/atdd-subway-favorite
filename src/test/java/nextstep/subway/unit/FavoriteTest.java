@@ -2,6 +2,7 @@ package nextstep.subway.unit;
 
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Station;
+import nextstep.subway.exception.InvalidDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +28,6 @@ class FavoriteTest {
         //when & then
         assertThatThrownBy(
             () -> new Favorite(ID, MEMBER_ID, source, source)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidDataException.class);
     }
 }

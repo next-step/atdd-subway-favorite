@@ -1,5 +1,7 @@
 package nextstep.subway.domain;
 
+import nextstep.subway.exception.InvalidDataException;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +31,7 @@ public class Favorite {
     public Favorite(Long id, Long memberId, Station source, Station target) {
 
         if (source.equals(target)) {
-            throw new IllegalArgumentException();
+            throw new InvalidDataException();
         }
 
         this.id = id;
