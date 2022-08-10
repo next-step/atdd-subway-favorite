@@ -1,5 +1,6 @@
 package nextstep.auth.interceptor;
 
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public abstract class AuthenticationChainHandler implements HandlerInterceptor {
         Object handler) {
         try {
             String authCredentials = extractCredentials(request);
+
             validAuthCredentials(authCredentials);
 
             UserDetails userDetails = getUserDetails(authCredentials);
