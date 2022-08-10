@@ -6,6 +6,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -119,7 +120,7 @@ public class Sections {
         return upStations.stream()
                 .filter(it -> !downStations.contains(it))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NoSuchElementException::new);
     }
 
     private void addNewSectionForDelete(Optional<Section> upSection, Optional<Section> downSection) {

@@ -40,11 +40,12 @@ public class DatabaseCleanup implements InitializingBean {
     }
 
     @Transactional
-    public void execute() {
+    public void execute(String... tables) {
+        List<String> excludeTables = List.of(tables);
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
-        for (String tableName : tableNames) {
-            jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
-        }
+        tableNames.stream()
+                .filter(tableName -> !excludeTables.contains(tableName.toLowerCase()))
+                .forEach(tableName -> jdbcTemplate.execute("TRUNCATE TABLE " + tableName));
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
     }
 }

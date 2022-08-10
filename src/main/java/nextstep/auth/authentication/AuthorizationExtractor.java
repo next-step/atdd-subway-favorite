@@ -1,16 +1,16 @@
 package nextstep.auth.authentication;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
     public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
-
-    private AuthorizationExtractor() {
-    }
 
     public static String extract(HttpServletRequest request, AuthorizationType type) {
         String typeToLowerCase = type.toLowerCase();
@@ -32,4 +32,5 @@ public class AuthorizationExtractor {
 
         return Strings.EMPTY;
     }
+
 }

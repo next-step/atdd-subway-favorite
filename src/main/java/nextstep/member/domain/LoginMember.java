@@ -1,8 +1,13 @@
 package nextstep.member.domain;
 
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginMember {
     private String email;
     private String password;
@@ -18,15 +23,6 @@ public class LoginMember {
 
     public static LoginMember guest() {
         return new LoginMember();
-    }
-
-    public LoginMember() {
-    }
-
-    public LoginMember(String email, String password, List<String> authorities) {
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
     }
 
     public String getEmail() {

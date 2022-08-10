@@ -1,9 +1,13 @@
 package nextstep.member.domain;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +22,6 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
-
-    public Member() {
-    }
 
     public Member(String email, String password, Integer age) {
         this.email = email;
