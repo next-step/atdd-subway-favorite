@@ -37,10 +37,10 @@ class FavoriteServiceMockTest {
     private static final Member MEMBER = new Member(1L, "user@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name()));
     private static final long 강남역_ID = 1L;
     private static final long 역삼역_ID = 2L;
-    private static final Station 강남역 = new Station(강남역_ID,"강남역");
-    private static final Station 역삼역 = new Station(역삼역_ID,"역삼역");
+    private static final Station 강남역 = new Station(강남역_ID, "강남역");
+    private static final Station 역삼역 = new Station(역삼역_ID, "역삼역");
     private static final Favorite 즐겨찾기 = new Favorite(1L, MEMBER.getId(), 강남역, 역삼역);
-    private static final Favorite 다른_회원의_즐겨찾기 = new Favorite(1L, 999L, 강남역, 역삼역);
+    private static final Favorite 다른_회원의_즐겨찾기 = new Favorite(3L, 999L, 강남역, 역삼역);
     @Mock
     FavoriteRepository favoriteRepository;
     @Mock
