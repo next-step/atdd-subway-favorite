@@ -1,4 +1,4 @@
-package nextstep.member.ui.exception;
+package nextstep.common.exception;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
