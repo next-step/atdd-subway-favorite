@@ -93,6 +93,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회_검증(즐겨찾기_조회_결과);
     }
 
+    /*
+     * when 즐겨찾기를 등록한다
+     * then 즐겨찾기 등록 결과를 검증한다.
+     * when 즐겨찾기를 삭제한다.
+     * and  삭제된 아이디의 즐겨찾기를 조회한다.
+     * then 400 상태코드와 즐겨찾기가 존재하지 않는다는 메세지를 응답받는다.
+     */
+    @Test
+    void 즐겨찾기_삭제_검증() {
+        //when
+        ExtractableResponse<Response> 즐겨찾기_등록_결과 = 즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), userToken);
+
+        //then
+        즐겨찾기_등록_검증(즐겨찾기_등록_결과);
+
+        //when
+        즐겨찾기_삭제(즐겨찾기_등록_결과.header("Location"), userToken);
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), userToken);
+
+        //then
+        즐겨찾기_삭제_검증(즐겨찾기_조회_결과);
+    }
+
     private void 즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("target.name")).isEqualTo("강남역");
@@ -102,6 +125,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_등록_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotNull();
+    }
+
+    private void 즐겨찾기_삭제_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).hasToString("즐겨찾기를 찾을 수 없습니다.");
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, Integer distance) {
