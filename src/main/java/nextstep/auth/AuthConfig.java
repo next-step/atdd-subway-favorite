@@ -16,6 +16,8 @@ import java.util.List;
 
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
+    private static final String LOGIN_FORM = "/login/form";
+    private static final String LOGIN_TOKEN = "/login/token";
     private UserDetailService userDetailService;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -27,10 +29,10 @@ public class AuthConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
-        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(userDetailService)).addPathPatterns("/login/form");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailService, jwtTokenProvider)).addPathPatterns("/login/token");
-        registry.addInterceptor(new BasicAuthenticationFilter(userDetailService));
-        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider));
+        registry.addInterceptor(new UsernamePasswordAuthenticationFilter(userDetailService)).addPathPatterns(LOGIN_FORM);
+        registry.addInterceptor(new TokenAuthenticationInterceptor(userDetailService, jwtTokenProvider)).addPathPatterns(LOGIN_TOKEN);
+        registry.addInterceptor(new BasicAuthenticationFilter(userDetailService)).excludePathPatterns(LOGIN_FORM, LOGIN_TOKEN);
+        registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider)).excludePathPatterns(LOGIN_FORM, LOGIN_TOKEN);
     }
 
     @Override

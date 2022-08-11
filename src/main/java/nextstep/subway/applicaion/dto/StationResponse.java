@@ -9,14 +9,14 @@ public class StationResponse {
     private Long id;
     private String name;
 
-    public static StationResponse of(Station station) {
+    public static StationResponse from(Station station) {
         return new StationResponse(station.getId(), station.getName());
     }
 
     public static List<StationResponse> listOf(List<Station> stations) {
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::from)
+            .collect(Collectors.toList());
     }
 
     public StationResponse() {

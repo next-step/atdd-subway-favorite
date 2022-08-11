@@ -6,6 +6,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class LoginMemberService implements UserDetailService {
     private MemberRepository memberRepository;
@@ -15,7 +17,7 @@ public class LoginMemberService implements UserDetailService {
     }
 
     public LoginMember loadUserByUsername(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return LoginMember.of(member);
+        Optional<Member> member = memberRepository.findByEmail(email);
+        return member.map(LoginMember::of).orElse(null);
     }
 }

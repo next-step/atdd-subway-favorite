@@ -9,10 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
-import static nextstep.subway.acceptance.MemberSteps.ADMIN_EMAIL;
-import static nextstep.subway.acceptance.MemberSteps.MEMBER_EMAIL;
-import static nextstep.subway.acceptance.MemberSteps.PASSWORD;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -25,8 +22,8 @@ public class AcceptanceTest {
     @Autowired
     private DataLoader dataLoader;
 
-    protected String adminAccessToken;
-    protected String memberAccessToken;
+    protected static String adminAccessToken;
+    protected static String memberAccessToken;
 
     @BeforeEach
     public void setUp() {

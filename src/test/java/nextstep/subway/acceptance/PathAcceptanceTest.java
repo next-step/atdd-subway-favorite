@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
-import static nextstep.subway.acceptance.MemberSteps.ADMIN_EMAIL;
-import static nextstep.subway.acceptance.MemberSteps.PASSWORD;
-import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,12 +36,12 @@ class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        교대역 = 지하철역_생성_요청(adminAccessToken,"교대역").jsonPath().getLong("id");
-        강남역 = 지하철역_생성_요청(adminAccessToken,"강남역").jsonPath().getLong("id");
-        양재역 = 지하철역_생성_요청(adminAccessToken,"양재역").jsonPath().getLong("id");
-        남부터미널역 = 지하철역_생성_요청(adminAccessToken,"남부터미널역").jsonPath().getLong("id");
+        교대역 = 지하철역_생성_요청(adminAccessToken, "교대역").jsonPath().getLong("id");
+        강남역 = 지하철역_생성_요청(adminAccessToken, "강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청(adminAccessToken, "양재역").jsonPath().getLong("id");
+        남부터미널역 = 지하철역_생성_요청(adminAccessToken, "남부터미널역").jsonPath().getLong("id");
 
-        이호선 = 지하철_노선_생성_요청(adminAccessToken,"2호선", "green", 교대역, 강남역, 10);
+        이호선 = 지하철_노선_생성_요청(adminAccessToken, "2호선", "green", 교대역, 강남역, 10);
         신분당선 = 지하철_노선_생성_요청(adminAccessToken, "신분당선", "red", 강남역, 양재역, 10);
         삼호선 = 지하철_노선_생성_요청(adminAccessToken, "3호선", "orange", 교대역, 남부터미널역, 2);
 
@@ -63,13 +60,13 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 두_역의_최단_거리_경로_조회를_요청(Long source, Long target) {
         return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", source, target)
-                .then().log().all().extract();
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/paths?source={sourceId}&target={targetId}", source, target)
+            .then().log().all().extract();
     }
 
-    private Long 지하철_노선_생성_요청(String adminAccessToken, String name, String color, Long upStation, Long downStation, int distance) {
+    protected static Long 지하철_노선_생성_요청(String adminAccessToken, String name, String color, Long upStation, Long downStation, int distance) {
         Map<String, String> lineCreateParams;
         lineCreateParams = new HashMap<>();
         lineCreateParams.put("name", name);
@@ -81,7 +78,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         return LineSteps.지하철_노선_생성_요청(adminAccessToken, lineCreateParams).jsonPath().getLong("id");
     }
 
-    private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
+    protected static Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
         Map<String, String> params = new HashMap<>();
         params.put("upStationId", upStationId + "");
         params.put("downStationId", downStationId + "");
