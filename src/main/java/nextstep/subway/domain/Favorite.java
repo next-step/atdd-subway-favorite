@@ -15,11 +15,11 @@ public class Favorite {
     private Long id;
     private Long memberId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_station_id")
     private Station sourceStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
