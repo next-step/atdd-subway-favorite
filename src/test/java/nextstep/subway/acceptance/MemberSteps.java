@@ -109,4 +109,11 @@ public class MemberSteps {
     public static RequestSpecification givenLogin() {
         return givenLogin("admin@email.com", "password");
     }
+
+    public static RequestSpecification givenLoginToken(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth()
+                .oauth2(token);
+    }
 }

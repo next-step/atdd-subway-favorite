@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 
 import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,6 +28,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 신분당선;
     private Long 삼호선;
 
+    private final static String EMAIL = "admin@email.com";
+    private final static String PASSWORD = "password";
+    private String accessToken;
+
+
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -40,6 +46,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
 
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3));
+
+        accessToken = 로그인_성공(EMAIL, PASSWORD);
     }
 
     /**
@@ -210,7 +218,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         body.put("target", target);
 
         return MemberSteps
-                .givenLogin()
+                .givenLoginToken(accessToken)
                     .body(body)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().log().all()
@@ -221,7 +229,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 즐겨찾기_조회() {
         return MemberSteps
-                .givenLogin()
+                .givenLoginToken(accessToken)
                 .when().log().all()
                     .get("/favorites")
                 .then().log().all()
@@ -230,7 +238,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 즐겨찾기_삭제(Long favoriteId) {
         return MemberSteps
-                .givenLogin()
+                .givenLoginToken(accessToken)
                     .pathParam("id", favoriteId)
                 .when()
                     .delete("/favorites/{id}")
@@ -240,5 +248,22 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 상태_응답_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
+    }
+
+    private String 로그인_성공(String email, String password) {
+        var token = 로그인_되어_있음(email, password);
+        var response = RestAssured
+                .given().log().all()
+                    .auth()
+                    .oauth2(token)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                    .get("/members/me")
+                .then()
+                    .extract();
+
+        상태_응답_확인(response, HttpStatus.OK);
+
+        return token;
     }
 }
