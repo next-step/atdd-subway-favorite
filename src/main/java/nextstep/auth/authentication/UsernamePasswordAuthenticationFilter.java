@@ -2,15 +2,9 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 

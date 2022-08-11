@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.authentication.AbstractCreateAuthenticationFilter;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.member.application.LoginMemberService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

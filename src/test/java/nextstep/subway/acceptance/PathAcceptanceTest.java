@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.LineSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,9 +42,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_생성_요청("양재역", adminAccessToken).jsonPath().getLong("id");
         남부터미널역 = 지하철역_생성_요청("남부터미널역", adminAccessToken).jsonPath().getLong("id");
 
-        이호선 = 지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10);
-        신분당선 = 지하철_노선_생성_요청("신분당선", "red", 강남역, 양재역, 10);
-        삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
+        이호선 = 지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10, adminAccessToken);
+        신분당선 = 지하철_노선_생성_요청("신분당선", "red", 강남역, 양재역, 10, adminAccessToken);
+        삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2, adminAccessToken);
 
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3), adminAccessToken);
     }
@@ -62,24 +63,4 @@ class PathAcceptanceTest extends AcceptanceTest {
         return AcceptanceTest.get("/paths?source=" + source + "&target=" + target, token);
     }
 
-    private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
-        Map<String, Object> lineCreateParams;
-        lineCreateParams = new HashMap<>();
-        lineCreateParams.put("name", name);
-        lineCreateParams.put("color", color);
-        lineCreateParams.put("upStationId", upStation);
-        lineCreateParams.put("downStationId", downStation);
-        lineCreateParams.put("distance", distance);
-
-        return LineSteps.지하철_노선_생성_요청(lineCreateParams, adminAccessToken)
-                .jsonPath().getLong("id");
-    }
-
-    private Map<String, Object> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-        return params;
-    }
 }
