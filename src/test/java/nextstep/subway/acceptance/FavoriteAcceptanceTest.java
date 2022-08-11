@@ -56,7 +56,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var favoriteResponse = 즐겨찾기_조회();
         var favorites = favoriteResponse.jsonPath().getList(".", FavoriteResponse.class);
         assertAll(
-                () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> 상태_응답_확인(createResponse, HttpStatus.CREATED),
                 () -> assertThat(favorites).hasSize(1),
                 () -> assertThat(favorites.get(0).getSource().getId()).isEqualTo(교대역),
                 () -> assertThat(favorites.get(0).getTarget().getId()).isEqualTo(양재역)
@@ -74,7 +74,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var createResponse = 즐겨찾기_등록(교대역, 교대역);
 
         // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        상태_응답_확인(createResponse, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -89,7 +89,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var createResponse = 즐겨찾기_등록(교대역, 존재하지_않는_역);
 
         // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        상태_응답_확인(createResponse, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -112,7 +112,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var favoriteResponse = 즐겨찾기_조회();
         var favorites = favoriteResponse.jsonPath().getList(".", FavoriteResponse.class);
         assertAll(
-                () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> 상태_응답_확인(deleteResponse, HttpStatus.NO_CONTENT),
                 () -> assertThat(favorites).isEmpty()
         );
     }
@@ -140,7 +140,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                     .extract();;
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        상태_응답_확인(deleteResponse, HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -155,7 +155,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var deleteResponse = 즐겨찾기_삭제(favoriteIdNotExist);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        상태_응답_확인(deleteResponse, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -180,7 +180,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태_응답_확인(response, HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -201,7 +201,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                     .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태_응답_확인(response, HttpStatus.UNAUTHORIZED);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_등록(Long source, Long target) {
@@ -236,5 +236,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                     .delete("/favorites/{id}")
                 .then()
                     .extract();
+    }
+
+    private void 상태_응답_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 }
