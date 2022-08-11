@@ -29,7 +29,7 @@ public class FavoriteService {
     @Transactional
     public FavoriteResponse createFavorite(Long userId, Long source, Long target) {
         if (Objects.equals(source, target)) {
-            throw new InvalidFavoriteStationException();
+            throw new InvalidFavoriteStationException("즐겨찾기의 출발역과 도착역이 동일합니다.");
         }
 
         var sourceStation = getStation(source);
@@ -59,6 +59,7 @@ public class FavoriteService {
     }
 
     private Station getStation(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(InvalidFavoriteStationException::new);
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new InvalidFavoriteStationException("존재하지 않는 역입니다."));
     }
 }
