@@ -21,12 +21,12 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken, Long id) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/favorites")
+                .when().get("/favorites/{id}", id)
                 .then().log().all().extract();
     }
 

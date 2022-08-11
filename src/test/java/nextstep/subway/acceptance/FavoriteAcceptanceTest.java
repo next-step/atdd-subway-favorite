@@ -52,9 +52,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 조회한다.")
     @Test
     void getFavorites() {
-        즐겨찾기_생성_요청(사용자_token, 강남역, 양재역);
+        long id = 즐겨찾기_생성_요청(사용자_token, 강남역, 양재역).jsonPath().getLong("id");
 
-        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(사용자_token);
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(사용자_token, id);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getLong("source.id")).isEqualTo(강남역);
@@ -68,8 +68,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 제거한다.")
     @Test
     void deleteFavorite() {
-        즐겨찾기_생성_요청(사용자_token, 강남역, 양재역);
-        long id = 즐겨찾기_조회_요청(사용자_token).jsonPath().getLong("id");
+        long id = 즐겨찾기_생성_요청(사용자_token, 강남역, 양재역).jsonPath().getLong("id");
 
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(사용자_token, id);
 
@@ -83,8 +82,24 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 안한 유저는 즐겨찾기를 생성하지 못한다.")
     @Test
     void notLoginUser() {
-        String dummyToken = 로그인_되어_있음("dummy@email.com", "dummy");
+        String dummyToken = "A^d*fd#@$asf";
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(dummyToken, 강남역, 양재역);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * When 다른 사람의 즐겨찾기에 접근하려고 하면
+     * Then 401을 리턴한다.
+     */
+    @DisplayName("다른 사람의 즐겨찾기에 접근하지 못한다.")
+    @Test
+    void notAccessOtherFavorite() {
+        long id = 즐겨찾기_생성_요청(사용자_token, 강남역, 양재역).jsonPath().getLong("id");
+
+        String otherUserToken = 로그인_되어_있음("otherUser@email.com", "otherUser");
+
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(otherUserToken, id);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
