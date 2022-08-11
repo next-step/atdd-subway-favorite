@@ -7,7 +7,13 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AcceptanceTest.adminAccessToken;
+
 public class StationSteps {
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+        return 지하철역_생성_요청(adminAccessToken, name);
+    }
+
     public static ExtractableResponse<Response> 지하철역_생성_요청(String token, String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -18,6 +24,10 @@ public class StationSteps {
             .post("/stations")
             .then().log().all()
             .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_제거_요청(String location) {
+        return 지하철역_제거_요청(adminAccessToken, location);
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(String token, String location) {
