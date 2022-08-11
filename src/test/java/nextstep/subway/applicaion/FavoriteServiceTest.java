@@ -27,6 +27,8 @@ class FavoriteServiceTest {
     private FavoriteRepository favoriteRepository;
     private StationRepository stationRepository;
 
+    private final Long USER_ID = 123L;
+
     @BeforeEach
     void setUp() {
         favoriteRepository = mock(FavoriteRepository.class);
@@ -38,7 +40,6 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 등록")
     @Test
     void createFavorite() {
-        var userId = 123L;
         var source = createStation(1L, "출발역");
         var target = createStation(2L, "도착역");
         when(stationRepository.findById(source.getId()))
@@ -48,12 +49,12 @@ class FavoriteServiceTest {
         when(favoriteRepository.save(any(Favorite.class)))
                 .thenAnswer(args -> args.getArgument(0));
 
-        favoriteService.createFavorite(userId, source.getId(), target.getId());
+        favoriteService.createFavorite(USER_ID, source.getId(), target.getId());
 
         var captor = ArgumentCaptor.forClass(Favorite.class);
         assertAll(
                 () -> verify(favoriteRepository, times(1)).save(captor.capture()),
-                () -> assertThat(captor.getValue().getUserId()).isEqualTo(userId),
+                () -> assertThat(captor.getValue().getUserId()).isEqualTo(USER_ID),
                 () -> assertThat(captor.getValue().getSource()).isEqualTo(source),
                 () -> assertThat(captor.getValue().getTarget()).isEqualTo(target)
         );
@@ -62,17 +63,15 @@ class FavoriteServiceTest {
     @DisplayName("동일한 역에 대하여 즐겨찾기 등록 실패")
     @Test
     void createFavoriteFailsForSameStations() {
-        var userId = 123L;
         var source = createStation(1L, "출발역");
 
         assertThrows(InvalidFavoriteStationException.class,
-                () -> favoriteService.createFavorite(userId, source.getId(), source.getId()));
+                () -> favoriteService.createFavorite(USER_ID, source.getId(), source.getId()));
     }
 
     @DisplayName("존재하지 않는 역에 대하여 즐겨찾기 등록 실패")
     @Test
     void createFavoriteFailsForStationNotExist() {
-        var userId = 123L;
         var source = createStation(1L, "출발역");
         var target = createStation(2L, "도착역");
         when(stationRepository.findById(source.getId()))
@@ -81,20 +80,19 @@ class FavoriteServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(InvalidFavoriteStationException.class,
-                () -> favoriteService.createFavorite(userId, source.getId(), target.getId()));
+                () -> favoriteService.createFavorite(USER_ID, source.getId(), target.getId()));
     }
 
     @DisplayName("즐겨찾기 조회")
     @Test
     void getFavorites() {
-        var userId = 123L;
         var favorites = List.of(
-                new Favorite(1L, userId, createStation(1L, "강남역"), createStation(2L, "양재역"))
+                new Favorite(1L, USER_ID, createStation(1L, "강남역"), createStation(2L, "양재역"))
         );
-        when(favoriteRepository.findAllByUserId(userId))
+        when(favoriteRepository.findAllByUserId(USER_ID))
                 .thenReturn(favorites);
 
-        var result = favoriteService.getFavorites(userId);
+        var result = favoriteService.getFavorites(USER_ID);
 
         assertAll(
                 () -> assertThat(result).hasSize(1),
@@ -120,7 +118,7 @@ class FavoriteServiceTest {
     @Test
     void removeFavoriteFailsWhenUserIsNotMatch() {
         var userId = 987L;
-        var favorite = new Favorite(1L, 123L, createStation(1L, "강남역"), createStation(2L, "양재역"));
+        var favorite = new Favorite(1L, USER_ID, createStation(1L, "강남역"), createStation(2L, "양재역"));
         when(favoriteRepository.findById(favorite.getId()))
                 .thenReturn(Optional.of(favorite));
 
@@ -130,12 +128,11 @@ class FavoriteServiceTest {
     @DisplayName("존재하지 않는 즐겨찾기 삭제시 예외 발생")
     @Test
     void removeFavoriteFailsForIdNotExist() {
-        var userId = 123L;
         var favoriteIdNotExist = 123123L;
         when(favoriteRepository.findById(favoriteIdNotExist))
                 .thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> favoriteService.removeFavorite(userId, favoriteIdNotExist));
+        assertThrows(IllegalArgumentException.class, () -> favoriteService.removeFavorite(USER_ID, favoriteIdNotExist));
     }
 
     private Station createStation(Long id, String name) {
