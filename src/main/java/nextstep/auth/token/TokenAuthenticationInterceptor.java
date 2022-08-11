@@ -2,6 +2,7 @@ package nextstep.auth.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.auth.UserDetailsService;
 import nextstep.auth.authentication.AbstractCreateAuthenticationFilter;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.member.application.LoginMemberService;
@@ -14,8 +15,8 @@ import java.util.stream.Collectors;
 public class TokenAuthenticationInterceptor extends AbstractCreateAuthenticationFilter {
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        super(loginMemberService);
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
