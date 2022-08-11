@@ -1,9 +1,6 @@
 package nextstep.subway.applicaion.dto;
 
-import nextstep.subway.domain.Favorite;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import nextstep.subway.domain.Station;
 
 public class FavoriteResponse {
     private Long id;
@@ -16,17 +13,8 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse of(Long id, StationResponse source, StationResponse target) {
-        return new FavoriteResponse(id, source, target);
-    }
-
-    public static FavoriteResponse from(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), StationResponse.from(favorite.getSource()),
-            StationResponse.from(favorite.getTarget()));
-    }
-
-    public static List<FavoriteResponse> ofList(List<Favorite> favoriteList) {
-        return favoriteList.stream().map(FavoriteResponse::from).collect(Collectors.toList());
+    public static FavoriteResponse of(Long id, Station source, Station target) {
+        return new FavoriteResponse(id, StationResponse.from(source), StationResponse.from(target));
     }
 
     public Long getId() {

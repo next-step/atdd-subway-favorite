@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,13 +32,25 @@ public class FavoriteService {
         Long memberId = getMemberById(userDetails);
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Favorite favorite = favoriteRepository.save(Favorite.of(memberId, source, target));
-        return FavoriteResponse.from(favorite);
+        Favorite favorite = favoriteRepository.save(Favorite.of(memberId, source.getId(), target.getId()));
+        return convertToFavoriteResponse(favorite);
+    }
+
+    private FavoriteResponse convertToFavoriteResponse(Favorite favorite) {
+        return FavoriteResponse.of(favorite.getId(),
+            stationService.findById(favorite.getSourceId()),
+            stationService.findById(favorite.getTargetId()));
     }
 
     public List<FavoriteResponse> getFavoriteList(UserDetails userDetails) {
         Long memberId = getMemberById(userDetails);
-        return FavoriteResponse.ofList(favoriteRepository.findByMemberId(memberId));
+        return convertToFavoriteResponseList(favoriteRepository.findByMemberId(memberId));
+    }
+
+    private List<FavoriteResponse> convertToFavoriteResponseList(List<Favorite> favoriteList) {
+        return favoriteList.stream()
+            .map(favorite -> convertToFavoriteResponse(favorite))
+            .collect(Collectors.toList());
     }
 
     private Long getMemberById(UserDetails userDetails) {
@@ -46,17 +59,16 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(UserDetails userDetails, Long favoriteId) {
-        Favorite favorite = getAndValidate(userDetails, favoriteId);
+        Favorite favorite = getFavoriteById(favoriteId);
+        Long memberId = getMemberById(userDetails);
+        validateMemberFavorite(memberId, favorite);
         favoriteRepository.delete(favorite);
     }
 
-    private Favorite getAndValidate(UserDetails userDetails, Long favoriteId) {
-        Long memberId = getMemberById(userDetails);
-        Favorite favorite = getFavoriteById(favoriteId);
+    private static void validateMemberFavorite(Long memberId, Favorite favorite) {
         if (!favorite.isMembersFavorite(memberId)) {
             throw new IllegalArgumentException("사용자의 즐겨찾기가 아닙니다.");
         }
-        return favorite;
     }
 
     private Favorite getFavoriteById(Long favoriteId) {
@@ -64,7 +76,9 @@ public class FavoriteService {
     }
 
     public FavoriteResponse getFavorite(UserDetails userDetails, Long favoriteId) {
-        Favorite favorite = getAndValidate(userDetails, favoriteId);
-        return FavoriteResponse.from(favorite);
+        Favorite favorite = getFavoriteById(favoriteId);
+        Long memberId = getMemberById(userDetails);
+        validateMemberFavorite(memberId, favorite);
+        return convertToFavoriteResponse(favorite);
     }
 }
