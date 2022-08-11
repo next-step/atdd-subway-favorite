@@ -1,6 +1,7 @@
 package nextstep.auth.authentication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
@@ -15,10 +16,10 @@ import java.util.List;
 
 public abstract class AbstractCreateAuthenticationFilter implements HandlerInterceptor {
 
-    protected LoginMemberService loginMemberService;
+    protected UserDetailsService userDetailsService;
 
-    public AbstractCreateAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public AbstractCreateAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     protected abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request) throws IOException;
@@ -30,7 +31,7 @@ public abstract class AbstractCreateAuthenticationFilter implements HandlerInter
 
         AuthenticationToken authenticationToken = getAuthenticationToken(request);
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(authenticationToken.getPrincipal());
+        LoginMember loginMember = userDetailsService.loadUserByUsername(authenticationToken.getPrincipal());
 
         if(loginMember == null) {
             throw new AuthenticationException();

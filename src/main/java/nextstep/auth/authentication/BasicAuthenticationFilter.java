@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
@@ -7,10 +8,10 @@ import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BasicAuthenticationFilter extends AbstractValidateAuthenticationFilter<LoginMemberService> {
+public class BasicAuthenticationFilter extends AbstractValidateAuthenticationFilter<UserDetailsService> {
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        super(loginMemberService);
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        super(userDetailsService);
     }
 
     @Override

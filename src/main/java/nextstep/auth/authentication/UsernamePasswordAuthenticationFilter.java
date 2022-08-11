@@ -1,5 +1,6 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContext;
 import nextstep.auth.context.SecurityContextHolder;
@@ -24,8 +25,8 @@ import java.util.Objects;
  */
 public class UsernamePasswordAuthenticationFilter extends AbstractCreateAuthenticationFilter {
 
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        super(loginMemberService);
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
+        super(userDetailsService);
     }
 
     @Override

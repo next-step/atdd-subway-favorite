@@ -22,6 +22,8 @@ class TokenAuthenticationInterceptorTest {
 
     @Test
     void preHandle() throws IOException {
+
+
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {
