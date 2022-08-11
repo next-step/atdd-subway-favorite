@@ -25,19 +25,19 @@ public class FavoriteStep {
             .then().log().all().extract();
     }
 
-    protected static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Map<String, String> favoriteParam) {
+    protected static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long source, Long target) {
         return AcceptanceStep.oAuthRequest(token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(favoriteParam)
+            .body(Map.of("source", source, "target", target))
             .when()
             .post("/favorites")
             .then().log().all().extract();
     }
 
-    protected static ExtractableResponse<Response> 로그인하지_않고_즐겨찾기_생성_요청(Map<String, String> favoriteParam) {
+    protected static ExtractableResponse<Response> 로그인하지_않고_즐겨찾기_생성_요청(Long source, Long target) {
         return RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(favoriteParam)
+            .body(Map.of("source", source, "target", target))
             .when()
             .post("/favorites")
             .then().log().all().extract();

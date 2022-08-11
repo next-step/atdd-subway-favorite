@@ -44,9 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given 역이 생성되어 있다
-     * and 노선이 생성되어 있다
-     * and 구간이 생성되어 있다
+     * given 역, 노선, 구간이 생성되어 있다.
      * and 사용자가 로그인되어 있다
      * when 즐겨찾기를 추가한다.
      * then 201이 응답된다.
@@ -54,20 +52,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 생성 요청 테스트")
     @Test
     void createFavoriteTest() {
-        //given
         Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
 
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(memberAccessToken, 교대역, 강남역);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     /**
-     * given 역이 생성되어 있다
-     * and 노선이 생성되어 있다
-     * and 구간이 생성되어 있다
+     * given 역, 노선, 구간이 생성되어 있다.
      * and 사용자가 로그인되어 있다
      * when 즐겨찾기를 추가한다.
      * then 즐겨찾기 조회시 추가한 즐겨찾기가 조회된다.
@@ -76,8 +71,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavoriteAndGetFavoriteTest() {
         //given
-        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
-        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        즐겨찾기_생성_요청(memberAccessToken, 교대역, 강남역);
 
         //when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(memberAccessToken);
@@ -89,9 +83,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given 역이 생성되어 있다
-     * and 노선이 생성되어 있다
-     * and 구간이 생성되어 있다
+     * given 역, 노선, 구간이 생성되어 있다.
      * and 사용자가 로그인되어 있다
      * and 즐겨찾기가 추가되어 있다.
      * when 즐겨찾기를 삭제한다.
@@ -101,8 +93,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoriteTest() {
         //given
-        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
-        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        즐겨찾기_생성_요청(memberAccessToken, 교대역, 강남역);
         Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
 
         //when
@@ -116,8 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteNotMemberMatchFavoriteTest() {
         //given
-        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
-        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        즐겨찾기_생성_요청(memberAccessToken, 교대역, 강남역);
         Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
 
         //when
@@ -129,21 +119,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given 역이 생성되어 있다
-     * and 노선이 생성되어 있다
-     * and 구간이 생성되어 있다
+     * given 역, 노선, 구간이 생성되어 있다.
      * and 사용자가 로그인되어 있다
      * and 즐겨찾기가 추가되어 있다.
-     * when 즐겨찾기를 삭제한다.
-     * and 즐겨찾기를 조회한다.
+     * and 즐겨찾기를 삭제한다.
+     * when 즐겨찾기를 조회한다.
      * then Bad Request가 응답된다.
      */
     @DisplayName("즐겨찾기 삭제 테스트")
     @Test
     void deleteNonExistFavorite() {
         //given
-        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
-        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        즐겨찾기_생성_요청(memberAccessToken, 교대역, 강남역);
         Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
         즐겨찾기_삭제_요청(memberAccessToken, 즐겨찾기);
 
@@ -154,12 +141,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    /**
+     * when 로그인하지 않은 상태에서 즐겨찾기 생성 요청
+     * then UNAUTHORIZED가 응답된다
+     */
     @DisplayName("로그인하지 않은 상태에서 즐겨찾기 생성 테스트")
     @Test
     void createFavoriteWithoutLogin() {
         //given //when
-        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
-        ExtractableResponse<Response> response = 로그인하지_않고_즐겨찾기_생성_요청(favoriteParam);
+        ExtractableResponse<Response> response = 로그인하지_않고_즐겨찾기_생성_요청(교대역, 강남역);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -169,8 +159,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoriteWithoutLogin() {
         //given
-        Map<String, String> favoriteParam = Map.of("source", 교대역 + "", "target", 강남역 + "");
-        즐겨찾기_생성_요청(memberAccessToken, favoriteParam);
+        즐겨찾기_생성_요청(memberAccessToken, 교대역, 강남역);
         Long 즐겨찾기 = 즐겨찾기_조회_요청(memberAccessToken).jsonPath().getList("id", Long.class).get(0);
 
         //when

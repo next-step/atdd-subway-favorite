@@ -12,12 +12,12 @@ public class StationSteps {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         return AcceptanceStep.oAuthRequest(token)
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/stations")
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(String token, String location) {
