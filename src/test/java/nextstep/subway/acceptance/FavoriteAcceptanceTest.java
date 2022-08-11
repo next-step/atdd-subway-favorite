@@ -33,6 +33,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         사용자_token = 로그인_되어_있음("user@email.com", "user");
     }
 
+    /**
+     * When 즐겨찾기 생성 요청을 하면
+     * Then 성공한다.
+     */
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void createFavorite() {
@@ -41,6 +45,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    /**
+     * When 즐겨찾기를 만들고, 조회 요청을 하면
+     * Then 보여준다.
+     */
     @DisplayName("즐겨찾기를 조회한다.")
     @Test
     void getFavorites() {
@@ -53,6 +61,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getLong("target.id")).isEqualTo(양재역);
     }
 
+    /**
+     * When 즐겨찾기를 만들고, 삭제 요청을 하면
+     * Then 삭제된다.
+     */
     @DisplayName("즐겨찾기를 제거한다.")
     @Test
     void deleteFavorite() {
@@ -64,6 +76,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * When 로그인 정보가 없는 유저가 접근하려고 하면
+     * Then 401을 리턴한다.
+     */
     @DisplayName("로그인 안한 유저는 즐겨찾기를 생성하지 못한다.")
     @Test
     void notLoginUser() {
