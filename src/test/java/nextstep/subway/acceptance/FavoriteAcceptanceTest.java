@@ -33,21 +33,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_생성_요청(관리자, "양재역").jsonPath().getLong("id");
     }
 
-    /**
-     * when: 즐겨찾기 생성 요청을 하면
-     * then: 즐겨찾기가 생성됨
-     *
-     * when: 생성한 즐겨찾기를 조회 요청하면
-     * then: 해당 즐겨찾기 정보가 조회됨
-     *
-     * given: 즐겨찾기를 하나 더 생성 요청하고
-     * when: 즐겨찾기 목록을 조회 요청하면
-     * then: 즐겨찾기 목록이 조회됨
-     *
-     * when: 생성한 즐겨찾기를 삭제 요청하면
-     * then: 해당 즐겨찾기가 삭제됨
-     * then: 해당 즐겨찾기를 찾을 수 없음
-     */
     @Test
     @DisplayName("유저가 즐겨찾기를 관리한다.")
     void userManageFavorites() {
@@ -67,21 +52,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         찾을수없음(삭제된_즐겨찾기_조회_정보);
     }
 
-    /**
-     * given: 즐겨찾기를 생성하고,
-     *
-     * when: 즐겨찾기 생성 요청을 하면
-     * then: 권한이 없음
-     *
-     * when: 생성되어있는 즐겨찾기를 조회 요청하면
-     * then: 권한이 없음
-     *
-     * when: 즐겨찾기 목록을 조회 요청하면
-     * then: 권한이 없음
-     *
-     * when: 생성한 즐겨찾기를 삭제 요청하면
-     * then: 권한이 없음
-     */
     @Test
     @DisplayName("사용자, 관리자가 아닌 경우 즐겨찾기를 관리할 수 없다.")
     void invalidUserManageFavorites() {
