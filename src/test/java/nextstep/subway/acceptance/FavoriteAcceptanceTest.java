@@ -70,7 +70,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("즐겨찾기 조회")
     @Test
-    void getsFavorites() {
+    void getFavorites() {
 
         // given (교대역 -> 양재역)
         즐겨찾기_등록_요청(교대역, 양재역, adminAccessToken);
