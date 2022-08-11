@@ -80,7 +80,7 @@ public class FavoriteServiceTest {
         신분당선 = lineRepository.save(red);
     }
 
-    public FavoriteRequest 즐겨찾기_등록_요청_param(Long source, Long target) {
+    public FavoriteRequest createFavoriteRequestParams(Long source, Long target) {
         FavoriteRequest favoriteRequest = new FavoriteRequest();
         ReflectionTestUtils.setField(favoriteRequest, "source", source);
         ReflectionTestUtils.setField(favoriteRequest, "target", target);
@@ -92,7 +92,7 @@ public class FavoriteServiceTest {
     void registerFavorite() {
 
         //given
-        FavoriteRequest favoriteRequest = 즐겨찾기_등록_요청_param(교대역.getId(), 양재역.getId());
+        FavoriteRequest favoriteRequest = createFavoriteRequestParams(교대역.getId(), 양재역.getId());
 
         //when
         Long 즐겨찾기식별자 = favoriteService.registerFavorite(favoriteRequest);
@@ -106,8 +106,8 @@ public class FavoriteServiceTest {
     void getFavorites() {
 
         //given
-        favoriteService.registerFavorite(즐겨찾기_등록_요청_param(교대역.getId(), 양재역.getId()));
-        favoriteService.registerFavorite(즐겨찾기_등록_요청_param(남부터미널역.getId(), 양재역.getId()));
+        favoriteService.registerFavorite(createFavoriteRequestParams(교대역.getId(), 양재역.getId()));
+        favoriteService.registerFavorite(createFavoriteRequestParams(남부터미널역.getId(), 양재역.getId()));
 
         //when
         List<FavoriteResponse> favorites = favoriteService.getFavorites();
@@ -126,7 +126,7 @@ public class FavoriteServiceTest {
     void deleteFavorite() {
 
         //given
-        FavoriteRequest favoriteRequest = 즐겨찾기_등록_요청_param(교대역.getId(), 양재역.getId());
+        FavoriteRequest favoriteRequest = createFavoriteRequestParams(교대역.getId(), 양재역.getId());
 
         Long 즐겨찾기식별자 = favoriteService.registerFavorite(favoriteRequest);
 
