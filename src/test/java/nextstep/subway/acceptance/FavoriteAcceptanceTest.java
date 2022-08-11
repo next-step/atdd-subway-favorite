@@ -84,10 +84,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_등록_검증(즐겨찾기_등록_결과);
 
         //when
-        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_단일_조회(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
 
         //then
-        즐겨찾기_조회_검증(즐겨찾기_조회_결과);
+        즐겨찾기_조회_검증(즐겨찾기_조회_결과, 강남역.getName(), 남부터미널역.getName());
     }
 
     /*
@@ -107,11 +107,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //when
         즐겨찾기_삭제(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
-        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_단일_조회(즐겨찾기_등록_결과.header("Location"), subscribeMemberToken);
 
         //then
         즐겨찾기_삭제_검증(즐겨찾기_조회_결과);
     }
+
 
     /* given 정기 구독 멤버가 즐겨찾기를 등록하고
      * when  멤버 권한으로 즐겨찾기를 조회한다.
@@ -126,7 +127,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_등록_검증(즐겨찾기_등록_결과);
 
         //when
-        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(즐겨찾기_등록_결과.header("Location"), userToken);
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_단일_조회(즐겨찾기_등록_결과.header("Location"), userToken);
 
         //then
         권한이_없는_유저_즐겨찾기_응답_검증(즐겨찾기_조회_결과);
@@ -183,11 +184,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("message")).contains(SubwayErrorMessage.NOT_FOUND_STATION.getMessage());
     }
 
-
-    private void 즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
+    private void 즐겨찾기_목록_조회_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getString("target.name")).isEqualTo("강남역");
-        assertThat(response.jsonPath().getString("source.name")).isEqualTo("남부터미널역");
+        assertThat(response.jsonPath().getLong("id")).isEqualTo("강남역");
+    }
+
+
+    private void 즐겨찾기_조회_검증(ExtractableResponse<Response> response, String targetName, String sourceName) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("target.name")).isEqualTo(targetName);
+        assertThat(response.jsonPath().getString("source.name")).isEqualTo(sourceName);
     }
 
     private void 즐겨찾기_등록_검증(ExtractableResponse<Response> response) {
