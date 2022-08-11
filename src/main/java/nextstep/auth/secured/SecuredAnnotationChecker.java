@@ -24,6 +24,11 @@ public class SecuredAnnotationChecker {
         List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            throw new RoleAuthenticationException("권한이 없습니다.");
+        }
+
         authentication.getAuthorities().stream()
             .filter(values::contains)
             .findFirst()
