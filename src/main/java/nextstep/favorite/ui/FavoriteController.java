@@ -1,5 +1,6 @@
 package nextstep.favorite.ui;
 
+import nextstep.auth.secured.Secured;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -20,17 +21,20 @@ public class FavoriteController {
     }
 
     @PostMapping
+    @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     public ResponseEntity<Void> registerFavorite(@RequestBody FavoriteRequest favoriteRequest) {
         Long id = favoriteService.registerFavorite(favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + id)).build();
     }
 
     @GetMapping
+    @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     public ResponseEntity<List<FavoriteResponse>> getFavorites() {
         return ResponseEntity.ok().body(favoriteService.getFavorites());
     }
 
     @DeleteMapping("/{id}")
+    @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     public ResponseEntity<Void> deleteFavorite(@PathVariable Long id) {
         boolean isDeleted = favoriteService.deleteFavorite(id);
         return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.internalServerError().build();

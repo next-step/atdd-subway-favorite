@@ -43,9 +43,25 @@ public class AcceptanceTest {
         memberAccessToken = MemberSteps.로그인_되어_있음(MEMBER_EMAIL, MEMBER_PASSWORD);
     }
 
+    public static ExtractableResponse<Response> get(final String url) {
+        return RestAssured.given().log().all()
+                .when().get(url)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> get(final String url, final String token) {
         return AuthSteps.given(token)
                 .when().get(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> post(final String url, final Map<String, Object> params) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post(url)
                 .then().log().all()
                 .extract();
     }
@@ -64,6 +80,13 @@ public class AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(url)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> delete(final String url) {
+        return RestAssured.given().log().all()
+                .when().delete(url)
                 .then().log().all()
                 .extract();
     }
