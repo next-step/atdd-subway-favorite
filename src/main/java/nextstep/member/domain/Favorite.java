@@ -25,22 +25,21 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     private Long sourceId;
 
     private Long targetId;
 
-    public Favorite(Member member, Long sourceId, Long targetId) {
-        this.member = member;
+    public Favorite(Long memberId, Long sourceId, Long targetId) {
+        this.memberId = memberId;
         this.sourceId = sourceId;
         this.targetId = targetId;
     }
 
-    public static Favorite of(Member member, Long sourceId, Long targetId) {
-        return  new Favorite(member, sourceId, targetId);
+    public static Favorite of(Long memberId, Long sourceId, Long targetId) {
+        return  new Favorite(memberId, sourceId, targetId);
     }
 
     @Override
@@ -48,12 +47,12 @@ public class Favorite {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Favorite favorite = (Favorite) o;
-        return Objects.equals(member, favorite.member) && Objects.equals(sourceId, favorite.sourceId) && Objects.equals(targetId, favorite.targetId);
+        return Objects.equals(memberId, favorite.memberId) && Objects.equals(sourceId, favorite.sourceId) && Objects.equals(targetId, favorite.targetId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(member, sourceId, targetId);
+        return Objects.hash(memberId, sourceId, targetId);
     }
 
     public void validFavorite() {

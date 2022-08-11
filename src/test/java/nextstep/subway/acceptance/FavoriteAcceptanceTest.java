@@ -91,6 +91,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /*
+     * when 정기 구독 멤버가 2개의 즐겨찾기를 등록한다
+     * when 정기 구독 멤버가 즐겨찾기 목록을 조회한다.
+     * then 응답 받은 리스트의 사이즈와 응답코드를 확인한다.
+     */
+    @Test
+    void 즐겨찾기_목록_조회_검증() {
+        //when
+        즐겨찾기_등록(강남역.getId(), 남부터미널역.getId(), subscribeMemberToken);
+        즐겨찾기_등록(서초역.getId(), 남부터미널역.getId(), subscribeMemberToken);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_목록_조회(subscribeMemberToken);
+
+        //then
+        int 검증할_리스트_길이 = 2;
+
+        즐겨찾기_목록_조회_검증(즐겨찾기_조회_결과, 검증할_리스트_길이);
+    }
+
+    /*
      * when 정기 구독 멤버가 즐겨찾기를 등록한다
      * then 즐겨찾기 등록 결과를 검증한다.
      * when 정기 구독 멤버가 즐겨찾기를 삭제한다.
@@ -184,9 +204,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("message")).contains(SubwayErrorMessage.NOT_FOUND_STATION.getMessage());
     }
 
-    private void 즐겨찾기_목록_조회_검증(ExtractableResponse<Response> response) {
+    private void 즐겨찾기_목록_조회_검증(ExtractableResponse<Response> response, int size) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getLong("id")).isEqualTo("강남역");
+        assertThat(response.jsonPath().getList("id")).hasSize(size);
     }
 
 
