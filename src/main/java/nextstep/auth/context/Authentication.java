@@ -17,6 +17,6 @@ public class Authentication implements Serializable {
     }
 
     public List<String> getAuthorities() {
-        return authorities;
+        return authorities == null ? List.of() : authorities;
     }
 }
