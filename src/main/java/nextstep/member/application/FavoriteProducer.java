@@ -9,13 +9,10 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberErrorMessage;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.ui.exception.FavoriteOwnerException;
-import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import nextstep.subway.domain.SubwayErrorMessage;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +53,7 @@ public class FavoriteProducer {
 
     private Map<Long, Station> extractStationsAs(List<Favorite> favorites) {
         Set<Long> stationIds = findStationIds(favorites);
-        List<Station> stations = stationRepository.findStationsByIds(stationIds);
+        List<Station> stations = stationRepository.findAllById(stationIds);
         return stations.stream().collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
