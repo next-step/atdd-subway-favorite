@@ -4,7 +4,6 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
-    private LoginMemberService loginMemberService;
+    private final LoginMemberService loginMemberService;
 
     public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
         this.loginMemberService = loginMemberService;
