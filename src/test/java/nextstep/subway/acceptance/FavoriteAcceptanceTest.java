@@ -199,6 +199,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         등록되지_않은_역을_즐겨찾기로_등록_검증(즐겨찾기_등록_결과);
     }
 
+    /*
+     * when 정기 구독 멤버가 등록되지 않은 즐겨찾기를 삭제한다.
+     * then 등록되지 않은 즐겨찾기는 삭제할 수 없다.
+     * and  400 상태코드와 즐겨찾기를 찾을 수 없다는 메세지를 응답 받는다.
+     */
+    @Test
+    void 등록되지_않은_즐겨찾기_삭제() {
+        String 등록되지_않은_즐겨찾기_삭제_URI = "/favorites/99";
+        ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제(등록되지_않은_즐겨찾기_삭제_URI, subscribeMemberToken);
+
+        등록되지_않은_즐겨찾기_삭제_검증(즐겨찾기_삭제_결과);
+    }
+
+    private void 등록되지_않은_즐겨찾기_삭제_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isEqualTo(MemberErrorMessage.NOT_FOUND_FAVORITE.getMessage());
+    }
+
     private void 등록되지_않은_역을_즐겨찾기로_등록_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.jsonPath().getString("message")).contains(SubwayErrorMessage.NOT_FOUND_STATION.getMessage());
