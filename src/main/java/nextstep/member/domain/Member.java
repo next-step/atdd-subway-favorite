@@ -26,13 +26,16 @@ public class Member {
     private List<String> roles;
 
     public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.roles = List.of(RoleType.ROLE_MEMBER.name());
+        this(null, email, password, age, List.of(RoleType.ROLE_MEMBER.name()));
     }
 
     public Member(String email, String password, Integer age, List<String> roles) {
+        this(null, email, password, age, roles);
+
+    }
+
+    public Member(Long id, String email, String password, Integer age, List<String> roles) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
@@ -57,6 +60,10 @@ public class Member {
 
     public List<String> getRoles() {
         return roles;
+    }
+
+    public boolean isSameId(Long memberId) {
+        return id == memberId;
     }
 
     public void update(Member member) {

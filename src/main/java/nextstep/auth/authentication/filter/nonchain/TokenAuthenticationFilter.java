@@ -20,10 +20,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends AuthenticationNonChainFilter {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     private final ProviderManager providerManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected AuthenticationToken createToken(HttpServletRequest request) throws IOException {
