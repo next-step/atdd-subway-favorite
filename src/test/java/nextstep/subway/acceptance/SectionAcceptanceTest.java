@@ -1,11 +1,13 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,11 +30,11 @@ class SectionAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_생성_요청(adminToken, "강남역").jsonPath().getLong("id");
-        양재역 = 지하철역_생성_요청(adminToken, "양재역").jsonPath().getLong("id");
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
 
         Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
-        신분당선 = 지하철_노선_생성_요청(adminToken, lineCreateParams).jsonPath().getLong("id");
+        신분당선 = 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
     }
 
     /**
@@ -43,8 +45,8 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection() {
         // when
-        Long 정자역 = 지하철역_생성_요청(adminToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        Long 정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
+        지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역));
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
@@ -60,11 +62,14 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionFail() {
         // when
-        Long 정자역 = 지하철역_생성_요청(adminToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        Long 정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createSectionCreateParams(양재역, 정자역))
+                .when().post("/lines/{lineId}/sections", 신분당선)
+                .then().log().all().extract();
 
         // then
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -77,11 +82,11 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection() {
         // given
-        Long 정자역 = 지하철역_생성_요청(adminToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        Long 정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
+        지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역));
 
         // when
-        지하철_노선에_지하철_구간_제거_요청(adminToken, 신분당선, 정자역);
+        지하철_노선에_지하철_구간_제거_요청(신분당선, 정자역);
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
@@ -98,14 +103,15 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSectionFail() {
         // given
-        Long 정자역 = 지하철역_생성_요청(adminToken, "정자역").jsonPath().getLong("id");
-        지하철_노선에_지하철_구간_생성_요청(adminToken, 신분당선, createSectionCreateParams(양재역, 정자역));
+        Long 정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
+        지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역));
 
         // when
-        지하철_노선에_지하철_구간_제거_요청(adminToken, 신분당선, 정자역);
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().delete("/lines/{lineId}/sections?stationId={stationId}", 신분당선, 정자역)
+                .then().log().all().extract();
 
         // then
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 

@@ -14,9 +14,6 @@ import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    protected String adminToken;
     @LocalServerPort
     int port;
 
@@ -31,7 +28,5 @@ public class AcceptanceTest {
         RestAssured.port = port;
         databaseCleanup.execute();
         dataLoader.loadData();
-
-        adminToken = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 }

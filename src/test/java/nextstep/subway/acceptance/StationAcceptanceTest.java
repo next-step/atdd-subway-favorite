@@ -7,8 +7,11 @@ import nextstep.subway.applicaion.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static nextstep.subway.acceptance.StationSteps.지하철역_삭제_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
@@ -25,7 +28,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(adminToken, "강남역");
+        ExtractableResponse<Response> response = 지하철역_생성_요청("강남역");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -47,7 +50,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationFail() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(adminToken, "강남역");
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "강남역");
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -62,8 +73,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        지하철역_생성_요청(adminToken, "강남역");
-        지하철역_생성_요청(adminToken, "역삼역");
+        지하철역_생성_요청("강남역");
+        지하철역_생성_요청("역삼역");
 
         // when
         ExtractableResponse<Response> stationResponse = RestAssured.given().log().all()
@@ -85,11 +96,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(adminToken, "강남역");
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역");
 
         // when
         String location = createResponse.header("location");
-        지하철역_삭제_요청(adminToken, location, "강남역");
+        지하철역_삭제_요청(location);
 
         // then
         List<String> stationNames =
@@ -109,11 +120,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStationFail() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(adminToken, "강남역");
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역");
 
         // when
         String location = createResponse.header("location");
-        ExtractableResponse<Response> response = 지하철역_삭제_요청(adminToken, location, "강남역");
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when()
+                .delete(location)
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());

@@ -24,7 +24,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(adminToken, "2호선", "green");
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -41,7 +41,14 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineFail() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청("invalidToken", "2호선", "green");
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "2호선");
+        params.put("color", "green");
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines")
+                .then().log().all().extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -56,8 +63,8 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        지하철_노선_생성_요청(adminToken, "2호선", "green");
-        지하철_노선_생성_요청(adminToken, "3호선", "orange");
+        지하철_노선_생성_요청("2호선", "green");
+        지하철_노선_생성_요청("3호선", "orange");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -76,7 +83,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(adminToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
@@ -95,13 +102,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(adminToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        RestAssured
-                .given().log().all()
+        authGiven().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -122,12 +128,12 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLineFail() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(adminToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        RestAssured
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -135,7 +141,6 @@ class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
 
         // then
-        ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -148,11 +153,10 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(adminToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        ExtractableResponse<Response> response = authGiven().log().all()
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 
@@ -169,7 +173,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLineFail() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(adminToken, "2호선", "green");
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
         ExtractableResponse<Response> response = RestAssured
