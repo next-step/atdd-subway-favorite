@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,6 +37,13 @@ public class FavoriteController {
     @Secured("ROLE_SUBSCRIPTION_MEMBER")
     public ResponseEntity<FavoriteResponse> findFavorite(@PathVariable Long id) {
         FavoriteResponse response = service.findFavorite(id);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping()
+    @Secured("ROLE_SUBSCRIPTION_MEMBER")
+    public ResponseEntity<List<FavoriteResponse>> findAll(@AuthenticationPrincipal UserDetails user) {
+        List<FavoriteResponse> response = service.findAll(user.getUsername());
         return ResponseEntity.ok().body(response);
     }
 

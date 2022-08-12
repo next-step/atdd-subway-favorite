@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.applicaion.dto.StationResponse;
-import nextstep.subway.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,5 +22,9 @@ public class FavoriteResponse {
                 StationResponse.of(favoriteDto.getTarget()),
                 StationResponse.of(favoriteDto.getSource())
         );
+    }
+
+    public static List<FavoriteResponse> of(List<FavoriteDto> favoriteDto) {
+        return favoriteDto.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 }

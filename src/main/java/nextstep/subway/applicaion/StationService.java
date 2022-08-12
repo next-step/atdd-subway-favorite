@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,5 +49,9 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException(SubwayErrorMessage.NOT_FOUND_STATION.getMessage() + " : ["+ id +"]")
         );
+    }
+
+    public List<Station> findAllByIds(Set<Long> ids) {
+        return stationRepository.findAllById(ids);
     }
 }
