@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.authentication.AbstractCreateAuthenticationFilter;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.member.application.LoginMemberService;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
@@ -14,10 +12,12 @@ import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends AbstractCreateAuthenticationFilter {
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
     public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = new ObjectMapper();
     }
 
 
@@ -34,7 +34,7 @@ public class TokenAuthenticationInterceptor extends AbstractCreateAuthentication
     protected String returnAuthenticationToken(String principal, List<String> authorities) throws JsonProcessingException {
         String token = jwtTokenProvider.createToken(principal, authorities);
         TokenResponse tokenResponse = new TokenResponse(token);
-        return new ObjectMapper().writeValueAsString(tokenResponse);
+        return this.objectMapper.writeValueAsString(tokenResponse);
     }
 
 }

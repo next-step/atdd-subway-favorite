@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.token.TokenRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
@@ -31,6 +32,11 @@ class TokenAuthenticationInterceptorTest {
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
         request.setContent(new ObjectMapper().writeValueAsString(tokenRequest).getBytes());
         return request;
+    }
+
+    private MockHttpServletResponse createMockResponse() throws IOException {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        return response;
     }
 
 }
