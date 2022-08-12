@@ -27,7 +27,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractCreateAuthenti
     }
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+    public AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         String email = request.getParameter(USERNAME);
         String password = request.getParameter(PASSWORD);
         if(!isExistAuthentication(email, password)) {
@@ -37,7 +37,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractCreateAuthenti
     }
 
     @Override
-    protected String returnAuthenticationToken(String principal, List<String> authorities) {
+    public String retrieveAuthenticationToken(String principal, List<String> authorities) {
         SecurityContextHolder.getContext().setAuthentication(new Authentication(principal, authorities));
         return "";
     }

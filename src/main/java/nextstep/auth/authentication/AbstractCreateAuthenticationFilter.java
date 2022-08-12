@@ -19,9 +19,9 @@ public abstract class AbstractCreateAuthenticationFilter implements HandlerInter
         this.userDetailsService = userDetailsService;
     }
 
-    protected abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request) throws IOException;
+    public abstract AuthenticationToken getAuthenticationToken(HttpServletRequest request) throws IOException;
 
-    protected abstract String returnAuthenticationToken(String principal, List<String> authorities) throws JsonProcessingException;
+    public abstract String retrieveAuthenticationToken(String principal, List<String> authorities) throws JsonProcessingException;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -38,7 +38,7 @@ public abstract class AbstractCreateAuthenticationFilter implements HandlerInter
             throw new AuthenticationException();
         }
 
-        String responseToClient = returnAuthenticationToken(userDetails.getEmail(), userDetails.getAuthorities());
+        String responseToClient = retrieveAuthenticationToken(userDetails.getEmail(), userDetails.getAuthorities());
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
