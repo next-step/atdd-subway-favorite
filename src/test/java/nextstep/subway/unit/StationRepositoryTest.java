@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-public class StationRepositoryTest {
+class StationRepositoryTest {
 
     @Autowired
     private StationRepository stationRepository;
@@ -35,6 +35,26 @@ public class StationRepositoryTest {
         강남역 = stationRepository.save(new Station("강남역"));
         병점역 = stationRepository.save(new Station("병점역"));
         선릉역 = stationRepository.save(new Station("선릉역"));
+    }
+
+    @Test
+    void findStationById() {
+        //when
+        Station findStation = stationRepository.findStationById(강남역.getId());
+
+        //then
+        assertThat(findStation.getName()).isEqualTo(강남역.getName());
+    }
+
+    @Test
+    void findStationByNotExistsId() {
+        //given
+        Long 등록되지_않은_ID = 99L;
+
+        //then
+        assertThatThrownBy(() -> stationRepository.findStationById(등록되지_않은_ID))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(SubwayErrorMessage.NOT_FOUND_STATION.getMessage());
     }
 
     @Test
@@ -57,9 +77,7 @@ public class StationRepositoryTest {
         Set<Long> 등록되지_않은_ID_목록 = getStationIds(99L, 88L, 77L);
 
         //then
-        assertThatThrownBy(() -> stationRepository.findAllById(등록되지_않은_ID_목록))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(SubwayErrorMessage.NOT_FOUND_STATION.getMessage());
+        assertThat(stationRepository.findStationsByIds(등록되지_않은_ID_목록)).hasSize(0);
     }
 
     private Set<Long> getStationIds(Long ...ids) {
