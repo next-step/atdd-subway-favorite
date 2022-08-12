@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,10 +18,12 @@ public class FavoriteService {
         return FavoriteResponse.of(favoriteProducer.saveFavorite(username, request));
     }
 
+    @Transactional(readOnly = true)
     public FavoriteResponse findFavorite(Long id) {
         return FavoriteResponse.of(favoriteProducer.findFavorite(id));
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(String username) {
         return FavoriteResponse.of(favoriteProducer.findAllByUsername(username));
     }

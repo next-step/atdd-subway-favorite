@@ -11,7 +11,11 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.member.ui.exception.FavoriteOwnerException;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
+import nextstep.subway.domain.StationRepository;
+import nextstep.subway.domain.SubwayErrorMessage;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -20,17 +24,17 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class FavoriteProducer {
     private final MemberRepository memberRepository;
-    private final StationService stationService;
+    private final StationRepository stationRepository;
     private final FavoriteRepository favoriteRepository;
 
     public FavoriteDto saveFavorite(String username, FavoriteRequest request) {
         Member findMember = findUserByUsername(username);
-        Station target = stationService.findById(request.getTarget());
-        Station source = stationService.findById(request.getSource());
+        Station target = findStationById(request.getTarget());
+        Station source = findStationById(request.getSource());
 
         Favorite saveFavorite = favoriteRepository.save(Favorite.of(findMember.getId(), target.getId(), source.getId()));
         return FavoriteDto.of(saveFavorite.getId(), target, source);
@@ -38,8 +42,8 @@ public class FavoriteProducer {
 
     public FavoriteDto findFavorite(Long id) {
         Favorite favorite = findById(id);
-        Station target = stationService.findById(favorite.getTargetId());
-        Station source = stationService.findById(favorite.getSourceId());
+        Station target = findStationById(favorite.getTargetId());
+        Station source = findStationById(favorite.getSourceId());
         return FavoriteDto.of(id, target, source);
     }
 
@@ -52,7 +56,7 @@ public class FavoriteProducer {
 
     private Map<Long, Station> extractStationsAs(List<Favorite> favorites) {
         Set<Long> stationIds = findStationIds(favorites);
-        List<Station> stations = stationService.findAllByIds(stationIds);
+        List<Station> stations = stationRepository.findStationsByIds(stationIds);
         return stations.stream().collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
@@ -65,8 +69,9 @@ public class FavoriteProducer {
         return stationIds;
     }
 
-    private Member findUserByUsername(String username) {
-        return memberRepository.findByEmail(username).orElseThrow(IllegalArgumentException::new);
+    public void deleteFavorite(Long id) {
+        checkExistsFavorite(id);
+        favoriteRepository.deleteById(id);
     }
 
     private Favorite findById(Long id) {
@@ -74,14 +79,19 @@ public class FavoriteProducer {
                 () -> new FavoriteOwnerException(MemberErrorMessage.NOT_FOUND_FAVORITE.getMessage()));
     }
 
-    public void deleteFavorite(Long id) {
-        checkExistsFavorite(id);
-        favoriteRepository.deleteById(id);
+    private Member findUserByUsername(String username) {
+        return memberRepository.findByEmail(username).orElseThrow(IllegalArgumentException::new);
     }
 
     private void checkExistsFavorite(Long id) {
         if (!favoriteRepository.existsById(id)) {
             throw new FavoriteOwnerException(MemberErrorMessage.NOT_FOUND_FAVORITE.getMessage());
         }
+    }
+
+    private Station findStationById(Long id) {
+        return stationRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException(SubwayErrorMessage.NOT_FOUND_STATION.getMessage())
+        );
     }
 }
