@@ -76,7 +76,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // when
         String location = createResponse.header("location");
         MemberSteps
-                .givenAdminLogin()
+                .givenLogin()
                 .delete(location)
                 .then().log().all()
                 .extract();

@@ -1,5 +1,6 @@
 package nextstep.auth.authorization;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.SimpleUser;
 import nextstep.auth.authentication.UserDetails;
 import nextstep.auth.context.Authentication;
@@ -20,7 +21,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public UserDetails resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            return new SimpleUser();
+            throw new AuthenticationException();
         }
 
         return new SimpleUser(authentication.getPrincipal().toString(), null, authentication.getAuthorities());

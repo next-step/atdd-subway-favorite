@@ -98,8 +98,19 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static RequestSpecification givenAdminLogin() {
-        var token = 로그인_되어_있음("admin@email.com", "password");
+    public static RequestSpecification givenLogin(String id, String password) {
+        var token = 로그인_되어_있음(id, password);
+        return RestAssured
+                .given().log().all()
+                .auth()
+                .oauth2(token);
+    }
+
+    public static RequestSpecification givenLogin() {
+        return givenLogin("admin@email.com", "password");
+    }
+
+    public static RequestSpecification givenLoginToken(String token) {
         return RestAssured
                 .given().log().all()
                 .auth()

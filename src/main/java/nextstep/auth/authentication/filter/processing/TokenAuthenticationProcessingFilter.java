@@ -18,10 +18,12 @@ import java.util.stream.Collectors;
 public class TokenAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
     private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
     public TokenAuthenticationProcessingFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -31,7 +33,7 @@ public class TokenAuthenticationProcessingFilter extends AuthenticationProcessin
                 .lines()
                 .collect(Collectors.joining(System.lineSeparator()));
 
-        var tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
+        var tokenRequest = objectMapper.readValue(content, TokenRequest.class);
 
         return new AuthenticationToken(tokenRequest.getEmail(), tokenRequest.getPassword());
     }
