@@ -34,6 +34,27 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * When 관리자 권한의 토큰 없이 지하철 노선을 생성하면
+     * Then 401 Unauthorized 응답을 받는다.
+     */
+    @DisplayName("지하철 노선 생성 실패 - 권한 없음")
+    @Test
+    void createLineFail() {
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "2호선");
+        params.put("color", "green");
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines")
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
      * Given 2개의 지하철 노선을 생성하고
      * When 지하철 노선 목록을 조회하면
      * Then 지하철 노선 목록 조회 시 2개의 노선을 조회할 수 있다.
@@ -86,8 +107,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("color", "red");
-        RestAssured
-                .given().log().all()
+        authGiven().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(createResponse.header("location"))
@@ -97,6 +117,31 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(createResponse);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("color")).isEqualTo("red");
+    }
+
+    /**
+     * Given 지하철 노선을 생성하고
+     * When 관리자 권한의 토큰 없이 지하철 노선을 수정하면
+     * Then 401 Unauthorized 응답을 받는다.
+     */
+    @DisplayName("지하철 노선 수정 실패 - 권한 없음")
+    @Test
+    void updateLineFail() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("color", "red");
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(createResponse.header("location"))
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -111,12 +156,32 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
 
         // when
+        ExtractableResponse<Response> response = authGiven().log().all()
+                .when().delete(createResponse.header("location"))
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Given 지하철 노선을 생성하고
+     * When 관리자 권한의 토큰 없이 지하철 노선을 삭제하면
+     * Then 401 Unauthorized 응답을 받는다.
+     */
+    @DisplayName("지하철 노선 삭제 실패 - 권한 없음")
+    @Test
+    void deleteLineFail() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청("2호선", "green");
+
+        // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

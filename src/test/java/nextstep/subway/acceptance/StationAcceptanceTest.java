@@ -7,15 +7,18 @@ import nextstep.subway.applicaion.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static nextstep.subway.acceptance.StationSteps.지하철역_삭제_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-
     /**
      * When 지하철역을 생성하면
      * Then 지하철역이 생성된다
@@ -37,6 +40,28 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).containsAnyOf("강남역");
+    }
+
+    /**
+     * When 관리자 권한의 토큰 없이 지하철역을 생성하면
+     * Then 401 Unauthorized 응답을 받는다.
+     */
+    @DisplayName("지하철역 생성 실패 - 권한 없음")
+    @Test
+    void createStationFail() {
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "강남역");
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -75,11 +100,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // when
         String location = createResponse.header("location");
-        RestAssured.given().log().all()
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        지하철역_삭제_요청(location);
 
         // then
         List<String> stationNames =
@@ -88,5 +109,28 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .then().log().all()
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
+    }
+
+    /**
+     * Given 지하철역을 생성하고
+     * When 관리자 권한의 토큰 없이 지하철역을 삭제하면
+     * Then 401 Unauthorized 응답을 받는다.
+     */
+    @DisplayName("지하철역 제거 실패 - 권한 없음")
+    @Test
+    void deleteStationFail() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청("강남역");
+
+        // when
+        String location = createResponse.header("location");
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when()
+                .delete(location)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
