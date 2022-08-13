@@ -4,10 +4,12 @@ import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import nextstep.subway.domain.SubwayErrorMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +46,12 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return stationRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException(SubwayErrorMessage.NOT_FOUND_STATION.getMessage() + " : ["+ id +"]")
+        );
+    }
+
+    public List<Station> findAllByIds(Set<Long> ids) {
+        return stationRepository.findAllById(ids);
     }
 }

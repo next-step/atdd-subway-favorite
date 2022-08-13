@@ -1,12 +1,15 @@
 package nextstep.auth;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nextstep.member.domain.Member;
 
 import java.util.List;
 
 @AllArgsConstructor
-public class User implements UserDetails{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User implements UserDetails {
 
     private String username;
     private String password;
@@ -16,6 +19,7 @@ public class User implements UserDetails{
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
+
     @Override
     public String getUsername() {
         return this.username;
@@ -33,5 +37,13 @@ public class User implements UserDetails{
 
     public static User from(Member member) {
         return new User(member.getEmail(), member.getPassword(), member.getRoles());
+    }
+
+    public static User of(String username, List<String> authorities) {
+        return new User(username, null, authorities);
+    }
+
+    public static User guest() {
+        return new User();
     }
 }

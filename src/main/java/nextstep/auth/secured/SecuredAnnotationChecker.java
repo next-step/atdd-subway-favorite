@@ -27,6 +27,6 @@ public class SecuredAnnotationChecker {
         authentication.getAuthorities().stream()
                 .filter(values::contains)
                 .findFirst()
-                .orElseThrow(() -> new RoleAuthenticationException("권한이 없습니다."));
+                .orElseThrow(RoleAuthenticationException::new);
     }
 }
