@@ -12,25 +12,29 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source")
     private Station source;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target")
     private Station target;
+
+    @Column(name = "member_id")
+    private Long memberId;
 
     protected Favorite() {
 
     }
 
-    private Favorite(Station source, Station target) {
+    private Favorite(Station source, Station target, Long memberId) {
         this.source = source;
         this.target = target;
+        this.memberId = memberId;
     }
 
-    public static Favorite register(Station source, Station target) {
-        return new Favorite(source, target);
+    public static Favorite register(Station source, Station target, Long memberId) {
+        return new Favorite(source, target, memberId);
     }
 
     public Long getId() {

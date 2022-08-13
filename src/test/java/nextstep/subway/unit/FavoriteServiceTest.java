@@ -3,6 +3,7 @@ package nextstep.subway.unit;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.member.domain.LoginMember;
 import nextstep.subway.applicaion.LineService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.StationRequest;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,6 +89,10 @@ public class FavoriteServiceTest {
         return favoriteRequest;
     }
 
+    public LoginMember createLoginMember() {
+        return new LoginMember("member@email.com", "password", Arrays.asList("ROLE_MEMBER"));
+    }
+
     @DisplayName("즐겨찾기 등록")
     @Test
     void registerFavorite() {
@@ -95,7 +101,7 @@ public class FavoriteServiceTest {
         FavoriteRequest favoriteRequest = createFavoriteRequestParams(교대역.getId(), 양재역.getId());
 
         //when
-        Long 즐겨찾기식별자 = favoriteService.registerFavorite(favoriteRequest);
+        Long 즐겨찾기식별자 = favoriteService.registerFavorite(createLoginMember(), favoriteRequest);
 
         //then
         assertThat(즐겨찾기식별자).isNotNull();
@@ -106,11 +112,12 @@ public class FavoriteServiceTest {
     void getFavorites() {
 
         //given
-        favoriteService.registerFavorite(createFavoriteRequestParams(교대역.getId(), 양재역.getId()));
-        favoriteService.registerFavorite(createFavoriteRequestParams(남부터미널역.getId(), 양재역.getId()));
+        LoginMember loginMember = createLoginMember();
+        favoriteService.registerFavorite(loginMember, createFavoriteRequestParams(교대역.getId(), 양재역.getId()));
+        favoriteService.registerFavorite(loginMember, createFavoriteRequestParams(남부터미널역.getId(), 양재역.getId()));
 
         //when
-        List<FavoriteResponse> favorites = favoriteService.getFavorites();
+        List<FavoriteResponse> favorites = favoriteService.getFavorites(loginMember);
 
         //then
         assertThat(favorites.size()).isEqualTo(2);
@@ -128,7 +135,7 @@ public class FavoriteServiceTest {
         //given
         FavoriteRequest favoriteRequest = createFavoriteRequestParams(교대역.getId(), 양재역.getId());
 
-        Long 즐겨찾기식별자 = favoriteService.registerFavorite(favoriteRequest);
+        Long 즐겨찾기식별자 = favoriteService.registerFavorite(createLoginMember(), favoriteRequest);
 
         //when
         boolean isDeleted = favoriteService.deleteFavorite(즐겨찾기식별자);

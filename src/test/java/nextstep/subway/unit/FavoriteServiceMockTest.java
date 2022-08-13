@@ -5,6 +5,9 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
@@ -31,6 +34,9 @@ import static org.mockito.Mockito.when;
 public class FavoriteServiceMockTest {
 
     @Mock
+    private MemberService memberService;
+
+    @Mock
     private StationService stationService;
 
     @Mock
@@ -43,9 +49,12 @@ public class FavoriteServiceMockTest {
     private Station 양재역;
     private Station 남부터미널역;
 
+    private Member member;
+
+
     @BeforeEach
     void setup() {
-        this.favoriteService = new FavoriteService(stationService, favoriteRepository);
+        this.favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
 
         교대역 = new Station("교대역");
         ReflectionTestUtils.setField(교대역, "id", 1L);
@@ -58,6 +67,9 @@ public class FavoriteServiceMockTest {
 
         남부터미널역 = new Station("남부터미널역");
         ReflectionTestUtils.setField(남부터미널역, "id", 4L);
+
+        member = new Member("member@email.com", "password", 20, Arrays.asList("ROLE_MEMBER"));
+        ReflectionTestUtils.setField(member, "id", 1L);
     }
 
     public FavoriteRequest createFavoriteRequestParams(Long source, Long target) {
@@ -67,20 +79,25 @@ public class FavoriteServiceMockTest {
         return favoriteRequest;
     }
 
+    public LoginMember createLoginMember() {
+        return new LoginMember("member@email.com", "password", Arrays.asList("ROLE_MEMBER"));
+    }
+
     @DisplayName("즐겨찾기 등록")
     @Test
     void registerFavorite() {
 
         // given
+        when(memberService.findByEmail("member@email.com")).thenReturn(member);
         when(stationService.findById(1L)).thenReturn(교대역);
         when(stationService.findById(3L)).thenReturn(양재역);
 
-        Favorite favorite = Favorite.register(교대역, 양재역);
+        Favorite favorite = Favorite.register(교대역, 양재역, member.getId());
         ReflectionTestUtils.setField(favorite, "id", 1L);
         when(favoriteRepository.save(any())).thenReturn(favorite);
 
         // when
-        Long 즐겨찾기식별자 = favoriteService.registerFavorite(createFavoriteRequestParams(교대역.getId(), 양재역.getId()));
+        Long 즐겨찾기식별자 = favoriteService.registerFavorite(createLoginMember(), createFavoriteRequestParams(교대역.getId(), 양재역.getId()));
 
         // then
         assertThat(즐겨찾기식별자).isNotNull();
@@ -91,16 +108,17 @@ public class FavoriteServiceMockTest {
     void getFavorites() {
 
         // given
-        Favorite 첫번째_즐겨찾기 = Favorite.register(교대역, 양재역);
+        Favorite 첫번째_즐겨찾기 = Favorite.register(교대역, 양재역, member.getId());
         ReflectionTestUtils.setField(첫번째_즐겨찾기, "id", 1L);
 
-        Favorite 두번째_즐겨찾기 = Favorite.register(남부터미널역, 양재역);
+        Favorite 두번째_즐겨찾기 = Favorite.register(남부터미널역, 양재역, member.getId());
         ReflectionTestUtils.setField(두번째_즐겨찾기, "id", 2L);
 
-        when(favoriteRepository.findAll()).thenReturn(Arrays.asList(첫번째_즐겨찾기, 두번째_즐겨찾기));
+        when(memberService.findByEmail(any())).thenReturn(member);
+        when(favoriteRepository.findByMemberId(member.getId())).thenReturn(Arrays.asList(첫번째_즐겨찾기, 두번째_즐겨찾기));
 
         // when
-        List<FavoriteResponse> favorites = favoriteService.getFavorites();
+        List<FavoriteResponse> favorites = favoriteService.getFavorites(createLoginMember());
 
         // then
         assertThat(favorites.size()).isEqualTo(2);
@@ -117,7 +135,7 @@ public class FavoriteServiceMockTest {
     void deleteFavorite() {
 
         // given
-        Favorite favorite = Favorite.register(교대역, 양재역);
+        Favorite favorite = Favorite.register(교대역, 양재역, member.getId());
         ReflectionTestUtils.setField(favorite, "id", 1L);
 
         when(favoriteRepository.findById(1L)).thenReturn(Optional.ofNullable(favorite));

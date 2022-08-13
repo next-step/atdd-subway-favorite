@@ -4,6 +4,9 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
@@ -17,23 +20,29 @@ import java.util.stream.Collectors;
 @Transactional
 public class FavoriteService {
 
+    private final MemberService memberService;
+
     private final StationService stationService;
     private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(final StationService stationService, final FavoriteRepository favoriteRepository) {
+
+    public FavoriteService(final MemberService memberService, final StationService stationService, final FavoriteRepository favoriteRepository) {
+        this.memberService = memberService;
         this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
     }
 
-    public Long registerFavorite(FavoriteRequest favoriteRequest) {
+    public Long registerFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
+        Member member = memberService.findByEmail(loginMember.getEmail());
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Favorite favorite = Favorite.register(source, target);
+        Favorite favorite = Favorite.register(source, target, member.getId());
         return favoriteRepository.save(favorite).getId();
     }
 
-    public List<FavoriteResponse> getFavorites() {
-        return favoriteRepository.findAll().stream()
+    public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
+        Member member = memberService.findByEmail(loginMember.getEmail());
+        return favoriteRepository.findByMemberId(member.getId()).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
