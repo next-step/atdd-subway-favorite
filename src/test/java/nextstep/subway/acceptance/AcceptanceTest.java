@@ -16,6 +16,8 @@ import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 public class AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
+    private static final String OTHER_EMAIL = "other@email.com";
+    private static final String OTHER_PASSWORD = "password123";
 
     @LocalServerPort
     int port;
@@ -23,6 +25,7 @@ public class AcceptanceTest {
     @Autowired
     private DatabaseCleanup databaseCleanup;
     String 관리자;
+    String 일반사용자;
     @Autowired
     private DataLoader dataLoader;
 
@@ -33,5 +36,6 @@ public class AcceptanceTest {
         dataLoader.loadData();
 
         관리자 = 로그인_되어_있음(EMAIL, PASSWORD);
+        일반사용자 = 로그인_되어_있음(OTHER_EMAIL, OTHER_PASSWORD);
     }
 }

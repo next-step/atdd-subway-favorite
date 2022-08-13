@@ -85,4 +85,29 @@ public class StationAcceptanceTest extends AcceptanceTest {
                         .extract().jsonPath().getList("name", String.class);
         assertThat(stationNames).doesNotContain("강남역");
     }
+
+    //예외 처리
+    @DisplayName("일반 사용자는 지하철역을 생성할 수 없다.")
+    @Test
+    void canNotCreateStationWithMemberToken() {
+        // when
+        ExtractableResponse<Response> response = 관리자로_지하철역_생성_요청(일반사용자, "강남역");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("일반 사용자는 지하철을 제거할 수 없다.")
+    @Test
+    void canNotDeleteStationWithMemberToken() {
+        // given
+        ExtractableResponse<Response> createResponse = 관리자로_지하철역_생성_요청(관리자, "강남역");
+
+        // when
+        ExtractableResponse<Response> response = 관리자로_지하철역_삭제_요청(일반사용자, createResponse.header("location"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }
