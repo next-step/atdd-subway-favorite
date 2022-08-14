@@ -3,9 +3,10 @@ package nextstep.subway.applicaion;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
-import nextstep.subway.domain.FavoriteRepository;
+import nextstep.subway.repository.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.exception.NotMyFavoriteException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,10 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(String email, FavoriteRequest request) {
-        Station source = stationRepository.findById(request.getSource()).orElseThrow(IllegalArgumentException::new);
-        Station target = stationRepository.findById(request.getTarget()).orElseThrow(IllegalArgumentException::new);
+        Station source = stationRepository.findById(request.getSource())
+                .orElseThrow(() -> new NotFoundStationException("잘못된 source id입니다."));
+        Station target = stationRepository.findById(request.getTarget())
+                .orElseThrow(() -> new NotFoundStationException("잘못된 target id입니다."));
 
         Favorite save = favoriteRepository.save(new Favorite(email, source, target));
         return FavoriteResponse.of(save);

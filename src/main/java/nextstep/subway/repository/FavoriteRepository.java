@@ -1,5 +1,6 @@
-package nextstep.subway.domain;
+package nextstep.subway.repository;
 
+import nextstep.subway.domain.Favorite;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
