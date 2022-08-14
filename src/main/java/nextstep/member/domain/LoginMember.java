@@ -3,12 +3,13 @@ package nextstep.member.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nextstep.auth.userdetail.UserDetails;
 
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginMember {
+public class LoginMember implements UserDetails {
     private String email;
     private String password;
     private List<String> authorities;
@@ -29,6 +30,17 @@ public class LoginMember {
         return email;
     }
 
+    @Override
+    public String getPrincipal() {
+        return email;
+    }
+
+    @Override
+    public boolean isInvalidCredentials(String credentials) {
+        return !checkPassword(credentials);
+    }
+
+    @Override
     public List<String> getAuthorities() {
         return authorities;
     }
