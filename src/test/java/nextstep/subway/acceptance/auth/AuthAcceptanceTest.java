@@ -5,19 +5,17 @@ import io.restassured.response.Response;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.auth.AuthSteps.베어러_인증으로_회원_정보_조회;
 import static nextstep.subway.acceptance.auth.AuthSteps.베이직_인증으로_회원_정보_조회;
 import static nextstep.subway.acceptance.auth.AuthSteps.폼_로그인_후_회원_정보_조회;
-import static nextstep.subway.acceptance.member.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.member.MemberSteps.어드민_로그인_되어_있음;
 import static nextstep.subway.acceptance.member.MemberSteps.회원_정보_조회됨;
 import static nextstep.subway.utils.GivenUtils.ADMIN_AGE;
 import static nextstep.subway.utils.GivenUtils.ADMIN_EMAIL;
 import static nextstep.subway.utils.GivenUtils.ADMIN_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -61,7 +59,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("Bearer 인증으로 내 정보 조회")
     void bearerAuth() {
-        String accessToken = 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+        String accessToken = 어드민_로그인_되어_있음();
 
         ExtractableResponse<Response> response = 베어러_인증으로_회원_정보_조회(accessToken);
 
@@ -75,7 +73,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 베어러_인증으로_회원_정보_조회(invalidToken);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }
