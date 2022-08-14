@@ -1,5 +1,6 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.exception.AuthenticationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +22,11 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Void> noSuchElementException(NoSuchElementException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Void> authenticationException(AuthenticationException e) {
         return ResponseEntity.badRequest().build();
     }
 
