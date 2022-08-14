@@ -1,5 +1,6 @@
 package nextstep.subway.utils;
 
+import nextstep.DataLoader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -18,6 +19,9 @@ import java.util.List;
 public class DatabaseCleanup implements InitializingBean {
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private DataLoader dataLoader;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -44,8 +48,8 @@ public class DatabaseCleanup implements InitializingBean {
         List<String> excludeTables = List.of(tables);
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
         tableNames.stream()
-                .filter(tableName -> !excludeTables.contains(tableName.toLowerCase()))
                 .forEach(tableName -> jdbcTemplate.execute("TRUNCATE TABLE " + tableName));
         jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+        dataLoader.loadData();
     }
 }

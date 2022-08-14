@@ -27,6 +27,10 @@ public class MemberSteps {
         return response.jsonPath().getString(ACCESS_TOKEN);
     }
 
+    public static String 어드민_로그인_되어_있음() {
+        return 로그인_되어_있음(ADMIN_EMAIL, ADMIN_PASSWORD);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put(EMAIL, email);
