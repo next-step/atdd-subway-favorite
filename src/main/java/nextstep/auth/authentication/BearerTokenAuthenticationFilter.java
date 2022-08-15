@@ -18,16 +18,20 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
+        try {
+            String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
 
-        jwtTokenProvider.validateToken(authCredentials);
-        String principal = jwtTokenProvider.getPrincipal(authCredentials);
-        List<String> roles = jwtTokenProvider.getRoles(authCredentials);
+            jwtTokenProvider.validateToken(authCredentials);
+            String principal = jwtTokenProvider.getPrincipal(authCredentials);
+            List<String> roles = jwtTokenProvider.getRoles(authCredentials);
 
-        Authentication authentication = new Authentication(principal, roles);
+            Authentication authentication = new Authentication(principal, roles);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return true;
+            return true;
+        } catch (RuntimeException exception) {
+            return true;
+        }
     }
 }

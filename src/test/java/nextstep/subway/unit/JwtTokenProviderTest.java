@@ -1,6 +1,8 @@
 package nextstep.subway.unit;
 
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.member.domain.RoleType;
+import nextstep.subway.utils.SecurityUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -12,21 +14,12 @@ public class JwtTokenProviderTest {
 
     @Test
     void token() {
-        JwtTokenProvider jwtTokenProvider = getTarget();
+        JwtTokenProvider jwtTokenProvider = SecurityUtil.getUnlimitedJwtTokenProvider();
         String email = "email@email.com";
 
-        String token = jwtTokenProvider.createToken(email, List.of());
-        List<String> roles = jwtTokenProvider.getRoles(token);
+        String token = jwtTokenProvider.createToken(email, List.of(RoleType.ROLE_MEMBER.toString()));
 
         assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo(email);
-//        TODO: role assert
-    }
-
-    private JwtTokenProvider getTarget() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", "atdd-secret-key");
-        ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", 3600000);
-
-        return jwtTokenProvider;
+        assertThat(jwtTokenProvider.getRoles(token)).contains(RoleType.ROLE_MEMBER.toString());
     }
 }
