@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.secured.Secured;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -31,6 +32,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();

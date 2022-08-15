@@ -10,7 +10,7 @@ import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
+    public static final String EMAIL = "email2@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
@@ -67,10 +67,32 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String newEmail = "new@email.com";
+
+        // when
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, newEmail, PASSWORD, AGE);
+        ExtractableResponse<Response> member = 회원_정보_조회_요청(createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(member.jsonPath().getString("email")).isEqualTo(newEmail);
     }
 
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String newEmail = "new@email.com";
+
+        // when
+        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_수정_요청(EMAIL, PASSWORD, newEmail, PASSWORD, AGE);
+        ExtractableResponse<Response> member = 회원_정보_조회_요청(createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(member.jsonPath().getString("email")).isEqualTo(newEmail);
     }
 }

@@ -19,13 +19,7 @@ public abstract class Authenticator implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken token = convert(request);
-        LoginMember member;
-
-        try {
-            member = userDetailsService.loadUserByUsername(token.getPrincipal());
-        } catch (RuntimeException e) {
-            throw new AuthenticationException();
-        }
+        LoginMember member = userDetailsService.loadUserByUsername(token.getPrincipal());
 
         checkAuthentication(member, token.getCredentials());
         authenticate(member, response);
