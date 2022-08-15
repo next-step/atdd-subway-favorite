@@ -19,5 +19,6 @@ public class DataLoader {
     public void loadData() {
         memberRepository.save(new Member("admin@email.com", "password", 20, List.of(RoleType.ROLE_ADMIN.name())));
         memberRepository.save(new Member("user@email.com", "user", 20));
+        memberRepository.save(new Member("otherUser@email.com", "otherUser", 20));
     }
 }
