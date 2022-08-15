@@ -1,5 +1,8 @@
 package nextstep.auth.token;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class TokenResponse {
     private String accessToken;
 

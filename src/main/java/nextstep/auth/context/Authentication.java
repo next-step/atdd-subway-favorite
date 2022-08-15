@@ -1,8 +1,11 @@
 package nextstep.auth.context;
 
+import lombok.EqualsAndHashCode;
+
 import java.io.Serializable;
 import java.util.List;
 
+@EqualsAndHashCode
 public class Authentication implements Serializable {
     private Object principal;
     private List<String> authorities;

@@ -11,35 +11,23 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
-public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
-    private final LoginMemberService loginMemberService;
+public class UsernamePasswordAuthenticationFilter extends Authenticator {
 
     public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+        super(loginMemberService);
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+    public AuthenticationToken convert(HttpServletRequest request) {
+        return new AuthenticationToken(request.getParameter("email"), request.getParameter("password"));
+    }
 
-        LoginMember member;
-
-        try {
-            member = loginMemberService.loadUserByUsername(email);
-        } catch (RuntimeException e) {
-            throw new AuthenticationException();
-        }
-
-        if (!member.checkPassword(password)) {
-            throw new AuthenticationException();
-        }
-
+    @Override
+    public void authenticate(LoginMember member, HttpServletResponse response) throws IOException {
         Authentication authentication = new Authentication(member.getEmail(), member.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return true;
     }
 }
