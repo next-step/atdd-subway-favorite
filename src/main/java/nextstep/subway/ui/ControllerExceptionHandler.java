@@ -1,5 +1,6 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.secured.RoleAuthenticationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,6 +15,11 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(RoleAuthenticationException.class)
+    public ResponseEntity<Void> handleNoAuthenticationException(RoleAuthenticationException e) {
         return ResponseEntity.badRequest().build();
     }
 }
