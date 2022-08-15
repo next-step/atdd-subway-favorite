@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class TokenAuthenticationFilter extends IsolationAuthenticationFilter {
+public class TokenAuthenticationFilter extends AuthorizationFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;

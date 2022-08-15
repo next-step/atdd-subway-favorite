@@ -5,9 +5,12 @@ import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Path;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.SubwayMap;
+import nextstep.subway.exception.DuplicatedStationsException;
+import nextstep.subway.exception.DisconnectedSectionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PathService {
@@ -28,4 +31,21 @@ public class PathService {
 
         return PathResponse.of(path);
     }
+
+    public void validateDuplicatedStations(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new DuplicatedStationsException();
+        }
+    }
+
+    public void validatePath(Station upStation, Station downStation) {
+        if (getSubwayMap().isGraphPathNull(upStation, downStation)) {
+            throw new DisconnectedSectionException();
+        }
+    }
+
+    private SubwayMap getSubwayMap() {
+        return new SubwayMap(lineService.findLines());
+    }
+
 }

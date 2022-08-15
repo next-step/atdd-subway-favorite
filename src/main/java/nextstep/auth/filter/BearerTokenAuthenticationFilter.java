@@ -4,18 +4,15 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public class BearerTokenAuthenticationFilter extends ChainingAuthenticationFilter {
+public class BearerTokenAuthenticationFilter extends AuthenticationFilter {
 
     private static final String BEARER = "Bearer ";
 

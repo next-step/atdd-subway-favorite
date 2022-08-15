@@ -8,7 +8,7 @@ import nextstep.auth.userdetail.UserDetailService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UsernamePasswordAuthenticationFilter extends IsolationAuthenticationFilter {
+public class UsernamePasswordAuthenticationFilter extends AuthorizationFilter {
 
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
