@@ -5,20 +5,16 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.userdetail.UserDetailService;
 import nextstep.auth.userdetail.UserDetails;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class BasicAuthenticationFilter extends ChainingAuthenticationFilter {
+public class BasicAuthenticationFilter extends AuthenticationFilter {
 
     private static final String DELIMITER = ":";
 

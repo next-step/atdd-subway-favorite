@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,8 +26,12 @@ public class SecuredAnnotationChecker {
         Secured secured = method.getAnnotation(Secured.class);
         List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
-        Authentication authentication = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .orElseThrow(AuthenticationException::new);
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+
+        if (Objects.isNull(authentication)) {
+            throw new AuthenticationException();
+        }
 
         authentication.getAuthorities().stream()
                 .filter(values::contains)

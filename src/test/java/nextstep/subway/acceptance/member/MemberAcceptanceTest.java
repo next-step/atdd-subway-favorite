@@ -108,7 +108,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> afterDeleteResponse = 회원_정보_조회_요청(createResponse);
         // then
-        assertThat(afterDeleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(afterDeleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -160,6 +160,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> newResponse = 내_정보_조회_요청(newAccessToken);
 
         // then
-        assertThat(newResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(newResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

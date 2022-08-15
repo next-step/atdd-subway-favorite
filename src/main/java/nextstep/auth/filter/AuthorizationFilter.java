@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.NoSuchElementException;
 
-public abstract class IsolationAuthenticationFilter implements HandlerInterceptor {
+public abstract class AuthorizationFilter implements HandlerInterceptor {
 
     private final UserDetailService userDetailService;
 
-    public IsolationAuthenticationFilter(UserDetailService userDetailService) {
+    public AuthorizationFilter(UserDetailService userDetailService) {
         this.userDetailService = userDetailService;
     }
 
