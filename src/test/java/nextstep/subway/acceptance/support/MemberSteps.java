@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.support;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemberSteps {
+public class MemberSteps extends AcceptanceTestSteps{
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
