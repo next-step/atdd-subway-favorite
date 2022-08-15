@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+
 import java.util.List;
 
 public interface UserDetails {
@@ -8,4 +9,5 @@ public interface UserDetails {
     List<String> getAuthorities();
 
     boolean checkPassword(String password);
+
 }
