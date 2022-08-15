@@ -19,14 +19,17 @@ import java.util.Objects;
  */
 public class UsernamePasswordAuthenticationFilter extends AbstractCreateAuthenticationFilter {
 
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
     public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService) {
         super(userDetailsService);
     }
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
-        String email = request.getParameter("username");
-        String password = request.getParameter("password");
+    public AuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+        String email = request.getParameter(USERNAME);
+        String password = request.getParameter(PASSWORD);
         if(!isExistAuthentication(email, password)) {
             throw new AuthenticationException();
         }
@@ -34,7 +37,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractCreateAuthenti
     }
 
     @Override
-    protected String returnAuthenticationToken(String principal, List<String> authorities) {
+    public String retrieveAuthenticationToken(String principal, List<String> authorities) {
         SecurityContextHolder.getContext().setAuthentication(new Authentication(principal, authorities));
         return "";
     }

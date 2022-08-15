@@ -2,21 +2,16 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public abstract class AbstractValidateAuthenticationFilter<T> implements HandlerInterceptor {
+public abstract class AbstractValidateAuthenticationFilter implements HandlerInterceptor {
 
-    protected T t;
+    public AbstractValidateAuthenticationFilter() {
 
-    public AbstractValidateAuthenticationFilter(T t) {
-        this.t = t;
     }
 
     protected abstract Authentication getAuthenticationToken(HttpServletRequest request);

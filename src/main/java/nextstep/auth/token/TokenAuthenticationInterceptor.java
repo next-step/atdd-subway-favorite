@@ -13,27 +13,28 @@ import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends AbstractCreateAuthenticationFilter {
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
     public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = new ObjectMapper();
     }
 
-
     @Override
-    protected AuthenticationToken getAuthenticationToken(HttpServletRequest request) throws IOException {
+    public AuthenticationToken getAuthenticationToken(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
+        TokenRequest tokenRequest = this.objectMapper.readValue(content, TokenRequest.class);
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
         return new AuthenticationToken(principal, credentials);
     }
 
     @Override
-    protected String returnAuthenticationToken(String principal, List<String> authorities) throws JsonProcessingException {
+    public String retrieveAuthenticationToken(String principal, List<String> authorities) throws JsonProcessingException {
         String token = jwtTokenProvider.createToken(principal, authorities);
         TokenResponse tokenResponse = new TokenResponse(token);
-        return new ObjectMapper().writeValueAsString(tokenResponse);
+        return this.objectMapper.writeValueAsString(tokenResponse);
     }
 
 }

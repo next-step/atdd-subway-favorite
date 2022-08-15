@@ -1,17 +1,18 @@
 package nextstep.auth.authentication;
 
+import nextstep.auth.UserDetails;
 import nextstep.auth.UserDetailsService;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BasicAuthenticationFilter extends AbstractValidateAuthenticationFilter<UserDetailsService> {
+public class BasicAuthenticationFilter extends AbstractValidateAuthenticationFilter {
+
+    private final UserDetailsService userDetailsService;
 
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
-        super(userDetailsService);
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -25,14 +26,14 @@ public class BasicAuthenticationFilter extends AbstractValidateAuthenticationFil
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-        LoginMember loginMember = this.t.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(token.getPrincipal());
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 }
