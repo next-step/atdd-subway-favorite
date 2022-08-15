@@ -1,40 +1,34 @@
 package nextstep.auth.authentication;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.interceptor.ChainFilter;
 import nextstep.auth.token.JwtTokenProvider;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
-public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
-    private JwtTokenProvider jwtTokenProvider;
+import static org.apache.logging.log4j.util.Strings.EMPTY;
 
-    public BearerTokenAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+@RequiredArgsConstructor
+public class BearerTokenAuthenticationFilter extends ChainFilter {
+    private static final String TOKEN_TYPE = "Bearer ";
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            String auth = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
-            AuthenticationToken token = new AuthenticationToken(auth, auth);
-
-            if (!jwtTokenProvider.validateToken(token.getCredentials())) {
-                throw new AuthenticationException();
-            }
-
-            String principal = jwtTokenProvider.getPrincipal(token.getPrincipal());
-            List<String> roles = jwtTokenProvider.getRoles(token.getPrincipal());
-
-            Authentication authentication = new Authentication(principal, roles);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return true;
-        } catch (Exception e) {
-            return true;
+    public Authentication createAuthentication(HttpServletRequest request) {
+        final String requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (requestTokenHeader == null || !requestTokenHeader.startsWith(TOKEN_TYPE)) {
+            throw new AuthenticationException();
         }
+        String token = requestTokenHeader.replaceFirst(TOKEN_TYPE, EMPTY);
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException();
+        }
+
+        return new Authentication(jwtTokenProvider.getPrincipal(token), jwtTokenProvider.getRoles(token));
     }
+
 }
