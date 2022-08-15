@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.BasicAuthenticationFilter;
 import nextstep.auth.authentication.BearerTokenAuthenticationFilter;
 import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,16 +20,19 @@ public class AuthConfig implements WebMvcConfigurer {
     private LoginMemberService loginMemberService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
+    private ObjectMapper objectMapper;
+
+    public AuthConfig(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         this.loginMemberService = loginMemberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SecurityContextPersistenceFilter());
         registry.addInterceptor(new UsernamePasswordAuthenticationFilter(loginMemberService)).addPathPatterns("/login/form");
-        registry.addInterceptor(new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider)).addPathPatterns("/login/token");
+        registry.addInterceptor(new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider, objectMapper)).addPathPatterns("/login/token");
         registry.addInterceptor(new BasicAuthenticationFilter(loginMemberService));
         registry.addInterceptor(new BearerTokenAuthenticationFilter(jwtTokenProvider));
     }

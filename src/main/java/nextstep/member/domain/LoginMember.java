@@ -32,7 +32,7 @@ public class LoginMember implements UserDetails {
     }
 
     @Override
-    public String getEmail() {
+    public String getPrincipal() {
         return email;
     }
 

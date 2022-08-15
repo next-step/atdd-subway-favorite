@@ -34,6 +34,6 @@ public class BasicAuthenticationFilter extends AbstractValidateAuthenticationFil
         if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
-        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
+        return new Authentication(userDetails.getPrincipal(), userDetails.getAuthorities());
     }
 }

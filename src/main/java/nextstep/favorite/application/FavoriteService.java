@@ -33,7 +33,7 @@ public class FavoriteService {
     }
 
     public Long registerFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Member member = memberService.findByEmail(loginMember.getEmail());
+        Member member = memberService.findByEmail(loginMember.getPrincipal());
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
         Favorite favorite = Favorite.register(source, target, member.getId());
@@ -41,7 +41,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
-        Member member = memberService.findByEmail(loginMember.getEmail());
+        Member member = memberService.findByEmail(loginMember.getPrincipal());
         return favoriteRepository.findByMemberId(member.getId()).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());

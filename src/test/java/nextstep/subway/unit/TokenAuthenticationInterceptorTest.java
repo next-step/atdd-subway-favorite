@@ -43,6 +43,9 @@ class TokenAuthenticationInterceptorTest {
     @Autowired
     private LoginMemberService loginMemberService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
     private MockHttpServletRequest createMockRequest() throws IOException {
@@ -79,7 +82,7 @@ class TokenAuthenticationInterceptorTest {
 
         // given
         memberRepository.save(new Member(EMAIL, PASSWORD, 20, Arrays.asList("ROLE_ADMIN", "ROLE_MEMBER")));
-        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider);
+        tokenAuthenticationInterceptor = new TokenAuthenticationInterceptor(loginMemberService, jwtTokenProvider, objectMapper);
         MockHttpServletRequest mockRequest = createMockRequest();
         MockHttpServletResponse mockResponse = createMockResponse();
 
