@@ -47,19 +47,21 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-//        Map<String, String> params = new HashMap<>();
-//        params.put("email", email);
-//        params.put("password", password);
-
         return RestAssured.given().log().all()
                 .auth().form(email, password, new FormAuthConfig("/login/form", "email", "password"))
-//                .auth().form(email, password, FormAuthConfig.springSecurity())
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return null;
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + accessToken);
+
+        return RestAssured.given().log().all()
+                .headers(headers)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
     }
 }
