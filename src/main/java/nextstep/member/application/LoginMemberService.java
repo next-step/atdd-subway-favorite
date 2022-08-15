@@ -6,7 +6,7 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LoginMemberService {
+public class LoginMemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     public LoginMemberService(MemberRepository memberRepository) {

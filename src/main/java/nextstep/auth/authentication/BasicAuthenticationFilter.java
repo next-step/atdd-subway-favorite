@@ -1,27 +1,24 @@
 package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthenticationFilter extends Authorizator {
 
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     public Authentication convert(HttpServletRequest request) {
         AuthenticationToken token = getToken(request);
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+        LoginMember loginMember = userDetailsService.loadUserByUsername(token.getPrincipal());
 
         checkAuthentication(token, loginMember);
 

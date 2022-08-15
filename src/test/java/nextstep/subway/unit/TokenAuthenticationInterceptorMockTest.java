@@ -6,7 +6,7 @@ import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
-import nextstep.member.application.LoginMemberService;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ class TokenAuthenticationInterceptorMockTest {
     JwtTokenProvider jwtTokenProvider;
 
     @Mock
-    LoginMemberService loginMemberService;
+    UserDetailsService userDetailsService;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -63,7 +63,7 @@ class TokenAuthenticationInterceptorMockTest {
     @Test
     void preHandle() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
-        given(loginMemberService.loadUserByUsername(any())).willReturn(new LoginMember(EMAIL, PASSWORD, List.of()));
+        given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(EMAIL, PASSWORD, List.of()));
 
         boolean result = interceptor.preHandle(createMockRequest(), response, null);
 

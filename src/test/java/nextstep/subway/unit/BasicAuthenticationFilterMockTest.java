@@ -1,11 +1,8 @@
 package nextstep.subway.unit;
 
-import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.BasicAuthenticationFilter;
-import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +27,7 @@ public class BasicAuthenticationFilterMockTest {
     static String BASIC_TOKEN = "Basic YWRtaW5AZW1haWwuY29tOnBhc3N3b3Jk";
 
     @Mock
-    LoginMemberService loginMemberService;
+    UserDetailsService userDetailsService;
 
     @InjectMocks
     BasicAuthenticationFilter filter;
@@ -41,7 +38,7 @@ public class BasicAuthenticationFilterMockTest {
         request.addHeader("Authorization", BASIC_TOKEN);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        given(loginMemberService.loadUserByUsername(any())).willReturn(new LoginMember(EMAIL, PASSWORD, List.of()));
+        given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(EMAIL, PASSWORD, List.of()));
 
         assertThat(filter.preHandle(request, response, null)).isTrue();
     }
@@ -51,7 +48,7 @@ public class BasicAuthenticationFilterMockTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", BASIC_TOKEN);
 
-        given(loginMemberService.loadUserByUsername(any())).willReturn(new LoginMember(EMAIL, PASSWORD, List.of()));
+        given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(EMAIL, PASSWORD, List.of()));
 
         assertThat(filter.convert(request)).isEqualTo(new Authentication(EMAIL, List.of()));
     }

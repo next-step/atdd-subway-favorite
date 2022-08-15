@@ -1,6 +1,6 @@
 package nextstep.auth.authentication;
 
-import nextstep.member.application.LoginMemberService;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -10,10 +10,10 @@ import java.io.IOException;
 
 public abstract class Authenticator implements HandlerInterceptor {
 
-    private final LoginMemberService loginMemberService;
+    private final UserDetailsService userDetailsService;
 
-    public Authenticator(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public Authenticator(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -22,7 +22,7 @@ public abstract class Authenticator implements HandlerInterceptor {
         LoginMember member;
 
         try {
-            member = loginMemberService.loadUserByUsername(token.getPrincipal());
+            member = userDetailsService.loadUserByUsername(token.getPrincipal());
         } catch (RuntimeException e) {
             throw new AuthenticationException();
         }

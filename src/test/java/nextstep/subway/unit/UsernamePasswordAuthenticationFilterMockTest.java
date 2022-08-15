@@ -4,7 +4,7 @@ import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
+import nextstep.member.application.UserDetailsService;
 import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -26,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 public class UsernamePasswordAuthenticationFilterMockTest {
 
     @Mock
-    LoginMemberService loginMemberService;
+    UserDetailsService userDetailsService;
 
     @InjectMocks
     UsernamePasswordAuthenticationFilter filter;
@@ -40,7 +39,7 @@ public class UsernamePasswordAuthenticationFilterMockTest {
         request.setParameter("password", password);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        given(loginMemberService.loadUserByUsername(any())).willReturn(new LoginMember(email, password, List.of()));
+        given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(email, password, List.of()));
 
         assertThat(filter.preHandle(request, response, null)).isFalse();
     }
