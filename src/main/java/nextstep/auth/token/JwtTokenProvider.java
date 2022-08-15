@@ -1,6 +1,7 @@
 package nextstep.auth.token;
 
 import io.jsonwebtoken.*;
+import nextstep.auth.context.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,14 @@ public class JwtTokenProvider {
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
+
+    public Authentication toAuthentication(String token) {
+        validateToken(token);
+        String principal = getPrincipal(token);
+        List<String> roles = getRoles(token);
+
+        return new Authentication(principal, roles);
+    }
 
     public String createToken(String principal, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(principal);
