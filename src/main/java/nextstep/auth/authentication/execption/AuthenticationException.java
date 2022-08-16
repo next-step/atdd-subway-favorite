@@ -1,4 +1,4 @@
-package nextstep.auth.authentication;
+package nextstep.auth.authentication.execption;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

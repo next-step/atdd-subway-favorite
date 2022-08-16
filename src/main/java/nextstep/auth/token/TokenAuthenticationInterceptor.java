@@ -1,7 +1,7 @@
 package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.authentication.AuthenticationException;
+import nextstep.auth.authentication.execption.AuthenticationException;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
