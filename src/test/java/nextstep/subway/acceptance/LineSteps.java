@@ -47,4 +47,25 @@ public class LineSteps {
     public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String url, String token) {
         return AcceptanceTest.delete(url, token);
     }
+
+    public static Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance, String adminAccessToken) {
+        Map<String, Object> lineCreateParams;
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", name);
+        lineCreateParams.put("color", color);
+        lineCreateParams.put("upStationId", upStation);
+        lineCreateParams.put("downStationId", downStation);
+        lineCreateParams.put("distance", distance);
+
+        return 지하철_노선_생성_요청(lineCreateParams, adminAccessToken).jsonPath().getLong("id");
+    }
+
+    public static Map<String, Object> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        params.put("distance", distance);
+        return params;
+    }
+
 }

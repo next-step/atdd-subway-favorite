@@ -38,7 +38,7 @@ public abstract class AbstractCreateAuthenticationFilter implements HandlerInter
             throw new AuthenticationException();
         }
 
-        String responseToClient = retrieveAuthenticationToken(userDetails.getEmail(), userDetails.getAuthorities());
+        String responseToClient = retrieveAuthenticationToken(userDetails.getPrincipal(), userDetails.getAuthorities());
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
