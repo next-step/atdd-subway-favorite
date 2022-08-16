@@ -1,5 +1,7 @@
 package nextstep.auth.authentication.filter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.authentication.AuthenticationManager;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
@@ -9,10 +11,6 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-
 public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
     private final AuthenticationManager authenticationManager;
 
@@ -20,7 +18,7 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
         this.authenticationManager = authenticationManager;
     }
 
-    private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+    private Authentication attemptAuthentication(HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         Authentication token = new BearerAuthenticationToken(authCredentials);
 
@@ -33,10 +31,15 @@ public class BearerTokenAuthenticationFilter implements HandlerInterceptor {
             return true;
         }
 
-        Authentication authentication = attemptAuthentication(request, response);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return true;
+        try {
+            Authentication authentication = attemptAuthentication(request);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return true;
+        } catch (AuthenticationException e) {
+            throw new AuthenticationException();
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     private boolean checkAlreadyAuthentication() {

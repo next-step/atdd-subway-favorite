@@ -1,5 +1,8 @@
 package nextstep.auth.authentication.filter;
 
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.authentication.AuthenticationManager;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
@@ -9,9 +12,6 @@ import nextstep.auth.context.SecurityContextHolder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public class BasicAuthenticationFilter implements HandlerInterceptor {
     private final AuthenticationManager authenticationManager;
 
@@ -19,7 +19,7 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
         this.authenticationManager = authenticationManager;
     }
 
-    private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+    private Authentication attemptAuthentication(HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
@@ -35,12 +35,20 @@ public class BasicAuthenticationFilter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        Authentication authentication = attemptAuthentication(request, response);
-        if (authentication == null)
-            return false;
+        if (checkAlreadyAuthentication()) {
+            return true;
+        }
+        try {
+            Authentication authentication = attemptAuthentication(request);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return true;
+    private boolean checkAlreadyAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null;
     }
 }

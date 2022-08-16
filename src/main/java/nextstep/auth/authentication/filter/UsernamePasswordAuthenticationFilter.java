@@ -1,13 +1,12 @@
 package nextstep.auth.authentication.filter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.authentication.AuthenticationManager;
 import nextstep.auth.authentication.token.UsernamePasswordAuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 // 전송이오면 필터로 가게 된다.
 public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor {
@@ -22,7 +21,7 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
     }
 
     // 인증 시도를 한다.
-    private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+    private Authentication attemptAuthentication(HttpServletRequest request) {
         // request 에서 아이디와 이름을 꺼낸뒤
         String username = request.getParameter(USERNAME_FIELD);
         String password = request.getParameter(PASSWORD_FIELD);
@@ -38,13 +37,21 @@ public class UsernamePasswordAuthenticationFilter implements HandlerInterceptor 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        Authentication authentication = attemptAuthentication(request, response);
-        if (authentication == null)
-            return false;
+        if (checkAlreadyAuthentication()) {
+            return true;
+        }
 
-        // 인증이 성공했을 경우, SecurityContextHoder에 저장함.
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            Authentication authentication = attemptAuthentication(request);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
 
-        return true;
+    private boolean checkAlreadyAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null;
     }
 }

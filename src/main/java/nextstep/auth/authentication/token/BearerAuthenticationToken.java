@@ -24,8 +24,8 @@ public class BearerAuthenticationToken implements Authentication {
     }
 
     // 인증 완료 후의 객체 생성
-    public BearerAuthenticationToken(Object credentials, List<String> authorities) {
-        this.credentials = credentials;
+    public BearerAuthenticationToken(Object principal, List<String> authorities) {
+        this.principal = principal;
         this.authorities = authorities;
         setAuthenticated(true);
     }
