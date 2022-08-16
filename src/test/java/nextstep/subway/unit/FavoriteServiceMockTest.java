@@ -92,7 +92,7 @@ public class FavoriteServiceMockTest {
         when(stationService.findById(1L)).thenReturn(교대역);
         when(stationService.findById(3L)).thenReturn(양재역);
 
-        Favorite favorite = Favorite.register(교대역, 양재역, member.getId());
+        Favorite favorite = Favorite.register(교대역, 양재역, member);
         ReflectionTestUtils.setField(favorite, "id", 1L);
         when(favoriteRepository.save(any())).thenReturn(favorite);
 
@@ -108,10 +108,10 @@ public class FavoriteServiceMockTest {
     void getFavorites() {
 
         // given
-        Favorite 첫번째_즐겨찾기 = Favorite.register(교대역, 양재역, member.getId());
+        Favorite 첫번째_즐겨찾기 = Favorite.register(교대역, 양재역, member);
         ReflectionTestUtils.setField(첫번째_즐겨찾기, "id", 1L);
 
-        Favorite 두번째_즐겨찾기 = Favorite.register(남부터미널역, 양재역, member.getId());
+        Favorite 두번째_즐겨찾기 = Favorite.register(남부터미널역, 양재역, member);
         ReflectionTestUtils.setField(두번째_즐겨찾기, "id", 2L);
 
         when(memberService.findByEmail(any())).thenReturn(member);
@@ -135,7 +135,7 @@ public class FavoriteServiceMockTest {
     void deleteFavorite() {
 
         // given
-        Favorite favorite = Favorite.register(교대역, 양재역, member.getId());
+        Favorite favorite = Favorite.register(교대역, 양재역, member);
         ReflectionTestUtils.setField(favorite, "id", 1L);
 
         when(favoriteRepository.findById(1L)).thenReturn(Optional.ofNullable(favorite));
