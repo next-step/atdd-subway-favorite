@@ -1,16 +1,12 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.acceptance.support.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static nextstep.subway.acceptance.support.LineSteps.지하철_노선_목록_조회_요청;
 import static nextstep.subway.acceptance.support.LineSteps.지하철_노선_삭제_요청;
@@ -21,21 +17,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {
-    /**
-     * When 지하철 노선을 생성하면
-     * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
-     */
-    @DisplayName("지하철 노선 생성")
-    @Test
-    void createLine() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
+    @Nested
+    class createLine{
+        /**
+         * When 지하철 노선을 생성하면
+         * Then 지하철 노선 목록 조회 시 생성한 노선을 찾을 수 있다
+         */
+        @DisplayName("지하철 노선 생성")
+        @Test
+        void success() {
+            // when
+            ExtractableResponse<Response> response = 지하철_노선_생성_요청(관리자, "2호선", "green");
 
-        assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            ExtractableResponse<Response> listResponse = 지하철_노선_목록_조회_요청();
+
+            assertThat(listResponse.jsonPath().getList("name")).contains("2호선");
+        }
+
+        /**
+         * When 관리자가 아닌 사용자가 지하철 노선을 생성하면
+         * Then 예외를 발생한다.
+         */
+        @DisplayName("지하철 노선 생성시 관리자 아닌 경우")
+        @Test
+        void throwExceptionWhenNotAdmin() {
+            // when
+            final String notAdmin = "9999";
+            ExtractableResponse<Response> response = 지하철_노선_생성_요청(notAdmin, "2호선", "green");
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(response.jsonPath().getLong("code")).isEqualTo(1002);
+        }
     }
 
     /**
