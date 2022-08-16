@@ -1,15 +1,12 @@
 package nextstep.auth.authentication.provider;
 
+import java.util.List;
 import nextstep.auth.authentication.AuthenticationManager;
 import nextstep.auth.authentication.execption.AuthenticationException;
-import nextstep.auth.authentication.token.BasicAuthenticationToken;
+import nextstep.auth.authentication.execption.InvalidTokenException;
 import nextstep.auth.authentication.token.BearerAuthenticationToken;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.userdetails.UserDetails;
-import nextstep.auth.userdetails.UserDetailsService;
-
-import java.util.List;
 
 public class BearerAuthenticationProvider implements AuthenticationManager {
     private final JwtTokenProvider jwtTokenProvider;
@@ -20,10 +17,14 @@ public class BearerAuthenticationProvider implements AuthenticationManager {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
         String credentials = (String) authentication.getCredentials();
-        if (!jwtTokenProvider.validateToken(credentials)) {
+
+        if (credentials.isBlank()) {
             throw new AuthenticationException();
+        }
+
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new InvalidTokenException();
         }
 
         String principal = jwtTokenProvider.getPrincipal(credentials);
