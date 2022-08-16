@@ -1,6 +1,7 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.support;
 
 import io.restassured.RestAssured;
+import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemberSteps {
+public class MemberSteps extends AcceptanceTestSteps{
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
@@ -89,6 +90,26 @@ public class MemberSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
+        return RestAssured
+            .given().log().all()
+            .auth().form(email, password, new FormAuthConfig("/login/form", USERNAME_FIELD, PASSWORD_FIELD))
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                          .auth().oauth2(accessToken)
+                          .accept(MediaType.APPLICATION_JSON_VALUE)
+                          .when().get("/members/me")
+                          .then().log().all()
+                          .statusCode(HttpStatus.OK.value())
+                          .extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {

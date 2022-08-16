@@ -21,7 +21,7 @@ public class SecuredAnnotationChecker {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Secured secured = method.getAnnotation(Secured.class);
-        List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
+        List<String> values = Arrays.stream(secured.value()).map(Enum::name).collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         authentication.getAuthorities().stream()
