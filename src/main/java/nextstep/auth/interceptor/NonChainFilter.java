@@ -21,9 +21,12 @@ public abstract class NonChainFilter implements HandlerInterceptor {
 
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        User user = preAuthentication(request);
-        afterAuthentication(user, response);
-
+        try {
+            User user = preAuthentication(request);
+            afterAuthentication(user, response);
+        } catch (Exception e) {
+            return false;
+        }
         return false;
     }
 
