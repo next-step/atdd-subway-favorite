@@ -15,9 +15,9 @@ public abstract class NonChainFilter implements HandlerInterceptor {
 
     private final UserDetailsService userDetailsService;
 
-    public abstract User preAuthentication(HttpServletRequest request) throws IOException;
+    protected abstract User preAuthentication(HttpServletRequest request) throws IOException;
 
-    public abstract void afterAuthentication(User user, HttpServletResponse response) throws IOException;
+    protected abstract void afterAuthentication(User user, HttpServletResponse response) throws IOException;
 
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
