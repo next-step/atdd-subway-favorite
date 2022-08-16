@@ -31,12 +31,10 @@ public class BasicAuthenticationProvider implements AuthenticationManager {
     }
 
     private void checkAuthentication(UserDetails userDetails, BasicAuthenticationToken token) {
-        // 조회가 null 이면 인증 오류
         if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        // 비밀번호를 체크했으나 오렴
         if (!userDetails.checkCredentials(token.getCredentials())) {
             throw new AuthenticationException();
         }
