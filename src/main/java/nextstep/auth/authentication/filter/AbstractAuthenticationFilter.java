@@ -1,5 +1,7 @@
 package nextstep.auth.authentication.filter;
 
+import static nextstep.auth.authentication.execption.InvalidTokenException.INVALID_TOKEN;
+
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +25,7 @@ public abstract class AbstractAuthenticationFilter implements HandlerInterceptor
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return true;
         } catch (InvalidTokenException e) {
-            throw new InvalidTokenException();
+            throw new InvalidTokenException(INVALID_TOKEN);
         } catch (Exception e) {
             return true;
         }

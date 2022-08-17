@@ -1,5 +1,7 @@
 package nextstep.auth.authentication.provider;
 
+import static nextstep.auth.authentication.execption.InvalidTokenException.INVALID_TOKEN;
+
 import java.util.List;
 import nextstep.auth.authentication.AuthenticationManager;
 import nextstep.auth.authentication.execption.AuthenticationException;
@@ -24,7 +26,7 @@ public class BearerAuthenticationProvider implements AuthenticationManager {
         }
 
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new InvalidTokenException();
+            throw new InvalidTokenException(INVALID_TOKEN);
         }
 
         String principal = jwtTokenProvider.getPrincipal(credentials);
