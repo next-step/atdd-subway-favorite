@@ -15,16 +15,18 @@ public class TokenAuthenticationInterceptor extends NonChainFilter {
 
     private UserDetailsService userDetailsService;
     private JwtTokenProvider jwtTokenProvider;
+    private ObjectMapper objectMapper;
 
-    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         super(userDetailsService);
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public User preAuthentication(HttpServletRequest request) throws IOException {
         String content = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        TokenRequest tokenRequest = new ObjectMapper().readValue(content, TokenRequest.class);
+        TokenRequest tokenRequest = objectMapper.readValue(content, TokenRequest.class);
 
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
@@ -37,7 +39,7 @@ public class TokenAuthenticationInterceptor extends NonChainFilter {
         String token = jwtTokenProvider.createToken(user.getPrincipal(), user.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);
