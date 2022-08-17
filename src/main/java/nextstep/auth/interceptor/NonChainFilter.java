@@ -2,8 +2,8 @@ package nextstep.auth.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.member.user.User;
-import nextstep.member.user.UserDetailsService;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

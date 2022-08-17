@@ -2,8 +2,8 @@ package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.interceptor.NonChainFilter;
-import nextstep.member.user.User;
-import nextstep.member.user.UserDetailsService;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;

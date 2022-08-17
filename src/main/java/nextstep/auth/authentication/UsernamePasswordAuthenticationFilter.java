@@ -3,8 +3,8 @@ package nextstep.auth.authentication;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.interceptor.NonChainFilter;
-import nextstep.member.user.User;
-import nextstep.member.user.UserDetailsService;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

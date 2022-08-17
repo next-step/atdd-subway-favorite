@@ -1,7 +1,7 @@
 package nextstep.member.domain;
 
 
-import nextstep.member.user.User;
+import nextstep.auth.user.User;
 
 import java.util.List;
 

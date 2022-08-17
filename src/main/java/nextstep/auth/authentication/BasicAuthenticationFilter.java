@@ -2,8 +2,8 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.interceptor.ChainFilter;
-import nextstep.member.user.User;
-import nextstep.member.user.UserDetailsService;
+import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetailsService;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
