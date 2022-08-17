@@ -133,11 +133,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 지하철 즐겨찾기 노선을 생성하고,
      * When 유효하지 않은 토큰이 즐겨찾기를 삭제 요청하면,
-     * Then 권한이 없어 (401)을 응답한다.
+     * Then 권한이 없음(401) 을 응답한다.
      */
     @DisplayName("유효하지 않은 로그인 정보로 삭제할 수 없다")
     @Test
-    void 유효하지_않은_토큰으로요청() {
+    void 유효하지_않은_토큰으로_로그인_삭제_요청() {
         // given
         String 즐겨찾기_노선 = 지하철_노선_즐겨찾기_생성(일반_사용자, 교대역, 양재역).header("location");
 
@@ -151,11 +151,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 지하철 즐겨찾기 노선을 생성하고,
      * When 비로그인으로 즐겨찾기를 삭제 요청하면,
-     * Then 권한이 없어 (401)을 응답한다.
+     * Then 권한이 없음(401) 을 응답한다.
      */
     @DisplayName("로그인되어 있지 않으면 삭제할 수 없다")
     @Test
-    void deleteFavoriteIfNotLogin() {
+    void 로그인하지_않은_즐겨찾기_삭제_요청() {
 
         // given
         String 즐겨찾기_노선 = 지하철_노선_즐겨찾기_생성(일반_사용자, 교대역, 양재역).header("location");
@@ -165,6 +165,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Givn 지하철 즐겨찾기 노선을 생성하고,
+     * When 다시 등록되어 있는 지하철 즐겨찾기 노선을 생성하면,
+     * Then 올바르지 않은 요청이기 떄문에 잘못된 요청(403)을 응답한다.
+     */
+    @DisplayName("")
+    @Test
+    void 중복된_즐겨찾기_노선_생성_요청() {
+
+        // given
+        지하철_노선_즐겨찾기_생성(일반_사용자, 교대역, 양재역).header("location");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_즐겨찾기_생성(일반_사용자, 교대역, 양재역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
