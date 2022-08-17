@@ -21,10 +21,6 @@ public class BasicAuthenticationProvider implements AuthenticationManager {
         String username = (String) token.getPrincipal();
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
-        if (user == null) {
-            throw new AuthenticationException();
-        }
-
         checkAuthentication(user, token);
 
         return new BasicAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
