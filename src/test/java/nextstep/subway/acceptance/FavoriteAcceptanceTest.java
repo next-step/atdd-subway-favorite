@@ -61,10 +61,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_노선을_생성한다() {
         // when
-         ExtractableResponse<Response> response = 지하철_노선_즐겨찾기_생성(일반_사용자, 교대역, 양재역);
+        ExtractableResponse<Response> response = 지하철_노선_즐겨찾기_생성(일반_사용자, 교대역, 양재역);
 
         // then
-         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     /**

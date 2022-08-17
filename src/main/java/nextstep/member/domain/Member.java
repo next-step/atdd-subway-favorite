@@ -1,10 +1,17 @@
 package nextstep.member.domain;
 
-import nextstep.subway.domain.Station;
-
-import javax.persistence.*;
-import java.sql.Statement;
 import java.util.List;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import nextstep.subway.domain.Station;
 
 @Entity
 public class Member {
@@ -65,8 +72,12 @@ public class Member {
         return favorites.getFavorites();
     }
 
-    public void addFavorites(Station source, Station target) {
-        favorites.add(new Favorite(source, target));
+    public Favorite addFavorite(Station source, Station target) {
+        Favorite favorite = new Favorite(source, target);
+
+        favorites.add(favorite);
+
+        return favorite;
     }
 
     public void update(Member member) {
