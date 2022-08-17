@@ -11,6 +11,8 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
+    @Embedded
+    private Favorites favorites = new Favorites();
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "MEMBER_ROLE",
@@ -54,6 +56,10 @@ public class Member {
 
     public List<String> getRoles() {
         return roles;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites.getFavorites();
     }
 
     public void update(Member member) {
