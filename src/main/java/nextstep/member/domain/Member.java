@@ -1,6 +1,9 @@
 package nextstep.member.domain;
 
+import nextstep.subway.domain.Station;
+
 import javax.persistence.*;
+import java.sql.Statement;
 import java.util.List;
 
 @Entity
@@ -60,6 +63,10 @@ public class Member {
 
     public List<Favorite> getFavorites() {
         return favorites.getFavorites();
+    }
+
+    public void addFavorites(Station source, Station target) {
+        favorites.add(new Favorite(source, target));
     }
 
     public void update(Member member) {
