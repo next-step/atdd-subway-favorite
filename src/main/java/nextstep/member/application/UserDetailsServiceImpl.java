@@ -6,7 +6,6 @@ import nextstep.auth.authentication.execption.UsernameNotFoundException;
 import nextstep.auth.userdetails.User;
 import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
-import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +19,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Member member = memberRepository.findByEmail(username)
+        return memberRepository.findByEmail(username)
+                .map(member -> new User(member.getEmail(), member.getPassword(), member.getRoles()))
                 .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
-
-        return new User(member.getEmail(), member.getPassword(), member.getRoles());
     }
 }
