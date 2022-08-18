@@ -1,9 +1,11 @@
 package nextstep.member.domain;
 
 
+import nextstep.auth.user.User;
+
 import java.util.List;
 
-public class LoginMember {
+public class LoginMember implements User {
     private String email;
     private String password;
     private List<String> authorities;
@@ -29,15 +31,22 @@ public class LoginMember {
         this.authorities = authorities;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 
+    @Override
+    public String getPrincipal() {
+        return this.email;
+    }
+
+    @Override
     public List<String> getAuthorities() {
         return authorities;
     }
 
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
+    public String getEmail() {
+        return email;
     }
 }
