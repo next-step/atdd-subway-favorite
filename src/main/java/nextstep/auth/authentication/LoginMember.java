@@ -1,9 +1,12 @@
-package nextstep.member.domain;
+package nextstep.auth.authentication;
 
+
+import nextstep.member.domain.Member;
+import nextstep.member.domain.User;
 
 import java.util.List;
 
-public class LoginMember {
+public class LoginMember implements User {
     private String email;
     private String password;
     private List<String> authorities;

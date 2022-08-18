@@ -1,10 +1,11 @@
 package nextstep.member.ui;
 
+import nextstep.auth.authentication.LoginMember;
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.secured.Secured;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();

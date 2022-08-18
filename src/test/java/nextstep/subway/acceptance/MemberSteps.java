@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.utils.SecurityUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -65,8 +66,7 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
+        return SecurityUtil.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
@@ -86,6 +86,23 @@ public class MemberSteps {
                 .auth().preemptive().basic(username, password)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_수정_요청(String username, String password, String newEmail, String newPassword, Integer newAge) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", newEmail);
+        params.put("password", newPassword);
+        params.put("age", newAge + "");
+
+        return RestAssured.given().log().all()
+                .auth().preemptive().basic(username, password)
+                .when()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .put("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();

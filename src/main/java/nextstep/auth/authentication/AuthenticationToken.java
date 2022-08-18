@@ -1,5 +1,8 @@
 package nextstep.auth.authentication;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class AuthenticationToken {
     private String principal;
     private String credentials;

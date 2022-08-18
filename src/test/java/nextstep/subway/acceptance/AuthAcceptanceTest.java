@@ -8,7 +8,6 @@ import nextstep.MemberData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +65,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 지하철역_생성_요청_토큰따로("서울역", accessToken);
 
-        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("권한 부족한 토큰 실패")
@@ -76,7 +75,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 지하철역_생성_요청_토큰따로("서울역", accessToken);
 
-        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
