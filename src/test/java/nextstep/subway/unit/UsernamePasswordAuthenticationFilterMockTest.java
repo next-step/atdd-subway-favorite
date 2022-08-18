@@ -1,11 +1,11 @@
 package nextstep.subway.unit;
 
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.LoginMember;
 import nextstep.auth.authentication.UsernamePasswordAuthenticationFilter;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

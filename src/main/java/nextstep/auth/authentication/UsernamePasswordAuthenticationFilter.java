@@ -3,7 +3,7 @@ package nextstep.auth.authentication;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +21,7 @@ public class UsernamePasswordAuthenticationFilter extends Authenticator {
     }
 
     @Override
-    public void authenticate(LoginMember member, HttpServletResponse response) throws IOException {
+    public void authenticate(User member, HttpServletResponse response) throws IOException {
         Authentication authentication = new Authentication(member.getEmail(), member.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
 import nextstep.auth.authentication.Authenticator;
 import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.User;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class TokenAuthenticationInterceptor extends Authenticator {
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TokenAuthenticationInterceptor(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
         super(userDetailsService);
@@ -32,11 +33,11 @@ public class TokenAuthenticationInterceptor extends Authenticator {
     }
 
     @Override
-    public void authenticate(LoginMember member, HttpServletResponse response) throws IOException {
+    public void authenticate(User member, HttpServletResponse response) throws IOException {
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
-        String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
+        String responseToClient = objectMapper.writeValueAsString(tokenResponse);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getOutputStream().print(responseToClient);

@@ -2,17 +2,18 @@ package nextstep.subway.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.authentication.LoginMember;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenAuthenticationInterceptor;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -64,10 +65,12 @@ class TokenAuthenticationInterceptorMockTest {
     void preHandle() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         given(userDetailsService.loadUserByUsername(any())).willReturn(new LoginMember(EMAIL, PASSWORD, List.of()));
-
-        boolean result = interceptor.preHandle(createMockRequest(), response, null);
+        given(jwtTokenProvider.createToken(any(), any())).willReturn(JWT_TOKEN);
+        boolean result = interceptor.preHandle(createMockRequest(), response, new Object());
 
         assertThat(result).isFalse();
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo(mapper.writeValueAsString(new TokenResponse(JWT_TOKEN)));
     }
 
     private MockHttpServletRequest createMockRequest() throws IOException {

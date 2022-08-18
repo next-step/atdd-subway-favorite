@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.authentication.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;

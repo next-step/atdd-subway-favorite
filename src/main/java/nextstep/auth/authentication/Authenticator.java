@@ -1,7 +1,7 @@
 package nextstep.auth.authentication;
 
 import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,20 +19,20 @@ public abstract class Authenticator implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         AuthenticationToken token = convert(request);
-        LoginMember member = userDetailsService.loadUserByUsername(token.getPrincipal());
+        User user = userDetailsService.loadUserByUsername(token.getPrincipal());
 
-        checkAuthentication(member, token.getCredentials());
-        authenticate(member, response);
+        checkAuthentication(user, token.getCredentials());
+        authenticate(user, response);
 
         return false;
     }
 
     abstract public AuthenticationToken convert(HttpServletRequest request) throws IOException;
 
-    abstract public void authenticate(LoginMember member, HttpServletResponse response) throws IOException;
+    abstract public void authenticate(User user, HttpServletResponse response) throws IOException;
 
-    private void checkAuthentication(LoginMember member, String password) {
-        if (!member.checkPassword(password)) {
+    private void checkAuthentication(User user, String password) {
+        if (!user.checkPassword(password)) {
             throw new AuthenticationException();
         }
     }

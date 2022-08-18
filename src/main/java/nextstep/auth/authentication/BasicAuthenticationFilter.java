@@ -2,7 +2,7 @@ package nextstep.auth.authentication;
 
 import nextstep.auth.context.Authentication;
 import nextstep.member.application.UserDetailsService;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.User;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ public class BasicAuthenticationFilter extends Authorizator {
     @Override
     public Authentication convert(HttpServletRequest request) {
         AuthenticationToken token = getToken(request);
-        LoginMember loginMember = userDetailsService.loadUserByUsername(token.getPrincipal());
+        User loginMember = userDetailsService.loadUserByUsername(token.getPrincipal());
 
         checkAuthentication(token, loginMember);
 
@@ -37,8 +37,8 @@ public class BasicAuthenticationFilter extends Authorizator {
         return new AuthenticationToken(principal, credentials);
     }
 
-    private void checkAuthentication(AuthenticationToken token, LoginMember loginMember) {
-        if (!loginMember.checkPassword(token.getCredentials())) {
+    private void checkAuthentication(AuthenticationToken token, User user) {
+        if (!user.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
     }

@@ -1,8 +1,8 @@
 package nextstep.member.application;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.User;
 
 public interface UserDetailsService {
 
-    LoginMember loadUserByUsername(String email);
+    User loadUserByUsername(String email);
 }
