@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,6 +81,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(sourceStationNames).containsExactly("강남역", "교대역"),
                 () -> assertThat(targetStationNames).containsExactly("양재역", "강남역")
         );
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(ADMIN_ACCESS_TOKEN, 교대역, 강남역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(ADMIN_ACCESS_TOKEN, createResponse.header("location"));
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId) {

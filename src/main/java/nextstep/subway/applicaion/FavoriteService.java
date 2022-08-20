@@ -39,4 +39,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteLine(Long id) {
+        favoriteRepository.deleteById(id);
+    }
 }

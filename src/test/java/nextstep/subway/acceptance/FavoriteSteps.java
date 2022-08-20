@@ -29,5 +29,11 @@ public class FavoriteSteps {
                 .when().get("/favorites")
                 .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String location) {
+        return auth(accessToken).log().all()
+                .when().delete(location)
+                .then().log().all().extract();
+    }
     
 }
