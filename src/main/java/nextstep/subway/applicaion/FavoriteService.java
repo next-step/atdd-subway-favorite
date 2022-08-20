@@ -13,6 +13,9 @@ import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -28,6 +31,12 @@ public class FavoriteService {
         Station target = stationRepository.findById(request.getTargetId()).orElseThrow(IllegalArgumentException::new);
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(RuntimeException::new);
         return FavoriteResponse.of(favoriteRepository.save(Favorite.of(source, target, member)));
+    }
+
+    public List<FavoriteResponse> findFavorites() {
+        return favoriteRepository.findAll().stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
 }

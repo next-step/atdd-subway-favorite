@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,10 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -60,6 +61,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
+    }
+
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void getFavorites() {
+        // given
+        즐겨찾기_생성_요청(ADMIN_ACCESS_TOKEN, 강남역, 양재역);
+        즐겨찾기_생성_요청(ADMIN_ACCESS_TOKEN, 교대역, 강남역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+
+        // then
+        List<String> sourceStationNames = response.jsonPath().getList("source.name", String.class);
+        List<String> targetStationNames = response.jsonPath().getList("target.name", String.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(sourceStationNames).containsExactly("강남역", "교대역"),
+                () -> assertThat(targetStationNames).containsExactly("양재역", "강남역")
+        );
     }
 
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId) {
