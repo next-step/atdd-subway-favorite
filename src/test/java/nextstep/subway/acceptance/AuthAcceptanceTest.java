@@ -1,11 +1,18 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
+import static nextstep.subway.acceptance.MemberSteps.베이직_인증으로_내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
+
+import io.restassured.RestAssured;
+import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static nextstep.subway.acceptance.MemberSteps.*;
+import org.springframework.http.HttpStatus;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -40,10 +47,21 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        return null;
+        return RestAssured.given().log().all()
+                .auth().form(email, password, new FormAuthConfig("/login/form", "email", "password"))
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return null;
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + accessToken);
+
+        return RestAssured.given().log().all()
+                .headers(headers)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
     }
 }
