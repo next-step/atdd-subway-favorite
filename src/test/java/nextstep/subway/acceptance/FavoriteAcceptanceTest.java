@@ -42,13 +42,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * feature : 즐겨찾기 생성
-     * Given 강남역 생성
-     * And 양재역 생성
-     * And 교대역 생성
-     * And 신분당선 노선 생성 [강남역 - 양재역]
-     * And 2호선 노선 생성 [교대역 - 강남역]
-     * And 로그인이 되어 있음
+     * Given Token 인증을 통해 로그인한다.
+     * When 경로(출발역, 도착역)을 즐겨찾기로 추가하면
+     * Then 즐겨찾기 추가 성공을 응답받는다.
      */
     @DisplayName("즐겨찾기를 추가한다.")
     @Test
@@ -62,6 +58,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
+    /**
+     * Given Token 인증을 통해 로그인한다.
+     * Given 2개의 경로(출발역, 도착역)을 즐겨찾기로 추가하고
+     * When 나의 즐겨찾기 목록을 조회하면
+     * Then 즐겨찾기 목록에 2개의 경로를 확인할 수 있다.
+     */
     @DisplayName("즐겨찾기 목록 조회")
     @Test
     void getFavorites() {
@@ -70,7 +72,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_요청(ADMIN_ACCESS_TOKEN, 교대역, 강남역);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(ADMIN_ACCESS_TOKEN);
 
         // then
         List<String> sourceStationNames = response.jsonPath().getList("source.name", String.class);
@@ -83,6 +85,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    /**
+     * Given Token 인증을 통해 로그인한다.
+     * Given 경로(출발역, 도착역)을 즐겨찾기로 추가하고
+     * When 즐겨찾기를 삭제하면
+     * Then 해당 즐겨찾기 정보는 삭제된다.
+     */
     @DisplayName("즐겨찾기 삭제")
     @Test
     void deleteFavorite() {
@@ -94,6 +102,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Given 로그인하지 않고
+     * When 경로(출발역, 도착역)을 즐겨찾기로 추가하면
+     * Then 401 Unauthorized Exception 을 만난다.
+     */
+    @DisplayName("비로그인 회원이 즐겨찾기 경로를 추가하면 예외")
+    @Test
+    void anonymousUserAddFavoritePathException() {
+
+        // when
+        ExtractableResponse<Response> response = 비로그인_즐겨찾기_생성_요청(강남역, 양재역);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId) {

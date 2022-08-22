@@ -27,8 +27,8 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Station source = stationRepository.findById(request.getSourceId()).orElseThrow(IllegalArgumentException::new);
-        Station target = stationRepository.findById(request.getTargetId()).orElseThrow(IllegalArgumentException::new);
+        Station source = stationRepository.findById(request.getSource()).orElseThrow(IllegalArgumentException::new);
+        Station target = stationRepository.findById(request.getTarget()).orElseThrow(IllegalArgumentException::new);
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(RuntimeException::new);
         return FavoriteResponse.of(favoriteRepository.save(Favorite.of(source, target, member)));
     }

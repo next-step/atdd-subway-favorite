@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FavoriteRequest {
 
-    private Long sourceId;
+    private Long source;
 
-    private Long targetId;
+    private Long target;
 
 }
