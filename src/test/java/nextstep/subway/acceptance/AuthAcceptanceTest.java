@@ -1,5 +1,10 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.AGE;
+import static nextstep.subway.acceptance.MemberSteps.EMAIL;
+import static nextstep.subway.acceptance.MemberSteps.MEMBER_EMAIL;
+import static nextstep.subway.acceptance.MemberSteps.MEMBER_PASSWORD;
+import static nextstep.subway.acceptance.MemberSteps.PASSWORD;
 import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.MemberSteps.베이직_인증으로_내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
@@ -18,13 +23,6 @@ import org.springframework.http.HttpStatus;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
-    private static final String MEMBER_EMAIL = "member@email.com";
-    private static final String MEMBER_PASSWORD = "memberPassword";
-    private static final Integer MEMBER_AGE = 23;
-
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {

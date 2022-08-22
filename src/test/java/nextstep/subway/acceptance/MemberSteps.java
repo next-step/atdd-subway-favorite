@@ -14,6 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberSteps {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
+    public static final String EMAIL = "admin@email.com";
+    public static final String PASSWORD = "password";
+    public static final Integer AGE = 20;
+    public static final String MEMBER_EMAIL = "member@email.com";
+    public static final String MEMBER_PASSWORD = "memberPassword";
+    public static final Integer MEMBER_AGE = 23;
 
     public static String 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
