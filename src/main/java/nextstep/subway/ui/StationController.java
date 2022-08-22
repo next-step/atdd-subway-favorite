@@ -32,6 +32,7 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
