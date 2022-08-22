@@ -29,7 +29,7 @@ public class FavoriteService {
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest request) {
         Station source = stationRepository.findById(request.getSource()).orElseThrow(IllegalArgumentException::new);
         Station target = stationRepository.findById(request.getTarget()).orElseThrow(IllegalArgumentException::new);
-        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(IllegalArgumentException::new);
         return FavoriteResponse.of(favoriteRepository.save(Favorite.of(source, target, member)));
     }
 
