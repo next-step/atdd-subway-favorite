@@ -74,7 +74,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청_토큰_포함("신논현역", accessToken);
 
         // then
-        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("관리자 권한이 아닌 토큰인 경우, 지하철역 생성 불가")
@@ -87,7 +87,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청_토큰_포함("신논현역", accessToken);
 
         // then
-        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.response().statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
