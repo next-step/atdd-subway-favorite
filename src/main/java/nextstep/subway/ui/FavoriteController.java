@@ -23,8 +23,8 @@ public class FavoriteController {
     @PostMapping("")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
-        FavoriteResponse favorite = favoriteService.saveFavorite(loginMember, favoriteRequest);
-        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
+        Long favoriteId = favoriteService.saveFavorite(loginMember, favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
     }
 
     @GetMapping("")

@@ -2,9 +2,11 @@ package nextstep.subway.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.member.domain.Member;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor
@@ -15,26 +17,20 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "source_id")
-    private Station source;
+    private Long sourceId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "target_id")
-    private Station target;
+    private Long targetId;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
-    public Favorite(Station source, Station target, Member member) {
-        this.source = source;
-        this.target = target;
-        this.member = member;
+    public Favorite(Long sourceId, Long targetId, Long memberId) {
+        this.sourceId = sourceId;
+        this.targetId = targetId;
+        this.memberId = memberId;
     }
 
-    public static Favorite of(Station source, Station target, Member member) {
-        return new Favorite(source, target, member);
+    public static Favorite of(Long sourceId, Long targetId, Long memberId) {
+        return new Favorite(sourceId, targetId, memberId);
     }
 
 }

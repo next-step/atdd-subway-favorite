@@ -19,8 +19,8 @@ public class FavoriteResponse {
         this.target = new StationResponse(target.getId(), target.getName());
     }
 
-    public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), favorite.getSource(), favorite.getTarget());
+    public static FavoriteResponse of(Long favoriteId, Station source, Station target) {
+        return new FavoriteResponse(favoriteId, source, target);
     }
 
 }

@@ -26,17 +26,24 @@ public class FavoriteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public Long saveFavorite(LoginMember loginMember, FavoriteRequest request) {
         Station source = stationRepository.findById(request.getSource()).orElseThrow(IllegalArgumentException::new);
         Station target = stationRepository.findById(request.getTarget()).orElseThrow(IllegalArgumentException::new);
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(IllegalArgumentException::new);
-        return FavoriteResponse.of(favoriteRepository.save(Favorite.of(source, target, member)));
+        return favoriteRepository.save(Favorite.of(source.getId(), target.getId(), member.getId())).getId();
     }
 
     public List<FavoriteResponse> findFavorites() {
-        return favoriteRepository.findAll().stream()
-                .map(FavoriteResponse::of)
+        return favoriteRepository.findAll()
+                .stream()
+                .map(this::createFavoriteResponse)
                 .collect(Collectors.toList());
+    }
+
+    private FavoriteResponse createFavoriteResponse(Favorite favorite) {
+        Station source = stationRepository.findById(favorite.getSourceId()).orElseThrow(IllegalArgumentException::new);
+        Station target = stationRepository.findById(favorite.getTargetId()).orElseThrow(IllegalArgumentException::new);
+        return FavoriteResponse.of(favorite.getId(), source, target);
     }
 
     public void deleteLine(Long id) {
