@@ -90,6 +90,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Given 경로(출발역, 도착역)을 즐겨찾기로 추가하고
      * When 즐겨찾기를 삭제하면
      * Then 해당 즐겨찾기 정보는 삭제된다.
+     * Then 즐겨찾기 목록 조회시 조회되지 않는다.
      */
     @DisplayName("즐겨찾기 삭제")
     @Test
@@ -102,6 +103,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(즐겨찾기_목록_조회_요청(ADMIN_ACCESS_TOKEN).jsonPath().getList("")).isEmpty();
     }
 
     /**

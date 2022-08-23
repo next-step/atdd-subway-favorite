@@ -46,6 +46,7 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite.getId(), source, target);
     }
 
+    @Transactional
     public void deleteLine(Long id) {
         favoriteRepository.deleteById(id);
     }
