@@ -1,5 +1,6 @@
 package nextstep.auth.secured;
 
+import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.aspectj.lang.JoinPoint;
@@ -24,6 +25,11 @@ public class SecuredAnnotationChecker {
         List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            throw new AuthenticationException();
+        }
+
         authentication.getAuthorities().stream()
                 .filter(values::contains)
                 .findFirst()
