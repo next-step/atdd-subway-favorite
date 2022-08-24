@@ -12,11 +12,12 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-public abstract class AbstractAuthenticationFilter implements HandlerInterceptor {
+public abstract class AbstractOneAuthenticationFilter implements HandlerInterceptor {
     private final AuthenticationManager authenticationManager;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
-    public AbstractAuthenticationFilter(AuthenticationManager authenticationManager, AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public AbstractOneAuthenticationFilter(AuthenticationManager authenticationManager,
+                                           AuthenticationSuccessHandler authenticationSuccessHandler) {
         this.authenticationManager = authenticationManager;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
     }
@@ -24,22 +25,23 @@ public abstract class AbstractAuthenticationFilter implements HandlerInterceptor
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         try {
-            Authentication authentication = attemptAuthentication(request);
+            Authentication authentication = attemptAuthentication(request, response);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             authenticationSuccessHandler.onAuthenticationSuccess(request, response, authentication);
-            return true;
+            return false;
         } catch (InvalidTokenException e) {
             throw new InvalidTokenException(INVALID_TOKEN);
         } catch (Exception e) {
-            return true;
+            return false;
         }
     }
 
-    protected abstract Authentication convert(HttpServletRequest request) throws IOException;
+    protected abstract Authentication convert(HttpServletRequest request,
+                                              HttpServletResponse response) throws IOException;
 
-    protected Authentication attemptAuthentication(HttpServletRequest request) throws IOException {
-        Authentication token = convert(request);
+    protected Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Authentication token = convert(request, response);
 
         return authenticationManager.authenticate(token);
     }

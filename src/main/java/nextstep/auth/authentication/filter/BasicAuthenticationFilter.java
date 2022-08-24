@@ -5,13 +5,14 @@ import javax.servlet.http.HttpServletRequest;
 import nextstep.auth.authentication.AuthenticationManager;
 import nextstep.auth.authentication.AuthorizationExtractor;
 import nextstep.auth.authentication.AuthorizationType;
+import nextstep.auth.authentication.handler.AuthenticationSuccessHandler;
 import nextstep.auth.authentication.token.BasicAuthenticationToken;
 import nextstep.auth.context.Authentication;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 public class BasicAuthenticationFilter extends AbstractAuthenticationFilter {
-    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager, AuthenticationSuccessHandler authenticationSuccessHandler) {
+        super(authenticationManager, authenticationSuccessHandler);
     }
 
     @Override
