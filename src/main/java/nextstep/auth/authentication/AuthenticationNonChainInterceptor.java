@@ -1,19 +1,16 @@
 package nextstep.auth.authentication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-public abstract class AuthenticationNonChainFilter implements HandlerInterceptor {
+public abstract class AuthenticationNonChainInterceptor implements HandlerInterceptor {
     private final LoginMemberService loginMemberService;
 
-    public AuthenticationNonChainFilter(LoginMemberService loginMemberService) {
+    public AuthenticationNonChainInterceptor(LoginMemberService loginMemberService) {
         this.loginMemberService = loginMemberService;
     }
 

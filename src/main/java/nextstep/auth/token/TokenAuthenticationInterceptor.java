@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nextstep.auth.authentication.AuthenticationNonChainFilter;
+import nextstep.auth.authentication.AuthenticationNonChainInterceptor;
 import nextstep.auth.authentication.UserInformation;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 
-public class TokenAuthenticationInterceptor extends AuthenticationNonChainFilter {
+public class TokenAuthenticationInterceptor extends AuthenticationNonChainInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
     public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {

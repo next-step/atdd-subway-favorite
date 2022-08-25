@@ -7,8 +7,8 @@ import nextstep.auth.context.SecurityContextHolder;
 import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 
-public class UsernamePasswordAuthenticationFilter extends AuthenticationNonChainFilter {
-    public UsernamePasswordAuthenticationFilter(LoginMemberService loginMemberService) {
+public class UsernamePasswordAuthenticationInterceptor extends AuthenticationNonChainInterceptor {
+    public UsernamePasswordAuthenticationInterceptor(LoginMemberService loginMemberService) {
         super(loginMemberService);
     }
 
