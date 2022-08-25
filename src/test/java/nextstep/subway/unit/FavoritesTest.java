@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -75,13 +77,10 @@ class FavoritesTest {
         void 즐겨찾기_같은역_추가_실패() {
             // given
             Station 강남역 = new Station("강남역");
-            Favorites favorites = new Favorites();
 
             // when
-            Favorite favorite = new Favorite(강남역, 강남역);
-
             // then
-            assertThatThrownBy(() -> favorites.add(favorite))
+            assertThatThrownBy(() -> new Favorite(강남역, 강남역))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(FavoriteException.SAME_SOURCE_AND_TARGET);
         }
