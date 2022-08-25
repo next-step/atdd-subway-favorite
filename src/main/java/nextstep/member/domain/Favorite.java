@@ -43,4 +43,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean hasDuplicateFavorite(Station target, Station source) {
+        return this.target == target && this.source == source;
+    }
 }
