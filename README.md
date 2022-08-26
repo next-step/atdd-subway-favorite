@@ -16,6 +16,6 @@
   - [X] TokenAuthenticationInterceptor와 UsernamePasswordAuthenticationFilter는 인증 성공 후 더이상의 Interceptor chain을 진행하지 않고 응답을 함
   - [X] BasicAuthenticationFilter와 BearerTokenAuthenticationFilter는 인증 성공 후 다음 Interceptor chain을 수행함
   이 차이를 참고하여 각각 추상화 가능
-- [ ] auth 패키지와 member 패키지에 대한 의존 제거
-  - [ ] 현재 auth 패키지와 member 패키지는 서로 의존하고 있음
-  - [ ] UserDetailsService를 추상화 하여 auth -> member 의존을 제거하기
+- [X] auth 패키지와 member 패키지에 대한 의존 제거
+  - [X] 현재 auth 패키지와 member 패키지는 서로 의존하고 있음
+  - [X] UserDetailsService를 추상화 하여 auth -> member 의존을 제거하기
