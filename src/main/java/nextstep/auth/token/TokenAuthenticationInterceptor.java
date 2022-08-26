@@ -7,21 +7,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.authentication.AuthenticationNonChainInterceptor;
 import nextstep.auth.authentication.UserInformation;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.UserDetailService;
+import nextstep.auth.user.UserDetails;
 import org.springframework.http.MediaType;
 
 public class TokenAuthenticationInterceptor extends AuthenticationNonChainInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenAuthenticationInterceptor(LoginMemberService loginMemberService, JwtTokenProvider jwtTokenProvider) {
-        super(loginMemberService);
+    public TokenAuthenticationInterceptor(UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider) {
+        super(userDetailService);
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    protected void afterAuthentication(HttpServletResponse response, LoginMember loginMember) throws IOException {
-        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void afterAuthentication(HttpServletResponse response, UserDetails userDetails) throws IOException {
+        String token = jwtTokenProvider.createToken(userDetails.getEmail(), userDetails.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);

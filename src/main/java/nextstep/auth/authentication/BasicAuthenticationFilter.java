@@ -2,15 +2,15 @@ package nextstep.auth.authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import nextstep.auth.context.Authentication;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.UserDetailService;
+import nextstep.auth.user.UserDetails;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
-    private LoginMemberService loginMemberService;
+    private UserDetailService userDetailService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailService userDetailService) {
+        this.userDetailService = userDetailService;
     }
 
     @Override
@@ -23,15 +23,15 @@ public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
         String credentials = splits[1];
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
+        UserDetails userDetails = userDetailService.loadUserByUsername(token.getPrincipal());
+        if (userDetails == null) {
             throw new AuthenticationException();
         }
 
-        if (!loginMember.checkPassword(token.getCredentials())) {
+        if (!userDetails.checkPassword(token.getCredentials())) {
             throw new AuthenticationException();
         }
 
-        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 }

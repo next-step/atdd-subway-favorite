@@ -4,12 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.user.UserDetailService;
+import nextstep.auth.user.UserDetails;
 
 public class UsernamePasswordAuthenticationInterceptor extends AuthenticationNonChainInterceptor {
-    public UsernamePasswordAuthenticationInterceptor(LoginMemberService loginMemberService) {
-        super(loginMemberService);
+    public UsernamePasswordAuthenticationInterceptor(UserDetailService userDetailService) {
+        super(userDetailService);
     }
 
     @Override
@@ -21,8 +21,8 @@ public class UsernamePasswordAuthenticationInterceptor extends AuthenticationNon
     }
 
     @Override
-    protected void afterAuthentication(HttpServletResponse response, LoginMember loginMember) {
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+    protected void afterAuthentication(HttpServletResponse response, UserDetails userDetails) {
+        Authentication authentication = new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
