@@ -1,50 +1,37 @@
 package nextstep.auth.authentication;
 
-import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
-import nextstep.member.application.LoginMemberService;
-import nextstep.member.domain.LoginMember;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.web.servlet.HandlerInterceptor;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import nextstep.auth.context.Authentication;
+import nextstep.auth.user.UserDetailService;
+import nextstep.auth.user.UserDetails;
+import org.apache.tomcat.util.codec.binary.Base64;
 
-public class BasicAuthenticationFilter implements HandlerInterceptor {
-    private LoginMemberService loginMemberService;
+public class BasicAuthenticationFilter extends AuthenticationChainInterceptor {
+    private UserDetailService userDetailService;
 
-    public BasicAuthenticationFilter(LoginMemberService loginMemberService) {
-        this.loginMemberService = loginMemberService;
+    public BasicAuthenticationFilter(UserDetailService userDetailService) {
+        this.userDetailService = userDetailService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
-            String authHeader = new String(Base64.decodeBase64(authCredentials));
+    protected Authentication createAuthentication(HttpServletRequest request) {
+        String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
+        String authHeader = new String(Base64.decodeBase64(authCredentials));
 
-            String[] splits = authHeader.split(":");
-            String principal = splits[0];
-            String credentials = splits[1];
+        String[] splits = authHeader.split(":");
+        String principal = splits[0];
+        String credentials = splits[1];
 
-            AuthenticationToken token = new AuthenticationToken(principal, credentials);
-
-            LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
-            if (loginMember == null) {
-                throw new AuthenticationException();
-            }
-
-            if (!loginMember.checkPassword(token.getCredentials())) {
-                throw new AuthenticationException();
-            }
-
-            Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            return true;
-        } catch (Exception e) {
-            return true;
+        AuthenticationToken token = new AuthenticationToken(principal, credentials);
+        UserDetails userDetails = userDetailService.loadUserByUsername(token.getPrincipal());
+        if (userDetails == null) {
+            throw new AuthenticationException();
         }
+
+        if (!userDetails.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
+        }
+
+        return new Authentication(userDetails.getEmail(), userDetails.getAuthorities());
     }
 }

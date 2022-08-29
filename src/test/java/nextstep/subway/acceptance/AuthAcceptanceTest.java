@@ -15,14 +15,20 @@ import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 
 class AuthAcceptanceTest extends AcceptanceTest {
+    private String accessToken;
+
+    @BeforeEach
+    void init() {
+        accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+    }
+
     @DisplayName("Basic Auth")
     @Test
     void myInfoWithBasicAuth() {
@@ -42,8 +48,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-
         ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, EMAIL, AGE);
@@ -52,9 +56,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("권한 확인 성공")
     @Test
     void adminAuth() {
-        // given
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-
         // when
         ExtractableResponse<Response> response = 지하철역_생성_요청_토큰_포함("신논현역", accessToken);
 
@@ -97,11 +98,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + accessToken);
-
         return RestAssured.given().log().all()
-                .headers(headers)
+                .auth().oauth2(accessToken)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();

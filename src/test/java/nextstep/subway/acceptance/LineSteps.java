@@ -7,10 +7,9 @@ import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.MediaType;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.MediaType;
 
 public class LineSteps {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color) {
@@ -77,6 +76,26 @@ public class LineSteps {
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(String accessToken, Map<String, String> params,
+                                                             ExtractableResponse<Response> createResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(createResponse.header("location"))
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String accessToken,
+                                                             ExtractableResponse<Response> createResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(createResponse.header("location"))
                 .then().log().all().extract();
     }
 }
