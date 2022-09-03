@@ -3,20 +3,17 @@ package nextstep.auth.context;
 import java.io.Serializable;
 import java.util.List;
 
-public class Authentication implements Serializable {
-    private Object principal;
-    private List<String> authorities;
+public interface Authentication extends Serializable {
+    List<String> getAuthorities();
 
-    public Authentication(Object principal, List<String> authorities) {
-        this.principal = principal;
-        this.authorities = authorities;
-    }
+    Object getPrincipal();
 
-    public Object getPrincipal() {
-        return principal;
-    }
+    // 주로 비밀번호
+    Object getCredentials();
 
-    public List<String> getAuthorities() {
-        return authorities;
-    }
+    // 인증 여부를 가져옴
+    boolean isAuthenticated();
+
+    // 인증 여부를 설정함함
+    void setAuthenticated(boolean isAuthenticated);
 }
