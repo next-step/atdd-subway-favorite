@@ -1,7 +1,17 @@
 package nextstep.member.domain;
 
-import javax.persistence.*;
 import java.util.List;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import nextstep.subway.domain.Station;
 
 @Entity
 public class Member {
@@ -11,6 +21,8 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
+    @Embedded
+    private Favorites favorites = new Favorites();
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "MEMBER_ROLE",
@@ -54,6 +66,22 @@ public class Member {
 
     public List<String> getRoles() {
         return roles;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites.getFavorites();
+    }
+
+    public Favorite addFavorite(Station source, Station target) {
+        Favorite favorite = new Favorite(source, target);
+
+        favorites.add(favorite);
+
+        return favorite;
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.delete(favorite);
     }
 
     public void update(Member member) {

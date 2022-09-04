@@ -1,5 +1,7 @@
 package nextstep.auth.secured;
 
+import java.util.Optional;
+import nextstep.auth.authentication.execption.AuthenticationException;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import org.aspectj.lang.JoinPoint;
@@ -23,7 +25,9 @@ public class SecuredAnnotationChecker {
         Secured secured = method.getAnnotation(Secured.class);
         List<String> values = Arrays.stream(secured.value()).collect(Collectors.toList());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .orElseThrow(() -> new AuthenticationException("인증에 실패하였습니다."));
+
         authentication.getAuthorities().stream()
                 .filter(values::contains)
                 .findFirst()

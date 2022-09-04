@@ -46,4 +46,8 @@ public class MemberService {
     public void deleteMember(String email) {
         memberRepository.deleteByEmail(email);
     }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+    }
 }
