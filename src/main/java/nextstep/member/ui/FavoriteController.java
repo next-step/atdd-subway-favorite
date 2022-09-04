@@ -3,6 +3,7 @@ package nextstep.member.ui;
 import java.net.URI;
 import java.util.List;
 import nextstep.auth.authorization.AuthenticationPrincipal;
+import nextstep.auth.secured.Secured;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
@@ -26,6 +27,7 @@ public class FavoriteController {
     }
 
     @PostMapping
+    @Secured("ROLE_MEMBER")
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                @RequestBody FavoriteRequest favoriteRequest) {
         Long favoriteId = favoriteService.saveFavorite(loginMember, favoriteRequest);
@@ -33,12 +35,14 @@ public class FavoriteController {
     }
 
     @GetMapping
+    @Secured("ROLE_MEMBER")
     public ResponseEntity<List<FavoriteResponse>> showFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         List<FavoriteResponse> responses = favoriteService.findFavoriteResponses(loginMember);
         return ResponseEntity.ok().body(responses);
     }
 
     @DeleteMapping("/{favoriteId}")
+    @Secured("ROLE_MEMBER")
     public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                @PathVariable Long favoriteId) {
         favoriteService.deleteFavorite(loginMember, favoriteId);
