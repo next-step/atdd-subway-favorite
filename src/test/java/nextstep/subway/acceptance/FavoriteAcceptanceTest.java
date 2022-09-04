@@ -83,7 +83,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> Assertions.assertThat(response.jsonPath().getList("source.name", String.class)).containsExactly("교대역"),
                 () -> Assertions.assertThat(response.jsonPath().getList("target.name", String.class)).containsExactly("양재역")
         );
@@ -106,7 +106,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> Assertions.assertThat(response.jsonPath().getList("source.name", String.class)).containsExactly("교대역", "남부터미널역"),
                 () -> Assertions.assertThat(response.jsonPath().getList("target.name", String.class)).containsExactly("양재역", "양재역")
         );

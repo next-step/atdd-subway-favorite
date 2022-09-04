@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Favorite;
@@ -35,8 +36,13 @@ public class FavoriteService {
         return favoriteRepository.save(favorite).getId();
     }
 
-    public List<FavoriteResponse> findFavoriteResponses() {
-        return null;
+    public List<FavoriteResponse> findFavoriteResponses(LoginMember loginMember) {
+        Member member = memberService.findByEmail(loginMember.getEmail());
+        List<Favorite> favorites = member.getFavorites();
+
+        return favorites.stream()
+                .map(it -> FavoriteResponse.of(it, it.getSource(), it.getTarget()))
+                .collect(Collectors.toList());
     }
 
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {

@@ -33,8 +33,8 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> showFavorites() {
-        List<FavoriteResponse> responses = favoriteService.findFavoriteResponses();
+    public ResponseEntity<List<FavoriteResponse>> showFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> responses = favoriteService.findFavoriteResponses(loginMember);
         return ResponseEntity.ok().body(responses);
     }
 
