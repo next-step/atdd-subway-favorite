@@ -27,15 +27,15 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_즐겨찾기_제거_요청(String accessToken, String favoriteId) {
+    public static ExtractableResponse<Response> 지하철_노선_즐겨찾기_제거_요청(String accessToken, String uri) {
         return given(accessToken)
-                .when().delete("/favorites/{favoriteId}", favoriteId)
+                .when().delete(uri)
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_즐겨찾기_제거_요청(String favoriteId) {
+    public static ExtractableResponse<Response> 지하철_노선_즐겨찾기_제거_요청(String uri) {
         return RestAssured.given().log().all()
-                .when().delete("/favorites/{favoriteId}", favoriteId)
+                .when().delete(uri)
                 .then().log().all().extract();
     }
 

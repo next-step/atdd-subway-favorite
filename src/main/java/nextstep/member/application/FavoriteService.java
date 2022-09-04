@@ -39,9 +39,13 @@ public class FavoriteService {
         return null;
     }
 
-    public void deleteFavorite(Long favoriteId) {
-        // TODO document why this method is empty
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        Member member = memberService.findByEmail(loginMember.getEmail());
+        member.removeFavorite(favorite);
+
+        favoriteRepository.delete(favorite);
     }
-
-
 }

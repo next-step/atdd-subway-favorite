@@ -80,6 +80,10 @@ public class Member {
         return favorite;
     }
 
+    public void removeFavorite(Favorite favorite) {
+        favorites.delete(favorite);
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
