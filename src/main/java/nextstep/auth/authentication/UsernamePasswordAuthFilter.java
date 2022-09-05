@@ -3,8 +3,8 @@ package nextstep.auth.authentication;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.service.LoginMemberService;
 import nextstep.common.interceptor.NotProgressInterceptor;
-import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 
 import javax.servlet.http.HttpServletRequest;

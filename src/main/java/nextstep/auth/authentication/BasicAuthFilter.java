@@ -1,14 +1,10 @@
 package nextstep.auth.authentication;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.AuthorizationExtractor;
-import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.service.LoginMemberService;
 import nextstep.common.interceptor.ProgressInterceptor;
-import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
 

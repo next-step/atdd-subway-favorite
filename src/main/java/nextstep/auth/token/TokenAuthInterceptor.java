@@ -3,11 +3,8 @@ package nextstep.auth.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.token.TokenRequest;
-import nextstep.auth.token.TokenResponse;
+import nextstep.auth.service.LoginMemberService;
 import nextstep.common.interceptor.NotProgressInterceptor;
-import nextstep.member.application.LoginMemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
 

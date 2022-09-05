@@ -7,10 +7,10 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService {
+public class MemberServiceImpl {
     private MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
