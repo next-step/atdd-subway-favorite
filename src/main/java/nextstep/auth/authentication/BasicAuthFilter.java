@@ -15,8 +15,22 @@ import javax.servlet.http.HttpServletResponse;
 public class BasicAuthFilter extends AuthChainInterceptor {
     private final UserDetailService userDetailService;
 
-    @Override
-    protected void execute(final HttpServletRequest request, final HttpServletResponse response) {
+    protected void checkValidAuth(final AuthenticationToken token) {
+        UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
+        if (loginMember == null) {
+            throw new AuthenticationException();
+        }
+        if (!loginMember.checkPassword(token.getCredentials())) {
+            throw new AuthenticationException();
+        }
+    }
+
+    protected Authentication getAuthentication(final AuthenticationToken token) {
+        UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
+        return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
+    }
+
+    protected AuthenticationToken getAuthenticationToken(final HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 
@@ -24,19 +38,6 @@ public class BasicAuthFilter extends AuthChainInterceptor {
         String principal = splits[0];
         String credentials = splits[1];
 
-        AuthenticationToken token = new AuthenticationToken(principal, credentials);
-
-        UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
-        if (loginMember == null) {
-            throw new AuthenticationException();
-        }
-
-        if (!loginMember.checkPassword(token.getCredentials())) {
-            throw new AuthenticationException();
-        }
-
-        Authentication authentication = new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return new AuthenticationToken(principal, credentials);
     }
 }
