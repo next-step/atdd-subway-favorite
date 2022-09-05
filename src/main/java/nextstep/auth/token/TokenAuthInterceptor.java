@@ -3,7 +3,8 @@ package nextstep.auth.token;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.service.LoginMemberService;
+import nextstep.auth.user.UserDetail;
+import nextstep.auth.user.UserDetailService;
 import nextstep.common.interceptor.NotProgressInterceptor;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.MediaType;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class TokenAuthInterceptor extends NotProgressInterceptor {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailService loginMemberService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -25,7 +26,7 @@ public class TokenAuthInterceptor extends NotProgressInterceptor {
         String principal = tokenRequest.getEmail();
         String credentials = tokenRequest.getPassword();
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        UserDetail loginMember = loginMemberService.loadUserByUsername(principal);
 
         if (loginMember == null) {
             throw new AuthenticationException();

@@ -3,7 +3,8 @@ package nextstep.auth.authentication;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.service.LoginMemberService;
+import nextstep.auth.user.UserDetail;
+import nextstep.auth.user.UserDetailService;
 import nextstep.common.interceptor.ProgressInterceptor;
 import nextstep.member.domain.LoginMember;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 public class BasicAuthFilter extends ProgressInterceptor {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailService userDetailService;
 
     @Override
     protected void execute(final HttpServletRequest request, final HttpServletResponse response) {
@@ -26,7 +27,7 @@ public class BasicAuthFilter extends ProgressInterceptor {
 
         AuthenticationToken token = new AuthenticationToken(principal, credentials);
 
-        LoginMember loginMember = loginMemberService.loadUserByUsername(token.getPrincipal());
+        UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
         if (loginMember == null) {
             throw new AuthenticationException();
         }

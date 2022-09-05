@@ -3,7 +3,8 @@ package nextstep.auth.authentication;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.auth.service.LoginMemberService;
+import nextstep.auth.user.UserDetail;
+import nextstep.auth.user.UserDetailService;
 import nextstep.common.interceptor.NotProgressInterceptor;
 import nextstep.member.domain.LoginMember;
 
@@ -16,7 +17,7 @@ public class UsernamePasswordAuthFilter extends NotProgressInterceptor {
     public static final String USERNAME_FIELD = "username";
     public static final String PASSWORD_FIELD = "password";
 
-    private final LoginMemberService loginMemberService;
+    private final UserDetailService loginMemberService;
 
     @Override
     protected void execute(HttpServletRequest request, HttpServletResponse response) {
@@ -27,7 +28,7 @@ public class UsernamePasswordAuthFilter extends NotProgressInterceptor {
         AuthenticationToken token = new AuthenticationToken(username, password);
 
         String principal = token.getPrincipal();
-        LoginMember loginMember = loginMemberService.loadUserByUsername(principal);
+        UserDetail loginMember = loginMemberService.loadUserByUsername(principal);
 
         if (loginMember == null) {
             throw new AuthenticationException();

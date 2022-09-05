@@ -6,7 +6,7 @@ import nextstep.auth.authorization.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.context.SecurityContextPersistenceFilter;
 import nextstep.auth.authentication.BasicAuthFilter;
 import nextstep.auth.authentication.BearerTokenAuthFilter;
-import nextstep.auth.service.LoginMemberService;
+import nextstep.auth.user.UserDetailService;
 import nextstep.auth.token.TokenAuthInterceptor;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
-    private final LoginMemberService loginMemberService;
+    private final UserDetailService loginMemberService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override

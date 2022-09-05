@@ -1,16 +1,16 @@
 package nextstep.member.application;
 
-import nextstep.auth.service.LoginMemberService;
+import nextstep.auth.user.UserDetailService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LoginMemberServiceImpl implements LoginMemberService {
+public class UserDetailServiceImpl implements UserDetailService {
     private MemberRepository memberRepository;
 
-    public LoginMemberServiceImpl(MemberRepository memberRepository) {
+    public UserDetailServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
