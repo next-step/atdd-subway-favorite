@@ -1,11 +1,11 @@
-package nextstep.common.interceptor;
+package nextstep.auth.interceptor;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class ProgressInterceptor implements HandlerInterceptor {
+public abstract class AuthChainInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler){

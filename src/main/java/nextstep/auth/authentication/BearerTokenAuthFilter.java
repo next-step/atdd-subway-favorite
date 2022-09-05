@@ -1,21 +1,17 @@
 package nextstep.auth.authentication;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.authentication.AuthenticationException;
-import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.authentication.AuthorizationExtractor;
-import nextstep.auth.authentication.AuthorizationType;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.common.interceptor.ProgressInterceptor;
+import nextstep.auth.interceptor.AuthChainInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class BearerTokenAuthFilter extends ProgressInterceptor {
+public class BearerTokenAuthFilter extends AuthChainInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override

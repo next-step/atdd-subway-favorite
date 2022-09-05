@@ -5,15 +5,14 @@ import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
 import nextstep.auth.user.UserDetail;
 import nextstep.auth.user.UserDetailService;
-import nextstep.common.interceptor.ProgressInterceptor;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.interceptor.AuthChainInterceptor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
-public class BasicAuthFilter extends ProgressInterceptor {
+public class BasicAuthFilter extends AuthChainInterceptor {
     private final UserDetailService userDetailService;
 
     @Override
