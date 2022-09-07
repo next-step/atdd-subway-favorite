@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance.support;
 
-import io.restassured.RestAssured;
 import io.restassured.authentication.FormAuthConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -83,18 +82,17 @@ public class MemberSteps extends AcceptanceTestSteps {
     }
 
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
-        return RestAssured.given().log().all()
-                          .auth().preemptive().basic(username, password)
-                          .accept(MediaType.APPLICATION_JSON_VALUE)
-                          .when().get("/members/me")
-                          .then().log().all()
-                          .statusCode(HttpStatus.OK.value())
-                          .extract();
+        return given()
+            .auth().preemptive().basic(username, password)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract();
     }
 
     public static ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        return RestAssured
-            .given().log().all()
+        return given()
             .auth().form(email, password, new FormAuthConfig("/login/form", USERNAME_FIELD, PASSWORD_FIELD))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/members/me")
