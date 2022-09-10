@@ -22,7 +22,7 @@ class LineAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("지하철 노선 생성")
     @Test
-    void createLine() {
+    void createLineByAdmin() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청("2호선", "green");
 
