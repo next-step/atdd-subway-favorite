@@ -46,6 +46,20 @@ public class LineSteps extends Steps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(Map<String, String> params, String location, String accessToken) {
+        return given(accessToken)
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(location)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_삭제_요청(String location, String accessToken) {
+        return given(accessToken)
+                .when().delete(location)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, String> params, String accessToken) {
         return given(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
