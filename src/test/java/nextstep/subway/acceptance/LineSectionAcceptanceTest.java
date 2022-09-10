@@ -36,12 +36,12 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 지하철 노선에 새로운 구간 추가를 요청 하면
+     * When 관리자가 지하철 노선에 새로운 구간 추가를 요청 하면
      * Then 노선에 새로운 구간이 추가된다
      */
-    @DisplayName("지하철 노선에 구간을 등록")
+    @DisplayName("관리자가 지하철 노선에 구간을 등록")
     @Test
-    void addLineSection() {
+    void addLineSectionByAdmin() {
         // when
         Long 정자역 = 지하철역_생성_요청("정자역", ADMIN_TOKEN).jsonPath().getLong("id");
         지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), ADMIN_TOKEN);
@@ -50,6 +50,21 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 양재역, 정자역);
+    }
+
+    /**
+     * When 일반 사용자가 지하철 노선에 새로운 구간 추가를 요청 하면
+     * Then 권한이 없다는 오류가 발생한다
+     */
+    @DisplayName("일반 사용자는 지하철 노선에 구간을 등록할 수 없다.")
+    @Test
+    void addLineSectionByMember() {
+        // when
+        Long 정자역 = 지하철역_생성_요청("정자역", ADMIN_TOKEN).jsonPath().getLong("id");
+        final ExtractableResponse<Response> 지하철_구간_생성_응답 = 지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), MEMBER_TOKEN);
+
+        // then
+        assertThat(지하철_구간_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -85,12 +100,12 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 지하철 노선에 새로운 구간 추가를 요청 하고
-     * When 지하철 노선의 마지막 구간 제거를 요청 하면
+     * When 관리자가 지하철 노선의 마지막 구간 제거를 요청 하면
      * Then 노선에 구간이 제거된다
      */
-    @DisplayName("지하철 노선의 마지막 구간을 제거")
+    @DisplayName("관리자가 지하철 노선의 마지막 구간을 제거")
     @Test
-    void removeLineSection() {
+    void removeLineSectionByAdmin() {
         // given
         Long 정자역 = 지하철역_생성_요청("정자역", ADMIN_TOKEN).jsonPath().getLong("id");
         지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), ADMIN_TOKEN);
@@ -102,6 +117,25 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 양재역);
+    }
+
+    /**
+     * Given 지하철 노선에 새로운 구간 추가를 요청 하고
+     * When 일반 사용자가 지하철 노선의 마지막 구간 제거를 요청 하면
+     * Then 노선에 구간이 제거된다
+     */
+    @DisplayName("일반 사용자는 지하철 노선의 마지막 구간을 제거할 수 없다.")
+    @Test
+    void removeLineSectionByMember() {
+        // given
+        Long 정자역 = 지하철역_생성_요청("정자역", ADMIN_TOKEN).jsonPath().getLong("id");
+        지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(양재역, 정자역), ADMIN_TOKEN);
+
+        // when
+        final ExtractableResponse<Response> 지하철_구간_제거_응답 = 지하철_노선에_지하철_구간_제거_요청(신분당선, 정자역, MEMBER_TOKEN);
+
+        // then
+        assertThat(지하철_구간_제거_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
