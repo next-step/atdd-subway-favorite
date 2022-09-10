@@ -38,12 +38,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         회원_정보_조회됨(response, EMAIL, AGE);
     }
-
-    private ExtractableResponse<Response> 폼_로그인_후_내_회원_정보_조회_요청(String email, String password) {
-        return null;
-    }
-
-    private ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String accessToken) {
-        return null;
-    }
 }
