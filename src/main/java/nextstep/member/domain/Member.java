@@ -1,8 +1,11 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
 @Entity
 public class Member {
     @Id
@@ -34,26 +37,6 @@ public class Member {
         this.password = password;
         this.age = age;
         this.roles = roles;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
     }
 
     public void update(Member member) {

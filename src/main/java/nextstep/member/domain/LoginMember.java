@@ -1,9 +1,18 @@
 package nextstep.member.domain;
 
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nextstep.auth.user.UserDetail;
+
 import java.util.List;
 
-public class LoginMember {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+public class LoginMember implements UserDetail {
     private String email;
     private String password;
     private List<String> authorities;
@@ -18,23 +27,6 @@ public class LoginMember {
 
     public static LoginMember guest() {
         return new LoginMember();
-    }
-
-    public LoginMember() {
-    }
-
-    public LoginMember(String email, String password, List<String> authorities) {
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public List<String> getAuthorities() {
-        return authorities;
     }
 
     public boolean checkPassword(String password) {

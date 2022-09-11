@@ -2,6 +2,8 @@ package nextstep.auth.secured;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
+import nextstep.common.exception.CustomException;
+import nextstep.common.exception.code.CommonCode;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Aspect
@@ -23,10 +26,12 @@ public class SecuredAnnotationChecker {
         Secured secured = method.getAnnotation(Secured.class);
         List<String> values = Arrays.stream(secured.value()).map(Enum::name).collect(Collectors.toList());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                                                .orElseThrow(() -> new CustomException(CommonCode.AUTH_INVALID));
+
         authentication.getAuthorities().stream()
-                .filter(values::contains)
-                .findFirst()
-                .orElseThrow(() -> new RoleAuthenticationException("권한이 없습니다."));
+                      .filter(values::contains)
+                      .findFirst()
+                      .orElseThrow(() -> new CustomException(CommonCode.AUTH_INVALID));
     }
 }
