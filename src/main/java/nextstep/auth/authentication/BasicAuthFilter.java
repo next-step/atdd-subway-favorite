@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.user.UserDetail;
 import nextstep.auth.user.UserDetailService;
-import nextstep.auth.interceptor.AuthChainInterceptor;
+import nextstep.auth.interceptor.AuthContextChainInterceptor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
-public class BasicAuthFilter extends AuthChainInterceptor {
+public class BasicAuthFilter extends AuthContextChainInterceptor {
     private final UserDetailService userDetailService;
 
     @Override
@@ -31,7 +31,7 @@ public class BasicAuthFilter extends AuthChainInterceptor {
     }
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(final HttpServletRequest request) {
+    protected AuthenticationToken createAuthToken(final HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 

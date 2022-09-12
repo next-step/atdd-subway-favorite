@@ -8,12 +8,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class AuthChainInterceptor implements HandlerInterceptor {
+public abstract class AuthContextChainInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler){
         try {
-            AuthenticationToken token = getAuthenticationToken(request);
+            AuthenticationToken token = createAuthToken(request);
             checkValidAuth(token);
             saveAuthContext(token);
             return true;
@@ -26,7 +26,7 @@ public abstract class AuthChainInterceptor implements HandlerInterceptor {
 
     protected abstract Authentication getAuthentication(final AuthenticationToken token);
 
-    protected abstract AuthenticationToken getAuthenticationToken(final HttpServletRequest request);
+    protected abstract AuthenticationToken createAuthToken(final HttpServletRequest request);
 
     private void saveAuthContext(final AuthenticationToken token) {
         Authentication authentication = getAuthentication(token);

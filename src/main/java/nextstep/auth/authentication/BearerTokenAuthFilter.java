@@ -3,13 +3,13 @@ package nextstep.auth.authentication;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.token.JwtTokenProvider;
-import nextstep.auth.interceptor.AuthChainInterceptor;
+import nextstep.auth.interceptor.AuthContextChainInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class BearerTokenAuthFilter extends AuthChainInterceptor {
+public class BearerTokenAuthFilter extends AuthContextChainInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -29,7 +29,7 @@ public class BearerTokenAuthFilter extends AuthChainInterceptor {
     }
 
     @Override
-    protected AuthenticationToken getAuthenticationToken(final HttpServletRequest request) {
+    protected AuthenticationToken createAuthToken(final HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BEARER);
         return new AuthenticationToken(authCredentials, authCredentials);
     }

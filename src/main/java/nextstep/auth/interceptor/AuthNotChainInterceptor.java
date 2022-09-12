@@ -19,7 +19,7 @@ public abstract class AuthNotChainInterceptor implements HandlerInterceptor {
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler){
         try {
             AuthenticationToken authToken = createAuthToken(request);
-            checkValidUser(authToken);
+            checkValidAuth(authToken);
             UserDetail userDetail = getUserDetail(authToken);
             afterSuccessUserCheck(request, response, userDetail);
             return false;
@@ -33,7 +33,7 @@ public abstract class AuthNotChainInterceptor implements HandlerInterceptor {
     protected abstract void afterSuccessUserCheck(final HttpServletRequest request, final HttpServletResponse response, UserDetail userDetail)
         throws IOException;
 
-    protected void checkValidUser(AuthenticationToken authToken){
+    protected void checkValidAuth(AuthenticationToken authToken){
         UserDetail loginMember = getUserDetail(authToken);
 
         if (loginMember == null) {
