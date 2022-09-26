@@ -6,6 +6,7 @@ import nextstep.subway.acceptance.support.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.support.FavoritesSteps.즐겨찾기_삭제_요청;
@@ -38,6 +39,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
          * When 서로 다른 두개의 역에 대해서 즐겨찾기를 등록하면
          * Then 즐겨찾기가 등록된다.
          */
+        @Test
         void success(){
             // when
             ExtractableResponse<Response> response = 즐겨찾기_생성_요청(관리자, 강남역, 양재역);
@@ -50,6 +52,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
          * When 유효하지 않은 사용자가 즐겨찾기를 등록하면
          * Then 등록에 실패한다.
          */
+        @Test
         void unauthorized(){
             // when
             final String notAdmin = "9999";
@@ -69,6 +72,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
          * When 즐겨 찾기를 조회하면
          * Then 즐겨찾기 정보를 얻을 수 있다.
          */
+        @Test
         void success(){
             // given
             즐겨찾기_생성_요청(관리자, 강남역, 양재역);
@@ -87,6 +91,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
          * When 유효하지 않은 사용자가 즐겨찾기를 조회하면
          * Then 조회에 실패한다.
          */
+        @Test
         void unauthorized(){
             // when
             final String notAdmin = "9999";
@@ -106,6 +111,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
          * When 즐겨찾기를 삭제하면
          * Then 즐겨찾기 삭제가 된다.
          */
+        @Test
         void success(){
             // given
             Long 등록된_즐겨찾기 = 즐겨찾기_생성_요청(관리자, 강남역, 양재역).jsonPath().getLong("id");
@@ -122,6 +128,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
          * When 유효하지 않은 사용자가 즐겨찾기를 조회하면
          * Then 조회에 실패한다.
          */
+        @Test
         void unauthorized(){
             // given
             Long 등록된_즐겨찾기 = 즐겨찾기_생성_요청(관리자, 강남역, 양재역).jsonPath().getLong("id");
