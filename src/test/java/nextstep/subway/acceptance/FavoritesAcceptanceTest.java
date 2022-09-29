@@ -82,9 +82,9 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.jsonPath().getList("id")).isNotNull();
-            assertThat(response.jsonPath().getList("source.name")).contains("강남역");
-            assertThat(response.jsonPath().getList("target.name")).contains("양재역");
+            assertThat(response.jsonPath().getLong("[0].id")).isNotNull();
+            assertThat(response.jsonPath().getString("[0].source.name")).contains("강남역");
+            assertThat(response.jsonPath().getString("[0].target.name")).contains("양재역");
         }
 
         /**
@@ -114,7 +114,8 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         @Test
         void success(){
             // given
-            Long 등록된_즐겨찾기 = 즐겨찾기_생성_요청(관리자, 강남역, 양재역).jsonPath().getLong("id");
+            즐겨찾기_생성_요청(관리자, 강남역, 양재역);
+            Long 등록된_즐겨찾기 = 즐겨찾기_조회_요청(관리자).jsonPath().getLong("[0].id");
 
             // when
             ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(관리자, 등록된_즐겨찾기);
@@ -131,11 +132,12 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         @Test
         void unauthorized(){
             // given
-            Long 등록된_즐겨찾기 = 즐겨찾기_생성_요청(관리자, 강남역, 양재역).jsonPath().getLong("id");
+            즐겨찾기_생성_요청(관리자, 강남역, 양재역);
+            Long 등록된_즐겨찾기 = 즐겨찾기_조회_요청(관리자).jsonPath().getLong("[0].id");
 
             // when
-            final String notAdmin = "9999";
-            ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(notAdmin, 등록된_즐겨찾기);
+            final String 유효하지않은_사용자 = "9999";
+            ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(유효하지않은_사용자, 등록된_즐겨찾기);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
