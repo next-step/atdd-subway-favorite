@@ -51,4 +51,6 @@ class FavoritesServiceTest {
                  );
         verify(favoritesRepository).save(any(Favorite.class));
     }
+
+
 }

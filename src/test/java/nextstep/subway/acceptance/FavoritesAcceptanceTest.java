@@ -82,9 +82,9 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.jsonPath().getLong("id")).isNotNull();
-            assertThat(response.jsonPath().getString("source.name")).isEqualTo("강남역");
-            assertThat(response.jsonPath().getString("target.name")).isEqualTo("양재역");
+            assertThat(response.jsonPath().getList("id")).isNotNull();
+            assertThat(response.jsonPath().getList("source.name")).contains("강남역");
+            assertThat(response.jsonPath().getList("target.name")).contains("양재역");
         }
 
         /**

@@ -13,6 +13,7 @@ public class FavoriteResponse {
     StationDTO target;
 
     public FavoriteResponse(Favorite favorite) {
+        this.id = favorite.getId();
         this.source = new StationDTO(favorite.getSource());
         this.target = new StationDTO(favorite.getTarget());
     }
