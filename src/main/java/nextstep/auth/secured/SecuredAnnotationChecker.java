@@ -2,8 +2,8 @@ package nextstep.auth.secured;
 
 import nextstep.auth.context.Authentication;
 import nextstep.auth.context.SecurityContextHolder;
-import nextstep.common.exception.CustomException;
-import nextstep.common.exception.code.CommonCode;
+import nextstep.common.exception.AuthException;
+import nextstep.common.exception.code.AuthCode;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -27,11 +27,11 @@ public class SecuredAnnotationChecker {
         List<String> values = Arrays.stream(secured.value()).map(Enum::name).collect(Collectors.toList());
 
         Authentication authentication = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                                                .orElseThrow(() -> new CustomException(CommonCode.AUTH_INVALID));
+                                                .orElseThrow(() -> new AuthException(AuthCode.AUTH_INVALID));
 
         authentication.getAuthorities().stream()
                       .filter(values::contains)
                       .findFirst()
-                      .orElseThrow(() -> new CustomException(CommonCode.AUTH_INVALID));
+                      .orElseThrow(() -> new AuthException(AuthCode.AUTH_INVALID));
     }
 }
