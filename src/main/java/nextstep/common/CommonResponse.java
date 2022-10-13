@@ -13,7 +13,7 @@ import nextstep.common.exception.code.ResponseCode;
 public class CommonResponse<T> {
     private int code;
     private String message;
-    T data;
+    private T data;
 
     public CommonResponse(ResponseCode responseCode) {
         this.code = responseCode.getCode();

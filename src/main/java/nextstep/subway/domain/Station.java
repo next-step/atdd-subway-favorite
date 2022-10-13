@@ -1,5 +1,7 @@
 package nextstep.subway.domain;
 
+import lombok.Builder;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +15,12 @@ public class Station {
     private String name;
 
     public Station() {
+    }
+
+    @Builder
+    public Station(final Long id, final String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Station(String name) {

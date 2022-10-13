@@ -2,19 +2,19 @@ package nextstep.auth.authentication;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
-import nextstep.auth.context.SecurityContextHolder;
+import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetail;
 import nextstep.auth.user.UserDetailService;
-import nextstep.auth.interceptor.AuthChainInterceptor;
+import nextstep.auth.interceptor.AuthContextChainInterceptor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
-public class BasicAuthFilter extends AuthChainInterceptor {
+public class BasicAuthFilter extends AuthContextChainInterceptor {
     private final UserDetailService userDetailService;
 
+    @Override
     protected void checkValidAuth(final AuthenticationToken token) {
         UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
         if (loginMember == null) {
@@ -25,12 +25,14 @@ public class BasicAuthFilter extends AuthChainInterceptor {
         }
     }
 
+    @Override
     protected Authentication getAuthentication(final AuthenticationToken token) {
         UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
         return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
     }
 
-    protected AuthenticationToken getAuthenticationToken(final HttpServletRequest request) {
+    @Override
+    protected AuthenticationToken createAuthToken(final HttpServletRequest request) {
         String authCredentials = AuthorizationExtractor.extract(request, AuthorizationType.BASIC);
         String authHeader = new String(Base64.decodeBase64(authCredentials));
 

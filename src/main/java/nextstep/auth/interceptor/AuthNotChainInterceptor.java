@@ -3,6 +3,7 @@ package nextstep.auth.interceptor;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.authentication.AuthenticationException;
 import nextstep.auth.authentication.AuthenticationToken;
+import nextstep.auth.user.User;
 import nextstep.auth.user.UserDetail;
 import nextstep.auth.user.UserDetailService;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,9 +20,9 @@ public abstract class AuthNotChainInterceptor implements HandlerInterceptor {
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler){
         try {
             AuthenticationToken authToken = createAuthToken(request);
-            checkValidUser(authToken);
-            UserDetail userDetail = getUserDetail(authToken);
-            afterSuccessUserCheck(request, response, userDetail);
+            checkValidAuth(authToken);
+            UserDetail user = getUserDetail(authToken);
+            afterSuccessUserCheck(request, response, user);
             return false;
         } catch (Exception e) {
             return true;
@@ -30,10 +31,10 @@ public abstract class AuthNotChainInterceptor implements HandlerInterceptor {
 
     protected abstract AuthenticationToken createAuthToken(final HttpServletRequest request) throws IOException;
 
-    protected abstract void afterSuccessUserCheck(final HttpServletRequest request, final HttpServletResponse response, UserDetail userDetail)
+    protected abstract void afterSuccessUserCheck(final HttpServletRequest request, final HttpServletResponse response, UserDetail user)
         throws IOException;
 
-    protected void checkValidUser(AuthenticationToken authToken){
+    protected void checkValidAuth(AuthenticationToken authToken){
         UserDetail loginMember = getUserDetail(authToken);
 
         if (loginMember == null) {

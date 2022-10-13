@@ -2,8 +2,9 @@ package nextstep.auth.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.auth.authentication.AuthenticationToken;
-import nextstep.auth.user.UserDetail;
+import nextstep.auth.user.User;
 import nextstep.auth.interceptor.AuthNotChainInterceptor;
+import nextstep.auth.user.UserDetail;
 import nextstep.auth.user.UserDetailService;
 import org.springframework.http.MediaType;
 
@@ -30,8 +31,8 @@ public class TokenAuthInterceptor extends AuthNotChainInterceptor {
     @Override
     protected void afterSuccessUserCheck(final HttpServletRequest request,
                                          final HttpServletResponse response,
-                                         final UserDetail userDetail) throws IOException {
-        String token = jwtTokenProvider.createToken(userDetail.getEmail(), userDetail.getAuthorities());
+                                         final UserDetail user) throws IOException {
+        String token = jwtTokenProvider.createToken(user.getEmail(), user.getAuthorities());
         TokenResponse tokenResponse = new TokenResponse(token);
 
         String responseToClient = new ObjectMapper().writeValueAsString(tokenResponse);
