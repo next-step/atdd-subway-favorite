@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.subway.acceptance.support.FavoritesSteps.미로그인_즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.support.FavoritesSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.support.FavoritesSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.support.FavoritesSteps.즐겨찾기_조회_요청;
@@ -59,7 +60,35 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
             ExtractableResponse<Response> response = 즐겨찾기_생성_요청(notAdmin, 강남역, 양재역);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+            assertThat(response.jsonPath().getLong("code")).isEqualTo(1002);
+        }
+
+        /**
+         * When 로그인 하지 않은 사용자가 즐겨찾기 등록하면
+         * Then 등록에 실패한다.
+         */
+        @Test
+        void unauthorized_notlogin(){
+            // when
+            ExtractableResponse<Response> response = 미로그인_즐겨찾기_생성_요청(강남역, 양재역);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+            assertThat(response.jsonPath().getLong("code")).isEqualTo(1002);
+        }
+
+        /**
+         * When 일반 회원이 즐겨찾기를 등록하면
+         * Then 등록에 실패한다.
+         */
+        @Test
+        void unauthorized_when_member(){
+            // when
+            ExtractableResponse<Response> response = 즐겨찾기_생성_요청(일반회원, 강남역, 양재역);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
             assertThat(response.jsonPath().getLong("code")).isEqualTo(1002);
         }
     }
@@ -98,7 +127,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
             ExtractableResponse<Response> response = 즐겨찾기_조회_요청(notAdmin);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
             assertThat(response.jsonPath().getLong("code")).isEqualTo(1002);
         }
     }
@@ -140,7 +169,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
             ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(유효하지않은_사용자, 등록된_즐겨찾기);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
             assertThat(response.jsonPath().getLong("code")).isEqualTo(1002);
         }
     }

@@ -49,7 +49,7 @@ class LineAcceptanceTest extends AcceptanceTest {
             ExtractableResponse<Response> response = 지하철_노선_생성_요청(notAdmin, "2호선", "green");
 
             // then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
             assertThat(response.jsonPath().getLong("code")).isEqualTo(1002);
         }
     }

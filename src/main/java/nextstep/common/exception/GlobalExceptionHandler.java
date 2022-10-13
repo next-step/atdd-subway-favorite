@@ -2,6 +2,7 @@ package nextstep.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import nextstep.common.CommonResponse;
+import nextstep.common.exception.code.AuthCode;
 import nextstep.common.exception.code.CommonCode;
 import nextstep.common.exception.code.ResponseCode;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +27,16 @@ public class GlobalExceptionHandler {
         ResponseCode responseCode = ex.getResponseCode();
         CommonResponse<Object> response = new CommonResponse<>(responseCode);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    /**
+     * 인증 exception 처리
+     */
+    @ExceptionHandler(value = {AuthException.class})
+    public ResponseEntity<Object> handleAuthException(AuthException ex) {
+        ResponseCode responseCode = ex.getResponseCode();
+        CommonResponse<Object> response = new CommonResponse<>(responseCode);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     /**

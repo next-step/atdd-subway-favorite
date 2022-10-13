@@ -21,6 +21,17 @@ public class FavoritesSteps {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 미로그인_즐겨찾기_생성_요청(Long sourceId, Long targetId) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", sourceId);
+        params.put("target", targetId);
+        return given()
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/favorites")
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String token) {
         return given(token)
             .when().get("/favorites")
