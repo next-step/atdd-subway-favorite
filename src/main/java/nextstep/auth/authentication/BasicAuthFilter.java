@@ -3,6 +3,7 @@ package nextstep.auth.authentication;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.context.Authentication;
 import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetail;
 import nextstep.auth.user.UserDetailService;
 import nextstep.auth.interceptor.AuthContextChainInterceptor;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -15,7 +16,7 @@ public class BasicAuthFilter extends AuthContextChainInterceptor {
 
     @Override
     protected void checkValidAuth(final AuthenticationToken token) {
-        User loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
+        UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
         if (loginMember == null) {
             throw new AuthenticationException();
         }
@@ -26,7 +27,7 @@ public class BasicAuthFilter extends AuthContextChainInterceptor {
 
     @Override
     protected Authentication getAuthentication(final AuthenticationToken token) {
-        User loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
+        UserDetail loginMember = userDetailService.loadUserByUsername(token.getPrincipal());
         return new Authentication(loginMember.getEmail(), loginMember.getAuthorities());
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class User {
+public class User implements UserDetail{
     private String email;
     private String password;
     private List<String> authorities;
@@ -23,10 +23,11 @@ public class User {
         return new User(email, password, authorities);
     }
 
-    public static User guest() {
+    public static UserDetail guest() {
         return new User();
     }
 
+    @Override
     public boolean checkPassword(final String password) {
         return this.password.equals(password);
     }

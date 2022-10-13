@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.auth.user.User;
+import nextstep.auth.user.UserDetail;
 import nextstep.auth.user.UserDetailService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -14,7 +15,7 @@ public class LoginMemberService implements UserDetailService {
         this.memberRepository = memberRepository;
     }
 
-    public User loadUserByUsername(String email) {
+    public UserDetail loadUserByUsername(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return User.of(member.getEmail(), member.getPassword(), member.getRoles());
     }
