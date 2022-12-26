@@ -64,13 +64,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("회원 정보를 관리한다.")
+    @DisplayName("내 정보를 조회한다.")
     @Test
-    void manageMember() {
-    }
-
-    @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
+    void getMyInfo() {
     }
 }
