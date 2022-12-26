@@ -1,50 +1,40 @@
 package nextstep.subway.utils;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Profile("test")
 @Service
 public class DatabaseCleanup implements InitializingBean {
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private List<String> tableNames;
 
     @Override
     public void afterPropertiesSet() {
-        tableNames = new ArrayList<>();
-        try {
-            DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
-            ResultSet tables = metaData.getTables(null, null, null, new String[]{"TABLE"});
-            while (tables.next()) {
-                String tableName = tables.getString("TABLE_NAME");
-                tableNames.add(tableName);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        tableNames = entityManager.getMetamodel().getEntities().stream()
+                .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
+                .map(entity -> entity.getName())
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void execute() {
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
+        entityManager.flush();
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         for (String tableName : tableNames) {
-            jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
+            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
         }
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 }
