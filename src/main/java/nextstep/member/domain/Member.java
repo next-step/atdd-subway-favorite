@@ -1,7 +1,6 @@
 package nextstep.member.domain;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -9,16 +8,11 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String email;
     private String password;
     private Integer age;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "MEMBER_ROLE",
-            joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
-    )
-    @Column(name = "role")
-    private List<String> roles;
+    private String role;
 
     public Member() {
     }
@@ -27,14 +21,14 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.roles = List.of(RoleType.ROLE_MEMBER.name());
+        this.role = RoleType.ROLE_MEMBER.name();
     }
 
-    public Member(String email, String password, Integer age, List<String> roles) {
+    public Member(String email, String password, Integer age, String role) {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.roles = roles;
+        this.role = role;
     }
 
     public Long getId() {
@@ -53,8 +47,8 @@ public class Member {
         return age;
     }
 
-    public List<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
     public void update(Member member) {
