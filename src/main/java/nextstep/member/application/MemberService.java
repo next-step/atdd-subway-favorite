@@ -4,6 +4,7 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.ui.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,9 +35,9 @@ public class MemberService {
     }
 
     public Member login(String email, String password) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(AuthenticationException::new);
         if (!member.checkPassword(password)) {
-            throw new RuntimeException();
+            throw new AuthenticationException();
         }
 
         return member;
