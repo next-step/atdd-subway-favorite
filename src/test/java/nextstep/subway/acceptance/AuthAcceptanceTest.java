@@ -11,8 +11,7 @@ import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
+
 
     @DisplayName("Bearer Auth")
     @Test
