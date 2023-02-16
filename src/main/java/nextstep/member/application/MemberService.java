@@ -1,5 +1,8 @@
 package nextstep.member.application;
 
+import nextstep.exception.BadCredentialException;
+import nextstep.exception.InvalidAccessTokenException;
+import nextstep.exception.MemberNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -30,7 +33,7 @@ public class MemberService {
         String accessToken = authorization.split(" ")[1];
 
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new IllegalStateException();
+            throw new InvalidAccessTokenException(accessToken);
         }
 
         Long id = Long.parseLong(jwtTokenProvider.getPrincipal(accessToken));
@@ -48,10 +51,10 @@ public class MemberService {
 
     public Member authenticate(String email, String password) {
         Member member = memberRepository.findByEmail(email)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new MemberNotFoundException(email));
 
         if (!member.checkPassword(password)) {
-            throw new RuntimeException();
+            throw new BadCredentialException();
         }
 
         return member;
