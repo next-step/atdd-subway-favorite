@@ -15,6 +15,8 @@ import java.util.List;
 @Component
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final String BEARER = "Bearer ";
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public LoginArgumentResolver(JwtTokenProvider jwtTokenProvider) {
@@ -33,6 +35,10 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
         if (authorization == null) {
             throw new TokenAuthorizationException();
+        }
+
+        if (authorization.startsWith(BEARER)) {
+            authorization = authorization.replace(BEARER, "");
         }
 
         if (!jwtTokenProvider.validateToken(authorization)) {

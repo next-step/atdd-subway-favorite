@@ -4,11 +4,16 @@ import java.util.List;
 
 public class LoginMember {
 
-    private final String principal;
+    private final String email;
     private final List<String> roles;
 
-    public LoginMember(String principal, List<String> roles) {
-        this.principal = principal;
+    public LoginMember(String email, List<String> roles) {
+        this.email = email;
         this.roles = roles;
     }
+
+    public String getEmail() {
+        return email;
+    }
+    
 }
