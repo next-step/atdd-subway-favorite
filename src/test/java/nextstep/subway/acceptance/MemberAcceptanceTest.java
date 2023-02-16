@@ -80,11 +80,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("토큰이 유효하지 않으면 내 정보를 조회할 수 없다.")
     @Test
-    void cannotGetMyInfo() {
+    void getMyInfoWithInvalidToken() {
         // when
         ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청("invalid token");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @DisplayName("토큰 정보가 없으면 내 정보를 조회할 수 없다.")
+    @Test
+    void getMyInfoWithoutToken() {
+        // when
+        ExtractableResponse<Response> response = 토큰_없이_내_회원_정보_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
