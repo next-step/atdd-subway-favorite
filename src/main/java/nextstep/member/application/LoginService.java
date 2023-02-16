@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.auth.JwtTokenProvider;
 import nextstep.member.domain.Member;
 import nextstep.member.exception.PasswordAuthenticationException;
 import org.springframework.stereotype.Service;

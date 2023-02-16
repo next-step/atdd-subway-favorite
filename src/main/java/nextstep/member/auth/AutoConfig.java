@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.member.auth;
 
 
 import org.springframework.context.annotation.Configuration;

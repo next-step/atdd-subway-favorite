@@ -1,6 +1,6 @@
-package nextstep.member;
+package nextstep.member.auth;
 
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.member.LoginMember;
 import nextstep.member.exception.TokenAuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +27,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
