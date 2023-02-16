@@ -28,6 +28,11 @@ public class MemberService {
 
     public MemberResponse findMember(String authorization) {
         String accessToken = authorization.split(" ")[1];
+
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new IllegalStateException();
+        }
+
         Long id = Long.parseLong(jwtTokenProvider.getPrincipal(accessToken));
         return findMember(id);
     }
