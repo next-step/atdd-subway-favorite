@@ -1,7 +1,6 @@
 package nextstep.member.application;
 
 import nextstep.exception.BadCredentialException;
-import nextstep.exception.InvalidAccessTokenException;
 import nextstep.exception.MemberNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -27,17 +26,6 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
-    }
-
-    public MemberResponse findMember(String authorization) {
-        String accessToken = authorization.split(" ")[1];
-
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new InvalidAccessTokenException(accessToken);
-        }
-
-        Long id = Long.parseLong(jwtTokenProvider.getPrincipal(accessToken));
-        return findMember(id);
     }
 
     public void updateMember(Long id, MemberRequest param) {
