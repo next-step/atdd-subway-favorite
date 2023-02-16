@@ -32,4 +32,15 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public Member authenticate(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(IllegalArgumentException::new);
+
+        if (!member.checkPassword(password)) {
+            throw new RuntimeException();
+        }
+
+        return member;
+    }
 }
