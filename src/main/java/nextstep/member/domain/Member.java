@@ -1,8 +1,12 @@
 package nextstep.member.domain;
 
+import nextstep.member.config.exception.PasswordMatchException;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+
+import static nextstep.member.config.message.MemberError.UNAUTHORIZED;
 
 @Entity
 public class Member {
@@ -20,21 +24,32 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
-    public Member() {
-    }
+    protected Member() {}
 
-    public Member(String email, String password, Integer age) {
+    public Member(final String email, final String password, final Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
         this.roles = List.of(RoleType.ROLE_MEMBER.name());
     }
 
-    public Member(String email, String password, Integer age, List<String> roles) {
+    public Member(final String email, final String password, final Integer age, final List<String> roles) {
         this.email = email;
         this.password = password;
         this.age = age;
         this.roles = roles;
+    }
+
+    public void update(final Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
+    }
+
+    public void validatePassword(String password) {
+        if (!Objects.equals(this.password, password)) {
+            throw new PasswordMatchException(UNAUTHORIZED);
+        }
     }
 
     public Long getId() {
@@ -45,25 +60,11 @@ public class Member {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer getAge() {
         return age;
     }
 
     public List<String> getRoles() {
         return roles;
-    }
-
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
     }
 }
