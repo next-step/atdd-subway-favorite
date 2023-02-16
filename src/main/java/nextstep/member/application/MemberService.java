@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -22,6 +24,12 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
+    }
+
+    public MemberResponse findMember(String authorization) {
+        String accessToken = authorization.split(" ")[1];
+        Long id = Long.parseLong(jwtTokenProvider.getPrincipal(accessToken));
+        return findMember(id);
     }
 
     public void updateMember(Long id, MemberRequest param) {

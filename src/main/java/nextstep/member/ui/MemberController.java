@@ -10,7 +10,7 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -41,9 +41,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader("Authorization") String authorization) {
+        MemberResponse member = memberService.findMember(authorization);
         return ResponseEntity.ok().body(member);
     }
 }
