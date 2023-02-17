@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
 import io.jsonwebtoken.*;
+import nextstep.member.domain.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,10 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String createPrincipalFrom(final Member member) {
+        return member.getEmail();
     }
 
     public List<String> getRoles(String token) {
