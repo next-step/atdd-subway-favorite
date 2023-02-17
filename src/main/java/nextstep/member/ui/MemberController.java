@@ -51,7 +51,7 @@ public class MemberController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> loginBy(@RequestBody final TokenRequest tokenRequest) {
-        return ResponseEntity.ok(new TokenResponse("token"));
+        return ResponseEntity.ok(memberService.loginBy(tokenRequest));
     }
 }
 
