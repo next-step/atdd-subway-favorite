@@ -67,5 +67,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+         베어러_인증_로그인_요청(EMAIL, PASSWORD);
     }
 }
