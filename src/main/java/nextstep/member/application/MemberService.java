@@ -39,14 +39,10 @@ public class MemberService {
     }
 
     public TokenResponse createTokenFrom(final TokenRequest tokenRequest) {
-        Member member = memberRepository.findByEmail(tokenRequest.getEmail())
-                .orElseThrow(UserNotFoundException::new);
+        Member member = memberRepository.findByEmail(tokenRequest.getEmail()).orElseThrow(UserNotFoundException::new);
 
         member.validatePassword(tokenRequest.getPassword());
 
-        String principal = String.join(".", member.getEmail(), member.getPassword());
-        String token = jwtTokenProvider.createToken(principal, member.getRoles());
-
-        return new TokenResponse(token);
+        return new TokenResponse(jwtTokenProvider.createToken(member.principal(), member.getRoles()));
     }
 }
