@@ -2,7 +2,9 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.exception.AuthException;
+import nextstep.member.application.exception.MemberErrorCode;
+import nextstep.member.application.exception.MemberException;
+import nextstep.member.application.exception.NotFoundMemberException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class MemberService {
 
     public MemberResponse findMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email)
-            .orElseThrow(AuthException::new);
+            .orElseThrow(() -> new NotFoundMemberException(MemberErrorCode.NOT_FOUND_MEMBER));
 
         return MemberResponse.of(member);
     }

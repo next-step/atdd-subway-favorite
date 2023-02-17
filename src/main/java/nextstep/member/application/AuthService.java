@@ -5,7 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.application.exception.AuthException;
+import nextstep.member.application.exception.MemberErrorCode;
+import nextstep.member.application.exception.NotFoundMemberException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
@@ -24,7 +25,7 @@ public class AuthService {
 	@Transactional(readOnly = true)
 	public TokenResponse createToken(TokenRequest tokenRequest) {
 		Member member = memberRepository.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword())
-			.orElseThrow(AuthException::new);
+			.orElseThrow(() -> new NotFoundMemberException(MemberErrorCode.NOT_FOUND_MEMBER));
 
 		return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
 	}
