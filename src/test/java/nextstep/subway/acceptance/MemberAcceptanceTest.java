@@ -67,5 +67,34 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    @DisplayName("토큰이 유효하지 않으면 내 정보를 조회할 수 없다.")
+    @Test
+    void getMyInfoWithInvalidToken() {
+        // when
+        ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청("invalid token");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @DisplayName("토큰 정보가 없으면 내 정보를 조회할 수 없다.")
+    @Test
+    void getMyInfoWithoutToken() {
+        // when
+        ExtractableResponse<Response> response = 토큰_없이_내_회원_정보_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

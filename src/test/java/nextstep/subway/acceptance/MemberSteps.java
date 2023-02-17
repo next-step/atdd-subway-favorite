@@ -74,6 +74,23 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 토큰으로_내_회원_정보_조회_요청(String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰_없이_내_회원_정보_조회_요청() {
+        return RestAssured.given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
         return RestAssured.given().log().all()
                 .auth().preemptive().basic(username, password)

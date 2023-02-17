@@ -1,5 +1,7 @@
 package nextstep.member.application;
 
+import nextstep.exception.BadCredentialException;
+import nextstep.exception.MemberNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -31,5 +33,16 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member authenticate(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new MemberNotFoundException(email));
+
+        if (!member.checkPassword(password)) {
+            throw new BadCredentialException();
+        }
+
+        return member;
     }
 }
