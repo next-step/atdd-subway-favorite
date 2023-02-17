@@ -4,16 +4,19 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.exception.UserNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(final MemberRepository memberRepository, final JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -36,6 +39,15 @@ public class MemberService {
     }
 
     public TokenResponse loginBy(final TokenRequest tokenRequest) {
-        return new TokenResponse("token");
+        Member member = memberRepository.findByEmail(tokenRequest.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!member.checkPassword(tokenRequest.getPassword())) {
+            throw new UserNotFoundException();
+        }
+
+        String token = jwtTokenProvider.createToken(String.join(member.getEmail(), member.getPassword()), member.getRoles());
+
+        return new TokenResponse(token);
     }
 }
