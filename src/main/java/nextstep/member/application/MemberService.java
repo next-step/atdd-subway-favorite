@@ -35,8 +35,7 @@ public class MemberService {
             throw new InvalidTokenException();
         }
         String principal = jwtTokenProvider.getPrincipal(token);
-        Member member = memberRepository.findByEmail(principal.substring(0, principal.lastIndexOf(".")))
-                .orElseThrow(UserNotFoundException::new);
+        Member member = memberRepository.findByEmail(principal).orElseThrow(UserNotFoundException::new);
         return MemberResponse.of(member);
     }
 
@@ -54,6 +53,7 @@ public class MemberService {
 
         member.validatePassword(tokenRequest.getPassword());
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.principal(), member.getRoles()));
+        return new TokenResponse(
+                jwtTokenProvider.createToken(jwtTokenProvider.createPrincipalFrom(member), member.getRoles()));
     }
 }

@@ -15,7 +15,6 @@ import nextstep.member.domain.exception.PasswordMismatchException;
 
 @Entity
 public class Member {
-    private static final String PRINCIPAL_DELIMITER = ".";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,9 +81,5 @@ public class Member {
         if (!this.password.equals(password)) {
             throw new PasswordMismatchException();
         }
-    }
-
-    public String principal() {
-        return String.join(PRINCIPAL_DELIMITER, email, password);
     }
 }

@@ -43,7 +43,8 @@ class MemberServiceTest {
     @Test
     void createToken() {
         memberRepository.save(member);
-        String expected = jwtTokenProvider.createToken(member.principal(), member.getRoles());
+        String principal = jwtTokenProvider.createPrincipalFrom(member);
+        String expected = jwtTokenProvider.createToken(principal, member.getRoles());
         TokenRequest token = new TokenRequest(member.getEmail(), member.getPassword());
 
         TokenResponse tokenResponse = memberService.createTokenFrom(token);
@@ -55,7 +56,8 @@ class MemberServiceTest {
     @Test
     void findMember() {
         memberRepository.save(member);
-        String token = jwtTokenProvider.createToken(member.principal(), member.getRoles());
+        String principal = jwtTokenProvider.createPrincipalFrom(member);
+        String token = jwtTokenProvider.createToken(principal, member.getRoles());
 
         MemberResponse member = memberService.findMember(token);
 
