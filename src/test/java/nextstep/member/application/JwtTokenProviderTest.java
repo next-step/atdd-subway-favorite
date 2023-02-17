@@ -1,8 +1,11 @@
 package nextstep.member.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
 import nextstep.member.domain.Member;
+import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,16 +15,22 @@ class JwtTokenProviderTest {
 
     private JwtTokenProvider jwtTokenProvider;
 
+    private Member member;
+
     @BeforeEach
     void setUp() {
         jwtTokenProvider = new JwtTokenProvider();
+        member = new Member("admin@email.com", "1234", 26, List.of(RoleType.ROLE_ADMIN.name()));
     }
 
-    @DisplayName("멤버를 기준으로 principal을 생성한다.")
+    @DisplayName("멤버를 기준으로 토큰을 생성한다.")
     @Test
-    void createPrincipal() {
-        String principal = jwtTokenProvider.createPrincipalFrom(new Member("admin@email.com", "1234", 26));
+    public void createToken() {
+        String token = jwtTokenProvider.createToken(member);
 
-        assertThat(principal).isEqualTo("admin@email.com");
+        assertAll(
+                () -> assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo(member.getEmail()),
+                () -> assertThat(jwtTokenProvider.getRoles(token)).containsExactly(RoleType.ROLE_ADMIN.name())
+        );
     }
 }
