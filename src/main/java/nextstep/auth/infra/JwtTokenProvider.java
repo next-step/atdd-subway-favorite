@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.auth.infra;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +9,7 @@ import java.util.List;
 
 @Component
 public class JwtTokenProvider {
+    private static final String ROLES = "roles";
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
@@ -23,7 +24,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("roles", roles)
+                .claim(ROLES, roles)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -33,7 +34,7 @@ public class JwtTokenProvider {
     }
 
     public List<String> getRoles(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get(ROLES, List.class);
     }
 
     public boolean validateToken(String token) {

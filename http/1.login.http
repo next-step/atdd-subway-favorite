@@ -1,0 +1,8 @@
+POST /login/token HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+  "password": "password",
+  "email": "admin@email.com"
+}
