@@ -4,6 +4,7 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.exception.InvalidTokenException;
 import nextstep.member.application.exception.UserNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -26,6 +27,16 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
+    }
+
+    public MemberResponse findMember(final String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new InvalidTokenException();
+        }
+        String principal = jwtTokenProvider.getPrincipal(token);
+        Member member = memberRepository.findByEmail(principal.substring(0, principal.lastIndexOf(".")))
+                .orElseThrow(UserNotFoundException::new);
         return MemberResponse.of(member);
     }
 
