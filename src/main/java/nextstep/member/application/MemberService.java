@@ -38,7 +38,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public TokenResponse loginBy(final TokenRequest tokenRequest) {
+    public TokenResponse createTokenFrom(final TokenRequest tokenRequest) {
         Member member = memberRepository.findByEmail(tokenRequest.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 

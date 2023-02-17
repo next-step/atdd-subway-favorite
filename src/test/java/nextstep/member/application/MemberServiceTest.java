@@ -37,15 +37,15 @@ class MemberServiceTest {
         );
     }
 
-    @DisplayName("토큰으로 로그인한다.")
+    @DisplayName("토큰을 발급한다.")
     @Test
-    void loginByToken() {
+    void createToken() {
         memberRepository.save(member);
         String expected
                 = jwtTokenProvider.createToken(String.join(member.getEmail(), member.getPassword()), member.getRoles());
         TokenRequest token = new TokenRequest(member.getEmail(), member.getPassword());
 
-        TokenResponse tokenResponse = memberService.loginBy(token);
+        TokenResponse tokenResponse = memberService.createTokenFrom(token);
 
         assertThat(tokenResponse.getAccessToken()).isEqualTo(expected);
     }
