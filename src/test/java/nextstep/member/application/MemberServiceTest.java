@@ -3,11 +3,13 @@ package nextstep.member.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,5 +49,20 @@ class MemberServiceTest {
         TokenResponse tokenResponse = memberService.createTokenFrom(token);
 
         assertThat(tokenResponse.getAccessToken()).isEqualTo(expected);
+    }
+
+    @DisplayName("토큰으로 멤버를 조회한다.")
+    @Test
+    void findMember() {
+        memberRepository.save(member);
+        String token = jwtTokenProvider.createToken(member.principal(), member.getRoles());
+
+        MemberResponse member = memberService.findMember(token);
+
+        Assertions.assertAll(
+                () -> assertThat(member.getId()).isEqualTo(member.getId()),
+                () -> assertThat(member.getEmail()).isEqualTo(member.getEmail()),
+                () -> assertThat(member.getAge()).isEqualTo(member.getAge())
+        );
     }
 }
