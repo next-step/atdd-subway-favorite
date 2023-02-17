@@ -98,7 +98,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
             //when 토큰없이 내 회원 정보를 조회한다.
             ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청("0000");
             //then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         }
 
     }

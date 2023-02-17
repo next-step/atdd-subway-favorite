@@ -2,7 +2,6 @@ package nextstep.member.application;
 
 import nextstep.member.auth.JwtTokenProvider;
 import nextstep.member.domain.Member;
-import nextstep.member.exception.PasswordAuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,14 +15,8 @@ public class LoginService {
         this.memberService = memberService;
     }
 
-
     public String createToken(String email, String password) {
-
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.checkPassword(password)) {
-            throw new PasswordAuthenticationException();
-        }
-
+        Member member = memberService.verificateAndFindMember(email, password);
         return jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
     }
 }
