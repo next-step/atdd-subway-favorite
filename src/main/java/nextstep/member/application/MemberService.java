@@ -53,7 +53,6 @@ public class MemberService {
 
         member.validatePassword(tokenRequest.getPassword());
 
-        return new TokenResponse(
-                jwtTokenProvider.createToken(jwtTokenProvider.createPrincipalFrom(member), member.getRoles()));
+        return new TokenResponse(jwtTokenProvider.createToken(member));
     }
 }

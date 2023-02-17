@@ -9,17 +9,20 @@ import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @DisplayName("Jwt 관련 기능 테스트")
+@SpringBootTest
 class JwtTokenProviderTest {
 
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     private Member member;
 
     @BeforeEach
     void setUp() {
-        jwtTokenProvider = new JwtTokenProvider();
         member = new Member("admin@email.com", "1234", 26, List.of(RoleType.ROLE_ADMIN.name()));
     }
 
