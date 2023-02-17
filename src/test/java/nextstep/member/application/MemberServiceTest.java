@@ -41,8 +41,7 @@ class MemberServiceTest {
     @Test
     void createToken() {
         memberRepository.save(member);
-        String expected
-                = jwtTokenProvider.createToken(String.join(member.getEmail(), member.getPassword()), member.getRoles());
+        String expected = jwtTokenProvider.createToken(member.principal(), member.getRoles());
         TokenRequest token = new TokenRequest(member.getEmail(), member.getPassword());
 
         TokenResponse tokenResponse = memberService.createTokenFrom(token);
