@@ -42,9 +42,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(tokenRequest.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 
-        if (!member.checkPassword(tokenRequest.getPassword())) {
-            throw new UserNotFoundException();
-        }
+        member.validatePassword(tokenRequest.getPassword());
 
         String token = jwtTokenProvider.createToken(String.join(member.getEmail(), member.getPassword()), member.getRoles());
 
