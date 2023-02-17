@@ -44,7 +44,8 @@ public class MemberService {
 
         member.validatePassword(tokenRequest.getPassword());
 
-        String token = jwtTokenProvider.createToken(String.join(member.getEmail(), member.getPassword()), member.getRoles());
+        String principal = String.join(".", member.getEmail(), member.getPassword());
+        String token = jwtTokenProvider.createToken(principal, member.getRoles());
 
         return new TokenResponse(token);
     }
