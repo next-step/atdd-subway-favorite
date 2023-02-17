@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletRequest;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
@@ -57,7 +58,7 @@ public class MemberController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> loginBy(@RequestBody final TokenRequest tokenRequest) {
-        return ResponseEntity.ok(memberService.createTokenFrom(tokenRequest));
+        return ResponseEntity.ok(memberService.createTokenFrom(tokenRequest, LocalDateTime.now()));
     }
 }
 

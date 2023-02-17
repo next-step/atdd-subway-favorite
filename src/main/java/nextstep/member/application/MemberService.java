@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import java.time.LocalDateTime;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
@@ -48,11 +49,11 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public TokenResponse createTokenFrom(final TokenRequest tokenRequest) {
+    public TokenResponse createTokenFrom(final TokenRequest tokenRequest, final LocalDateTime localDateTime) {
         Member member = memberRepository.findByEmail(tokenRequest.getEmail()).orElseThrow(UserNotFoundException::new);
 
         member.validatePassword(tokenRequest.getPassword());
 
-        return new TokenResponse(jwtTokenProvider.createToken(member));
+        return new TokenResponse(jwtTokenProvider.createToken(member, localDateTime));
     }
 }

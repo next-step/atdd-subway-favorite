@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
@@ -42,11 +43,12 @@ class MemberServiceTest {
     @DisplayName("토큰을 발급한다.")
     @Test
     void createToken() {
+        LocalDateTime localDateTime = LocalDateTime.now();
         memberRepository.save(member);
-        String expected = jwtTokenProvider.createToken(member);
+        String expected = jwtTokenProvider.createToken(member, localDateTime);
         TokenRequest token = new TokenRequest(member.getEmail(), member.getPassword());
 
-        TokenResponse tokenResponse = memberService.createTokenFrom(token);
+        TokenResponse tokenResponse = memberService.createTokenFrom(token, localDateTime);
 
         assertThat(tokenResponse.getAccessToken()).isEqualTo(expected);
     }

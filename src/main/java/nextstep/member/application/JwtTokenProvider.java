@@ -1,12 +1,17 @@
 package nextstep.member.application;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.List;
 import nextstep.member.domain.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtTokenProvider {
@@ -23,6 +28,20 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
+                .setExpiration(validity)
+                .claim("roles", member.getRoles())
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    public String createToken(final Member member, final LocalDateTime localDateTime) {
+        Claims claims = Jwts.claims().setSubject(member.getEmail());
+        Date start = Date.from(localDateTime.toInstant(ZoneOffset.UTC));
+        Date validity = new Date(start.getTime() + validityInMilliseconds);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(start)
                 .setExpiration(validity)
                 .claim("roles", member.getRoles())
                 .signWith(SignatureAlgorithm.HS256, secretKey)
