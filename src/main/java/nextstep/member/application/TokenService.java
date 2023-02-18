@@ -26,7 +26,7 @@ public class TokenService {
 
     public TokenResponse createGitHubToken(String code) {
         // 1. 권한증서(code)로 GitHub 에서 Access Token 발급
-        String accessTokenFromGithub = gitHubClient.getAccessTokenFromGithub(code);
+        String accessTokenFromGithub = gitHubClient.getAccessTokenFromGitHub(code);
 
         // 2. Access Token 으로 GitHub 의 Resource Server 에서 사용자 프로필 조회
 

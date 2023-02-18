@@ -6,12 +6,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import nextstep.member.application.dto.GitHubAccessTokenRequest;
 import nextstep.member.application.dto.GitHubAccessTokenResponse;
+import nextstep.member.application.dto.GitHubProfileResponse;
 
 @Component
 public class GitHubClient {
@@ -25,13 +26,16 @@ public class GitHubClient {
     @Value("${github.url.access-token}")
     private String accessTokenUrl;
 
+    @Value("${github.url.profile}")
+    private String profileUrl;
+
     private final RestTemplate restTemplate;
 
     public GitHubClient(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public String getAccessTokenFromGithub(String code) {
+    public String getAccessTokenFromGitHub(String code) {
         GitHubAccessTokenRequest gitHubAccessTokenRequest = new GitHubAccessTokenRequest(code, clientId, clientSecret);
 
         HttpHeaders headers = new HttpHeaders();
@@ -48,5 +52,18 @@ public class GitHubClient {
         }
 
         return accessToken;
+    }
+
+    public GitHubProfileResponse getGithubProfileFromGithub(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "token " + accessToken);
+
+        try {
+            return restTemplate
+                .exchange(profileUrl, HttpMethod.GET, new HttpEntity<>(headers), GitHubProfileResponse.class)
+                .getBody();
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException();
+        }
     }
 }

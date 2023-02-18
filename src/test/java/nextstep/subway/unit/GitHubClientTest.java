@@ -13,9 +13,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.HttpClientErrorException;
 
 import nextstep.member.application.GitHubClient;
+import nextstep.member.application.dto.GitHubProfileResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class GitHubClientTest {
@@ -24,17 +24,17 @@ class GitHubClientTest {
     private GitHubClient gitHubClient;
 
     @DisplayName("권한증서로 GitHub Access Token을 발급한다.")
-    @MethodSource("getAccessTokenFromGithubSource")
+    @MethodSource("getAccessTokenFromGitHubSource")
     @ParameterizedTest
     void getAccessTokenFromGithub(String code, String accessToken) {
         // when
-        String accessTokenFromGitHub = gitHubClient.getAccessTokenFromGithub(code);
+        String accessTokenFromGitHub = gitHubClient.getAccessTokenFromGitHub(code);
 
         // then
         assertThat(accessTokenFromGitHub).isEqualTo(accessToken);
     }
 
-    private static Stream<Arguments> getAccessTokenFromGithubSource() {
+    private static Stream<Arguments> getAccessTokenFromGitHubSource() {
         return Stream.of(
             Arguments.of(사용자1.getCode(), 사용자1.getAccessToken()),
             Arguments.of(사용자2.getCode(), 사용자2.getAccessToken()),
@@ -48,7 +48,7 @@ class GitHubClientTest {
     @ParameterizedTest
     void cannotGetAccessTokenFromGitHub(String code) {
         // when & then
-        assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGithub(code))
+        assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGitHub(code))
             .isInstanceOf(RuntimeException.class);
     }
 
@@ -59,7 +59,20 @@ class GitHubClientTest {
         String code = 사용자5_ACCESS_TOKEN_없음.getCode();
 
         // then
-        assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGithub(code))
+        assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGitHub(code))
             .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("Access Token 으로 GitHub 에서 사용자 프로필을 조회한다.")
+    @Test
+    void getGithubProfileFromGitHub() {
+        // given
+        String accessToken = gitHubClient.getAccessTokenFromGitHub(사용자1.getCode());
+
+        // when
+        GitHubProfileResponse githubProfile = gitHubClient.getGithubProfileFromGithub(accessToken);
+
+        // then
+        assertThat(githubProfile.getEmail()).isEqualTo(사용자1.getEmail());
     }
 }
