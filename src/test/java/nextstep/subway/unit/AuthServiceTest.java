@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.AuthService;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -24,5 +26,21 @@ class AuthServiceTest {
         TokenResponse tokenResponse = authService.loginMember(tokenRequest);
         assertThat(tokenResponse).isNotNull();
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("패스워드가 일치하지 않는다면 예외 발생")
+    void passwordNotEqual() {
+        TokenRequest tokenRequest = new TokenRequest("admin@email.com", "nopassword");
+        assertThatThrownBy(() -> authService.loginMember(tokenRequest))
+                .isExactlyInstanceOf(PasswordNotEqualException.class);
+    }
+
+    @Test
+    @DisplayName("일치하는 이메일의 회원이 존재하지 않는다면 예외 발생")
+    void nonExistEmail() {
+        TokenRequest tokenRequest = new TokenRequest("nonExist@email.com", "password");
+        assertThatThrownBy(() -> authService.loginMember(tokenRequest))
+                .isExactlyInstanceOf(RuntimeException.class);
     }
 }
