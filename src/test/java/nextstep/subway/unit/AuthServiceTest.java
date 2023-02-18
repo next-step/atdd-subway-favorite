@@ -1,8 +1,8 @@
 package nextstep.subway.unit;
 
 import nextstep.auth.application.AuthService;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.config.exception.PasswordMatchException;
