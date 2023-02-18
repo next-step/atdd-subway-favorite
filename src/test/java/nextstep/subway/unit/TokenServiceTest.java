@@ -1,19 +1,21 @@
 package nextstep.subway.unit;
 
-import nextstep.member.application.TokenService;
-import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
-import nextstep.member.domain.RoleType;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import nextstep.member.application.TokenService;
+import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.RoleType;
+import nextstep.subway.utils.GitHubResponses;
 
 @SpringBootTest
 class TokenServiceTest {
@@ -37,6 +39,16 @@ class TokenServiceTest {
     void createToken() {
         // when
         TokenResponse response = tokenService.createToken(EMAIL, PASSWORD);
+
+        // then
+        assertThat(response.getAccessToken()).isNotBlank();
+    }
+
+    @DisplayName("권한증서(code)로 GitHub 토큰을 생성한다.")
+    @Test
+    void createGitHubToken() {
+        // when
+        TokenResponse response = tokenService.createGitHubToken(GitHubResponses.사용자1.getCode());
 
         // then
         assertThat(response.getAccessToken()).isNotBlank();
