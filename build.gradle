@@ -1,3 +1,11 @@
+buildscript {
+    ext {
+        guavaVersion = "31.1-jre"
+        apacheCommonLang3Version = "3.12.0"
+        p6spySpringBootStarterVersion = "1.8.1"
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.7.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -16,6 +24,7 @@ dependencies {
     // spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:${p6spySpringBootStarterVersion}"
 
     // log
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
@@ -26,11 +35,22 @@ dependencies {
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // lombok
+    implementation 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:4.5.1'
 
     runtimeOnly 'com.h2database:h2'
+
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation "com.google.guava:guava:${guavaVersion}"
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation "org.apache.commons:commons-lang3:${apacheCommonLang3Version}"
+
 }
 
 test {
