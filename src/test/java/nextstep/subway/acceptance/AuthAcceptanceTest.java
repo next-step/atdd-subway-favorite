@@ -1,20 +1,18 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.utils.FakeGithubResponse;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
+
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
 
@@ -26,19 +24,16 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
+    @Nested
     @DisplayName("Github Auth")
-    @Test
-    void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+    class github {
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        @DisplayName("깃허브 인증 로그인 요청")
+        @Test
+        void githubAuth() {
+            ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(FakeGithubResponse.사용자1.getCode());
+            assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        }
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }
