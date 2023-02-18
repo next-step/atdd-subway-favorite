@@ -30,7 +30,7 @@ class JwtTokenProviderTest {
     @DisplayName("멤버를 기준으로 토큰을 생성한다.")
     @Test
     public void createTokenFromMember() {
-        String token = jwtTokenProvider.createToken(member);
+        String token = jwtTokenProvider.createToken(member, LocalDateTime.now());
 
         assertAll(
                 () -> assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo(member.getEmail()),

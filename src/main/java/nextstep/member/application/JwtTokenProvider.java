@@ -20,20 +20,6 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(final Member member) {
-        Claims claims = Jwts.claims().setSubject(member.getEmail());
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .claim("roles", member.getRoles())
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-    }
-
     public String createToken(final Member member, final LocalDateTime localDateTime) {
         Claims claims = Jwts.claims().setSubject(member.getEmail());
         Date start = Date.from(localDateTime.toInstant(ZoneOffset.UTC));

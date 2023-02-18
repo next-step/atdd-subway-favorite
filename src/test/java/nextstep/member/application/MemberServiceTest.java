@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -41,7 +42,7 @@ class MemberServiceTest {
     @Test
     void findMember() {
         memberRepository.save(member);
-        String token = jwtTokenProvider.createToken(member);
+        String token = jwtTokenProvider.createToken(member, LocalDateTime.now());
 
         MemberResponse member = memberService.findMember(token);
 
