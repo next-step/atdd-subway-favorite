@@ -141,7 +141,14 @@ host: localhost:8080
 
 - [X] 코드리뷰 반영
   - HandlerMethodArgumentResolver 처리
-- [X] github의 AccessToken을 요청하는 대응답 API
+- [X] Github 호출 Client 단위 테스트 작성
+  - [X] 권한증서로 GitHub Access Token 을 발급한다.
+  - [X] 권한증서가 null 또는 공백이라면, GitHub Access Token 발급 요청 시 예외처리한다.
+  - [X] Access Token 으로 GitHub 에서 사용자 프로필을 조회한다.
+  - [X] GitHub 사용자 프로필 조회 시, Access Token 에 해당하는 사용자가 없으면 예외처리한다.
 - [X] 인수테스트 조건 정의
-  - accessToken을 정상 조회한다.
-  - 존재하지 않는 토큰으로 조회에 실패한다.
+  - [X] Github 로그인에 성공한다.
+  - [X] 권한이 없는 사용자일 경우에는 예외처리한다.
+- [X] 테스트 환경 설정
+  - [X] Github 테스트 엔드포인트 생성
+  - [X] 테스트 프로퍼티 설정 
