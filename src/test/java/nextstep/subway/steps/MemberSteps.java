@@ -18,12 +18,13 @@ public class MemberSteps {
         params.put("email", email);
         params.put("password", password);
 
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+		ExtractableResponse<Response> response = RestAssured
+			.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(params)
+			.when().post("/login/token")
+			.then().log().all()
+			.extract();
+		return response;
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
