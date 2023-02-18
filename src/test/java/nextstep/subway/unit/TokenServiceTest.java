@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.member.application.TokenService;
@@ -16,11 +15,11 @@ import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
+import nextstep.subway.acceptance.ApplicationContextTest;
 import nextstep.subway.utils.GitHubResponses;
 
-@SpringBootTest
 @Transactional
-class TokenServiceTest {
+class TokenServiceTest extends ApplicationContextTest {
 
     private static final String EMAIL = "testuser@email.com";
     private static final String PASSWORD = "password";
