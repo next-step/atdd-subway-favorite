@@ -18,12 +18,12 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
+    public MemberResponse createMember(final MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponse findMember(final Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
@@ -37,12 +37,12 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
+    public void updateMember(final Long id, final MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
     }
 
-    public void deleteMember(Long id) {
+    public void deleteMember(final Long id) {
         memberRepository.deleteById(id);
     }
 }
