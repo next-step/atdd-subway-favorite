@@ -4,6 +4,7 @@ import nextstep.member.application.AuthService;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,7 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public TokenResponse loginMember(TokenRequest tokenRequest) {
+    public TokenResponse loginMember(@RequestBody TokenRequest tokenRequest) {
         return authService.loginMember(tokenRequest);
     }
 }
