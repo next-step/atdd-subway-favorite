@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.exception.ErrorDTO;
@@ -56,6 +57,19 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/members")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰으로_회원_정보_조회(String accessToken) {
+        Map<String, String> headerParams = new HashMap<>();
+        headerParams.put("accessToken", accessToken);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .headers(headerParams)
+                .accept("application/json")
+                .when().get("/members/me")
                 .then().log().all().extract();
     }
 

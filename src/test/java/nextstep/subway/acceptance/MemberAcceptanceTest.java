@@ -67,5 +67,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        ExtractableResponse<Response> accessTokenResponse = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        String accessToken = accessTokenResponse.jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> memberResponse = 토큰으로_회원_정보_조회(accessToken);
+
+        // then
+        토큰으로_조회한_회원정보_검증(memberResponse);
+    }
+
+    private static void 토큰으로_조회한_회원정보_검증(ExtractableResponse<Response> memberResponse) {
+        assertThat(memberResponse).extracting("email").isEqualTo(EMAIL);
+        assertThat(memberResponse).extracting("age").isEqualTo(AGE);
     }
 }
