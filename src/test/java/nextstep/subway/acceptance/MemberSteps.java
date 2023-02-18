@@ -3,6 +3,9 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.exception.ErrorMessage;
+import org.hamcrest.Matchers;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -26,6 +29,21 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    public static void 베어러_인증_패스워드_예외발생(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL.getHttpStatus().value())
+                .assertThat().body("title", Matchers.equalTo(ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL.name()))
+                .assertThat().body("message", Matchers.equalTo(ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL.getDescription()));
+    }
+
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -37,6 +55,19 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/members")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰으로_회원_정보_조회(String accessToken) {
+        Map<String, String> headerParams = new HashMap<>();
+        headerParams.put(HttpHeaders.AUTHORIZATION, accessToken);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .headers(headerParams)
+                .accept("application/json")
+                .when().get("/members/me")
                 .then().log().all().extract();
     }
 

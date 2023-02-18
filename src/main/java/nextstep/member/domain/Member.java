@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,7 +55,7 @@ public class Member {
     }
 
     public List<String> getRoles() {
-        return roles;
+        return Collections.unmodifiableList(roles);
     }
 
     public void update(Member member) {
