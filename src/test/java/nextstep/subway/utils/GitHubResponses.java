@@ -29,7 +29,7 @@ public enum GitHubResponses {
 
     public static GitHubResponses fromAccessToken(String accessToken) {
         return Arrays.stream(values())
-            .filter(it -> it.accessToken.equals(accessToken))
+            .filter(it -> it.accessToken != null && it.accessToken.equals(accessToken))
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
     }

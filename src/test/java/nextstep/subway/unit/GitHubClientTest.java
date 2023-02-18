@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import nextstep.exception.AuthorizationException;
 import nextstep.member.application.GitHubClient;
 import nextstep.member.application.dto.GitHubProfileResponse;
 import nextstep.subway.acceptance.ApplicationContextTest;
@@ -48,7 +49,7 @@ class GitHubClientTest extends ApplicationContextTest {
     void cannotGetAccessTokenFromGitHub(String code) {
         // when & then
         assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGitHub(code))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(AuthorizationException.class);
     }
 
     @DisplayName("GitHub Access Token 발급 요청 시, 응답 결과에 Access Token 이 없으면 예외가 발생한다.")
@@ -59,7 +60,7 @@ class GitHubClientTest extends ApplicationContextTest {
 
         // then
         assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGitHub(code))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(AuthorizationException.class);
     }
 
     @DisplayName("Access Token 으로 GitHub 에서 사용자 프로필을 조회한다.")
@@ -77,6 +78,6 @@ class GitHubClientTest extends ApplicationContextTest {
     void githubProfileNotFoundFromGitHub() {
         // when & then
         assertThatThrownBy(() -> gitHubClient.getGithubProfileFromGithub("access token"))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(AuthorizationException.class);
     }
 }
