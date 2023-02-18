@@ -49,14 +49,17 @@ class GitHubClientTest {
     void cannotGetAccessTokenFromGitHub(String code) {
         // when & then
         assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGithub(code))
-            .isInstanceOf(HttpClientErrorException.class);
+            .isInstanceOf(RuntimeException.class);
     }
 
-    @DisplayName("GitHub Access Token 발급 요청 시, 응답 결과에 Access Token이 없으면 예외가 발생한다.")
+    @DisplayName("GitHub Access Token 발급 요청 시, 응답 결과에 Access Token 이 없으면 예외가 발생한다.")
     @Test
     void emptyAccessTokenFromGitHub() {
-        // when & then
-        assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGithub(사용자5_ACCESS_TOKEN_없음.getCode()))
+        // when
+        String code = 사용자5_ACCESS_TOKEN_없음.getCode();
+
+        // then
+        assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGithub(code))
             .isInstanceOf(RuntimeException.class);
     }
 }

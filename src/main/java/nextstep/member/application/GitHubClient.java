@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,15 +39,9 @@ public class GitHubClient {
 
         HttpEntity<GitHubAccessTokenRequest> httpEntity = new HttpEntity<>(gitHubAccessTokenRequest, headers);
 
-        GitHubAccessTokenResponse response = restTemplate
-            .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GitHubAccessTokenResponse.class)
-            .getBody();
-
-        if (response == null) {
-            throw new IllegalArgumentException();
-        }
-
-        String accessToken = response.getAccessToken();
+        String accessToken = restTemplate.postForEntity(accessTokenUrl, httpEntity, GitHubAccessTokenResponse.class)
+            .getBody()
+            .getAccessToken();
 
         if (accessToken == null) {
             throw new RuntimeException();
