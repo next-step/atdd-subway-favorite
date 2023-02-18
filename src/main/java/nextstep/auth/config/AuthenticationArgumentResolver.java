@@ -14,19 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private AuthService authService;
+    private final AuthService authService;
 
-    public AuthenticationArgumentResolver(AuthService authService) {
+    public AuthenticationArgumentResolver(final AuthService authService) {
         this.authService = authService;
     }
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
+    public boolean supportsParameter(final MethodParameter parameter) {
         return parameter.hasParameterAnnotation(LoginUser.class);
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         return authService.findMemberByToken(credentials);
     }

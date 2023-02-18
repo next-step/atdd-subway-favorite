@@ -18,11 +18,11 @@ public class AuthenticationConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(final List argumentResolvers) {
-        argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
+        argumentResolvers.add(createAuthenticationArgumentResolver());
     }
 
     @Bean
-    public AuthenticationArgumentResolver createAuthenticationPrincipalArgumentResolver() {
+    public AuthenticationArgumentResolver createAuthenticationArgumentResolver() {
         return new AuthenticationArgumentResolver(authService);
     }
 }
