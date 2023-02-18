@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.auth.config.message.AuthError.NOT_MISSING_TOKEN;
 import static nextstep.member.config.message.MemberError.UNAUTHORIZED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -88,16 +89,6 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
-        return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-    }
-
     public static ExtractableResponse<Response> github_인증_로그인_요청(final Map<String, String> params) {
 
         return RestAssured
@@ -154,10 +145,10 @@ public class MemberSteps {
         );
     }
 
-    public static void github_인증_로그인_응답_성공(final ExtractableResponse<Response> github_로그인_응답) {
+    public static void github_인증_로그인_응답_성공(final ExtractableResponse<Response> response) {
         assertAll(
-                () -> assertThat(github_로그인_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(github_로그인_응답.jsonPath().getString("accessToken")).isNotBlank()
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getString("accessToken")).isNotBlank()
         );
     }
 
@@ -169,7 +160,8 @@ public class MemberSteps {
 
     public static void github_인증_로그인_응답_실패(final ExtractableResponse<Response> response) {
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(NOT_MISSING_TOKEN.getMessage())
         );
     }
 }
