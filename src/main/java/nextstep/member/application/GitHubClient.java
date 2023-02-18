@@ -38,10 +38,15 @@ public class GitHubClient {
 
         HttpEntity<GitHubAccessTokenRequest> httpEntity = new HttpEntity<>(gitHubAccessTokenRequest, headers);
 
-        String accessToken = restTemplate
+        GitHubAccessTokenResponse response = restTemplate
             .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GitHubAccessTokenResponse.class)
-            .getBody()
-            .getAccessToken();
+            .getBody();
+
+        if (response == null) {
+            throw new IllegalArgumentException();
+        }
+
+        String accessToken = response.getAccessToken();
 
         if (accessToken == null) {
             throw new RuntimeException();
