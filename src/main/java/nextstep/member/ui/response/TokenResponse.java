@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.member.ui.response;
 
 public class TokenResponse {
     private String accessToken;
@@ -6,8 +6,12 @@ public class TokenResponse {
     public TokenResponse() {
     }
 
-    public TokenResponse(String accessToken) {
+    private TokenResponse(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public static TokenResponse of(String accessToken) {
+        return new TokenResponse(accessToken);
     }
 
     public String getAccessToken() {
