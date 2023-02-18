@@ -1,12 +1,13 @@
 package nextstep.member.ui;
 
+import nextstep.auth.domain.LoginUserInfo;
+import nextstep.auth.domain.LoginUser;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -42,8 +43,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(final HttpServletRequest request) {
-        final String email = request.getAttribute("email").toString();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@LoginUser final LoginUserInfo loginUserInfo) {
+        final String email = loginUserInfo.getEmail();
         MemberResponse member = memberService.findMemberOfMine(email);
         return ResponseEntity.ok().body(member);
     }
