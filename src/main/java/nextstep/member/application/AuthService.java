@@ -9,8 +9,6 @@ import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class AuthService {
     private final MemberService memberService;
@@ -30,6 +28,21 @@ public class AuthService {
         }
         String token = jwtTokenProvider.createToken(convertObjectAsString(MemberResponse.of(member)), member.getRoles());
         return new TokenResponse(token);
+    }
+
+    public MemberResponse findMemberOfMine(String accessToken) {
+        jwtTokenProvider.validateToken(accessToken);
+        String principal = jwtTokenProvider.getPrincipal(accessToken);
+        return convertStringToMemberResponse(principal);
+    }
+
+
+    private MemberResponse convertStringToMemberResponse(String principal) {
+        try {
+            return objectMapper.readValue(principal, MemberResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String convertObjectAsString(MemberResponse memberResponse) {
