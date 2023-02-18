@@ -1,6 +1,5 @@
 package nextstep.subway.unit;
 
-import nextstep.exception.member.AuthTokenIsExpiredException;
 import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.AuthService;
 import nextstep.member.application.JwtTokenProvider;

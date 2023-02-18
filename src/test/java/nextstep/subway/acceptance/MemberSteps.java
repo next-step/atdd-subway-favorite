@@ -1,12 +1,9 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.exception.ErrorDTO;
 import nextstep.exception.ErrorMessage;
-import nextstep.exception.member.PasswordNotEqualException;
 import org.hamcrest.Matchers;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
