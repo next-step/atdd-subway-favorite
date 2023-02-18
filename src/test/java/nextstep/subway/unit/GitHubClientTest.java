@@ -66,13 +66,18 @@ class GitHubClientTest {
     @DisplayName("Access Token 으로 GitHub 에서 사용자 프로필을 조회한다.")
     @Test
     void getGithubProfileFromGitHub() {
-        // given
-        String accessToken = gitHubClient.getAccessTokenFromGitHub(사용자1.getCode());
-
         // when
-        GitHubProfileResponse githubProfile = gitHubClient.getGithubProfileFromGithub(accessToken);
+        GitHubProfileResponse githubProfile = gitHubClient.getGithubProfileFromGithub(사용자1.getAccessToken());
 
         // then
         assertThat(githubProfile.getEmail()).isEqualTo(사용자1.getEmail());
+    }
+
+    @DisplayName("GitHub 사용자 프로필 조회 시, Access Token 에 해당하는 사용자가 없으면 예외가 발생한다.")
+    @Test
+    void githubProfileNotFoundFromGitHub() {
+        // when & then
+        assertThatThrownBy(() -> gitHubClient.getGithubProfileFromGithub("access token"))
+            .isInstanceOf(RuntimeException.class);
     }
 }
