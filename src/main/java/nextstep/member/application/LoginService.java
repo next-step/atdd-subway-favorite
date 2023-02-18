@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.application.MemberService;
 import nextstep.member.auth.JwtTokenProvider;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
@@ -19,4 +20,5 @@ public class LoginService {
         Member member = memberService.verificateAndFindMember(email, password);
         return jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
     }
+
 }
