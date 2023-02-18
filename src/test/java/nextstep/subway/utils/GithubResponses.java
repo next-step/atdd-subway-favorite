@@ -1,4 +1,7 @@
-package nextstep.auth.infra;
+package nextstep.subway.utils;
+
+import nextstep.auth.config.exception.MissingTokenException;
+import nextstep.auth.config.message.AuthError;
 
 import java.util.Arrays;
 
@@ -19,11 +22,18 @@ public enum GithubResponses {
         this.email = email;
     }
 
-    public static GithubResponses find(final String code) {
+    public static GithubResponses findCode(final String code) {
         return Arrays.stream(values())
                 .filter(responses -> responses.code.equals(code))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new MissingTokenException(AuthError.NOT_MISSING_TOKEN));
+    }
+
+    public static GithubResponses findAccessToken(final String accessToken) {
+        return Arrays.stream(values())
+                .filter(responses -> responses.accessToken.equals(accessToken))
+                .findAny()
+                .orElseThrow(() -> new MissingTokenException(AuthError.NOT_MISSING_TOKEN));
     }
 
     public String getCode() {
