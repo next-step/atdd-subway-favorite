@@ -8,6 +8,7 @@ import nextstep.exception.ErrorDTO;
 import nextstep.exception.ErrorMessage;
 import nextstep.exception.member.PasswordNotEqualException;
 import org.hamcrest.Matchers;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -62,7 +63,7 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 토큰으로_회원_정보_조회(String accessToken) {
         Map<String, String> headerParams = new HashMap<>();
-        headerParams.put("accessToken", accessToken);
+        headerParams.put(HttpHeaders.AUTHORIZATION, accessToken);
 
         return RestAssured
                 .given().log().all()
