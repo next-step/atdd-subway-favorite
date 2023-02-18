@@ -75,7 +75,7 @@ Content-Type: application/json
 }
 ```
 
-### 실습 - 구현사항
+### 실습 - 구현사항자
 
 - [X] 인수테스트 조건 정의
   - 로그인
@@ -93,3 +93,55 @@ Content-Type: application/json
   - [X] 에러 메시지 생성
   - [X] 공통 에러 객체 생성
   - [X] 커스텀 익셉션 생성
+
+## 🚀 2단계 - 깃헙 로그인
+
+### 요구사항
+
+#### 기능 요구사항
+
+- [] 깃허브를 이용한 로그인 구현(토큰 발행)
+- [] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
+
+#### 프로그래밍 요구사항
+
+- [] GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
+
+### 요구사항 설명
+
+#### 깃헙 로그인 API
+
+- [] AuthAcceptanceTest 테스트 만들기
+
+##### Request
+
+```http
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "code": "qwerasdfzxvcqwerasdfzxcv"
+}
+```
+
+##### Response
+
+```http
+{
+    "accessToken": "asdfasdf.asdfasdf.asdfasfd"
+}
+```
+
+#### code 별 응답 response
+
+- 매번 실제 깃헙 서비스에 요청을 보낼 수 없으니 어떤 코드로 요청이 오면 정해진 response를 응답하는 구조를 만든다.
+
+### 실습 - 구현사항자
+
+- [X] 코드리뷰 반영
+  - HandlerMethodArgumentResolver 처리
+- [X] github의 AccessToken을 요청하는 대응답 API
+- [X] 인수테스트 조건 정의
+  - accessToken을 정상 조회한다.
+  - 존재하지 않는 토큰으로 조회에 실패한다.
