@@ -1,10 +1,7 @@
 package nextstep.member.application;
 
-import java.time.LocalDateTime;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.exception.InvalidTokenException;
 import nextstep.member.application.exception.UserNotFoundException;
 import nextstep.member.domain.Member;
@@ -47,13 +44,5 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
-    }
-
-    public TokenResponse createTokenFrom(final TokenRequest tokenRequest, final LocalDateTime localDateTime) {
-        Member member = memberRepository.findByEmail(tokenRequest.getEmail()).orElseThrow(UserNotFoundException::new);
-
-        member.validatePassword(tokenRequest.getPassword());
-
-        return new TokenResponse(jwtTokenProvider.createToken(member, localDateTime));
     }
 }

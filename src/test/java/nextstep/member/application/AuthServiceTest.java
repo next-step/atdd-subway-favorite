@@ -2,12 +2,13 @@ package nextstep.member.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-@DisplayName("회원 관련 기능")
-class MemberServiceTest {
+@DisplayName("인증 관련 기능")
+class AuthServiceTest {
 
     @Autowired
-    private MemberService memberService;
+    private AuthService authService;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -37,18 +38,16 @@ class MemberServiceTest {
         );
     }
 
-    @DisplayName("토큰으로 멤버를 조회한다.")
+    @DisplayName("토큰을 발급한다.")
     @Test
-    void findMember() {
+    void createToken() {
+        LocalDateTime localDateTime = LocalDateTime.now();
         memberRepository.save(member);
-        String token = jwtTokenProvider.createToken(member);
+        String expected = jwtTokenProvider.createToken(member, localDateTime);
+        TokenRequest token = new TokenRequest(member.getEmail(), member.getPassword());
 
-        MemberResponse member = memberService.findMember(token);
+        TokenResponse tokenResponse = authService.createTokenFrom(token, localDateTime);
 
-        Assertions.assertAll(
-                () -> assertThat(member.getId()).isEqualTo(member.getId()),
-                () -> assertThat(member.getEmail()).isEqualTo(member.getEmail()),
-                () -> assertThat(member.getAge()).isEqualTo(member.getAge())
-        );
+        assertThat(tokenResponse.getAccessToken()).isEqualTo(expected);
     }
 }
