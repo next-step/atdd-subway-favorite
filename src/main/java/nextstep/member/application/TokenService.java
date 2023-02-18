@@ -10,10 +10,12 @@ public class TokenService {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final GitHubClient gitHubClient;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GitHubClient gitHubClient) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.gitHubClient = gitHubClient;
     }
 
     public TokenResponse createToken(String email, String password) {
@@ -23,6 +25,15 @@ public class TokenService {
     }
 
     public TokenResponse createGitHubToken(String code) {
-        return new TokenResponse("fasdfasd.fasdfasd.fasdfasd");
+        // 1. 권한증서(code)로 GitHub 에서 Access Token 발급
+        String accessTokenFromGithub = gitHubClient.getAccessTokenFromGithub(code);
+
+        // 2. Access Token 으로 GitHub 의 Resource Server 에서 사용자 프로필 조회
+
+        // 3. 사용자 프로필의 이메일 주소로 회원을 조회
+        // Option. 조회된 회원이 없으면 해당 이메일 주소로 회원 가입
+
+        // 4. 회원 정보로 토큰 발급
+        return new TokenResponse(accessTokenFromGithub);
     }
 }
