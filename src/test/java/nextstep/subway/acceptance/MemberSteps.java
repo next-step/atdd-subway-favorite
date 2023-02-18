@@ -98,6 +98,16 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> github_인증_로그인_요청(final Map<String, String> params) {
+
+        return RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/github")
+                .then().log().all().extract();
+    }
+
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
@@ -141,6 +151,25 @@ public class MemberSteps {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
                 () -> assertThat(jsonPathResponse.getString("message")).isEqualTo(UNAUTHORIZED.getMessage())
+        );
+    }
+
+    public static void github_인증_로그인_응답_성공(final ExtractableResponse<Response> github_로그인_응답) {
+        assertAll(
+                () -> assertThat(github_로그인_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(github_로그인_응답.jsonPath().getString("accessToken")).isNotBlank()
+        );
+    }
+
+    public static Map<String, String> createCode(final String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+        return params;
+    }
+
+    public static void github_인증_로그인_응답_실패(final ExtractableResponse<Response> response) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         );
     }
 }
