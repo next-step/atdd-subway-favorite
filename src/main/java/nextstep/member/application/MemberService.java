@@ -29,6 +29,10 @@ public class MemberService {
         member.update(param.toMember());
     }
 
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
