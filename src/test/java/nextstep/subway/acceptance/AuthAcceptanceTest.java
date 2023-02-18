@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.utils.GithubResponses.USER1;
+import static nextstep.subway.utils.GithubResponses.USER2;
 
 @DisplayName("인증 관리 기능")
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -41,20 +43,24 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void githubLogin() {
 
-        final Map<String, String> params = createCode("832ovnq039hfjn");
+        회원_생성_요청(USER1.getEmail(), PASSWORD, AGE);
+
+        final Map<String, String> params = createCode(USER1.getCode());
 
         final ExtractableResponse<Response> github_로그인_응답 = github_인증_로그인_요청(params);
 
         github_인증_로그인_응답_성공(github_로그인_응답);
     }
 
-    @DisplayName("Github 요청시 유효하지 않은 코드일 경우에는 예외처리한다.")
+    @DisplayName("권한이 없는 사용자일 경우에는 예외처리한다.")
     @Test
     void error_githubLogin() {
 
-        final Map<String, String> 존재하지_않는_코드 = createCode("code");
+        회원_생성_요청(USER1.getEmail(), PASSWORD, AGE);
 
-        final ExtractableResponse<Response> github_로그인_응답 = github_인증_로그인_요청(존재하지_않는_코드);
+        final Map<String, String> 로그인_하지_않은_사용자 = createCode(USER2.getEmail());
+
+        final ExtractableResponse<Response> github_로그인_응답 = github_인증_로그인_요청(로그인_하지_않은_사용자);
 
         github_인증_로그인_응답_실패(github_로그인_응답);
     }
