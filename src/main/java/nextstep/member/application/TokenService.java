@@ -37,6 +37,7 @@ public class TokenService {
         Member member = memberService.findOrCreateMember(githubProfile.getEmail());
 
         // 4. 회원 정보로 토큰 발급
-        return new TokenResponse(accessTokenFromGithub);
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getRoles());
+        return new TokenResponse(token);
     }
 }

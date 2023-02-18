@@ -1,15 +1,13 @@
 package nextstep.subway.acceptance;
 
-import nextstep.DataLoader;
-import nextstep.subway.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public abstract class AcceptanceTest {
+import nextstep.DataLoader;
+import nextstep.subway.utils.DatabaseCleanup;
+
+public abstract class AcceptanceTest extends ApplicationContextTest {
+
     @Autowired
     private DatabaseCleanup databaseCleanup;
 

@@ -12,18 +12,17 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import nextstep.member.application.GitHubClient;
 import nextstep.member.application.dto.GitHubProfileResponse;
+import nextstep.subway.acceptance.ApplicationContextTest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class GitHubClientTest {
+class GitHubClientTest extends ApplicationContextTest {
 
     @Autowired
     private GitHubClient gitHubClient;
 
-    @DisplayName("권한증서로 GitHub Access Token을 발급한다.")
+    @DisplayName("권한증서로 GitHub Access Token 을 발급한다.")
     @MethodSource("getAccessTokenFromGitHubSource")
     @ParameterizedTest
     void getAccessTokenFromGithub(String code, String accessToken) {
