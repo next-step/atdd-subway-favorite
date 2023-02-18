@@ -1,6 +1,6 @@
 package nextstep.exception;
 
-public class InvalidAccessTokenException extends RuntimeException {
+public class InvalidAccessTokenException extends AuthorizationException {
 
     private static final String MESSAGE = "유효하지 않은 토큰입니다. (토큰: %s)";
 

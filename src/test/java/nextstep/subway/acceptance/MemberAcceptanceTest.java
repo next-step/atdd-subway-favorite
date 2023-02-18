@@ -1,13 +1,14 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import static nextstep.subway.acceptance.MemberSteps.*;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -85,7 +86,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청("invalid token");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("토큰 정보가 없으면 내 정보를 조회할 수 없다.")
