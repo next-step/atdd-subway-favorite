@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.exception.member.AuthTokenIsExpiredException;
 import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
@@ -31,9 +32,15 @@ public class AuthService {
     }
 
     public MemberResponse findMemberOfMine(String accessToken) {
-        jwtTokenProvider.validateToken(accessToken);
+        if (tokenIsExpired(accessToken)) {
+            throw new AuthTokenIsExpiredException();
+        }
         String principal = jwtTokenProvider.getPrincipal(accessToken);
         return convertStringToMemberResponse(principal);
+    }
+
+    private boolean tokenIsExpired(String accessToken) {
+        return !jwtTokenProvider.validateToken(accessToken);
     }
 
 

@@ -1,7 +1,9 @@
 package nextstep.subway.unit;
 
+import nextstep.exception.member.AuthTokenIsExpiredException;
 import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.AuthService;
+import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
@@ -22,6 +24,9 @@ class AuthServiceTest {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("이메일, 패스워드가 일치하는 멤버가 존재한다면 토큰반환")
@@ -61,4 +66,16 @@ class AuthServiceTest {
         // then
         assertThat(memberInfo.getEmail()).isEqualTo(EMAIL);
     }
+
+    /*@Test
+    @DisplayName("토큰 만료 테스트")
+    void tokenIsExpired() {
+        // given
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = authService.loginMember(tokenRequest);
+
+        // then
+        assertThatThrownBy(() -> authService.findMemberOfMine(tokenResponse.getAccessToken()))
+                .isExactlyInstanceOf(AuthTokenIsExpiredException.class);
+    }*/
 }
