@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -49,5 +50,13 @@ class GitHubClientTest {
         // when & then
         assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGithub(code))
             .isInstanceOf(HttpClientErrorException.class);
+    }
+
+    @DisplayName("GitHub Access Token 발급 요청 시, 응답 결과에 Access Token이 없으면 예외가 발생한다.")
+    @Test
+    void emptyAccessTokenFromGitHub() {
+        // when & then
+        assertThatThrownBy(() -> gitHubClient.getAccessTokenFromGithub(사용자5_ACCESS_TOKEN_없음.getCode()))
+            .isInstanceOf(RuntimeException.class);
     }
 }
