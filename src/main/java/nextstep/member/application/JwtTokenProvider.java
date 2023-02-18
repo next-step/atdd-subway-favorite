@@ -20,7 +20,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(Member member) {
+    public String createToken(final Member member) {
         Claims claims = Jwts.claims().setSubject(member.getEmail());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -48,15 +48,15 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
+    public String getPrincipal(final String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public List<String> getRoles(String token) {
+    public List<String> getRoles(final String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(final String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
