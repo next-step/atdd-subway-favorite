@@ -1,13 +1,10 @@
 package nextstep.member.ui;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletRequest;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,11 +51,6 @@ public class MemberController {
     public ResponseEntity<MemberResponse> findMemberOfMine(final HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
         return ResponseEntity.ok().body(memberService.findMember(token));
-    }
-
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> loginBy(@RequestBody final TokenRequest tokenRequest) {
-        return ResponseEntity.ok(memberService.createTokenFrom(tokenRequest, LocalDateTime.now()));
     }
 }
 
