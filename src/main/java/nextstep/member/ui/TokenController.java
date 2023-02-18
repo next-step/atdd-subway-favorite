@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nextstep.member.application.TokenService;
+import nextstep.member.application.dto.GitHubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 
@@ -24,7 +25,7 @@ public class TokenController {
     }
 
     @PostMapping("/login/github")
-    public ResponseEntity<TokenResponse> createGitHubToken() {
+    public ResponseEntity<TokenResponse> createGitHubToken(@RequestBody GitHubTokenRequest request) {
         return ResponseEntity.ok(new TokenResponse("fasdfasd.fasdfasd.fasdfasd"));
     }
 }
