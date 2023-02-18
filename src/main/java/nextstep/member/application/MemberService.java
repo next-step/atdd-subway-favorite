@@ -6,6 +6,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -31,5 +33,9 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findMemberByEmailAndPassword(String email, String password) {
+        return memberRepository.findByEmail(email).filter(it -> it.checkPassword(password)).orElseThrow(RuntimeException::new);
     }
 }
