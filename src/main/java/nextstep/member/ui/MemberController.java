@@ -1,12 +1,11 @@
 package nextstep.member.ui;
 
-import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
+import nextstep.member.annotation.MemberInfo;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberInfoDto;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,20 +41,10 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        String accessToken = extractAccessTokenFromAuthorization(authorization);
-
-        MemberResponse memberResponse = memberService.findByAccessToken(accessToken);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@MemberInfo MemberInfoDto memberInfo) {
+        MemberResponse memberResponse = MemberResponse.of(memberInfo);
 
         return ResponseEntity.ok().body(memberResponse);
-    }
-
-    private String extractAccessTokenFromAuthorization(String authorization) {
-        String[] tokens = authorization.split(StringUtils.SPACE);
-
-        Preconditions.checkArgument(tokens.length >= 2);
-
-        return tokens[1];
     }
 }
 

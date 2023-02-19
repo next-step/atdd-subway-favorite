@@ -101,4 +101,20 @@ public class MemberSteps {
             .statusCode(HttpStatus.OK.value())
             .extract();
     }
+
+    public static void 응답에서_id_정보_있는지_확인(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getLong("id")).isNotNull();
+    }
+
+    public static void 응답에서_email_정보_확인(ExtractableResponse<Response> response, String email) {
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+    }
+
+    public static void 응답에서_나이_정보_확인(ExtractableResponse<Response> response, int age) {
+        assertThat(response.jsonPath().getLong("age")).isNotNull().isEqualTo(age);
+    }
+
+    public static void 응답에서_access_token_존재_여부_확인(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
 }

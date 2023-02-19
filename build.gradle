@@ -3,6 +3,7 @@ buildscript {
         guavaVersion = "31.1-jre"
         apacheCommonLang3Version = "3.12.0"
         p6spySpringBootStarterVersion = "1.8.1"
+        apacheCommonIoVersion = "2.11.0"
     }
 }
 
@@ -51,6 +52,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation "org.apache.commons:commons-lang3:${apacheCommonLang3Version}"
 
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation "commons-io:commons-io:${apacheCommonIoVersion}"
 }
 
 test {

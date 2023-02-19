@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.MemberSteps.JWT_토큰으로_내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.acceptance.MemberSteps.응답에서_email_정보_확인;
+import static nextstep.subway.acceptance.MemberSteps.응답에서_id_정보_있는지_확인;
+import static nextstep.subway.acceptance.MemberSteps.응답에서_나이_정보_확인;
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
@@ -18,16 +20,16 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void bearerAuth() {
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        MemberSteps.응답에서_access_token_존재_여부_확인(response);
     }
 
-    @DisplayName("내 정보 조회가 가능하다")
+    @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
         ExtractableResponse<Response> response = JWT_토큰으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
 
-        assertThat(response.jsonPath().getLong("id")).isNotNull();
-        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
-        assertThat(response.jsonPath().getLong("age")).isNotNull().isEqualTo(20);
+        응답에서_id_정보_있는지_확인(response);
+        응답에서_email_정보_확인(response, EMAIL);
+        응답에서_나이_정보_확인(response, 20);
     }
 }

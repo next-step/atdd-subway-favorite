@@ -1,6 +1,5 @@
 package nextstep.login.ui;
 
-import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import nextstep.login.application.LoginService;
 import nextstep.member.application.dto.TokenRequest;
@@ -21,9 +20,6 @@ public class LoginController {
     @PostMapping("/token")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse generateToken(@RequestBody TokenRequest tokenRequest) {
-        Preconditions.checkArgument(tokenRequest.getEmail() != null);
-        Preconditions.checkArgument(tokenRequest.getPassword() != null);
-
         return loginService.generateToken(tokenRequest);
     }
 }
