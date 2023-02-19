@@ -3,6 +3,7 @@ package nextstep.member.ui;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private MemberService memberService;
+    private static final String Basic_PREFIX = "Basic ";
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -41,10 +43,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        return ResponseEntity.ok().body(memberService.findMemberOfMine(authorizationHeader));
     }
 }
 
