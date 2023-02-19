@@ -18,6 +18,6 @@ github:
     id: hungrytech_id
     secret: hungrytech_secret
   url:
-    base: https://api.github.com/
+    base: https://github.com/
     access-token: access_token
-    profile: user
+    profile: https://api.github.com/user
