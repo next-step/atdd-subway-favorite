@@ -1,21 +1,17 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.*;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -51,22 +47,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavoriteSection() {
         // when
-        Map<String, String> params = new HashMap<>();
-        params.put("source", String.valueOf(수서역));
-        params.put("target", String.valueOf(복정역));
-
-        ExtractableResponse<Response> createResponse = RestAssured
-            .given().log().all()
-            .auth().oauth2(accessToken)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/favorites")
-            .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 복정역);
 
         // then
         assertAll(
-            () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(createResponse.header("Location")).isEqualTo("/favorites/1")
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+            () -> assertThat(response.header("Location")).isEqualTo("/favorites/1")
         );
     }
 
@@ -78,18 +64,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavoriteSectionWithoutAccessToken() {
         // when
-        Map<String, String> params = new HashMap<>();
-        params.put("source", String.valueOf(수서역));
-        params.put("target", String.valueOf(복정역));
-
-        ExtractableResponse<Response> createResponse = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/favorites")
-            .then().log().all().extract();
+        ExtractableResponse<Response> response = 인증_없이_즐겨찾기_구간_생성_요청(수서역, 복정역);
 
         // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
