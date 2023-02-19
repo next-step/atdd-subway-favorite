@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GitHubOauthAdapterImpl implements GithubOauthAdapter {
 
+    private static final String TOKEN_PREFIX = "Token ";
+
     private final GithubClient githubClient;
 
     private final GithubOauthProperty githubOauthProperty;
@@ -48,7 +50,7 @@ public class GitHubOauthAdapterImpl implements GithubOauthAdapter {
         return RetrofitExecutor.execute(
                 githubClient.callProfileApi(
                         githubOauthProperty.getProfileUrl(),
-                        githubOauthAccessTokenResponse.getAccessToken()
+                        TOKEN_PREFIX + githubOauthAccessTokenResponse.getAccessToken()
                 ),
                 () -> new GithubOauthConnectionException(MemberErrorCode.CONNECTION_FAIL_GITHUB)
         );
