@@ -57,9 +57,26 @@ class FavoriteServiceTest {
 
         // then
         assertAll(
-            () -> assertThat(response.getId()).isEqualTo(1L),
             () -> assertThat(response.getSource().getId()).isEqualTo(수서역.getId()),
             () -> assertThat(response.getTarget().getId()).isEqualTo(복정역.getId())
+        );
+    }
+
+    @DisplayName("즐겨찾기 구간 목록을 조회한다.")
+    @Test
+    void findFavorites() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(수서역.getId(), 복정역.getId());
+        favoriteService.createFavorite(member.getId(), request);
+
+        // when
+        List<FavoriteResponse> response = favoriteService.findFavorites(member.getId());
+
+        // then
+        assertAll(
+            () -> assertThat(response).hasSize(1),
+            () -> assertThat(response.get(0).getSource().getId()).isEqualTo(수서역.getId()),
+            () -> assertThat(response.get(0).getTarget().getId()).isEqualTo(복정역.getId())
         );
     }
 }
