@@ -63,7 +63,9 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public void validatePassword(String password) {
+        if (!Objects.equals(this.password, password)) {
+            throw new RuntimeException();
+        }
     }
 }
