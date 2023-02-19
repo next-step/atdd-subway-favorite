@@ -18,6 +18,8 @@ import nextstep.member.application.dto.GitHubProfileResponse;
 @Component
 public class GitHubClient {
 
+    private static final String TOKEN_PREFIX = "token ";
+
     @Value("${github.client.id}")
     private String clientId;
 
@@ -65,7 +67,7 @@ public class GitHubClient {
 
     public GitHubProfileResponse getGithubProfileFromGithub(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "token " + accessToken);
+        headers.add(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + accessToken);
 
         try {
             return restTemplate
