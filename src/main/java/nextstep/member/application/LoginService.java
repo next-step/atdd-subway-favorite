@@ -25,12 +25,10 @@ public class LoginService {
     }
 
     public String createGithubToken(String code){
-        System.out.println("code = " + code);
         String accessToken = githubClient.getAccessTokenFromGithub(code);
         GithubProfileResponse response = githubClient.getGithubProfileFromGithub(accessToken);
-        memberService.findOrCreateMember(response.getEmail());
-
-        return accessToken;
+        Member member = memberService.findOrCreateMember(response.getEmail());
+        return jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
     }
 
 }

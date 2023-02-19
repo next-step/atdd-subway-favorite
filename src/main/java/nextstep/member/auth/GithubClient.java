@@ -3,6 +3,7 @@ package nextstep.member.auth;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.exception.MemberAuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +44,7 @@ public class GithubClient {
                 ;
 
         if (response == null ) {
-            throw new RuntimeException();
+            throw new MemberAuthenticationException();
         }
         return response.getAccessToken();
     }
@@ -60,7 +61,7 @@ public class GithubClient {
                     .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                     .getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException();
+            throw new MemberAuthenticationException();
         }
     }
 }

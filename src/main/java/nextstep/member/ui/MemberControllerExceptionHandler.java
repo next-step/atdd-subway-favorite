@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
+import nextstep.member.exception.MemberAuthenticationException;
 import nextstep.member.exception.MemberNotFoundException;
-import nextstep.member.exception.PasswordAuthenticationException;
 import nextstep.member.exception.TokenAuthorizationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ public class MemberControllerExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(PasswordAuthenticationException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(PasswordAuthenticationException e) {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(MemberAuthenticationException.class)
+    public ResponseEntity<Void> handleIllegalArgsException(MemberAuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(TokenAuthorizationException.class)

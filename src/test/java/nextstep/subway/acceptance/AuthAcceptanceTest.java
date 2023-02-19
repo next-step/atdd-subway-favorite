@@ -6,6 +6,7 @@ import nextstep.subway.utils.FakeGithubResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
@@ -25,7 +26,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("Github Auth")
+    @DisplayName("깃허브 인증")
     class github {
 
         @DisplayName("깃허브 인증 로그인 요청")
@@ -35,5 +36,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
             assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
         }
 
+        @DisplayName("깃허브 인증 로그인 요청 실패")
+        @Test
+        void githubAuthFail() {
+            ExtractableResponse<Response> response = 깃허브_인증_로그인_요청("0000");
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        }
     }
 }

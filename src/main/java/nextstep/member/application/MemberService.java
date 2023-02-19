@@ -4,16 +4,13 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.MemberNotFoundException;
-import nextstep.member.exception.PasswordAuthenticationException;
-import org.springframework.beans.factory.annotation.Autowired;
+import nextstep.member.exception.MemberAuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -41,7 +38,7 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
 
         if (!member.checkPassword(password)) {
-            throw new PasswordAuthenticationException();
+            throw new MemberAuthenticationException();
         }
 
         return member;
@@ -54,7 +51,7 @@ public class MemberService {
     }
 
     public Member findOrCreateMember(String email) {
-        return memberRepository.findByEmail(email)
-                .orElse(memberRepository.save(new Member(email)));
+        Member member = memberRepository.findByEmail(email).orElse(new Member(email));
+        return memberRepository.save(member);
     }
 }

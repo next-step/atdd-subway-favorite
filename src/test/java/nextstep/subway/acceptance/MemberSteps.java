@@ -89,7 +89,7 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(String code){
+    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(String code) {
 
         Map<String, String> params = new HashMap<>();
         params.put("code", code);
@@ -99,6 +99,7 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/fake/login/github")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
+
 }
