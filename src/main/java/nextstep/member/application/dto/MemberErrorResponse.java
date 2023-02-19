@@ -1,12 +1,15 @@
 package nextstep.member.application.dto;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import nextstep.member.application.exception.ErrorCode;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberErrorResponse {
 
-	private final String message;
+	private String message;
 
-	private final String code;
+	private String code;
 
 	private MemberErrorResponse(String message, String code) {
 		this.message = message;

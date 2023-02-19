@@ -1,26 +1,29 @@
 package nextstep.member.application;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import lombok.RequiredArgsConstructor;
+import nextstep.member.application.dto.GithubCodeRequest;
+import nextstep.member.application.dto.GithubResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.exception.MemberErrorCode;
 import nextstep.member.application.exception.NotFoundMemberException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.ui.GithubOauthAdapter;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
 	private final JwtTokenProvider jwtTokenProvider;
 
 	private final MemberRepository memberRepository;
 
-	public AuthService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
-		this.jwtTokenProvider = jwtTokenProvider;
-		this.memberRepository = memberRepository;
-	}
+	private final GithubOauthAdapter gitHubOauthAdapter;
 
 	@Transactional(readOnly = true)
 	public TokenResponse createToken(TokenRequest tokenRequest) {
@@ -28,5 +31,20 @@ public class AuthService {
 			.orElseThrow(() -> new NotFoundMemberException(MemberErrorCode.NOT_FOUND_MEMBER));
 
 		return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
+	}
+
+	@Transactional
+	public TokenResponse createToken(GithubCodeRequest githubCodeRequest) {
+		GithubResponse githubResponse = gitHubOauthAdapter.login(githubCodeRequest.getCode());
+
+		Optional<Member> findMember = memberRepository.findByEmail(githubResponse.getEmail());
+
+		if (findMember.isPresent()) {
+			Member member = findMember.get();
+			return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
+		}
+
+		Member savedMember = memberRepository.save(new Member(githubResponse.getEmail(), githubResponse.getCode()));
+		return new TokenResponse(jwtTokenProvider.createToken(savedMember.getEmail(), savedMember.getRoles()));
 	}
 }

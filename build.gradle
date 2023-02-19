@@ -27,6 +27,11 @@ dependencies {
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.7.0'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:4.5.1'
