@@ -51,9 +51,15 @@ public class FavoriteSteps {
             .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_구간_삭제_요청(String accessToken, String location) {
+    public static ExtractableResponse<Response> 즐겨찾기_구간_제거_요청(String accessToken, String location) {
         return RestAssured.given().log().all()
             .auth().oauth2(accessToken)
+            .when().delete(location)
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 인증_없이_즐겨찾기_구간_제거_요청(String location) {
+        return RestAssured.given().log().all()
             .when().delete(location)
             .then().log().all().extract();
     }

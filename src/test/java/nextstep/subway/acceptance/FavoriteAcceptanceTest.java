@@ -115,10 +115,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 새로운 즐겨찾기 구간 생성을 요청하고
-     * When 즐겨찾기 구간 삭제를 요청하고 즐겨찾기 구간 목록을 조회하면
+     * When 즐겨찾기 구간 제거를 요청하고 즐겨찾기 구간 목록을 조회하면
      * Then 해당 즐겨찾기 구간이 조회되지 않는다.
      */
-    @DisplayName("즐겨찾기 구간을 삭제한다.")
+    @DisplayName("즐겨찾기 구간을 제거한다.")
     @Test
     void removeFavoriteSection() {
         // given
@@ -126,7 +126,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         String location = createResponse.header("Location");
 
         // when
-        ExtractableResponse<Response> removeResponse = 즐겨찾기_구간_삭제_요청(accessToken, location);
+        ExtractableResponse<Response> removeResponse = 즐겨찾기_구간_제거_요청(accessToken, location);
 
         // then
         ExtractableResponse<Response> response = 즐겨찾기_구간_목록_조회_요청(accessToken);
@@ -135,5 +135,23 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(response.jsonPath().getList("id")).isEmpty()
         );
+    }
+
+    /**
+     * Given 새로운 즐겨찾기 구간 생성을 요청하고
+     * When 인증 정보 없이 즐겨찾기 구간 제거를 요청하면
+     * Then 해당 즐겨찾기 구간이 제거되지 않는다.
+     */
+    @DisplayName("즐겨찾기 구간 제거 요청 시, 인증 정보가 없으면 즐겨찾기 구간이 제거되지 않는다.")
+    @Test
+    void removeFavoriteSectionByNonMember() {
+        // given
+        String location = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 오금역).header("Location");
+
+        // when
+        ExtractableResponse<Response> response = 인증_없이_즐겨찾기_구간_제거_요청(location);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

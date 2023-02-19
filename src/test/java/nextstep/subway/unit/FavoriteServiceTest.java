@@ -116,4 +116,16 @@ class FavoriteServiceTest {
         // then
         assertThat(favoriteService.findFavorites(member.getId())).isEmpty();
     }
+
+    @DisplayName("즐겨찾기 구간 제거 시, 사용자가 존재하지 않으면 즐겨찾기 구간이 제거되지 않는다.")
+    @Test
+    void removeFavoriteByNonMember() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(수서역.getId(), 복정역.getId());
+        FavoriteResponse favorite = favoriteService.createFavorite(member.getId(), request);
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(999L, favorite.getId()))
+            .isInstanceOf(RuntimeException.class);
+    }
 }
