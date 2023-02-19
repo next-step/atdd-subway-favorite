@@ -5,13 +5,14 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.config.message.AuthError;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.auth.config.message.AuthError.NOT_MISSING_TOKEN;
 import static nextstep.member.config.message.MemberError.UNAUTHORIZED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -88,14 +89,14 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
-        return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+    public static ExtractableResponse<Response> github_인증_로그인_요청(final Map<String, String> params) {
+
+        return RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/github")
+                .then().log().all().extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
@@ -141,6 +142,26 @@ public class MemberSteps {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
                 () -> assertThat(jsonPathResponse.getString("message")).isEqualTo(UNAUTHORIZED.getMessage())
+        );
+    }
+
+    public static void github_인증_로그인_응답_성공(final ExtractableResponse<Response> response) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getString("accessToken")).isNotBlank()
+        );
+    }
+
+    public static Map<String, String> createCode(final String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+        return params;
+    }
+
+    public static void github_인증_로그인_응답_실패(final ExtractableResponse<Response> response) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(NOT_MISSING_TOKEN.getMessage())
         );
     }
 }

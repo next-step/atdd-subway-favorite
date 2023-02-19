@@ -1,20 +1,28 @@
 package nextstep.auth.config;
 
+import nextstep.auth.application.AuthService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class AuthenticationConfig implements WebMvcConfigurer {
 
-    private BearerAuthInterceptor bearerAuthInterceptor;
+    private final AuthService authService;
 
-    public AuthenticationConfig(final BearerAuthInterceptor bearerAuthInterceptor) {
-        this.bearerAuthInterceptor = bearerAuthInterceptor;
+    public AuthenticationConfig(final AuthService authService) {
+        this.authService = authService;
     }
 
     @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/members/me");
+    public void addArgumentResolvers(final List argumentResolvers) {
+        argumentResolvers.add(createAuthenticationArgumentResolver());
+    }
+
+    @Bean
+    public AuthenticationArgumentResolver createAuthenticationArgumentResolver() {
+        return new AuthenticationArgumentResolver(authService);
     }
 }

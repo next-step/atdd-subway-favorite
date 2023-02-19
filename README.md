@@ -75,7 +75,7 @@ Content-Type: application/json
 }
 ```
 
-### 실습 - 구현사항
+### 실습 - 구현사항자
 
 - [X] 인수테스트 조건 정의
   - 로그인
@@ -93,3 +93,62 @@ Content-Type: application/json
   - [X] 에러 메시지 생성
   - [X] 공통 에러 객체 생성
   - [X] 커스텀 익셉션 생성
+
+## 🚀 2단계 - 깃헙 로그인
+
+### 요구사항
+
+#### 기능 요구사항
+
+- [] 깃허브를 이용한 로그인 구현(토큰 발행)
+- [] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
+
+#### 프로그래밍 요구사항
+
+- [] GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
+
+### 요구사항 설명
+
+#### 깃헙 로그인 API
+
+- [] AuthAcceptanceTest 테스트 만들기
+
+##### Request
+
+```http
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "code": "qwerasdfzxvcqwerasdfzxcv"
+}
+```
+
+##### Response
+
+```http
+{
+    "accessToken": "asdfasdf.asdfasdf.asdfasfd"
+}
+```
+
+#### code 별 응답 response
+
+- 매번 실제 깃헙 서비스에 요청을 보낼 수 없으니 어떤 코드로 요청이 오면 정해진 response를 응답하는 구조를 만든다.
+
+### 실습 - 구현사항자
+
+- [X] 코드리뷰 반영
+  - HandlerMethodArgumentResolver 처리
+- [X] Github 호출 Client 단위 테스트 작성
+  - [X] 권한증서로 GitHub Access Token 을 발급한다.
+  - [X] 권한증서가 null 또는 공백이라면, GitHub Access Token 발급 요청 시 예외처리한다.
+  - [X] Access Token 으로 GitHub 에서 사용자 프로필을 조회한다.
+  - [X] GitHub 사용자 프로필 조회 시, Access Token 에 해당하는 사용자가 없으면 예외처리한다.
+- [X] 인수테스트 조건 정의
+  - [X] Github 로그인에 성공한다.
+  - [X] 권한이 없는 사용자일 경우에는 예외처리한다.
+- [X] 테스트 환경 설정
+  - [X] Github 테스트 엔드포인트 생성
+  - [X] 테스트 프로퍼티 설정 
