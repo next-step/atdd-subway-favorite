@@ -17,13 +17,16 @@ import io.restassured.response.Response;
 
 class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMAIL = "member@email.com";
-    private static final String PASSWORD = "password";
+    private static final String EMAIL = "member1@email.com";
+    private static final String EMAIL_OTHER = "member2@email.com";
+    private static final String PASSWORD = "pass1234";
+    private static final String PASSWORD_OTHER = "pass1234";
 
     private Long 수서역;
     private Long 복정역;
     private Long 오금역;
     private String accessToken;
+    private String accessTokenByOther;
 
     /**
      *  수서역 ─── <분당선> ─── 복정역
@@ -44,6 +47,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_요청("3호선", "yellow", 수서역, 오금역, 30);
 
         accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+        accessTokenByOther = 베어러_인증_로그인_요청(EMAIL_OTHER, PASSWORD_OTHER).jsonPath().getString("accessToken");
     }
 
     /**
@@ -149,6 +153,24 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 인증_없이_즐겨찾기_구간_제거_요청(location);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 다른 회원의 인증 정보로 새로운 즐겨찾기 구간 생성을 요청하고
+     * When 본인의 인증 정보로 해당 즐겨찾기 구간 제거를 요청하면
+     * Then 해당 즐겨찾기 구간이 제거되지 않는다.
+     */
+    @DisplayName("즐겨찾기 구간 제거 요청 시, 본인이 등록한 즐겨찾기 구간이 아니라면 즐겨찾기 구간이 제거되지 않는다.")
+    @Test
+    void removeFavoriteSectionByOtherMember() {
+        // given
+        String location = 즐겨찾기_구간_생성_요청(accessTokenByOther, 수서역, 오금역).header("Location");
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_구간_제거_요청(accessToken, location);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
