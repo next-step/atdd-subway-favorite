@@ -17,7 +17,7 @@ public class AuthService {
 	private final JwtTokenProvider jwtTokenProvider;
 
 	public AuthResponse createToken(AuthRequest authRequest) {
-		Member findMember = memberRepository.findByEmail(authRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException(LOGIN_NOT_FIND_MEMBER.isMessage()));
+		Member findMember = memberRepository.findByEmail(authRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException(LOGIN_NOT_MATH_EMAIL.isMessage()));
 		findMember.checkPassword(authRequest.getPassword());
 
 		String token = jwtTokenProvider.createToken(authRequest.getEmail(), findMember.getRoles());
