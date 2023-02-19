@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.exception.AuthorizationException;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -59,8 +60,8 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.findById(id)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (!favorite.getMemberId().equals(member.getId())) {
-            throw new RuntimeException();
+        if (!favorite.isCreatedBy(member.getId())) {
+            throw new AuthorizationException();
         }
 
         favoriteRepository.delete(favorite);

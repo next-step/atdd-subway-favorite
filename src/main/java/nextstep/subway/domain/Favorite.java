@@ -1,5 +1,7 @@
 package nextstep.subway.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +27,10 @@ public class Favorite {
         this.memberId = memberId;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+    }
+
+    public boolean isCreatedBy(Long memberId) {
+        return Objects.equals(this.memberId, memberId);
     }
 
     public Long getId() {

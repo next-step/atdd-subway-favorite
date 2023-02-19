@@ -17,10 +17,10 @@ import io.restassured.response.Response;
 
 class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMAIL = "member1@email.com";
-    private static final String EMAIL_OTHER = "member2@email.com";
-    private static final String PASSWORD = "pass1234";
-    private static final String PASSWORD_OTHER = "pass1234";
+    private static final String EMAIL = "member@email.com";
+    private static final String EMAIL_OTHER = "member1@email.com";
+    private static final String PASSWORD = "password";
+    private static final String PASSWORD_OTHER = "password";
 
     private Long 수서역;
     private Long 복정역;
