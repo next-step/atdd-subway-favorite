@@ -74,17 +74,25 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
+    public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String token) {
         return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
+                .auth().preemptive().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰_없이_내_회원_정보_조회_요청() {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
                 .extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
