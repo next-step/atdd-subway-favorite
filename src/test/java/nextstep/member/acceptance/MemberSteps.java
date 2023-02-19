@@ -14,6 +14,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
 
+    public static ExtractableResponse<Response> 깃_허브_로그인_요청(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 베어러_인증_로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
