@@ -32,15 +32,21 @@ public class MemberService {
     }
 
     public Member validateMemberAndReturn(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
-            () -> new ApiException(HttpStatus.NOT_FOUND, "회원정보가 존재하지 않습니다.")
-        );
-
+        Member member = findMemberByEmail(request.getEmail());
         if (member.checkPassword(request.getPassword())) {
             return member;
         }
-
         throw new ApiException(HttpStatus.UNAUTHORIZED, "회원정보가 일치하지 않습니다.");
+    }
+
+    public MemberResponse findByEmail(String email) {
+        return MemberResponse.of(findMemberByEmail(email));
+    }
+
+    private Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(
+            () -> new ApiException(HttpStatus.NOT_FOUND, "회원정보가 존재하지 않습니다.")
+        );
     }
 
     public void updateMember(Long id, MemberRequest param) {

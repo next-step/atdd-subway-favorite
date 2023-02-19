@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.auth.AuthorizedUser;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -41,9 +42,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute AuthorizedUser authorizedUser) {
+        MemberResponse member = memberService.findByEmail(authorizedUser.getEmail());
         return ResponseEntity.ok().body(member);
     }
 }
