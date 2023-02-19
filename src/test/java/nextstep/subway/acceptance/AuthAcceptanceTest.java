@@ -4,7 +4,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.config.GithubOauthConfig;
 import nextstep.subway.config.MockGithubResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +16,6 @@ import java.util.stream.Stream;
 
 import static nextstep.subway.acceptance.AuthSteps.깃허브로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
-import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -25,13 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
-
-    public static final int AGE = 20;
-
-    @BeforeEach
-    public void setUpMember() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-    }
 
     @DisplayName("Bearer Auth")
     @Test
