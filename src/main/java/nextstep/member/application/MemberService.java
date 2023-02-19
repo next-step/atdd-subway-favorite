@@ -2,34 +2,47 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.exception.InvalidTokenException;
+import nextstep.member.application.exception.UserNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(final MemberRepository memberRepository, final JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
+    public MemberResponse createMember(final MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponse findMember(final Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
+    public MemberResponse findMember(final String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new InvalidTokenException();
+        }
+        String principal = jwtTokenProvider.getPrincipal(token);
+        Member member = memberRepository.findByEmail(principal).orElseThrow(UserNotFoundException::new);
+        return MemberResponse.of(member);
+    }
+
+    public void updateMember(final Long id, final MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
     }
 
-    public void deleteMember(Long id) {
+    public void deleteMember(final Long id) {
         memberRepository.deleteById(id);
     }
 }
