@@ -45,6 +45,14 @@ public class MemberService {
         }
         String token = tokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
+    }
 
+    public MemberResponse findMemberByToken(String token) {
+        if (!tokenProvider.validateToken(token)) {
+            throw new IllegalArgumentException();
+        }
+        String email = tokenProvider.getPrincipal(token);
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
     }
 }
