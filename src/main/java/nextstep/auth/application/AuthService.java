@@ -39,7 +39,7 @@ public class AuthService {
         final String accessToken = githubClient.getAccessTokenFromGithub(request.getCode());
         final GithubProfileResponse response = githubClient.getGithubProfileFromGithub(accessToken);
         final Member findMember = memberService.findByEmail(response.getEmail());
-        return new GithubAccessTokenResponse(createToken(findMember));
+        return new GithubAccessTokenResponse(createToken(findMember.getEmail(), findMember.getRoles()));
     }
 
     public LoginUserInfo findMemberByToken(final String credentials) {
@@ -52,10 +52,6 @@ public class AuthService {
         final String email = jwtTokenProvider.getPrincipal(credentials);
         final Member member = memberService.findByEmail(email);
         return LoginUserInfo.from(member);
-    }
-
-    private String createToken(final Member member) {
-        return jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
     }
 
     private String createToken(final String email, final List<String> roles) {
