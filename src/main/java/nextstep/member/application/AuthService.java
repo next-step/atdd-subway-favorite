@@ -3,17 +3,15 @@ package nextstep.member.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.dto.GithubCodeRequest;
 import nextstep.member.application.dto.GithubResponse;
-import nextstep.member.ui.GitHubOauthAdapterImpl;
-import nextstep.member.ui.GithubOauthAdapter;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.exception.MemberErrorCode;
 import nextstep.member.application.exception.NotFoundMemberException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.ui.GithubOauthAdapter;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
