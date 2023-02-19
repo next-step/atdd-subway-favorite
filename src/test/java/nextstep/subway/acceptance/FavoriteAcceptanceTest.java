@@ -22,10 +22,15 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 수서역;
     private Long 복정역;
+    private Long 오금역;
     private String accessToken;
 
     /**
-     * 수서역 -----<분당선>----- 복정역
+     *  수서역 ─── <분당선> ─── 복정역
+     *    │
+     * <3호선>
+     *    │
+     *  오금역
      */
     @BeforeEach
     public void setUp() {
@@ -33,8 +38,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         수서역 = 지하철역_생성_요청("수서역").jsonPath().getLong("id");
         복정역 = 지하철역_생성_요청("복정역").jsonPath().getLong("id");
+        오금역 = 지하철역_생성_요청("오금역").jsonPath().getLong("id");
 
         지하철_노선_생성_요청("분당선", "yellow", 수서역, 복정역, 20);
+        지하철_노선_생성_요청("3호선", "yellow", 수서역, 오금역, 30);
 
         accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
     }
@@ -115,11 +122,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void removeFavoriteSection() {
         // given
-        ExtractableResponse<Response> createResponse = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 복정역);
-        long favoriteId = createResponse.jsonPath().getLong("id");
+        ExtractableResponse<Response> createResponse = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 오금역);
+        String location = createResponse.header("Location");
 
         // when
-        ExtractableResponse<Response> removeResponse = 즐겨찾기_구간_삭제_요청(accessToken, favoriteId);
+        ExtractableResponse<Response> removeResponse = 즐겨찾기_구간_삭제_요청(accessToken, location);
 
         // then
         ExtractableResponse<Response> response = 즐겨찾기_구간_목록_조회_요청(accessToken);

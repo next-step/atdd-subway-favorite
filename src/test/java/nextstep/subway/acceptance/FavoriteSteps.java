@@ -51,10 +51,10 @@ public class FavoriteSteps {
             .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_구간_삭제_요청(String accessToken, Long favoriteId) {
+    public static ExtractableResponse<Response> 즐겨찾기_구간_삭제_요청(String accessToken, String location) {
         return RestAssured.given().log().all()
             .auth().oauth2(accessToken)
-            .when().delete("/favorites/{id}", favoriteId)
+            .when().delete(location)
             .then().log().all().extract();
     }
 }

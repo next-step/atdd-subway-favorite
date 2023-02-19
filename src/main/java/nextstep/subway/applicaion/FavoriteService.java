@@ -52,4 +52,17 @@ public class FavoriteService {
         Station target = stationService.findById(favorite.getTargetStationId());
         return new FavoriteResponse(id, StationResponse.of(source), StationResponse.of(target));
     }
+
+    @Transactional
+    public void deleteFavorite(Long memberId, Long id) {
+        MemberResponse member = memberService.findMember(memberId);
+        Favorite favorite = favoriteRepository.findById(id)
+            .orElseThrow(IllegalArgumentException::new);
+
+        if (!favorite.getMemberId().equals(member.getId())) {
+            throw new RuntimeException();
+        }
+
+        favoriteRepository.delete(favorite);
+    }
 }

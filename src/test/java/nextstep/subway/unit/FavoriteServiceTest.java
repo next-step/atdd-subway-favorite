@@ -102,4 +102,18 @@ class FavoriteServiceTest {
         assertThatThrownBy(() -> favoriteService.findFavorites(999L))
             .isInstanceOf(RuntimeException.class);
     }
+
+    @DisplayName("즐겨찾기 구간을 제거한다.")
+    @Test
+    void removeFavorite() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(수서역.getId(), 복정역.getId());
+        FavoriteResponse favorite = favoriteService.createFavorite(member.getId(), request);
+
+        // when
+        favoriteService.deleteFavorite(member.getId(), favorite.getId());
+
+        // then
+        assertThat(favoriteService.findFavorites(member.getId())).isEmpty();
+    }
 }
