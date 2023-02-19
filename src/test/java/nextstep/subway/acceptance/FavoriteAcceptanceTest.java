@@ -105,4 +105,28 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    /**
+     * Given 새로운 즐겨찾기 구간 생성을 요청하고
+     * When 즐겨찾기 구간 삭제를 요청하고 즐겨찾기 구간 목록을 조회하면
+     * Then 해당 즐겨찾기 구간이 조회되지 않는다.
+     */
+    @DisplayName("즐겨찾기 구간을 삭제한다.")
+    @Test
+    void removeFavoriteSection() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 복정역);
+        long favoriteId = createResponse.jsonPath().getLong("id");
+
+        // when
+        ExtractableResponse<Response> removeResponse = 즐겨찾기_구간_삭제_요청(accessToken, favoriteId);
+
+        // then
+        ExtractableResponse<Response> response = 즐겨찾기_구간_목록_조회_요청(accessToken);
+        assertAll(
+            () -> assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(response.jsonPath().getList("id")).isEmpty()
+        );
+    }
 }
