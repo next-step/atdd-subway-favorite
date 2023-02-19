@@ -17,14 +17,10 @@ import io.restassured.response.Response;
 
 class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMAIL = "member@email.com";
-    private static final String EMAIL_OTHER = "member1@email.com";
-    private static final String PASSWORD = "password";
-    private static final String PASSWORD_OTHER = "password";
-
     private Long 수서역;
     private Long 복정역;
     private Long 오금역;
+    private String invalidAccessToken;
     private String accessToken;
     private String accessTokenByOther;
 
@@ -46,8 +42,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_요청("분당선", "yellow", 수서역, 복정역, 20);
         지하철_노선_생성_요청("3호선", "yellow", 수서역, 오금역, 30);
 
-        accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
-        accessTokenByOther = 베어러_인증_로그인_요청(EMAIL_OTHER, PASSWORD_OTHER).jsonPath().getString("accessToken");
+        invalidAccessToken = "invalid bearer token";
+        accessToken = 베어러_인증_로그인_요청("member@email.com", "password").jsonPath().getString("accessToken");
+        accessTokenByOther = 베어러_인증_로그인_요청("member1@email.com", "password").jsonPath().getString("accessToken");
     }
 
     /**
@@ -76,6 +73,20 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void createFavoriteSectionWithoutAuthorization() {
         // when
         ExtractableResponse<Response> response = 인증_없이_즐겨찾기_구간_생성_요청(수서역, 복정역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * When 유효하지 않은 인증 정보로 출발역과 도착역으로 즐겨찾기 구간 생성을 요청하면
+     * Then 해당 구간이 즐겨찾기 구간으로 생성되지 않는다.
+     */
+    @DisplayName("즐겨찾기 구간 생성 요청 시, 인증 정보가 유효하지 않으면 즐겨찾기 구간이 생성되지 않는다.")
+    @Test
+    void createFavoriteSectionWithInvalidToken() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_구간_생성_요청(invalidAccessToken, 수서역, 복정역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -112,6 +123,20 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void findFavoriteSectionsWithoutAuthorization() {
         // when
         ExtractableResponse<Response> response = 인증_없이_즐겨찾기_구간_목록_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * When 유효하지 않은 인증 정보로 즐겨찾기 구간 목록 조회를 요청하면
+     * Then 즐겨찾기 구간 목록을 응답받을 수 없다.
+     */
+    @DisplayName("즐겨찾기 구간 목록 조회 요청 시, 인증 정보가 유효하지 않으면 즐겨찾기 구간 목록이 조회되지 않는다.")
+    @Test
+    void findFavoriteSectionsWithInvalidToken() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_구간_목록_조회_요청(invalidAccessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -171,6 +196,24 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_구간_제거_요청(accessToken, location);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 새로운 즐겨찾기 구간 생성을 요청하고
+     * When 유효하지 않은 인증 정보로 즐겨찾기 구간 제거를 요청하면
+     * Then 해당 즐겨찾기 구간이 제거되지 않는다.
+     */
+    @DisplayName("즐겨찾기 구간 제거 요청 시, 인증 정보가 유효하지 않으면 즐겨찾기 구간이 제거되지 않는다.")
+    @Test
+    void removeFavoriteSectionWithInvalidToken() {
+        // given
+        String location = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 오금역).header("Location");
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_구간_제거_요청(invalidAccessToken, location);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
