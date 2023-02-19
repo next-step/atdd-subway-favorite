@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.member.application.dto.GithubCodeRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,5 +22,10 @@ public class AuthController {
 	@PostMapping("/login/token")
 	public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {
 		return ResponseEntity.ok(authService.createToken(tokenRequest));
+	}
+
+	@PostMapping("/login/github")
+	public ResponseEntity<TokenResponse> createTokenWithGithubLogin(@RequestBody GithubCodeRequest githubCodeRequest) {
+		return ResponseEntity.ok(authService.createToken(githubCodeRequest));
 	}
 }

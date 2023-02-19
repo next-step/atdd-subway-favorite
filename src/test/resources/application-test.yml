@@ -11,3 +11,13 @@ security:
     token:
       secret-key: atdd-secret-key
       expire-length: 3600000
+
+
+github:
+  client:
+    id: test_id
+    secret: test_secret
+  url:
+    base: https://api.github.com/
+    access-token: access_token
+    profile: user

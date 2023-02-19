@@ -6,6 +6,7 @@ import java.util.Objects;
 
 @Entity
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,6 +22,10 @@ public class Member {
     private List<String> roles;
 
     public Member() {
+    }
+
+    public Member(String email, String password) {
+        this(email, password, null);
     }
 
     public Member(String email, String password, Integer age) {
