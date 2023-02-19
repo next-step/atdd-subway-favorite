@@ -4,19 +4,41 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
+    private final String EMAIL = "admin@email.com";
+    private final String PASSWORD = "password";
 
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
 
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    @DisplayName("Bearer Auth 실패 - 없는 이메일")
+    @Test
+    void bearerAuthWhenEmailDoesNotExist() {
+        String email = "wrong@email.com";
+
+        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(email, PASSWORD);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("Bearer Auth 실패 - pw 오류")
+    @Test
+    void bearerAuthWhenPWDoesNotMatch() {
+        String pw = "wrongPassword";
+
+        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, pw);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
