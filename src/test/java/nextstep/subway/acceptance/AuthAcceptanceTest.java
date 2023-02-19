@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
+
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
 
     @DisplayName("Bearer Auth")
     @Test
