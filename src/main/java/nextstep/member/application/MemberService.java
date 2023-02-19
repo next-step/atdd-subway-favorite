@@ -10,11 +10,9 @@ import java.util.Optional;
 
 @Service
 public class MemberService {
-    private final JwtTokenProvider jwtTokenProvider;
     private MemberRepository memberRepository;
 
-    public MemberService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
@@ -28,10 +26,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(String authorization) {
-        String token = jwtTokenProvider.parseJwt(authorization);
-        String principal = jwtTokenProvider.getPrincipal(token);
-        return findByUserEmail(principal).map(MemberResponse::of).orElseThrow();
+    public MemberResponse findMember(String principal) {
+        return findByUserEmail(principal).map(MemberResponse::of).orElseThrow(RuntimeException::new);
     }
 
     public void updateMember(Long id, MemberRequest param) {

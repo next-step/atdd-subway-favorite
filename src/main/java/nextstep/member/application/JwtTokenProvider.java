@@ -46,8 +46,12 @@ public class JwtTokenProvider {
         }
     }
 
-    public String parseJwt(String authorization) {
-        return authorization.split(" ")[1];
+    public String parseJwt(String authorizationHeader) {
+        if (authorizationHeader == null) {
+            throw new IllegalArgumentException();
+        }
+
+        return authorizationHeader.split(" ")[1];
     }
 }
 
