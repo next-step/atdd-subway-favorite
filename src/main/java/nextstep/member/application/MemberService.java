@@ -4,10 +4,12 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.MemberNotFoundException;
+import nextstep.member.exception.MemberAuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
+
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -31,8 +33,25 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+    public Member verificateAndFindMember(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+
+        if (!member.checkPassword(password)) {
+            throw new MemberAuthenticationException();
+        }
+
+        return member;
+
     }
 
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public Member findOrCreateMember(String email) {
+        Member member = memberRepository.findByEmail(email).orElse(new Member(email));
+        return memberRepository.save(member);
+    }
 }

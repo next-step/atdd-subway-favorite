@@ -2,6 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.utils.FakeGithubResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 
@@ -40,7 +41,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         void getMember() {
             // when
             ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
-
             // then
             회원_정보_조회됨(response, EMAIL, AGE);
 
@@ -69,7 +69,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
 
     @Nested
-    @DisplayName("내 회원 정보 조회")
+    @DisplayName("토큰 로그인")
     class MyInfo {
         ExtractableResponse<Response> createResponse;
 
@@ -98,8 +98,50 @@ class MemberAcceptanceTest extends AcceptanceTest {
             //when 토큰없이 내 회원 정보를 조회한다.
             ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청("0000");
             //then
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         }
 
+    }
+
+    @Nested
+    @DisplayName("깃허브 로그인")
+    class MyInfoByGithub {
+
+
+        @Test
+        @DisplayName("신규회원 깃허브 로그인 후 회원정보 조회")
+        void getNewMemberInfoByToken() {
+            //when 토큰으로 내 회원 정보를 조회한다.
+            String accessToken = MemberSteps.깃허브_인증_로그인_요청(FakeGithubResponse.사용자1.getCode())
+                    .jsonPath().get("accessToken");
+            ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청(accessToken);
+            //then
+            assertThat(response.jsonPath().getString("email")).isEqualTo(FakeGithubResponse.사용자1.getEmail());
+        }
+
+        @Test
+        @DisplayName("기존회원 깃허브 로그인 후 회원정보 조회")
+        void getRegisteredMemberInfoByToken() {
+            //given 고객을 생성한다.
+            회원_생성_요청(FakeGithubResponse.사용자2.getEmail(), PASSWORD, AGE);
+            //when 깃허브 로그인 인증해 토큰을 얻는다..
+            String accessToken = MemberSteps.깃허브_인증_로그인_요청(FakeGithubResponse.사용자2.getCode())
+                    .jsonPath().get("accessToken");
+            //then 토큰으로 내 회원 정보를 조회한다.
+            ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청(accessToken);
+            Assertions.assertAll(
+                    () -> assertThat(response.jsonPath().getString("email")).isEqualTo(FakeGithubResponse.사용자2.getEmail()),
+                    () -> assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE)
+            );
+        }
+
+        @Test
+        @DisplayName("잘못된 토큰으로 인증한다.")
+        void getMemberInfoByWrongToken() {
+            //when 잘못된 토큰으로 인증 요청한다.
+            ExtractableResponse<Response> response = 깃허브_인증_로그인_요청("0000");
+            //then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        }
     }
 }
