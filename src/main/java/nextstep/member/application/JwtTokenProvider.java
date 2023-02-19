@@ -45,5 +45,9 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    public String parseJwt(String authorization) {
+        return authorization.split(" ")[1];
+    }
 }
 

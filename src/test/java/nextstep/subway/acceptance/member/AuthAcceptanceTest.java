@@ -1,7 +1,5 @@
 package nextstep.subway.acceptance.member;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,9 +22,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void bearerAuth() {
         회원_생성_요청(EMAIL, PASSWORD, 29);
 
-        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(token).isNotBlank();
     }
 
     /**
@@ -39,8 +37,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void bearerAuthException() {
         회원_생성_요청(EMAIL, PASSWORD, 29);
 
-        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(token).isNotBlank();
     }
 }
