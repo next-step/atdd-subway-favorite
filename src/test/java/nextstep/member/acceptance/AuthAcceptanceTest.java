@@ -1,13 +1,14 @@
-package nextstep.subway.acceptance;
+package nextstep.member.acceptance;
 
-import static nextstep.subway.acceptance.AuthAcceptanceSteps.베어러_인증_로그인에_실패하면_예외_처리한다;
-import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인에_실패하면_예외_처리한다;
+import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.UUID;
 import nextstep.DataLoader;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
