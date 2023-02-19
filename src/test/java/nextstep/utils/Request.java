@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.utils;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -42,8 +42,7 @@ public class Request {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post(path)
+                .when().get(path)
                 .then().log().all().extract();
     }
 }
