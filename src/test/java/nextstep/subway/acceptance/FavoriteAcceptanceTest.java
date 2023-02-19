@@ -69,4 +69,27 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
             () -> assertThat(createResponse.header("Location")).isEqualTo("/favorites/1")
         );
     }
+
+    /**
+     * When 액세스 토큰 없이 출발역과 도착역으로 즐겨찾기 구간 생성을 요청하면
+     * Then 해당 구간이 즐겨찾기 구간으로 생성되지 않는다.
+     */
+    @DisplayName("즐겨찾기 구간 생성 요청 시, 액세스 토큰이 없으면 즐겨찾기 구간이 생성되지 않는다.")
+    @Test
+    void createFavoriteSectionWithoutAccessToken() {
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("source", String.valueOf(수서역));
+        params.put("target", String.valueOf(복정역));
+
+        ExtractableResponse<Response> createResponse = RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/favorites")
+            .then().log().all().extract();
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
