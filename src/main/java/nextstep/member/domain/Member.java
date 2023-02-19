@@ -1,6 +1,16 @@
 package nextstep.member.domain;
 
-import javax.persistence.*;
+import nextstep.member.domain.exception.BadCredentialException;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,7 +73,9 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public void checkPassword(final String password) {
+        if (!Objects.equals(this.password, password)) {
+            throw new BadCredentialException();
+        }
     }
 }
