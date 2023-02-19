@@ -20,7 +20,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
 
     @BeforeEach
-    public void setUp() {
+    void setUpMember() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
     }
 
