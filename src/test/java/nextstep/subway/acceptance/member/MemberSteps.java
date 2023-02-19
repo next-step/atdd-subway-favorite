@@ -23,7 +23,6 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract().jsonPath().getString("accessToken");
     }
 

@@ -18,7 +18,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 회원가입을 하고
      * When 로그인을 요청하면
      * Then 토큰을 발급 받는다
      */
@@ -31,15 +30,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 회원가입을 하고
-     * When 올바르지 않은 아이디 또는 패스워드를 입력하면
+     * When 올바르지 않은 아이디/패스워드를 입력하면
      * Then 토큰을 받을 수 없다.
      */
     @DisplayName("잘못된 인증 정보 입력")
     @Test
     void bearerAuthException() {
-        String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        String token = 베어러_인증_로그인_요청("wrongEmail@email.com", "wrongPassword");
 
-        assertThat(token).isNotBlank();
+        assertThat(token).isNull();
     }
 }
