@@ -57,12 +57,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 액세스 토큰 없이 출발역과 도착역으로 즐겨찾기 구간 생성을 요청하면
+     * When 인증 정보 없이 출발역과 도착역으로 즐겨찾기 구간 생성을 요청하면
      * Then 해당 구간이 즐겨찾기 구간으로 생성되지 않는다.
      */
-    @DisplayName("즐겨찾기 구간 생성 요청 시, 액세스 토큰이 없으면 즐겨찾기 구간이 생성되지 않는다.")
+    @DisplayName("즐겨찾기 구간 생성 요청 시, 인증 정보가 없으면 즐겨찾기 구간이 생성되지 않는다.")
     @Test
-    void createFavoriteSectionWithoutAccessToken() {
+    void createFavoriteSectionWithoutAuthorization() {
         // when
         ExtractableResponse<Response> response = 인증_없이_즐겨찾기_구간_생성_요청(수서역, 복정역);
 
@@ -72,7 +72,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 새로운 즐겨찾기 구간 추가를 요청하고
-     * When 유효한 인증 토큰과 함께 즐겨찾기 구간 조회를 요청하면
+     * When 유효한 인증 정보와 함께 즐겨찾기 구간 조회를 요청하면
      * Then 즐겨찾기 구간 목록을 응답받을 수 있다.
      */
     @DisplayName("즐겨찾기 구간 목록을 조회한다.")
@@ -90,5 +90,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
             () -> assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(수서역),
             () -> assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(복정역)
         );
+    }
+
+    /**
+     * When 인증 정보 없이 즐겨찾기 구간 목록 조회를 요청하면
+     * Then 즐겨찾기 구간 목록을 응답받을 수 없다.
+     */
+    @DisplayName("즐겨찾기 구간 목록 조회 요청 시, 인증 정보가 없으면 즐겨찾기 구간 목록이 조회되지 않는다.")
+    @Test
+    void findFavoriteSectionsWithoutAuthorization() {
+        // when
+        ExtractableResponse<Response> response = 인증_없이_즐겨찾기_구간_목록_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

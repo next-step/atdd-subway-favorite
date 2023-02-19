@@ -43,4 +43,11 @@ public class FavoriteSteps {
             .when().get("/favorites")
             .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 인증_없이_즐겨찾기_구간_목록_조회_요청() {
+        return RestAssured.given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/favorites")
+            .then().log().all().extract();
+    }
 }
