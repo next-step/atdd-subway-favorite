@@ -69,4 +69,26 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    /**
+     * Given 새로운 즐겨찾기 구간 추가를 요청하고
+     * When 유효한 인증 토큰과 함께 즐겨찾기 구간 조회를 요청하면
+     * Then 즐겨찾기 구간 목록을 응답받을 수 있다.
+     */
+    @DisplayName("즐겨찾기 구간 목록을 조회한다.")
+    @Test
+    void findFavoriteSections() {
+        // given
+        즐겨찾기_구간_생성_요청(accessToken, 수서역, 복정역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_구간_목록_조회_요청(accessToken);
+
+        // then
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(수서역),
+            () -> assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(복정역)
+        );
+    }
 }
