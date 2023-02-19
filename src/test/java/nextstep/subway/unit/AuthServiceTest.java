@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @Transactional
 class AuthServiceTest extends ApplicationContextTest {
 
-    private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     @Autowired
     private MemberRepository memberRepository;

@@ -137,7 +137,7 @@ host: localhost:8080
 
 - 매번 실제 깃헙 서비스에 요청을 보낼 수 없으니 어떤 코드로 요청이 오면 정해진 response를 응답하는 구조를 만든다.
 
-### 실습 - 구현사항자
+### 실습 - 구현사항
 
 - [X] 코드리뷰 반영
   - HandlerMethodArgumentResolver 처리
@@ -148,7 +148,134 @@ host: localhost:8080
   - [X] GitHub 사용자 프로필 조회 시, Access Token 에 해당하는 사용자가 없으면 예외처리한다.
 - [X] 인수테스트 조건 정의
   - [X] Github 로그인에 성공한다.
-  - [X] 권한이 없는 사용자일 경우에는 예외처리한다.
+  - [X] 가입을 하지 않은 사용자가 로그인을 요청할 경우에는 예외처리한다.
 - [X] 테스트 환경 설정
   - [X] Github 테스트 엔드포인트 생성
   - [X] 테스트 프로퍼티 설정 
+
+## 🚀 3단계 - 즐겨찾기 기능 구현
+
+### 요구사항
+
+#### 기능 요구사항
+
+- 기존 인수 테스트와 동일
+
+#### 프로그래밍 요구사항
+
+- 기존 인수 테스트와 동일
+
+### 요구사항 설명
+
+#### Request / Response
+
+##### 생성
+
+```http
+POST /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:60443
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
+accept-encoding: gzip,deflate
+
+{
+    "source": "1",
+    "target": "3"
+}
+```
+
+```http
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Set-Cookie: JSESSIONID=204A5CC2753073508BE5CE2343AE26F5; Path=/; HttpOnly
+Content-Length: 0
+Date: Mon, 22 Mar 2021 14:27:37 GMT
+Location: /favorites/1
+```
+
+##### 조회
+
+```http
+GET /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
+accept: application/json
+host: localhost:60443
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
+accept-encoding: gzip,deflate
+```
+
+```http
+HTTP/1.1 200 
+Set-Cookie: JSESSIONID=B1F46939E516565DA3808E69D673F3B1; Path=/; HttpOnly
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 22 Mar 2021 14:27:37 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+    {
+        "id": 1,
+        "source": {
+            "id": 1,
+            "name": "교대역"
+        },
+        "target": {
+            "id": 3,
+            "name": "양재역"
+        }
+    }
+]
+```
+
+##### 삭제
+
+```http
+DELETE /favorites/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
+accept: */*
+host: localhost:60443
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
+accept-encoding: gzip,deflate
+```
+
+```http
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Set-Cookie: JSESSIONID=587FCC78DBF0EE1B6705C6EC3E612968; Path=/; HttpOnly
+Date: Mon, 22 Mar 2021 14:27:37 GMT
+```
+
+#### 권한이 없는 경우 401 Unauthorized 응답
+
+- 내 정보 관리 / 즐겨 찾기 기능은 로그인 된 상태에서만 가능
+- 비로그인이거나 유효하지 않을 경우 401 Unauthorized 응답
+
+### 실습 - 구현사항
+
+- [X] 즐겨찾기 인수테스트 조건 정의
+  - [X] 등록
+    - [X] 로그인한 사용자는 즐겨찾기를 저장한다.
+    - [X] 등록되지 않는 역의 대한 즐겨찾기 요청은 예외처리한다.
+    - [X] 로그인하지 않은 사용자는 예외처리한다.
+    - [X] 등록되지 않은 역의 즐겨찾기 등록 요청은 예외처리한다
+  - [X] 조회
+    - [X] 로그인한 사용자는 저장된 즐겨찾기를 보여준다.
+    - [X] 로그인하지 않은 사용자는 예외처리한다.
+    - [X] 존재하지 않는 즐겨찾기 조회 요청은 예외처리한다.
+  - [X] 제거
+    - [X] 로그인한 사용자는 즐겨찾기 제거의 성공한다.
+    - [X] 로그인하지 않은 사용자는 예외처리한다.
+    - [X] 존재하지 않는 즐겨찾기는 제거 요청은 예외처리한다.
+- [X] 즐겨찾기 도메인
+  - [X] 즐겨찾기 객체 생성 
+  - [X] 즐겨찾기 서비스 테스트 작성
+  - [X] 즐겨찾기 DTO 생성

@@ -1,15 +1,21 @@
 package nextstep;
 
+import java.util.List;
+
 public class ErrorResponse {
 
-    private String message;
+    private List<String> messages;
 
-    public ErrorResponse(final String message) {
+    public ErrorResponse(final List<String> messages) {
         super();
-        this.message = message;
+        this.messages = messages;
     }
 
-    public String getMessage() {
-        return message;
+    public static ErrorResponse from(final String message) {
+        return new ErrorResponse(List.of(message));
+    }
+
+    public List<String> getMessage() {
+        return messages;
     }
 }

@@ -4,14 +4,14 @@ import nextstep.member.domain.Member;
 
 public class LoginUserInfo {
 
-    private Long id;
+    private Long memberId;
     private String email;
     private Integer age;
 
     private LoginUserInfo() {}
 
-    public LoginUserInfo(final Long id, final String email, final Integer age) {
-        this.id = id;
+    public LoginUserInfo(final Long memberId, final String email, final Integer age) {
+        this.memberId = memberId;
         this.email = email;
         this.age = age;
     }
@@ -20,8 +20,8 @@ public class LoginUserInfo {
         return new LoginUserInfo(member.getId(), member.getEmail(), member.getAge());
     }
 
-    public Long getId() {
-        return id;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public String getEmail() {

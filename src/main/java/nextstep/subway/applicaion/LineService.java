@@ -3,7 +3,6 @@ package nextstep.subway.applicaion;
 import nextstep.subway.applicaion.dto.LineRequest;
 import nextstep.subway.applicaion.dto.LineResponse;
 import nextstep.subway.applicaion.dto.SectionRequest;
-import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
@@ -71,12 +70,6 @@ public class LineService {
         Line line = findById(lineId);
 
         line.addSection(upStation, downStation, sectionRequest.getDistance());
-    }
-
-    private List<StationResponse> createStationResponses(Line line) {
-        return line.getStations().stream()
-                .map(it -> stationService.createStationResponse(it))
-                .collect(Collectors.toList());
     }
 
     @Transactional

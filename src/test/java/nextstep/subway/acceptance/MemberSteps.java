@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.config.message.AuthError;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.member.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -109,7 +110,7 @@ public class MemberSteps {
         final JsonPath jsonPathResponse = 내_회원_정보_조회_응답.response().body().jsonPath();
         assertAll(
                 () -> assertThat(내_회원_정보_조회_응답.statusCode()).isEqualTo(httpStatus.value()),
-                () -> assertThat(jsonPathResponse.getString("message")).isEqualTo(authError.getMessage())
+                () -> assertThat(jsonPathResponse.getString("message")).contains(authError.getMessage())
         );
     }
 
@@ -141,7 +142,7 @@ public class MemberSteps {
         final JsonPath jsonPathResponse = response.response().body().jsonPath();
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
-                () -> assertThat(jsonPathResponse.getString("message")).isEqualTo(UNAUTHORIZED.getMessage())
+                () -> assertThat(jsonPathResponse.getString("message")).contains(UNAUTHORIZED.getMessage())
         );
     }
 
@@ -161,7 +162,11 @@ public class MemberSteps {
     public static void github_인증_로그인_응답_실패(final ExtractableResponse<Response> response) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
-                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(NOT_MISSING_TOKEN.getMessage())
+                () -> assertThat(response.jsonPath().getString("message")).contains(NOT_MISSING_TOKEN.getMessage())
         );
+    }
+
+    public static Member createMember(final String email, final String password, final Integer age) {
+        return new Member(email, password, age);
     }
 }

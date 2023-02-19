@@ -52,15 +52,15 @@ class AuthAcceptanceTest extends AcceptanceTest {
         github_인증_로그인_응답_성공(github_로그인_응답);
     }
 
-    @DisplayName("권한이 없는 사용자일 경우에는 예외처리한다.")
+    @DisplayName("가입을 하지 않은 사용자가 로그인을 요청할 경우에는 예외처리한다.")
     @Test
     void error_githubLogin() {
 
         회원_생성_요청(USER1.getEmail(), PASSWORD, AGE);
 
-        final Map<String, String> 로그인_하지_않은_사용자 = createCode(USER2.getEmail());
+        final Map<String, String> 가입하지_않은_사용자 = createCode(USER2.getEmail());
 
-        final ExtractableResponse<Response> github_로그인_응답 = github_인증_로그인_요청(로그인_하지_않은_사용자);
+        final ExtractableResponse<Response> github_로그인_응답 = github_인증_로그인_요청(가입하지_않은_사용자);
 
         github_인증_로그인_응답_실패(github_로그인_응답);
     }
