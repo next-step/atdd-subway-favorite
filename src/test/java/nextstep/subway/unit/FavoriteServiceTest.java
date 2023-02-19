@@ -62,6 +62,17 @@ class FavoriteServiceTest {
         );
     }
 
+    @DisplayName("즐겨찾기 구간 생성 시, 사용자가 존재하지 않으면 즐겨찾기 구간이 생성되지 않는다.")
+    @Test
+    void createByNonMember() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(수서역.getId(), 복정역.getId());
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.createFavorite(999L, request))
+            .isInstanceOf(RuntimeException.class);
+    }
+
     @DisplayName("즐겨찾기 구간 목록을 조회한다.")
     @Test
     void findFavorites() {
@@ -78,5 +89,17 @@ class FavoriteServiceTest {
             () -> assertThat(response.get(0).getSource().getId()).isEqualTo(수서역.getId()),
             () -> assertThat(response.get(0).getTarget().getId()).isEqualTo(복정역.getId())
         );
+    }
+
+    @DisplayName("즐겨찾기 구간 목록 조회 시, 사용자가 존재하지 않으면 즐겨찾기 구간 목록이 조회되지 않는다.")
+    @Test
+    void findFavoritesByNonMember() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(수서역.getId(), 복정역.getId());
+        favoriteService.createFavorite(member.getId(), request);
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.findFavorites(999L))
+            .isInstanceOf(RuntimeException.class);
     }
 }
