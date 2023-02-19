@@ -18,7 +18,7 @@ public class RetrofitExecutor {
         try {
             return call.execute().body();
         } catch (IOException e) {
-            log.error("GITHUB 서버와 통신에 실패하였습니다.", e);
+            log.error("서버와 통신에 실패하였습니다.", e);
             throw connectionExceptionSupplier.get();
         }
     }
