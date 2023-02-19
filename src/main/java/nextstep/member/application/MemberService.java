@@ -4,6 +4,7 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.exception.NotAuthorizedException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,6 +28,10 @@ public class MemberService {
     }
 
     public MemberResponse findMember(String principal) {
+        if (principal == null) {
+            throw new NotAuthorizedException("인증정보가 유효하지 않습니다.");
+        }
+
         return findByUserEmail(principal).map(MemberResponse::of).orElseThrow(RuntimeException::new);
     }
 

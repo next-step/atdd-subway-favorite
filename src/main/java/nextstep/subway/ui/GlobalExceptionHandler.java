@@ -1,12 +1,16 @@
 package nextstep.subway.ui;
 
+import nextstep.member.domain.exception.NotAuthorizedException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+
 @ControllerAdvice
-public class ControllerExceptionHandler {
+public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Void> handleIllegalArgsException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
@@ -15,5 +19,12 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<?> handleNotAuthorizedException(NotAuthorizedException e) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 }

@@ -15,7 +15,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     /**
      * Given 회원가입을 하고
      * When 로그인을 요청하면
-     * Then 토큰을 발급받는다
+     * Then 토큰을 발급 받는다
      */
     @DisplayName("Bearer Auth Token 발급")
     @Test
@@ -32,7 +32,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * When 올바르지 않은 아이디 또는 패스워드를 입력하면
      * Then 토큰을 받을 수 없다.
      */
-    @DisplayName("Bearer Auth Token 발급")
+    @DisplayName("잘못된 인증 정보 입력")
     @Test
     void bearerAuthException() {
         회원_생성_요청(EMAIL, PASSWORD, 29);

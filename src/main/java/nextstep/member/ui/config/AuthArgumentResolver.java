@@ -28,7 +28,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         String token = jwtTokenProvider.parseJwt(authorizationHeader);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException();
+            return null;
         }
 
         return jwtTokenProvider.getPrincipal(token);

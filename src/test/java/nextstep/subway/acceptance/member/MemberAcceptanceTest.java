@@ -85,4 +85,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
             assertThat(response.jsonPath().getLong("age")).isEqualTo(AGE);
         });
     }
+
+    @DisplayName("토큰값이 올바르지 않으면 내 정보를 조회할 수 없다")
+    @Test
+    void getMyInfoException() {
+        var response = 토큰_인증으로_내_회원_정보_조회_요청("abcd1234");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
+import nextstep.member.domain.exception.NotAuthorizedException;
 import org.springframework.stereotype.Service;
 
 
@@ -19,10 +20,10 @@ public class LoginService {
 
     public TokenResponse authorize(TokenRequest request) {
         Member findMember = memberService.findByUserEmail(request.getEmail())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotAuthorizedException("이메일 또는 비밀번호가 일치하지 않습니다."));
 
         if (!findMember.checkPassword(request.getPassword())) {
-            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+            throw new NotAuthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
 
         String token = jwtTokenProvider.createToken(findMember.getEmail(), findMember.getRoles());
