@@ -1,23 +1,33 @@
+package nextstep.member.ui.filter;
+
 import org.springframework.util.StringUtils;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class JwtTokenFilter implements Filter {
-
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ";
+public class BearerTokenFilter implements Filter {
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
+    private static final String ACCESS_TOKEN = "accessToken";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String authorizationHeader = httpRequest.getHeader(AUTHORIZATION_HEADER);
+        String authorization = httpRequest.getHeader(AUTHORIZATION);
 
-        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(BEARER_PREFIX)) {
-            String accessToken = authorizationHeader.substring(BEARER_PREFIX.length());
-            httpRequest.setAttribute("accessToken", accessToken);
+        if(containsBearerToken(authorization)) {
+            httpRequest.setAttribute(ACCESS_TOKEN, getAccessToken(authorization));
         }
 
-        chain.doFilter(request, response);
+        chain.doFilter(httpRequest, response);
+    }
+
+    private boolean containsBearerToken(String authorization) {
+        return StringUtils.hasText(authorization) && authorization.startsWith(BEARER);
+    }
+
+    private String getAccessToken(String authorization) {
+        return authorization.replace(BEARER, "");
     }
 }

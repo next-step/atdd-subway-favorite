@@ -21,6 +21,12 @@ public class AuthService {
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
     }
+    String getPrincipal(String accessToken) {
+        if(!jwtTokenProvider.validateToken(accessToken)) {
+            // TODO: throw shit;
+        }
+        return jwtTokenProvider.getPrincipal(accessToken);
+    }
 
     private Member authenticate(String email, String password) {
         return memberRepository.findByEmail(email)
