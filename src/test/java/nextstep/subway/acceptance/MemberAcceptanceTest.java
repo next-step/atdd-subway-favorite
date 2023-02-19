@@ -64,8 +64,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * When 베이직 인증을 통해 내 회원 정보를 조회하면
+     * Then 자신의 회원 정보를 응답에서 확인할 수 있다.
+     */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // when
+        final ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_응답 = 베이직_인증으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+
+        // then
+        회원_정보_조회됨(베이직_인증으로_내_회원_정보_조회_응답, EMAIL, AGE);
     }
 }
