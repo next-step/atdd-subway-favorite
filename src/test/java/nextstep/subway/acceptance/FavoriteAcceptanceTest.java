@@ -122,18 +122,17 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void removeFavoriteSection() {
         // given
-        ExtractableResponse<Response> createResponse = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 오금역);
-        String location = createResponse.header("Location");
+        String location = 즐겨찾기_구간_생성_요청(accessToken, 수서역, 오금역).header("Location");
 
         // when
         ExtractableResponse<Response> removeResponse = 즐겨찾기_구간_제거_요청(accessToken, location);
 
         // then
-        ExtractableResponse<Response> response = 즐겨찾기_구간_목록_조회_요청(accessToken);
+        ExtractableResponse<Response> findResponse = 즐겨찾기_구간_목록_조회_요청(accessToken);
         assertAll(
             () -> assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
-            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(response.jsonPath().getList("id")).isEmpty()
+            () -> assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(findResponse.jsonPath().getList("id")).isEmpty()
         );
     }
 
