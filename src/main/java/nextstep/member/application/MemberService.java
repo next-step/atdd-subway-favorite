@@ -1,12 +1,13 @@
 package nextstep.member.application;
 
+import org.springframework.stereotype.Service;
+
 import nextstep.exception.BadCredentialException;
 import nextstep.exception.MemberNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
@@ -44,5 +45,10 @@ public class MemberService {
         }
 
         return member;
+    }
+
+    public Member findOrCreateMember(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseGet(() -> memberRepository.save(new Member(email)));
     }
 }

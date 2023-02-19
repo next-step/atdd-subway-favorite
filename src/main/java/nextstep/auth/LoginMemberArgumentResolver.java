@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import nextstep.exception.InvalidAccessTokenException;
-import nextstep.exception.AuthorizationException;
+import nextstep.exception.NotAllowedAuthorizationException;
 import nextstep.member.application.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +38,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         if (!BEARER_TOKEN_PREFIX.equals(authorization.split(" ")[0])) {
-            throw new AuthorizationException(authorization);
+            throw new NotAllowedAuthorizationException(authorization);
         }
 
         String accessToken = authorization.split(" ")[1];
