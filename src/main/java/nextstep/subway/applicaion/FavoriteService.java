@@ -56,14 +56,8 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long memberId, Long id) {
-        Member member = memberService.findById(memberId);
-        Favorite favorite = favoriteRepository.findById(id)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (!favorite.isCreatedBy(member)) {
-            throw new AuthorizationException();
-        }
-
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId)
+            .orElseThrow(AuthorizationException::new);
         favoriteRepository.delete(favorite);
     }
 }
