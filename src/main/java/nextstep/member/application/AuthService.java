@@ -25,4 +25,8 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return TokenResponse.of(accessToken);
     }
+
+    public String getEmail(String accessToken) {
+        return jwtTokenProvider.getPrincipal(accessToken);
+    }
 }
