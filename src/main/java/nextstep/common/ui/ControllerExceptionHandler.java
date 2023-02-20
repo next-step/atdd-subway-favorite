@@ -1,6 +1,7 @@
 package nextstep.common.ui;
 
 import nextstep.common.exception.LoginException;
+import nextstep.github.exception.GithubException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<Void> handleLoginException(LoginException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(GithubException.class)
+    public ResponseEntity<Void> handleGithubException(GithubException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

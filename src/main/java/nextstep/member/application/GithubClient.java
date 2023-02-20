@@ -28,8 +28,6 @@ public class GithubClient {
     private String clientSecret;
     @Value("${github.url.access-token}")
     private String tokenUrl;
-    @Value("${github.url.authorize-callback}")
-    private String authCallbackUrl;
     @Value("${github.url.profile}")
     private String profileUrl;
 
