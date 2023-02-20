@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
@@ -11,9 +12,11 @@ import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
@@ -45,9 +48,16 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
+    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        authorization = authorization.replace("Bearer ", "");
+
+        if (!jwtTokenProvider.validateToken(authorization)) {
+            throw new IllegalArgumentException("인증 헤더 정보가 유효하지 않습니다. " + authorization);
+        }
+
+        String principal = jwtTokenProvider.getPrincipal(authorization);
+        MemberResponse member = memberService.findByEmail(principal);
         return ResponseEntity.ok().body(member);
     }
 
