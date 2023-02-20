@@ -27,7 +27,7 @@ public class BasicAuthorizationInterceptor implements HandlerInterceptor {
         final byte[] bytes = Base64.getDecoder().decode(token);
         final String principal = new String(bytes).split(":")[0];
         final Member member = memberService.getMember(principal);
-        request.setAttribute("user", new UserDetails(member.getEmail(), member.getRoles()));
+        request.setAttribute("user", member);
         return true;
     }
 }
