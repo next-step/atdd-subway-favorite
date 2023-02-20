@@ -3,7 +3,6 @@ package nextstep.subway.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -16,11 +15,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
-
-	@BeforeEach
-	void setup() {
-		회원_생성_요청(EMAIL, PASSWORD, 20);
-	}
 
 	/**
 	 * When 올바른 값으로 로그인 요청을 했을 때
