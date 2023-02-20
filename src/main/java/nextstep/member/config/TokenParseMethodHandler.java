@@ -1,24 +1,19 @@
 package nextstep.member.config;
 
-import javax.servlet.http.HttpServletRequest;
-
+import nextstep.member.application.JwtTokenProvider;
+import nextstep.member.domain.AuthToken;
+import nextstep.member.domain.TokenInfo;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.exception.InvalidTokenException;
-import nextstep.member.application.exception.MemberErrorCode;
-import nextstep.member.domain.AuthToken;
-import nextstep.member.domain.TokenInfo;
+import javax.servlet.http.HttpServletRequest;
 
 public class TokenParseMethodHandler implements HandlerMethodArgumentResolver {
 
 	private static final String AUTHORIZATION_HEADER = "Authorization";
-
-	private static final String BEARER_TOKEN_PREFIX = "Bearer ";
 
 	private final JwtTokenProvider jwtTokenProvider;
 
@@ -32,18 +27,14 @@ public class TokenParseMethodHandler implements HandlerMethodArgumentResolver {
 	}
 
 	@Override
-	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+	public Object resolveArgument(
+            MethodParameter parameter, ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
 		HttpServletRequest httpServletRequest = (HttpServletRequest)webRequest.getNativeRequest();
 
-		String bearerAccessToken = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
+		String accessToken = BearerTokenExtractor.extract(httpServletRequest.getHeader(AUTHORIZATION_HEADER));
 
-		String accessToken = bearerAccessToken.substring(BEARER_TOKEN_PREFIX.length());
-
-		if (!jwtTokenProvider.validateToken(accessToken)) {
-			throw new InvalidTokenException(MemberErrorCode.INVALID_TOKEN);
-		}
 		return jwtTokenProvider.getPrincipal(accessToken);
 	}
 
