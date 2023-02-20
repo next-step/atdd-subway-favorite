@@ -2,11 +2,18 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.토근_인증으로_내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -67,5 +74,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        final String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        final ExtractableResponse<Response> response = 토근_인증으로_내_회원_정보_조회_요청(token);
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }
