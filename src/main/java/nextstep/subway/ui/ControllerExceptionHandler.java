@@ -1,7 +1,7 @@
 package nextstep.subway.ui;
 
-import nextstep.member.ui.error.ErrorResponse;
-import nextstep.member.ui.error.exception.BusinessException;
+import nextstep.error.ErrorResponse;
+import nextstep.error.exception.BusinessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

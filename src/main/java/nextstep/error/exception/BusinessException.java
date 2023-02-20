@@ -1,4 +1,4 @@
-package nextstep.member.ui.error.exception;
+package nextstep.error.exception;
 
 import org.springframework.http.HttpStatus;
 
