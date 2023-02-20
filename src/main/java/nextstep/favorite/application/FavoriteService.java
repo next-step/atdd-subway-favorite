@@ -2,6 +2,7 @@ package nextstep.favorite.application;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteCreateRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.exception.MemberErrorCode;
@@ -14,6 +15,9 @@ import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +43,17 @@ public class FavoriteService {
         return favoriteRepository.save(
                 new Favorite(member.getId(), source, target)
         ).getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> getFavorites(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundMemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+
+        return favorites.stream()
+                .map(FavoriteResponse::new)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

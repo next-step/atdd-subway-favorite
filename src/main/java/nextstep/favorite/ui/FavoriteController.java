@@ -3,14 +3,13 @@ package nextstep.favorite.ui;
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteCreateRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.domain.AuthToken;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RequestMapping("/favorites")
 @RestController
@@ -29,5 +28,10 @@ public class FavoriteController {
         return ResponseEntity.created(
                 URI.create("/favorites/" + id)
         ).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthToken String email) {
+        return ResponseEntity.ok(favoriteService.getFavorites(email));
     }
 }
