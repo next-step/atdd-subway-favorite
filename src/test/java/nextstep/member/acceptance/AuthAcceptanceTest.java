@@ -48,9 +48,36 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * When 깃 허브 회원 정보로 깃 허브 권한 증서(code)를 요청하면
+     * Then 권한 증서를 조회한다.
+     */
+    @Test
+    @DisplayName("깃 허브 권한 증서를 조회한다.")
+    void getGithubAuthCode() {
+        // when
+        ExtractableResponse<Response> response = 깃_허브_권한_증서_요청("email1@email.com");
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("code")).isNotBlank();
+    }
+
+    /**
+     * When 존재하지 않는 회원의 깃 허브 권한 증서(code)를 요청하면
+     * Then 권한 증서를 조회를 실패한다.
+     */
+    @Test
+    @DisplayName("깃 허브 권한 증서를 조회를 실패한다.")
+    void getGithubAuthCodeFail() {
+        // when
+        ExtractableResponse<Response> response = 깃_허브_권한_증서_요청("unknown@email.com");
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
      * Given 깃 허브 권한 증서(code)를 받고
-     * When 지하철 노선도 서비스에 권한 증서로 로그인 요청을 하면
-     * Then 엑세스 토큰을 발급 받는다.
+     * When 권한 증서로 깃 허브 로그인 요청을 하면
+     * Then 지하철 노선도 엑세스 토큰을 발급 받는다.
      */
     @DisplayName("깃 허브 로그인 요청을 성공한다.")
     @Test
@@ -68,8 +95,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 유효하지 않은 깃 허브 권한 증서(code)를 받고
-     * When 지하철 노선도 서비스에 권한 증서로 로그인 요청을 하면
-     * Then 엑세스 토큰을 발급을 실패한다.
+     * When 깃 허브 로그인 요청을 하면
+     * Then 지하철 노선도 서비스 엑세스 토큰을 발급을 실패한다.
      */
     @DisplayName("유효하지 않은 권한 증서로 깃 허브 로그인 요청하면 실패한다.")
     @Test
@@ -82,5 +109,23 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 지하철 노선도 서비스 엑세스 토큰을 발급 받고
+     * When 회원 정보 조회를 요청을 하면
+     * Then 회원 정보를 조회한다.
+     */
+    @DisplayName("회원 정보를 조회한다.")
+    @Test
+    void getProfile() {
+        // given
+        ExtractableResponse<Response> githubLoginResponse = 깃_허브_로그인_요청();
+
+        // when
+        ExtractableResponse<Response> findMemberResponse = OAUTH_인증으로_내_회원_정보_조회_요청();
+
+        // then
+        assertThat(findMemberResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
