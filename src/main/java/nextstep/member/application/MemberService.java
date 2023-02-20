@@ -32,4 +32,17 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public Member authenticate(String email, String password) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
+        verifyPassword(password, member);
+
+        return member;
+    }
+
+    private static void verifyPassword(String password, Member member) {
+        if (!member.checkPassword(password)) {
+            throw new WrongPasswordException(password);
+        }
+    }
 }
