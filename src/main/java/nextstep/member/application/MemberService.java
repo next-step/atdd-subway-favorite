@@ -38,7 +38,9 @@ public class MemberService {
 	}
 
 	public Member findMemberByEmailAndPassword(String email, String password) {
-		return memberRepository.findByEmail(email).filter(it -> it.checkPassword(password)).orElseThrow(() -> new BusinessException(MISMATCHED_PASSWORD));
+		return memberRepository.findByEmail(email)
+				.filter(it -> it.checkPassword(password))
+				.orElseThrow(() -> new BusinessException(MISMATCHED_PASSWORD));
 	}
 
 	public MemberResponse findMemberOfMine(String email) {
