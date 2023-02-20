@@ -7,6 +7,8 @@ import nextstep.member.exception.MemberNotFoundException;
 import nextstep.member.exception.MemberAuthenticationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
 
@@ -51,7 +53,7 @@ public class MemberService {
     }
 
     public Member findOrCreateMember(String email) {
-        Member member = memberRepository.findByEmail(email).orElse(new Member(email));
-        return memberRepository.save(member);
+        Optional<Member> member = memberRepository.findByEmail(email);
+        return member.orElseGet(() -> memberRepository.save(new Member(email)));
     }
 }
