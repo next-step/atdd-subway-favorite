@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.exception.AuthorizationException;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
@@ -32,16 +32,16 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
-        MemberResponse member = memberService.findMember(memberId);
+        Member member = memberService.findById(memberId);
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
-        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source.getId(), target.getId()));
+        Favorite favorite = favoriteRepository.save(new Favorite(member, source.getId(), target.getId()));
         return createFavoriteResponse(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
-        MemberResponse member = memberService.findMember(memberId);
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+        Member member = memberService.findById(memberId);
+        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
         return favorites.stream()
             .map(this::createFavoriteResponse)
             .collect(Collectors.toList());
@@ -56,11 +56,11 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long memberId, Long id) {
-        MemberResponse member = memberService.findMember(memberId);
+        Member member = memberService.findById(memberId);
         Favorite favorite = favoriteRepository.findById(id)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (!favorite.isCreatedBy(member.getId())) {
+        if (!favorite.isCreatedBy(member)) {
             throw new AuthorizationException();
         }
 

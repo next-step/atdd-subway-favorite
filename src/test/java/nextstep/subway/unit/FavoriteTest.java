@@ -38,11 +38,11 @@ class FavoriteTest {
     @DisplayName("즐겨찾기 구간을 특정 회원이 생성했는지의 여부를 확인한다.")
     @Test
     void isCreatedBy() {
-        Favorite favorite = new Favorite(본인.getId(), 수서역.getId(), 복정역.getId());
+        Favorite favorite = new Favorite(본인, 수서역.getId(), 복정역.getId());
 
         assertAll(
-            () -> assertThat(favorite.isCreatedBy(본인.getId())).isTrue(),
-            () -> assertThat(favorite.isCreatedBy(타인.getId())).isFalse()
+            () -> assertThat(favorite.isCreatedBy(본인)).isTrue(),
+            () -> assertThat(favorite.isCreatedBy(타인)).isFalse()
         );
     }
 }
