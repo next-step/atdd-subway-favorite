@@ -4,10 +4,11 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.ui.error.exception.BusinessException;
+import nextstep.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
-import static nextstep.member.ui.error.exception.ErrorCode.MISMATCHED_PASSWORD;
+import static nextstep.error.exception.ErrorCode.MEMBER_NOT_EXISTS;
+import static nextstep.error.exception.ErrorCode.MISMATCHED_PASSWORD;
 
 @Service
 public class MemberService {
@@ -40,22 +41,10 @@ public class MemberService {
 	}
 
 	public Member findMemberByEmailAndPassword(String email, String password) {
-		return memberRepository.findByEmail(email).filter(it -> it.checkPassword(password)).orElseThrow(RuntimeException::new);
+		return memberRepository.findByEmail(email).filter(it -> it.checkPassword(password)).orElseThrow(() -> new BusinessException(MISMATCHED_PASSWORD));
 	}
 
-	public MemberResponse findMemberOfMine(String authorizationHeader) {
-		if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
-			throw new IllegalArgumentException();
-		}
-
-		String accessToken = authorizationHeader.substring(BEARER_PREFIX.length());
-
-		if (!jwtTokenProvider.validateToken(accessToken)) {
-			throw new IllegalArgumentException();
-		}
-
-		String email = jwtTokenProvider.getPrincipal(accessToken);
-
-		return MemberResponse.of(memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MISMATCHED_PASSWORD)));
+	public MemberResponse findMemberOfMine(String email) {
+		return MemberResponse.of(memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS)));
 	}
 }
