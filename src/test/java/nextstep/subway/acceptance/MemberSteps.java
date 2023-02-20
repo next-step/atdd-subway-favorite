@@ -1,19 +1,14 @@
 package nextstep.subway.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import nextstep.exception.InvalidGithubTokenException;
-import nextstep.infra.github.GithubClient;
 import org.apache.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -138,23 +133,7 @@ public class MemberSteps {
     public static void 응답에서_access_token_존재_여부_확인(ExtractableResponse<Response> response) {
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
-
-    public static void Github_Client가_given_code에_대해_given_access_token을_리턴한다고_Mocking_설정(
-        GithubClient githubClient, String code, String accessToken) {
-        Arrays.stream(GithubTestResponses.values()).forEach(githubResponse ->
-            when(githubClient.getAccessTokenFromGithub(eq(code)))
-                .thenReturn(accessToken)
-        );
-    }
-
-    public static void Github_Client가_given_code에_대해_InvalidGithubTokenException을_throw한다고_Mocking_설정(
-        GithubClient githubClient, String invalidCode
-    ) {
-        when(githubClient.getAccessTokenFromGithub(eq(invalidCode))).thenThrow(
-            InvalidGithubTokenException.class);
-    }
     public static void 응답에서_access_token_일치_여부_확인(ExtractableResponse<Response> response, String accessToken) {
         assertThat(response.jsonPath().getString("accessToken")).isEqualTo(accessToken);
     }
-
 }

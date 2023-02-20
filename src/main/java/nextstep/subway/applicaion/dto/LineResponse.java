@@ -1,9 +1,8 @@
 package nextstep.subway.applicaion.dto;
 
-import nextstep.subway.domain.Line;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.domain.Line;
 
 public class LineResponse {
     private Long id;

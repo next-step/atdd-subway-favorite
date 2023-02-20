@@ -1,7 +1,5 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.acceptance.MemberSteps.Github_Client가_given_code에_대해_InvalidGithubTokenException을_throw한다고_Mocking_설정;
-import static nextstep.subway.acceptance.MemberSteps.Github_Client가_given_code에_대해_given_access_token을_리턴한다고_Mocking_설정;
 import static nextstep.subway.acceptance.MemberSteps.Github의_access_token을_요청;
 import static nextstep.subway.acceptance.MemberSteps.JWT_토큰으로_내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
@@ -14,20 +12,16 @@ import static nextstep.subway.acceptance.MemberSteps.응답에서_나이_정보_
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.infra.github.GithubClient;
+import nextstep.infra.github.mock.GithubFakeResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
-
-    @Autowired
-    GithubClient githubClient;
 
     @DisplayName("Bearer Auth")
     @Test
@@ -50,22 +44,18 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given Github Client가 정상적으로 작동한다고 가정할 때 (Fake),
      * Given Github code를 가지고,
-     * Given Github Client가 정상적으로 작동한다고 가정할 때,
      * When Github을 통한 로그인 요청을 하면
      * Then access token을 발급 받는다.
      */
     @DisplayName("Github Auth를 통한 로그인을 성공한다")
     @ParameterizedTest
-    @EnumSource(value = GithubTestResponses.class)
-    void githubAuth(GithubTestResponses githubResponse) {
+    @EnumSource(value = GithubFakeResponses.class)
+    void githubAuth(GithubFakeResponses githubResponse) {
         // Given
         String givenCode = githubResponse.getCode();
         String givenAccessToken = githubResponse.getAccessToken();
-
-        Github_Client가_given_code에_대해_given_access_token을_리턴한다고_Mocking_설정(
-            githubClient, givenCode, givenAccessToken
-        );
 
         // When
         ExtractableResponse<Response> response = Github의_access_token을_요청(givenCode);
@@ -77,8 +67,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given Github Client가 정상적으로 작동한다고 가정할 때 (Fake),
      * Given 유효하지 않은 Github code를 가지고
-     * Given Github Client가 정상적으로 작동한다고 가정할 때,
      * When Github을 통한 로그인 요청을 하면
      * Then 401 Unauthorized 응답을 받는다.
      */
@@ -87,10 +77,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void failToGithubLogin() {
         // Given
         String givenInvalidCode = "invalid_code";
-
-        Github_Client가_given_code에_대해_InvalidGithubTokenException을_throw한다고_Mocking_설정(
-            githubClient, givenInvalidCode
-        );
 
         // When
         ExtractableResponse<Response> response = Github의_access_token을_요청(givenInvalidCode);

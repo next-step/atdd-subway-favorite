@@ -1,4 +1,4 @@
-package nextstep.member.annotation;
+package nextstep.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

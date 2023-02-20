@@ -2,7 +2,7 @@ package nextstep.member.ui;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import nextstep.member.annotation.MemberInfo;
+import nextstep.annotation.MemberInfo;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberInfoDto;
 import nextstep.member.application.dto.MemberRequest;
