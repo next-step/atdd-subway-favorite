@@ -1,5 +1,8 @@
 package nextstep.member.unit;
 
+import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.exception.AuthorizationException;
+import nextstep.auth.exception.ErrorCode;
 import nextstep.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,8 @@ public class MemberTest {
         Member member = new Member("email@email.com", "password", 29);
 
         // when & then
-        assertThatThrownBy(() -> member.validatePassword("password1")).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> member.validatePassword("password1"))
+                .isInstanceOf(AuthenticationException.class)
+                .hasMessage(ErrorCode.UNAUTHORIZED.getMessage());
     }
 }
