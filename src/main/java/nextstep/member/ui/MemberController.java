@@ -12,7 +12,6 @@ import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -48,22 +47,15 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        authorization = authorization.replace("Bearer ", "");
-
-        if (!jwtTokenProvider.validateToken(authorization)) {
-            throw new IllegalArgumentException("인증 헤더 정보가 유효하지 않습니다. " + authorization);
-        }
-
-        String principal = jwtTokenProvider.getPrincipal(authorization);
-        MemberResponse member = memberService.findByEmail(principal);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute("email") String email) {
+        MemberResponse member = memberService.findByEmail(email);
         return ResponseEntity.ok().body(member);
     }
 
     @PostMapping("/login/token")
     public TokenResponse login(@RequestBody @Valid TokenRequest tokenRequest) {
         // tokenRequest 를 직접 넘기는게 좋을까? 직접 넘기게되면 가독성은 좋아보이지만 tokenRequest 에대한 의존성이 생긴다
+        // 서비스에서 회원 조회 + jwt 토큰생성 하는게 좋을까?? 커맨드와 쿼리를 분리하려면  지금처럼 호출하는게 좋을까/
         Member member = memberService.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
