@@ -1,5 +1,7 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.GithubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
@@ -10,10 +12,13 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final GithubClient githubClient;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
+
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository, GithubClient githubClient) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberRepository = memberRepository;
+        this.githubClient = githubClient;
     }
 
     public TokenResponse login(TokenRequest request) {
@@ -21,6 +26,16 @@ public class AuthService {
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
     }
+    public TokenResponse loginGithub(GithubTokenRequest request) {
+        String githubAccessToken = githubClient.getAccessTokenFromGithub(request.getCode());
+        GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(githubAccessToken);
+
+        Member member = loginOrRegister(githubProfile.getEmail());
+
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+        return new TokenResponse(token);
+    }
+
     String getPrincipal(String accessToken) {
         if(!jwtTokenProvider.validateToken(accessToken)) {
             // TODO: throw shit;
@@ -32,5 +47,10 @@ public class AuthService {
         return memberRepository.findByEmail(email)
                 .filter(it -> it.checkPassword(password))
                 .orElseThrow(RuntimeException::new);
+    }
+
+    private Member loginOrRegister(String email) {
+        Member member = memberRepository.findByEmail(email).orElse(new Member(email));
+        return memberRepository.save(member);
     }
 }

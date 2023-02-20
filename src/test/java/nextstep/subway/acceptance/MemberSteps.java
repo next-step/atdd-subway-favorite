@@ -33,7 +33,7 @@ public class MemberSteps {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/login/github")
+                .when().post("/fake/login/github")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
