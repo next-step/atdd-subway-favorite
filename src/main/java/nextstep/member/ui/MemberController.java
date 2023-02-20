@@ -43,8 +43,12 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        String email = (String) request.getAttribute("principal");
-        MemberResponse member = memberService.findMemberByEmail(email);
+        String principal = (String) request.getAttribute("principal");
+        if (principal.contains("github")) {
+            String accessToken = (String) request.getAttribute("accessToken");
+            return ResponseEntity.ok().body(memberService.getGithubProfile(accessToken));
+        }
+        MemberResponse member = memberService.findMemberByEmail(principal);
         return ResponseEntity.ok().body(member);
     }
 }

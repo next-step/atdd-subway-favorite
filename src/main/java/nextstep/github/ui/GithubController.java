@@ -38,4 +38,15 @@ public class GithubController {
         GithubAccessTokenResponse githubAccessTokenResponse = githubService.getAccessToken(githubAccessTokenRequest);
         return ResponseEntity.ok(githubAccessTokenResponse);
     }
+
+    /**
+     * 프로필 조회
+     * @param request
+     * @return
+     */
+    @GetMapping("/user")
+    public ResponseEntity<GithubProfileResponse> getProfile(HttpServletRequest request) {
+        String principal = (String) request.getAttribute("principal");
+        return ResponseEntity.ok(githubService.getProfile(principal));
+    }
 }

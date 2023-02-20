@@ -7,7 +7,11 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
-    public MemberResponse() {
+    private MemberResponse() {
+    }
+
+    public MemberResponse(String email, Integer age) {
+        this(null, email, age);
     }
 
     public MemberResponse(Long id, String email, Integer age) {

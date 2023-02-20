@@ -20,7 +20,7 @@ import java.util.Objects;
 public class GithubClient {
     private static final String AUTHORIZATION = "Authorization";
     private static final String ACCEPT = "Accept";
-    private static final String TOKEN = "token %s";
+    private static final String TOKEN = "Bearer %s";
 
     @Value("${github.client.id}")
     private String clientId;

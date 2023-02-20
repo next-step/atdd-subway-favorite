@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
     private final JwtInterceptor jwtInterceptor;
 
     public WebConfig(JwtInterceptor jwtInterceptor) {
@@ -16,6 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtInterceptor).addPathPatterns("/members/me");
+        registry.addInterceptor(jwtInterceptor)
+                .addPathPatterns("/members/me")
+                .addPathPatterns("/github/user");
     }
 }
