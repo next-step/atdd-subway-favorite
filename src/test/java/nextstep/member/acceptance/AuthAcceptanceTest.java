@@ -58,7 +58,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 깃_허브_권한_증서_요청("email1@email.com");
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getString("code")).isNotBlank();
+        assertThat(response.body().asPrettyString()).isNotBlank();
     }
 
     /**
@@ -83,7 +83,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void githubLogin() {
         // given
-        String code = "832ovnq039hfjn";
+        String code = 깃_허브_권한_증서를_가져온다("email1@email.com");
 
         // when
         ExtractableResponse<Response> response = 깃_허브_로그인_요청(code);
@@ -112,20 +112,31 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 지하철 노선도 서비스 엑세스 토큰을 발급 받고
+     * Given 깃 허브 로그인으로 지하철 노선도 서비스 엑세스 토큰을 발급 받고
      * When 회원 정보 조회를 요청을 하면
      * Then 회원 정보를 조회한다.
      */
-    @DisplayName("회원 정보를 조회한다.")
+    @DisplayName("깃 허브 로그인으로 인증한 지하철 노선도 회원의 정보를 조회한다.")
     @Test
-    void getProfile() {
+    void getGithubProfile() {
         // given
-        ExtractableResponse<Response> githubLoginResponse = 깃_허브_로그인_요청();
+        String accessToken = 깃_허브_로그인으로_지하철_노선도_서비스_엑세스_토큰_발급("email1@email.com");
 
         // when
-        ExtractableResponse<Response> findMemberResponse = OAUTH_인증으로_내_회원_정보_조회_요청();
+        ExtractableResponse<Response> findMemberResponse = OAUTH_인증으로_내_회원_정보_조회_요청(accessToken);
 
         // then
         assertThat(findMemberResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private String 깃_허브_로그인으로_지하철_노선도_서비스_엑세스_토큰_발급(String email) {
+        String code = 깃_허브_권한_증서를_가져온다(email);
+        ExtractableResponse<Response> githubLoginResponse = 깃_허브_로그인_요청(code);
+        return githubLoginResponse.jsonPath().getString("accessToken");
+    }
+
+    private String 깃_허브_권한_증서를_가져온다(String email) {
+        ExtractableResponse<Response> githubAuthCodeResponse = 깃_허브_권한_증서_요청(email);
+        return githubAuthCodeResponse.body().asPrettyString();
     }
 }

@@ -80,7 +80,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         String token = loginResponse.jsonPath().getString("accessToken");
 
         // when
-        ExtractableResponse<Response> findResponse = OAUTH_인증으로_내_회원_정보_조회_요청(token, EMAIL, PASSWORD);
+        ExtractableResponse<Response> findResponse = OAUTH_인증으로_내_회원_정보_조회_요청(token);
 
         // then
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());

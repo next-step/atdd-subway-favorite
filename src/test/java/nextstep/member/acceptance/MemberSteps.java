@@ -95,11 +95,17 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> OAUTH_인증으로_내_회원_정보_조회_요청(String token, String username, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("username", username);
-        params.put("password", password);
-        return Request.oauthGet(token, MediaType.APPLICATION_JSON_VALUE, "/members/me", params);
+    public static ExtractableResponse<Response> OAUTH_인증으로_내_회원_정보_조회_요청(String token) {
+        return Request.oauthGet(token, MediaType.APPLICATION_JSON_VALUE, "/members/me", new HashMap<>());
+    }
+
+    public static ExtractableResponse<Response> 깃_허브_권한_증서_요청(String email) {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("client_id", email)
+                .when().get("/github/login/oauth/authorize")
+                .then().log().all()
+                .extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
