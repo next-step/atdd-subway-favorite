@@ -5,7 +5,10 @@ import nextstep.member.application.dto.GithubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
@@ -25,17 +28,6 @@ public class LoginController {
     @PostMapping("/github")
     public ResponseEntity<TokenResponse> loginGithub(@RequestBody GithubTokenRequest githubTokenRequest) {
         TokenResponse tokenResponse = loginService.loginGithubToken(githubTokenRequest.getCode());
-        return ResponseEntity.ok(tokenResponse);
-    }
-
-    /**
-     * Github OAuth Callback API
-     * @param code
-     * @return
-     */
-    @GetMapping("/oauth/authorize")
-    public ResponseEntity<TokenResponse> loginGithub(@RequestParam("code") String code) {
-        TokenResponse tokenResponse = loginService.loginGithubToken(code);
         return ResponseEntity.ok(tokenResponse);
     }
 }

@@ -1,6 +1,6 @@
 package nextstep.common.interceptor;
 
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.common.utils.JwtTokenProvider;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

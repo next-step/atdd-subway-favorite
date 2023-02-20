@@ -3,11 +3,14 @@ package nextstep.github.ui;
 import nextstep.github.application.GithubService;
 import nextstep.github.application.dto.GithubAccessTokenRequest;
 import nextstep.github.application.dto.GithubAccessTokenResponse;
+import nextstep.github.application.dto.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
-@RequestMapping("/github/login/oauth")
+@RequestMapping("/github")
 public class GithubController {
     private final GithubService githubService;
 
@@ -20,7 +23,7 @@ public class GithubController {
      * @param clientId
      * @return
      */
-    @GetMapping("/authorize")
+    @GetMapping("/login/oauth/authorize")
     public ResponseEntity<String> getCode(@RequestParam("client_id") String clientId) {
         return ResponseEntity.ok(githubService.getCode(clientId));
     }
@@ -30,7 +33,7 @@ public class GithubController {
      * @param githubAccessTokenRequest
      * @return
      */
-    @PostMapping("/access_token")
+    @PostMapping("/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> getAccessToken(@RequestBody GithubAccessTokenRequest githubAccessTokenRequest) {
         GithubAccessTokenResponse githubAccessTokenResponse = githubService.getAccessToken(githubAccessTokenRequest);
         return ResponseEntity.ok(githubAccessTokenResponse);
