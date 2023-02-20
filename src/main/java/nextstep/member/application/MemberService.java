@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -22,6 +22,10 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member findByEmail(final String email) {
+        return null;
     }
 
     public void updateMember(Long id, MemberRequest param) {
