@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.auth.AccessToken;
 import nextstep.auth.AuthorizedUser;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
@@ -42,7 +43,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute AuthorizedUser authorizedUser) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(
+        @AccessToken AuthorizedUser authorizedUser) {
+        System.out.println(authorizedUser.getEmail());
         MemberResponse member = memberService.findByEmail(authorizedUser.getEmail());
         return ResponseEntity.ok().body(member);
     }

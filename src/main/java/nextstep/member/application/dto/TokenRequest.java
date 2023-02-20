@@ -1,6 +1,6 @@
 package nextstep.member.application.dto;
 
-public class TokenRequest {
+public class TokenRequest implements AuthInfo {
     private String email;
     private String password;
 
