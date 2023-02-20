@@ -12,13 +12,10 @@ import static nextstep.error.exception.ErrorCode.MISMATCHED_PASSWORD;
 
 @Service
 public class MemberService {
-	private static final String BEARER_PREFIX = "Bearer ";
 	private final MemberRepository memberRepository;
-	private final JwtTokenProvider jwtTokenProvider;
 
-	public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+	public MemberService(MemberRepository memberRepository) {
 		this.memberRepository = memberRepository;
-		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 	public MemberResponse createMember(MemberRequest request) {
