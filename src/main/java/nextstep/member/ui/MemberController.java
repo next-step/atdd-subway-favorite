@@ -1,20 +1,21 @@
 package nextstep.member.ui;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
+@RequiredArgsConstructor
 public class MemberController {
-    private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
@@ -41,10 +42,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<MemberResponse> findMemberOfMine(final HttpServletRequest request) {
+        final Member member = (Member) request.getAttribute("user");
+        final MemberResponse memberResponse = new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+        return ResponseEntity.ok().body(memberResponse);
     }
 }
-
