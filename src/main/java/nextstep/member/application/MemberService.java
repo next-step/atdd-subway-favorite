@@ -1,6 +1,5 @@
 package nextstep.member.application;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -12,12 +11,10 @@ public class MemberService {
     private static final String BEARER_PREFIX = "Bearer ";
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
     }
 
     public MemberResponse createMember(MemberRequest request) {
