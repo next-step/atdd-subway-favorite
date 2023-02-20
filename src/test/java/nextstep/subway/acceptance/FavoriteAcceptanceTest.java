@@ -157,11 +157,13 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 즐겨찾기_구간_제거_요청(accessToken, location);
 
         // then
-        ExtractableResponse<Response> findResponse = 즐겨찾기_구간_목록_조회_요청(accessToken);
         assertAll(
             () -> assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
-            () -> assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(findResponse.jsonPath().getList("id")).isEmpty()
+            () -> {
+                ExtractableResponse<Response> findResponse = 즐겨찾기_구간_목록_조회_요청(accessToken);
+                assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+                assertThat(findResponse.jsonPath().getList("id")).isEmpty();
+            }
         );
     }
 
