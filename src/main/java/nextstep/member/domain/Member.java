@@ -1,5 +1,7 @@
 package nextstep.member.domain;
 
+import static nextstep.common.ErrorMsg.*;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -63,7 +65,9 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public void checkPassword(String password) {
+		if (!Objects.equals(this.password, password)) {
+			throw new IllegalArgumentException(LOGIN_NOT_MATCH_PASSWORD.isMessage());
+		}
     }
 }
