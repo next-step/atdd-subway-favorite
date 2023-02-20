@@ -4,6 +4,7 @@ import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.GithubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.exception.UnauthorizedException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class AuthService {
 
     String getPrincipal(String accessToken) {
         if(!jwtTokenProvider.validateToken(accessToken)) {
-            // TODO: throw shit;
+            throw new UnauthorizedException("잘못된 인증 정보입니다");
         }
         return jwtTokenProvider.getPrincipal(accessToken);
     }
@@ -46,7 +47,7 @@ public class AuthService {
     private Member authenticate(String email, String password) {
         return memberRepository.findByEmail(email)
                 .filter(it -> it.checkPassword(password))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new UnauthorizedException("잘못된 인증 정보입니다"));
     }
 
     private Member loginOrRegister(String email) {

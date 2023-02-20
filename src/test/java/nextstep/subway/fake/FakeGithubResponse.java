@@ -1,6 +1,7 @@
 package nextstep.subway.fake;
 
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.exception.UnauthorizedException;
 
 import java.util.Arrays;
 
@@ -25,7 +26,7 @@ public enum FakeGithubResponse {
                 .filter(it -> it.code.equals(code))
                 .findFirst()
                 .map(it -> it.accessToken)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new UnauthorizedException("잘못된 코드 정보입니다"));
     }
 
     static GithubProfileResponse getProfile(String accessToken) {
@@ -33,6 +34,6 @@ public enum FakeGithubResponse {
                 .filter(it -> it.accessToken.equals(accessToken))
                 .findFirst()
                 .map(it -> new GithubProfileResponse(it.email))
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new UnauthorizedException("잘못된 토큰 정보입니다"));
     }
 }

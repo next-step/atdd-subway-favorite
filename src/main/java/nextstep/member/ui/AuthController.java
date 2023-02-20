@@ -4,7 +4,10 @@ import nextstep.member.application.AuthService;
 import nextstep.member.application.dto.GithubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.exception.UnauthorizedException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,5 +30,10 @@ public class AuthController {
     public ResponseEntity<TokenResponse> loginGithub(@RequestBody GithubTokenRequest request) {
         TokenResponse response = authService.loginGithub(request);
         return ResponseEntity.ok().body(response);
+    }
+
+    @ExceptionHandler(value = {UnauthorizedException.class})
+    public ResponseEntity<Void> onUnauthorized(UnauthorizedException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

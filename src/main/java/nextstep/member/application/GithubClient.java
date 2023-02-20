@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +46,7 @@ public class GithubClient {
                 .getAccessToken();
 
         if (accessToken == null) {
-            throw new RuntimeException();
+            throw new UnauthorizedException("토큰을 발급할 수 없습니다");
         }
         return accessToken;
     }
@@ -62,7 +63,7 @@ public class GithubClient {
                     .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                     .getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException();
+            throw new UnauthorizedException("프로필 정보를 얻을 수 없습니다");
         }
     }
 }
