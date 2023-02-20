@@ -1,8 +1,8 @@
-package nextstep.common.configuration;
+package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.MemberService;
-import nextstep.member.filter.BasicAuthorizationInterceptor;
+import nextstep.auth.filter.BasicAuthorizationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

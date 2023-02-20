@@ -1,4 +1,4 @@
-package nextstep.member.filter;
+package nextstep.auth.filter;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.MemberService;

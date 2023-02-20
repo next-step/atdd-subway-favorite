@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;

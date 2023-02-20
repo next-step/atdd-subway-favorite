@@ -1,6 +1,6 @@
 package nextstep.subway.unit;
 
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.auth.application.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

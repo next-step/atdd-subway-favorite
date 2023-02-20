@@ -3,7 +3,7 @@ package nextstep.subway.unit;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
-import nextstep.member.filter.BasicAuthorizationInterceptor;
+import nextstep.auth.filter.BasicAuthorizationInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
