@@ -1,6 +1,7 @@
 package nextstep.subway.config;
 
 import nextstep.member.application.dto.GithubResponse;
+import nextstep.member.application.exception.MemberErrorCode;
 
 import java.util.Arrays;
 
@@ -11,9 +12,9 @@ public enum MockGithubResponse implements GithubResponse {
     사용자3("m-a3hnfnoew92", "access_token_3", "email3@email.com"),
     사용자4("nvci383mciq0oq", "access_token_4", "email4@email.com");
 
-    private String code;
-    private String accessToken;
-    private String email;
+    private final String code;
+    private final String accessToken;
+    private final String email;
 
 
     MockGithubResponse(String code, String accessToken, String email) {
@@ -26,7 +27,7 @@ public enum MockGithubResponse implements GithubResponse {
         return Arrays.stream(values())
                 .filter(it -> it.code.equals(code))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new NotFoundFakeMemberException(MemberErrorCode.NOT_FOUND_MEMBER));
     }
 
     @Override
