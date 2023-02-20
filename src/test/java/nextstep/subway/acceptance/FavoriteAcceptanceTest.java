@@ -2,37 +2,50 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.FavoriteService;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.FavoriteRepository;
+import nextstep.subway.applicaion.LineService;
+import nextstep.subway.applicaion.StationService;
+import nextstep.subway.domain.Line;
+import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.StationSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 
-@ExtendWith(MockitoExtension.class)
 class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
 
-    private Station 강남역;
-    private Station 역삼역;
-    private Station 삼성역;
+    private Long 강남역;
+    private Long 역삼역;
+    private Long 삼성역;
+    private static final String 강남역_이름 = "강남역";
+    private static final String 삼성역_이름 = "삼성역";
+    private static final String 역삼역_이름 = "역삼역";
 
     @BeforeEach
     void makeStation() {
-        강남역 = new Station("강남역");
-        ReflectionTestUtils.setField(강남역, "id", 1L);
-        역삼역 = new Station("역삼역");
-        ReflectionTestUtils.setField(역삼역, "id", 2L);
-        삼성역 = new Station("삼성역");
-        ReflectionTestUtils.setField(삼성역, "id", 3L);
+
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        역삼역 = 지하철역_생성_요청("역삼역").jsonPath().getLong("id");
+        삼성역 = 지하철역_생성_요청("삼성역").jsonPath().getLong("id");
     }
 
     @Nested
@@ -41,7 +54,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         private String accessToken;
 
-        @BeforeAll
+        @BeforeEach
         void login() {
             //given 로그인 한다.
             accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
@@ -51,14 +64,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("즐겨찾기 추가")
         void addFavorite() {
             //when 즐겨찾기를 추가한다.
-            즐겨찾기_추가(accessToken, String.valueOf(강남역.getId()), String.valueOf(역삼역.getId()));
+            ExtractableResponse<Response> createResponse = 즐겨찾기_추가(accessToken, String.valueOf(강남역), String.valueOf(역삼역));
             //then 추가한 즐겨찾기가 조회된다.
             ExtractableResponse<Response> response = 즐겨찾기_조회(accessToken);
 
             assertAll(
-                    () -> assertThat(response.jsonPath().getString("source.name")).isEqualTo("강남역"),
-                    () -> assertThat(response.jsonPath().getString("target.name")).isEqualTo("역삼역"),
-                    () -> assertThat(response.jsonPath().getList("name")).containsOnly("강남역", "역삼역")
+                    () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                    () -> assertThat(response.jsonPath().getList("source.name", String.class)).containsOnly(강남역_이름),
+                    () -> assertThat(response.jsonPath().getList("target.name", String.class)).containsOnly(역삼역_이름)
             );
         }
 
@@ -66,16 +79,17 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("즐겨찾기 조회")
         void getFavorites() {
             //when 즐겨찾기를 추가한다.
-            즐겨찾기_추가(accessToken, String.valueOf(강남역.getId()), String.valueOf(역삼역.getId()));
-            즐겨찾기_추가(accessToken, String.valueOf(강남역.getId()), String.valueOf(삼성역.getId()));
+            즐겨찾기_추가(accessToken, String.valueOf(강남역), String.valueOf(역삼역));
+            즐겨찾기_추가(accessToken, String.valueOf(강남역), String.valueOf(삼성역));
             //then 추가한 즐겨찾기가 조회된다.
             ExtractableResponse<Response> response = 즐겨찾기_조회(accessToken);
 
             assertAll(
+                    () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                     () -> assertThat(response.jsonPath()
-                            .getList("source.name", String.class)).containsOnly("강남역", "강남역"),
+                            .getList("source.name", String.class)).containsOnly(강남역_이름, 강남역_이름),
                     () -> assertThat(response.jsonPath()
-                            .getList("target.name", String.class)).containsOnly("역삼역", "삼성역")
+                            .getList("target.name", String.class)).containsOnly(역삼역_이름, 삼성역_이름)
             );
         }
 
@@ -83,19 +97,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("즐겨찾기 삭제")
         void deleteFavorite() {
             //given 즐겨찾기를 추가한다.
-            즐겨찾기_추가(accessToken, String.valueOf(강남역.getId()), String.valueOf(역삼역.getId()));
-            ExtractableResponse<Response> addResponse = 즐겨찾기_추가(accessToken, String.valueOf(강남역.getId()), String.valueOf(삼성역.getId()));
+            즐겨찾기_추가(accessToken, String.valueOf(강남역), String.valueOf(역삼역));
+            ExtractableResponse<Response> addResponse = 즐겨찾기_추가(accessToken, String.valueOf(강남역), String.valueOf(삼성역));
             //when 즐겨찾기를 삭제한다.
-            String location = addResponse.header("Location");
-            즐겨찾기_삭제(accessToken, location);
+            ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제(accessToken, addResponse.header("Location"));
             //then 추가한 즐겨찾기가 조회된다.
-            ExtractableResponse<Response> response = 즐겨찾기_조회(accessToken);
+            ExtractableResponse<Response> findResponse = 즐겨찾기_조회(accessToken);
 
             assertAll(
-                    () -> assertThat(response.jsonPath()
-                            .getList("source.name", String.class)).containsOnly("강남역"),
-                    () -> assertThat(response.jsonPath()
-                            .getList("target.name", String.class)).containsOnly("역삼역")
+                    () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                    () -> assertThat(findResponse.jsonPath()
+                            .getList("source.name", String.class)).containsOnly(강남역_이름),
+                    () -> assertThat(findResponse.jsonPath()
+                            .getList("target.name", String.class)).containsOnly(역삼역_이름)
             );
         }
     }
@@ -105,13 +119,13 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     class notLogin {
 
         //given 로그인을 하지 않는다.
-        private String accessToken;
+        private String accessToken = "0000";
 
         @Test
         @DisplayName("즐겨찾기 추가")
         void addFavorite() {
             //when 즐겨찾기를 추가한다.
-            ExtractableResponse<Response> response = 즐겨찾기_추가(accessToken, String.valueOf(강남역.getId()), String.valueOf(역삼역.getId()));
+            ExtractableResponse<Response> response = 즐겨찾기_추가(accessToken, String.valueOf(강남역), String.valueOf(역삼역));
             //then UNAUTHORIZED 응답을 받는다.
             assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         }
@@ -120,7 +134,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("즐겨찾기 조회")
         void getFavorites() {
             //when 즐겨찾기를 추가한다.
-            ExtractableResponse<Response> response = 즐겨찾기_추가(accessToken, String.valueOf(강남역.getId()), String.valueOf(역삼역.getId()));
+            ExtractableResponse<Response> response = 즐겨찾기_추가(accessToken, String.valueOf(강남역), String.valueOf(역삼역));
             //then  401 UNAUTHORIZED 응답을 받는다.
             assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         }
@@ -129,7 +143,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("즐겨찾기 삭제")
         void deleteFavorite() {
             //when 즐겨찾기를 삭제한다.
-            ExtractableResponse<Response> response = 즐겨찾기_삭제(accessToken, "1");
+            ExtractableResponse<Response> response = 즐겨찾기_삭제(accessToken, "/favorites/1");
             //then  401 UNAUTHORIZED 응답을 받는다.
             assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         }

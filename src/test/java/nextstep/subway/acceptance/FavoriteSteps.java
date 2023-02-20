@@ -17,9 +17,9 @@ public class FavoriteSteps {
 
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
@@ -40,7 +40,7 @@ public class FavoriteSteps {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .given().log().all()
-                .when().delete("/favorites/{id}", target)
+                .when().delete(target)
                 .then().log().all()
                 .extract();
     }
