@@ -22,7 +22,10 @@ public enum ErrorCode {
 	SECTION_NOT_DELETE_THEN_ONE(BAD_REQUEST, "구간이 하나 이하일때 제거할 수 없습니다."),
 
 	//path
-	SAME_SOURCE_AND_TARGET(BAD_REQUEST, "출발지와 도착지가 같습니다.");
+	SAME_SOURCE_AND_TARGET(BAD_REQUEST, "출발지와 도착지가 같습니다."),
+
+	//member
+	MISMATCHED_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다.");
 
 	private HttpStatus status;
 	private String message;
