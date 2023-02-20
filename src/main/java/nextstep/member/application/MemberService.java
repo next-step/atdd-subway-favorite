@@ -38,10 +38,6 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
