@@ -20,6 +20,9 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
+    @Embedded
+    private Favorites favorites;
+
     public Member() {
     }
 
@@ -49,10 +52,6 @@ public class Member {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer getAge() {
         return age;
     }
@@ -69,5 +68,17 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
+    public Favorites getFavorites() {
+        return this.favorites;
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        this.favorites.delete(favorite);
     }
 }

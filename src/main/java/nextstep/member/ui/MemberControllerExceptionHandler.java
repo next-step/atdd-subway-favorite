@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.member.exception.FavoriteNotFoundException;
 import nextstep.member.exception.MemberAuthenticationException;
 import nextstep.member.exception.MemberNotFoundException;
 import nextstep.member.exception.TokenAuthorizationException;
@@ -24,6 +25,11 @@ public class MemberControllerExceptionHandler {
     @ExceptionHandler(TokenAuthorizationException.class)
     public ResponseEntity<Void> handleIllegalArgsException(TokenAuthorizationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(FavoriteNotFoundException.class)
+    public ResponseEntity<Void> handleIllegalArgsException(FavoriteNotFoundException e) {
+        return ResponseEntity.badRequest().build();
     }
 
 }

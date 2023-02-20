@@ -12,13 +12,10 @@ public class Favorites {
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Favorite> values = new ArrayList<>();
 
-    public void addFavorite(Favorite favorite) {
+    public void add(Favorite favorite) {
         this.values.add(favorite);
     }
 
-    public List<Favorite> getValues() {
-        return Collections.unmodifiableList(values);
-    }
 
     public void delete(Favorite favorite) {
         if (values.isEmpty()) {
@@ -28,5 +25,9 @@ public class Favorites {
             throw new IllegalArgumentException();
         }
         this.values.remove(favorite);
+    }
+
+    public List<Favorite> values() {
+        return Collections.unmodifiableList(values);
     }
 }
