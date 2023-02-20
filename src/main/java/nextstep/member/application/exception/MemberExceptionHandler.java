@@ -1,6 +1,7 @@
 package nextstep.member.application.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import nextstep.common.exception.ErrorCode;
 import nextstep.member.application.dto.MemberErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

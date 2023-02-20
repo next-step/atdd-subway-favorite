@@ -1,5 +1,7 @@
 package nextstep.member.application.exception;
 
+import nextstep.common.exception.ErrorCode;
+
 public class MemberException extends RuntimeException {
 
 	private final ErrorCode errorCode;

@@ -2,7 +2,7 @@ package nextstep.member.application.dto;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import nextstep.member.application.exception.ErrorCode;
+import nextstep.common.exception.ErrorCode;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberErrorResponse {

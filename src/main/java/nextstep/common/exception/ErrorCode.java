@@ -1,4 +1,4 @@
-package nextstep.member.application.exception;
+package nextstep.common.exception;
 
 public interface ErrorCode {
 
