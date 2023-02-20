@@ -3,6 +3,9 @@ package nextstep.favorite.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.application.exception.FavoriteErrorCode;
+import nextstep.favorite.application.exception.FavoriteException;
+import nextstep.favorite.application.exception.NotFoundFavoriteException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.exception.MemberErrorCode;
@@ -55,5 +58,13 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Transactional
+    public void deleteFavorite(Long id) {
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundFavoriteException(FavoriteErrorCode.NOT_FOUND_FAVORITE));
+
+        favoriteRepository.delete(favorite);
     }
 }

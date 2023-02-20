@@ -34,4 +34,12 @@ public class FavoriteController {
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthToken String email) {
         return ResponseEntity.ok(favoriteService.getFavorites(email));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFavorite(@AuthToken String email, @PathVariable Long id) {
+        favoriteService.deleteFavorite(id);
+
+        return ResponseEntity.noContent()
+                .build();
+    }
 }

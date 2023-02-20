@@ -43,4 +43,16 @@ public class FavoriteSteps {
                 .log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String resourceLocation) {
+        return RestAssured.given()
+                .log().all()
+                .auth().preemptive().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete(resourceLocation)
+                .then()
+                .log().all()
+                .extract();
+    }
 }
