@@ -3,8 +3,6 @@ package nextstep.subway.unit;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.LoginService;
 import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
