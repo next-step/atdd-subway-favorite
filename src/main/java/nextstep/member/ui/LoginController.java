@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
-    private final AuthService authService;
+	private final AuthService authService;
 
-    public LoginController(AuthService authService) {
-        this.authService = authService;
-    }
+	public LoginController(AuthService authService) {
+		this.authService = authService;
+	}
 
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> getAccessToken(@RequestBody TokenRequest tokenRequest) {        ;
-        return ResponseEntity.ok().body(authService.loginMember(tokenRequest));
-    }
+	@PostMapping("/login/token")
+	public ResponseEntity<TokenResponse> getAccessToken(@RequestBody TokenRequest tokenRequest) {
+		return ResponseEntity.ok().body(authService.loginMember(tokenRequest));
+	}
 }
