@@ -42,8 +42,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@Auth String authorizationHeader) {
-        return ResponseEntity.ok().body(memberService.findMemberOfMine(authorizationHeader));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@Auth MemberResponse memberResponse) {
+        return ResponseEntity.ok().body(memberResponse);
     }
 }
 

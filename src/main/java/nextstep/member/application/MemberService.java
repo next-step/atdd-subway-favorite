@@ -43,7 +43,9 @@ public class MemberService {
 				.orElseThrow(() -> new BusinessException(MISMATCHED_PASSWORD));
 	}
 
-	public MemberResponse findMemberOfMine(String email) {
-		return MemberResponse.of(memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS)));
+	public MemberResponse findMemberByEmail(String email) {
+		Member member = memberRepository.findByEmail(email)
+				.orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
+		return MemberResponse.of(member);
 	}
 }

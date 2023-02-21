@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import nextstep.member.application.JwtTokenProvider;
+import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -13,10 +15,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
 	private static final String BEARER_PREFIX = "Bearer";
-	private final JwtTokenProvider jwtTokenProvider;
 
-	public AuthArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+	private final JwtTokenProvider jwtTokenProvider;
+	private final MemberService memberService;
+
+	public AuthArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
 		this.jwtTokenProvider = jwtTokenProvider;
+		this.memberService = memberService;
 	}
 
 	@Override
@@ -36,9 +41,10 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 		if (!jwtTokenProvider.validateToken(accessToken)) {
 			throw new IllegalArgumentException(accessToken);
 		}
-
 		String email = jwtTokenProvider.getPrincipal(accessToken);
 
-		return email;
+		MemberResponse memberResponse = memberService.findMemberByEmail(email);
+
+		return memberResponse;
 	}
 }
