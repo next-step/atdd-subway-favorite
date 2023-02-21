@@ -19,8 +19,7 @@ public class LoginService {
     }
 
     public TokenResponse authorize(TokenRequest request) {
-        Member findMember = memberService.findByUserEmail(request.getEmail())
-                .orElseThrow(() -> new NotAuthorizedException("이메일 또는 비밀번호가 일치하지 않습니다."));
+        Member findMember = memberService.findByUserEmail(request.getEmail());
 
         if (!findMember.checkPassword(request.getPassword())) {
             throw new NotAuthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
