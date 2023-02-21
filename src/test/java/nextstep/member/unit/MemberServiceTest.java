@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static nextstep.DataLoader.ADMIN_EMAIL;
+import static nextstep.DataLoader.ADMIN_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 public class MemberServiceTest {
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
 
     @Autowired
     private MemberService memberService;
@@ -23,26 +23,26 @@ public class MemberServiceTest {
     @Test
     void authenticate() {
         // When
-        Member member = memberService.authenticate(EMAIL, PASSWORD);
+        Member member = memberService.authenticate(ADMIN_EMAIL, ADMIN_PASSWORD);
 
         // Then
         assertAll(
-                () -> assertThat(member.getEmail()).isEqualTo(EMAIL),
-                () -> assertThat(member.getPassword()).isEqualTo(PASSWORD)
+                () -> assertThat(member.getEmail()).isEqualTo(ADMIN_EMAIL),
+                () -> assertThat(member.getPassword()).isEqualTo(ADMIN_PASSWORD)
         );
     }
 
     @Test
     void wrongPasswordAuthenticate() {
         // When & Then
-        assertThatThrownBy(() -> memberService.authenticate(EMAIL, "틀린 암호"))
+        assertThatThrownBy(() -> memberService.authenticate(ADMIN_EMAIL, "틀린 암호"))
                 .isInstanceOf(WrongPasswordException.class);
     }
 
     @Test
     void notExistEmailAuthenticate() {
         // When & Then
-        assertThatThrownBy(() -> memberService.authenticate("존재하지 않는 이메일", PASSWORD))
+        assertThatThrownBy(() -> memberService.authenticate("존재하지 않는 이메일", ADMIN_PASSWORD))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 }
