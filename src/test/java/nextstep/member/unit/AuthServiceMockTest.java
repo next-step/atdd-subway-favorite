@@ -1,10 +1,10 @@
 package nextstep.member.unit;
 
-import nextstep.member.application.AuthService;
+import nextstep.auth.application.AuthService;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.DisplayName;
