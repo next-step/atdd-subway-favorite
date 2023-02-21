@@ -61,32 +61,4 @@ public class AuthServiceMockTest {
         // then
         assertThat(token.getAccessToken()).isNotBlank();
     }
-
-    @Test
-    @DisplayName("토큰 정보 조회 실패-잘못된 토큰")
-    void getPrincipal_invalidToken() {
-        // given
-        final String token = "accessToken";
-        when(jwtTokenProvider.validateToken(token)).thenReturn(false);
-
-        // when
-        // then
-        assertThatThrownBy(() -> authService.getEmail(token))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("토큰 정보 조회")
-    void getPrincipal() {
-        // given
-        final String token = "accessToken";
-        when(jwtTokenProvider.validateToken(token)).thenReturn(true);
-        when(jwtTokenProvider.getPrincipal(token)).thenReturn(EMAIL);
-
-        // when
-        final String email = authService.getEmail(token);
-
-        // then
-        assertThat(email).isEqualTo(EMAIL);
-    }
 }

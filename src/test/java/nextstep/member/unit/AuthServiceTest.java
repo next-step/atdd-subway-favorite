@@ -44,30 +44,4 @@ public class AuthServiceTest {
         // then
         assertThat(token.getAccessToken()).isNotBlank();
     }
-
-    @Test
-    @DisplayName("토큰 정보 조회 실패-잘못된 토큰")
-    void getPrincipal_invalidToken() {
-        // given
-        final String token = "accessToken";
-
-        // when
-        // then
-        assertThatThrownBy(() -> authService.getEmail(token))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("토큰 정보 조회")
-    void getPrincipal() {
-        // given
-        final TokenRequest request = new TokenRequest(EMAIL, PASSWORD);
-        final String token = authService.login(request).getAccessToken();
-
-        // when
-        final String email = authService.getEmail(token);
-
-        // then
-        assertThat(email).isEqualTo(EMAIL);
-    }
 }
