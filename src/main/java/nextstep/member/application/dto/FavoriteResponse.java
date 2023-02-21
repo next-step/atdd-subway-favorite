@@ -1,6 +1,6 @@
 package nextstep.member.application.dto;
 
-import nextstep.member.domain.Favorite;
+import nextstep.subway.domain.Favorite;
 import nextstep.subway.applicaion.dto.StationResponse;
 
 import java.util.List;

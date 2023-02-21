@@ -9,6 +9,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String email;
     private String password;
     private Integer age;
@@ -19,9 +20,6 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
-
-    @Embedded
-    private Favorites favorites;
 
     public Member() {
     }
@@ -70,15 +68,4 @@ public class Member {
         return Objects.equals(this.password, password);
     }
 
-    public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
-    }
-
-    public Favorites getFavorites() {
-        return this.favorites;
-    }
-
-    public void removeFavorite(Favorite favorite) {
-        this.favorites.delete(favorite);
-    }
 }

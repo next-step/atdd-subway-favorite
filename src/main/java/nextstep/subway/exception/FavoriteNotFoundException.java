@@ -1,4 +1,4 @@
-package nextstep.member.exception;
+package nextstep.subway.exception;
 
 public class FavoriteNotFoundException extends RuntimeException {
 }
