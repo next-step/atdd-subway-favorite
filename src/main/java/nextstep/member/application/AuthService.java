@@ -31,27 +31,6 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public MemberResponse findMemberOfMine(String accessToken) {
-        if (tokenIsExpired(accessToken)) {
-            throw new AuthTokenIsExpiredException();
-        }
-        String principal = jwtTokenProvider.getPrincipal(accessToken);
-        return convertStringToMemberResponse(principal);
-    }
-
-    private boolean tokenIsExpired(String accessToken) {
-        return !jwtTokenProvider.validateToken(accessToken);
-    }
-
-
-    private MemberResponse convertStringToMemberResponse(String principal) {
-        try {
-            return objectMapper.readValue(principal, MemberResponse.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private String convertObjectAsString(MemberResponse memberResponse) {
         try {
             return objectMapper.writeValueAsString(memberResponse);
