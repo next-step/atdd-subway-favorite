@@ -96,7 +96,7 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> OAUTH_인증으로_내_회원_정보_조회_요청(String token) {
-        return Request.oauthGet(token, MediaType.APPLICATION_JSON_VALUE, "/members/me", new HashMap<>());
+        return Request.oauthGet(token, "/members/me", new HashMap<>());
     }
 
     public static ExtractableResponse<Response> 깃_허브_권한_증서_요청(String email) {

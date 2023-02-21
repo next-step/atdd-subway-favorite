@@ -3,10 +3,16 @@ package nextstep.subway.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTest;
+import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.subway.applicaion.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
@@ -54,8 +60,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(saveResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-//        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-//        assertThat(findResponse.jsonPath().getList("*.id", Long.class)).containsExactly(강남역, 판교역);
     }
 
     /**
@@ -73,7 +77,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> saveResponse = 즐겨찾기_생성_요청(accessToken, Long.MAX_VALUE, Long.MAX_VALUE);
 
         // then
-        assertThat(saveResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(saveResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -112,7 +116,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(findResponse.jsonPath().getList("*.id", Long.class)).containsExactly(강남역, 판교역);
+        assertThat(extractStationIds(findResponse)).containsExactlyInAnyOrder(강남역, 판교역);
     }
 
     /**
@@ -170,7 +174,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, Long.MAX_VALUE);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -196,5 +200,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String accessToken = response.jsonPath().getString("accessToken");
         assertThat(accessToken).isNotBlank();
         return accessToken;
+    }
+
+    private static List<Long> extractStationIds(ExtractableResponse<Response> findResponse) {
+        List<FavoriteResponse> favoriteResponses = findResponse.jsonPath().getList("", FavoriteResponse.class);
+        return favoriteResponses.stream()
+                .map(favorite -> List.of(favorite.getSource(), favorite.getTarget()))
+                .flatMap(Collection::stream)
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
     }
 }

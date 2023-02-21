@@ -3,6 +3,7 @@ package nextstep.common.ui;
 import nextstep.common.exception.LoginException;
 import nextstep.github.exception.GithubException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +18,11 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<Void> handleEmptyResultDataAccessException(EmptyResultDataAccessException e) {
         return ResponseEntity.badRequest().build();
     }
 

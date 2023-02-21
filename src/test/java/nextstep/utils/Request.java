@@ -20,8 +20,8 @@ public class Request {
     }
 
     public static ExtractableResponse<Response> oauthGet(final String token,
-                                                         final String contentType,
                                                          final String path,
+                                                         final String contentType,
                                                          final Map<String, ?> params) {
         return RestAssured
                 .given().log().all()
