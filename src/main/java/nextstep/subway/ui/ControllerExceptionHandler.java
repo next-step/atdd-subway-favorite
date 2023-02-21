@@ -1,6 +1,9 @@
 package nextstep.subway.ui;
 
+import nextstep.error.ErrorResponse;
+import nextstep.error.exception.BusinessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,5 +18,16 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
+    }
+
+    /**
+     * 비즈니스 로직 실행 중 오류 발생
+     */
+    @ExceptionHandler(value = { BusinessException.class })
+    protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
+        String errorMessages = e.getMessage();
+        HttpStatus httpStatus = e.getStatus();
+        ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
+        return ResponseEntity.status(httpStatus).body(errorResponse);
     }
 }
