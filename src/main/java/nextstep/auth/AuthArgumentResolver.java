@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.error.exception.BusinessException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import static nextstep.error.exception.ErrorCode.MISMATCHED_AUTHKEY;
 
 @Component
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
@@ -33,7 +36,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 		if (authorization == null || !BEARER_PREFIX.equals(authorization.split(" ")[0])) {
-			throw new IllegalArgumentException();
+			throw new BusinessException(MISMATCHED_AUTHKEY);
 		}
 
 		String accessToken = authorization.split(" ")[1];

@@ -26,7 +26,10 @@ public enum ErrorCode {
 
 	//member
 	MEMBER_NOT_EXISTS(BAD_REQUEST, "해당 유저는 존재하지 않습니다."),
-	MISMATCHED_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다.");
+	MISMATCHED_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다."),
+
+	//auth
+	MISMATCHED_AUTHKEY(BAD_REQUEST, "올바른 인증키가 아닙니다.");
 
 	private final HttpStatus status;
 	private final String message;
