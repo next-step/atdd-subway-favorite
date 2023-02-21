@@ -1,8 +1,8 @@
 package nextstep.error.exception;
 
-public class InvalidValueException extends BusinessException{
+public class InvalidValueException extends BusinessException {
 
-    public InvalidValueException(ErrorCode errorCode) {
-        super(errorCode);
-    }
+	public InvalidValueException(ErrorCode errorCode) {
+		super(errorCode);
+	}
 }
