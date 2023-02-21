@@ -40,4 +40,17 @@ public class JwtTokenProviderTest {
         assertThat(jwtTokenProvider.validateToken("invalidToken")).isFalse();
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
+
+    @Test
+    @DisplayName("토큰 정보 조회")
+    void getPrincipal() {
+        // given
+        final String token = jwtTokenProvider.createToken(EMAIL, ROLES);
+
+        // when
+        final String principal = jwtTokenProvider.getPrincipal(token);
+
+        // then
+        assertThat(principal).isEqualTo(EMAIL);
+    }
 }
