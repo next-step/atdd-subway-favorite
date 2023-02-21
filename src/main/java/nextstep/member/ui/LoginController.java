@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
-    final private AuthService authService;
+    private final AuthService authService;
 
     public LoginController(AuthService authService) {
         this.authService = authService;
