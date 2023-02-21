@@ -22,14 +22,18 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponse findMemberResponseById(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByEmail(String email) {
+    public MemberResponse findMemberResponseByEmail(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
     public MemberResponse getGithubProfile(String accessToken) {

@@ -25,7 +25,7 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
+        MemberResponse member = memberService.findMemberResponseById(id);
         return ResponseEntity.ok().body(member);
     }
 
@@ -48,7 +48,7 @@ public class MemberController {
             String accessToken = (String) request.getAttribute("accessToken");
             return ResponseEntity.ok().body(memberService.getGithubProfile(accessToken));
         }
-        MemberResponse member = memberService.findMemberByEmail(principal);
+        MemberResponse member = memberService.findMemberResponseByEmail(principal);
         return ResponseEntity.ok().body(member);
     }
 }

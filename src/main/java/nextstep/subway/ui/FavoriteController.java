@@ -6,6 +6,7 @@ import nextstep.subway.applicaion.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 
@@ -19,14 +20,16 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> save(@RequestBody FavoriteRequest favoriteRequest) {
-        FavoriteResponse favoriteResponse = favoriteService.save(favoriteRequest);
+    public ResponseEntity<FavoriteResponse> save(@RequestBody FavoriteRequest favoriteRequest, HttpServletRequest request) {
+        String email = (String) request.getAttribute("principal");
+        FavoriteResponse favoriteResponse = favoriteService.save(email, favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).body(favoriteResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> getAll() {
-        List<FavoriteResponse> responses = favoriteService.findFavoriteResponses();
+    public ResponseEntity<List<FavoriteResponse>> getAll(HttpServletRequest request) {
+        String email = (String) request.getAttribute("principal");
+        List<FavoriteResponse> responses = favoriteService.findFavoriteResponses(email);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -39,6 +42,6 @@ public class FavoriteController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         favoriteService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

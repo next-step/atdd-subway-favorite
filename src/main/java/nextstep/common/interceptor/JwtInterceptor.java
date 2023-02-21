@@ -5,6 +5,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
@@ -29,7 +30,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         }
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new LoginException("유효하지 않은 토큰입니다.");
         }
         String principal = jwtTokenProvider.getPrincipal(token);
         request.setAttribute(PRINCIPAL_KEY, principal);
