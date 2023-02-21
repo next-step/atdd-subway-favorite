@@ -96,6 +96,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰_없이_내_회원_정보_조회_요청();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

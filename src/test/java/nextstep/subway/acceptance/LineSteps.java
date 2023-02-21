@@ -1,12 +1,13 @@
 package nextstep.subway.acceptance;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LineSteps {
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color) {
@@ -19,6 +20,18 @@ public class LineSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
                 .then().log().all().extract();
+    }
+
+    public static Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
+        Map<String, String> lineCreateParams;
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", name);
+        lineCreateParams.put("color", color);
+        lineCreateParams.put("upStationId", String.valueOf(upStation));
+        lineCreateParams.put("downStationId", String.valueOf(downStation));
+        lineCreateParams.put("distance", String.valueOf(distance));
+
+        return 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {

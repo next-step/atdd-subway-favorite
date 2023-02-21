@@ -1,18 +1,18 @@
 package nextstep.auth;
 
-import nextstep.exception.InvalidAccessTokenException;
-import nextstep.exception.NotAllowedAuthorizationException;
-import nextstep.member.application.JwtTokenProvider;
+import java.util.List;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.List;
+import nextstep.exception.InvalidAccessTokenException;
+import nextstep.exception.NotAllowedAuthorizationException;
+import nextstep.member.application.JwtTokenProvider;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
@@ -33,11 +33,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorization == null) {
-            throw new MissingRequestHeaderException(HttpHeaders.AUTHORIZATION, parameter);
-        }
-
-        if (!BEARER_TOKEN_PREFIX.equals(authorization.split(" ")[0])) {
+        if (authorization == null || !BEARER_TOKEN_PREFIX.equals(authorization.split(" ")[0])) {
             throw new NotAllowedAuthorizationException(authorization);
         }
 
