@@ -16,10 +16,6 @@ public class MemberResponse {
         this.age = age;
     }
 
-    public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
-    }
-
     public Long getId() {
         return id;
     }
@@ -30,5 +26,14 @@ public class MemberResponse {
 
     public Integer getAge() {
         return age;
+    }
+
+    public static MemberResponse of(Member member) {
+        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    public static MemberResponse of(MemberInfoDto memberInfoDto) {
+        return new MemberResponse(memberInfoDto.getId(), memberInfoDto.getEmail(),
+            memberInfoDto.getAge());
     }
 }

@@ -1,11 +1,10 @@
 package nextstep.subway.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SubwayMap {
     private List<Line> lines;

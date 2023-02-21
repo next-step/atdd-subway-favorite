@@ -1,9 +1,8 @@
 package nextstep.subway.applicaion.dto;
 
-import nextstep.subway.domain.Path;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.domain.Path;
 
 public class PathResponse {
     private List<StationResponse> stations;

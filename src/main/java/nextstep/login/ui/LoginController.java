@@ -1,8 +1,9 @@
 package nextstep.login.ui;
 
-import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import nextstep.login.application.LoginService;
+import nextstep.login.application.dto.GithubTokenRequest;
+import nextstep.login.application.dto.GithubTokenResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,12 @@ public class LoginController {
     @PostMapping("/token")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse generateToken(@RequestBody TokenRequest tokenRequest) {
-        Preconditions.checkArgument(tokenRequest.getEmail() != null);
-        Preconditions.checkArgument(tokenRequest.getPassword() != null);
-
         return loginService.generateToken(tokenRequest);
+    }
+
+    @PostMapping("/github")
+    @ResponseStatus(HttpStatus.OK)
+    public GithubTokenResponse generateToken(@RequestBody GithubTokenRequest githubTokenRequest) {
+        return loginService.generateGithubToken(githubTokenRequest);
     }
 }
