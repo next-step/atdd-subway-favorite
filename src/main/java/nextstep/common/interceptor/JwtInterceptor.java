@@ -1,6 +1,6 @@
 package nextstep.common.interceptor;
 
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.common.utils.JwtTokenProvider;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,6 +14,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer";
     private static final String PRINCIPAL_KEY = "principal";
+    private static final String ACCESS_TOKEN_KEY = "accessToken";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -32,6 +33,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         String principal = jwtTokenProvider.getPrincipal(token);
         request.setAttribute(PRINCIPAL_KEY, principal);
+        request.setAttribute(ACCESS_TOKEN_KEY, token);
         return true;
     }
 

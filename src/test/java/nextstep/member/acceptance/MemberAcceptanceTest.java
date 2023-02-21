@@ -1,12 +1,13 @@
-package nextstep.subway.acceptance;
+package nextstep.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -79,7 +80,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         String token = loginResponse.jsonPath().getString("accessToken");
 
         // when
-        ExtractableResponse<Response> findResponse = OAUTH_인증으로_내_회원_정보_조회_요청(token, EMAIL, PASSWORD);
+        ExtractableResponse<Response> findResponse = OAUTH_인증으로_내_회원_정보_조회_요청(token);
 
         // then
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());

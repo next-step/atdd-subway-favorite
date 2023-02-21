@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final GithubClient githubClient;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, GithubClient githubClient) {
         this.memberRepository = memberRepository;
+        this.githubClient = githubClient;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -27,6 +30,11 @@ public class MemberService {
     public MemberResponse findMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
+    }
+
+    public MemberResponse getGithubProfile(String accessToken) {
+        GithubProfileResponse githubProfileResponse = githubClient.getGithubProfileFromGithub(accessToken);
+        return new MemberResponse(githubProfileResponse.getEmail(), githubProfileResponse.getAge());
     }
 
     public void updateMember(Long id, MemberRequest param) {
