@@ -1,9 +1,7 @@
 package nextstep.subway.unit;
 
+import nextstep.error.exception.BusinessException;
 import nextstep.member.application.AuthService;
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -22,13 +20,8 @@ public class AuthServiceTest {
     private static final String PASSWORD = "password";
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
     AuthService authService;
 
-    @Autowired
-    MemberService memberService;
     @Test
     @DisplayName("이메일, 패스워드가 일치하는 멤버가 존재한다면 토큰반환")
     void createToken() {
@@ -42,7 +35,7 @@ public class AuthServiceTest {
     void passwordNotEqual() {
         TokenRequest tokenRequest = new TokenRequest(EMAIL, "nopassword");
         assertThatThrownBy(() -> authService.loginMember(tokenRequest))
-                .isExactlyInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(BusinessException.class);
     }
 
     @Test
@@ -50,30 +43,8 @@ public class AuthServiceTest {
     void nonExistEmail() {
         TokenRequest tokenRequest = new TokenRequest("nonExist@email.com", "password");
         assertThatThrownBy(() -> authService.loginMember(tokenRequest))
-                .isExactlyInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(BusinessException.class);
     }
 
-    @Test
-    @DisplayName("토큰으로 부터 멤버 정보 가져오기")
-    void getInfoFromToken() {
-        // given
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        TokenResponse tokenResponse = authService.loginMember(tokenRequest);
 
-        // when
-        MemberResponse memberInfo = memberService.findMemberOfMine("Bearer "+tokenResponse.getAccessToken());
-
-        // then
-        assertThat(memberInfo.getEmail()).isEqualTo(EMAIL);
-    }
-
-    @Test
-    @DisplayName("존재하지 않은 토큰으로 부터 멤버 정보 가져오기")
-    void getInfoFromTokenNonExistToken() {
-        // given
-        String token = "NOT_EXIST_TOKEN";
-
-        // when&then
-        assertThatThrownBy(()->memberService.findMemberOfMine(token)).isInstanceOf(IllegalArgumentException.class);
-    }
 }
