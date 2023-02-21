@@ -1,5 +1,7 @@
 package nextstep.member.application.exception;
 
+import nextstep.common.exception.ErrorCode;
+
 public enum MemberErrorCode implements ErrorCode {
 	NOT_FOUND_MEMBER("존재하지 않은 회원입니다."),
 	INVALID_TOKEN("만료되거나, 잘못된 토큰입니다."),

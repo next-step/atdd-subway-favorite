@@ -1,12 +1,9 @@
 package nextstep.member.ui;
 
-import nextstep.member.application.AuthService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.AuthToken;
-import nextstep.member.domain.TokenInfo;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
