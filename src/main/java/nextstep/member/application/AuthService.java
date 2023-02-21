@@ -31,4 +31,11 @@ public class AuthService {
         final String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
     }
+
+    public String getEmail(final String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new IllegalArgumentException();
+        }
+        return jwtTokenProvider.getPrincipal(token);
+    }
 }
