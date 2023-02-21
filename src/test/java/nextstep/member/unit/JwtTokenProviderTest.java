@@ -28,4 +28,16 @@ public class JwtTokenProviderTest {
         // then
         assertThat(token).isNotBlank();
     }
+
+    @Test
+    @DisplayName("토큰 유효성 검사")
+    void tokenValidation() {
+        // given
+        final String token = jwtTokenProvider.createToken(EMAIL, ROLES);
+
+        // when
+        // then
+        assertThat(jwtTokenProvider.validateToken("invalidToken")).isFalse();
+        assertThat(jwtTokenProvider.validateToken(token)).isTrue();
+    }
 }
