@@ -15,8 +15,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
-        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        MemberSteps.회원_생성_요청(EMAIL, PASSWORD, 3);
 
+        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }
