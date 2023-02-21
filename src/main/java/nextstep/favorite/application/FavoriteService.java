@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.exception.FavoriteErrorCode;
-import nextstep.favorite.application.exception.FavoriteException;
 import nextstep.favorite.application.exception.InvalidFavoriteRemoveRequest;
 import nextstep.favorite.application.exception.NotFoundFavoriteException;
 import nextstep.favorite.domain.Favorite;
@@ -45,7 +44,7 @@ public class FavoriteService {
                 .orElseThrow(() -> new NotFoundStationException(SubwayErrorCode.NOT_FOUND_STATION));
 
         return favoriteRepository.save(
-                new Favorite(member.getId(), source, target)
+                new Favorite(member, source, target)
         ).getId();
     }
 
@@ -54,7 +53,7 @@ public class FavoriteService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundMemberException(MemberErrorCode.NOT_FOUND_MEMBER));
 
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
 
         return favorites.stream()
                 .map(FavoriteResponse::new)
