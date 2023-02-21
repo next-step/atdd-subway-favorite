@@ -20,8 +20,8 @@ public class MemberControllerExceptionHandler {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(WrongPasswordException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(WrongPasswordException e) {
+    @ExceptionHandler({WrongPasswordException.class, InvalidTokenException.class})
+    public ResponseEntity<Void> handleIllegalArgsException() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

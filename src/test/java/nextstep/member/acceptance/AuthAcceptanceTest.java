@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTest;
 import nextstep.DataLoader;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private DataLoader dataLoader;
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
 

@@ -3,8 +3,11 @@ package nextstep.member.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTest;
+import nextstep.DataLoader;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.DataLoader.ADMIN_AGE;
@@ -20,6 +23,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
+
+    @Autowired
+    private DataLoader dataLoader;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        dataLoader.loadData();
+    }
 
     @DisplayName("회원가입을 한다.")
     @Test
@@ -85,7 +99,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.jsonPath().getString("id")).isNotNull(),
                 () -> assertThat(response.jsonPath().getString("email")).isEqualTo(ADMIN_EMAIL),
-                () -> assertThat(response.jsonPath().getInt("age")).isEqualTo(ADMIN_PASSWORD)
+                () -> assertThat(response.jsonPath().getInt("age")).isEqualTo(ADMIN_AGE)
         );
     }
 }

@@ -24,6 +24,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMember(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
+        return MemberResponse.of(member);
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
