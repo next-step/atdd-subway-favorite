@@ -1,13 +1,19 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.베어러_인증으로_내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static nextstep.subway.acceptance.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -64,8 +70,22 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * given 회원 생성을 하고 인증 요청을 한다<br>
+     * when 회원 생성한 정보로 내 정보 요청을 하면<br>
+     * then 내 정보를 조회할 수 있다.<br>
+    * */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        final String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        final ExtractableResponse<Response> myInfoResponse = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(myInfoResponse, EMAIL, AGE);
     }
 }
