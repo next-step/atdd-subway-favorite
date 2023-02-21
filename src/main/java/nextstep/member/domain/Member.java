@@ -23,6 +23,10 @@ public class Member {
     public Member() {
     }
 
+    public Member(String email) {
+        this.email = email;
+    }
+
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;

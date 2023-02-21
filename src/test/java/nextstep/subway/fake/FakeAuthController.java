@@ -1,8 +1,6 @@
-package nextstep.member.ui;
+package nextstep.subway.fake;
 
-import nextstep.member.application.AuthService;
 import nextstep.member.application.dto.GithubTokenRequest;
-import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
@@ -13,22 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class AuthController {
-    private final AuthService authService;
+public class FakeAuthController {
+    private FakeAuthService authService;
 
-    public AuthController(AuthService authService) {
+    public FakeAuthController(FakeAuthService authService) {
         this.authService = authService;
     }
 
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
-        TokenResponse response = authService.login(request);
-        return ResponseEntity.ok().body(response);
-    }
-
-    @PostMapping("/login/github")
-    public ResponseEntity<TokenResponse> loginGithub(@RequestBody GithubTokenRequest request) {
-        TokenResponse response = authService.loginGithub(request);
+    @PostMapping("/fake/login/github")
+    public ResponseEntity<TokenResponse> createGithubToken(@RequestBody GithubTokenRequest tokenRequest) {
+        TokenResponse response = authService.loginGithub(tokenRequest);
         return ResponseEntity.ok().body(response);
     }
 
