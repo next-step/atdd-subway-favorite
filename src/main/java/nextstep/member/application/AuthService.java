@@ -8,18 +8,17 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
+import nextstep.utils.ObjectStringMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
 
-    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
     }
 
     public TokenResponse loginMember(TokenRequest tokenRequest) {
@@ -27,15 +26,7 @@ public class AuthService {
         if (!member.checkPassword(tokenRequest.getPassword())) {
             throw new PasswordNotEqualException();
         }
-        String token = jwtTokenProvider.createToken(convertObjectAsString(MemberResponse.of(member)), member.getRoles());
+        String token = jwtTokenProvider.createToken(ObjectStringMapper.convertObjectAsString(MemberResponse.of(member)), member.getRoles());
         return new TokenResponse(token);
-    }
-
-    private String convertObjectAsString(MemberResponse memberResponse) {
-        try {
-            return objectMapper.writeValueAsString(memberResponse);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

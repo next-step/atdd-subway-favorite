@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.exception.member.AuthTokenIsExpiredException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.dto.AuthenticationPrincipal;
+import nextstep.utils.ObjectStringMapper;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AuthenticationPrincipalResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public AuthenticationPrincipalResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -42,20 +42,10 @@ public class AuthenticationPrincipalResolver implements HandlerMethodArgumentRes
         }
 
         String principal = jwtTokenProvider.getPrincipal(accessToken);
-        return convertStringToLoginMember(principal);
+        return ObjectStringMapper.convertStringToLoginMember(principal, LoginMember.class);
     }
 
     private boolean tokenIsExpired(String accessToken) {
         return !jwtTokenProvider.validateToken(accessToken);
     }
-
-    private LoginMember convertStringToLoginMember(String principal) {
-        try {
-            return objectMapper.readValue(principal, LoginMember.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
 }
