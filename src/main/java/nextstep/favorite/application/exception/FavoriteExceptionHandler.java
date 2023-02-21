@@ -19,4 +19,14 @@ public class FavoriteExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(FavoriteErrorResponse.of(errorCode));
     }
+
+    @ExceptionHandler(InvalidFavoriteRemoveRequest.class)
+    public ResponseEntity<FavoriteErrorResponse> handleInvalidFavoriteRemoveRequest(
+            InvalidFavoriteRemoveRequest exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        log.info("즐겨찾기 예외 이유: {} 코드: {}", errorCode.getMessage(), errorCode.getCode());
+
+        return ResponseEntity.badRequest()
+                .body(FavoriteErrorResponse.of(errorCode));
+    }
 }

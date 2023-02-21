@@ -5,6 +5,7 @@ import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.exception.FavoriteErrorCode;
 import nextstep.favorite.application.exception.FavoriteException;
+import nextstep.favorite.application.exception.InvalidFavoriteRemoveRequest;
 import nextstep.favorite.application.exception.NotFoundFavoriteException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
@@ -61,9 +62,16 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(String email, Long id) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundMemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundFavoriteException(FavoriteErrorCode.NOT_FOUND_FAVORITE));
+
+        if (!favorite.isCreatedBy(member)) {
+            throw new InvalidFavoriteRemoveRequest(FavoriteErrorCode.INVALID_REMOVE_REQUEST);
+        }
 
         favoriteRepository.delete(favorite);
     }

@@ -3,7 +3,9 @@ package nextstep.subway.acceptance;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.favorite.application.dto.FavoriteErrorResponse;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.application.exception.FavoriteErrorCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -127,5 +129,36 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    // Given 로그인 요청하고
+    // Given 출발역과 도착역을 즐겨찾기에 추가하고
+    // Given 즐겨찾기를 생성하고.
+    // When 다른 유저가 즐겨찾기 삭제요청을 할 경우
+    // Then 삭제에 실패한다.
+    @DisplayName("자신이 생성한 즐겨찾기가 아닐경우 삭제에 실패한다")
+    @Test
+    void 자신이_생성한_즐겨찾기가_아닐경우_삭제에_실패한다() {
+        // given
+        String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+        String resourceLocation = 즐겨찾기_생성_요청(accessToken, 강남, 판교).header(LOCATION_HEADER);
+
+        String differentMemberAccessToken = 베어러_인증_로그인_요청(EMAIL_2, PASSWORD_2)
+                .jsonPath()
+                .getString("accessToken");
+
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(differentMemberAccessToken, resourceLocation);
+
+        FavoriteErrorResponse favoriteErrorResponse = response.as(new TypeRef<>() {
+        });
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(favoriteErrorResponse.getCode())
+                        .isEqualTo(FavoriteErrorCode.INVALID_REMOVE_REQUEST.getMessage())
+        );
     }
 }

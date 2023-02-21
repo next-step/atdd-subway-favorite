@@ -3,6 +3,7 @@ package nextstep.favorite.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
@@ -29,5 +30,9 @@ public class Favorite {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
+    }
+
+    public boolean isCreatedBy(Member member) {
+        return this.id.equals(member.getId());
     }
 }
