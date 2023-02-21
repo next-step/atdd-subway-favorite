@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import nextstep.exception.member.MemberNotFoundException;
 import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.AuthService;
 import nextstep.member.application.JwtTokenProvider;
@@ -60,6 +61,6 @@ class AuthServiceTest {
 
         //when,then
         assertThatThrownBy(() -> authService.loginMember(tokenRequest))
-                .isExactlyInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(MemberNotFoundException.class);
     }
 }

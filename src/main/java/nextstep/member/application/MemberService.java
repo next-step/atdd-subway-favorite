@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.exception.member.MemberNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -30,7 +31,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }
 
     public void deleteMember(Long id) {
