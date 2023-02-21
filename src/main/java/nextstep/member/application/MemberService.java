@@ -28,6 +28,11 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
     }
 
+    public MemberResponse findMemberByEmail(final String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+        return MemberResponse.of(member);
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
