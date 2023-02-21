@@ -28,8 +28,8 @@ public enum ErrorCode {
 	MEMBER_NOT_EXISTS(BAD_REQUEST, "해당 유저는 존재하지 않습니다."),
 	MISMATCHED_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다.");
 
-	private HttpStatus status;
-	private String message;
+	private final HttpStatus status;
+	private final String message;
 
 	ErrorCode(HttpStatus status, String message) {
 		this.status = status;
