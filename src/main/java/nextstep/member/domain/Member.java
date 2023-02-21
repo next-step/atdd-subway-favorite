@@ -1,5 +1,7 @@
 package nextstep.member.domain;
 
+import nextstep.auth.exception.AuthenticationException;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -63,7 +65,9 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public void validatePassword(String password) {
+        if (!Objects.equals(this.password, password)) {
+            throw new AuthenticationException();
+        }
     }
 }

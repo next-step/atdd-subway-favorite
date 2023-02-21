@@ -1,6 +1,6 @@
-package nextstep.subway.acceptance;
+package nextstep;
 
-import nextstep.subway.utils.DatabaseCleanup;
+import nextstep.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +13,7 @@ public class AcceptanceTest {
     private DatabaseCleanup databaseCleanup;
 
     @BeforeEach
-    public void setUp() {
+    protected void setUp() {
         databaseCleanup.execute();
     }
 }
