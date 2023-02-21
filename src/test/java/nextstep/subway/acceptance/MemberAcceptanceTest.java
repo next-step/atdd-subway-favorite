@@ -67,5 +67,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> 베어러_인증_로그인_요청 = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        String token = 베어러_인증_로그인_요청.jsonPath().getString("accessToken");
+        ExtractableResponse<Response> response = 일반_인증으로_내_회원_정보_조회_요청(token);
+        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 }
