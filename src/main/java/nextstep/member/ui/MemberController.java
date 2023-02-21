@@ -2,8 +2,8 @@ package nextstep.member.ui;
 
 import nextstep.config.LoginMember;
 import nextstep.member.application.AuthService;
-import nextstep.member.application.dto.AuthenticationPrincipal;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.AuthenticationPrincipal;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;

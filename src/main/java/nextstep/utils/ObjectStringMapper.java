@@ -2,8 +2,6 @@ package nextstep.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.config.LoginMember;
-import nextstep.member.application.dto.MemberResponse;
 
 public class ObjectStringMapper {
     private static final ObjectMapper objectMapper = new ObjectMapper();

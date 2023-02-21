@@ -1,8 +1,5 @@
 package nextstep.member.application;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.exception.member.AuthTokenIsExpiredException;
 import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;

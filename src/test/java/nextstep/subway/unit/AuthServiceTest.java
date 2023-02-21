@@ -4,7 +4,6 @@ import nextstep.exception.member.MemberNotFoundException;
 import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.AuthService;
 import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
