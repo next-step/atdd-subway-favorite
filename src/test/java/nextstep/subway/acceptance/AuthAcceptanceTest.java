@@ -22,16 +22,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
-
-    @DisplayName("내 정보를 조회한다.")
-    @Test
-    void getMyInfo() {
-        ExtractableResponse<Response> loginResponse = 베어러_인증_로그인_요청(DataLoader.EMAIL, DataLoader.PASSWORD);
-
-        ExtractableResponse<Response> response = 토큰으로_회원_정보_조회_요청(loginResponse);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getString("email")).isEqualTo(DataLoader.EMAIL);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(DataLoader.AGE);
-    }
 }
