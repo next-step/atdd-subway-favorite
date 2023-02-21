@@ -31,6 +31,13 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:4.5.1'
 
     runtimeOnly 'com.h2database:h2'
+
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.26'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+
 }
 
 test {
