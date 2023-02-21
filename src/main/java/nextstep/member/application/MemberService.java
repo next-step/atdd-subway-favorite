@@ -34,6 +34,7 @@ public class MemberService {
 	}
 
 	public void deleteMember(Long id) {
+		memberRepository.findById(id).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
 		memberRepository.deleteById(id);
 	}
 
