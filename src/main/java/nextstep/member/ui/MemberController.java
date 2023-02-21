@@ -3,6 +3,10 @@ package nextstep.member.ui;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.utils.TokenUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +45,16 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        String token = TokenUtils.parseToken(authorization);
+        MemberResponse member = memberService.findMemberByToken(token);
         return ResponseEntity.ok().body(member);
+    }
+
+    @PostMapping("/login/token")
+    public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
+        TokenResponse token = memberService.createToken(request);
+        return ResponseEntity.ok().body(token);
     }
 }
 
