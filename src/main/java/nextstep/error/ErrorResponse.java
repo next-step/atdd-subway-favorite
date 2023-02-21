@@ -2,27 +2,25 @@ package nextstep.error;
 
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 public class ErrorResponse {
 
 	private HttpStatus status;
-	private List<String> errorMessages;
+	private String errorMessage;
 
-	public ErrorResponse(HttpStatus status, List<String> errorMessages) {
+	public ErrorResponse(HttpStatus status, String errorMessage) {
 		this.status = status;
-		this.errorMessages = errorMessages;
+		this.errorMessage = errorMessage;
 	}
 
 	public HttpStatus getStatus() {
 		return status;
 	}
 
-	public List<String> getErrorMessages() {
-		return errorMessages;
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
-	public static ErrorResponse of(HttpStatus status, List<String> errorMessages) {
-		return new ErrorResponse(status,errorMessages);
+	public static ErrorResponse of(HttpStatus status, String errorMessage) {
+		return new ErrorResponse(status,errorMessage);
 	}
 }

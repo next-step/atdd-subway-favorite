@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.List;
-
 @ControllerAdvice
 public class ControllerExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -27,7 +25,7 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(value = { BusinessException.class })
     protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
-        List<String> errorMessages = List.of(e.getMessage());
+        String errorMessages = e.getMessage();
         HttpStatus httpStatus = e.getStatus();
         ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
         return ResponseEntity.status(httpStatus).body(errorResponse);
