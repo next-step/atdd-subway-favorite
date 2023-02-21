@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
-
+    
     public static ExtractableResponse<Response> 베어러_인증_로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -23,7 +23,7 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {

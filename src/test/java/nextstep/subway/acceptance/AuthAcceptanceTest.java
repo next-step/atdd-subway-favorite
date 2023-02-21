@@ -14,12 +14,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
+    private static final String INVALID_PASSWORD = "asdfafasdfasdf";
 
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
 
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    @DisplayName("Bearer Auth Fail")
+    @Test
+    void bearerAuthFail() {
+        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, INVALID_PASSWORD);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
