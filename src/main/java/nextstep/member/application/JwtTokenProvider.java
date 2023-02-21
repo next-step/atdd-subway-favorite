@@ -13,6 +13,9 @@ import java.util.List;
 
 @Component
 public class JwtTokenProvider {
+    private static final String BEARER = "Bearer ";
+    private static final int BEARER_TOKEN_INDEX = 1;
+
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
@@ -55,11 +58,15 @@ public class JwtTokenProvider {
     }
 
     public String parseJwt(String authorizationHeader) {
-        if (authorizationHeader == null) {
+        if (hasBearerToken(authorizationHeader)) {
             throw new IllegalArgumentException("올바른 인증 정보를 요청해주세요.");
         }
 
-        return authorizationHeader.split(" ")[1];
+        return authorizationHeader.split(" ")[BEARER_TOKEN_INDEX];
+    }
+
+    private boolean hasBearerToken(String authorizationHeader) {
+        return authorizationHeader == null || !authorizationHeader.startsWith(BEARER);
     }
 }
 
