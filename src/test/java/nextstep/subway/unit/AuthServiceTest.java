@@ -42,7 +42,7 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("패스워드가 일치하지 않는다면 예외 발생")
+    @DisplayName("패스워드가 일치하지 않는다면 예외 던짐")
     void passwordNotEqual() {
         //given
         TokenRequest tokenRequest = new TokenRequest(EMAIL, "nopassword");
@@ -53,7 +53,7 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("일치하는 이메일의 회원이 존재하지 않는다면 예외 발생")
+    @DisplayName("일치하는 이메일의 회원이 존재하지 않는다면 예외 던짐")
     void nonExistEmail() {
         //given
         TokenRequest tokenRequest = new TokenRequest("nonExist@email.com", "password");
