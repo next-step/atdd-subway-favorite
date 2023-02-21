@@ -84,12 +84,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("잘못된 내 정보를 조회할 경우 500 에러")
+    @DisplayName("잘못된 내 정보를 조회할 경우 Bad Request 에러")
     @Test
     void getInvalidMyInfo() {
         // when
         ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청("Invalid Token");
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
