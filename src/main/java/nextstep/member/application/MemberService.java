@@ -6,6 +6,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import static nextstep.common.constants.ErrorConstant.NOT_FOUND_EMAIL;
+
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -25,11 +27,15 @@ public class MemberService {
     }
 
     public Member findByEmail(final String email) {
-        return memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+        return memberRepository.findByEmail(email).orElseThrow(() -> {
+            throw new IllegalArgumentException(NOT_FOUND_EMAIL);
+        });
     }
 
     public MemberResponse findMemberByEmail(final String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {
+            throw new IllegalArgumentException(NOT_FOUND_EMAIL);
+        });
         return MemberResponse.of(member);
     }
 

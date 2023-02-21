@@ -11,6 +11,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.security.sasl.AuthenticationException;
 
+import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INFO;
+
 @Component
 public class AuthenticationUserArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -38,13 +40,13 @@ public class AuthenticationUserArgumentResolver implements HandlerMethodArgument
         final String authorization = webRequest.getHeader(AUTHORIZATION_HEADER);
 
         if (StringUtils.hasText(authorization) && !authorization.startsWith(SCHEME_TYPE)) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(INVALID_AUTHENTICATION_INFO);
         }
 
         final String token = authorization.substring(SCHEME_TYPE.length() + 1);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(INVALID_AUTHENTICATION_INFO);
         }
 
         return jwtTokenProvider.getPrincipal(token);

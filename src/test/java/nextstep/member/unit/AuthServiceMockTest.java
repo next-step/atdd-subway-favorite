@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static nextstep.common.constants.ErrorConstant.INVALID_EMAIL_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -44,7 +45,8 @@ public class AuthServiceMockTest {
         // when
         // then
         assertThatThrownBy(() -> authService.login(new TokenRequest(EMAIL, "new" + PASSWORD)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INVALID_EMAIL_PASSWORD);
     }
 
     @Test
