@@ -1,6 +1,6 @@
 package nextstep.member.auth;
 
-import nextstep.member.LoginMember;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.exception.TokenAuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;

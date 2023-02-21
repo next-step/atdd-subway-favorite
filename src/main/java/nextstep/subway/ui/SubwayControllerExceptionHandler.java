@@ -1,5 +1,6 @@
 package nextstep.subway.ui;
 
+import nextstep.subway.exception.FavoriteNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,6 +15,11 @@ public class SubwayControllerExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(FavoriteNotFoundException.class)
+    public ResponseEntity<Void> handleIllegalArgsException(FavoriteNotFoundException e) {
         return ResponseEntity.badRequest().build();
     }
 }

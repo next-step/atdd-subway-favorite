@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.member.domain;
 
 import java.util.List;
 
