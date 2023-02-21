@@ -10,12 +10,14 @@ import org.springframework.http.HttpStatus;
 import static nextstep.DataLoader.ADMIN_AGE;
 import static nextstep.DataLoader.ADMIN_EMAIL;
 import static nextstep.DataLoader.ADMIN_PASSWORD;
+import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_정보_수정_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_정보_조회_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
 
@@ -72,5 +74,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // Given
+        String accessToken = 베어러_인증_로그인_요청(ADMIN_EMAIL, ADMIN_PASSWORD).jsonPath().getString("accessToken");
+
+        // When
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(accessToken);
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(response.jsonPath().getString("id")).isNotNull(),
+                () -> assertThat(response.jsonPath().getString("email")).isEqualTo(ADMIN_EMAIL),
+                () -> assertThat(response.jsonPath().getInt("age")).isEqualTo(ADMIN_PASSWORD)
+        );
     }
 }
