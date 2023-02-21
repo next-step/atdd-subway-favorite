@@ -85,12 +85,20 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 로그인을 통해 토큰을 발급 받고
-     * When 토큰으로 내 정보를 요청하면
+     * Given 회원을 생성하고
+     * When 로그인을 통해 토큰을 발급 받고, 토큰으로 내 정보를 요청하면
      * Then 내 정보가 조회된다.
      */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        var response = 베어러_인증으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }
