@@ -3,6 +3,7 @@ package nextstep.member.ui;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.ui.dto.LoginUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,9 +42,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
+    public ResponseEntity<MemberResponse> findMemberOfMine(LoginUser loginUser) {
+        MemberResponse member = memberService.findMember(Long.parseLong(loginUser.getId()));
         return ResponseEntity.ok().body(member);
     }
 }

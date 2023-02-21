@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -31,5 +32,16 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse loginMember(String email, String password) {
+        final Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("email 또는 password 를 확인해 주세요."));
+
+        if (!member.checkPassword(password)) {
+            throw new IllegalArgumentException("email 또는 password 를 확인해 주세요.");
+        }
+
+        return MemberResponse.of(member);
     }
 }
