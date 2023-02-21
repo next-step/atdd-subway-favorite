@@ -20,7 +20,6 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
@@ -54,10 +53,7 @@ public class MemberController {
 
     @PostMapping("/login/token")
     public TokenResponse login(@RequestBody @Valid TokenRequest tokenRequest) {
-        // tokenRequest 를 직접 넘기는게 좋을까? 직접 넘기게되면 가독성은 좋아보이지만 tokenRequest 에대한 의존성이 생긴다
-        // 서비스에서 회원 조회 + jwt 토큰생성 하는게 좋을까?? 커맨드와 쿼리를 분리하려면  지금처럼 호출하는게 좋을까/
-        Member member = memberService.findByEmailAndPassword(tokenRequest.getEmail(), tokenRequest.getPassword());
-        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+        String token  = memberService.jwtLogin(tokenRequest.getEmail(), tokenRequest.getPassword());
         return new TokenResponse(token);
     }
 }

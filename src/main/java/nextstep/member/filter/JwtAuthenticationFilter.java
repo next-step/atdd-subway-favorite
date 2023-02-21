@@ -4,6 +4,7 @@ package nextstep.member.filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.member.application.JwtTokenProvider;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,7 +21,6 @@ import java.security.InvalidParameterException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String AUTH_URL = "/members/me";
 
@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // Authorization header에서 JWT 토큰을 가져온다.
-        String token = parseJwtToken(request.getHeader(AUTHORIZATION_HEADER));
+        String token = parseJwtToken(request.getHeader(HttpHeaders.AUTHORIZATION));
         if (!jwtTokenProvider.validateToken(token)) {
             log.debug("유효하지 않은 토큰 : [{}]", token);
             throw new InvalidParameterException("유효하지 않은 jwt 토큰 입니다.");
