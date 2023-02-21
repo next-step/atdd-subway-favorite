@@ -25,7 +25,7 @@ public class MemberService {
     }
 
     public Member findByEmail(final String email) {
-        return null;
+        return memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
     }
 
     public void updateMember(Long id, MemberRequest param) {
