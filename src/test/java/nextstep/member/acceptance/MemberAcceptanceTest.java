@@ -102,4 +102,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getInt("age")).isEqualTo(ADMIN_AGE)
         );
     }
+
+    @DisplayName("인증받지 않았다면 내 정보를 조회할 수 없다.")
+    @Test
+    void getMyInfoWhenUnauthentication() {
+        // When
+        ExtractableResponse<Response> response = 회원_정보_조회_요청("invalid token");
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
