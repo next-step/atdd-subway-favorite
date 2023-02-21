@@ -3,7 +3,7 @@ package nextstep.member.ui;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.ui.auth.Auth;
+import nextstep.auth.Auth;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

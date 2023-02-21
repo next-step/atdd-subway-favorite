@@ -1,4 +1,4 @@
-package nextstep.member.ui.auth;
+package nextstep.auth;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

@@ -1,4 +1,4 @@
-package nextstep.member.ui.auth;
+package nextstep.auth;
 
 import nextstep.member.application.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
