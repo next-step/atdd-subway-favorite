@@ -1,12 +1,13 @@
-package nextstep.subway.acceptance;
+package nextstep.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.common.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -14,6 +15,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
+    /**
+     * When 회원 생성을 요청하면
+     * Then 회원이 생성된다.
+     */
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
@@ -24,6 +29,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    /**
+     * Given 회원을 생성하고
+     * When 회원 정보를 요청하면
+     * Then 회원정보가 조회된다.
+     */
     @DisplayName("회원 정보를 조회한다.")
     @Test
     void getMember() {
@@ -38,6 +48,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 
+    /**
+     * Given 회원을 생성하고
+     * When 회원정보 수정을 요청하면
+     * Then 회원 정보가 수정된다.
+     */
     @DisplayName("회원 정보를 수정한다.")
     @Test
     void updateMember() {
@@ -51,6 +66,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    /**
+     * Given 회원을 생성하고
+     * When 회원 삭제를 요청하면
+     * Then 회원이 삭제된다.
+     */
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
@@ -64,8 +84,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * Given 회원을 생성하고
+     * When 로그인을 통해 토큰을 발급 받고, 토큰으로 내 정보를 요청하면
+     * Then 내 정보가 조회된다.
+     */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        var response = 베어러_인증으로_내_회원_정보_조회_요청(EMAIL, PASSWORD);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }
