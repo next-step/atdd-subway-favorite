@@ -23,6 +23,10 @@ public class Member {
     public Member() {
     }
 
+    public Member(String email) {
+        this(email, null, null);
+    }
+
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -35,6 +39,10 @@ public class Member {
         this.password = password;
         this.age = age;
         this.roles = roles;
+    }
+
+    public static Member of(String email) {
+        return new Member(email);
     }
 
     public Long getId() {

@@ -8,6 +8,8 @@ import nextstep.member.domain.exception.NotAuthorizedException;
 import nextstep.member.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -21,6 +23,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member createMember(String email) {
+        return memberRepository.save(Member.of(email));
+    }
+
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -31,7 +37,8 @@ public class MemberService {
             throw new NotAuthorizedException("인증정보가 유효하지 않습니다.");
         }
 
-        return MemberResponse.of(findByUserEmail(principal));
+        Member member = findByUserEmail(principal).orElseThrow(() -> new NotFoundException(principal + " 사용자를 찾을 수 없습니다."));
+        return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
@@ -44,8 +51,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findByUserEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(email + " 사용자를 찾을 수 없습니다."));
+    public Optional<Member> findByUserEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }
