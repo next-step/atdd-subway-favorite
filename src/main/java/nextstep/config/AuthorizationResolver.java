@@ -31,14 +31,14 @@ public class AuthorizationResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String authorization = webRequest.getHeader("Authorization");
 
-        String accessToken = validate(authorization);
+        String accessToken = getAccessToken(authorization);
 
         checkAccessToken(accessToken);
         String principal = jwtTokenProvider.getPrincipal(accessToken);
         return new LoginUser(Long.parseLong(principal));
     }
 
-    private String validate(String authorization) {
+    private String getAccessToken(String authorization) {
         if (authorization == null || authorization.isBlank()) {
             throw new IllegalAccessTokenException();
         }
