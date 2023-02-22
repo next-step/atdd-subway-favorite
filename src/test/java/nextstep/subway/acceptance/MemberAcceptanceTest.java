@@ -64,13 +64,23 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * given 회원 생성 후 token 을 받아온다.
+     * when  token 으로 내 정보를 요청하면
+     * then  내 email 을 받아볼 수 있다.
+     */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         ExtractableResponse<Response> 베어러_인증_로그인_요청 = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
         String token = 베어러_인증_로그인_요청.jsonPath().getString("accessToken");
+
+        // when
         ExtractableResponse<Response> response = 일반_인증으로_내_회원_정보_조회_요청(token);
+
+        // then
         assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 }
