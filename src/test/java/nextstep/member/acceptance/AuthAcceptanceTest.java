@@ -74,7 +74,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("Github에 가입이 되어있지 않은 경우 회원 가입을 먼저 진행해야 한다.")
     @Test
-    void githubAuth() {
+    void githubUnAuthorized() {
         Map<String, String> params = Map.of("code", "code");
 
         var response = Github_로그인_요청(params);

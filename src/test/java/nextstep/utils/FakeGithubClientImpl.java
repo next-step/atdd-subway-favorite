@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.exception.UnAuthorizedException;
 
 public class FakeGithubClientImpl implements GithubClient {
 
@@ -27,7 +28,7 @@ public class FakeGithubClientImpl implements GithubClient {
             return Arrays.stream(GithubResponses.values())
                     .filter(predicate)
                     .findFirst()
-                    .orElseThrow(RuntimeException::new);
+                    .orElseThrow(UnAuthorizedException::new);
         }
     }
 

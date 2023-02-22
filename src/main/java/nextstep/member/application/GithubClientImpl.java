@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.exception.UnAuthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +44,7 @@ public class GithubClientImpl implements GithubClient {
                 .getBody()
                 .getAccessToken();
         if (accessToken == null) {
-            throw new RuntimeException();
+            throw new UnAuthorizedException();
         }
         return accessToken;
     }
@@ -60,7 +61,7 @@ public class GithubClientImpl implements GithubClient {
                     .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                     .getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException();
+            throw new UnAuthorizedException();
         }
     }
 }
