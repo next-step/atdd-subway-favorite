@@ -19,8 +19,6 @@ public class LoginService {
     }
 
     public String login(TokenRequest tokenRequest) {
-        System.out.println("--_-");
-        System.out.println(tokenRequest.getEmail());
         MemberResponse memberResponse = memberService.loginMember(tokenRequest.getEmail(), tokenRequest.getPassword());
         return jwtTokenProvider.createToken(memberResponse.getId().toString(), memberResponse.getRoles());
     }
