@@ -74,15 +74,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
-        var response =  RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .given().header("authorization", "Bearer "+accessToken)
-                .when().get("/members/me")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 내_정보_조회(accessToken);
 
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-
-        assertAll(() -> assertThat(memberResponse.getEmail()).isEqualTo(EMAIL),
-                () -> assertThat(memberResponse.getAge()).isEqualTo(AGE));
+        assertAll(() -> assertThat(response.as(MemberResponse.class).getEmail()).isEqualTo(EMAIL),
+                () -> assertThat(response.as(MemberResponse.class).getAge()).isEqualTo(AGE));
     }
 }
