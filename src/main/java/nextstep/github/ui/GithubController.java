@@ -28,7 +28,7 @@ public class GithubController {
         try {
             return ResponseEntity.ok().body(githubService.login(request.getCode()));
         } catch (Exception e) {
-            URI redirectUri = new URI("http//localhost:8080/login/github/join");
+            URI redirectUri = new URI("/login/github/join");
 
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(redirectUri);
