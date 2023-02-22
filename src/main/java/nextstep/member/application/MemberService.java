@@ -7,9 +7,12 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+    private static final String NON_EXIST_ID = "존재하지 않은 ID 입니다.";
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -19,12 +22,14 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(NON_EXIST_ID));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(NON_EXIST_ID));
         member.update(param.toMember());
     }
 
@@ -39,6 +44,6 @@ public class MemberService {
         String email = jwtTokenProvider.getPrincipal(token);
         return memberRepository.findByEmail(email)
                 .map(MemberResponse::of)
-                .orElseThrow(() -> new RuntimeException("존재하지 않은 이메일입니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않은 이메일입니다."));
     }
 }
