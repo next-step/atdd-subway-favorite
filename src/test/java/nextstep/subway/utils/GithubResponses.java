@@ -1,5 +1,7 @@
 package nextstep.subway.utils;
 
+import java.util.Arrays;
+
 public enum GithubResponses {
 	사용자1("832ovnq039hfjn", "access_token_1", "email@email.com"),
 	사용자2("mkfo0aFa03m", "access_token_2", "email2@email.com"),
@@ -15,6 +17,20 @@ public enum GithubResponses {
 		this.code = code;
 		this.accessToken = accessToken;
 		this.email = email;
+	}
+
+	public static GithubResponses fromCode(String code) {
+		return Arrays.stream(values())
+				.filter(it -> it.code.equals(code))
+				.findFirst()
+				.orElseThrow(IllegalArgumentException::new);
+	}
+
+	public static GithubResponses fromAccessToken(String accessToken) {
+		return Arrays.stream(values())
+				.filter(it -> it.accessToken != null && it.accessToken.equals(accessToken))
+				.findFirst()
+				.orElseThrow(IllegalArgumentException::new);
 	}
 
 	public String getCode() {
