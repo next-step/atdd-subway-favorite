@@ -26,7 +26,7 @@ public class AuthServiceTest {
     @DisplayName("이메일, 패스워드가 일치하는 멤버가 존재한다면 토큰반환")
     void createToken() {
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        TokenResponse tokenResponse = authService.loginMember(tokenRequest);
+        TokenResponse tokenResponse = authService.createToken(tokenRequest);
         assertThat(tokenResponse).isNotNull();
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
@@ -34,7 +34,7 @@ public class AuthServiceTest {
     @DisplayName("패스워드가 일치하지 않는다면 예외 발생")
     void passwordNotEqual() {
         TokenRequest tokenRequest = new TokenRequest(EMAIL, "nopassword");
-        assertThatThrownBy(() -> authService.loginMember(tokenRequest))
+        assertThatThrownBy(() -> authService.createToken(tokenRequest))
                 .isExactlyInstanceOf(BusinessException.class);
     }
 
@@ -42,7 +42,7 @@ public class AuthServiceTest {
     @DisplayName("일치하는 이메일의 회원이 존재하지 않는다면 예외 발생")
     void nonExistEmail() {
         TokenRequest tokenRequest = new TokenRequest("nonExist@email.com", "password");
-        assertThatThrownBy(() -> authService.loginMember(tokenRequest))
+        assertThatThrownBy(() -> authService.createToken(tokenRequest))
                 .isExactlyInstanceOf(BusinessException.class);
     }
 

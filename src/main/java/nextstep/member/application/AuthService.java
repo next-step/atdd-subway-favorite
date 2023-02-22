@@ -1,7 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.*;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -9,15 +8,24 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
-    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.githubClient = githubClient;
     }
 
-    public TokenResponse loginMember(TokenRequest tokenRequest) {
+    public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberService.findMemberByEmailAndPassword(tokenRequest.getEmail(),tokenRequest.getPassword());
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+        return new TokenResponse(token);
+    }
+    public TokenResponse createGitHubToken(GithubTokenRequest tokenRequest) {
+        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(tokenRequest);
+        GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
+        MemberResponse memberResponse = memberService.findMemberByEmail(githubProfile.getEmail());
+        String token = jwtTokenProvider.createToken(String.valueOf(memberResponse.getId()), memberResponse.getRoles());
         return new TokenResponse(token);
     }
 }
