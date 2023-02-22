@@ -46,8 +46,8 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 		}
 		String email = jwtTokenProvider.getPrincipal(accessToken);
 
-		MemberResponse memberResponse = memberService.findMemberByEmail(email);
+		AuthMember authMember = memberService.findAuthMemberByEmail(email);
 
-		return memberResponse;
+		return authMember;
 	}
 }
