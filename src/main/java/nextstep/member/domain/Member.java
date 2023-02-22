@@ -1,5 +1,7 @@
 package nextstep.member.domain;
 
+import nextstep.member.domain.exception.NotEqualsPasswordException;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -14,8 +16,8 @@ public class Member {
     private Integer age;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
-            name = "MEMBER_ROLE",
-            joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
+        name = "MEMBER_ROLE",
+        joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
     )
     @Column(name = "role")
     private List<String> roles;
@@ -63,7 +65,10 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public void checkPassword(String password) {
+        if (!Objects.equals(this.password, password)) {
+            throw new NotEqualsPasswordException();
+        }
     }
+
 }
