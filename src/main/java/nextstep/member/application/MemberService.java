@@ -35,9 +35,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMine(String accessToken) {
-        String email = authService.getEmail(accessToken);
-        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+    public MemberResponse findMine(String principal) {
+        Member member = memberRepository.findByEmail(principal).orElseThrow(IllegalArgumentException::new);
 
         return MemberResponse.of(member);
     }
