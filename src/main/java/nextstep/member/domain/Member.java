@@ -20,7 +20,7 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email) {
