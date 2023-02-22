@@ -7,6 +7,7 @@ import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -39,8 +40,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader("authorization") String token) {
-        MemberResponse member = memberService.findMemberOfMine(token);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute("email") String email) {
+        MemberResponse member = memberService.findMemberOfMine(email);
         return ResponseEntity.ok().body(member);
     }
 }

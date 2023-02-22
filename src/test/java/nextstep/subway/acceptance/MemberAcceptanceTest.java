@@ -83,4 +83,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    /**
+     * given 회원 생성 후 token 을 받아온다.
+     * when  token 으로 내 정보를 요청하면
+     * then  내 email 을 받아볼 수 있다.
+     */
+    @DisplayName("내 정보 조회 : 실패")
+    @Test
+    void getMyInfo2() {
+        // given
+        // when
+        ExtractableResponse<Response> response = 일반_인증으로_내_회원_정보_조회_요청("invalid");
+
+        // then
+        assertThat(response.body().asString()).contains("유효하지 않은 토큰입니다");
+    }
+
 }

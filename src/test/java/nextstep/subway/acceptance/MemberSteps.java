@@ -88,7 +88,6 @@ public class MemberSteps {
         return RestAssured.given().header("authorization", token).log().all()
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 

@@ -37,11 +37,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMemberOfMine(String token) {
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
-        }
-        String email = jwtTokenProvider.getPrincipal(token);
+    public MemberResponse findMemberOfMine(String email) {
         return memberRepository.findByEmail(email)
                 .map(MemberResponse::of)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않은 이메일입니다."));
