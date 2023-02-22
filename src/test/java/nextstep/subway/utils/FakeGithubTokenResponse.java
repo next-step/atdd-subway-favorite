@@ -28,6 +28,14 @@ public enum FakeGithubTokenResponse {
                 .getAccessToken();
     }
 
+    public static String getEmailByToken(final String accessToken) {
+        return Arrays.stream(values())
+                .filter(githubTokenResponse -> githubTokenResponse.getAccessToken().equals(accessToken))
+                .findAny()
+                .orElseThrow(InvalidTokenException::new)
+                .getEmail();
+    }
+
     public String getCode() {
         return code;
     }

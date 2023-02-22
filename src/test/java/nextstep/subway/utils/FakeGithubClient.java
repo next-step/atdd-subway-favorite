@@ -14,6 +14,7 @@ public class FakeGithubClient extends GithubClient {
 
     @Override
     public GithubProfileResponse getGithubProfileFromGithub(final String accessToken) {
-        return super.getGithubProfileFromGithub(accessToken);
+        final String email = FakeGithubTokenResponse.getEmailByToken(accessToken);
+        return new GithubProfileResponse(email);
     }
 }
