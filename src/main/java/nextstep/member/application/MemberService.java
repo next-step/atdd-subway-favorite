@@ -29,11 +29,6 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(LoginUser loginUser) {
-        Member member = memberRepository.findById(loginUser.getUserId()).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
-    }
-
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
@@ -43,10 +38,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse loginMember(String email, String password) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        member.checkPassword(password);
-        return MemberResponse.of(member);
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
 }
