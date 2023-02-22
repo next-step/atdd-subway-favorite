@@ -105,14 +105,14 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
-        return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
+    public static ExtractableResponse<Response> 깃허브_로그인_요청(Map<String, String> params) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+                .statusCode(HttpStatus.OK.value()).extract();
+        return response;
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
