@@ -1,7 +1,6 @@
 package nextstep.member.application;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,25 +35,25 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return getClaims(token).getBody().getSubject();
+        return getClaims(token).getSubject();
     }
 
     public List<String> getRoles(String token) {
-        return getClaims(token).getBody().get("roles", List.class);
-    }
-
-    private Jws<Claims> getClaims(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+        return getClaims(token).get("roles", List.class);
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = getClaims(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
+            return !getClaims(token).getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser().setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public String parseJwt(String authorizationHeader) {
