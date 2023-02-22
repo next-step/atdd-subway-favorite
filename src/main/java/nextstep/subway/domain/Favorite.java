@@ -1,8 +1,11 @@
 package nextstep.subway.domain;
 
-import nextstep.member.domain.Member;
+import nextstep.common.exception.AuthorityException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Favorite {
@@ -10,45 +13,44 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
-    private Station upStation;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
-    private Station downStation;
+    private Long memberId;
+    private Long upStationId;
+    private Long downStationId;
 
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station upStation, Station downStation) {
-        this(null, member, upStation, downStation);
+    public Favorite(Long memberId, Long upStationId, Long downStationId) {
+        this(null, memberId, upStationId, downStationId);
     }
 
-    private Favorite(Long id, Member member, Station upStation, Station downStation) {
+    private Favorite(Long id, Long memberId, Long upStationId, Long downStationId) {
         this.id = id;
-        this.member = member;
-        this.upStation = upStation;
-        this.downStation = downStation;
+        this.memberId = memberId;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public Station getUpStation() {
-        return upStation;
+    public Long getUpStationId() {
+        return upStationId;
     }
 
-    public Station getDownStation() {
-        return downStation;
+    public Long getDownStationId() {
+        return downStationId;
+    }
+
+    public boolean isOwner(Long memberId) {
+        if (this.memberId.equals(memberId)) {
+            return true;
+        }
+        throw new AuthorityException();
     }
 }
