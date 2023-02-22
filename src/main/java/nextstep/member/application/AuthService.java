@@ -17,10 +17,11 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest tokenRequest) {
-        Member member = memberRepository.findByEmail(tokenRequest.getEmail()).stream()
-                .filter(a -> a.checkPassword(tokenRequest.getPassword()))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+        Member member = memberRepository.findByEmail(tokenRequest.getEmail()).orElseThrow(IllegalArgumentException::new);
+
+        if(!member.checkPassword(tokenRequest.getPassword())) {
+            throw new IllegalArgumentException();
+        }
 
         String accessToken = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return TokenResponse.of(accessToken);
