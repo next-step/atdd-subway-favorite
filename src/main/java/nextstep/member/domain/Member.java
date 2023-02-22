@@ -2,6 +2,7 @@ package nextstep.member.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -48,4 +49,9 @@ public class Member {
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }
+
+    public boolean arePasswordsSame(String password) {
+        return StringUtils.equals(this.password, password);
+    }
+
 }

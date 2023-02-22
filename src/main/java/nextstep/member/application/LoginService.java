@@ -16,7 +16,7 @@ public class LoginService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberRepository.findByEmail(tokenRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Email 입니다."));
-        if (!member.getPassword().equals(tokenRequest.getPassword())) {
+        if (!member.arePasswordsSame(tokenRequest.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
         }
         return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
