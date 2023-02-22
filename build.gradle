@@ -38,6 +38,8 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.26'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
 
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
 }
 
 test {
