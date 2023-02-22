@@ -1,5 +1,6 @@
 package nextstep.common.interceptor;
 
+import nextstep.common.exception.LoginException;
 import nextstep.common.utils.JwtTokenProvider;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
@@ -23,13 +24,13 @@ public class JwtInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = extractAuthScheme(request, BEARER);
         if (Strings.isBlank(token)) {
             return true;
         }
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new LoginException("유효하지 않은 토큰입니다.");
         }
         String principal = jwtTokenProvider.getPrincipal(token);
         request.setAttribute(PRINCIPAL_KEY, principal);
