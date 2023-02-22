@@ -101,4 +101,14 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(Map<String, String> params) {
+        return RestAssured.given().log().all()
+                .params(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .extract();
+    }
 }

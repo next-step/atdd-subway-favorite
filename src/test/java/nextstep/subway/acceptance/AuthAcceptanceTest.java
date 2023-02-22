@@ -1,14 +1,18 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.DataLoader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
-import static nextstep.subway.acceptance.MemberSteps.토큰으로_회원_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -29,6 +33,29 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void bearerAuthFail() {
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, INVALID_PASSWORD);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", "832ovnq039hfjn");
+
+        ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(params);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    @DisplayName("Github Auth fail")
+    @Test
+    void githubAuthFail() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", "code");
+
+        ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(params);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
