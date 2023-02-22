@@ -45,4 +45,9 @@ public class MemberService {
 
         return member;
     }
+
+    public Member findByEmailOrCreate(final String email) {
+        return memberRepository.findByEmail(email)
+                .orElseGet(() -> memberRepository.save(new Member(email)));
+    }
 }

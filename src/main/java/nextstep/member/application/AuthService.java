@@ -17,12 +17,18 @@ public class AuthService {
 
     public TokenResponse createToken(final TokenRequest tokenRequest) {
         final Member member = memberService.authenticate(tokenRequest);
-        final String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getRoles());
-        return new TokenResponse(token);
+        return new TokenResponse(createToken(member));
     }
 
     public TokenResponse createToken(final GithubTokenRequest tokenRequest) {
-        final String token = githubClient.getAccessTokenFromGithub(tokenRequest.getCode());
-        return new TokenResponse(token);
+        final String accessToken = githubClient.getAccessTokenFromGithub(tokenRequest.getCode());
+        final var profile = githubClient.getGithubProfileFromGithub(accessToken);
+
+        final Member member = memberService.findByEmailOrCreate(profile.getEmail());
+        return new TokenResponse(createToken(member));
+    }
+
+    private String createToken(final Member member) {
+        return jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getRoles());
     }
 }
