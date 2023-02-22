@@ -2,6 +2,7 @@ package nextstep.member.ui;
 
 import java.time.LocalDateTime;
 import nextstep.member.application.AuthService;
+import nextstep.member.application.dto.GithubLoginRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,10 @@ public class AuthController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> loginBy(@RequestBody final TokenRequest tokenRequest) {
         return ResponseEntity.ok(authService.createTokenFrom(tokenRequest, LocalDateTime.now()));
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> loginBy(@RequestBody final GithubLoginRequest githubLoginRequest) {
+        return ResponseEntity.ok(authService.createTokenFrom(githubLoginRequest));
     }
 }
