@@ -2,8 +2,6 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -25,12 +23,12 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
@@ -38,21 +36,22 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public TokenResponse createToken(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(RuntimeException::new);
-        if (!member.checkPassword(request.getPassword())) {
-            throw new IllegalArgumentException();
-        }
-        String token = tokenProvider.createToken(member.getEmail(), member.getRoles());
-        return new TokenResponse(token);
-    }
-
     public MemberResponse findMemberByToken(String token) {
         if (!tokenProvider.validateToken(token)) {
             throw new IllegalArgumentException();
         }
         String email = tokenProvider.getPrincipal(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = findMemberByEmail(email);
         return MemberResponse.of(member);
+    }
+
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(RuntimeException::new);
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(RuntimeException::new);
     }
 }
