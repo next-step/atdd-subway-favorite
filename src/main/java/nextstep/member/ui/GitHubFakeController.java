@@ -5,6 +5,7 @@ import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 @RequestMapping("/github-fake")
 @RestController
 public class GitHubFakeController {
+    private static final int AUTH_TOKEN_INDEX = 1;
 
     @PostMapping("/access-token")
     public ResponseEntity<GithubAccessTokenResponse> getAccessToken(@RequestBody GithubAccessTokenRequest request) {
@@ -29,7 +31,11 @@ public class GitHubFakeController {
 
     @GetMapping("/profile")
     public ResponseEntity<GithubProfileResponse> getProfile(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        String token = authorization.split(" ")[1];
+        if (authorization == null || !authorization.startsWith("token ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String token = authorization.split(" ")[AUTH_TOKEN_INDEX];
         GithubProfileResponse response = GithubResponses.find(githubResponse -> githubResponse.accessToken.equals(token));
         return ResponseEntity.ok(response);
     }
