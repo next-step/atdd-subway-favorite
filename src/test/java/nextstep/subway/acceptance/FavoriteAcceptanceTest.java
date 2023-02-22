@@ -59,7 +59,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> saveResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 판교역);
 
         // then
+        ExtractableResponse<Response> findResponse = 즐겨찾기_조회_요청(accessToken, saveResponse);
         assertThat(saveResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(findResponse.jsonPath().getLong("source.id")).isEqualTo(판교역);
+        assertThat(findResponse.jsonPath().getLong("target.id")).isEqualTo(강남역);
     }
 
     /**

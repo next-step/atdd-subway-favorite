@@ -16,6 +16,10 @@ public class FavoriteSteps {
         return Request.oauthPost(token, "/favorites", body);
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String token, ExtractableResponse<Response> createResponse) {
+        return Request.oauthGet(token, createResponse.header("Location"));
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
         return Request.oauthGet(token, "/favorites");
     }
