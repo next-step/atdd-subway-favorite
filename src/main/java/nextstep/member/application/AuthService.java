@@ -1,12 +1,11 @@
 package nextstep.member.application;
 
+import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.dto.MemberInfo;
 import nextstep.member.ui.request.TokenRequest;
 import nextstep.member.ui.response.TokenResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,7 +20,8 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        String token = jwtTokenProvider.createToken(request.getEmail(), Collections.emptyList());
+        Member member = memberService.findMemberByEmail(request.getEmail());
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return TokenResponse.of(token);
     }
 
