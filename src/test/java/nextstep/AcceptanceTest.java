@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep;
 
 import nextstep.subway.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,16 @@
 package nextstep.member.domain;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Member {
@@ -18,19 +26,22 @@ public class Member {
             joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
     )
     @Column(name = "role")
-    private List<String> roles;
+    private Set<RoleType> roles;
 
-    public Member() {
+    /**
+     * JPA를 위한 기본 생성자
+     */
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.roles = List.of(RoleType.ROLE_MEMBER.name());
+        this.roles = Set.of(RoleType.ROLE_MEMBER);
     }
 
-    public Member(String email, String password, Integer age, List<String> roles) {
+    public Member(String email, String password, Integer age, Set<RoleType> roles) {
         this.email = email;
         this.password = password;
         this.age = age;
@@ -53,7 +64,7 @@ public class Member {
         return age;
     }
 
-    public List<String> getRoles() {
+    public Set<RoleType> getRoles() {
         return roles;
     }
 

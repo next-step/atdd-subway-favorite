@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -46,6 +46,15 @@ public class MemberSteps {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_정보_조회_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }

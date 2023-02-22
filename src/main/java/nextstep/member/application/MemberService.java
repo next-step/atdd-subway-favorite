@@ -24,6 +24,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMember(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
+        return MemberResponse.of(member);
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
@@ -31,5 +36,18 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member authenticate(String email, String password) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
+        verifyPassword(password, member);
+
+        return member;
+    }
+
+    private static void verifyPassword(String password, Member member) {
+        if (!member.checkPassword(password)) {
+            throw new WrongPasswordException(password);
+        }
     }
 }
