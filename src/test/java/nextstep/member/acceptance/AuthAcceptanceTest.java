@@ -11,11 +11,11 @@ import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_
 
 class AuthAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private DataLoader dataLoader;
-
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
+
+    @Autowired
+    private DataLoader dataLoader;
 
     /**
      * When Email, Password로 로그인 요청하면

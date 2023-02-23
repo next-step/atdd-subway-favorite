@@ -15,11 +15,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 public class AuthServiceTest {
 
-    @Autowired
-    private AuthService authService;
-
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
+
+    @Autowired
+    private AuthService authService;
 
     @Test
     @DisplayName("토큰 생성 실패-비밀번호 미일치")

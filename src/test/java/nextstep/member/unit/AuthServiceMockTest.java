@@ -24,6 +24,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceMockTest {
 
+    private static final String EMAIL = "admin@email.com";
+    private static final String PASSWORD = "password";
+
     @InjectMocks
     private AuthService authService;
 
@@ -31,9 +34,6 @@ public class AuthServiceMockTest {
     private JwtTokenProvider jwtTokenProvider;
     @Mock
     private MemberService memberService;
-
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
 
     @Test
     @DisplayName("토큰 생성 실패-비밀번호 미일치")
