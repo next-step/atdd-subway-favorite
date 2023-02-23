@@ -17,16 +17,16 @@ public class LoginService {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final OAuth2Client OAuth2Client;
+    private final OAuth2Client oAuth2Client;
 
     public LoginService(
         MemberService memberService,
         JwtTokenProvider jwtTokenProvider,
-        OAuth2Client OAuth2Client
+        OAuth2Client oAuth2Client
     ) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.OAuth2Client = OAuth2Client;
+        this.oAuth2Client = oAuth2Client;
     }
 
     public TokenResponse login(TokenRequest request) {
@@ -40,8 +40,8 @@ public class LoginService {
     }
 
     public TokenResponse githubLogin(CodeRequest request) {
-        final String authAccessToken = OAuth2Client.getAccessToken(request.getCode());
-        final OAuth2User oAuth2User = OAuth2Client.loadUser(authAccessToken);
+        final String authAccessToken = oAuth2Client.getAccessToken(request.getCode());
+        final OAuth2User oAuth2User = oAuth2Client.loadUser(authAccessToken);
 
         final Optional<Member> member = memberService.findMemberByEmail(oAuth2User.getName());
 
