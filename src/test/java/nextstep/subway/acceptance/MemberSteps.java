@@ -107,6 +107,11 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email) {
+        assertThat(response.jsonPath().getString("id")).isNotNull();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+    }
+
     public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(final String code) {
         Map<String, String> params = new HashMap<>();
         params.put("code", code);
@@ -116,7 +121,7 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/fake/login/github")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
 
     public static String 깃허브_인증_로그인_요청하고_토큰_반환(final String code) {
