@@ -34,7 +34,6 @@ public enum GithubResponses implements OAuth2User {
             .map(it -> it.accessToken)
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException());
-
     }
 
     @Override

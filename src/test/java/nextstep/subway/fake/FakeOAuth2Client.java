@@ -1,9 +1,11 @@
 package nextstep.subway.fake;
 
-import nextstep.member.auth.Auth2Client;
+import nextstep.member.auth.OAuth2Client;
 import nextstep.member.auth.OAuth2User;
+import org.springframework.context.annotation.Profile;
 
-public class FakeAuth2Client implements Auth2Client {
+@Profile("test")
+public class FakeOAuth2Client implements OAuth2Client {
 
     @Override
     public String getAccessToken(String code) {

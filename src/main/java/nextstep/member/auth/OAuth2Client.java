@@ -1,6 +1,6 @@
 package nextstep.member.auth;
 
-public interface Auth2Client {
+public interface OAuth2Client {
 
     String getAccessToken(String code);
 

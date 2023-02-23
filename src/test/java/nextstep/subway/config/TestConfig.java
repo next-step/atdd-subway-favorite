@@ -1,15 +1,17 @@
 package nextstep.subway.config;
 
-import nextstep.member.auth.Auth2Client;
-import nextstep.subway.fake.FakeAuth2Client;
+import nextstep.member.auth.OAuth2Client;
+import nextstep.subway.fake.FakeOAuth2Client;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 @TestConfiguration
 public class TestConfig {
 
     @Bean
-    public Auth2Client auth2Client() {
-        return new FakeAuth2Client();
+    @Primary
+    public OAuth2Client oAuth2Client() {
+        return new FakeOAuth2Client();
     }
 }

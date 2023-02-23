@@ -1,10 +1,10 @@
 package nextstep.member.infra;
 
-import nextstep.member.auth.Auth2Client;
+import nextstep.member.auth.BaseOAuth2User;
+import nextstep.member.auth.OAuth2Client;
 import nextstep.member.auth.OAuth2User;
 import nextstep.member.infra.dto.GithubAccessTokenRequest;
 import nextstep.member.infra.dto.GithubAccessTokenResponse;
-import nextstep.member.infra.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class GithubClient implements Auth2Client {
+public class GithubClient implements OAuth2Client {
 
     private final String clientId;
     private final String clientSecret;
@@ -81,7 +81,7 @@ public class GithubClient implements Auth2Client {
                     profileUrl,
                     HttpMethod.GET,
                     httpEntity,
-                    GithubProfileResponse.class
+                    BaseOAuth2User.class
                 )
                 .getBody();
         } catch (HttpClientErrorException e) {
