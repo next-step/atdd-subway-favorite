@@ -1,5 +1,6 @@
 package nextstep.global;
 
+import nextstep.member.application.exception.InvalidTokenException;
 import nextstep.member.application.exception.UnAuthorizedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class ControllerExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(UnAuthorizedException.class)
-    public ResponseEntity unAuthorizedException(UnAuthorizedException e) {
+    @ExceptionHandler(value = {UnAuthorizedException.class, InvalidTokenException.class})
+    public ResponseEntity unAuthorizedException(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
