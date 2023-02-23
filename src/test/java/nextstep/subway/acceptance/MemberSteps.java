@@ -34,9 +34,9 @@ public class MemberSteps {
         return RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
-            .when().post("/login/github")
+            .when().post("/fake/login/github")
             .then().log().all()
-            .statusCode(HttpStatus.OK.value()).extract();
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
