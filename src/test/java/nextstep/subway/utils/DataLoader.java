@@ -1,12 +1,14 @@
-package nextstep;
+package nextstep.subway.utils;
 
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Profile("test")
 @Component
 public class DataLoader {
     public static final String ADMIN_EMAIL = "admin@email.com";
@@ -18,7 +20,6 @@ public class DataLoader {
     public static final String MEMBER_PASSWORD = "password";
     public static final int MEMBER_AGE = 20;
     public static final Set<RoleType> MEMBER_ROLES = Set.of(RoleType.ROLE_MEMBER);
-
 
     private final MemberRepository memberRepository;
 
