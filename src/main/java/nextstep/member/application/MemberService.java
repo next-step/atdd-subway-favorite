@@ -68,4 +68,9 @@ public class MemberService {
 
         member.updateAccessToken(accessToken);
     }
+
+    public Member findByAccessToken(String token) {
+        return memberRepository.findByAccessToken(token)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }

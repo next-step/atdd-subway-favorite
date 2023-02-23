@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -78,7 +79,7 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static ExtractableResponse<Response> 토큰으로_회원_정보_조회_요청(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> JWT_토큰으로_회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String accessToken = response.jsonPath().getString("accessToken");
 
         return RestAssured.given().log().all()
@@ -89,4 +90,17 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 깃허브_토큰으로_회원_정보_조회_요청(ExtractableResponse<Response> response) {
+        String accessToken = response.jsonPath().getString("accessToken");
+
+        return RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "token " + accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+    
 }

@@ -1,6 +1,9 @@
 package nextstep.member.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Objects;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +29,6 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
-    public Member() {
-    }
-
     public Member(String email, String accessToken) {
         this.email = email;
         this.accessToken = accessToken;
@@ -41,10 +42,11 @@ public class Member {
         this.roles = List.of(RoleType.ROLE_MEMBER.name());
     }
 
-    public Member(String email, String password, Integer age, List<String> roles) {
+    public Member(String email, String password, Integer age, String accessToken, List<String> roles) {
         this.email = email;
         this.password = password;
         this.age = age;
+        this.accessToken = accessToken;
         this.roles = roles;
     }
 
