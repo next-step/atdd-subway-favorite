@@ -42,4 +42,12 @@ public class MemberService {
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
+
+    public Member findOrCreateMember(String email) {
+        try {
+            return findMemberByEmail(email);
+        } catch (MemberNotFoundException e) {
+            return memberRepository.save(new Member(email));
+        }
+    }
 }
