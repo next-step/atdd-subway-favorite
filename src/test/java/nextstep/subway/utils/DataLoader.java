@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+import static nextstep.subway.utils.GithubResponses.사용자1;
+import static nextstep.subway.utils.GithubResponses.사용자2;
+import static nextstep.subway.utils.GithubResponses.사용자3;
+import static nextstep.subway.utils.GithubResponses.사용자4;
+
 @Profile("test")
 @Component
 public class DataLoader {
@@ -30,5 +35,9 @@ public class DataLoader {
     public void loadData() {
         memberRepository.save(new Member(ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_AGE, ADMIN_ROLES));
         memberRepository.save(new Member(MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_AGE, MEMBER_ROLES));
+        memberRepository.save(new Member(사용자1.getEmail(), "password", 20, Set.of(RoleType.ROLE_MEMBER)));
+        memberRepository.save(new Member(사용자2.getEmail(), "password", 20, Set.of(RoleType.ROLE_MEMBER)));
+        memberRepository.save(new Member(사용자3.getEmail(), "password", 20, Set.of(RoleType.ROLE_MEMBER)));
+        memberRepository.save(new Member(사용자4.getEmail(), "password", 20, Set.of(RoleType.ROLE_MEMBER)));
     }
 }

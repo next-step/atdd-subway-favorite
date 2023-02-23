@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTest;
 import nextstep.subway.utils.DataLoader;
+import nextstep.subway.utils.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.member.acceptance.LoginSteps.베어러_인증_로그인_실패하는_요청;
+import static nextstep.member.acceptance.MemberSteps.깃허브_인증_요청;
 import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.subway.utils.DataLoader.ADMIN_EMAIL;
 import static nextstep.subway.utils.DataLoader.ADMIN_PASSWORD;
@@ -51,5 +53,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 베어러_인증_로그인_실패하는_요청("존재하지 않는 이메일", ADMIN_PASSWORD);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("깃허브 권한 증서(code)로 로그인 요청시, 인증에 성공한다(토큰 발급)")
+    @Test
+    void githubAuth() {
+        ExtractableResponse<Response> response = 깃허브_인증_요청(GithubResponses.사용자1.getCode());
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }
