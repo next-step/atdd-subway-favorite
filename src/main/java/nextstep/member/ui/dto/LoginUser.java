@@ -2,20 +2,20 @@ package nextstep.member.ui.dto;
 
 public class LoginUser {
 
-    private final String id;
+    private final String email;
 
-    public LoginUser(String id) {
-        this.id = id;
+    public LoginUser(String email) {
+        this.email = email;
     }
 
-    public String getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
 
     @Override
     public String toString() {
         return "LoginUser{" +
-            "id='" + id + '\'' +
+            "email='" + email + '\'' +
             '}';
     }
 }

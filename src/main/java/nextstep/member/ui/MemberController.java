@@ -43,7 +43,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(LoginUser loginUser) {
-        MemberResponse member = memberService.findMember(Long.parseLong(loginUser.getId()));
+        MemberResponse member = memberService.findMember(loginUser.getEmail());
         return ResponseEntity.ok().body(member);
     }
 }
