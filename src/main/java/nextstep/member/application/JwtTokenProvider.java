@@ -45,9 +45,5 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
-    public String removeTypeFromToken(String token) {
-        return token.replace("Bearer ", "");
-    }
 }
 

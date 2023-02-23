@@ -1,9 +1,9 @@
 package nextstep.member.ui;
 
+import nextstep.auth.Authentication;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +29,11 @@ public class MemberController {
         return ResponseEntity.ok().body(member);
     }
 
+    @GetMapping("/members/me")
+    public ResponseEntity<MemberResponse> findMemberOfMine(@Authentication String principal) {
+        return ResponseEntity.ok().body(memberService.findMemberByEmail(principal));
+    }
+
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
@@ -39,12 +44,6 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader("authorization") String token) {
-        Member findMember = memberService.findMemberByToken(token);
-        return ResponseEntity.ok().body(MemberResponse.of(findMember));
     }
 }
 

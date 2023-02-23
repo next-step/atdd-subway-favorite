@@ -10,10 +10,10 @@ public class MemberResponse {
     private Integer age;
     private List<String> roles;
 
-    public MemberResponse() {
+    private MemberResponse() {
     }
 
-    public MemberResponse(Long id, String email, Integer age, List<String> roles) {
+    private MemberResponse(Long id, String email, Integer age, List<String> roles) {
         this.id = id;
         this.email = email;
         this.age = age;
