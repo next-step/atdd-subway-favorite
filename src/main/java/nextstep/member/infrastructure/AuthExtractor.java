@@ -9,12 +9,9 @@ public class AuthExtractor {
     private static final String BEARER_TYPE = "Bearer";
 
     public static String extract(HttpServletRequest request) {
-        Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
-        while (headers.hasMoreElements()) {
-            String headerValue = headers.nextElement();
-            if (isBearerHeader(headerValue)) {
-                return getAuthHeaderValue(request, headerValue);
-            }
+        String header = request.getHeader(AUTHORIZATION);
+        if (isBearerHeader(header)) {
+            return getAuthHeaderValue(request, header);
         }
         return null;
     }

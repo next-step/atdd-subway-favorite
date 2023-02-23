@@ -1,12 +1,14 @@
 package nextstep.member.application;
 
-import nextstep.member.infrastructure.dto.MemberInfo;
+import nextstep.member.domain.Member;
+import nextstep.member.infrastructure.SocialClient;
+import nextstep.member.infrastructure.dto.GithubTokenRequest;
+import nextstep.member.infrastructure.dto.MemberIdDto;
+import nextstep.member.infrastructure.dto.ProfileDto;
 import nextstep.member.ui.request.TokenRequest;
 import nextstep.member.ui.response.TokenResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
 
 @Service
 @Transactional(readOnly = true)
@@ -14,19 +16,29 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
+    private final SocialClient socialClient;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberService memberService, SocialClient socialClient) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberService = memberService;
+        this.socialClient = socialClient;
     }
 
     public TokenResponse login(TokenRequest request) {
-        String token = jwtTokenProvider.createToken(request.getEmail(), Collections.emptyList());
+        Member member = memberService.findMemberByEmail(request.getEmail());
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return TokenResponse.of(token);
     }
 
-    public MemberInfo findMemberByToken(String accessToken) {
+    public MemberIdDto findMemberByToken(String accessToken) {
         String email = jwtTokenProvider.getPrincipal(accessToken);
-        return MemberInfo.from(memberService.findMemberByEmail(email));
+        return MemberIdDto.from(memberService.findMemberByEmail(email));
+    }
+
+    public TokenResponse login(GithubTokenRequest request) {
+        ProfileDto profileDto = socialClient.getProfileFromGithub(request.getCode());
+        Member member = memberService.getJoinedMember(profileDto.getEmail());
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+        return TokenResponse.of(token);
     }
 }

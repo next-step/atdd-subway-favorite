@@ -2,18 +2,18 @@ package nextstep.member.infrastructure.dto;
 
 import nextstep.member.domain.Member;
 
-public class MemberInfo {
+public class MemberIdDto {
     private Long id;
 
-    public MemberInfo() {
+    public MemberIdDto() {
     }
 
-    public MemberInfo(Long id) {
+    public MemberIdDto(Long id) {
         this.id = id;
     }
 
-    public static MemberInfo from(Member member) {
-        return new MemberInfo(member.getId());
+    public static MemberIdDto from(Member member) {
+        return new MemberIdDto(member.getId());
     }
 
     public Long getId() {
