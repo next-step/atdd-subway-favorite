@@ -13,18 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
 
-    public static ExtractableResponse<Response> 베어러_인증_로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
@@ -99,15 +87,6 @@ public class MemberSteps {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(Map<String, String> params) {
-        return RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/github")
-                .then().log().all()
                 .extract();
     }
 }

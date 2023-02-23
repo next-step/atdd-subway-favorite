@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
-import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.AuthSteps.깃허브_인증_로그인_요청;
+import static nextstep.subway.acceptance.AuthSteps.베어러_인증_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
