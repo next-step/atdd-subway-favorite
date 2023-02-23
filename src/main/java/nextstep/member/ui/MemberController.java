@@ -2,20 +2,25 @@ package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nextstep.config.annotation.AuthHeader;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.*;
+import nextstep.member.domain.AuthType;
+import nextstep.member.domain.AuthTypes;
 import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
     private final MemberService memberService;
+    private final List<AuthType> authTypes;
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
@@ -42,8 +47,10 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute("email") String email) {
-        Member member = memberService.findByEmail(email);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthHeader String header) {
+        AuthTypes types = AuthTypes.from(authTypes);
+        AuthType auth = types.findAuth(header);
+        Member member = auth.findMember(header);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 

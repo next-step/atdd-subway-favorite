@@ -1,6 +1,7 @@
 package nextstep.config;
 
 import nextstep.config.resolver.AccessTokenArgumentResolver;
+import nextstep.config.resolver.AuthHeaderResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new AccessTokenArgumentResolver());
+        resolvers.add(new AuthHeaderResolver());
     }
 
     @Bean
