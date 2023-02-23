@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.LoginMemberRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
@@ -44,12 +44,11 @@ class MemberServiceTest {
         memberRepository.save(member);
         String token = jwtTokenProvider.createToken(member, LocalDateTime.now());
 
-        MemberResponse member = memberService.findMember(token);
+        LoginMemberRequest loginMemberRequest = memberService.findMember(token);
 
         Assertions.assertAll(
-                () -> assertThat(member.getId()).isEqualTo(member.getId()),
-                () -> assertThat(member.getEmail()).isEqualTo(member.getEmail()),
-                () -> assertThat(member.getAge()).isEqualTo(member.getAge())
+                () -> assertThat(loginMemberRequest.getMemberId()).isEqualTo(member.getId()),
+                () -> assertThat(loginMemberRequest.getRoles()).containsExactly(member.getRoles().toArray(String[]::new))
         );
     }
 }

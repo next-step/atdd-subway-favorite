@@ -2,9 +2,10 @@ package nextstep.member.ui;
 
 import java.net.URI;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.LoginMemberRequest;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.ui.argumentresolver.BearerToken;
+import nextstep.member.ui.argumentresolver.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,8 +51,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@BearerToken String token) {
-        return ResponseEntity.ok().body(memberService.findMember(token));
+    public ResponseEntity<MemberResponse> findMemberOfMine(@LoginMember LoginMemberRequest loginMember) {
+        return ResponseEntity.ok().body(memberService.findMember(loginMember.getMemberId()));
     }
 }
 
