@@ -1,8 +1,8 @@
 package nextstep;
 
-import nextstep.common.AuthArgumentResolver;
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.ui.JwtTokenFilter;
+import nextstep.auth.config.AuthArgumentResolver;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.config.JwtTokenFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package nextstep.member.ui;
+package nextstep.auth.config;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

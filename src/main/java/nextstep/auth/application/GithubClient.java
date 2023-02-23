@@ -1,9 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.github.application.dto.GithubAccessTokenRequest;
-import nextstep.github.application.dto.GithubAccessTokenResponse;
-import nextstep.github.application.dto.GithubProfileResponse;
-import nextstep.github.application.dto.GithubResponses;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -39,10 +38,6 @@ public class GithubClient {
                 githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        if (!"PROD".equals(System.getProperty("spring.profiles.active"))) {
-            return devResponse(code);
-        }
-
         String accessToken = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                 .getBody()
@@ -51,12 +46,6 @@ public class GithubClient {
             throw new RuntimeException();
         }
         return accessToken;
-    }
-
-    private String devResponse(String code) {
-        GithubResponses response = GithubResponses.getGithubResponseByCode(code);
-
-        return response.getAccessToken();
     }
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {

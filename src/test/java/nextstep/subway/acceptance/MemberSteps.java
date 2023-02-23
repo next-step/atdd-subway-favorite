@@ -40,20 +40,6 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 깃헙_인증_로그인_요청_실패(String code) {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", code);
-        params.put("clientId", "");
-        params.put("clientSecret", "");
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value()).extract();
-    }
-
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);

@@ -1,4 +1,4 @@
-package nextstep.github.application.dto;
+package nextstep.auth.application.fake;
 
 import java.util.Arrays;
 
@@ -21,6 +21,13 @@ public enum GithubResponses {
     public static GithubResponses getGithubResponseByCode(String code) {
         return Arrays.stream(GithubResponses.values())
                 .filter(a -> code.equals(a.code))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public static GithubResponses getGithubResponseByAccessToken(String accessToken) {
+        return Arrays.stream(GithubResponses.values())
+                .filter(a -> accessToken.equals(a.accessToken))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
