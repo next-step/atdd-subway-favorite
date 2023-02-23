@@ -44,6 +44,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     }
 
     private String getAccessToken(String authorization) {
-        return authorization.split(" ")[1];
+        return authorization.replace(BEARER, "");
     }
 }
