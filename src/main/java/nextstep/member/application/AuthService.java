@@ -1,15 +1,14 @@
 package nextstep.member.application;
 
 import nextstep.member.domain.Member;
-import nextstep.member.infrastructure.GithubClientImpl;
+import nextstep.member.infrastructure.SocialClient;
 import nextstep.member.infrastructure.dto.GithubTokenRequest;
-import nextstep.member.infrastructure.dto.MemberInfo;
+import nextstep.member.infrastructure.dto.MemberIdDto;
+import nextstep.member.infrastructure.dto.ProfileDto;
 import nextstep.member.ui.request.TokenRequest;
 import nextstep.member.ui.response.TokenResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,12 +16,12 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
-    private final GithubClientImpl githubClientImpl;
+    private final SocialClient socialClient;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberService memberService, GithubClientImpl githubClientImpl) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberService memberService, SocialClient socialClient) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberService = memberService;
-        this.githubClientImpl = githubClientImpl;
+        this.socialClient = socialClient;
     }
 
     public TokenResponse login(TokenRequest request) {
@@ -31,17 +30,15 @@ public class AuthService {
         return TokenResponse.of(token);
     }
 
-    public MemberInfo findMemberByToken(String accessToken) {
+    public MemberIdDto findMemberByToken(String accessToken) {
         String email = jwtTokenProvider.getPrincipal(accessToken);
-        return MemberInfo.from(memberService.findMemberByEmail(email));
+        return MemberIdDto.from(memberService.findMemberByEmail(email));
     }
 
-    public TokenResponse getGithubToken(GithubTokenRequest request) {
-        Optional<String> token = githubClientImpl.getAccessToken(request.getCode());
-        return token.map(TokenResponse::of).orElseGet(() -> joinGithubMember(request));
-    }
-
-    private TokenResponse joinGithubMember(GithubTokenRequest request) {
-
+    public TokenResponse login(GithubTokenRequest request) {
+        ProfileDto profileDto = socialClient.getProfileFromGithub(request.getCode());
+        Member member = memberService.getJoinedMember(profileDto.getEmail());
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+        return TokenResponse.of(token);
     }
 }

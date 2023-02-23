@@ -3,22 +3,21 @@ package nextstep.member.infrastructure;
 import nextstep.member.infrastructure.dto.GithubTokenRequest;
 import nextstep.member.infrastructure.dto.GithubTokenResponse;
 import nextstep.member.infrastructure.dto.GithubProfileResponse;
+import nextstep.member.infrastructure.dto.ProfileDto;
 import nextstep.member.infrastructure.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.text.html.Option;
-import java.util.Optional;
-
 @Component
-public class GithubClientImpl implements GithubClient {
+@Profile("!test")
+public class GithubClientImpl implements SocialClient {
 
     @Value("${github.client.id}")
     private String clientId;
@@ -29,11 +28,18 @@ public class GithubClientImpl implements GithubClient {
     @Value("${github.url.profile}")
     private String profileUrl;
 
-    public Optional<String> getAccessToken(String code) {
+    @Override
+    public ProfileDto getProfileFromGithub(String code) {
+        String accessToken = getAccessToken(code);
+        GithubProfileResponse githubProfileResponse = getGithubProfileFromGithub(accessToken);
+        return ProfileDto.from(githubProfileResponse.getEmail());
+    }
+
+    private String getAccessToken(String code) {
         GithubTokenRequest githubTokenRequest = new GithubTokenRequest(
-                code,
-                clientId,
-                clientSecret
+            code,
+            clientId,
+            clientSecret
         );
 
         HttpHeaders headers = new HttpHeaders();
@@ -43,14 +49,18 @@ public class GithubClientImpl implements GithubClient {
         RestTemplate restTemplate = new RestTemplate();
 
         String accessToken = restTemplate
-                .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubTokenResponse.class)
-                .getBody()
-                .getAccessToken();
+            .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubTokenResponse.class)
+            .getBody()
+            .getAccessToken();
 
-        return Optional.ofNullable(accessToken);
+        if (accessToken == null) {
+            throw new InternalServerException();
+        }
+
+        return accessToken;
     }
 
-    public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
+    private GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "token " + accessToken);
 
@@ -59,8 +69,8 @@ public class GithubClientImpl implements GithubClient {
 
         try {
             return restTemplate
-                    .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
-                    .getBody();
+                .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException();
         }

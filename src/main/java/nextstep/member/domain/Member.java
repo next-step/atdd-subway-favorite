@@ -9,6 +9,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String email;
     private String password;
     private Integer age;
@@ -20,7 +21,12 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
+
     public Member() {
+    }
+
+    public Member(String email) {
+        this.email = email;
     }
 
     public Member(String email, String password, Integer age) {
