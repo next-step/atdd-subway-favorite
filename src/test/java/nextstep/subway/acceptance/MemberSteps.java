@@ -89,4 +89,12 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String token) {
+        return RestAssured.given().header("authorization", "Bearer " + token)
+                .log().all()
+                .when().get("member/me")
+                .then().log().all()
+                .extract();
+    }
 }
