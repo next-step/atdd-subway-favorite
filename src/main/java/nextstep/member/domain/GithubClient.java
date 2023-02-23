@@ -1,8 +1,10 @@
 package nextstep.member.domain;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Component
 public class GithubClient {
 
@@ -27,18 +30,10 @@ public class GithubClient {
     @Value("${github.url.profile}")
     private String profileUrl;
 
+    private final RestTemplate restTemplate;
+
     public String getAccessTokenFromGithub(String code) {
-        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
-                code,
-                clientId,
-                clientSecret
-        );
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
-        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<MultiValueMap<String, String>> httpEntity = createGithubAccessTokenRequestHttpEntity(code);
 
         GithubAccessTokenResponse response = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
@@ -54,12 +49,22 @@ public class GithubClient {
         return accessToken;
     }
 
-    public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "token " + accessToken);
+    private HttpEntity<MultiValueMap<String, String>> createGithubAccessTokenRequestHttpEntity(String code) {
+        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
+                code,
+                clientId,
+                clientSecret
+        );
 
-        HttpEntity httpEntity = new HttpEntity<>(headers);
-        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
+        return httpEntity;
+    }
+
+    public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
+        HttpEntity httpEntity = createGithubProfileRequestHttpEntity(accessToken);
 
         try {
             return restTemplate
@@ -68,6 +73,14 @@ public class GithubClient {
         } catch (HttpClientErrorException e) {
             throw new RuntimeException();
         }
+    }
+
+    private static HttpEntity createGithubProfileRequestHttpEntity(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "token " + accessToken);
+
+        HttpEntity httpEntity = new HttpEntity<>(headers);
+        return httpEntity;
     }
 
 }
