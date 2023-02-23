@@ -5,7 +5,7 @@ import nextstep.config.annotation.AuthHeader;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.domain.GithubAuth;
+import nextstep.member.domain.GithubAuthType;
 import nextstep.member.domain.GithubResponses;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GithubTestController {
 
-    private final GithubAuth githubAuth;
+    private final GithubAuthType githubAuthType;
 
     @PostMapping("access-token")
     public GithubAccessTokenResponse createAccessToken(@RequestBody GithubAccessTokenRequest request) {
@@ -24,7 +24,7 @@ public class GithubTestController {
 
     @GetMapping("profile")
     public GithubProfileResponse getProfile(@AuthHeader String header) {
-        String accessToken = githubAuth.parseAccessToken(header);
+        String accessToken = githubAuthType.parseAccessToken(header);
         GithubResponses githubResponses = GithubResponses.ofAccessToken(accessToken);
         return GithubProfileResponse.of(githubResponses.getEmail());
     }

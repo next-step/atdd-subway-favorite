@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuth implements AuthType {
+public class JwtAuthType implements AuthType {
 
     private static final String BEARER_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;

@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
-public class GithubAuth implements AuthType {
+public class GithubAuthType implements AuthType {
 
     private static final String PREFIX = "token ";
 
