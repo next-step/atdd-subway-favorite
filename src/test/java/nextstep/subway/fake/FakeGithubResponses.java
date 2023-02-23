@@ -37,4 +37,8 @@ public enum FakeGithubResponses {
     public String getCode() {
         return code;
     }
+
+    public String getEmail() {
+        return email;
+    }
 }
