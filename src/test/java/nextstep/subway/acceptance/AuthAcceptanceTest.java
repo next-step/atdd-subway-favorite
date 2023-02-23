@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
 import static nextstep.subway.acceptance.MemberSteps.깃헙_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.깃헙_인증_로그인_요청_실패;
 import static nextstep.subway.acceptance.MemberSteps.리다이렉트_요청;

@@ -37,7 +37,6 @@ public class MemberService {
 
     public MemberResponse findMine(String principal) {
         Member member = memberRepository.findByEmail(principal).orElseThrow(IllegalArgumentException::new);
-
         return MemberResponse.of(member);
     }
 }

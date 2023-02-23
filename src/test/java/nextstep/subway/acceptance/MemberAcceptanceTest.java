@@ -73,7 +73,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
-
         ExtractableResponse<Response> response = 내_정보_조회(accessToken);
 
         assertAll(() -> assertThat(response.as(MemberResponse.class).getEmail()).isEqualTo(EMAIL),

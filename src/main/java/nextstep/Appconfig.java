@@ -18,7 +18,7 @@ public class Appconfig implements WebMvcConfigurer {
     public Appconfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
+  
     @Bean
     public FilterRegistrationBean<JwtTokenFilter> bearerTokenFilter() {
         FilterRegistrationBean<JwtTokenFilter> registrationBean = new FilterRegistrationBean<>();
@@ -27,7 +27,7 @@ public class Appconfig implements WebMvcConfigurer {
 
         return registrationBean;
     }
-
+  
     @Bean
     public AuthArgumentResolver authArgumentResolver(){
         return new AuthArgumentResolver(jwtTokenProvider);
