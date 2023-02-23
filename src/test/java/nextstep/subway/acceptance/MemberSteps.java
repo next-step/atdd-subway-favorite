@@ -23,7 +23,7 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -81,6 +81,13 @@ public class MemberSteps {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 일반_인증으로_내_회원_정보_조회_요청(String token) {
+        return RestAssured.given().header("authorization", token).log().all()
+                .when().get("/members/me")
+                .then().log().all()
                 .extract();
     }
 

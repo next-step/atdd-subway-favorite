@@ -1,10 +1,16 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 @Entity
+@NoArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +26,6 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
-    public Member() {
-    }
-
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -37,26 +40,6 @@ public class Member {
         this.roles = roles;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -66,4 +49,9 @@ public class Member {
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }
+
+    public boolean arePasswordsSame(String password) {
+        return StringUtils.equals(this.password, password);
+    }
+
 }
