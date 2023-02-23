@@ -5,7 +5,7 @@ import nextstep.auth.application.dto.GithubAccessTokenRequest;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.exception.AuthRestApiException;
+import nextstep.auth.exception.AuthRestApiException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;

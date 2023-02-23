@@ -1,4 +1,4 @@
-package nextstep.exception;
+package nextstep.auth.exception;
 
 public class AuthRestApiException extends RuntimeException{
     public AuthRestApiException() {
