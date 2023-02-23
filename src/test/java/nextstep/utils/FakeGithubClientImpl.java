@@ -5,7 +5,13 @@ import java.util.function.Predicate;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.exception.UnAuthorizedException;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
+@Primary
+@Profile("test")
+@Component
 public class FakeGithubClientImpl implements GithubClient {
 
     public enum GithubResponses {
@@ -37,7 +43,8 @@ public class FakeGithubClientImpl implements GithubClient {
     }
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
-        GithubResponses githubResponses = GithubResponses.findBy(githubResponse -> githubResponse.accessToken.equals(accessToken));
-        return new GithubProfileResponse(githubResponses.email);
+        return new GithubProfileResponse(
+                GithubResponses.findBy(githubResponse -> githubResponse.accessToken.equals(accessToken)).email
+        );
     }
 }
