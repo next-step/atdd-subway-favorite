@@ -1,7 +1,6 @@
 package nextstep.member.application;
 
 import nextstep.exception.member.PasswordNotEqualException;
-import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
@@ -30,7 +29,7 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public String loginGithub(String code) {
-        return githubClient.getAccessTokenFromGithub(code);
+    public TokenResponse loginGithub(String code) {
+        return new TokenResponse(githubClient.getAccessTokenFromGithub(code));
     }
 }

@@ -1,10 +1,7 @@
 package nextstep.subway.unit;
 
-import nextstep.member.application.AuthService;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.MemberService;
+import nextstep.member.application.RealGithubClient;
 import nextstep.utils.ObjectStringMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,10 +16,10 @@ import org.springframework.test.web.client.response.MockRestResponseCreators;
 
 import static org.assertj.core.api.Assertions.*;
 
-@RestClientTest(value = {GithubClient.class})
-public class GithubClientTest {
+@RestClientTest(value = {RealGithubClient.class})
+public class RealGithubClinetTest {
     @Autowired
-    private GithubClient githubClient;
+    private RealGithubClient githubClient;
 
     @Autowired
     private MockRestServiceServer mockServer;
