@@ -1,8 +1,14 @@
 package nextstep.subway.acceptance;
 
+import nextstep.subway.utils.FakeGithubTokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_400을_반환한다;
 import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
@@ -11,6 +17,9 @@ import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_
 import static nextstep.subway.acceptance.MemberSteps.토근_인증으로_내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
 import static nextstep.subway.utils.FakeGithubTokenResponse.사용자1;
+import static nextstep.subway.utils.FakeGithubTokenResponse.사용자2;
+import static nextstep.subway.utils.FakeGithubTokenResponse.사용자3;
+import static nextstep.subway.utils.FakeGithubTokenResponse.사용자4;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -36,10 +45,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * then : 액세스 토큰을 발급 받는다
      */
     @DisplayName("깃허브 권한증서로 로그인 요청을하면 액세스 토큰을 발급받는다.")
-    @Test
-    void githubAuth() {
+    @MethodSource("codeProvider")
+    @ParameterizedTest(name = "{0}")
+    void githubAuth(FakeGithubTokenResponse tokenResponse) {
         // given
-        final String code = 사용자1.getCode();
+        final String code = tokenResponse.getCode();
 
         // when
         var token = 깃허브_인증_로그인_요청하고_토큰_반환(code);
@@ -74,16 +84,25 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * then : 회원 정보를 반환한다.
      */
     @DisplayName("깃허브 로그인 요청으로 얻은 토큰으로 회원 정보를 조회할 수 있다.")
-    @Test
-    void githubAuthAndGetInfo() {
+    @MethodSource("codeProvider")
+    @ParameterizedTest(name = "{0}")
+    void githubAuthAndGetInfo(FakeGithubTokenResponse tokenResponse) {
         // given
-        final String code = 사용자1.getCode();
-        var token = 깃허브_인증_로그인_요청하고_토큰_반환(code);
+        var token = 깃허브_인증_로그인_요청하고_토큰_반환(tokenResponse.getCode());
 
         // when
         final var response = 토근_인증으로_내_회원_정보_조회_요청(token);
 
         // then
-        회원_정보_조회됨(response, 사용자1.getEmail());
+        회원_정보_조회됨(response, tokenResponse.getEmail());
+    }
+
+    private static Stream<Arguments> codeProvider() {
+        return Stream.of(
+                Arguments.of(사용자1),
+                Arguments.of(사용자2),
+                Arguments.of(사용자3),
+                Arguments.of(사용자4)
+        );
     }
 }
