@@ -91,9 +91,9 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String token) {
-        return RestAssured.given().header("authorization", "Bearer " + token)
+        return RestAssured.given().auth().oauth2(token)
                 .log().all()
-                .when().get("member/me")
+                .when().get("members/me")
                 .then().log().all()
                 .extract();
     }
