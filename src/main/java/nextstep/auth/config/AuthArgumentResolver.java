@@ -1,7 +1,9 @@
 package nextstep.auth.config;
 
 import nextstep.auth.application.JwtTokenProvider;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.core.MethodParameter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -23,9 +25,13 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String accessToken = (String) webRequest.getAttribute("accessToken", 0);
-        String email = jwtTokenProvider.getPrincipal(accessToken);
+        Object accessToken = webRequest.getAttribute("accessToken", 0);
 
-        return email;
+        try {
+            String email = jwtTokenProvider.getPrincipal(String.valueOf(accessToken));
+            return email;
+        } catch (Exception e) {
+            throw new AuthenticationException("인증 요청값 accessToken이 문자열인지 확인 필요");
+        }
     }
 }
