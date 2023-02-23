@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Transactional
 @SpringBootTest
@@ -55,5 +56,21 @@ public class MemberServiceTest {
     void correctEmailAndWrongPassword() {
         assertThatThrownBy(() -> memberService.authenticate(new TokenRequest(EMAIL, WRONG_PASSWORD)))
                 .isInstanceOf(BadCredentialException.class);
+    }
+
+    @DisplayName("이메일로 유저를 찾고 있으면 찾은 유저를 반환한다.")
+    @Test
+    void findByEmail() {
+        final Member member = memberService.findByEmailOrCreate(EMAIL);
+
+        assertThat(member.getEmail()).isEqualTo(EMAIL);
+    }
+
+    @DisplayName("이메일로 유저를 찾고 없으면 유저를 생성한다.")
+    @Test
+    void findByEmailOrElseSaveMember() {
+        final Member member = assertDoesNotThrow(() -> memberService.findByEmailOrCreate(WRONG_EMAIL));
+
+        assertThat(member.getEmail()).isEqualTo(WRONG_EMAIL);
     }
 }
