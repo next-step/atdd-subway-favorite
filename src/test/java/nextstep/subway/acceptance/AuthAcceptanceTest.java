@@ -50,7 +50,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(INVALID_EMAIL, PASSWORD);
 
         //Then
-        assertThat(response.response().getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     /**
@@ -68,6 +68,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, INVALID_PASSWORD);
 
         //Then
-        assertThat(response.response().getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
