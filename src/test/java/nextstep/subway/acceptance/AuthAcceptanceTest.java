@@ -3,11 +3,17 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.GithubClient;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.unit.GithubSampleResponse;
+import nextstep.subway.unit.StubGithubClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -46,12 +52,21 @@ class AuthAcceptanceTest {
     void githubAuth() {
         // given
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", GithubSampleResponse.사용자1.getCode());
 
         // when
         ExtractableResponse<Response> response = 깃허브_로그인_요청(params);
 
         // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        @Primary
+        GithubClient stubGithubClient() {
+            return new StubGithubClient();
+        }
     }
 }
