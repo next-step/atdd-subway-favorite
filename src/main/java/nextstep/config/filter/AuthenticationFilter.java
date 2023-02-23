@@ -4,6 +4,7 @@ package nextstep.config.filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.member.domain.AuthType;
+import nextstep.member.domain.AuthTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
     private static final String AUTH_URL = "/members/me";
-    private final List<AuthType> authTypes;
+    private final AuthTypes authTypes;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -32,10 +33,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        AuthType authType = authTypes.stream()
-                .filter(a -> a.match(header))
-                .findAny().orElseThrow(IllegalArgumentException::new);
-
+        AuthType authType = authTypes.findAuth(header);
         authType.validate(header);
 
         filterChain.doFilter(request, response);

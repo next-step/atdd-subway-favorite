@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 public class MemberController {
     private final MemberService memberService;
-    private final List<AuthType> authTypes;
+    private final AuthTypes authTypes;
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
@@ -48,8 +48,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthHeader String header) {
-        AuthTypes types = AuthTypes.from(authTypes);
-        AuthType auth = types.findAuth(header);
+        AuthType auth = authTypes.findAuth(header);
         Member member = auth.findMember(header);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }
