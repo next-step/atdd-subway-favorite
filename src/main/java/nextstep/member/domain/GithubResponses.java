@@ -20,14 +20,14 @@ public enum GithubResponses {
     private final String accessToken;
     private final String email;
 
-    public static GithubResponses fromCode(String code) {
+    public static GithubResponses ofCode(String code) {
         return Arrays.stream(values())
                 .filter(e -> e.code.equals(code))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 입니다. " + code));
     }
 
-    public static GithubResponses fromAccessToken(String accessToken) {
+    public static GithubResponses ofAccessToken(String accessToken) {
         return Arrays.stream(values())
                 .filter(e -> e.accessToken.equals(accessToken))
                 .findAny()

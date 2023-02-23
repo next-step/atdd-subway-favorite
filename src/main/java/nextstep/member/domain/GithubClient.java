@@ -35,10 +35,9 @@ public class GithubClient {
         );
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
-                githubAccessTokenRequest, headers);
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         GithubAccessTokenResponse response = restTemplate
@@ -57,7 +56,7 @@ public class GithubClient {
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "token " + accessToken);
+        headers.add(HttpHeaders.AUTHORIZATION, "token " + accessToken);
 
         HttpEntity httpEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();

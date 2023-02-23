@@ -11,7 +11,7 @@ public class GithubProfileResponse {
 
     private String email;
 
-    public static GithubProfileResponse from(String email) {
+    public static GithubProfileResponse of(String email) {
         return new GithubProfileResponse(email);
     }
 }

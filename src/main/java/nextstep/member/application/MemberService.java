@@ -18,6 +18,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);

@@ -15,13 +15,13 @@ public class GithubTestController {
 
     @PostMapping("access-token")
     public GithubAccessTokenResponse createAccessToken(@RequestBody GithubAccessTokenRequest request) {
-        GithubResponses githubResponses = GithubResponses.fromCode(request.getCode());
-        return GithubAccessTokenResponse.from(githubResponses.getAccessToken());
+        GithubResponses githubResponses = GithubResponses.ofCode(request.getCode());
+        return GithubAccessTokenResponse.of(githubResponses.getAccessToken());
     }
 
     @GetMapping("profile")
     public GithubProfileResponse getProfile(@GithubAccessToken String accessToken) {
-        GithubResponses githubResponses = GithubResponses.fromAccessToken(accessToken);
-        return GithubProfileResponse.from(githubResponses.getEmail());
+        GithubResponses githubResponses = GithubResponses.ofAccessToken(accessToken);
+        return GithubProfileResponse.of(githubResponses.getEmail());
     }
 }
