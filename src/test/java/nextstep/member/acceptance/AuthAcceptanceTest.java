@@ -11,7 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Map;
 import java.util.UUID;
-import nextstep.DataLoader;
+import nextstep.utils.DataLoader;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
