@@ -1,7 +1,6 @@
 package nextstep.subway.unit;
 
 import nextstep.member.application.GithubClient;
-import org.springframework.boot.test.context.TestComponent;
 
 public class StubGithubClient implements GithubClient {
 
