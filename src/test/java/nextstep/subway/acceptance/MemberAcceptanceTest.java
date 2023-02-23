@@ -6,10 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.fake.FakeGithubResponses;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -91,5 +94,31 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청("Invalid Token");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ParameterizedTest(name = "깃허브 방식으로 내 정보 요청: {0}")
+    @EnumSource
+    void getMyInfoViaGithub(FakeGithubResponses user) {
+        // given
+        String accessToken = 깃허브_인증_로그인_요청(user.getCode()).jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> response = 토큰으로_내_회원_정보_조회_요청(accessToken);
+
+        // then
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(response.jsonPath().getString("email")).isEqualTo(user.getEmail())
+        );
+    }
+
+    @DisplayName("존재하지 않는 코드로 깃허브 인증 시도를 할경우 예외")
+    @Test
+    void getInvalidMyInfoViaGithub() {
+        // when
+        ExtractableResponse<Response> response = 깃허브_인증_로그인_요청("invalid code");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

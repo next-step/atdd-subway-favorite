@@ -31,13 +31,7 @@ public class TokenAuthResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorization == null || !authorization.startsWith(BEARER_TOKEN)) {
-            throw new InvalidTokenException();
-        }
-
-        authorization = authorization.replace(BEARER_TOKEN, "");
+        String authorization = getAuthorization(webRequest);
 
         if (!jwtTokenProvider.validateToken(authorization)) {
             throw new InvalidTokenException();
@@ -47,5 +41,15 @@ public class TokenAuthResolver implements HandlerMethodArgumentResolver {
         List<String> roles = jwtTokenProvider.getRoles(authorization);
 
         return new LoginMemberRequest(principal, roles);
+    }
+
+    private String getAuthorization(NativeWebRequest webRequest) {
+        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (authorization == null || !authorization.startsWith(BEARER_TOKEN)) {
+            throw new InvalidTokenException();
+        }
+
+        return authorization.replace(BEARER_TOKEN, "");
     }
 }
