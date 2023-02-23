@@ -1,9 +1,12 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 @Entity
 public class Member {
     @Id
@@ -12,6 +15,8 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
+    private String accessToken;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "MEMBER_ROLE",
@@ -37,26 +42,6 @@ public class Member {
         this.roles = roles;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -65,5 +50,9 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public void updateAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

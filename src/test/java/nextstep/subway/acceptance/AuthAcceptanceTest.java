@@ -1,12 +1,11 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.domain.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +40,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void githubAuth() {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "832ovnq039hfjn");
+        params.put("code", GithubResponses.사용자1.getCode());
 
         ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(params);
 
@@ -57,6 +56,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(params);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

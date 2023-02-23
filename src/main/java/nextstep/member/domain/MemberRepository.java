@@ -1,6 +1,5 @@
 package nextstep.member.domain;
 
-import nextstep.member.application.dto.MemberResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -11,5 +10,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     void deleteByEmail(String email);
 
-    Optional<MemberResponse> findByEmail(String email);
+    Optional<Member> findByEmail(String email);
 }

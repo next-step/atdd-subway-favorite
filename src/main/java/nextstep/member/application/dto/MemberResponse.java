@@ -20,6 +20,7 @@ public class MemberResponse {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
 
+
     public Long getId() {
         return id;
     }

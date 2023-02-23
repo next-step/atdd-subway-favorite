@@ -2,13 +2,8 @@ package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
+import nextstep.member.application.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,8 +48,14 @@ public class MemberController {
 
     @PostMapping("/login/token")
     public TokenResponse login(@RequestBody @Valid TokenRequest tokenRequest) {
-        String token  = memberService.jwtLogin(tokenRequest.getEmail(), tokenRequest.getPassword());
+        String token = memberService.jwtLogin(tokenRequest.getEmail(), tokenRequest.getPassword());
         return new TokenResponse(token);
+    }
+
+    @PostMapping("/login/github")
+    public TokenResponse login(@RequestBody @Valid GithubTokenRequest request) {
+        String accessToken = memberService.githubLogin(request.getCode());
+        return new TokenResponse(accessToken);
     }
 }
 

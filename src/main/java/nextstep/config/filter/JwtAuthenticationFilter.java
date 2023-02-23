@@ -1,4 +1,4 @@
-package nextstep.member.filter;
+package nextstep.config.filter;
 
 
 import lombok.RequiredArgsConstructor;
