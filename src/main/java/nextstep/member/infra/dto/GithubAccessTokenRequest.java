@@ -1,9 +1,15 @@
 package nextstep.member.infra.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class GithubAccessTokenRequest {
 
     private String code;
+
+    @JsonProperty("client_id")
     private String clientId;
+
+    @JsonProperty("client_secret")
     private String clientSecret;
 
     public GithubAccessTokenRequest(String code, String clientId, String clientSecret) {
