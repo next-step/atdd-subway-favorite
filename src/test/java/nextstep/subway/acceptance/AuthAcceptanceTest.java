@@ -39,13 +39,18 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubResponses.사용자1.getCode());
+        Map<String, String> params = 깃허브_인증_로그인_요청_파라미터_생성();
 
         ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(params);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    public static Map<String, String> 깃허브_인증_로그인_요청_파라미터_생성() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponses.사용자1.getCode());
+        return params;
     }
 
     @DisplayName("Github Auth fail")
