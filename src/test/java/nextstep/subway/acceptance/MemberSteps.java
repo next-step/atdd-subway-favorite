@@ -22,8 +22,7 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -81,6 +80,15 @@ public class MemberSteps {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰_인증으로_내_회원_정보_조회_요청(String token) {
+        return RestAssured.given().log().all()
+                .header("authorization", "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
                 .extract();
     }
 
