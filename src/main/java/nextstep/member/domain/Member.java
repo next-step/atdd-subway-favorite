@@ -28,6 +28,12 @@ public class Member {
     public Member() {
     }
 
+    public Member(String email, String accessToken) {
+        this.email = email;
+        this.accessToken = accessToken;
+        this.roles = List.of(RoleType.ROLE_MEMBER.name());
+    }
+
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;

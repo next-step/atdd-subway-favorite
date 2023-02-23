@@ -63,7 +63,9 @@ public class MemberService {
     }
 
     private void updateAccessToken(String email, String accessToken) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+        Member member = memberRepository.findByEmail(email)
+                        .orElseGet(() -> new Member(email, accessToken));
+
         member.updateAccessToken(accessToken);
     }
 }
