@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static nextstep.member.acceptance.AuthSteps.토큰_발급_검증;
+import static nextstep.member.acceptance.MemberSteps.깃허브_권한증서_로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -29,6 +30,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         // when
         var response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+
+        // then
+        토큰_발급_검증(response);
+    }
+
+    /**
+     * When 깃허브 권한증서를 통해 로그인 요청하면
+     * Then 토큰을 발급받는다.
+     */
+    @Test
+    @DisplayName("깃허브 권한증서를 통한 토큰 발급")
+    void githubAuth() {
+        // when
+        var response = 깃허브_권한증서_로그인_요청("code");
 
         // then
         토큰_발급_검증(response);
