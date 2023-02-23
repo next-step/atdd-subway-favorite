@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.*;
+import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +43,8 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute("email") String email) {
-        MemberResponse member = memberService.findByEmail(email);
-        return ResponseEntity.ok().body(member);
+        Member member = memberService.findByEmail(email);
+        return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @PostMapping("/login/token")

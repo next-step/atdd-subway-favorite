@@ -40,20 +40,18 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .map(MemberResponse::of)
-                .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + email));
-    }
-
     public String jwtLogin(String email, String password) {
-        Member member = findByEmailAndPassword(email, password);
+        Member member = findByEmail(email);
+        if (!member.checkPassword(password)) {
+            throw new IllegalArgumentException("유효하지 않은 비밀번호 입니다.");
+        }
+
         return jwtTokenProvider.createToken(email, member.getRoles());
     }
 
-    private Member findByEmailAndPassword(String email, String password) {
-        return memberRepository.findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + email));
     }
 
     @Transactional
