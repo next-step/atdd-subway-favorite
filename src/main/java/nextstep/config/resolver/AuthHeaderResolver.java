@@ -1,7 +1,6 @@
 package nextstep.config.resolver;
 
 import nextstep.config.annotation.AuthHeader;
-import nextstep.config.annotation.GithubAccessToken;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
