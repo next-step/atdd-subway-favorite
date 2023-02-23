@@ -9,7 +9,7 @@
 #### 기능 요구사항
 
 - [x] 토큰 생성
-- [ ] 토큰을 이용하여 내 정보 조회
+- [x] 토큰을 이용하여 내 정보 조회
 
 #### 프로그래밍 요구사항
 
@@ -42,9 +42,9 @@ Content-Type: application/json
 
 #### 내 정보 조회 기능
 
-- [ ] 로그인하여 생성한 토큰을 이용하여 내 정보를 조회하는 API
-- [ ] MemberAcceptanceTest의 getMyInfo 테스트 완성하기
-- [ ] MemberController 의 findMemberOfMine 메서드 구현하기
+- [x] 로그인하여 생성한 토큰을 이용하여 내 정보를 조회하는 API
+- [x] MemberAcceptanceTest의 getMyInfo 테스트 완성하기
+- [x] MemberController 의 findMemberOfMine 메서드 구현하기
 
 ``` Request
 GET /members/me HTTP/1.1

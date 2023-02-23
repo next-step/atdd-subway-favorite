@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public class DataLoader {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public DataLoader(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;

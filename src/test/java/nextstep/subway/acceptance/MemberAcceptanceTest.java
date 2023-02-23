@@ -82,7 +82,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
             assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE);
         });
@@ -98,7 +98,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         var response = 토큰_인증으로_내_회원_정보_조회_요청("invalid token");
 
+        System.out.println(response.jsonPath().getString("errorMessage"));
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertAll(() -> {
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+            assertThat(response.jsonPath().getString("errorMessage")).contains("is UnAuthorized token");
+        });
     }
 }

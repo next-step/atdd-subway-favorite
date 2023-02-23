@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import io.jsonwebtoken.MalformedJwtException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -36,5 +39,14 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findMemberByToken(String token) {
+        token = jwtTokenProvider.removeTypeFromToken(token);
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new MalformedJwtException(String.format("%s is UnAuthorized token", token));
+        }
+
+        return findByEmail(jwtTokenProvider.getPrincipal(token));
     }
 }
