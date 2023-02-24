@@ -1,11 +1,11 @@
 package nextstep.member.application;
 
 import nextstep.auth.AuthMember;
+import nextstep.error.exception.BusinessException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.error.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import static nextstep.error.exception.ErrorCode.MEMBER_NOT_EXISTS;
@@ -48,6 +48,12 @@ public class MemberService {
 	public MemberResponse findMemberByEmail(String email) {
 		Member member = memberRepository.findByEmail(email)
 				.orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
+		return MemberResponse.of(member);
+	}
+
+	public MemberResponse findMemberByEmailAndAccessTokenFromGithub(String email, String accessTokenFromGithub) {
+		Member member = memberRepository.findByEmail(email)
+				.orElse(memberRepository.save(new Member(email, accessTokenFromGithub, null)));
 		return MemberResponse.of(member);
 	}
 

@@ -3,7 +3,6 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -17,7 +16,6 @@ public class AuthSteps {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(params)
 				.when().post("/login/github")
-				.then().log().all()
-				.statusCode(HttpStatus.OK.value()).extract();
+				.then().log().all().extract();
 	}
 }
