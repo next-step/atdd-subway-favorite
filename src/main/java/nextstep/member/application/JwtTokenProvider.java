@@ -9,10 +9,15 @@ import java.util.List;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+
+    private final String secretKey;
+    private final Long validityInMilliseconds;
+
+    public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
+                            @Value("${security.jwt.token.expire-length}") Long validityInMilliseconds) {
+        this.secretKey = secretKey;
+        this.validityInMilliseconds = validityInMilliseconds;
+    }
 
     public String createToken(String principal, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(principal);
@@ -20,12 +25,12 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .claim("roles", roles)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .claim("roles", roles)
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
     }
 
     public String getPrincipal(String token) {

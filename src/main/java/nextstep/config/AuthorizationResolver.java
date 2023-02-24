@@ -5,6 +5,7 @@ import nextstep.member.domain.LoginUser;
 import nextstep.member.domain.exception.IllegalAccessTokenException;
 import nextstep.member.ui.LoginedUser;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -29,7 +30,7 @@ public class AuthorizationResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String authorization = webRequest.getHeader("Authorization");
+        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
         String accessToken = getAccessToken(authorization);
 
