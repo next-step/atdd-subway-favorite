@@ -7,13 +7,13 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.AuthMemberArgumentResolver;
+import nextstep.auth.AuthArgumentResolver;
 
 @Configuration
 @RequiredArgsConstructor
 public class AuthConfig implements WebMvcConfigurer {
 
-	private final AuthMemberArgumentResolver authMemberArgumentResolver;
+	private final AuthArgumentResolver authMemberArgumentResolver;
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

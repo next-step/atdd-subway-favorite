@@ -1,6 +1,4 @@
-package nextstep.auth;
-
-import java.util.List;
+package nextstep.login.github;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthMember {
-	private String email;
-	private List<String> roles;
+public class GithubAccessTokenResponse {
+	private String accessToken;
 }

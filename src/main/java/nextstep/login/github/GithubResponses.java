@@ -25,4 +25,10 @@ public enum GithubResponses {
 			.findAny()
 			.orElseThrow(() -> new IllegalArgumentException(GITHUB_NOT_MATCH_CODE.isMessage()));
 	}
+	public static GithubResponses findByToken(String accessToken) {
+		return Arrays.stream(values())
+			.filter(user -> user.accessToken.equals(accessToken))
+			.findAny()
+			.orElseThrow(() -> new IllegalArgumentException(GITHUB_NOT_MATCH_ACCESS_TOKEN.isMessage()));
+	}
 }
