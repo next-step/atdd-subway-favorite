@@ -2,6 +2,7 @@ package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.FindMemberOfMineRequest;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +41,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute("email") String email) {
-        MemberResponse member = memberService.findMemberOfMine(email);
+    public ResponseEntity<MemberResponse> findMemberOfMine(FindMemberOfMineRequest request) {
+        MemberResponse member = memberService.findMemberOfMine(request.getPrincipal());
         return ResponseEntity.ok().body(member);
     }
 }
