@@ -1,27 +1,27 @@
-package nextstep.member.application.dto;
+package nextstep.auth;
 
 import nextstep.member.domain.Member;
 
 import java.util.List;
 
-public class MemberResponse {
+public class AuthMember {
 	private Long id;
 	private String email;
 	private Integer age;
 	private List<String> roles;
 
-	public MemberResponse() {
+	protected AuthMember() {
 	}
 
-	public MemberResponse(Long id, String email, Integer age, List<String> roles) {
+	public AuthMember(Long id, String email, Integer age, List<String> roles) {
 		this.id = id;
 		this.email = email;
 		this.age = age;
 		this.roles = roles;
 	}
 
-	public static MemberResponse of(Member member) {
-		return new MemberResponse(member.getId(), member.getEmail(), member.getAge(), member.getRoles());
+	public static AuthMember of(Member member) {
+		return new AuthMember(member.getId(), member.getEmail(), member.getAge(), member.getRoles());
 	}
 
 	public Long getId() {
