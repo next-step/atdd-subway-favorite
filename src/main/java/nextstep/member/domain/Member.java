@@ -1,8 +1,21 @@
 package nextstep.member.domain;
 
-import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import nextstep.member.domain.exception.NotAuthorizedException;
+import nextstep.subway.domain.Station;
 
 @Entity
 public class Member {
@@ -19,6 +32,9 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     protected Member() {
     }
@@ -61,6 +77,10 @@ public class Member {
         return roles;
     }
 
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -69,5 +89,19 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public Favorite addFavorite(Station source, Station target) {
+        Favorite favorite = new Favorite(this, source, target);
+        favorites.add(favorite);
+        return favorite;
+    }
+
+    public void deleteFavorite(Favorite favorite) {
+        if (!favorites.contains(favorite)) {
+            throw new NotAuthorizedException(String.format("%s 님의 즐겨찾기가 아닙니다.", email));
+        }
+
+        favorites.remove(favorite);
     }
 }
