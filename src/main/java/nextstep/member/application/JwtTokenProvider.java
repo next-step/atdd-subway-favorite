@@ -9,10 +9,17 @@ import java.util.List;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+
+    private final String secretKey;
+    private final long validityInMilliseconds;
+
+    public JwtTokenProvider(
+            @Value("${security.jwt.token.secret-key}") final String secretKey,
+            @Value("${security.jwt.token.expire-length}") long validityInMilliseconds
+    ) {
+        this.secretKey = secretKey;
+        this.validityInMilliseconds = validityInMilliseconds;
+    }
 
     public String createToken(String principal, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(principal);
@@ -46,4 +53,3 @@ public class JwtTokenProvider {
         }
     }
 }
-
