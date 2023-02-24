@@ -1,6 +1,10 @@
 package nextstep.member.application;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,18 +14,19 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
+    private static final String CLAIM_NAME_ROLES = "roles";
     private final String secretKey;
     private final long validityInMilliseconds;
 
     public JwtTokenProvider(
             @Value("${security.jwt.token.secret-key}") final String secretKey,
-            @Value("${security.jwt.token.expire-length}") long validityInMilliseconds
+            @Value("${security.jwt.token.expire-length}") final long validityInMilliseconds
     ) {
         this.secretKey = secretKey;
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(String principal, List<String> roles) {
+    public String createToken(final String principal, final List<String> roles) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -30,22 +35,32 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("roles", roles)
+                .claim(CLAIM_NAME_ROLES, roles)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public String getPrincipal(final String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
-    public List<String> getRoles(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
+    public List<String> getRoles(final String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .get(CLAIM_NAME_ROLES, List.class);
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(final String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {

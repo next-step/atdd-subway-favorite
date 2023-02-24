@@ -9,38 +9,42 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
+@RequestMapping("/members")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(final MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    @PostMapping
+    public ResponseEntity<Void> createMember(@RequestBody final MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse> findMember(@PathVariable final Long id) {
         MemberResponse member = memberService.findMemberById(id);
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberResponse> updateMember(
+            @PathVariable final Long id,
+            @RequestBody final MemberRequest param
+    ) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MemberResponse> deleteMember(@PathVariable final Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/me")
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMemberOfMine() {
         // TODO: 자신의 정보 조회
         MemberResponse member = null;

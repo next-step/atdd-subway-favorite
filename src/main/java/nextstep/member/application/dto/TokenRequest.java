@@ -1,22 +1,14 @@
 package nextstep.member.application.dto;
 
+import lombok.Getter;
+
+@Getter
 public class TokenRequest {
-    private String email;
-    private String password;
+    private final String email;
+    private final String password;
 
-    public TokenRequest() {
-    }
-
-    public TokenRequest(String email, String password) {
+    public TokenRequest(final String email, final String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }
