@@ -34,7 +34,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void bearerAuthFail() {
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, INVALID_PASSWORD);
 
-        expectHttpStatus(response, HttpStatus.BAD_REQUEST);
+        expectHttpStatus(response, HttpStatus.UNAUTHORIZED);
     }
 
     @DisplayName("Github Auth")
@@ -62,7 +62,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(params);
 
-        expectHttpStatus(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        expectHttpStatus(response, HttpStatus.UNAUTHORIZED);
     }
 
 

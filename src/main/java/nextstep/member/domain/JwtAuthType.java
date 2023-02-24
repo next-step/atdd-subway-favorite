@@ -18,7 +18,8 @@ public class JwtAuthType extends AbstractAuthType {
     public Member findMember(String header) {
         String token = parseAccessToken(header);
         String principal = jwtTokenProvider.getPrincipal(token);
-        return memberService.findByEmail(principal);
+        return memberService.findByEmail(principal)
+                .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + principal));
     }
 
     @Override

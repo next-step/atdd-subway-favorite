@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.config.exception.AuthenticationException;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -9,6 +10,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Service
@@ -41,17 +44,14 @@ public class MemberService {
     }
 
     public String jwtLogin(String email, String password) {
-        Member member = findByEmail(email);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthenticationException("이메일로 회원을 찾을 수 업습니다. " + email));
+
         if (!member.checkPassword(password)) {
-            throw new IllegalArgumentException("유효하지 않은 비밀번호 입니다.");
+            throw new AuthenticationException("유효하지 않은 비밀번호 입니다.");
         }
 
         return jwtTokenProvider.createToken(email, member.getRoles());
-    }
-
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + email));
     }
 
     @Transactional
@@ -72,5 +72,9 @@ public class MemberService {
     public Member findByAccessToken(String token) {
         return memberRepository.findByAccessToken(token)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public Optional<Member> findByEmail(String principal) {
+        return memberRepository.findByEmail(principal);
     }
 }
