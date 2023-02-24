@@ -4,7 +4,10 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.infrastructure.GithubProfileResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -20,6 +23,10 @@ public class MemberService {
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
+    }
+
+    public Member createMember(GithubProfileResponse githubProfile) {
+        return memberRepository.save(githubProfile.toMember());
     }
 
     public MemberResponse findMember(Long id) {
@@ -41,7 +48,7 @@ public class MemberService {
             throw new IllegalArgumentException();
         }
         String email = tokenProvider.getPrincipal(token);
-        Member member = findMemberByEmail(email);
+        Member member = findMemberByEmail(email).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
@@ -50,8 +57,7 @@ public class MemberService {
             .orElseThrow(RuntimeException::new);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-            .orElseThrow(RuntimeException::new);
+    public Optional<Member> findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }

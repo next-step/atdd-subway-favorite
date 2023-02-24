@@ -6,7 +6,7 @@ import nextstep.DataLoader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,23 +33,22 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
-    @DisplayName("Member Github Auth")
+    @DisplayName("Github Member Auth")
     @ParameterizedTest
-    @ValueSource(strings = {"832ovnq039hfjn", "mkfo0aFa03m", "m-a3hnfnoew92", "nvci383mciq0oq"})
-    void memberGithubAuth(String memberCode) {
-        ExtractableResponse<Response> response = 깃헙_로그인_요청(memberCode);
+    @EnumSource(GithubResponse.class)
+    void githubMemberAuth(GithubResponse githubResponse) {
+        ExtractableResponse<Response> response = 깃헙_로그인_요청(githubResponse.getCode());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
-    @DisplayName("NonMember Github Auth")
+    @DisplayName("Github NonMember Auth")
     @Test
-    void nonMemberGithubAuth() {
+    void githubNonMemberAuth() {
         ExtractableResponse<Response> response = 깃헙_로그인_요청(NON_MEMBER_CODE);
 
-        // 400에러가 발생한 경우에는 회원가입을 진행해야 한다
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
 

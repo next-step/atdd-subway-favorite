@@ -3,8 +3,9 @@ package nextstep.member.application;
 import nextstep.member.application.dto.GithubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.GithubClient;
 import nextstep.member.domain.Member;
+import nextstep.member.infrastructure.GithubClient;
+import nextstep.member.infrastructure.GithubProfileResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +22,7 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest request) {
-        Member member = memberService.findMemberByEmail(request.getEmail());
+        Member member = memberService.findMemberByEmail(request.getEmail()).orElseThrow(RuntimeException::new);
         if (!member.checkPassword(request.getPassword())) {
             throw new IllegalArgumentException();
         }
@@ -30,8 +31,12 @@ public class AuthService {
     }
 
     public TokenResponse getGithubToken(GithubTokenRequest request) {
-        String token = githubClient.getAccessTokenFromGithub(request.getCode())
-            .orElseThrow(IllegalArgumentException::new);
+        String githubAccessToken = githubClient.getAccessTokenFromGithub(request.getCode());
+        GithubProfileResponse githubProfileResponse = githubClient.getGithubProfileFromGithub(githubAccessToken);
+        Member member = memberService.findMemberByEmail(githubProfileResponse.getEmail()).orElseGet(
+            () -> memberService.createMember(githubProfileResponse)
+        );
+        String token = tokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
     }
 }

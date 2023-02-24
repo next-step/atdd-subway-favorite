@@ -1,4 +1,4 @@
-package nextstep.member.infrastructure;
+package nextstep.subway.acceptance;
 
 public enum GithubResponse {
     사용자1("832ovnq039hfjn", "access_token_1", "email1@email.com"),
