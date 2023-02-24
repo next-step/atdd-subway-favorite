@@ -89,4 +89,12 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static void AccessToken이_JWT_토큰_형식으로_반환된다(ExtractableResponse<Response> 로그인_요청_결과) {
+        assertThat(로그인_요청_결과.jsonPath().getString("accessToken").split("\\.")).hasSize(3);
+    }
+
+    public static void 로그인이_성공한다(ExtractableResponse<Response> 로그인_요청_결과) {
+        assertThat(로그인_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 }

@@ -1,5 +1,6 @@
 package nextstep.unit.login;
 
+import nextstep.fixture.MemberFixture;
 import nextstep.login.application.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +9,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
+import static nextstep.fixture.MemberFixture.회원_ALEX;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JWT Token 생성 테스트")
@@ -21,13 +21,14 @@ class JwtTokenProviderTest {
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     class 토큰_생성 {
 
+        private final MemberFixture 인증_주체 = 회원_ALEX;
         private JwtTokenProvider 토큰_생성기 = new JwtTokenProvider(SECRET_KEY, 3600000);
         private String accessToken;
 
 
         @BeforeEach
         void setUp() {
-            accessToken = 토큰_생성기.createToken("test@test.com", List.of("user"));
+            accessToken = 토큰_생성기.createToken(인증_주체.이메일(), 인증_주체.역할_목록());
         }
 
         @Nested
@@ -40,15 +41,15 @@ class JwtTokenProviderTest {
                 assertThat(토큰_생성기.validateToken(accessToken)).isTrue();
             }
         }
-        
+
         @Nested
         @DisplayName("토큰의 인증 주체를 조회하면")
         class Context_with_get_principal {
-        
+
             @Test
             @DisplayName("인증 주체의 이메일을 반환한다")
             void it_returns_email() throws Exception {
-                assertThat(토큰_생성기.getPrincipal(accessToken)).isEqualTo("test@test.com");
+                assertThat(토큰_생성기.getPrincipal(accessToken)).isEqualTo(인증_주체.이메일());
             }
         }
 
@@ -59,7 +60,7 @@ class JwtTokenProviderTest {
             @Test
             @DisplayName("갖고 있는 권한 목록을 반환한다")
             void it_returns_role_list() throws Exception {
-                assertThat(토큰_생성기.getRoles(accessToken)).containsExactly("user");
+                assertThat(토큰_생성기.getRoles(accessToken)).containsAll(인증_주체.역할_목록());
             }
         }
     }

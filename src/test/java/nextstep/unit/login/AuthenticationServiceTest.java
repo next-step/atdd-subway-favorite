@@ -2,32 +2,39 @@ package nextstep.unit.login;
 
 import nextstep.login.application.AuthenticationService;
 import nextstep.login.application.dto.LoginResponse;
-import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
+import static nextstep.fixture.MemberFixture.회원_ALEX;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 @DisplayName("로그인 인증 기능")
+@SpringBootTest
+@Transactional
 class AuthenticationServiceTest {
 
     @Autowired
     private AuthenticationService authenticationService;
 
-    @Autowired
-    private MemberService memberService;
+    @Nested
+    @DisplayName("로그인 진행 시")
+    class Context_with_login {
 
-    @Test
-    @DisplayName("로그인 테스트")
-    void test() {
-        memberService.createMember(new MemberRequest("dev.gibeom@gmail.com", "서비스로가는길", 27));
+        @Test
+        @DisplayName("Jwt 토큰으로 생성된 AccessToken을 반환한다")
+        void it_returns_access_token_made_with_jwt_token() throws Exception {
+            LoginResponse login = authenticationService.login(회원_ALEX.이메일(), 회원_ALEX.비밀번호());
 
-        LoginResponse login = authenticationService.login("dev.gibeom@gmail.com", "서비스로가는길");
+            JWT_토큰_형식으로_반환된다(login);
+        }
+    }
 
+
+    private void JWT_토큰_형식으로_반환된다(LoginResponse login) {
         assertThat(login.getAccessToken().split("\\.")).hasSize(3);
     }
 }
