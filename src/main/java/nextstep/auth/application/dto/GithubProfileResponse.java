@@ -1,7 +1,5 @@
 package nextstep.auth.application.dto;
 
-import nextstep.auth.application.fake.GithubResponses;
-
 public class GithubProfileResponse {
     private String email;
 
