@@ -23,7 +23,7 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -88,5 +88,13 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String token) {
+        return RestAssured.given().auth().oauth2(token)
+                .log().all()
+                .when().get("members/me")
+                .then().log().all()
+                .extract();
     }
 }

@@ -32,4 +32,8 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public MemberResponse findMemberByEmail(String email) {
+        return MemberResponse.of(memberRepository.findByEmail(email).orElseThrow(RuntimeException::new));
+    }
 }
