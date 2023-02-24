@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private AuthService authService;
+    private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository, AuthService authService) {
+    public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.authService = authService;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -35,10 +33,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMine(String accessToken) {
-        String email = authService.getEmail(accessToken);
+    public MemberResponse findMine(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
-
         return MemberResponse.of(member);
     }
 }

@@ -1,13 +1,11 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,16 +71,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+        ExtractableResponse<Response> response = 내_정보_조회(accessToken);
 
-        var response =  RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .given().header("authorization", "Bearer "+accessToken)
-                .when().get("/members/me")
-                .then().log().all().extract();
-
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-
-        assertAll(() -> assertThat(memberResponse.getEmail()).isEqualTo(EMAIL),
-                () -> assertThat(memberResponse.getAge()).isEqualTo(AGE));
+        assertAll(() -> assertThat(response.as(MemberResponse.class).getEmail()).isEqualTo(EMAIL),
+                () -> assertThat(response.as(MemberResponse.class).getAge()).isEqualTo(AGE));
     }
 }

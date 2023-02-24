@@ -26,6 +26,20 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    public static ExtractableResponse<Response> 깃헙_인증_로그인_요청(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+        params.put("clientId", "");
+        params.put("clientSecret", "");
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -74,6 +88,16 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 리다이렉트_요청(ExtractableResponse<Response> response) {
+        String redirectUrl = response.response().getHeader("Location");
+
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(redirectUrl)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
         return RestAssured.given().log().all()
                 .auth().preemptive().basic(username, password)
@@ -88,5 +112,13 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회(String accessToken) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .given().header("authorization", "Bearer "+ accessToken)
+                .when().get("/members/me")
+                .then().log().all().extract();
     }
 }
