@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.utils;
 
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-import static nextstep.subway.utils.GithubResponses.사용자1;
-import static nextstep.subway.utils.GithubResponses.사용자2;
-import static nextstep.subway.utils.GithubResponses.사용자3;
-import static nextstep.subway.utils.GithubResponses.사용자4;
+import static nextstep.utils.GithubResponses.사용자1;
+import static nextstep.utils.GithubResponses.사용자2;
+import static nextstep.utils.GithubResponses.사용자3;
+import static nextstep.utils.GithubResponses.사용자4;
 
 @Profile("test")
 @Component

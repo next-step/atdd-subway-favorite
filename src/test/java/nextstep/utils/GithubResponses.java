@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.utils;
 
 public enum GithubResponses {
     사용자1("832ovnq039hfjn", "access_token_1", "email1@email.com"),

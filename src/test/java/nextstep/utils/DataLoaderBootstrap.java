@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.utils;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;

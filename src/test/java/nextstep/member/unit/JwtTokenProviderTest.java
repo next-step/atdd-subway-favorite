@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static nextstep.subway.utils.DataLoader.ADMIN_EMAIL;
-import static nextstep.subway.utils.DataLoader.ADMIN_ROLES;
+import static nextstep.utils.DataLoader.ADMIN_EMAIL;
+import static nextstep.utils.DataLoader.ADMIN_ROLES;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
