@@ -1,7 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.exception.AuthenticationTokenException;
-import nextstep.exception.MemberInvalidException;
+import nextstep.exception.MemberNotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -10,13 +9,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private static final String BEARER = "Bearer ";
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -38,22 +34,12 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMemberByToken(String accessToken) {
-        String token = parseAccessToken(accessToken);
-        boolean validateToken = jwtTokenProvider.validateToken(token);
-        if (!validateToken) {
-            throw new AuthenticationTokenException();
-        }
-        String principal = jwtTokenProvider.getPrincipal(token);
-        Member member = memberRepository.findByEmail(principal)
-                .orElseThrow((MemberInvalidException::new));
-        return MemberResponse.of(member);
+    public MemberResponse findMemberByEmail(String email) {
+        return MemberResponse.of(findByEmail(email));
     }
 
-    private String parseAccessToken(String accessToken) {
-        if (accessToken.startsWith(BEARER)) {
-            return accessToken.substring(7);
-        }
-        throw new AuthenticationTokenException();
+    private Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
     }
 }
