@@ -20,7 +20,7 @@ public class LoginService {
 	}
 
 	public TokenResponse createToken(TokenRequest request) {
-		final Member member = findMember(request);
+		final Member member = findMemberByEmail(request.getEmail());
 		member.validPassword(request.getPassword());
 
 		final String accessToken = jwtTokenProvider.createToken(request.getEmail(), member.getRoles());
@@ -28,8 +28,8 @@ public class LoginService {
 		return TokenResponse.of(accessToken);
 	}
 
-	private Member findMember(TokenRequest request) {
-		return memberRepository.findByEmail(
-			request.getEmail()).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_MEMBER_BY_EMAIL));
+	private Member findMemberByEmail(String email) {
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_MEMBER_BY_EMAIL));
 	}
 }
