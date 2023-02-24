@@ -1,6 +1,6 @@
 package nextstep.subway.acceptance.member;
 
-import nextstep.member.ui.GitHubFakeController;
+import nextstep.fake.GithubResponses;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Github 권한증서 인증")
     @Test
     void githubAuth() {
-        var response = 깃허브_권한증서로_로그인_요청(GitHubFakeController.GithubResponses.관리자.getCode());
+        var response = 깃허브_권한증서로_로그인_요청(GithubResponses.관리자.getCode());
 
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -69,14 +69,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("깃허브 로그인 후 내 정보 확인")
     @Test
     void checkMyProfile() {
-        var loginResponse = 깃허브_권한증서로_로그인_요청(GitHubFakeController.GithubResponses.관리자.getCode());
+        var loginResponse = 깃허브_권한증서로_로그인_요청(GithubResponses.관리자.getCode());
         String token = loginResponse.jsonPath().getString("accessToken");
 
         var response = 토큰_인증으로_내_회원_정보_조회_요청(token);
 
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.jsonPath().getString("email")).isEqualTo(GitHubFakeController.GithubResponses.관리자.getEmail());
+            assertThat(response.jsonPath().getString("email")).isEqualTo(GithubResponses.관리자.getEmail());
             assertThat(response.jsonPath().getInt("age")).isEqualTo(20);
         });
     }
@@ -89,14 +89,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("미가입 회원 깃허브 로그인 후 내 정보 확인")
     @Test
     void registerAndcheckMyProfile() {
-        var loginResponse = 깃허브_권한증서로_로그인_요청(GitHubFakeController.GithubResponses.사용자4.getCode());
+        var loginResponse = 깃허브_권한증서로_로그인_요청(GithubResponses.사용자4.getCode());
         String token = loginResponse.jsonPath().getString("accessToken");
 
         var response = 토큰_인증으로_내_회원_정보_조회_요청(token);
 
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.jsonPath().getString("email")).isEqualTo(GitHubFakeController.GithubResponses.사용자4.getEmail());
+            assertThat(response.jsonPath().getString("email")).isEqualTo(GithubResponses.사용자4.getEmail());
             assertThat(response.jsonPath().getString("age")).isNull();
         });
     }

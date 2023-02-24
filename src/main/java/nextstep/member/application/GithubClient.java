@@ -27,16 +27,16 @@ public class GithubClient {
     }
 
     public String getAccessTokenFromGithub(String code) {
-        var client = githubProperties.client;
-        var url = githubProperties.url;
+        var client = githubProperties.getClient();
+        var url = githubProperties.getUrl();
 
-        GithubAccessTokenRequest body = new GithubAccessTokenRequest(code, client.id, client.secret);
+        GithubAccessTokenRequest body = new GithubAccessTokenRequest(code, client.getId(), client.getSecret());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity<>(body, headers);
         String accessToken = restTemplate
-            .exchange(url.accessToken, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+            .exchange(url.getAccessToken(), HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
             .getBody()
             .getAccessToken();
 
@@ -47,14 +47,14 @@ public class GithubClient {
     }
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
-        var url = githubProperties.url;
+        var url = githubProperties.getUrl();
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "token " + accessToken);
 
         HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
         try {
             return restTemplate
-                .exchange(url.profile, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .exchange(url.getProfile(), HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException();
