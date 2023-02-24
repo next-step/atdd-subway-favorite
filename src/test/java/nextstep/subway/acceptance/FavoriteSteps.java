@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public class FavoriteSteps {
         params.put("target", targetId);
 
         return RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "token accessToken_1")
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
