@@ -47,6 +47,10 @@ public class Member {
         this.roles = roles;
     }
 
+    public Member(final String email) {
+        this(email, null, null);
+    }
+
     public Long getId() {
         return id;
     }

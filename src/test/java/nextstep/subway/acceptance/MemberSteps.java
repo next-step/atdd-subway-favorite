@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -24,6 +25,12 @@ public class MemberSteps {
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static String 베어러_인증_로그인_요청하고_토큰_반환(final String email, final String password) {
+        return 베어러_인증_로그인_요청(email, password)
+                .as(TokenResponse.class)
+                .getAccessToken();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -98,5 +105,28 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email) {
+        assertThat(response.jsonPath().getString("id")).isNotNull();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+    }
+
+    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(final String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/fake/login/github")
+                .then().log().all()
+                .extract();
+    }
+
+    public static String 깃허브_인증_로그인_요청하고_토큰_반환(final String code) {
+        return 깃허브_인증_로그인_요청(code)
+                .as(TokenResponse.class)
+                .getAccessToken();
     }
 }

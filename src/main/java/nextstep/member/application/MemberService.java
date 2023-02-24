@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    public final JwtTokenProvider jwtTokenProvider;
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
@@ -45,5 +44,10 @@ public class MemberService {
         member.checkPassword(tokenRequest.getPassword());
 
         return member;
+    }
+
+    public Member findByEmailOrCreate(final String email) {
+        return memberRepository.findByEmail(email)
+                .orElseGet(() -> memberRepository.save(new Member(email)));
     }
 }

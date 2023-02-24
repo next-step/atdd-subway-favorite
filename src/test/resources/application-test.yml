@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active:
+      on-profile: test
+
+github:
+  client:
+    id: test
+    secret: test-secret
