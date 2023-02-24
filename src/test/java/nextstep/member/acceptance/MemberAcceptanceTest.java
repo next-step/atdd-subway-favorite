@@ -1,6 +1,6 @@
 package nextstep.member.acceptance;
 
-import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.베어러_인증으로_내_회원_정보_조회_요청;
 import static nextstep.member.acceptance.MemberSteps.유효하지_않은_토큰으로_내_정보를_조회시_예외_처리한다;
 import static nextstep.member.acceptance.MemberSteps.회원_삭제_요청;

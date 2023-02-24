@@ -12,19 +12,6 @@ import org.springframework.http.MediaType;
 
 public class MemberSteps {
 
-    public static ExtractableResponse<Response> 베어러_인증_로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -76,16 +63,6 @@ public class MemberSteps {
                 .given().log().all()
                 .when().delete(uri)
                 .then().log().all().extract();
-    }
-
-    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String username, String password) {
-        return RestAssured.given().log().all()
-                .auth().preemptive().basic(username, password)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
     }
 
     public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(final String token) {
