@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.config.exception.AuthenticationException;
 import nextstep.member.application.MemberService;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ public class GithubAuthType extends AbstractAuthType {
     @Override
     public void validate(String header) {
         if (!match(header)) {
-            throw new IllegalArgumentException();
+            throw new AuthenticationException();
         }
     }
 

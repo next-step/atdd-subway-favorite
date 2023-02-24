@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.config.exception.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import org.springframework.stereotype.Component;
@@ -23,12 +24,12 @@ public class JwtAuthType extends AbstractAuthType {
     @Override
     public void validate(String header) {
         if (!match(header)) {
-            throw new IllegalArgumentException("jwt 인증 헤더 정보가 유효하지 않습니다");
+            throw new AuthenticationException("jwt 인증 헤더 정보가 유효하지 않습니다");
         }
 
         String token = parseAccessToken(header);
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 jwt 토큰 입니다.");
+            throw new AuthenticationException("유효하지 않은 jwt 토큰 입니다.");
         }
     }
 
