@@ -1,5 +1,7 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubLoginRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,10 @@ public class LoginService {
         member.checkPassword(tokenRequest.getPassword());
 
         return jwtTokenProvider.createToken(member.getId().toString(), member.getRoles());
+    }
+
+    public GithubAccessTokenResponse githubLogin(GithubLoginRequest tokenRequest) {
+        return null;
     }
 
 }
