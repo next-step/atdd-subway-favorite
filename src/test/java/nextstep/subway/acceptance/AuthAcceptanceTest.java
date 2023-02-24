@@ -2,8 +2,12 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.DataLoader;
+import nextstep.member.domain.Member;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
@@ -17,6 +21,15 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private String INVALID_EMAIL = "admin2@email.com";
     private String INVALID_PASSWORD = "password2";
 
+    @Autowired
+    private DataLoader dataLoader;
+
+    @BeforeEach
+    public void setUpUser() {
+        dataLoader.addMember(new Member(EMAIL,PASSWORD,AGE));
+        dataLoader.loadData();
+    }
+
     /**
      * Given 회원을 생성한다.
      * When 베어러 인증으로 토큰을 생성한다.
@@ -25,9 +38,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 정상 실행")
     @Test
     void bearerAuth() {
-        //Given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         //When
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
 
@@ -43,9 +53,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bear Auth 이메일 오입력시")
     @Test
     void bearerAuth2() {
-        //Given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         //When
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(INVALID_EMAIL, PASSWORD);
 
@@ -61,9 +68,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bear Auth 비밀번호 오입력시")
     @Test
     void bearerAuth3() {
-        //Given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         //When
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, INVALID_PASSWORD);
 
