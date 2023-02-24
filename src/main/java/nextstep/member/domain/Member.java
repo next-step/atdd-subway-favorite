@@ -12,6 +12,7 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "MEMBER_ROLE",
@@ -63,7 +64,9 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public void validatePassword(String password) {
+        if (!Objects.equals(this.password, password)) {
+            throw new RuntimeException();
+        }
     }
 }
