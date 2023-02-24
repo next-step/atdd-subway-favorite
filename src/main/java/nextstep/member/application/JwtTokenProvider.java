@@ -57,7 +57,7 @@ public class JwtTokenProvider {
     }
 
     public String parseJwt(String authorizationHeader) {
-        if (hasBearerToken(authorizationHeader)) {
+        if (!hasBearerToken(authorizationHeader)) {
             throw new IllegalArgumentException("올바른 인증 정보를 요청해주세요.");
         }
 
@@ -65,7 +65,9 @@ public class JwtTokenProvider {
     }
 
     private boolean hasBearerToken(String authorizationHeader) {
-        return authorizationHeader == null || !authorizationHeader.startsWith(BEARER);
+        return authorizationHeader != null &&
+            authorizationHeader.startsWith(BEARER) &&
+            authorizationHeader.length() > BEARER.length();
     }
 }
 
