@@ -39,12 +39,12 @@ public class MemberService {
             throw new NotAuthorizedException("인증정보가 유효하지 않습니다.");
         }
 
-        return MemberResponse.of(findByUserEmail(principal));
+        return MemberResponse.of(findByPrincipal(principal));
     }
 
-    public Member findByUserEmail(String email) {
-        return memberRepository.findByEmail(email)
-            .orElseThrow(() -> new NotFoundException(email + " 사용자를 찾을 수 없습니다."));
+    public Member findByPrincipal(String principal) {
+        return memberRepository.findByEmail(principal)
+            .orElseThrow(() -> new NotAuthorizedException(principal + " 사용자를 찾을 수 없습니다."));
     }
 
     @Transactional

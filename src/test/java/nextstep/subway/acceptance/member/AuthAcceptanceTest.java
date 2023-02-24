@@ -13,6 +13,7 @@ import static nextstep.subway.acceptance.member.MemberSteps.토큰_인증으로_
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+ @DisplayName("인증 관련 기능")
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";

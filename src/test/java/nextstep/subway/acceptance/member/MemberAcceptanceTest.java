@@ -17,6 +17,7 @@ import static nextstep.subway.acceptance.member.MemberSteps.회원_정보_조회
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("회원 관리 기능")
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -43,7 +44,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
-
     }
 
     @DisplayName("회원 정보를 수정한다.")
