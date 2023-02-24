@@ -1,8 +1,11 @@
 package nextstep.member.ui;
 
+import nextstep.member.application.JwtTokenProvider;
+import nextstep.member.application.LoginService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +14,8 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private MemberService memberService;
+
+    private JwtTokenProvider jwtTokenProvider;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -41,9 +46,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+
+        MemberResponse member = memberService.findMember(accessToken);
         return ResponseEntity.ok().body(member);
     }
 }
