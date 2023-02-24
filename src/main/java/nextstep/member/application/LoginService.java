@@ -6,7 +6,6 @@ import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubProfileResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.exception.NotAuthorizedException;
-import nextstep.member.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,20 +35,13 @@ public class LoginService {
         return TokenResponse.of(token);
     }
 
-    @Transactional
     public TokenResponse authorize(GithubAccessTokenRequest request) {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(request.getCode())
             .orElseThrow(() -> new NotAuthorizedException("인증정보가 유효하지 않습니다."));
         GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
 
         String githubEmail = githubProfile.getEmail();
-        Member member;
-        try {
-            member = memberService.findByUserEmail(githubEmail);
-        } catch (NotFoundException e) {
-            member = memberService.createMember(githubEmail);
-        }
-
+        Member member = memberService.findOrCreateMember(githubEmail);
         return TokenResponse.of(jwtTokenProvider.createToken(githubEmail, member.getRoles()));
     }
 }

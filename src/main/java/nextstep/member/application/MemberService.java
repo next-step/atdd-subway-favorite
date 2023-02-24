@@ -25,8 +25,9 @@ public class MemberService {
     }
 
     @Transactional
-    public Member createMember(String email) {
-        return memberRepository.save(new Member(email));
+    public Member findOrCreateMember(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseGet(() -> memberRepository.save(new Member(email)));
     }
 
     public MemberResponse findMember(Long id) {
