@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.config.Interceptor.AuthenticationInterceptor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +34,7 @@ public class MemberSteps {
         String uri = response.header("Location");
 
         return RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "token access_token_1")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
                 .then().log().all()
@@ -49,6 +51,7 @@ public class MemberSteps {
 
         return RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "token access_token_1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
@@ -59,6 +62,7 @@ public class MemberSteps {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "token access_token_1")
                 .when().delete(uri)
                 .then().log().all().extract();
     }
