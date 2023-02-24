@@ -35,7 +35,7 @@ public class LoginService {
         );
     }
 
-    private static void validatePassword(TokenRequest tokenRequest, Member member) {
+    private void validatePassword(TokenRequest tokenRequest, Member member) {
         if (!member.getPassword().equals(tokenRequest.getPassword())) {
             throw new MemberNotFoundException("잘못된 비밀번호 입니다.");
         }
