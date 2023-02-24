@@ -32,7 +32,8 @@ public class LoginService {
     }
 
     public TokenResponse authorize(GithubAccessTokenRequest request) {
-        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(request.getCode());
+        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(request.getCode())
+            .orElseThrow(() -> new NotAuthorizedException("인증정보가 유효하지 않습니다."));
         GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
 
         String githubEmail = githubProfile.getEmail();
