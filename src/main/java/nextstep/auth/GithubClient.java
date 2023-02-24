@@ -10,8 +10,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import nextstep.login.github.GithubAccessTokenRequest;
 import nextstep.login.github.GithubAccessTokenResponse;
+import nextstep.login.github.GithubLoginRequest;
 import nextstep.login.github.GithubProfileResponse;
 
 @Component
@@ -27,7 +27,7 @@ public class GithubClient {
 
 
 	public String getAccessTokenFromGithub(String code) {
-		GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(code, clientId, clientSecret);
+		GithubLoginRequest githubAccessTokenRequest = new GithubLoginRequest(code, clientId, clientSecret);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);

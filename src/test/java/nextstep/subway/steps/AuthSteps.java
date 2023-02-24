@@ -29,26 +29,8 @@ public class AuthSteps {
 		return response;
 	}
 
-	public static ExtractableResponse<Response> tokenAuth(String accessToken) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "token " + accessToken);
-
-		ExtractableResponse<Response> response = RestAssured
-			.given().log().all()
-			.headers(headers)
-			.when().get("/login/github")
-			.then().log().all()
-			.extract();
-		return response;
-	}
-
-	public static void github_정상_응답(ExtractableResponse<Response> response, String accessToken) {
+	public static void github_정상_응답(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.jsonPath().getString("accessToken")).isEqualTo(accessToken);
-	}
-
-	public static void github_실패_응답(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
 	public static void github_정상_유저정보_응답(ExtractableResponse<Response> response, String email) {

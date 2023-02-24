@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GithubAccessTokenRequest {
+public class GithubLoginRequest {
 	private String code;
 	private String clientId;
 	private String clientSecret;

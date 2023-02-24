@@ -1,6 +1,6 @@
 package nextstep.subway.unit;
 
-import static nextstep.login.github.GithubResponses.*;
+import static nextstep.subway.utils.GithubTestResponses.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.stream.Stream;
@@ -21,7 +21,7 @@ public class GithubClientTest extends AcceptanceTest {
 	@Autowired
 	private GithubClient githubClient;
 
-	@DisplayName("올바른 code 전달 시 AccessToken 제공")
+	@DisplayName("권한증서(code)로 AccessToken 발급")
 	@MethodSource(value = {"githubResponsesCodeAndAccessToken"})
 	@ParameterizedTest
 	void getAccessTokenFromGithubTest(String code, String accessToken) {
@@ -38,7 +38,7 @@ public class GithubClientTest extends AcceptanceTest {
 		);
 	}
 
-	@DisplayName("올바른 AccessToken 전달 시 유저정보 제공")
+	@DisplayName("AccessToken으로 Github 프로필 조회 정보 제공")
 	@MethodSource(value = {"githubResponsesAccessTokenAndEmail"})
 	@ParameterizedTest
 	void getGithubProfileFromGithubTest(final String accessToken, final String email) {
