@@ -6,9 +6,12 @@ import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubProfileResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.exception.NotAuthorizedException;
+import nextstep.member.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+@Transactional(readOnly = true)
 @Service
 public class LoginService {
 
@@ -23,22 +26,30 @@ public class LoginService {
     }
 
     public TokenResponse authorize(TokenRequest request) {
-        Member findMember = memberService.findByUserEmail(request.getEmail())
-                .filter(member -> member.checkPassword(request.getPassword()))
-                .orElseThrow(() -> new NotAuthorizedException("이메일 또는 비밀번호가 일치하지 않습니다."));
+        Member findMember = memberService.findByUserEmail(request.getEmail());
+
+        if (!findMember.checkPassword(request.getPassword())) {
+            throw new NotAuthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
+        }
 
         String token = jwtTokenProvider.createToken(findMember.getEmail(), findMember.getRoles());
         return TokenResponse.of(token);
     }
 
+    @Transactional
     public TokenResponse authorize(GithubAccessTokenRequest request) {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(request.getCode())
             .orElseThrow(() -> new NotAuthorizedException("인증정보가 유효하지 않습니다."));
         GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
 
         String githubEmail = githubProfile.getEmail();
-        Member member = memberService.findByUserEmail(githubEmail)
-                .orElseGet(() -> memberService.createMember(githubEmail));
+        Member member;
+        try {
+            member = memberService.findByUserEmail(githubEmail);
+        } catch (NotFoundException e) {
+            member = memberService.createMember(githubEmail);
+        }
+
         return TokenResponse.of(jwtTokenProvider.createToken(githubEmail, member.getRoles()));
     }
 }

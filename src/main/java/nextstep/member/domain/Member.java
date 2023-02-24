@@ -41,10 +41,6 @@ public class Member {
         this.roles = roles;
     }
 
-    public static Member of(String email) {
-        return new Member(email);
-    }
-
     public Long getId() {
         return id;
     }
