@@ -11,23 +11,26 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.acceptance.AuthSteps.깃허브_인증_로그인_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    private static final Long SOURCE_ID = 0L;
-    private static final Long TARGET_ID = 1L;
+    private static final Long SOURCE_ID = 1L;
+    private static final Long TARGET_ID = 2L;
 
     /**
-     * Given : jwt 로그인을 하고
+     * Given : 깃허브 로그인을 하고
      * When  : 구간 즐겨찾기를 하면
      * Then  : 즐겨찾기가 등록된다
      */
     @DisplayName("즐거찾기 등록")
     @Test
     void favoriteCreate() {
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(SOURCE_ID, TARGET_ID);
+        ExtractableResponse<Response> 깃허브_로그인_응답 = 깃허브_인증_로그인_요청(깃허브_인증_로그인_요청_파라미터_생성());
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(깃허브_로그인_응답, SOURCE_ID, TARGET_ID);
         expectHttpStatus(response, HttpStatus.CREATED);
     }
 

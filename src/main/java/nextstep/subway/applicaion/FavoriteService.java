@@ -1,0 +1,25 @@
+package nextstep.subway.applicaion;
+
+import lombok.RequiredArgsConstructor;
+import nextstep.member.domain.AuthTypes;
+import nextstep.member.domain.Member;
+import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
+import nextstep.subway.domain.Favorite;
+import nextstep.subway.domain.FavoriteRepository;
+import nextstep.subway.domain.StationRepository;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class FavoriteService {
+
+    private final FavoriteRepository favoriteRepository;
+    private final StationRepository stationRepository;
+    private final AuthTypes authTypes;
+
+    public Favorite save(FavoriteCreateRequest request, String header) {
+        Member member = authTypes.findAuth(header).findMember(header);
+        Favorite favorite = request.toEntity(stationRepository::findById, member); // request에서 station id를 꺼내서 조회하는게 좋을까?
+        return favoriteRepository.save(favorite);
+    }
+}

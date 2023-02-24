@@ -10,15 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FavoriteSteps {
-    public static ExtractableResponse<Response> 즐겨찾기_등록_요청(Long sourceId, Long targetId) {
+    public static ExtractableResponse<Response> 즐겨찾기_등록_요청(ExtractableResponse<Response> 깃허브_로그인_응답, Long sourceId, Long targetId) {
+        String accessToken = 깃허브_로그인_응답.jsonPath().getString("accessToken");
+
         Map<String, Long> params = new HashMap<>();
         params.put("source", sourceId);
         params.put("target", targetId);
 
         return RestAssured.given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "token accessToken_1")
-                .body(params)
+                .header(HttpHeaders.AUTHORIZATION, "token " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
                 .when()
                 .post("/favorites")
                 .then().log().all()
