@@ -5,6 +5,8 @@ import io.restassured.response.Response;
 import nextstep.member.domain.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
@@ -62,5 +64,18 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(params);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+
+    // 로그인 인증이 필요한 사이트에 접근 가능여부 테스트가 목적이기 떄문에 인증관련 인수테스트 클래스에 위치해야한다
+    /**
+     * When  : 로그인하지 않은 사용자가 로그인이 필요한 주소로 접근하면
+     * Then  : 요청이 거부된다 (상세하게 401 응답을 리턴한다 이렇게 정의하는게 좋을까?)
+     */
+    @DisplayName("로그인 하지 않은 사용자는 로그인이 필요한 주소로 접근불가")
+    @ParameterizedTest
+    @ValueSource(strings = {"/url-A", "/url-B", "/url-C"})
+    void requestUnauthorized() {
+
     }
 }
