@@ -1,4 +1,4 @@
-package nextstep.login.ui;
+package nextstep.login.application.dto;
 
 import lombok.Getter;
 

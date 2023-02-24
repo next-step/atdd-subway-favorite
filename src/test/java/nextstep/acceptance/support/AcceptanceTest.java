@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.acceptance.support;
 
 import nextstep.utils.DataLoader;
 import nextstep.utils.DatabaseCleanup;

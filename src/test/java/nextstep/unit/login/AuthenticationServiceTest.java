@@ -1,7 +1,7 @@
-package nextstep.login.unit;
+package nextstep.unit.login;
 
-import nextstep.login.ui.AuthenticationService;
-import nextstep.login.ui.LoginResponse;
+import nextstep.login.application.AuthenticationService;
+import nextstep.login.application.dto.LoginResponse;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
-package nextstep.login.ui;
+package nextstep.login.application;
 
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.login.application.dto.LoginResponse;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;

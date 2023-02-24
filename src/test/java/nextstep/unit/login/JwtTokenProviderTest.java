@@ -1,6 +1,6 @@
-package nextstep.login.unit;
+package nextstep.unit.login;
 
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.login.application.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
