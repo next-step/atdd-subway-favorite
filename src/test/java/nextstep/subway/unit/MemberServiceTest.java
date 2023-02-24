@@ -3,6 +3,7 @@ package nextstep.subway.unit;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,10 +19,11 @@ public class MemberServiceTest {
 	private final String NO_REGISTER_MEMBER_EMAIL = "noregister@email.com";
 	private final String NO_REGISTER_MEMBER_TOKEN = "qweqweqwe121t2eg2g23g3gh23h";
 
+	@DisplayName("가입되지 않은 회원이 깃헙 Access 토큰을 요청 할 경우")
 	@Test
-	void findMemberByEmailAndAccessTokenFromGithub(){
+	void findMemberByGithubEmailOrElseCreateMember(){
 		//when
-		MemberResponse response = memberService.findMemberByEmailAndAccessTokenFromGithub(NO_REGISTER_MEMBER_EMAIL, NO_REGISTER_MEMBER_TOKEN);
+		MemberResponse response = memberService.findMemberByGithubEmailOrElseCreateMember(NO_REGISTER_MEMBER_EMAIL, NO_REGISTER_MEMBER_TOKEN);
 		MemberResponse memberByEmail = memberService.findMemberByEmail(response.getEmail());
 		//then
 		Assertions.assertThat(memberByEmail).isNotNull();

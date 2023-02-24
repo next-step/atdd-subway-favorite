@@ -24,6 +24,7 @@ public class GithubController {
 	public ResponseEntity<GithubProfileResponse> getProfile(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
 		String accessToken = authorization.split(" ")[1];
 		String email = GithubResponses.fromAccessToken(accessToken).getEmail();
-		return ResponseEntity.ok(new GithubProfileResponse(email));
+		long id = GithubResponses.fromAccessToken(accessToken).getId();
+		return ResponseEntity.ok(new GithubProfileResponse(id, email));
 	}
 }
