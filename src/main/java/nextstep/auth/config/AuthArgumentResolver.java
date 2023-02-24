@@ -9,6 +9,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.text.ParseException;
+
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -30,7 +32,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         try {
             String email = jwtTokenProvider.getPrincipal(String.valueOf(accessToken));
             return email;
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new AuthenticationException("인증 요청값 accessToken이 문자열인지 확인 필요");
         }
     }
