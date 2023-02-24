@@ -78,4 +78,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
 		// then
 		회원_정보_조회됨(response, EMAIL, AGE);
 	}
+
+	@DisplayName("내 정보를 조회한다. - 유효하지 않은 토큰일 경우, 예외를 던진다.")
+	@Test
+	void getMyInfo_fail_by_invalid_token() {
+		// given
+		String token = "Invalid Token";
+
+		// when
+		ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(token);
+
+		// then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
 }

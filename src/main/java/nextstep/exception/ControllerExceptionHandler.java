@@ -1,11 +1,14 @@
 package nextstep.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import nextstep.member.exception.InvalidTokenException;
 import nextstep.member.exception.NotFoundException;
+import nextstep.member.exception.UnAuthenticationException;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
@@ -24,4 +27,13 @@ public class ControllerExceptionHandler {
 		return ResponseEntity.notFound().build();
 	}
 
+	@ExceptionHandler(UnAuthenticationException.class)
+	public ResponseEntity<Void> handleUnAuthenticationException(UnAuthenticationException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}
+
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<Void> handleInvalidTokenException(InvalidTokenException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}
 }

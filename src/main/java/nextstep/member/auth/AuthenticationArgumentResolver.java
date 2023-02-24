@@ -58,7 +58,7 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
 	}
 
 	private void validateAuthorizationNonNull(String authorization) {
-		if (Objects.nonNull(authorization)) {
+		if (!Objects.nonNull(authorization)) {
 			throw new UnAuthenticationException(ErrorMessage.UNAUTHENTICATED_TOKEN);
 		}
 	}
