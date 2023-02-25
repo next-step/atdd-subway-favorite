@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-import static nextstep.member.ui.GithubResponses.사용자1;
-import static nextstep.member.ui.GithubResponses.사용자2;
-import static nextstep.member.ui.GithubResponses.사용자3;
-import static nextstep.member.ui.GithubResponses.사용자4;
+import static nextstep.member.fake.ui.GithubResponses.사용자1;
+import static nextstep.member.fake.ui.GithubResponses.사용자2;
+import static nextstep.member.fake.ui.GithubResponses.사용자3;
+import static nextstep.member.fake.ui.GithubResponses.사용자4;
 
 @Profile("test")
 @Component
