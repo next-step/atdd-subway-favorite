@@ -15,15 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthMemberHandlerArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthMember.class);
+        return parameter.hasParameterAnnotation(PreAuthorize.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         MemberResponse member = (MemberResponse) request.getAttribute("member");
-        AuthMember authMember = parameter.getParameterAnnotation(AuthMember.class);
-        if (authMember == null || member == null) {
+        PreAuthorize preAuthorize = parameter.getParameterAnnotation(PreAuthorize.class);
+        if (preAuthorize == null || member == null) {
             throw new MemberNotFoundException();
         }
         return member;

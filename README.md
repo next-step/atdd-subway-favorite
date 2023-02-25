@@ -26,3 +26,4 @@
 > - [x] 인증로직 Interceptor와 ArgumentResolver사용
 > - [x] 타입추론 사용
 >   - 개발자가 변수의 타입을 명시적으로 적어주지 않고도, 타입을 컴파일러에서 알아서 이 변수의 타입을 대입된 리터럴로 추론하는 것.
+> - [x] class 명 알맞게 변경 @AuthMember -> @PreAuthorize 

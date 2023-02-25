@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.MemberService;
-import nextstep.filter.AuthMember;
+import nextstep.filter.PreAuthorize;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthMember MemberResponse member) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@PreAuthorize MemberResponse member) {
         return ResponseEntity.ok().body(member);
     }
 }
