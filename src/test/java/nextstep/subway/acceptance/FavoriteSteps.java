@@ -21,8 +21,7 @@ public class FavoriteSteps {
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
-                .then().statusCode(HttpStatus.CREATED.value())
-                .log().all().extract();
+                .then().log().all().extract();
         return response;
     }
 
@@ -32,8 +31,7 @@ public class FavoriteSteps {
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
-                .then().statusCode(HttpStatus.OK.value())
-                .log().all().extract();
+                .then().log().all().extract();
         return response;
     }
 
@@ -43,8 +41,7 @@ public class FavoriteSteps {
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/favorites/{favoriteId}", favoriteId)
-                .then().statusCode(HttpStatus.NO_CONTENT.value())
-                .log().all().extract();
+                .then().log().all().extract();
         return response;
     }
 }

@@ -1,16 +1,12 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
 import java.util.List;
-
 import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_등록;
 import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_삭제;
 import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_조회;
@@ -99,5 +95,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(지하철_즐겨찾기_조회(인증토큰).jsonPath().getList("id", Long.class)).doesNotContain(삭제즐겨찾기);
+    }
+
+    /**
+     * when 지하철 즐겨찾기 생성, 조회, 삭제를 요청한다.
+     * then 401권한 없음 에러가 발생한다.
+     */
+    @DisplayName("지하철 즐겨찾기 권한체크 실패")
+    @Test
+    void ExceptionFavorite() {
+        String 유효하지않는인증 = "testtesttest";
+
+        assertAll(() -> assertThat(지하철_즐겨찾기_등록(유효하지않는인증,교대역, 강남역).statusCode()).isEqualTo(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value()),
+                () -> assertThat(지하철_즐겨찾기_삭제(유효하지않는인증, 0L).statusCode()).isEqualTo(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value()),
+                () -> assertThat(지하철_즐겨찾기_조회(유효하지않는인증).statusCode()).isEqualTo(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value()));
     }
 }

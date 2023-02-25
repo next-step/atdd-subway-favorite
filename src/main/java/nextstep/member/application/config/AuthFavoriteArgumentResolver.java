@@ -27,9 +27,13 @@ public class AuthFavoriteArgumentResolver implements HandlerMethodArgumentResolv
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        Object accessToken = webRequest.getAttribute("accessToken", 0);
+        try {
+            Object accessToken = webRequest.getAttribute("accessToken", 0);
+            String email = jwtTokenProvider.getPrincipal(String.valueOf(accessToken));
 
-        String email = jwtTokenProvider.getPrincipal(String.valueOf(accessToken));
-        return memberRepository.findByEmail(email).orElseThrow(FavoriteRestApiException::new);
+            return memberRepository.findByEmail(email);
+        } catch (Exception e) {
+            throw new FavoriteRestApiException(e.getMessage());
+        }
     }
 }
