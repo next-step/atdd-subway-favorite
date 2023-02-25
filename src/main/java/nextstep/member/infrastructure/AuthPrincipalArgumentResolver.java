@@ -1,7 +1,7 @@
 package nextstep.member.infrastructure;
 
 import nextstep.member.application.AuthService;
-import nextstep.member.infrastructure.dto.MemberIdDto;
+import nextstep.member.infrastructure.dto.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -25,7 +25,7 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
     }
 
     @Override
-    public MemberIdDto resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+    public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                       NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         String accessToken = AuthExtractor.extract(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));

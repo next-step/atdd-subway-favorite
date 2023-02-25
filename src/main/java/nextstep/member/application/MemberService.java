@@ -43,6 +43,10 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
     public Member getJoinedMember(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         return member.orElseGet(() -> memberRepository.save(new Member(email)));

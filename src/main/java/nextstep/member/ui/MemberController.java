@@ -2,7 +2,7 @@ package nextstep.member.ui;
 
 import nextstep.member.application.MemberService;
 import nextstep.member.infrastructure.AuthPrincipal;
-import nextstep.member.infrastructure.dto.MemberIdDto;
+import nextstep.member.infrastructure.dto.LoginMember;
 import nextstep.member.ui.request.MemberRequest;
 import nextstep.member.ui.response.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +49,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthPrincipal MemberIdDto memberIdDto) {
-        MemberResponse response = memberService.findMember(memberIdDto.getId());
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthPrincipal LoginMember loginMember) {
+        MemberResponse response = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(response);
     }
 }
