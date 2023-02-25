@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.fixture.AuthFixture;
+import nextstep.fixture.MemberFixture;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -35,37 +36,36 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_생성_요청(Map<String, String> 회원_등록_요청_데이터) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(회원_등록_요청_데이터)
+                .when().post("/members")
+                .then().log().all().extract();
+    }
 
+    public static ExtractableResponse<Response> 회원_정보_조회_요청(String 회원_생성_결과_Location) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
+                .when().get(회원_생성_결과_Location)
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
-
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(String 회원_생성_결과_Location, Map<String, String> 회원_수정_요청_데이터) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
+                .body(회원_수정_요청_데이터)
+                .when().put(회원_생성_결과_Location)
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_삭제_요청(String 회원_생성_결과_Location) {
         return RestAssured
                 .given().log().all()
-                .when().delete(uri)
+                .when().delete(회원_생성_결과_Location)
                 .then().log().all().extract();
     }
 
@@ -92,10 +92,10 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> 내_정보_조회_결과, AuthFixture 인증_주체) {
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> 내_정보_조회_결과, MemberFixture 회원) {
         assertThat(문자열로_추출(내_정보_조회_결과, 식별자_아이디)).isNotNull();
-        assertThat(문자열로_추출(내_정보_조회_결과, 회원_이메일)).isEqualTo(인증_주체.회원_정보().이메일());
-        assertThat(Integer로_추출(내_정보_조회_결과, 회원_나이)).isEqualTo(인증_주체.회원_정보().나이());
+        assertThat(문자열로_추출(내_정보_조회_결과, 회원_이메일)).isEqualTo(회원.이메일());
+        assertThat(Integer로_추출(내_정보_조회_결과, 회원_나이)).isEqualTo(회원.나이());
     }
 
     public static void AccessToken이_JWT_토큰_형식으로_반환된다(ExtractableResponse<Response> 로그인_요청_결과) {

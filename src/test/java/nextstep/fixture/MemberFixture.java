@@ -13,11 +13,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static nextstep.fixture.FieldFixture.식별자_아이디;
+import static nextstep.fixture.FieldFixture.회원_나이;
 import static nextstep.fixture.FieldFixture.회원_비밀번호;
 import static nextstep.fixture.FieldFixture.회원_이메일;
 
 public enum MemberFixture {
     회원_ALEX("dev.gibeom@gmail.com", "password", 27, RoleType.ROLE_MEMBER),
+    회원_ALEX_수정("dev.gibeom@gmail.com", "drowssap", 72, RoleType.ROLE_MEMBER),
     관리자_ADMIN("admin@email.com", "password", 30, RoleType.ROLE_ADMIN),
     ;
 
@@ -56,6 +58,24 @@ public enum MemberFixture {
         Map<String, String> params = new HashMap<>();
         params.put(회원_이메일.필드명(), 이메일());
         params.put(회원_비밀번호.필드명(), 비밀번호());
+        return params;
+    }
+
+    public Map<String, String> 회원_등록_요청_데이터_생성() {
+        Map<String, String> params = new HashMap<>();
+        params.put(회원_이메일.필드명(), 이메일());
+        params.put(회원_비밀번호.필드명(), 비밀번호());
+        params.put(회원_나이.필드명(), String.valueOf(나이()));
+
+        return params;
+    }
+
+    public Map<String, String> 회원_수정_요청_데이터_생성() {
+        Map<String, String> params = new HashMap<>();
+        params.put(회원_이메일.필드명(), 이메일());
+        params.put(회원_비밀번호.필드명(), 비밀번호());
+        params.put(회원_나이.필드명(), String.valueOf(나이()));
+
         return params;
     }
 
