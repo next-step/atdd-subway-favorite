@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
@@ -95,5 +96,14 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static ExtractableResponse<Response> 인가서버에_토큰_요청(String code) {
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(code)
+                .when().post("/login/github")
+                .then().log().all()
+                .extract();
     }
 }
