@@ -2,6 +2,7 @@ package nextstep.member.ui.config;
 
 import nextstep.member.application.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,7 +25,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String authorizationHeader = webRequest.getHeader("authorization");
+        String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         String token = jwtTokenProvider.parseJwt(authorizationHeader);
 
         if (!jwtTokenProvider.validateToken(token)) {

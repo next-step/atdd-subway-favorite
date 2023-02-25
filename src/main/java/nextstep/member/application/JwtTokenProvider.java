@@ -1,7 +1,6 @@
 package nextstep.member.application;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,6 +12,9 @@ import java.util.List;
 
 @Component
 public class JwtTokenProvider {
+    private static final String BEARER = "Bearer ";
+    private static final int BEARER_TOKEN_INDEX = 1;
+
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
@@ -33,33 +35,39 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return getClaims(token).getBody().getSubject();
+        return getClaims(token).getSubject();
     }
 
     public List<String> getRoles(String token) {
-        return getClaims(token).getBody().get("roles", List.class);
-    }
-
-    private Jws<Claims> getClaims(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+        return getClaims(token).get("roles", List.class);
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = getClaims(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
+            return !getClaims(token).getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
 
+    private Claims getClaims(String token) {
+        return Jwts.parser().setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String parseJwt(String authorizationHeader) {
-        if (authorizationHeader == null) {
+        if (!hasBearerToken(authorizationHeader)) {
             throw new IllegalArgumentException("올바른 인증 정보를 요청해주세요.");
         }
 
-        return authorizationHeader.split(" ")[1];
+        return authorizationHeader.split(" ")[BEARER_TOKEN_INDEX];
+    }
+
+    private boolean hasBearerToken(String authorizationHeader) {
+        return authorizationHeader != null &&
+            authorizationHeader.startsWith(BEARER) &&
+            authorizationHeader.length() > BEARER.length();
     }
 }
 
