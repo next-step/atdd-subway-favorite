@@ -1,6 +1,9 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.member.domain.exception.BadCredentialException;
+import nextstep.member.domain.exception.FavoriteIsNotYoursException;
 import nextstep.subway.domain.Favorite;
 
 import javax.persistence.CascadeType;
@@ -18,6 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static lombok.AccessLevel.PROTECTED;
+
+@Getter
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class Member {
     @Id
@@ -37,9 +44,6 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
-    public Member() {
-    }
-
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -58,26 +62,6 @@ public class Member {
         this(email, null, null);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -92,5 +76,17 @@ public class Member {
 
     public void addFavorite(final Favorite favorite) {
         this.favorites.add(favorite);
+    }
+
+    private void validateIsYourFavorite(final Favorite favorite) {
+        favorites.stream()
+                .filter(f -> f.equals(favorite))
+                .findAny()
+                .orElseThrow(FavoriteIsNotYoursException::new);
+    }
+
+    public void removeFavorite(final Favorite favorite) {
+        validateIsYourFavorite(favorite);
+        favorites.remove(favorite);
     }
 }
