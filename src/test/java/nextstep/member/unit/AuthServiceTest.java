@@ -5,14 +5,18 @@ import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static nextstep.common.constants.ErrorConstant.INVALID_EMAIL_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class AuthServiceTest {
 
     private static final String EMAIL = "admin@email.com";
@@ -42,6 +46,17 @@ public class AuthServiceTest {
 
         // when
         TokenResponse token = authService.login(request);
+
+        // then
+        assertThat(token.getAccessToken()).isNotBlank();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"832ovnq039hfjn", "mkfo0aFa03m", "m-a3hnfnoew92", "nvci383mciq0oq"})
+    @DisplayName("깃허브 로그인")
+    void githubLogin(final String code) {
+        // when
+        final TokenResponse token = authService.oauth2Login(code);
 
         // then
         assertThat(token.getAccessToken()).isNotBlank();
