@@ -7,13 +7,15 @@ import nextstep.member.domain.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import static nextstep.DataLoader.ADMIN_EMAIL;
-import static nextstep.DataLoader.ADMIN_PASSWORD;
+import static nextstep.utils.DataLoader.ADMIN_EMAIL;
+import static nextstep.utils.DataLoader.ADMIN_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@ActiveProfiles("test")
 @SpringBootTest
 public class MemberServiceTest {
 
