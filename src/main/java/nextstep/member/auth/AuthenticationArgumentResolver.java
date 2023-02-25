@@ -10,7 +10,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.application.dto.AuthUser;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.ErrorMessage;
@@ -36,7 +36,7 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		final boolean isAuthTokenAnnotation = Objects.nonNull(parameter.getParameterAnnotation(AuthToken.class));
-		final boolean isTokenRequest = Objects.equals(parameter.getParameterType(), TokenRequest.class);
+		final boolean isTokenRequest = Objects.equals(parameter.getParameterType(), AuthUser.class);
 		return isAuthTokenAnnotation && isTokenRequest;
 	}
 
@@ -54,7 +54,7 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
 
 		Member member = findMember(token);
 
-		return TokenRequest.of(member.getEmail(), member.getPassword());
+		return AuthUser.of(member.getEmail(), member.getRoles());
 	}
 
 	private void validateAuthorizationNonNull(String authorization) {

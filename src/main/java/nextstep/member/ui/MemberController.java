@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.AuthUser;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.ui.annotations.AuthToken;
 
 @RestController
@@ -50,7 +50,7 @@ public class MemberController {
 	}
 
 	@GetMapping("/members/me")
-	public ResponseEntity<MemberResponse> findMemberOfMine(@AuthToken TokenRequest request) {
+	public ResponseEntity<MemberResponse> findMemberOfMine(@AuthToken AuthUser request) {
 		MemberResponse member = memberService.findMemberByToken(request);
 		return ResponseEntity.ok().body(member);
 	}

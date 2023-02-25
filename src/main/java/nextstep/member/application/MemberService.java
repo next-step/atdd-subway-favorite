@@ -2,9 +2,9 @@ package nextstep.member.application;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.member.application.dto.AuthUser;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.ErrorMessage;
@@ -37,8 +37,8 @@ public class MemberService {
 		memberRepository.deleteById(id);
 	}
 
-	public MemberResponse findMemberByToken(TokenRequest request) {
-		final Member member = findMemberByEmail(request.getEmail());
+	public MemberResponse findMemberByToken(AuthUser authUser) {
+		final Member member = findMemberByEmail(authUser.getEmail());
 		return MemberResponse.of(member);
 	}
 
