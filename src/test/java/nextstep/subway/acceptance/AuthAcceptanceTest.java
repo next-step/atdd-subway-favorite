@@ -18,8 +18,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
-    @Autowired
-    private MemberService memberService;
 
     @DisplayName("Bearer Auth")
     @Test

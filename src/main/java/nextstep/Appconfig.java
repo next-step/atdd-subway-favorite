@@ -23,7 +23,7 @@ public class Appconfig implements WebMvcConfigurer {
     public FilterRegistrationBean<JwtTokenFilter> bearerTokenFilter() {
         FilterRegistrationBean<JwtTokenFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new JwtTokenFilter());
-        registrationBean.addUrlPatterns("/members/me");
+        registrationBean.addUrlPatterns("/members/me","/favorite");
 
         return registrationBean;
     }
