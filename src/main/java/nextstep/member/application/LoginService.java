@@ -1,10 +1,6 @@
 package nextstep.member.application;
 
-import java.util.List;
-import java.util.Optional;
 import nextstep.member.application.dto.CodeRequest;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.auth.OAuth2Client;
@@ -36,24 +32,21 @@ public class LoginService {
             throw new IllegalArgumentException("email 또는 password 를 확인해 주세요.");
         }
 
-        return generateToken(member.getEmail(), member.getRoles());
+        return generateToken(member);
     }
 
     public TokenResponse githubLogin(CodeRequest request) {
         final String authAccessToken = oAuth2Client.getAccessToken(request.getCode());
         final OAuth2User oAuth2User = oAuth2Client.loadUser(authAccessToken);
 
-        final Optional<Member> member = memberService.findMemberByEmail(oAuth2User.getName());
+        final Member member = memberService.findMemberByEmail(oAuth2User.getName())
+            .orElseGet(() -> memberService.createMember(oAuth2User.getName()));
 
-        return member.map(it -> generateToken(it.getEmail(), it.getRoles()))
-            .orElseGet(() -> {
-                final MemberResponse memberResponse = memberService.createMember(new MemberRequest(oAuth2User.getName()));
-                return generateToken(memberResponse.getEmail(), memberResponse.getRoles());
-            });
+        return generateToken(member);
     }
 
-    private TokenResponse generateToken(String email, List<String> roles) {
-        final String token = jwtTokenProvider.createToken(email, roles);
+    private TokenResponse generateToken(Member member) {
+        final String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
     }
 }

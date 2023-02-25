@@ -1,34 +1,35 @@
 package nextstep.member.infra;
 
+import java.util.List;
 import nextstep.member.auth.BaseOAuth2User;
 import nextstep.member.auth.OAuth2Client;
 import nextstep.member.auth.OAuth2User;
+import nextstep.member.auth.interceptor.TokenAuthenticationInterceptor;
 import nextstep.member.infra.dto.GithubAccessTokenRequest;
 import nextstep.member.infra.dto.GithubAccessTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 public class GithubClient implements OAuth2Client {
 
+    private final RestTemplate restTemplate;
     private final String clientId;
     private final String clientSecret;
     private final String tokenUrl;
     private final String profileUrl;
 
     public GithubClient(
+        RestTemplate restTemplate,
         @Value("${github.client.id}") String clientId,
         @Value("${github.client.secret}") String clientSecret,
         @Value("${github.url.access-token}") String tokenUrl,
         @Value("${github.url.profile}") String profileUrl
     ) {
+        this.restTemplate = restTemplate;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.tokenUrl = tokenUrl;
@@ -43,24 +44,13 @@ public class GithubClient implements OAuth2Client {
             clientSecret
         );
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+        final GithubAccessTokenResponse response = restTemplate.postForObject(
+            tokenUrl,
             githubAccessTokenRequest,
-            headers
+            GithubAccessTokenResponse.class
         );
-        RestTemplate restTemplate = new RestTemplate();
 
-        String accessToken = restTemplate
-            .exchange(
-                tokenUrl,
-                HttpMethod.POST,
-                httpEntity,
-                GithubAccessTokenResponse.class
-            )
-            .getBody()
-            .getAccessToken();
+        String accessToken = response.getAccessToken();
         if (accessToken == null) {
             throw new RuntimeException();
         }
@@ -69,21 +59,15 @@ public class GithubClient implements OAuth2Client {
 
     @Override
     public OAuth2User loadUser(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "token " + accessToken);
-
-        HttpEntity httpEntity = new HttpEntity<>(headers);
-        RestTemplate restTemplate = new RestTemplate();
-
         try {
-            return restTemplate
-                .exchange(
-                    profileUrl,
-                    HttpMethod.GET,
-                    httpEntity,
-                    BaseOAuth2User.class
-                )
-                .getBody();
+            restTemplate.setInterceptors(List.of(new TokenAuthenticationInterceptor(accessToken)));
+
+            final ResponseEntity<BaseOAuth2User> response = restTemplate.getForEntity(
+                profileUrl,
+                BaseOAuth2User.class
+            );
+
+            return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException();
         }

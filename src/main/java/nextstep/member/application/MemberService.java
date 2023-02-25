@@ -21,18 +21,22 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member createMember(String email) {
+        return memberRepository.save(new Member(email));
+    }
+
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         member.update(param.toMember());
     }
 
@@ -42,5 +46,10 @@ public class MemberService {
 
     public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    private Member findById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(IllegalArgumentException::new);
     }
 }
