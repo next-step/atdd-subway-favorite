@@ -76,7 +76,7 @@ public class MemberService {
 				.orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
 		return AuthMember.of(member);
 	}
-
+  
 	@Transactional
     public FavoriteResponse createFavorite(AuthMember authMember, FavoriteRequest favoriteRequest) {
 		Member member = memberRepository.findById(authMember.getId()).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));

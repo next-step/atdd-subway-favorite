@@ -3,6 +3,7 @@ package nextstep.subway.utils;
 import java.util.Arrays;
 
 public enum GithubResponses {
+
 	사용자1(1L,"832ovnq039hfjn", "access_token_1", "email@email.com"),
 	사용자2(2L,"mkfo0aFa03m", "access_token_2", "email2@email.com"),
 	사용자3(3L,"m-a3hnfnoew92", "access_token_3", "email3@email.com"),
@@ -12,7 +13,6 @@ public enum GithubResponses {
 	private final String code;
 	private final String accessToken;
 	private final String email;
-
 
 	GithubResponses(Long id, String code, String accessToken, String email) {
 		this.id = id;

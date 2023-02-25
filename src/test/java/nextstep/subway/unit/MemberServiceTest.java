@@ -22,10 +22,12 @@ public class MemberServiceTest {
 	@DisplayName("가입되지 않은 회원이 깃헙 Access 토큰을 요청 할 경우")
 	@Test
 	void findMemberByGithubEmailOrElseCreateMember(){
-		//when
+		
+    //when
 		MemberResponse response = memberService.findMemberByGithubEmailOrElseCreateMember(NO_REGISTER_MEMBER_EMAIL, NO_REGISTER_MEMBER_TOKEN);
 		MemberResponse memberByEmail = memberService.findMemberByEmail(response.getEmail());
-		//then
+		
+    //then
 		Assertions.assertThat(memberByEmail).isNotNull();
 	}
 }

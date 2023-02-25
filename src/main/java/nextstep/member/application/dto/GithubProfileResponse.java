@@ -5,8 +5,6 @@ public class GithubProfileResponse {
 	private Long id;
 	private String email;
 
-
-
 	protected GithubProfileResponse() {
 	}
 
@@ -18,6 +16,7 @@ public class GithubProfileResponse {
 	public Long getId() {
 		return id;
 	}
+  
 	public String getEmail() {
 		return email;
 	}
