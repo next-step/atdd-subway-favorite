@@ -2,6 +2,8 @@ package nextstep.member.ui;
 
 import nextstep.auth.AuthMember;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.auth.Auth;
@@ -45,6 +47,13 @@ public class MemberController {
     @GetMapping("/members/me")
     public ResponseEntity<AuthMember> findMemberOfMine(@Auth AuthMember authMember) {
         return ResponseEntity.ok().body(authMember);
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> createFavorite(@Auth AuthMember authMember, @RequestBody FavoriteRequest request) {
+        FavoriteResponse favorite = memberService.createFavorite(authMember, request);
+
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getMemberId())).build();
     }
 }
 
