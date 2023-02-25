@@ -3,6 +3,7 @@ package nextstep.member.unit;
 import nextstep.auth.application.AuthService;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.GithubLoginRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -56,7 +57,7 @@ public class AuthServiceTest {
     @DisplayName("깃허브 로그인")
     void githubLogin(final String code) {
         // when
-        final TokenResponse token = authService.oauth2Login(code);
+        final TokenResponse token = authService.oauth2Login(new GithubLoginRequest(code));
 
         // then
         assertThat(token.getAccessToken()).isNotBlank();

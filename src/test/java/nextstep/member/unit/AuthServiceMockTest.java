@@ -3,6 +3,7 @@ package nextstep.member.unit;
 import nextstep.auth.application.AuthService;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.GithubLoginRequest;
 import nextstep.auth.domain.GithubProfileResponse;
 import nextstep.auth.domain.Oauth2Client;
 import nextstep.member.application.JwtTokenProvider;
@@ -80,7 +81,7 @@ public class AuthServiceMockTest {
         when(jwtTokenProvider.createToken(member.getEmail(), member.getRoles())).thenReturn("token");
 
         // when
-        final TokenResponse token = authService.oauth2Login("code");
+        final TokenResponse token = authService.oauth2Login(new GithubLoginRequest("code"));
 
         // then
         assertThat(token.getAccessToken()).isNotBlank();
