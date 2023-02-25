@@ -1,7 +1,6 @@
 package nextstep.member.ui;
 
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.LoginService;
+import nextstep.member.application.TokenService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -14,8 +13,6 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private MemberService memberService;
-
-    private JwtTokenProvider jwtTokenProvider;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -45,11 +42,6 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
 
-        MemberResponse member = memberService.findMember(accessToken);
-        return ResponseEntity.ok().body(member);
-    }
 }
 
