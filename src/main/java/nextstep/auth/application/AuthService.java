@@ -2,6 +2,8 @@ package nextstep.auth.application;
 
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.Oauth2Client;
+import nextstep.auth.domain.ProfileResponse;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
@@ -16,10 +18,12 @@ public class AuthService {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Oauth2Client client;
 
-    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider, Oauth2Client client) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.client = client;
     }
 
     public TokenResponse login(final TokenRequest tokenRequest) {
@@ -28,6 +32,14 @@ public class AuthService {
             throw new IllegalArgumentException(INVALID_EMAIL_PASSWORD);
         }
 
+        return createToken(member);
+    }
+
+    public TokenResponse oauth2Login(final String code) {
+        final String accessToken = client.getAccessToken(code);
+        final ProfileResponse profile = client.getProfile(accessToken);
+
+        final Member member = memberService.findByEmail(profile.getEmail());
         return createToken(member);
     }
 
