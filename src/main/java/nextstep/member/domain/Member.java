@@ -63,7 +63,9 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public void checkPassword(String password) {
+        if(!this.password.equals(password)){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+        }
     }
 }
