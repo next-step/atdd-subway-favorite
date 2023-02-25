@@ -21,14 +21,20 @@ public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(unique = true)
 	private String email;
+
 	private String password;
+
 	private Integer age;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
 		name = "MEMBER_ROLE",
 		joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
 	)
+
 	@Column(name = "role")
 	private List<String> roles;
 
