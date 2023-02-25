@@ -1,36 +1,35 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
-import nextstep.subway.applicaion.dto.FavoriteResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_201을_반환한다;
+import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_400을_반환한다;
+import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_401을_반환한다;
+import static nextstep.subway.acceptance.FavoriteSteps.인증없이_즐겨찾기_추가_요청;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청하고_목록_반환;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청하고_토큰_반환;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
-
-    private Long 신분당선;
+    private static final String WRONG_TOKEN = "WRONG_TOKEN";
 
     private Long 강남역;
     private Long 양재역;
+    private Long 정자역;
 
     private String token;
 
     /**
-     * given: 지하철 노선 및 역을 추가하고
+     * given: 지하철 역을 추가하고
      * given: 회원 가입을하고(super.setUp)
      * given: 로그인을 하고
      */
@@ -40,9 +39,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
-
-        Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
-        신분당선 = 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+        정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
 
         token = 베어러_인증_로그인_요청하고_토큰_반환(EMAIL, PASSWORD);
     }
@@ -50,54 +47,68 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * given: 올바른 로그인 토큰으로
      * when : 경로 즐겨찾기 추가 요청을 하면
-     * then : 즐겨찾기 등록을 성공하고
-     * then : 즐겨찾기 목록 조회시 추가한 경로를 확인할 수 있다.
+     * then : 즐겨찾기 등록을 성공한다.
+     */
+    @DisplayName("올바른 인증 토큰으로 경로 즐겨찾기 추가 요청을 하면 성공적으로 즐겨찾기에 추가된다.")
+    @Test
+    void addFavorite() {
+        final var response = 즐겨찾기_추가_요청(token, 강남역, 정자역);
+
+        assertAll(
+                () -> 응답코드_201을_반환한다(response),
+                () -> assertThat(response.header(HttpHeaders.LOCATION)).isEqualTo("/favorites/1")
+        );
+    }
+
+    /**
+     * given: 올바른 로그인 토큰으로 경로 즐겨찾기 추가 요청을 하고
+     * when : 즐겨찾기 목록을 조회하면
+     * then : 추가한 경로를 확인할 수 있다.
      */
     @DisplayName("올바른 인증 토큰으로 경로 즐겨찾기 추가 요청을 하면 즐겨찾기 목록에서 해당 구간을 확인할 수 있다.")
     @Test
-    void addFavorite() {
-        RestAssured
-                .given()
-                    .auth().oauth2(token)
-                    .accept(MediaType.ALL_VALUE)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(Map.of("source", 강남역, "target", 양재역))
-                .when()
-                    .post("/favorites")
-                .then()
-                    .log().all()
-                    .statusCode(HttpStatus.CREATED.value())
-                .extract();
+    void showFavorites() {
+        // given
+        즐겨찾기_추가_요청(token, 강남역, 정자역);
 
+        // when
+        final var 즐겨찾기_목록 = 즐겨찾기_목록_조회_요청하고_목록_반환(token);
+        final var 추가된_즐겨찾기_경로 = 즐겨찾기_목록.get(0);
 
-        final List<FavoriteResponse> favorites = RestAssured
-                .given()
-                    .auth().oauth2(token)
-                    .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                    .get("/favorites")
-                .then()
-                    .log().all()
-                    .statusCode(HttpStatus.OK.value())
-                .extract()
-                .jsonPath()
-                .getList("", FavoriteResponse.class);
-
-        assertThat(favorites.size()).isEqualTo(1);
-        final FavoriteResponse favoriteResponse = favorites.get(0);
-        assertThat(favoriteResponse.getSource().getName()).isEqualTo("강남역");
-        assertThat(favoriteResponse.getTarget().getName()).isEqualTo("강남역");
+        // then
+        assertAll(
+                () -> assertThat(즐겨찾기_목록.size()).isEqualTo(1),
+                () -> assertThat(추가된_즐겨찾기_경로.getSource().getId()).isEqualTo(강남역),
+                () -> assertThat(추가된_즐겨찾기_경로.getTarget().getId()).isEqualTo(정자역)
+        );
     }
 
+    /**
+     * when : 인증 없이 경로 즐겨찾기 추가 요청을 하면
+     * then : 오류가 발생한다.
+     */
+    @DisplayName("인증 없이 경로 즐겨찾기 추가 요청을 하면 오류가 발생한다.")
+    @Test
+    void addFavoriteWithNoAuth() {
+        // when
+        final var response = 인증없이_즐겨찾기_추가_요청(강남역, 정자역);
 
-    private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
-        Map<String, String> lineCreateParams;
-        lineCreateParams = new HashMap<>();
-        lineCreateParams.put("name", "신분당선");
-        lineCreateParams.put("color", "bg-red-600");
-        lineCreateParams.put("upStationId", upStationId + "");
-        lineCreateParams.put("downStationId", downStationId + "");
-        lineCreateParams.put("distance", 10 + "");
-        return lineCreateParams;
+        // then
+        응답코드_401을_반환한다(response);
+    }
+
+    /**
+     * given: 올바르지 않은 로그인 토큰으로
+     * when : 경로 즐겨찾기 추가 요청을 하면
+     * then : 오류가 발생한다.
+     */
+    @DisplayName("올바르지 않은 인증 토큰으로 경로 즐겨찾기 추가 요청을 하면 오류가 발생한다.")
+    @Test
+    void addFavoriteWithWrongToken() {
+        // given & when
+        final var response = 즐겨찾기_추가_요청(WRONG_TOKEN, 강남역, 정자역);
+
+        // then
+        응답코드_400을_반환한다(response);
     }
 }
