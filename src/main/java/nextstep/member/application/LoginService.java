@@ -1,9 +1,12 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.member.application.dto.GithubAccessTokenRequest;
+import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.message.Message;
+import nextstep.member.domain.GithubResponses;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class LoginService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberRepository.findByEmail(tokenRequest.getEmail())
@@ -23,4 +27,12 @@ public class LoginService {
         return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
     }
 
+    public GithubAccessTokenResponse getGithubToken(String code) {
+        return new GithubAccessTokenResponse(githubClient.getAccessTokenFromGithub(code));
+    }
+
+    public GithubAccessTokenResponse getAuth(GithubAccessTokenRequest request) {
+        GithubResponses responses = GithubResponses.findByCode(request.getCode());
+        return new GithubAccessTokenResponse(responses.getAccessToken());
+    }
 }
