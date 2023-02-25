@@ -1,7 +1,7 @@
 package nextstep.member.unit;
 
 import nextstep.member.application.GithubClient;
-import nextstep.utils.GithubResponses;
+import nextstep.member.ui.GithubResponses;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
