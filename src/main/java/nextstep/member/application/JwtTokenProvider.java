@@ -13,6 +13,9 @@ public class JwtTokenProvider {
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
+    private static final int MIN_AUTH_LENGTH = 2;
+    private static final int TOKEN_INDEX = 1;
+
 
     public String createToken(String principal, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(principal);
@@ -45,5 +48,11 @@ public class JwtTokenProvider {
             return false;
         }
     }
-}
 
+    public static String parseToken(String authorization) {
+        if (authorization.length() >= MIN_AUTH_LENGTH) {
+            return authorization.split(" ")[TOKEN_INDEX];
+        }
+        return "";
+    }
+}
