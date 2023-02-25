@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.DataLoader;
+import nextstep.member.application.dto.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,11 +40,22 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
-    @DisplayName("Github Auth")
+    /**
+     * When Github 로그인 요청 시
+     * Then accessToken 을 얻을 수 있다.
+     */
+    @DisplayName("Github 로그인 요청 시 accessToken 을 얻을 수 있다")
     @Test
-    void githubAuth() {
+    void Github_로그인_요청_시_accessToken_을_얻을_수_있다() {
+        ExtractableResponse<Response> response = 깃헙_로그인_요청(GithubResponses.사용자1.getCode());
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo(GithubResponses.사용자1.getAccessToken());
+    }
+
+    private static ExtractableResponse<Response> 깃헙_로그인_요청(String code) {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", code);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -51,8 +63,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
             .when().post("/login/github")
             .then().log().all()
             .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        return response;
     }
 
 }
