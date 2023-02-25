@@ -63,5 +63,17 @@ class JwtTokenProviderTest {
                 assertThat(토큰_생성기.getRoles(accessToken)).containsAll(인증_주체.역할_목록());
             }
         }
+
+        @Nested
+        @DisplayName("토큰을 디코딩하면")
+        class Context_with_decode_token {
+
+            @Test
+            @DisplayName("인증 주체의 정보를 반환한다")
+            void it_returns_member_payload() throws Exception {
+                assertThat(토큰_생성기.decodeToken(accessToken).getEmail()).isEqualTo(인증_주체.이메일());
+                assertThat(토큰_생성기.decodeToken(accessToken).getRoles()).containsAll(인증_주체.역할_목록());
+            }
+        }
     }
 }

@@ -5,6 +5,9 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import nextstep.common.auth.InvalidTokenException;
+import nextstep.common.auth.MemberPayload;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +41,23 @@ public class JwtTokenProvider {
                 .claim(CLAIM_NAME_ROLES, roles)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public MemberPayload decodeToken(final String token) {
+        if (token == null || token.isBlank()) {
+            throw new InvalidTokenException();
+        }
+
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return new MemberPayload(claims.getSubject(), claims.get(CLAIM_NAME_ROLES, List.class));
+        } catch (SignatureException exception) {
+            throw new InvalidTokenException();
+        }
     }
 
     public String getPrincipal(final String token) {
