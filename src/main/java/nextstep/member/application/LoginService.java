@@ -1,8 +1,11 @@
 package nextstep.member.application;
 
 import nextstep.member.application.dto.GithubLoginRequest;
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.domain.Member;
+import nextstep.member.domain.exception.NotFoundMemberException;
 import nextstep.member.infrastructure.GithubClient;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +33,18 @@ public class LoginService {
     }
 
     public String githubLogin(GithubLoginRequest tokenRequest) {
-        return githubClient.getAccessTokenFromGithub(tokenRequest.getCode());
+        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(tokenRequest.getCode());
+        GithubProfileResponse profileFromGithub = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
+
+        Member member;
+
+        try {
+            member = memberService.findMemberByEmail(profileFromGithub.getEmail());
+        } catch (NotFoundMemberException e) {
+            member = memberService.createMember(new MemberRequest(profileFromGithub.getEmail()));
+        }
+
+        return jwtTokenProvider.createToken(member.getId().toString(), member.getRoles());
     }
 
 }

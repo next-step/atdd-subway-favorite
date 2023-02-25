@@ -2,9 +2,9 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginUser;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.exception.NotFoundMemberException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,9 +19,8 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+    public Member createMember(MemberRequest request) {
+        return memberRepository.save(request.toMember());
     }
 
     public MemberResponse findMember(Long id) {
@@ -39,7 +38,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
     }
 
 }
