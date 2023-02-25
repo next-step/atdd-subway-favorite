@@ -1,6 +1,7 @@
 package nextstep.member.unit;
 
 import nextstep.auth.domain.Oauth2Client;
+import nextstep.auth.domain.ProfileResponse;
 import nextstep.member.domain.FakeGithubClientImpl;
 import nextstep.member.domain.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,11 +49,41 @@ public class Oauth2ClientTest {
         assertThat(accessToken).isEqualTo(expectedAccessToken);
     }
 
+    @Test
+    @DisplayName("자원 조회 실패-잘못된 액세스 토큰")
+    void getProfile_invalidAccessToken() {
+        // when
+        // then
+        assertThatThrownBy(() -> client.getProfile("accessToken"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage(INVALID_AUTHENTICATION_INFO);
+    }
+
+    @ParameterizedTest
+    @MethodSource("validAccessTokenParameterAndExpectedEmailParameter")
+    @DisplayName("자원 조회")
+    void getProfile(final String accessToken,
+                    final String expectedEmail) {
+        // when
+        final ProfileResponse profile = client.getProfile(accessToken);
+
+        // then
+        assertThat(profile.getEmail()).isEqualTo(expectedEmail);
+    }
+
     private static Stream<Arguments> validCodeAndExpectedAccessTokenParameter() {
         return Stream.of(
                 Arguments.of(GithubResponses.사용자1.getCode(), GithubResponses.사용자1.getAccessToken()),
                 Arguments.of(GithubResponses.사용자2.getCode(), GithubResponses.사용자2.getAccessToken()),
                 Arguments.of(GithubResponses.사용자3.getCode(), GithubResponses.사용자3.getAccessToken())
+        );
+    }
+
+    private static Stream<Arguments> validAccessTokenParameterAndExpectedEmailParameter() {
+        return Stream.of(
+                Arguments.of(GithubResponses.사용자1.getAccessToken(), GithubResponses.사용자1.getEmail()),
+                Arguments.of(GithubResponses.사용자2.getAccessToken(), GithubResponses.사용자2.getEmail()),
+                Arguments.of(GithubResponses.사용자3.getAccessToken(), GithubResponses.사용자3.getEmail())
         );
     }
 }
