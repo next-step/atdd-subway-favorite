@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.member.LoginSteps.베어러_인증_내_정보_조회;
+import static nextstep.member.LoginSteps.베어러_인증_로그인_요청;
 import static nextstep.member.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
