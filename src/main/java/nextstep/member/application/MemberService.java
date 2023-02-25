@@ -35,10 +35,6 @@ public class MemberService {
     }
 
     public MemberResponse findMember(String principal) {
-        if (principal == null) {
-            throw new NotAuthorizedException("인증정보가 유효하지 않습니다.");
-        }
-
         return MemberResponse.of(findByPrincipal(principal));
     }
 
