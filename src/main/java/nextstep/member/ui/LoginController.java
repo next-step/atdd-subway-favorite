@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.AuthService;
-import nextstep.member.application.dto.GithubTokenRequest;
+import nextstep.member.application.dto.github.GithubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;

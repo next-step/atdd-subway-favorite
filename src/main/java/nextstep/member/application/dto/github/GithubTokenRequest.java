@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.member.application.dto.github;
 
 public class GithubTokenRequest {
     private String code;
