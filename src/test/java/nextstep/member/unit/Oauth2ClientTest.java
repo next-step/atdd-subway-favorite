@@ -2,11 +2,15 @@ package nextstep.member.unit;
 
 import nextstep.auth.domain.Oauth2Client;
 import nextstep.member.domain.FakeGithubClientImpl;
+import nextstep.member.domain.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +37,7 @@ public class Oauth2ClientTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"832ovnq039hfjn,access_token_1", "mkfo0aFa03m,access_token_2", "m-a3hnfnoew92,access_token_3", "nvci383mciq0oq,access_token_4"})
+    @MethodSource("validCodeAndExpectedAccessTokenParameter")
     @DisplayName("액세스 토큰 조회")
     void getAccessToken(final String code,
                         final String expectedAccessToken) {
@@ -42,5 +46,13 @@ public class Oauth2ClientTest {
 
         // then
         assertThat(accessToken).isEqualTo(expectedAccessToken);
+    }
+
+    private static Stream<Arguments> validCodeAndExpectedAccessTokenParameter() {
+        return Stream.of(
+                Arguments.of(GithubResponses.사용자1.getCode(), GithubResponses.사용자1.getAccessToken()),
+                Arguments.of(GithubResponses.사용자2.getCode(), GithubResponses.사용자2.getAccessToken()),
+                Arguments.of(GithubResponses.사용자3.getCode(), GithubResponses.사용자3.getAccessToken())
+        );
     }
 }
