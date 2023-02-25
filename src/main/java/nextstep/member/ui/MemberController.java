@@ -1,10 +1,20 @@
 package nextstep.member.ui;
 
+import nextstep.common.auth.LoginRequired;
+import nextstep.common.auth.MemberPayload;
+import nextstep.common.auth.VerifiedMember;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
@@ -45,9 +55,12 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
-        return ResponseEntity.ok().body(member);
+    @LoginRequired
+    public ResponseEntity<MemberResponse> findMemberOfMine(
+            @VerifiedMember final MemberPayload memberPayload
+    ) {
+        return ResponseEntity.ok().body(
+                MemberResponse.of(memberService.findMemberByEmail(memberPayload.getEmail()))
+        );
     }
 }

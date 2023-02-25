@@ -3,11 +3,20 @@ package nextstep.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.acceptance.support.AcceptanceTest;
+import nextstep.fixture.AuthFixture;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.acceptance.support.MemberSteps.*;
+import static nextstep.acceptance.support.MemberSteps.내_정보_조회가_성공한다;
+import static nextstep.acceptance.support.MemberSteps.베어러_인증으로_내_회원_정보_조회_요청;
+import static nextstep.acceptance.support.MemberSteps.회원_삭제_요청;
+import static nextstep.acceptance.support.MemberSteps.회원_생성_요청;
+import static nextstep.acceptance.support.MemberSteps.회원_정보_수정_요청;
+import static nextstep.acceptance.support.MemberSteps.회원_정보_조회_요청;
+import static nextstep.acceptance.support.MemberSteps.회원_정보_조회됨;
+import static nextstep.fixture.AuthFixture.알렉스;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -65,8 +74,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("내 정보를 조회한다.")
-    @Test
-    void getMyInfo() {
+    @Nested
+    @DisplayName("AccessToken을 Header에 포함하여 내 정보 조회를 요청하면")
+    class Context_with_select_my_info_with_access_token {
+
+        private final AuthFixture 인증_주체 = 알렉스;
+
+        @Test
+        @DisplayName("인증 주체의 회원 정보가 반환된다")
+        void it_returns_member() throws Exception {
+            ExtractableResponse<Response> 내_정보_조회_결과 = 베어러_인증으로_내_회원_정보_조회_요청(인증_주체);
+
+            내_정보_조회가_성공한다(내_정보_조회_결과);
+            회원_정보_조회됨(내_정보_조회_결과, 인증_주체);
+        }
     }
 }

@@ -23,7 +23,9 @@ public enum FieldFixture {
     회원_이메일("email"),
     회원_비밀번호("password"),
     회원_나이("age"),
-    회원_권한_목록("roles")
+    회원_권한_목록("roles"),
+
+    Access_Token("accessToken"),
     ;
 
     private final String value;

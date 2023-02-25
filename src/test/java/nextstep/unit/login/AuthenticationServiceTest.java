@@ -2,6 +2,8 @@ package nextstep.unit.login;
 
 import nextstep.login.application.AuthenticationService;
 import nextstep.login.application.dto.LoginResponse;
+import nextstep.utils.DataLoader;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,14 @@ class AuthenticationServiceTest {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private DataLoader dataLoader;
+
+    @BeforeEach
+    void setUp() {
+        dataLoader.loadData();
+    }
 
     @Nested
     @DisplayName("로그인 진행 시")

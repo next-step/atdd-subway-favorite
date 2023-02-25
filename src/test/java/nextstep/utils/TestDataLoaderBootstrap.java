@@ -17,6 +17,7 @@ public class TestDataLoaderBootstrap implements ApplicationListener<ContextRefre
      */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        dataLoader.loadData();
+        // Acceptence 클래스의 beforeEach와 중복이 됨..
+//        dataLoader.loadData();
     }
 }

@@ -52,7 +52,7 @@ public enum MemberFixture {
         return roles;
     }
 
-    public Map<String, String> 요청_데이터_생성() {
+    public Map<String, String> 로그인_요청_데이터_생성() {
         Map<String, String> params = new HashMap<>();
         params.put(회원_이메일.필드명(), 이메일());
         params.put(회원_비밀번호.필드명(), 비밀번호());
