@@ -1,5 +1,8 @@
-package nextstep.member.domain;
+package nextstep.member.application;
 
+import nextstep.member.application.dto.github.GithubAccessTokenRequest;
+import nextstep.member.application.dto.github.GithubAccessTokenResponse;
+import nextstep.member.application.dto.github.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class GithubClient {
-
     @Value("${github.client.id}")
     private String clientId;
     @Value("${github.client.secret}")

@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.member.application.dto.github;
 
 public class GithubAccessTokenRequest {
 
@@ -10,5 +10,17 @@ public class GithubAccessTokenRequest {
         this.code = code;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
     }
 }

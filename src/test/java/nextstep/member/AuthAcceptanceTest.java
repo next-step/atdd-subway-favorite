@@ -1,8 +1,5 @@
 package nextstep.member;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.DataLoader;
 import nextstep.member.fake.GithubResponse;
 import nextstep.subway.acceptance.AcceptanceTest;
@@ -13,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 
-import static nextstep.member.LoginSteps.깃허브_권한증서_로그인;
+import static nextstep.member.LoginSteps.가짜_깃허브_권한증서_로그인;
+import static nextstep.member.LoginSteps.가짜_베어러_인증_내_정보_조회;
 import static nextstep.member.LoginSteps.베어러_인증_내_정보_조회;
 import static nextstep.member.LoginSteps.베어러_인증_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +27,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void init() {
         dataLoader.loadData();
     }
+
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
@@ -46,15 +45,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void githubAuth() {
 
-        var response = 깃허브_권한증서_로그인(GithubResponse.사용자1.getCode());
-        String token = response.jsonPath().getString("accessToken");
+        var response = 가짜_깃허브_권한증서_로그인(GithubResponse.사용자1.getCode());
+        String token = response.as(GithubResponse.class).getAccessToken();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(token).isNotBlank();
 
-        var email = 베어러_인증_내_정보_조회(token).jsonPath().getString("email");
+        var email = 가짜_베어러_인증_내_정보_조회(token).as(GithubResponse.class).getEmail();
         assertThat(email).isEqualTo(GithubResponse.사용자1.getEmail());
     }
-
 
 
 }

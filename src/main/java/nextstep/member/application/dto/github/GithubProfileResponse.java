@@ -1,13 +1,25 @@
-package nextstep.member.application;
+package nextstep.member.application.dto.github;
 
 public class GithubProfileResponse {
     private final String code;
-    private final String clientId;
-    private final String clientSecret;
+    private final String accessToken;
+    private final String email;
 
-    public GithubProfileResponse(String code, String clientId, String clientSecret) {
+    public GithubProfileResponse(String code, String accessToken, String email) {
         this.code = code;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
+        this.accessToken = accessToken;
+        this.email = email;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

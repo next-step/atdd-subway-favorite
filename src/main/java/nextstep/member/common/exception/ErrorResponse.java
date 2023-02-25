@@ -1,4 +1,4 @@
-package nextstep.member.common;
+package nextstep.member.common.exception;
 
 public enum ErrorResponse {
     INVALIDATION_LOGIN_INFORMATION("로그인 정보가 틀렸습니다."),

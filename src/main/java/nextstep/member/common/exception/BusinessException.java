@@ -1,4 +1,4 @@
-package nextstep.member.common;
+package nextstep.member.common.exception;
 
 public class BusinessException extends RuntimeException {
     public BusinessException(ErrorResponse errorResponse) {

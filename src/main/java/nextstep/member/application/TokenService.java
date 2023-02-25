@@ -3,23 +3,30 @@ package nextstep.member.application;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.common.ErrorResponse;
-import nextstep.member.common.LoginException;
+import nextstep.member.application.dto.github.GithubAccessTokenRequest;
+import nextstep.member.application.dto.github.GithubProfileResponse;
+import nextstep.member.common.exception.ErrorResponse;
+import nextstep.member.common.exception.LoginException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional(readOnly = true)
 public class TokenService {
 
     private final JwtTokenProvider tokenProvider;
 
     private final MemberRepository memberRepository;
 
-    public TokenService(JwtTokenProvider tokenProvider, MemberRepository memberRepository) {
+    private final GithubClient githubClient;
+
+    public TokenService(JwtTokenProvider tokenProvider, MemberRepository memberRepository, GithubClient githubClient) {
         this.tokenProvider = tokenProvider;
         this.memberRepository = memberRepository;
+        this.githubClient = githubClient;
     }
 
     public TokenResponse login(TokenRequest tokenRequest) {
@@ -36,5 +43,16 @@ public class TokenService {
         String email = tokenProvider.getPrincipal(token);
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new LoginException(ErrorResponse.NOT_FOUND_EMAIL));
         return MemberResponse.of(member);
+    }
+
+    public TokenResponse login(String code) {
+
+        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(code);
+        GithubProfileResponse githubProfileFromGithub = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
+        String email = githubProfileFromGithub.getEmail();
+
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new LoginException(ErrorResponse.NOT_FOUND_EMAIL));
+
+        return new TokenResponse(tokenProvider.createToken(email, member.getRoles()));
     }
 }

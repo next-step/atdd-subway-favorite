@@ -8,28 +8,39 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@ActiveProfiles("test")
 public class LoginSteps {
 
-    @DisplayName("Github Auth")
+    @DisplayName("Fake Github Auth")
     @Test
-    public static ExtractableResponse<Response> 깃허브_권한증서_로그인(String code) {
+    public static ExtractableResponse<Response> 가짜_깃허브_권한증서_로그인(String code) {
         Map<String, String> params = new HashMap<>();
         params.put("code", code);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/login/github")
+                .when().post("fake/login/github")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
 
         return response;
+    }
+
+    @DisplayName("Fake Token 인증")
+    public static ExtractableResponse<Response> 가짜_베어러_인증_내_정보_조회(String token) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .given().header(HttpHeaders.AUTHORIZATION, token)
+                .when().get("fake/members/me")
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 베어러_인증_로그인_요청(String email, String password) {

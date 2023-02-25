@@ -1,7 +1,7 @@
 package nextstep.member.fake;
 
-import nextstep.member.common.ErrorResponse;
-import nextstep.member.common.LoginException;
+import nextstep.member.common.exception.ErrorResponse;
+import nextstep.member.common.exception.LoginException;
 
 import java.util.Arrays;
 
@@ -36,6 +36,13 @@ public enum GithubResponse {
     public static GithubResponse getByCode(String code) {
         return Arrays.stream(values())
                 .filter(githubResponse -> githubResponse.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new LoginException(ErrorResponse.INVALIDATION_LOGIN_INFORMATION));
+    }
+
+    public static GithubResponse getByAccessToken(String accessToken) {
+        return Arrays.stream(values())
+                .filter(githubResponse -> githubResponse.getAccessToken().equals(accessToken))
                 .findFirst()
                 .orElseThrow(() -> new LoginException(ErrorResponse.INVALIDATION_LOGIN_INFORMATION));
     }
