@@ -9,15 +9,16 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Favorite;
 import nextstep.member.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
-import nextstep.subway.domain.Station;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.StationService;
+import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static nextstep.error.exception.ErrorCode.MEMBER_NOT_EXISTS;
-import static nextstep.error.exception.ErrorCode.MISMATCHED_PASSWORD;
+import static nextstep.error.exception.ErrorCode.*;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final FavoriteRepository favoriteRepository;
@@ -29,6 +30,7 @@ public class MemberService {
 		this.stationService = stationService;
 	}
 
+	@Transactional
 	public MemberResponse createMember(MemberRequest request) {
 		Member member = memberRepository.save(request.toMember());
 		return MemberResponse.of(member);
@@ -39,11 +41,13 @@ public class MemberService {
 		return MemberResponse.of(member);
 	}
 
+	@Transactional
 	public void updateMember(Long id, MemberRequest param) {
 		Member member = memberRepository.findById(id).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
 		member.update(param.toMember());
 	}
 
+	@Transactional
 	public void deleteMember(Long id) {
 		memberRepository.findById(id).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
 		memberRepository.deleteById(id);
@@ -73,6 +77,7 @@ public class MemberService {
 		return AuthMember.of(member);
 	}
 
+	@Transactional
     public FavoriteResponse createFavorite(AuthMember authMember, FavoriteRequest favoriteRequest) {
 		Member member = memberRepository.findById(authMember.getId()).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
 		Station source = stationService.findById(favoriteRequest.getSource());
@@ -82,4 +87,9 @@ public class MemberService {
 
 		return FavoriteResponse.of(favorite);
     }
+
+	public FavoriteResponse findFavoriteOfMine(AuthMember authMember) {
+		Favorite favorite = favoriteRepository.findByMemberId(authMember.getId()).orElseThrow(() -> new BusinessException(FAVORITE_NOT_EXISTS));
+		return FavoriteResponse.of(favorite);
+	}
 }

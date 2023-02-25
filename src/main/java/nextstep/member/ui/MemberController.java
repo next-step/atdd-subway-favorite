@@ -55,5 +55,10 @@ public class MemberController {
 
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getMemberId())).build();
     }
-}
 
+    @GetMapping("/favorites")
+    public ResponseEntity<FavoriteResponse> getFavoriteOfMine(@Auth AuthMember authMember) {
+        FavoriteResponse favoriteResponseOfMine = memberService.findFavoriteOfMine(authMember);
+        return ResponseEntity.ok().body(favoriteResponseOfMine);
+    }
+}

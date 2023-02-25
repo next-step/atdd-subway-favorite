@@ -12,10 +12,10 @@ public class Favorite {
     private Long id;
     @JoinColumn(name = "member_id")
     private Long memberId;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "up_station_id")
     private Station source;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "down_station_id")
     private Station target;
 
