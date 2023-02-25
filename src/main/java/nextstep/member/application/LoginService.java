@@ -1,9 +1,9 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubLoginRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.domain.Member;
+import nextstep.member.infrastructure.GithubClient;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,10 +14,12 @@ public class LoginService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
+    private final GithubClient githubClient;
 
-    public LoginService(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
+    public LoginService(JwtTokenProvider jwtTokenProvider, MemberService memberService, GithubClient githubClient) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberService = memberService;
+        this.githubClient = githubClient;
     }
 
     public String login(TokenRequest tokenRequest) {
@@ -27,8 +29,8 @@ public class LoginService {
         return jwtTokenProvider.createToken(member.getId().toString(), member.getRoles());
     }
 
-    public GithubAccessTokenResponse githubLogin(GithubLoginRequest tokenRequest) {
-        return null;
+    public String githubLogin(GithubLoginRequest tokenRequest) {
+        return githubClient.getAccessTokenFromGithub(tokenRequest.getCode());
     }
 
 }

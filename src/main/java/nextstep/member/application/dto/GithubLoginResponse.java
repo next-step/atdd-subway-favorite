@@ -8,8 +8,8 @@ public class GithubLoginResponse {
         this.accessToken = accessToken;
     }
 
-    public static GithubLoginResponse from(GithubAccessTokenResponse githubLogin) {
-        return new GithubLoginResponse(githubLogin.getAccessToken());
+    public static GithubLoginResponse from(String accessToken) {
+        return new GithubLoginResponse(accessToken);
     }
 
     public String getAccessToken() {

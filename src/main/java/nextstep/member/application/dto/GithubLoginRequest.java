@@ -2,7 +2,10 @@ package nextstep.member.application.dto;
 
 public class GithubLoginRequest {
 
-    private final String code;
+    private String code;
+
+    public GithubLoginRequest() {
+    }
 
     public GithubLoginRequest(String code) {
         this.code = code;
