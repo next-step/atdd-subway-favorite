@@ -6,8 +6,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.exception.NotFoundMemberException;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
@@ -37,6 +37,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
     }

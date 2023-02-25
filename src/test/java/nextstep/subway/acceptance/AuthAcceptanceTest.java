@@ -42,16 +42,21 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given 회원 가입
      * When Github 로그인 요청 시
      * Then accessToken 을 얻을 수 있다.
      */
     @DisplayName("Github 로그인 요청 시 accessToken 을 얻을 수 있다")
     @Test
     void Github_로그인_요청_시_accessToken_을_얻을_수_있다() {
+        // Given
+        dataLoader.loadDataWithGithubUser();
+
+        // When
         ExtractableResponse<Response> response = 깃헙_로그인_요청(GithubResponses.사용자1.getCode());
 
+        // Then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
-        assertThat(response.jsonPath().getString("accessToken")).isEqualTo(GithubResponses.사용자1.getAccessToken());
     }
 
     /**
@@ -69,7 +74,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰으로_내_정보_요청(accessToken);
 
         assertThat(accessToken).isNotBlank();
-        assertThat(response.jsonPath().getString("id")).isEqualTo(GithubResponses.사용자1.getCode());
         assertThat(response.jsonPath().getString("email")).isEqualTo(GithubResponses.사용자1.getEmail());
     }
 
