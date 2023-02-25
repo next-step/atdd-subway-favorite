@@ -87,6 +87,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
      * when 내 로그인 토큰으로 즐겨찾기를 조회하면
      * then 나의 즐겨찾기가 조회된다.
      */
+    @DisplayName("내 즐겨찾기 조회 기능")
     @Test
     void findFavoritesOfMine() {
         //given
@@ -107,9 +108,26 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         );
     }
 
+    /**
+     *
+     */
+    @DisplayName("내 즐겨찾기 삭제 기능")
     @Test
     void deleteFavorites() {
+        //given
+        출발역 = 교대역;
+        도착역 = 양재역;
+        String 삭제할_즐겨찾기 = "1";
 
+        FavoriteSteps.즐겨찾기_추가(로그인_토큰,출발역 + "", 도착역 + "");
+
+        //when
+        FavoriteSteps.즐겨찾기_삭제(로그인_토큰, 삭제할_즐겨찾기);
+
+        ExtractableResponse<Response> response = FavoriteSteps.내_즐겨찾기_조회(로그인_토큰);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Map<String, String> createSectionCreateParams(Long upStationId, Long downStationId, int distance) {
