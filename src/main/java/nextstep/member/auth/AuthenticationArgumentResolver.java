@@ -11,11 +11,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.dto.AuthUser;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.ErrorMessage;
 import nextstep.member.exception.InvalidTokenException;
-import nextstep.member.exception.NotFoundException;
 import nextstep.member.exception.UnAuthenticationException;
 import nextstep.member.ui.annotations.AuthToken;
 
@@ -25,12 +22,9 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
 	private static final String AUTHENTICATION_TYPE = "Bearer";
 
 	private final JwtTokenProvider jwtTokenProvider;
-	private final MemberRepository memberRepository;
 
-	public AuthenticationArgumentResolver(JwtTokenProvider jwtTokenProvider,
-		MemberRepository memberRepository) {
+	public AuthenticationArgumentResolver(JwtTokenProvider jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
-		this.memberRepository = memberRepository;
 	}
 
 	@Override
@@ -52,20 +46,17 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
 
 		validateToken(token);
 
-		Member member = findMember(token);
+		return getAuthUser(token);
+	}
 
-		return AuthUser.of(member.getEmail(), member.getRoles());
+	private AuthUser getAuthUser(String token) {
+		return AuthUser.of(jwtTokenProvider.getPrincipal(token), jwtTokenProvider.getRoles(token));
 	}
 
 	private void validateAuthorizationNonNull(String authorization) {
 		if (!Objects.nonNull(authorization)) {
 			throw new UnAuthenticationException(ErrorMessage.UNAUTHENTICATED_TOKEN);
 		}
-	}
-
-	private Member findMember(String token) {
-		return memberRepository.findByEmail(jwtTokenProvider.getPrincipal(token))
-			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_MEMBER_BY_EMAIL));
 	}
 
 	private void validateTokenType(String authorization) {
