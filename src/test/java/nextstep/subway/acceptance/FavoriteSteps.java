@@ -58,4 +58,16 @@ public class FavoriteSteps {
                 .getList("", FavoriteResponse.class);
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(final String token, final String path) {
+        return RestAssured
+                .given()
+                    .auth().oauth2(token)
+                    .accept(ALL_VALUE)
+                .when()
+                    .delete(path)
+                .then()
+                    .log().all()
+                .extract();
+    }
+
 }

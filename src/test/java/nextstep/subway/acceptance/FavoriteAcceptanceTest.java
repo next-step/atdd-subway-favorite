@@ -3,18 +3,20 @@ package nextstep.subway.acceptance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 
 import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_201을_반환한다;
+import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_204를_반환한다;
 import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_400을_반환한다;
 import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_401을_반환한다;
 import static nextstep.subway.acceptance.FavoriteSteps.인증없이_즐겨찾기_추가_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청하고_목록_반환;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청하고_토큰_반환;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.springframework.http.HttpHeaders.LOCATION;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -56,7 +58,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         assertAll(
                 () -> 응답코드_201을_반환한다(response),
-                () -> assertThat(response.header(HttpHeaders.LOCATION)).isEqualTo("/favorites/1")
+                () -> assertThat(response.header(LOCATION)).isEqualTo("/favorites/1")
         );
     }
 
@@ -110,5 +112,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         응답코드_400을_반환한다(response);
+    }
+
+    /**
+     * given: 경로 즐겨찾기를 추가하고
+     * when : 해당 즐겨찾기를 삭제요청하면
+     * then : 삭제가 성공한다.
+     */
+    @DisplayName("경로 즐겨찾기를 추자하고 해당 즐겨찾기를 삭제요청하면 성공적으로 삭제된다.")
+    @Test
+    void removeFavorite() {
+        // given
+        final var location = 즐겨찾기_추가_요청(token, 강남역, 정자역).header(LOCATION);
+
+        // when
+        final var response = 즐겨찾기_삭제_요청(token, location);
+
+        // then
+        응답코드_204를_반환한다(response);
     }
 }
