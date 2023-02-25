@@ -92,4 +92,9 @@ public class MemberService {
 		Favorite favorite = favoriteRepository.findByMemberId(authMember.getId()).orElseThrow(() -> new BusinessException(FAVORITE_NOT_EXISTS));
 		return FavoriteResponse.of(favorite);
 	}
+
+	@Transactional
+	public void deleteFavoriteOfMine(String favoriteId) {
+		favoriteRepository.deleteById(Long.valueOf(favoriteId));
+	}
 }

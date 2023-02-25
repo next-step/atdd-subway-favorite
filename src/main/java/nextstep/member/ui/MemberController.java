@@ -61,4 +61,10 @@ public class MemberController {
         FavoriteResponse favoriteResponseOfMine = memberService.findFavoriteOfMine(authMember);
         return ResponseEntity.ok().body(favoriteResponseOfMine);
     }
+
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity<FavoriteResponse> deleteFavoriteOfMine(@Auth AuthMember authMember, @PathVariable String favoriteId) {
+        memberService.deleteFavoriteOfMine(favoriteId);
+        return ResponseEntity.noContent().build();
+    }
 }

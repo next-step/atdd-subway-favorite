@@ -109,7 +109,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
     }
 
     /**
-     *
+     * given 즐겨찾기를 추가 하고
+     * when 삭제할 해당 내 즐겨찾기를 삭제하면
+     * then 빈 값이 반환된다.
      */
     @DisplayName("내 즐겨찾기 삭제 기능")
     @Test
@@ -122,9 +124,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         FavoriteSteps.즐겨찾기_추가(로그인_토큰,출발역 + "", 도착역 + "");
 
         //when
-        FavoriteSteps.즐겨찾기_삭제(로그인_토큰, 삭제할_즐겨찾기);
-
-        ExtractableResponse<Response> response = FavoriteSteps.내_즐겨찾기_조회(로그인_토큰);
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_삭제(로그인_토큰, 삭제할_즐겨찾기);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
