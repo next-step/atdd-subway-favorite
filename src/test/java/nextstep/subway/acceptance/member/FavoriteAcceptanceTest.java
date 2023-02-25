@@ -2,8 +2,6 @@ package nextstep.subway.acceptance.member;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import nextstep.DataLoader;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static nextstep.fake.GithubResponses.사용자1;
 import static nextstep.fake.GithubResponses.사용자2;
@@ -28,7 +29,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Autowired
     private DataLoader dataLoader;
 
-    String 사용자1_토큰;
+    private String 사용자1_토큰;
     private Long 강남역;
     private Long 양재역;
 
@@ -76,7 +77,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void deleteFavorite() {
         var createResponse = 즐겨찾기_등록(사용자1_토큰, 강남역, 양재역);
         long id = 즐겨찾기_ID_가져오기(createResponse);
-        
+
         var deleteResponse = 즐겨찾기_삭제(사용자1_토큰, id);
 
         var favorites = 즐겨찾기_목록_조회_요청(사용자1_토큰);
@@ -96,9 +97,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void createFavoriteWithInvalidToken() {
         var createResponse = 즐겨찾기_등록(사용자1_토큰 + "abcd", 강남역, 양재역);
 
-        assertAll(() -> {
-            assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-        });
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**

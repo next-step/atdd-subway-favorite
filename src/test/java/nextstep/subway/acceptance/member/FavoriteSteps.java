@@ -4,10 +4,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.subway.acceptance.AbstractSteps;
-import org.springframework.http.HttpStatus;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteSteps extends AbstractSteps {
 
@@ -20,12 +16,6 @@ public class FavoriteSteps extends AbstractSteps {
             .body(request)
             .when().post("/favorites")
             .then().log().all().extract();
-    }
-
-    public void 즐겨찾기_정상_등록됨(ExtractableResponse<Response> response) {
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        });
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
