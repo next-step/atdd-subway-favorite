@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.토큰으로_내_정보_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -51,6 +52,25 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
         assertThat(response.jsonPath().getString("accessToken")).isEqualTo(GithubResponses.사용자1.getAccessToken());
+    }
+
+    /**
+     * When 가입이 되어있지 않은 회원이 로그인 요청 시
+     * Then 가입 진행 후
+     * Then Access Token 을 확인 할 수 있다
+     */
+    @DisplayName("가입이 되어있지 않은 회원이 로그인 요청 시 가입 진행 후 Access Token 을 확인 할 수 있다")
+    @Test
+    void 가입이_되어있지_않은_회원이_로그인_요청_시_가입_진행_후_Access_Token_을_확인_할_수_있다_() {
+        // When
+        String accessToken = 깃헙_로그인_요청(GithubResponses.사용자1.getCode()).jsonPath().getString("accessToken");
+
+        // Then
+        ExtractableResponse<Response> response = 토큰으로_내_정보_요청(accessToken);
+
+        assertThat(accessToken).isNotBlank();
+        assertThat(response.jsonPath().getString("id")).isEqualTo(GithubResponses.사용자1.getCode());
+        assertThat(response.jsonPath().getString("email")).isEqualTo(GithubResponses.사용자1.getEmail());
     }
 
     private static ExtractableResponse<Response> 깃헙_로그인_요청(String code) {
