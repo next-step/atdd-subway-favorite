@@ -3,6 +3,8 @@ package nextstep.member.unit;
 import nextstep.auth.application.AuthService;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.GithubProfileResponse;
+import nextstep.auth.domain.Oauth2Client;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
@@ -34,6 +36,8 @@ public class AuthServiceMockTest {
     private JwtTokenProvider jwtTokenProvider;
     @Mock
     private MemberService memberService;
+    @Mock
+    private Oauth2Client client;
 
     @Test
     @DisplayName("토큰 생성 실패-비밀번호 미일치")
@@ -59,6 +63,24 @@ public class AuthServiceMockTest {
 
         // when
         final TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
+
+        // then
+        assertThat(token.getAccessToken()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("깃허브 로그인")
+    void githubLogin() {
+        // given
+        final Member member = new Member(EMAIL, PASSWORD, 20, List.of(RoleType.ROLE_ADMIN.name()));
+
+        when(client.getAccessToken("code")).thenReturn("accessToken");
+        when(client.getProfile("accessToken")).thenReturn(new GithubProfileResponse(EMAIL));
+        when(memberService.findByEmail(EMAIL)).thenReturn(member);
+        when(jwtTokenProvider.createToken(member.getEmail(), member.getRoles())).thenReturn("token");
+
+        // when
+        final TokenResponse token = authService.oauth2Login("code");
 
         // then
         assertThat(token.getAccessToken()).isNotBlank();
