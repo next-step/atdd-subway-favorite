@@ -1,12 +1,13 @@
 package nextstep.member.domain;
 
+import nextstep.subway.domain.Station;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import nextstep.subway.domain.Station;
 
 @Entity
 public class Favorite {
@@ -37,6 +38,10 @@ public class Favorite {
 
     public Long getId() {
         return id;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public Station getSourceStation() {

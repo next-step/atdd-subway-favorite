@@ -1,8 +1,8 @@
 package nextstep.member.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import nextstep.member.domain.exception.NotAuthorizedException;
+import nextstep.subway.domain.Station;
+
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -14,8 +14,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import nextstep.member.domain.exception.NotAuthorizedException;
-import nextstep.subway.domain.Station;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Member {
@@ -98,10 +99,13 @@ public class Member {
     }
 
     public void deleteFavorite(Favorite favorite) {
-        if (!favorites.contains(favorite)) {
+        checkMyFavorite(favorite);
+        favorites.remove(favorite);
+    }
+
+    private void checkMyFavorite(Favorite favorite) {
+        if (favorite.getMember() != this) {
             throw new NotAuthorizedException(String.format("%s 님의 즐겨찾기가 아닙니다.", email));
         }
-
-        favorites.remove(favorite);
     }
 }
