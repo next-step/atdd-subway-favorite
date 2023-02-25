@@ -20,4 +20,12 @@ public class FavoriteSteps {
                 .when().post("/favorites")
                 .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 내_즐겨찾기_조회(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all().extract();
+    }
 }

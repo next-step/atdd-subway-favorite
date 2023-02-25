@@ -16,6 +16,7 @@ import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.PathSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("즐겨찾기 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest{
@@ -81,9 +82,29 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    /**
+     * given 즐겨찾기를 추가 하고
+     * when 내 로그인 토큰으로 즐겨찾기를 조회하면
+     * then 나의 즐겨찾기가 조회된다.
+     */
     @Test
-    void findFavorites() {
+    void findFavoritesOfMine() {
+        //given
+        출발역 = 교대역;
+        도착역 = 양재역;
 
+        FavoriteSteps.즐겨찾기_추가(로그인_토큰,출발역 + "", 도착역 + "");
+
+        //when
+        ExtractableResponse<Response> response = FavoriteSteps.내_즐겨찾기_조회(로그인_토큰);
+
+        //then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getLong("id")).isEqualTo(1),
+                () -> assertThat(response.jsonPath().getLong("source.id")).isEqualTo(출발역),
+                () -> assertThat(response.jsonPath().getLong("target.id")).isEqualTo(도착역)
+        );
     }
 
     @Test
