@@ -2,6 +2,7 @@ package nextstep.auth.application;
 
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.GithubLoginRequest;
 import nextstep.auth.domain.Oauth2Client;
 import nextstep.auth.domain.ProfileResponse;
 import nextstep.member.application.JwtTokenProvider;
@@ -35,8 +36,8 @@ public class AuthService {
         return createToken(member);
     }
 
-    public TokenResponse oauth2Login(final String code) {
-        final String accessToken = client.getAccessToken(code);
+    public TokenResponse oauth2Login(final GithubLoginRequest loginRequest) {
+        final String accessToken = client.getAccessToken(loginRequest.getCode());
         final ProfileResponse profile = client.getProfile(accessToken);
 
         final Member member = memberService.findByEmail(profile.getEmail());
