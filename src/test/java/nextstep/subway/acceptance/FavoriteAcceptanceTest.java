@@ -9,6 +9,7 @@ import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_204를_반
 import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_400을_반환한다;
 import static nextstep.subway.acceptance.AcceptanceUtils.응답코드_401을_반환한다;
 import static nextstep.subway.acceptance.FavoriteSteps.인증없이_즐겨찾기_추가_요청;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청하고_목록_반환;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
@@ -22,6 +23,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
+
+    private static final String OTHER_EMAIL = "member@email.com";
+    private static final String OTHER_PASSWORD = "password";
     private static final String WRONG_TOKEN = "WRONG_TOKEN";
 
     private Long 강남역;
@@ -29,6 +33,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 정자역;
 
     private String token;
+    private String otherToken;
 
     /**
      * given: 지하철 역을 추가하고
@@ -44,6 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_생성_요청("정자역").jsonPath().getLong("id");
 
         token = 베어러_인증_로그인_요청하고_토큰_반환(EMAIL, PASSWORD);
+        otherToken= 베어러_인증_로그인_요청하고_토큰_반환(OTHER_EMAIL, OTHER_PASSWORD);
     }
 
     /**
@@ -131,4 +137,50 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         응답코드_204를_반환한다(response);
     }
+
+    /**
+     * given: 경로 즐겨찾기를 여러개 추가하고
+     * given: 특정 즐겨찾기를 삭제하고
+     * when : 즐겨찾기 목록을 조회하면
+     * then : 해당 즐겨찾기를 찾을 수 없다.
+     */
+    @DisplayName("경로 즐겨찾기를 삭제하면 즐겨찾기 목록에서 해당 즐겨찾기를 찾을 수 없다.")
+    @Test
+    void removeFavoriteAndShowFavorites() {
+        // given
+        즐겨찾기_추가_요청(token, 강남역, 정자역);
+        final var location = 즐겨찾기_추가_요청(token, 정자역, 양재역).header(LOCATION);
+
+        즐겨찾기_삭제_요청(token, location);
+
+        // when
+        final var response = 즐겨찾기_목록_조회_요청(token);
+
+        final var sources = response.jsonPath().getList("source.id", Long.class);
+        final var targets = response.jsonPath().getList("target.id", Long.class);
+
+        // then
+        assertThat(sources).doesNotContain(정자역);
+        assertThat(targets).doesNotContain(양재역);
+    }
+
+    /**
+     * given: 경로 즐겨찾기를 추가하고
+     * when : 다른 사람의 즐겨찾기를 삭제요청하면
+     * then : 오류가 발생한다.
+     */
+    @DisplayName("다른 사람의 즐겨찾기를 삭제요청하면 오류가 발생한다.")
+    @Test
+    void removeOtherMemberFavorite() {
+        // given
+        final var location = 즐겨찾기_추가_요청(token, 강남역, 정자역).header(LOCATION);
+
+        // when
+        final var response = 즐겨찾기_삭제_요청(otherToken, location);
+
+        // then
+        응답코드_400을_반환한다(response);
+    }
+
+
 }
