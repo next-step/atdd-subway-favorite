@@ -2,10 +2,13 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.message.Message;
+import nextstep.member.domain.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.인가서버에_토큰_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -46,6 +49,26 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.body().asString()).contains("잘못된 비밀번호");
     }
+    
+    @Test
+    @DisplayName("깃헙 로그인 : 정상")
+    void test3() {
+        // given
+        GithubResponses 사용자1 = GithubResponses.사용자1;
+        // when
+        ExtractableResponse<Response> response = 인가서버에_토큰_요청(사용자1.getCode());
+        // then
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo(사용자1.getAccessToken());
+    }
 
+    @Test
+    @DisplayName("깃헙 로그인 : 존재하지 않는 코드")
+    void test4() {
+        // given
+        // when
+        ExtractableResponse<Response> response = 인가서버에_토큰_요청("Invalid");
+        // then
+        assertThat(response.body().asString()).contains(Message.INVALID_CODE);
+    }
 
 }
