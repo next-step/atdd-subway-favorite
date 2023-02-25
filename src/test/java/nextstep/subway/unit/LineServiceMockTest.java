@@ -26,7 +26,6 @@ class LineServiceMockTest {
     @Mock
     private StationService stationService;
 
-    @Autowired
     private LineService lineService;
     private Station 강남역;
     private Station 역삼역;
