@@ -22,6 +22,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
     private static final String 이메일 = "email@email.com";
     private static final String 비밀번호 = "password";
     public static final int 나이 = 20;
+    String 로그인_토큰;
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;
@@ -45,6 +46,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         super.setUp();
         회원_생성_요청(이메일, 비밀번호, 나이);
 
+        ExtractableResponse<Response> bearerResponse = 베어러_인증_로그인_요청(이메일, 비밀번호);
+        TokenResponse tokenResponse = bearerResponse.as(TokenResponse.class);
+        로그인_토큰 = tokenResponse.getAccessToken();
+
         교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
@@ -58,7 +63,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
     }
 
     /**
-     * given 로그인토큰값과 출발역과 도착역이 주어지고
+     * given 출발역과 도착역이 주어지고
      * when 즐겨찾기를 추가하면
      * then 즐겨찾기가 생성된다.
      */
@@ -68,10 +73,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         //given
         출발역 = 교대역;
         도착역 = 양재역;
-
-        ExtractableResponse<Response> bearerResponse = 베어러_인증_로그인_요청(이메일, 비밀번호);
-        TokenResponse tokenResponse = bearerResponse.as(TokenResponse.class);
-        String 로그인_토큰 = tokenResponse.getAccessToken();
 
         //when
         ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_추가(로그인_토큰,출발역 + "", 도착역 + "");
