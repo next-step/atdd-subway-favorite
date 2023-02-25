@@ -1,46 +1,44 @@
 package nextstep.member.ui;
 
-import nextstep.auth.config.AuthRequest;
 import nextstep.member.application.FavoriteService;
-import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.FarvoriteRequest;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.Favorite;
+import nextstep.member.application.config.AuthFavorite;
+import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
-import nextstep.subway.domain.Station;
-import nextstep.subway.domain.StationRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class FavoriteController {
     private final FavoriteService favoriteService;
-    private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
 
-    public FavoriteController(FavoriteService favoriteService, MemberRepository memberRepository, StationRepository stationRepository) {
+    public FavoriteController(FavoriteService favoriteService) {
         this.favoriteService = favoriteService;
-        this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
     }
 
-    @PostMapping("/favorite")
-    public ResponseEntity<Void> createMember(@AuthRequest String email, @RequestBody FarvoriteRequest param) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
-        Station sourceStation = stationRepository.findById(param.getSource()).orElseThrow(IllegalArgumentException::new);
-        Station targetStation = stationRepository.findById(param.getTarget()).orElseThrow(IllegalArgumentException::new);
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> createFavorite(@AuthFavorite Member member, @RequestBody FavoriteRequest param) {
+        favoriteService.createFavorite(member, param);
+        return ResponseEntity.created(URI.create("/favorites/")).build();
+    }
 
-        favoriteService.save(Favorite.builder()
-                .member(member)
-                .sourceStation(sourceStation)
-                .targetStation(targetStation).build());
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FavoriteResponse>> showFavorite() {
+        List<FavoriteResponse> favoriteResponses = favoriteService.showFavorite();
+        return ResponseEntity.ok().body(favoriteResponses);
+    }
 
-        return ResponseEntity.created(URI.create("/favorite/")).build();
+    @DeleteMapping("/favorites/{id}")
+    public ResponseEntity<Void> deleteFavorite(@PathVariable Long id) {
+        favoriteService.deleteFavorite(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -9,14 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_등록;
+import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_삭제;
+import static nextstep.subway.acceptance.FavoriteSteps.지하철_즐겨찾기_조회;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 즐겨찾기 관리 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -45,25 +47,57 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * when 지하철 즐겨찾기를 등록한다.
+     * then 정상적으로 지하철역이 생성됨을 확인한다.
      */
     @DisplayName("지하철 즐겨찾기 생성")
     @Test
     void createFavorite() {
         // when
-        Map<String, Long> params = new HashMap<>();
-        params.put("source", 교대역);
-        params.put("target", 남부터미널역);
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().header("authorization", "Bearer "+ 인증토큰)
-                .log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorite")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_등록(인증토큰, 교대역, 남부터미널역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    /**
+     * given 지하철 즐겨찾기를 여러개 등록한다.
+     * when 지하철 즐겨찾기를 조회한다.
+     * then 등록한 즐겨찾기 리스트인지 확인한다.
+     */
+    @DisplayName("지하철 즐겨찾기 리스트 조회")
+    @Test
+    void showFavorite() {
+        //given
+        지하철_즐겨찾기_등록(인증토큰, 교대역, 남부터미널역);
+        지하철_즐겨찾기_등록(인증토큰, 강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_즐겨찾기_조회(인증토큰);
+
+        // then
+        assertAll(() -> assertThat(response.body().as(List.class).size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(교대역, 강남역),
+                () -> assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(남부터미널역, 양재역));
+    }
+
+    /**
+     * given 지하철 즐겨찾기를 여러개 등록한다.
+     * when 지하철 즐겨찾기를 삭제한다.
+     * then 등록한 즐겨찾기 리스트인지 확인한다.
+     */
+    @DisplayName("지하철 즐겨찾기 리스트 조회")
+    @Test
+    void deleteFavorite() {
+        //given
+        지하철_즐겨찾기_등록(인증토큰, 교대역, 남부터미널역);
+        지하철_즐겨찾기_등록(인증토큰, 강남역, 양재역);
+
+        // when
+        Long 삭제즐겨찾기 = 지하철_즐겨찾기_조회(인증토큰).jsonPath().getList("id", Long.class).get(1);
+        지하철_즐겨찾기_삭제(인증토큰, 삭제즐겨찾기);
+
+        // then
+        assertThat(지하철_즐겨찾기_조회(인증토큰).jsonPath().getList("id", Long.class)).doesNotContain(삭제즐겨찾기);
+    }
 }

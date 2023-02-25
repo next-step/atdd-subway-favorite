@@ -1,10 +1,13 @@
 package nextstep.member.application.dto;
 
-public class FarvoriteRequest {
+public class FavoriteRequest {
     private Long source;
     private Long target;
 
-    public FarvoriteRequest(Long source, Long target) {
+    private FavoriteRequest() {
+    }
+
+    public FavoriteRequest(Long source, Long target) {
         this.source = source;
         this.target = target;
     }

@@ -27,8 +27,20 @@ public class Favorite {
     @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
+    public Long getId() {
+        return id;
+    }
+
     public Member getMember() {
         return member;
+    }
+
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
     }
 
     protected Favorite() {
