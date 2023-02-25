@@ -23,4 +23,15 @@ public class FakeGithubClientImpl implements Oauth2Client {
 
         return response.getAccessToken();
     }
+
+    @Override
+    public GithubProfileResponse getProfile(final String accessToken) {
+        try {
+            response = GithubResponses.ofAccessToken(accessToken);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(INVALID_AUTHENTICATION_INFO);
+        }
+
+        return new GithubProfileResponse(response.getEmail());
+    }
 }

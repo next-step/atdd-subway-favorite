@@ -56,4 +56,21 @@ public class GithubClientImpl implements Oauth2Client {
 
         return accessToken;
     }
+
+    @Override
+    public GithubProfileResponse getProfile(final String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "token " + accessToken);
+
+        HttpEntity httpEntity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            return restTemplate
+                    .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                    .getBody();
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException(INVALID_AUTHENTICATION_INFO);
+        }
+    }
 }
