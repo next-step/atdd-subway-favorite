@@ -68,13 +68,13 @@ Content-Type: application/json
 
 #### 기능 요구사항
 
-- [ ] 깃허브를 이용한 로그인 구현(토큰 발행)
+- [x] 깃허브를 이용한 로그인 구현(토큰 발행)
 - [ ] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
 
 #### 프로그래밍 요구사항
 
-- [ ] GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
-- [ ] 깃헙 로그인 API AuthAcceptanceTest 테스트 만들기
+- [x] GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
+- [x] 깃헙 로그인 API AuthAcceptanceTest 테스트 만들기
 
 ``` Request
 POST /login/github HTTP/1.1

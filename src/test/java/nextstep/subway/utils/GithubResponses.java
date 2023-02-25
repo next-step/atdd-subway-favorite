@@ -1,5 +1,9 @@
 package nextstep.subway.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+
 public enum GithubResponses {
     사용자1("832ovnq039hfjn", "access_token_1", "email1@email.com"),
     사용자2("mkfo0aFa03m", "access_token_2", "email2@email.com"),
@@ -26,5 +30,11 @@ public enum GithubResponses {
 
     public String getEmail() {
         return email;
+    }
+
+    public static GithubResponses getCodeFromGithubCode(String code) {
+        return Arrays.stream(values())
+                .filter(githubResponse -> StringUtils.equalsIgnoreCase(githubResponse.getCode(), code))
+                .findFirst().get();
     }
 }
