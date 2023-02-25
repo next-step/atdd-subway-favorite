@@ -1,12 +1,10 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,7 +80,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰으로_내_정보_요청(accessToken);
 
         // Then
-        회원_정보_조회됨(response,EMAIL, AGE);
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 
 }

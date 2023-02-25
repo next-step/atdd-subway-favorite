@@ -92,12 +92,12 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 토큰으로_내_정보_요청(String token) {
         return RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .auth().oauth2(token)
-            .when().get("/members/me")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 
 }

@@ -82,11 +82,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         params.put("code", code);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/login/github")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value()).extract();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
         return response;
     }
 

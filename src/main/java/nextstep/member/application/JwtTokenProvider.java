@@ -25,12 +25,12 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(now)
-            .setExpiration(validity)
-            .claim("roles", roles)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .claim("roles", roles)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public String getPrincipal(String token) {

@@ -9,15 +9,15 @@ public class FakeGithubResponse {
 
     public static String getAccessToken(String code) {
         return Arrays.stream(GithubResponses.values()).filter(githubResponses -> githubResponses.getCode().equals(code))
-            .findFirst()
-            .orElseThrow(RuntimeException::new)
-            .getAccessToken();
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .getAccessToken();
     }
 
     public static GithubProfileResponse findBy(String accessToken) {
         return new GithubProfileResponse(Arrays.stream(GithubResponses.values()).filter(githubResponses -> githubResponses.getAccessToken().equals(accessToken))
-            .findFirst()
-            .orElseThrow(RuntimeException::new)
-            .getEmail());
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .getEmail());
     }
 }

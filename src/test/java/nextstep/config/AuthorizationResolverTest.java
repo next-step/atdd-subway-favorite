@@ -56,8 +56,8 @@ class AuthorizationResolverTest {
     void 인증_헤더_없이_인증_요청_시_인증을_받을_수_없다() {
         // When && Then
         assertThatThrownBy(() -> authorizationResolver.resolveArgument(any(), any(), new StubNativeWebRequest(new MockHttpServletRequest()), any()))
-            .isInstanceOf(IllegalAccessTokenException.class)
-            .hasMessage("잘못된 AccessToken 입니다.");
+                .isInstanceOf(IllegalAccessTokenException.class)
+                .hasMessage("잘못된 AccessToken 입니다.");
     }
 
 
@@ -76,8 +76,8 @@ class AuthorizationResolverTest {
 
         // When && Then
         assertThatThrownBy(() -> authorizationResolver.resolveArgument(any(), any(), new StubNativeWebRequest(new MockHttpServletRequest()), any()))
-            .isInstanceOf(IllegalAccessTokenException.class)
-            .hasMessage("잘못된 AccessToken 입니다.");
+                .isInstanceOf(IllegalAccessTokenException.class)
+                .hasMessage("잘못된 AccessToken 입니다.");
     }
 
 

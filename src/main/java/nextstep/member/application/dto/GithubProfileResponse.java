@@ -11,5 +11,5 @@ public class GithubProfileResponse {
     public String getEmail() {
         return email;
     }
-    
+
 }
