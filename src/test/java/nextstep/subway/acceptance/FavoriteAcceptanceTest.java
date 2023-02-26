@@ -104,12 +104,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * when 지하철 즐겨찾기 생성, 조회, 삭제를 요청한다.
      * then 401권한 없음 에러가 발생한다.
      */
-//    @DisplayName("지하철 즐겨찾기 권한체크 실패")
-//    @Test
-//    void ExceptionFavorite() {
-//        String 유효하지않는인증 = "00000GciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2Nzc0MTg3NzAsImV4cCI6MTY3NzQyMjM3MCwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfTUVNQkVSIl19.BZD7rp2WsfSj4Lexkwgl9fs30f171tbceikLlmF9y6E";
+    @DisplayName("지하철 즐겨찾기 권한체크 실패")
+    @Test
+    void ExceptionFavorite() {
+        String 유효하지않는인증 = "00000GciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2Nzc0MTg3NzAsImV4cCI6MTY3NzQyMjM3MCwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfTUVNQkVSIl19.BZD7rp2WsfSj4Lexkwgl9fs30f171tbceikLlmF9y6E";
 //        var response = 지하철_즐겨찾기_등록(유효하지않는인증,교대역, 강남역);
-//
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value());
-//}
+
+        assertAll(() -> assertThat(지하철_즐겨찾기_등록(유효하지않는인증,교대역, 강남역).statusCode()).isEqualTo(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value()),
+                () -> assertThat(지하철_즐겨찾기_삭제(유효하지않는인증, 0L).statusCode()).isEqualTo(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value()),
+                () -> assertThat(지하철_즐겨찾기_조회(유효하지않는인증).statusCode()).isEqualTo(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value()));
+    }
 }

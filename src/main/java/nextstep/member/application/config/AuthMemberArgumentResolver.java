@@ -2,8 +2,7 @@ package nextstep.member.application.config;
 
 import nextstep.auth.application.JwtTokenProvider;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.exception.MemberRestApiException;
-import org.apache.tomcat.websocket.AuthenticationException;
+import nextstep.member.exception.MemberAuthRestApiException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -33,9 +32,9 @@ public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver
 
             String email = jwtTokenProvider.getPrincipal(String.valueOf(accessToken));
 
-            return memberRepository.findByEmail(email).orElseThrow(MemberRestApiException::new);
+            return memberRepository.findByEmail(email).orElseThrow(MemberAuthRestApiException::new);
         } catch (Exception e) {
-            throw new MemberRestApiException("인증 요청값 accessToken이 문자열인지 확인 필요");
+            throw new MemberAuthRestApiException("인증 요청값 accessToken이 문자열인지 확인 필요");
         }
     }
 }

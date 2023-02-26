@@ -6,7 +6,7 @@ import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.exception.MemberRestApiException;
+import nextstep.member.exception.MemberAuthRestApiException;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -24,10 +24,10 @@ public class AuthService {
 
     public TokenResponse creteToken(TokenRequest tokenRequest) {
         Member member = memberRepository.findByEmail(tokenRequest.getEmail())
-                                        .orElseThrow(MemberRestApiException::new);
+                                        .orElseThrow(MemberAuthRestApiException::new);
 
         if(!member.checkPassword(tokenRequest.getPassword())) {
-            throw new MemberRestApiException("유효하지 않는 토큰 정보입니다.");
+            throw new MemberAuthRestApiException("유효하지 않는 토큰 정보입니다.");
         }
 
         return TokenResponse.of(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
