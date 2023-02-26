@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.infrastructure.GithubProfileResponse;
@@ -49,13 +50,12 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMemberByToken(String token) {
+    public Member findMemberByToken(String token) {
         if (!tokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException();
+            throw new AuthenticationException();
         }
         String email = tokenProvider.getPrincipal(token);
-        Member member = findMemberByEmail(email).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
+        return findMemberByEmail(email).orElseThrow(RuntimeException::new);
     }
 
     private Member findMemberById(Long id) {

@@ -45,7 +45,9 @@ public class MemberController {
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         String token = JwtTokenProvider.parseToken(authorization);
-        MemberResponse member = memberService.findMemberByToken(token);
+        MemberResponse member = MemberResponse.of(
+            memberService.findMemberByToken(token)
+        );
         return ResponseEntity.ok().body(member);
     }
 }

@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class FavoriteSteps {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long target, Long source) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long source, Long target) {
         Map<String, String> params = new HashMap<>();
-        params.put("target", target.toString());
         params.put("source", source.toString());
+        params.put("target", target.toString());
 
         return RestAssured.given().log().all()
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

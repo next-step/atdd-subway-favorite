@@ -1,6 +1,9 @@
 package nextstep.subway.ui;
 
+import io.jsonwebtoken.JwtException;
+import nextstep.member.domain.AuthenticationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,5 +18,10 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler({JwtException.class, AuthenticationException.class})
+    public ResponseEntity<Void> handleAuthException(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

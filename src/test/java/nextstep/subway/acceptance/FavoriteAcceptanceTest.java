@@ -55,8 +55,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getLong("source.id")).isEqualTo(강남역);
-        assertThat(response.jsonPath().getLong("target.id")).isEqualTo(양재역);
+        assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(강남역);
+        assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(양재역);
     }
 
     /**
@@ -73,7 +73,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 매칭되는 유저가 없는 토큰 값을 가지고 즐겨찾기를 생성하면
+     * When 잘못된 토큰을 가지고 즐겨찾기를 생성하면
      * Then 401에러를 반환한다
      */
     @Test
@@ -86,7 +86,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 매칭되는 유저가 없는 토큰을 가지고 즐겨찾기를 조회하면
+     * When 잘못된 토큰을 가지고 즐겨찾기를 조회하면
      * Then 401에러를 반환한다
      */
     @Test
@@ -107,27 +107,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void 즐겨찾기_삭제() {
         // given
         createFavorite(token, 강남역, 양재역);
-        Long favoriteId = 즐겨찾기_조회_요청(token).jsonPath().getLong("id");
+        Long favoriteId = 즐겨찾기_조회_요청(token).jsonPath().getLong("[0].id");
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(token, favoriteId);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getLong("source.id")).isEqualTo(강남역);
-        assertThat(response.jsonPath().getLong("target.id")).isEqualTo(양재역);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     /**
      * Given 즐겨찾기를 생성하고
-     * When 매칭되는 유저가 없는 토큰을 가지고 즐겨찾기를 삭제하면
+     * When 잘못된 토큰을 가지고 즐겨찾기를 삭제하면
      * Then 401에러를 반환한다
      */
     @Test
     void 잘못된_토큰으로_즐겨찾기_삭제는_실패() {
         // given
         createFavorite(token, 강남역, 양재역);
-        Long favoriteId = 즐겨찾기_조회_요청(token).jsonPath().getLong("id");
+        Long favoriteId = 즐겨찾기_조회_요청(token).jsonPath().getLong("[0].id");
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(invalidToken, favoriteId);
