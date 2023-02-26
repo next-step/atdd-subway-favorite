@@ -3,6 +3,7 @@ package nextstep.member.common.exception;
 public enum ErrorResponse {
     INVALIDATION_LOGIN_INFORMATION("로그인 정보가 틀렸습니다."),
     NOT_FOUND_EMAIL("없는 이메일 입니다."),
+    INVALID_TOKEN_VALUE("유효하지 않은 토큰 값입니다.")
 
     ;
 

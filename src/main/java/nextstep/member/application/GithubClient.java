@@ -3,6 +3,8 @@ package nextstep.member.application;
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
+import nextstep.member.common.exception.ErrorResponse;
+import nextstep.member.common.exception.LoginException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,10 +46,10 @@ public class GithubClient {
                 .getBody()
                 .getAccessToken();
         if (accessToken == null) {
-            throw new RuntimeException();
+            throw new LoginException(ErrorResponse.INVALID_TOKEN_VALUE);
         }
         return accessToken;
-    }
+    }F
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
