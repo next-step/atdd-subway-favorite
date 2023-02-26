@@ -22,6 +22,5 @@ public class DataLoader {
         memberRepository.save(new Member("email1@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
         memberRepository.save(new Member("email2@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
         memberRepository.save(new Member("email3@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
-        memberRepository.save(new Member("email4@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
     }
 }

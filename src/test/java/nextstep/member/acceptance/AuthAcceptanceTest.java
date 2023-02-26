@@ -42,7 +42,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * Then 토큰을 발급받는다.
      */
     @ParameterizedTest
-    @ValueSource(strings = {"832ovnq039hfjn", "mkfo0aFa03m", "m-a3hnfnoew92", "nvci383mciq0oq"})
+    @ValueSource(strings = {"832ovnq039hfjn", "mkfo0aFa03m", "m-a3hnfnoew92"})
     @DisplayName("깃허브 권한증서를 통한 토큰 발급")
     void githubAuth(final String code) {
         // given

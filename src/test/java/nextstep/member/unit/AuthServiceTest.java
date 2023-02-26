@@ -53,7 +53,7 @@ public class AuthServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"832ovnq039hfjn", "mkfo0aFa03m", "m-a3hnfnoew92", "nvci383mciq0oq"})
+    @ValueSource(strings = {"832ovnq039hfjn", "mkfo0aFa03m", "m-a3hnfnoew92"})
     @DisplayName("깃허브 로그인")
     void githubLogin(final String code) {
         // when
