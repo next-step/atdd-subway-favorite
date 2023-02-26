@@ -100,7 +100,10 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 베어러_인증으로_내_회원_정보_조회_요청(String email, String password) {
         final String token = 베어러_인증_로그인_요청(email, password).jsonPath().getString("accessToken");
+        return 토큰으로_내_회원_정보_조회_요청(token);
+    }
 
+    public static ExtractableResponse<Response> 토큰으로_내_회원_정보_조회_요청(final String token) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -110,8 +113,12 @@ public class MemberSteps {
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        소셜_로그인_회원_정보_조회(response, email);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 소셜_로그인_회원_정보_조회(final ExtractableResponse<Response> response, final String email) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 }
