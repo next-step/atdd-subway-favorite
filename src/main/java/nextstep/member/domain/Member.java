@@ -3,6 +3,8 @@ package nextstep.member.domain;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.Favorites;
 
 @Entity
 public class Member {
@@ -12,7 +14,7 @@ public class Member {
     @Column(unique = true)
     private String email;
     private String password;
-    private Integer age;
+    private int age;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "MEMBER_ROLE",
@@ -20,6 +22,8 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    private Favorites favorites = new Favorites();
 
 
     public Member() {
@@ -55,7 +59,7 @@ public class Member {
         return password;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
@@ -71,5 +75,13 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public Favorites getFavorites() {
+        return favorites;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
     }
 }

@@ -3,7 +3,7 @@ package nextstep.member.application;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.SocialClient;
 import nextstep.member.infrastructure.dto.GithubTokenRequest;
-import nextstep.member.infrastructure.dto.MemberIdDto;
+import nextstep.member.infrastructure.dto.LoginMember;
 import nextstep.member.infrastructure.dto.ProfileDto;
 import nextstep.member.ui.request.TokenRequest;
 import nextstep.member.ui.response.TokenResponse;
@@ -30,9 +30,9 @@ public class AuthService {
         return TokenResponse.of(token);
     }
 
-    public MemberIdDto findMemberByToken(String accessToken) {
+    public LoginMember findMemberByToken(String accessToken) {
         String email = jwtTokenProvider.getPrincipal(accessToken);
-        return MemberIdDto.from(memberService.findMemberByEmail(email));
+        return LoginMember.from(memberService.findMemberByEmail(email));
     }
 
     public TokenResponse login(GithubTokenRequest request) {
