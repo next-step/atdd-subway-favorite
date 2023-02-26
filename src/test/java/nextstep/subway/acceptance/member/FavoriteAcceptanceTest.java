@@ -54,16 +54,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 생성 및 조회")
     @Test
     void createFavorite() {
-        var createResponse1 = 즐겨찾기_등록(사용자1_토큰, 강남역, 양재역);
-        var createResponse2 = 즐겨찾기_등록(사용자1_토큰, 강남역, 양재역);
+        var 첫_번째_즐겨찾기_응답 = 즐겨찾기_등록(사용자1_토큰, 강남역, 양재역);
+        var 두_번째_즐겨찾기_응답 = 즐겨찾기_등록(사용자1_토큰, 강남역, 양재역);
 
-        long 즐겨찾기1 = 즐겨찾기_ID_가져오기(createResponse1);
-        long 즐겨찾기2 = 즐겨찾기_ID_가져오기(createResponse2);
+        long 첫_번째_즐겨찾기 = 즐겨찾기_ID_가져오기(첫_번째_즐겨찾기_응답);
+        long 두_번째_즐겨찾기 = 즐겨찾기_ID_가져오기(두_번째_즐겨찾기_응답);
 
         var favorites = 즐겨찾기_목록_조회_요청(사용자1_토큰);
         assertAll(() -> {
             assertThat(favorites.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(favorites.jsonPath().getList("id", Long.class)).containsExactly(즐겨찾기1, 즐겨찾기2);
+            assertThat(favorites.jsonPath().getList("id", Long.class)).containsExactly(첫_번째_즐겨찾기, 두_번째_즐겨찾기);
         });
     }
 
