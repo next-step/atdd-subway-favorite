@@ -1,4 +1,4 @@
-package nextstep.subway.ui;
+package nextstep;
 
 import io.jsonwebtoken.MalformedJwtException;
 import nextstep.member.domain.exception.EntityNotFoundException;

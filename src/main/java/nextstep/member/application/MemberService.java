@@ -21,6 +21,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member findOrCreateMember(String principal) {
+        return memberRepository.findByEmail(principal).orElseGet(() -> new Member(principal));
+    }
+
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);

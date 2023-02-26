@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.GithubTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
@@ -26,6 +27,10 @@ public class AuthService {
     }
 
     public TokenResponse createTokenWithGithub(GithubTokenRequest request) {
-        return TokenResponse.of(githubClient.getAccessTokenFromGithub(request.getCode()));
+        String accessToken = githubClient.getAccessTokenFromGithub(request.getCode());
+        GithubProfileResponse githubProfileResponse = githubClient.getGithubProfileFromGithub(accessToken);
+        Member member = memberService.findOrCreateMember(githubProfileResponse.getEmail());
+
+        return TokenResponse.of(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
     }
 }
