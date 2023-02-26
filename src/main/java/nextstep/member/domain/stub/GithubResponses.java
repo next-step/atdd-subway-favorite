@@ -17,11 +17,4 @@ public enum GithubResponses {
     private String code;
     private String accessToken;
     private String email;
-
-    public static GithubResponses findByCode(String code) {
-        return Arrays.stream(values())
-                .filter(r -> r.getCode().equals(code))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(Message.INVALID_CODE));
-    }
 }

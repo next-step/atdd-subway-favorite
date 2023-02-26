@@ -24,6 +24,7 @@ public class DatabaseCleanup implements InitializingBean {
         tableNames = entityManager.getMetamodel().getEntities().stream()
                 .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
                 .map(entity -> entity.getName())
+                .filter(name -> !name.equals("GithubMember"))
                 .collect(Collectors.toList());
     }
 

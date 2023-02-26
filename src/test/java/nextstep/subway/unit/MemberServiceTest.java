@@ -4,7 +4,6 @@ import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.message.Message;
-import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("findMemberOfMine 테스트 : 정상")
     void findMemberOfMine_test_success() {
-//        memberRepository.save(new Member("admin@email.com", "password", 1));
         assertThat(memberService.findMemberOfMine("admin@email.com")).extracting(MemberResponse::getEmail).isEqualTo("admin@email.com");
     }
 

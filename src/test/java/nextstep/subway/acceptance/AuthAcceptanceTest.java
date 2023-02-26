@@ -2,7 +2,6 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.message.Message;
 import nextstep.member.domain.stub.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,7 +67,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = 인가서버에_토큰_요청("Invalid");
         // then
-        assertThat(response.body().asString()).contains(Message.INVALID_CODE);
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo("access_token_invalid");
     }
 
 }
