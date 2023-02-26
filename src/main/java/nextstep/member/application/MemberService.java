@@ -6,25 +6,29 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.infrastructure.GithubProfileResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    private JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
 
     public MemberService(MemberRepository memberRepository, JwtTokenProvider tokenProvider) {
         this.memberRepository = memberRepository;
         this.tokenProvider = tokenProvider;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public Member createMember(GithubProfileResponse githubProfile) {
         return memberRepository.save(githubProfile.toMember());
     }
@@ -34,11 +38,13 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
