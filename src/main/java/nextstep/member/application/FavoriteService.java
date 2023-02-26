@@ -1,8 +1,7 @@
-package nextstep.member.application.dto;
+package nextstep.member.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Favorite;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.exception.NotFoundException;
@@ -11,6 +10,9 @@ import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -33,7 +35,7 @@ public class FavoriteService {
         Station target = stationService.findById(favoriteRequest.getTarget());
 
         Favorite favorite = member.addFavorite(source, target);
-        favoriteRepository.flush();
+        favoriteRepository.save(favorite);
         return FavoriteResponse.of(favorite);
     }
 

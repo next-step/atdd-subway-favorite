@@ -1,11 +1,9 @@
 package nextstep.member.ui;
 
-import java.net.URI;
-import java.util.List;
-import nextstep.member.ui.config.Auth;
-import nextstep.member.application.dto.FavoriteResponse;
-import nextstep.member.application.dto.FavoriteService;
+import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
+import nextstep.member.ui.config.Auth;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 public class FavoriteController {
