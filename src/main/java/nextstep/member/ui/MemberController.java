@@ -5,6 +5,7 @@ import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.FindMemberOfMineRequest;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.abstractive.MemberInterface;
 import nextstep.member.config.argument.annotation.FindMemberOfMine;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@FindMemberOfMine FindMemberOfMineRequest request) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@FindMemberOfMine MemberInterface request) {
         MemberResponse member = memberService.findMemberOfMine(request.getPrincipal());
         return ResponseEntity.ok().body(member);
     }
