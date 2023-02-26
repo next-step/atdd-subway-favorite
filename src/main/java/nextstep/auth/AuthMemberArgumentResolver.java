@@ -13,7 +13,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.application.JwtTokenProvider;
 
 @Component
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver
 		return new AuthMember(email, roles);
 	}
 
-	public String checkHeaderAuth(String headerAuth) {
+	private String checkHeaderAuth(String headerAuth) {
 		if (headerAuth == null || headerAuth.length() == BEARER_TOKEN.length() - 1) {
 			throw new IllegalArgumentException(HEADER_AUTH_IS_NULL.isMessage());
 		}
