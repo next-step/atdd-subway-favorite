@@ -25,6 +25,9 @@ public class FindMemberOfMineRequestArgumentResolver implements HandlerMethodArg
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
         String token = webRequest.getHeader("authorization");
-        return new FindMemberOfMineRequest(jwtTokenProvider.getPrincipal(token), jwtTokenProvider.getRoles(token));
+        FindMemberOfMineRequest findMemberOfMineRequest = new FindMemberOfMineRequest(
+                jwtTokenProvider.getPrincipal(token),
+                jwtTokenProvider.getRoles(token));
+        return findMemberOfMineRequest;
     }
 }
