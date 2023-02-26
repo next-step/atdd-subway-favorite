@@ -39,4 +39,11 @@ public enum GithubResponses {
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
+
+    public static GithubResponses fromAccessToken(String accessToken) {
+        return Arrays.stream(values())
+                .filter(githubResponse -> StringUtils.equalsIgnoreCase(githubResponse.getAccessToken(), accessToken))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }
