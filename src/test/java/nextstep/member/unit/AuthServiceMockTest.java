@@ -8,6 +8,7 @@ import nextstep.auth.domain.GithubProfileResponse;
 import nextstep.auth.domain.Oauth2Client;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.DisplayName;
@@ -78,6 +79,25 @@ public class AuthServiceMockTest {
         when(client.getAccessToken("code")).thenReturn("accessToken");
         when(client.getProfile("accessToken")).thenReturn(new GithubProfileResponse(EMAIL));
         when(memberService.findByEmail(EMAIL)).thenReturn(member);
+        when(jwtTokenProvider.createToken(member.getEmail(), member.getRoles())).thenReturn("token");
+
+        // when
+        final TokenResponse token = authService.oauth2Login(new GithubLoginRequest("code"));
+
+        // then
+        assertThat(token.getAccessToken()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("가입되지 않은 깃허브 로그인")
+    void unregisteredGithubLogin() {
+        // given
+        final Member member = new Member(EMAIL, null, null, List.of(RoleType.ROLE_ADMIN.name()));
+
+        when(client.getAccessToken("code")).thenReturn("accessToken");
+        when(client.getProfile("accessToken")).thenReturn(new GithubProfileResponse(EMAIL));
+        when(memberService.findByEmail(EMAIL)).thenThrow(IllegalArgumentException.class);
+        when(memberService.saveMember(new MemberRequest(EMAIL))).thenReturn(member);
         when(jwtTokenProvider.createToken(member.getEmail(), member.getRoles())).thenReturn("token");
 
         // when
