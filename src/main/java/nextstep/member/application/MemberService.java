@@ -23,13 +23,13 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(Message.NOT_EXIST_EMAIL_ID));
+                .orElseThrow(() -> new IllegalArgumentException(Message.NOT_EXIST_EMAIL_ID.getMessage()));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(Message.NOT_EXIST_EMAIL_ID));
+                .orElseThrow(() -> new IllegalArgumentException(Message.NOT_EXIST_EMAIL_ID.getMessage()));
         member.update(param.toMember());
     }
 
@@ -40,6 +40,6 @@ public class MemberService {
     public MemberResponse findMemberOfMine(String email) {
         return memberRepository.findByEmail(email)
                 .map(MemberResponse::of)
-                .orElseThrow(() -> new NoSuchElementException(Message.NOT_EXIST_EAMIL));
+                .orElseThrow(() -> new NoSuchElementException(Message.NOT_EXIST_EAMIL.getMessage()));
     }
 }

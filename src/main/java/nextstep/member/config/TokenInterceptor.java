@@ -19,10 +19,10 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("authorization");
         if (token == null) {
-            throw new IllegalArgumentException(Message.INVALID_TOKEN);
+            throw new IllegalArgumentException(Message.INVALID_TOKEN.getMessage());
         }
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException(Message.INVALID_TOKEN);
+            throw new IllegalArgumentException(Message.INVALID_TOKEN.getMessage());
         }
         return true;
     }

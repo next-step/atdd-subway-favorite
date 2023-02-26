@@ -24,9 +24,9 @@ public class LoginService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberRepository.findByEmail(tokenRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException(Message.NOT_EXIST_EAMIL));
+                .orElseThrow(() -> new IllegalArgumentException(Message.NOT_EXIST_EAMIL.getMessage()));
         if (!member.arePasswordsSame(tokenRequest.getPassword())) {
-            throw new IllegalArgumentException(Message.INVALID_PASSWORD);
+            throw new IllegalArgumentException(Message.INVALID_PASSWORD.getMessage());
         }
         return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
     }

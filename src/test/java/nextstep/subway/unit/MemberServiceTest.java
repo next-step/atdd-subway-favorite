@@ -33,7 +33,7 @@ public class MemberServiceTest {
     void findMemberOfMine_test_invalid_token() {
         assertThatThrownBy(() -> {
             memberService.findMemberOfMine("invalid");
-        }).hasMessageContaining(Message.NOT_EXIST_EAMIL);
+        }).hasMessageContaining(Message.NOT_EXIST_EAMIL.getMessage());
     }
 
 }
