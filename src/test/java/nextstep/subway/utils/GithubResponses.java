@@ -35,6 +35,7 @@ public enum GithubResponses {
     public static GithubResponses getCodeFromGithubCode(String code) {
         return Arrays.stream(values())
                 .filter(githubResponse -> StringUtils.equalsIgnoreCase(githubResponse.getCode(), code))
-                .findFirst().get();
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

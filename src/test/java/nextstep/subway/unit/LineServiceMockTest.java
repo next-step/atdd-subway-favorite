@@ -9,9 +9,9 @@ import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -26,7 +26,7 @@ class LineServiceMockTest {
     @Mock
     private StationService stationService;
 
-    @Autowired
+    @InjectMocks
     private LineService lineService;
     private Station 강남역;
     private Station 역삼역;
