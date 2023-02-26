@@ -34,13 +34,13 @@ public class MemberService {
         return MemberResponse.of(findById(id));
     }
 
-    public MemberResponse findMember(String principal) {
-        return MemberResponse.of(findByEmail(principal));
+    public MemberResponse findMember(String email) {
+        return MemberResponse.of(findByEmail(email));
     }
 
-    public Member findByEmail(String principal) {
-        return memberRepository.findByEmail(principal)
-            .orElseThrow(() -> new NotAuthorizedException(principal + " 사용자를 찾을 수 없습니다."));
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new NotAuthorizedException(email + " 사용자를 찾을 수 없습니다."));
     }
 
     @Transactional

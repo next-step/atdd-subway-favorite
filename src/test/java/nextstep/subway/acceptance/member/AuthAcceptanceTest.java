@@ -1,10 +1,12 @@
 package nextstep.subway.acceptance.member;
 
+import nextstep.fake.DataLoader;
 import nextstep.fake.GithubResponses;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.member.MemberSteps.깃허브_권한증서로_로그인_요청;
@@ -15,12 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
  @DisplayName("인증 관련 기능")
 class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String EMAIL = "admin@email.com";
+     @Autowired
+     private DataLoader dataLoader;
+
+     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
 
     @Override
     @BeforeEach
     public void setUp() {
+        super.setUp();
+        dataLoader.loadData();
     }
 
     /**

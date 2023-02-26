@@ -2,7 +2,7 @@ package nextstep.subway.acceptance.member;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.DataLoader;
+import nextstep.fake.DataLoader;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
