@@ -26,7 +26,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("Bearer Auth : invalid email")
     @Test
-    void test1() {
+    void bearer_auth_invalid_email() {
         // given
         MemberSteps.회원_생성_요청(EMAIL, PASSWORD, 3);
 
@@ -39,7 +39,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("Bearer Auth : invalid password")
     @Test
-    void test2() {
+    void bearer_auth_invalid_password() {
         // given
         MemberSteps.회원_생성_요청(EMAIL, PASSWORD, 3);
 
@@ -52,7 +52,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     
     @Test
     @DisplayName("깃헙 로그인 : 정상")
-    void test3() {
+    void github_login_success() {
         // given
         GithubResponses 사용자1 = GithubResponses.사용자1;
         // when
@@ -63,7 +63,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("깃헙 로그인 : 존재하지 않는 코드")
-    void test4() {
+    void github_login_fail() {
         // given
         // when
         ExtractableResponse<Response> response = 인가서버에_토큰_요청("Invalid");

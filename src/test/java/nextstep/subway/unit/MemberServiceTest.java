@@ -23,14 +23,14 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("findMemberOfMine 테스트 : 정상")
-    void test1() {
+    void findMemberOfMine_test_success() {
         String token = jwtTokenProvider.createToken("admin@email.com", List.of(RoleType.ROLE_ADMIN.name()));
         assertThat(memberService.findMemberOfMine(token)).extracting(MemberResponse::getEmail).isEqualTo("admin@email.com");
     }
 
     @Test
     @DisplayName("findMemberOfMine 테스트 : 유효하지 않은 토큰")
-    void test2() {
+    void findMemberOfMine_test_invalid_token() {
         assertThatThrownBy(() -> {
             memberService.findMemberOfMine("invalid");
         }).hasMessageContaining("유효하지 않은 토큰입니다.");

@@ -43,7 +43,7 @@ public class LoginServiceTest {
 
     @Test
     @DisplayName("토큰 생성 테스트 : 존재하지 않는 이메일")
-    void test1() {
+    void token_create_test_inexist_email() {
         assertThatThrownBy(() -> {
             loginService.createToken(new TokenRequest("invalid@email.com", "password"));
         }).hasMessageContaining("존재하지 않는 Email 입니다");
@@ -51,7 +51,7 @@ public class LoginServiceTest {
 
     @Test
     @DisplayName("토큰 생성 테스트 : 잘못된 비밀번호")
-    void test2() {
+    void token_create_test_invalid_pw() {
         assertThatThrownBy(() -> {
             loginService.createToken(new TokenRequest("admin@email.com", "invalid"));
         }).hasMessageContaining("잘못된 비밀번호 입니다");
@@ -59,14 +59,14 @@ public class LoginServiceTest {
 
     @Test
     @DisplayName("토큰 생성 테스트 : 정상")
-    void test3() {
+    void token_create_test_success() {
         String token = loginService.createToken(new TokenRequest("admin@email.com", "password")).getAccessToken();
         assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("admin@email.com");
     }
 
     @Test
     @DisplayName("Github Token 테스트 : 정상")
-    void test4() {
+    void github_token_test_success() {
         GithubResponses 사용자1 = GithubResponses.사용자1;
         GithubClient githubClient1 = mock(GithubClient.class);
         when(githubClient1.getAccessTokenFromGithub(사용자1.getCode())).thenReturn(사용자1.getAccessToken());
@@ -78,7 +78,7 @@ public class LoginServiceTest {
 
     @Test
     @DisplayName("Authorization Fake 서버 테스트 : 정상")
-    void test5() {
+    void authorization_fake_server_test_success() {
         GithubResponses 사용자1 = GithubResponses.사용자1;
         GithubAccessTokenResponse response = loginService.getAuth(new GithubAccessTokenRequest(사용자1.getCode(), 사용자1.getEmail(), 사용자1.getAccessToken()));
         assertThat(response.getAccessToken()).isEqualTo(사용자1.getAccessToken());
@@ -86,7 +86,7 @@ public class LoginServiceTest {
 
     @Test
     @DisplayName("Authorization Fake 서버 테스트 : 실패")
-    void test6() {
+    void authorization_fake_server_test_fail() {
         assertThatThrownBy(() -> {
             loginService.getAuth(new GithubAccessTokenRequest("", null, null));
         }).isInstanceOf(IllegalArgumentException.class);
