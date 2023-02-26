@@ -1,7 +1,12 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.GithubLoginRequest;
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.exception.NotFoundMemberException;
+import nextstep.member.infrastructure.GithubClient;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -12,15 +17,34 @@ public class LoginService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
+    private final GithubClient githubClient;
 
-    public LoginService(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
+    public LoginService(JwtTokenProvider jwtTokenProvider, MemberService memberService, GithubClient githubClient) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberService = memberService;
+        this.githubClient = githubClient;
     }
 
     public String login(TokenRequest tokenRequest) {
-        MemberResponse memberResponse = memberService.loginMember(tokenRequest.getEmail(), tokenRequest.getPassword());
-        return jwtTokenProvider.createToken(memberResponse.getId().toString(), memberResponse.getRoles());
+        Member member = memberService.findMemberByEmail(tokenRequest.getEmail());
+        member.checkPassword(tokenRequest.getPassword());
+
+        return jwtTokenProvider.createToken(member.getId().toString(), member.getRoles());
+    }
+
+    public String githubLogin(GithubLoginRequest tokenRequest) {
+        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(tokenRequest.getCode());
+        GithubProfileResponse profileFromGithub = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
+
+        Member member;
+
+        try {
+            member = memberService.findMemberByEmail(profileFromGithub.getEmail());
+        } catch (NotFoundMemberException e) {
+            member = memberService.createMember(new MemberRequest(profileFromGithub.getEmail()));
+        }
+
+        return jwtTokenProvider.createToken(member.getId().toString(), member.getRoles());
     }
 
 }

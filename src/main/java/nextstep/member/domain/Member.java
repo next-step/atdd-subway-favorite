@@ -16,8 +16,8 @@ public class Member {
     private Integer age;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
-        name = "MEMBER_ROLE",
-        joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
+            name = "MEMBER_ROLE",
+            joinColumns = @JoinColumn(name = "id", referencedColumnName = "id")
     )
     @Column(name = "role")
     private List<String> roles;

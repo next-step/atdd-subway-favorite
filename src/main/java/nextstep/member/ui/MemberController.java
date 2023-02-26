@@ -1,6 +1,5 @@
 package nextstep.member.ui;
 
-import nextstep.config.AuthorizationResolver;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -21,7 +20,7 @@ public class MemberController {
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
+        MemberResponse member = MemberResponse.of(memberService.createMember(request));
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
@@ -45,7 +44,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@LoginedUser LoginUser loginUser) {
-        MemberResponse member = memberService.findMember(loginUser);
+        MemberResponse member = memberService.findMember(loginUser.getUserId());
         return ResponseEntity.ok().body(member);
     }
 
