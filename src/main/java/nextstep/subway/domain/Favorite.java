@@ -22,6 +22,9 @@ public class Favorite {
     @Column(name = "target_id")
     private Long targetId;
 
+    protected Favorite() {
+    }
+
     public Favorite(Long memberId, Long sourceId, Long targetId) {
         this.memberId = memberId;
         this.sourceId = sourceId;
@@ -30,5 +33,13 @@ public class Favorite {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getSourceId() {
+        return sourceId;
+    }
+
+    public Long getTargetId() {
+        return targetId;
     }
 }
