@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.AntPathMatcher;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -74,5 +75,34 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(즐겨찾기_조회(accessToken).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기를 삭제한다.")
+    void deleteFavorite() {
+        // given
+        String location = 즐겨찾기_추가(accessToken, 신논현역, 강남역).header("Location");
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제(accessToken, getFavoriteIdFromLocation(location));
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("로그인 없이 즐겨찾기 삭제할 경우 에러")
+    void deleteFavoriteWithoutLogin() {
+        // given
+        String location = 즐겨찾기_추가(accessToken, 신논현역, 강남역).header("Location");
+
+        accessToken = "";
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제(accessToken, getFavoriteIdFromLocation(location));
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private Long getFavoriteIdFromLocation(String location) {
+        return Long.valueOf(new AntPathMatcher().extractUriTemplateVariables("/favorites/{favoriteId}", location).get("favoriteId"));
     }
 }
