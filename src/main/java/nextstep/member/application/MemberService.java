@@ -6,6 +6,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -31,5 +33,15 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse findByEmail(String email){
+        Optional<Member> member = memberRepository.findByEmail(email);
+
+        if(member.isEmpty()){
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
+
+        return MemberResponse.of(member.get());
     }
 }
