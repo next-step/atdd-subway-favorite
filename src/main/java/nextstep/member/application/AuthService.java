@@ -4,7 +4,6 @@ import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
