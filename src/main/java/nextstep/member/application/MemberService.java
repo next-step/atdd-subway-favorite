@@ -5,31 +5,47 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(final MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
+    public MemberResponse findMemberById(final Long id) {
+        Member member = findById(id);
+        return MemberResponse.of(member);
+    }
+
+    public Member findMemberByEmail(final String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(RuntimeException::new);
+    }
+
+    @Transactional
+    public MemberResponse createMember(final MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
-    }
-
-    public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    @Transactional
+    public void updateMember(final Long id, final MemberRequest param) {
+        Member member = findById(id);
         member.update(param.toMember());
     }
 
-    public void deleteMember(Long id) {
+    @Transactional
+    public void deleteMember(final Long id) {
         memberRepository.deleteById(id);
+    }
+
+
+    private Member findById(final Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
     }
 }
