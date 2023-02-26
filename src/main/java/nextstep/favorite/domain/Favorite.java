@@ -54,4 +54,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public Long getMemberId() {
+        return member.getId();
+    }
 }

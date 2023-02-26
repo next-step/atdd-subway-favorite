@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import nextstep.exception.UnAuthorizedException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.domain.Favorites;
@@ -12,6 +13,8 @@ import nextstep.subway.domain.Station;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,8 +46,12 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+        if (!Objects.equals(favorite.getMemberId(), memberId)) {
+            throw new UnAuthorizedException();
+        }
+        favoriteRepository.deleteById(favoriteId);
     }
 
     private FavoriteStations findStations(FavoriteRequest favoriteRequest) {
