@@ -1,4 +1,4 @@
-package nextstep.member.domain;
+package nextstep.member.domain.stub;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

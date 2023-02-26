@@ -3,7 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.message.Message;
-import nextstep.member.domain.GithubResponses;
+import nextstep.member.domain.stub.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

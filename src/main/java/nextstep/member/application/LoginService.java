@@ -6,7 +6,7 @@ import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.message.Message;
-import nextstep.member.domain.GithubResponses;
+import nextstep.member.domain.stub.GithubResponses;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
