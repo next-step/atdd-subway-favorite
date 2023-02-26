@@ -7,6 +7,7 @@ import nextstep.auth.domain.Oauth2Client;
 import nextstep.auth.domain.ProfileResponse;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,13 @@ public class AuthService {
         final String accessToken = client.getAccessToken(loginRequest.getCode());
         final ProfileResponse profile = client.getProfile(accessToken);
 
-        final Member member = memberService.findByEmail(profile.getEmail());
+        Member member;
+        try {
+            member = memberService.findByEmail(profile.getEmail());
+        } catch (IllegalArgumentException e) {
+            member = memberService.saveMember(new MemberRequest(profile.getEmail()));
+        }
+
         return createToken(member);
     }
 
