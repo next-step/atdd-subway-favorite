@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.dto.FindMemberOfMineRequest;
 import nextstep.member.application.dto.abstractive.MemberProvider;
-import nextstep.member.config.argument.annotation.FindMemberOfMine;
+import nextstep.member.config.argument.annotation.MemberInfo;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -17,7 +17,7 @@ public class FindMemberOfMineRequestArgumentResolver implements HandlerMethodArg
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterAnnotation(FindMemberOfMine.class) != null;
+        return parameter.hasParameterAnnotation(MemberInfo.class);
     }
 
     @Override
