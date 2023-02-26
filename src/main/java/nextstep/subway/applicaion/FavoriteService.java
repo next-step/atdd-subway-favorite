@@ -28,10 +28,7 @@ public class FavoriteService {
 
         final var member = memberService.findById(loginMember.getId());
 
-        final var favorite = new Favorite(source, target, member);
-        favoriteRepository.save(favorite);
-
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.of(favoriteRepository.save(new Favorite(source, target, member)));
     }
 
     @Transactional(readOnly = true)
