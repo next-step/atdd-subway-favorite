@@ -25,6 +25,19 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(String code) {
+        Map<String, String> params = Map.of(
+            "code", code
+        );
+
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/login/github")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
+    }
+
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, Object> params = new HashMap<>();
         params.put("email", email);
@@ -97,5 +110,10 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email) {
+        assertThat(response.jsonPath().getString("id")).isNotNull();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
     }
 }

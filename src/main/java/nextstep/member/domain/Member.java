@@ -23,11 +23,17 @@ public class Member {
     public Member() {
     }
 
+    public Member(String email) {
+        this(email, null, null);
+    }
+
     public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.roles = List.of(RoleType.ROLE_MEMBER.name());
+        this(
+            email,
+            password,
+            age,
+            List.of(RoleType.ROLE_MEMBER.name())
+        );
     }
 
     public Member(String email, String password, Integer age, List<String> roles) {

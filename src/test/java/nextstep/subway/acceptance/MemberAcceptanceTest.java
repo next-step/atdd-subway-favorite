@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증으로_내_회원_정보_조회_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
@@ -11,14 +12,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.fake.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.http.HttpStatus;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
+
+    private static final GithubResponses[] GITHUB_RESPONSES = GithubResponses.values();
 
     @DisplayName("회원가입을 한다.")
     @Test
@@ -87,5 +93,24 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(myInfoResponse, EMAIL, AGE);
+    }
+
+    /**
+     * given 깃허브 인증 로그인 요청을 한다<br>
+     * when 내 정보 요청을 하면<br>
+     * then 내 정보를 조회할 수 있다.<br>
+     * */
+    @DisplayName("깃허브 인증 내 정보를 조회한다.")
+    @ParameterizedTest
+    @EnumSource(GithubResponses.class)
+    void getMyInfoByGitHub(GithubResponses response) {
+        // given
+        final String accessToken = 깃허브_인증_로그인_요청(response.getCode()).jsonPath().getString("accessToken");
+
+        // when
+        final ExtractableResponse<Response> myInfoResponse = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(myInfoResponse, response.getEmail());
     }
 }
