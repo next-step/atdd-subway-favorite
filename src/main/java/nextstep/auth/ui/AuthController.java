@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class AutoController {
+public class AuthController {
     private AuthService authService;
 
-    public AutoController(AuthService authService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
