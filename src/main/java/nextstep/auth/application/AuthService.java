@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
-    private JwtTokenProvider jwtTokenProvider;
-    private MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
     public AuthService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
