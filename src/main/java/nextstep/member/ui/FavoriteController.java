@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.FavoriteService;
-import nextstep.member.application.config.AuthFavorite;
+import nextstep.member.application.config.AuthMember;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Member;
@@ -25,20 +25,21 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity<Void> createFavorite(@AuthFavorite Member member, @RequestBody FavoriteRequest param) {
-        favoriteService.createFavorite(member, param);
-        return ResponseEntity.created(URI.create("/favorites/")).build();
+    public ResponseEntity<Void> createFavorite(@AuthMember Member member, @RequestBody FavoriteRequest param) {
+        FavoriteResponse response = favoriteService.createFavorite(member, param);
+        return ResponseEntity.created(URI.create("/favorites/"+response.getId())).build();
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> showFavorite(@AuthFavorite Member member) {
-        List<FavoriteResponse> favoriteResponses = favoriteService.showFavorite();
+    public ResponseEntity<List<FavoriteResponse>> showFavorite(@AuthMember Member member) {
+        List<FavoriteResponse> favoriteResponses = favoriteService.showFavorite(member);
         return ResponseEntity.ok().body(favoriteResponses);
     }
 
     @DeleteMapping("/favorites/{id}")
-    public ResponseEntity<Void> deleteFavorite(@AuthFavorite Member member, @PathVariable Long id) {
-        favoriteService.deleteFavorite(id);
+    public ResponseEntity<Void> deleteFavorite(@AuthMember Member member, @PathVariable Long id) {
+        favoriteService.deleteFavorite(member, id);
         return ResponseEntity.noContent().build();
     }
+
 }

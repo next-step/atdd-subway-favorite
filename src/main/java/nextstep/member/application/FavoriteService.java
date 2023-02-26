@@ -22,23 +22,27 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(Member member, FavoriteRequest farvoriteRequest) {
+    public FavoriteResponse createFavorite(Member member, FavoriteRequest farvoriteRequest) {
         Station sourceStation = stationRepository.findById(farvoriteRequest.getSource()).orElseThrow(IllegalArgumentException::new);
         Station targetStation = stationRepository.findById(farvoriteRequest.getTarget()).orElseThrow(IllegalArgumentException::new);
 
-        favoriteRepository.save(Favorite.builder()
+        Favorite favorite = favoriteRepository.save(Favorite.builder()
                 .member(member)
                 .sourceStation(sourceStation)
                 .targetStation(targetStation).build());
+
+        return FavoriteResponse.of(favorite);
     }
 
-    public List<FavoriteResponse> showFavorite() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteResponse> showFavorite(Member member) {
+        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
         return FavoriteResponse.listOf(favorites);
     }
 
-    public void deleteFavorite(Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public void deleteFavorite(Member member, Long id) {
+        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+
+        Favorite favorite = favorites.stream().filter(a -> id.equals(a.getId())).findFirst().orElseThrow(IllegalArgumentException::new);
         favoriteRepository.delete(favorite);
     }
 }
