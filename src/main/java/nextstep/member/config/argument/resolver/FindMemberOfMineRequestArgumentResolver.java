@@ -3,7 +3,7 @@ package nextstep.member.config.argument.resolver;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.dto.FindMemberOfMineRequest;
-import nextstep.member.application.dto.abstractive.MemberInterface;
+import nextstep.member.application.dto.abstractive.MemberProvider;
 import nextstep.member.config.argument.annotation.FindMemberOfMine;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -26,7 +26,7 @@ public class FindMemberOfMineRequestArgumentResolver implements HandlerMethodArg
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
         String token = webRequest.getHeader("authorization");
-        MemberInterface memberOfMine = new FindMemberOfMineRequest(
+        MemberProvider memberOfMine = new FindMemberOfMineRequest(
                 jwtTokenProvider.getPrincipal(token),
                 jwtTokenProvider.getRoles(token));
         return memberOfMine;

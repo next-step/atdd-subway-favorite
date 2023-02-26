@@ -2,7 +2,6 @@ package nextstep.member.application.dto.abstractive;
 
 import java.util.List;
 
-public interface MemberInterface {
-    String getPrincipal();
+public interface RolesProvider {
     List<String> getRoles();
 }
