@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/fake")
+@RequestMapping("/github")
 public class GithubFakeController {
 
-    @PostMapping("/login/github")
+    @PostMapping("/login")
     public GithubResponse fakeLogin(@RequestBody Map<String, String> map) {
         String code = map.get("code");
 

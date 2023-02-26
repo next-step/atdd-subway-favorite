@@ -13,8 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 @ActiveProfiles("test")
 public class LoginSteps {
 
@@ -27,7 +25,7 @@ public class LoginSteps {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("fake/login/github")
+                .when().post("/github/login")
                 .then().log().all()
                 .extract();
 
@@ -39,7 +37,7 @@ public class LoginSteps {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .given().header(HttpHeaders.AUTHORIZATION, token)
-                .when().get("fake/members/me")
+                .when().get("/github/members/me")
                 .then().log().all().extract();
     }
 

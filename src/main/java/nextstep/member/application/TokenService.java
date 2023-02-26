@@ -45,10 +45,14 @@ public class TokenService {
         return MemberResponse.of(member);
     }
 
+    public GithubProfileResponse getGitHubMember(String token) {
+        return githubClient.getGithubProfileFromGithub(token);
+    }
+
     public TokenResponse login(String code) {
 
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(code);
-        GithubProfileResponse githubProfileFromGithub = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
+        GithubProfileResponse githubProfileFromGithub = getGitHubMember(accessTokenFromGithub);
         String email = githubProfileFromGithub.getEmail();
 
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new LoginException(ErrorResponse.NOT_FOUND_EMAIL));
