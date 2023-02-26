@@ -49,7 +49,7 @@ public class GithubClient {
             throw new LoginException(ErrorResponse.INVALID_TOKEN_VALUE);
         }
         return accessToken;
-    }F
+    }
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
