@@ -33,7 +33,7 @@ public class GithubClientTest {
         assertThat(accessTokenFromGithub).isEqualTo(responses.getAccessToken());
     }
 
-    @DisplayName("Github에서 받은 권한증서가 공백이라면, GitHub Access Token 발급 요청.")
+    @DisplayName("Github에서 받은 권한증서가 null 이라면, GitHub Access Token 발급 요청.")
     @Test
     void getAccessTokenFromGithub_WithNullCode() {
         // given
@@ -43,5 +43,14 @@ public class GithubClientTest {
         // then
         assertThatThrownBy(() -> githubClient.getAccessTokenFromGithub(code))
                 .isInstanceOf(AuthorizationException.class);
+    }
+
+    @DisplayName("Github에서 받은 AccessToken이 null 일 경우")
+    @Test
+    void getAccessTokenFromGithub_WithNullAccessToken() {
+        // when
+        // then
+        assertThatThrownBy(() -> githubClient.getAccessTokenFromGithub(GithubResponses.사용자5.getCode()))
+                .isInstanceOf(RuntimeException.class);
     }
 }

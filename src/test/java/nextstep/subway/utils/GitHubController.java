@@ -12,7 +12,7 @@ public class GitHubController {
 
     @PostMapping("/access-token")
     public ResponseEntity<GithubAccessTokenResponse> getAccessToken(@RequestBody GithubAccessTokenRequest request) {
-        String accessToken = GithubResponses.getCodeFromGithubCode(request.getCode()).getAccessToken();
+        String accessToken = GithubResponses.getGithubResponsesFromCode(request.getCode()).getAccessToken();
         return ResponseEntity.ok(new GithubAccessTokenResponse(accessToken));
     }
 }
