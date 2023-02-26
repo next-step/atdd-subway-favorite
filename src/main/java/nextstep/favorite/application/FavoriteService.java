@@ -1,6 +1,7 @@
 package nextstep.favorite.application;
 
 import nextstep.exception.UnAuthorizedException;
+import nextstep.favorite.application.dto.FavoriteStations;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.domain.Favorites;
@@ -58,24 +59,5 @@ public class FavoriteService {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
         return new FavoriteStations(source, target);
-    }
-
-    class FavoriteStations {
-
-        private Station source;
-        private Station target;
-
-        public FavoriteStations(Station source, Station target) {
-            this.source = source;
-            this.target = target;
-        }
-
-        public Station getSource() {
-            return source;
-        }
-
-        public Station getTarget() {
-            return target;
-        }
     }
 }
