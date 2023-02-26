@@ -13,7 +13,7 @@ public class FavoriteSteps {
     public static ExtractableResponse<Response> 즐겨찾기_추가(String accessToken, Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", String.valueOf(source));
-        params.put("color", String.valueOf(target));
+        params.put("target", String.valueOf(target));
         return RestAssured
             .given().log().all()
             .auth().oauth2(accessToken)

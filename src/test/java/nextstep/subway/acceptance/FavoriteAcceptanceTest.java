@@ -47,7 +47,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 없이 즐겨찾기 추가할 경우 에러")
     void addFavoriteWithoutLogin() {
         accessToken = "";
-        assertThat(즐겨찾기_추가(accessToken, 신논현역, 강남역).statusCode()).isNotEqualTo(HttpStatus.CREATED.value());
+        assertThat(즐겨찾기_추가(accessToken, 신논현역, 강남역).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
     }
 }
