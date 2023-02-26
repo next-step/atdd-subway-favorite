@@ -62,4 +62,14 @@ public class AuthServiceTest {
         // then
         assertThat(token.getAccessToken()).isNotBlank();
     }
+
+    @Test
+    @DisplayName("가입되지 않은 깃허브 로그인")
+    void unregisteredGithubLogin() {
+        // when
+        final TokenResponse token = authService.oauth2Login(new GithubLoginRequest("nvci383mciq0oq"));
+
+        // then
+        assertThat(token.getAccessToken()).isNotBlank();
+    }
 }
