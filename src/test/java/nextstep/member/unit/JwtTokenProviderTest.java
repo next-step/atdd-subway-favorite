@@ -13,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class JwtTokenProviderTest {
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
     private final String EMAIL = "email";
     private final List<String> ROLES = List.of("ROLE_MEMBER");
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("토큰 생성")

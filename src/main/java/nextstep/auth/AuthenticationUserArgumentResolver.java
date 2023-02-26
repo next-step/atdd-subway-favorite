@@ -16,14 +16,14 @@ import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INF
 @Component
 public class AuthenticationUserArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final String AUTHORIZATION_HEADER = "authorization";
+    private static final String SCHEME_TYPE = "Bearer";
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationUserArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
-    private static final String AUTHORIZATION_HEADER = "authorization";
-    private static final String SCHEME_TYPE = "Bearer";
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {

@@ -2,8 +2,12 @@ package nextstep.auth.application;
 
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.GithubLoginRequest;
+import nextstep.auth.domain.Oauth2Client;
+import nextstep.auth.domain.ProfileResponse;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +20,32 @@ public class AuthService {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Oauth2Client client;
 
-    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider, Oauth2Client client) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.client = client;
     }
 
     public TokenResponse login(final TokenRequest tokenRequest) {
         final Member member = memberService.findByEmail(tokenRequest.getEmail());
         if (!member.checkPassword(tokenRequest.getPassword())) {
             throw new IllegalArgumentException(INVALID_EMAIL_PASSWORD);
+        }
+
+        return createToken(member);
+    }
+
+    public TokenResponse oauth2Login(final GithubLoginRequest loginRequest) {
+        final String accessToken = client.getAccessToken(loginRequest.getCode());
+        final ProfileResponse profile = client.getProfile(accessToken);
+
+        Member member;
+        try {
+            member = memberService.findByEmail(profile.getEmail());
+        } catch (IllegalArgumentException e) {
+            member = memberService.saveMember(new MemberRequest(profile.getEmail()));
         }
 
         return createToken(member);

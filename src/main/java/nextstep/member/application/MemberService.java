@@ -17,8 +17,12 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
+        Member member = saveMember(request);
         return MemberResponse.of(member);
+    }
+
+    public Member saveMember(final MemberRequest request) {
+        return memberRepository.save(request.toMember());
     }
 
     public MemberResponse findMember(Long id) {
