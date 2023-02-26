@@ -43,7 +43,7 @@ public class AppMemberArgumentResolver implements HandlerMethodArgumentResolver 
 
     private String extractToken(String headerValue) {
         if (headerValue == null || !isBearerType(headerValue)) {
-            return null;
+            throw new AuthorizationException();
         }
 
         return headerValue.substring(BEARER_TYPE.length());
