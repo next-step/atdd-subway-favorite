@@ -40,15 +40,15 @@ public class Favorite {
         return id;
     }
 
-    public Member getMember() {
-        return member;
-    }
-
     public Station getSourceStation() {
         return sourceStation;
     }
 
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    public boolean isOwnedBy(Member member) {
+        return this.member == member;
     }
 }

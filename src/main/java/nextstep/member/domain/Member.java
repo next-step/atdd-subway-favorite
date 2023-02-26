@@ -104,7 +104,7 @@ public class Member {
     }
 
     private void checkMyFavorite(Favorite favorite) {
-        if (favorite.getMember() != this) {
+        if (!favorite.isOwnedBy(this)) {
             throw new NotAuthorizedException(String.format("%s 님의 즐겨찾기가 아닙니다.", email));
         }
     }
