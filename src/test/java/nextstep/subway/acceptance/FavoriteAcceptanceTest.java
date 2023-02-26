@@ -48,6 +48,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void addFavoriteWithoutLogin() {
         accessToken = "";
         assertThat(즐겨찾기_추가(accessToken, 신논현역, 강남역).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
+    @Test
+    @DisplayName("로그인 후 즐겨찾기 조회")
+    void findAllFavorites() {
+        // given
+        즐겨찾기_추가(accessToken, 신논현역, 강남역);
+        즐겨찾기_추가(accessToken, 강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회(accessToken);
+
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(response.jsonPath().getList("source.name")).containsOnly("신논현역", "강남역"),
+            () -> assertThat(response.jsonPath().getList("target.name")).containsOnly("강남역", "양재역")
+        );
+    }
+
+    @Test
+    @DisplayName("로그인 없이 즐겨찾기 조회할 경우 에러")
+    void findAllFavoritesWithoutLogin() {
+        accessToken = "";
+
+        // then
+        assertThat(즐겨찾기_조회(accessToken).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
