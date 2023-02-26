@@ -35,10 +35,10 @@ public class MemberService {
     }
 
     public MemberResponse findMember(String principal) {
-        return MemberResponse.of(findByPrincipal(principal));
+        return MemberResponse.of(findByEmail(principal));
     }
 
-    public Member findByPrincipal(String principal) {
+    public Member findByEmail(String principal) {
         return memberRepository.findByEmail(principal)
             .orElseThrow(() -> new NotAuthorizedException(principal + " 사용자를 찾을 수 없습니다."));
     }

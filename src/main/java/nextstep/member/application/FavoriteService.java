@@ -30,7 +30,7 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse create(String principal, FavoriteRequest favoriteRequest) {
-        Member member = memberService.findByPrincipal(principal);
+        Member member = memberService.findByEmail(principal);
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
 
@@ -40,7 +40,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findAll(String principal) {
-        return memberService.findByPrincipal(principal)
+        return memberService.findByEmail(principal)
             .getFavorites()
             .stream()
             .map(FavoriteResponse::of)
@@ -49,7 +49,7 @@ public class FavoriteService {
 
     @Transactional
     public void delete(String principal, Long id) {
-        Member member = memberService.findByPrincipal(principal);
+        Member member = memberService.findByEmail(principal);
         Favorite favorite = favoriteRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(id + "번 즐겨찾기를 찾을 수 없습니다."));
 
