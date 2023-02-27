@@ -23,7 +23,7 @@ import java.util.List;
 import static nextstep.common.constants.ErrorConstant.INVALID_EMAIL_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceMockTest {
@@ -104,6 +104,7 @@ public class AuthServiceMockTest {
         final TokenResponse token = authService.oauth2Login(new GithubLoginRequest("code"));
 
         // then
+        verify(memberService, times(1)).saveMember(new MemberRequest(EMAIL));
         assertThat(token.getAccessToken()).isNotBlank();
     }
 }
