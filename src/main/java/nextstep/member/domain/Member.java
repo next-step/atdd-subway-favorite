@@ -37,6 +37,11 @@ public class Member {
         this.roles = roles;
     }
 
+    public Member(String email) {
+        this.email = email;
+        this.roles = List.of(RoleType.ROLE_MEMBER.name());
+    }
+
     public Long getId() {
         return id;
     }

@@ -16,6 +16,10 @@ public class MemberRequest {
         this.age = age;
     }
 
+    public MemberRequest(String email){
+        this.email = email;
+    }
+
     public String getEmail() {
         return email;
     }
