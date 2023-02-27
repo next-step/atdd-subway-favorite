@@ -12,9 +12,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.security.sasl.AuthenticationException;
 import java.util.Objects;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Component
 public class AuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
-    public static final String AUTHORIZATION = "authorization";
     public static final String AUTHENTICATION_TYPE = "Bearer";
     private final JwtTokenProvider jwtTokenProvider;
 

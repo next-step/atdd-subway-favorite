@@ -63,3 +63,31 @@ Content-Type: application/json
     "age": 20
 }
 ```
+
+### 🚀 2단계 - 깃헙 로그인
+
+#### 기능 요구사항
+
+- [x] 깃허브를 이용한 로그인 구현(토큰 발행)
+- [x] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
+
+#### 프로그래밍 요구사항
+
+- [x] GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
+- [x] 깃헙 로그인 API AuthAcceptanceTest 테스트 만들기
+
+``` Request
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "code": "qwerasdfzxvcqwerasdfzxcv"
+}
+```
+
+``` Response
+{
+"accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
+}
+```
