@@ -25,7 +25,7 @@ public class AuthService {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(tokenRequest);
         GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
 
-        MemberResponse memberResponse = memberService.findMemberByGithubEmailOrElseCreateMember(githubProfile.getId()+"", githubProfile.getEmail());
+        MemberResponse memberResponse = memberService.findMemberByGithubEmailOrElseCreateMember(Long.toString(githubProfile.getId()), githubProfile.getEmail());
 
         String token = jwtTokenProvider.createToken(String.valueOf(memberResponse.getId()), memberResponse.getRoles());
         return new TokenResponse(token);
