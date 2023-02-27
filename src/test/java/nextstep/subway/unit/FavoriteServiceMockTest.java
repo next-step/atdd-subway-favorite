@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willCallRealMethod;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -117,10 +117,12 @@ public class FavoriteServiceMockTest extends MockTest {
     void removeFavorite() {
         given(memberService.findById(memberId)).willReturn(member);
         given(favoriteRepository.findById(favorite.getId())).willReturn(Optional.of(favorite));
+        given(favoriteRepository.findByMemberId(loginMember.getId())).willReturn(Collections.emptyList());
 
         favoriteService.removeFavorite(loginMember, favorite.getId());
 
-        //assertThat(member.getFavorites()).isEmpty();
+        final var favorites = favoriteService.findFavorites(loginMember);
+        assertThat(favorites).isEmpty();
     }
 
     @DisplayName("다른 사람의 즐겨찾기를 삭제하면 오류가 발생한다.")

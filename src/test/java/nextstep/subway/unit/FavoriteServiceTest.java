@@ -74,7 +74,7 @@ public class FavoriteServiceTest {
 
         final var favorites = favoriteService.findFavorites(loginMemberA);
 
-        //assertThat(favorites).containsExactly(favoriteResponse);
+        assertThat(favorites).containsExactly(favoriteResponse);
     }
 
     @DisplayName("즐겨찾기로 추가한 경로를 삭제할 수 있다.")
@@ -84,7 +84,8 @@ public class FavoriteServiceTest {
 
         favoriteService.removeFavorite(loginMemberA, favoriteResponse.getId());
 
-        //assertThat(memberA.getFavorites()).isEmpty();
+        final var favorites = favoriteService.findFavorites(loginMemberA);
+        assertThat(favorites).isEmpty();
     }
 
     @DisplayName("다른 사람의 즐겨찾기를 삭제하면 오류가 발생한다.")
