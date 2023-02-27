@@ -3,7 +3,7 @@ package nextstep.subway.acceptance.controller;
 import java.util.Arrays;
 
 public enum GithubResponses {
-    사용자1("832ovnq039hfjn", "access_token_1", "member@email.com"),
+    회원가입_한_사용자1("832ovnq039hfjn", "access_token_1", "member@email.com"),
     사용자2("mkfo0aFa03m", "access_token_2", "admin@email.com");
 
     private String code;
@@ -36,5 +36,9 @@ public enum GithubResponses {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getCode() {
+        return code;
     }
 }
