@@ -3,10 +3,7 @@ package nextstep.member.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.member.domain.exception.BadCredentialException;
-import nextstep.member.domain.exception.FavoriteIsNotYoursException;
-import nextstep.subway.domain.Favorite;
 
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -16,8 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,9 +35,6 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
-
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
 
     public Member(String email, String password, Integer age) {
         this.email = email;
@@ -72,16 +64,5 @@ public class Member {
         if (!Objects.equals(this.password, password)) {
             throw new BadCredentialException();
         }
-    }
-
-    public void addFavorite(final Favorite favorite) {
-        this.favorites.add(favorite);
-    }
-
-    public void validateIsYourFavorite(final Favorite favorite) {
-        favorites.stream()
-                .filter(f -> f.equals(favorite))
-                .findAny()
-                .orElseThrow(FavoriteIsNotYoursException::new);
     }
 }

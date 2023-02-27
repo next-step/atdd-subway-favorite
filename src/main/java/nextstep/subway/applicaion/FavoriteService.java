@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -25,18 +26,26 @@ public class FavoriteService {
     public FavoriteResponse addFavorite(final LoginMember loginMember, final FavoriteRequest favoriteRequest) {
         final var source = stationService.findById(favoriteRequest.getSource());
         final var target = stationService.findById(favoriteRequest.getTarget());
-
         final var member = memberService.findById(loginMember.getId());
 
-        return FavoriteResponse.of(favoriteRepository.save(new Favorite(source, target, member)));
+        final var favorite = new Favorite(source.getId(), target.getId(), member.getId());
+        favoriteRepository.save(favorite);
+
+        return new FavoriteResponse(favorite, source, target);
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(final LoginMember loginMember) {
         final var member = memberService.findById(loginMember.getId());
-        final var favorites = favoriteRepository.findByMember(member);
+        final var favorites = favoriteRepository.findByMemberId(member.getId());
 
-        return FavoriteResponse.of(favorites);
+        return favorites.stream()
+                .map(favorite -> {
+                    final var source = stationService.findById(favorite.getSourceId());
+                    final var target = stationService.findById(favorite.getTargetId());
+                    return new FavoriteResponse(favorite, source, target);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +58,7 @@ public class FavoriteService {
         final var member = memberService.findById(loginMember.getId());
         final var favorite = findById(id);
 
-        member.validateIsYourFavorite(favorite);
+        favorite.validateRemove(member);
 
         favoriteRepository.deleteByIdAndMemberId(id, member.getId());
     }

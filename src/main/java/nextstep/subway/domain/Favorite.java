@@ -3,14 +3,12 @@ package nextstep.subway.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.member.domain.Member;
+import nextstep.member.domain.exception.FavoriteIsNotYoursException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -23,23 +21,21 @@ public class Favorite {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "source_id")
-    private Station source;
+    private Long sourceId;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "target_id")
-    private Station target;
+    private Long targetId;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
-    public Favorite(final Station source, final Station target, final Member member) {
-        this.source = source;
-        this.target = target;
-        this.member = member;
+    public Favorite(final Long sourceId, final Long targetId, final Long memberId) {
+        this.sourceId = sourceId;
+        this.targetId = targetId;
+        this.memberId = memberId;
+    }
 
-        member.addFavorite(this);
+    public void validateRemove(final Member member) {
+        if (!memberId.equals(member.getId())) {
+            throw new FavoriteIsNotYoursException();
+        }
     }
 }

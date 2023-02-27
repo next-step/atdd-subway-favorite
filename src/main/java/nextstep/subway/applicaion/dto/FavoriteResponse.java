@@ -2,10 +2,9 @@ package nextstep.subway.applicaion.dto;
 
 import lombok.Getter;
 import nextstep.subway.domain.Favorite;
+import nextstep.subway.domain.Station;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Getter
 public class FavoriteResponse {
@@ -14,24 +13,13 @@ public class FavoriteResponse {
     private StationResponse source;
     private StationResponse target;
 
-    private FavoriteResponse(final Long id, final StationResponse source, final StationResponse target) {
-        this.id = id;
-        this.source = source;
-        this.target = target;
+    public FavoriteResponse() {
     }
 
-    public static FavoriteResponse of(final Favorite favorite) {
-        return new FavoriteResponse(
-                favorite.getId(),
-                StationResponse.of(favorite.getSource()),
-                StationResponse.of(favorite.getTarget())
-        );
-    }
-
-    public static List<FavoriteResponse> of(final List<Favorite> favorites) {
-        return favorites.stream()
-                .map(FavoriteResponse::of)
-                .collect(Collectors.toList());
+    public FavoriteResponse(final Favorite favorite, final Station source, final Station target) {
+        this.id = favorite.getId();
+        this.source = StationResponse.of(source);
+        this.target = StationResponse.of(target);
     }
 
     @Override
