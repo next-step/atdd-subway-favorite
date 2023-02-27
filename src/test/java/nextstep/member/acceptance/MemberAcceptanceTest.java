@@ -122,4 +122,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
      * When 유효하지 않은 토큰으로 내 정보 조회를 요청하면
      * Then 예외가 발생한다.
      */
+    @Test
+    @DisplayName("유효하지 않은 토큰으로 내 정보 조회")
+    void getMyInfo_invalidToken() {
+        // when
+        var response = 토큰으로_내_회원_정보_조회_요청("invalidToken");
+
+        // then
+        권한없는_요청_검증(response, INVALID_AUTHENTICATION_INFO);
+    }
 }
