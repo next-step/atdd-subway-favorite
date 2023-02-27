@@ -2,6 +2,7 @@ package nextstep.member.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.member.application.exception.InvalidPasswordException;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -57,7 +58,7 @@ public class Member {
 
     public void validatePassword(final String password) {
         if (!Objects.equals(this.password, password)) {
-            throw new RuntimeException();
+            throw new InvalidPasswordException();
         }
     }
 }
