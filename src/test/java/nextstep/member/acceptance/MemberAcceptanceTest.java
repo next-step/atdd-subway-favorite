@@ -101,4 +101,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
+
+    /**
+     * When 비로그인 상태에서 내 정보 조회를 요청하면
+     * Then 예외가 발생한다.
+     */
+
+    /**
+     * When 유효하지 않은 토큰으로 내 정보 조회를 요청하면
+     * Then 예외가 발생한다.
+     */
 }
