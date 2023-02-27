@@ -1,4 +1,4 @@
-package nextstep;
+package nextstep.subway.utils;
 
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
