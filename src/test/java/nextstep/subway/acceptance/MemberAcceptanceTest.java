@@ -11,8 +11,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
     @DisplayName("회원가입을 한다.")
