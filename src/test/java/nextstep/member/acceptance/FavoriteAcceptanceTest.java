@@ -5,6 +5,8 @@ import static nextstep.member.acceptance.FavoriteAcceptanceSteps.연결되지_�
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.존재하지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_검증;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_요청;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회_검증;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.createSectionCreateParams;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.지하철_노선_생성_요청;
@@ -122,16 +124,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 조회 관련 기능")
     @Nested
     class ShowFavoriteTest {
-
         /**
          * Given 베어러 인증 로그인 후
          * And 즐겨찾기를 등록하고
          * When 즐겨찾기 목록을 조회하면
          * Then 등록 된 즐겨찾기를 찾을 수 있다.
          */
+        @DisplayName("즐겨찾기 목록을 조회한다.")
         @Test
         void showFavorite() {
+            // given
+            String accessToken = 베어러_인증_토큰();
+            즐겨찾기_등록_요청(accessToken, 강남역, 양재역);
 
+            // when
+            var response = 즐겨찾기_목록_조회(accessToken);
+
+            // then
+            즐겨찾기_목록_조회_검증(response, 강남역, 양재역);
         }
     }
 

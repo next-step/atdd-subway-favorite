@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Map;
@@ -64,5 +65,20 @@ public class FavoriteAcceptanceSteps {
 
     public static void 존재하지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 즐겨찾기_목록_조회_검증(
+            final ExtractableResponse<Response> response,
+            final Long source,
+            final Long target
+    ) {
+        JsonPath jsonPath = response.jsonPath();
+
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(jsonPath.getList("id")).hasSize(1),
+                () -> assertThat(jsonPath.getLong("source[0].id")).isEqualTo(source),
+                () -> assertThat(jsonPath.getLong("target[0].id")).isEqualTo(target)
+        );
     }
 }
