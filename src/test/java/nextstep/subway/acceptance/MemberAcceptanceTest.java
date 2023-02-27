@@ -71,7 +71,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().get("accessToken");
         // when
-        ExtractableResponse<Response> response = 베이직_인증으로_내_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> response = OAuth2_인증으로_내_회원_정보_조회_요청(accessToken);
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
