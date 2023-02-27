@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 public enum GithubResponses {
     회원가입_한_사용자1("832ovnq039hfjn", "access_token_1", "member@email.com"),
-    사용자2("mkfo0aFa03m", "access_token_2", "admin@email.com");
+    사용자2("mkfo0aFa03m", "access_token_2", "admin@email.com"),
+    회원가입_하지_않은_사용자("kaoq2gmq3t2", "access_token_3", "bactoria@email.com");
 
     private String code;
     private String accessToken;
