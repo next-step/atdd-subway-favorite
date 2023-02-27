@@ -29,8 +29,7 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse create(String email, Long targetId, Long sourceId) {
-        final Member member = memberService.findMemberByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException());
+        final Member member = findMemberByEmail(email);
         final Station target = stationService.findById(targetId);
         final Station source = stationService.findById(sourceId);
 
@@ -39,14 +38,36 @@ public class FavoriteService {
     }
 
     public FavoriteResponse findById(Long favoriteId, String email) {
-        final Favorite favorite = favoriteRepository.findById(favoriteId)
-            .orElseThrow(() -> new IllegalArgumentException());
-        final Member member = memberService.findMemberByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException());
+        final Favorite favorite = findFavoriteById(favoriteId);
+        final Member member = findMemberByEmail(email);
 
+        validFavorite(favorite, member);
+
+        return FavoriteResponse.toDto(favorite);
+    }
+
+    public void removeById(Long favoriteId, String email) {
+        final Favorite favorite = findFavoriteById(favoriteId);
+        final Member member = findMemberByEmail(email);
+
+        validFavorite(favorite, member);
+
+        favoriteRepository.deleteById(favoriteId);
+    }
+
+    private void validFavorite(Favorite favorite, Member member) {
         if (!favorite.isSameMember(member.getId())) {
             throw new IllegalArgumentException();
         }
-        return FavoriteResponse.toDto(favorite);
+    }
+
+    private Favorite findFavoriteById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+            .orElseThrow(() -> new IllegalArgumentException());
+    }
+
+    private Member findMemberByEmail(String email) {
+        return memberService.findMemberByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException());
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_등록_한다;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_한다;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_한다;
 import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
@@ -90,6 +91,36 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         로그인하지_않은경우_즐겨찾기_조회_실패한다(response);
     }
 
+    /**
+     * Given 지하철역을 생성, 깃허브 인증 로그인 요청, 즐겨찾기 등록하고
+     * When 삭제을 요청하면
+     * Then 즐겨찾기 삭제를 할 수 있다.
+     **/
+    @DisplayName("즐겨찾기_삭제")
+    @Test
+    void 즐겨찾기_삭제() {
+        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
+
+        final ExtractableResponse<Response> response = 즐겨찾기_삭제_한다(accessToken, favoriteId);
+
+        즐겨찾기_삭제에_성공한다(response);
+    }
+
+    /**
+     * Given 지하철역을 생성, 깃허브 인증 로그인 요청, 즐겨찾기 등록하고
+     * When 로그인 하지 않고 삭제을 요청하면
+     * Then 즐겨찾기 삭제를 할 수 없다.
+     **/
+    @DisplayName("로그인하지_않은경우_즐겨찾기_삭제_실패")
+    @Test
+    void 로그인하지_않은경우_즐겨찾기_삭제_실패() {
+        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
+
+        final ExtractableResponse<Response> response = 즐겨찾기_삭제_한다("notLogin", favoriteId);
+
+        로그인하지_않은경우_즐겨찾기_삭제_실패한다(response);
+    }
+
     private void 즐겨찾기_등록에_성공한다(ExtractableResponse<Response> response, Long source, Long target) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
@@ -113,11 +144,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    private void 즐겨찾기_삭제에_성공한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private void 로그인하지_않은경우_즐겨찾기_등록_실패한다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 로그인하지_않은경우_즐겨찾기_조회_실패한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 로그인하지_않은경우_즐겨찾기_삭제_실패한다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
