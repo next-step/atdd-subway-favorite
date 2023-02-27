@@ -34,6 +34,11 @@ public class MemberService {
         return member;
     }
 
+    public Member findByEmailOrCreateMember(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseGet(() -> memberRepository.save(new Member(email, "", 0)));
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());

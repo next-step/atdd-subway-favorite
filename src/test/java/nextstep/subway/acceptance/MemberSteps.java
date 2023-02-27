@@ -90,9 +90,9 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(String code) {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", code);
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
