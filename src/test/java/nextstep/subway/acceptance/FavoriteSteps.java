@@ -27,4 +27,14 @@ public class FavoriteSteps {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_조회_한다(String accessToken, Long favoriteId) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/favorites/{favoriteId}", favoriteId)
+            .then().log().all()
+            .extract();
+    }
+
 }

@@ -37,4 +37,16 @@ public class FavoriteService {
         final Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
         return FavoriteResponse.toDto(favorite);
     }
+
+    public FavoriteResponse findById(Long favoriteId, String email) {
+        final Favorite favorite = favoriteRepository.findById(favoriteId)
+            .orElseThrow(() -> new IllegalArgumentException());
+        final Member member = memberService.findMemberByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException());
+
+        if (!favorite.isSameMember(member.getId())) {
+            throw new IllegalArgumentException();
+        }
+        return FavoriteResponse.toDto(favorite);
+    }
 }

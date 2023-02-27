@@ -6,6 +6,8 @@ import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,15 @@ public class FavoriteController {
             request.getSource()
         );
         return ResponseEntity.created(URI.create("/favorites" + favoriteResponse.getId())).body(favoriteResponse);
+    }
+
+    @GetMapping("{favoriteId}")
+    public ResponseEntity<FavoriteResponse> findById(LoginUser loginUser, @PathVariable Long favoriteId) {
+        final FavoriteResponse favoriteResponse = favoriteService.findById(
+            favoriteId,
+            loginUser.getEmail()
+        );
+        return ResponseEntity.ok(favoriteResponse);
     }
 
 }

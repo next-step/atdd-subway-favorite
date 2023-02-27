@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_등록_한다;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_한다;
 import static nextstep.subway.acceptance.MemberSteps.깃허브_인증_로그인_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +36,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given 지하철역을 생성, 깃허브 인증 로그인 요청을 하고
+     * When 즐겨찾기 등록을 요청하면
+     * Then 즐겨찾기 등록이 된다.
+     **/
+    @DisplayName("즐겨찾기_등록")
+    @Test
+    void 즐겨찾기_등록() {
+        final ExtractableResponse<Response> response = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역);
+
+        즐겨찾기_등록에_성공한다(response, 강남역, 잠실역);
+    }
+
+    /**
      * Given 지하철역을 생성을 하고
      * When 즐겨찾기 등록을 요청하면
      * Then 즐겨찾기 등록을 할 수 없다.
@@ -50,14 +64,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 지하철역을 생성, 깃허브 인증 로그인 요청을 하고
      * When 즐겨찾기 등록을 요청하면
-     * Then 즐겨찾기 등록이 된다.
+     * Then 즐겨찾기 조회를 할 수 있다.
      **/
-    @DisplayName("즐겨찾기_등록")
+    @DisplayName("즐겨찾기_조회")
     @Test
-    void 즐겨찾기_등록() {
-        final ExtractableResponse<Response> response = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역);
+    void 즐겨찾기_조회() {
+        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
 
-        즐겨찾기_등록에_성공한다(response, 강남역, 잠실역);
+        final ExtractableResponse<Response> response = 즐겨찾기_조회_한다(accessToken, favoriteId);
+
+        즐겨찾기_조회에_성공한다(response, favoriteId, 강남역, 잠실역);
+    }
+
+    /**
+     * Given 깃허브 인증 로그인, 지하철역을 생성을 하고
+     * When 로그인 하지 않으면
+     * Then 즐겨찾기 조회를 할 수 없다.
+     **/
+    @DisplayName("로그인하지_않은경우_즐겨찾기_등록_실패")
+    @Test
+    void 로그인하지_않은경우_즐겨찾기_조회_실패() {
+        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
+        final ExtractableResponse<Response> response = 즐겨찾기_조회_한다("notLogin", favoriteId);
+
+        로그인하지_않은경우_즐겨찾기_조회_실패한다(response);
     }
 
     private void 즐겨찾기_등록에_성공한다(ExtractableResponse<Response> response, Long source, Long target) {
@@ -69,7 +99,25 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    private void 즐겨찾기_조회에_성공한다(
+        ExtractableResponse<Response> response,
+        Long favoriteId,
+        Long source,
+        Long target
+    ) {
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(response.body().jsonPath().getLong("id")).isEqualTo(favoriteId),
+            () -> assertThat(response.body().jsonPath().getLong("source.id")).isEqualTo(source),
+            () -> assertThat(response.body().jsonPath().getLong("target.id")).isEqualTo(target)
+        );
+    }
+
     private void 로그인하지_않은경우_즐겨찾기_등록_실패한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 로그인하지_않은경우_즐겨찾기_조회_실패한다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
