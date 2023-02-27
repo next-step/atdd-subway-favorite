@@ -25,7 +25,8 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest request){
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
 
         member.checkPassword(request.getPassword());
 
