@@ -49,6 +49,8 @@ public class FavoriteService {
         final var member = memberService.findById(loginMember.getId());
         final var favorite = findById(id);
 
-        member.removeFavorite(favorite);
+        member.validateIsYourFavorite(favorite);
+
+        favoriteRepository.deleteByIdAndMemberId(id, member.getId());
     }
 }

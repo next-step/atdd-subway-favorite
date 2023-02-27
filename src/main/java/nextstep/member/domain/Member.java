@@ -78,15 +78,10 @@ public class Member {
         this.favorites.add(favorite);
     }
 
-    private void validateIsYourFavorite(final Favorite favorite) {
+    public void validateIsYourFavorite(final Favorite favorite) {
         favorites.stream()
                 .filter(f -> f.equals(favorite))
                 .findAny()
                 .orElseThrow(FavoriteIsNotYoursException::new);
-    }
-
-    public void removeFavorite(final Favorite favorite) {
-        validateIsYourFavorite(favorite);
-        favorites.remove(favorite);
     }
 }
