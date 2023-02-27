@@ -15,6 +15,8 @@ import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static nextstep.error.exception.ErrorCode.*;
 
 @Service
@@ -88,9 +90,9 @@ public class MemberService {
 		return FavoriteResponse.of(favorite);
     }
 
-	public FavoriteResponse findFavoriteOfMine(AuthMember authMember) {
-		Favorite favorite = favoriteRepository.findByMemberId(authMember.getId()).orElseThrow(() -> new BusinessException(FAVORITE_NOT_EXISTS));
-		return FavoriteResponse.of(favorite);
+	public List<FavoriteResponse> findFavoritesOfMine(AuthMember authMember) {
+		List<Favorite> favorites = favoriteRepository.findByMemberId(authMember.getId());
+		return FavoriteResponse.of(favorites);
 	}
 
 	@Transactional

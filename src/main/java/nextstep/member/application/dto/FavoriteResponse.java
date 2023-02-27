@@ -2,16 +2,19 @@ package nextstep.member.application.dto;
 
 import nextstep.member.domain.Favorite;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class FavoriteResponse {
-	private Long memberId;
+	private Long id;
 	private Source source;
 	private Target target;
 
 	protected FavoriteResponse() {
 	}
 
-	public FavoriteResponse(Long memberId, Source source, Target target) {
-		this.memberId = memberId;
+	public FavoriteResponse(Long id, Source source, Target target) {
+		this.id = id;
 		this.source = source;
 		this.target = target;
 	}
@@ -20,8 +23,15 @@ public class FavoriteResponse {
 		return new FavoriteResponse(favorite.getMemberId(), new Source(favorite.getSource().getId(), favorite.getSource().getName()), new Target(favorite.getTarget().getId(), favorite.getTarget().getName()));
 	}
 
-	public Long getMemberId() {
-		return memberId;
+	public static List<FavoriteResponse> of(List<Favorite> favorite) {
+		List<FavoriteResponse> collect = favorite.stream()
+				.map(FavoriteResponse::of)
+				.collect(Collectors.toList());
+		return collect;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public Source getSource() {
