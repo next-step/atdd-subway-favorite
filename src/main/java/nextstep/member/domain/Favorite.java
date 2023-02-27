@@ -10,7 +10,6 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JoinColumn(name = "member_id")
     private Long memberId;
     @ManyToOne
     @JoinColumn(name = "up_station_id")
