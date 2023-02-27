@@ -33,8 +33,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMine(String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+    public MemberResponse findMine(Member member) {
         return MemberResponse.of(member);
     }
 }

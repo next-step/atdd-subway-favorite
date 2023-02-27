@@ -3,11 +3,9 @@ package nextstep.subway.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.application.fake.FakeGithubResponses;
-import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
@@ -18,8 +16,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
-    @Autowired
-    private MemberService memberService;
 
     @DisplayName("Bearer Auth")
     @Test
