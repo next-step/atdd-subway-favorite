@@ -80,10 +80,9 @@ public class MemberService {
   
 	@Transactional
     public FavoriteResponse createFavorite(AuthMember authMember, FavoriteRequest favoriteRequest) {
-		Member member = memberRepository.findById(authMember.getId()).orElseThrow(() -> new BusinessException(MEMBER_NOT_EXISTS));
 		Station source = stationService.findById(favoriteRequest.getSource());
 		Station target = stationService.findById(favoriteRequest.getTarget());
-		Favorite favorite = new Favorite(member.getId(), source, target);
+		Favorite favorite = new Favorite(authMember.getId(), source, target);
 		favoriteRepository.save(favorite);
 
 		return FavoriteResponse.of(favorite);
