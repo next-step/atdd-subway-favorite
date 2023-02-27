@@ -2,23 +2,23 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.GithubClient;
+import nextstep.exception.ErrorMessage;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.unit.GithubSampleResponse;
-import nextstep.subway.unit.StubGithubClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.깃허브_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.응답_상태코드_검증;
+import static nextstep.subway.acceptance.MemberSteps.응답_예외_메시지_검증;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -41,7 +41,10 @@ class AuthAcceptanceTest {
     @DisplayName("Bearer Auth Exception")
     @Test
     void bearerAuthException() {
-        베어러_인증_패스워드_예외발생(EMAIL, "no" + PASSWORD);
+        ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, "no" + PASSWORD);
+
+        응답_상태코드_검증(response, ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL.getHttpStatus());
+        응답_예외_메시지_검증(response, ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL);
     }
 
     @DisplayName("Github Auth")
@@ -56,14 +59,5 @@ class AuthAcceptanceTest {
 
         // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
-    }
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        @Primary
-        GithubClient stubGithubClient() {
-            return new StubGithubClient();
-        }
     }
 }

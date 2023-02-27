@@ -25,23 +25,7 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-    }
-
-    public static void 베어러_인증_패스워드_예외발생(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL.getHttpStatus().value())
-                .assertThat().body("title", Matchers.equalTo(ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL.name()))
-                .assertThat().body("message", Matchers.equalTo(ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL.getDescription()));
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -119,5 +103,14 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 응답_상태코드_검증(ExtractableResponse<Response> response, HttpStatus status) {
+        assertThat(response.statusCode()).isEqualTo(status.value());
+    }
+
+    public static void 응답_예외_메시지_검증(ExtractableResponse<Response> response, ErrorMessage errorMessage) {
+        assertThat(response.body().jsonPath().getString("title")).isEqualTo(errorMessage.name());
+        assertThat(response.body().jsonPath().getString("message")).isEqualTo(errorMessage.getDescription());
     }
 }
