@@ -2,7 +2,6 @@ package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.LoginService;
-import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
@@ -24,11 +23,5 @@ public class LoginController {
     @PostMapping("/login/github")
     public ResponseEntity<GithubAccessTokenResponse> getGithubToken(@RequestBody String code) {
         return ResponseEntity.ok(loginService.getGithubToken(code));
-    }
-
-    @PostMapping("/login/authorization")
-    public ResponseEntity<GithubAccessTokenResponse> getAuth(
-            @RequestBody GithubAccessTokenRequest request) {
-        return ResponseEntity.ok(loginService.getAuth(request));
     }
 }

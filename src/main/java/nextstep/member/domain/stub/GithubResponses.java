@@ -2,7 +2,6 @@ package nextstep.member.domain.stub;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nextstep.member.application.message.Message;
 
 import java.util.Arrays;
 
@@ -17,4 +16,12 @@ public enum GithubResponses {
     private String code;
     private String accessToken;
     private String email;
+
+    public static String findTokenByCode(String code) {
+        return Arrays.stream(values())
+                .filter(r -> r.getCode().equals(code))
+                .findFirst()
+                .map(GithubResponses::getAccessToken)
+                .orElse("invalid_token");
+    }
 }

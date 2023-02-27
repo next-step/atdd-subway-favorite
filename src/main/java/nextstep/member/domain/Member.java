@@ -4,7 +4,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +33,11 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    public Member(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public Member(String email, String password, Integer age) {
         this.email = email;

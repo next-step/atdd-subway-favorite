@@ -67,7 +67,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = 인가서버에_토큰_요청("Invalid");
         // then
-        assertThat(response.jsonPath().getString("accessToken")).isEqualTo("access_token_invalid");
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo("invalid_token");
     }
 
 }

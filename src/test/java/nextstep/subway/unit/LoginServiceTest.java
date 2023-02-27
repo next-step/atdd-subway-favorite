@@ -7,7 +7,6 @@ import nextstep.member.application.LoginService;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.domain.GithubMemberRepository;
 import nextstep.member.domain.stub.GithubResponses;
 import nextstep.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Import({JwtTokenProvider.class, DataLoader.class, GithubClient.class, GithubMemberRepository.class})
+@Import({JwtTokenProvider.class, DataLoader.class, GithubClient.class})
 @DataJpaTest
 public class LoginServiceTest {
     @Autowired
@@ -33,14 +32,12 @@ public class LoginServiceTest {
     DataLoader dataLoader;
     @Autowired
     GithubClient githubClient;
-    @Autowired
-    GithubMemberRepository githubMemberRepository;
     LoginService loginService;
 
 
     @BeforeEach
     void setUp() {
-        loginService = new LoginService(memberRepository, jwtTokenProvider, githubClient, githubMemberRepository);
+        loginService = new LoginService(memberRepository, jwtTokenProvider, githubClient);
         dataLoader.loadData();
     }
 
@@ -73,25 +70,10 @@ public class LoginServiceTest {
         GithubResponses 사용자1 = GithubResponses.사용자1;
         GithubClient githubClient1 = mock(GithubClient.class);
         when(githubClient1.getAccessTokenFromGithub(사용자1.getCode())).thenReturn(사용자1.getAccessToken());
-        loginService = new LoginService(memberRepository, jwtTokenProvider, githubClient1, githubMemberRepository);
+        loginService = new LoginService(memberRepository, jwtTokenProvider, githubClient1);
 
         GithubAccessTokenResponse githubToken = loginService.getGithubToken(사용자1.getCode());
         assertThat(githubToken.getAccessToken()).isEqualTo(사용자1.getAccessToken());
-    }
-
-    @Test
-    @DisplayName("Authorization Fake 서버 테스트 : 정상")
-    void authorization_fake_server_test_success() {
-        GithubResponses 사용자1 = GithubResponses.사용자1;
-        GithubAccessTokenResponse response = loginService.getAuth(new GithubAccessTokenRequest(사용자1.getCode(), 사용자1.getEmail(), 사용자1.getAccessToken()));
-        assertThat(response.getAccessToken()).isEqualTo(사용자1.getAccessToken());
-    }
-
-    @Test
-    @DisplayName("Authorization Fake 서버 테스트 : 존재하지 않는 코드")
-    void authorization_fake_server_test_fail() {
-        GithubAccessTokenResponse auth = loginService.getAuth(new GithubAccessTokenRequest("Invlid", "invalid@email.com", "access_token_invalid"));
-        assertThat(auth.getAccessToken()).isEqualTo("access_token_invalid");
     }
 
 }
