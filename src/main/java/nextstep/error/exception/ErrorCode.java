@@ -3,6 +3,7 @@ package nextstep.error.exception;
 import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public enum ErrorCode {
 
@@ -29,7 +30,8 @@ public enum ErrorCode {
 	MISMATCHED_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다."),
 	FAVORITE_NOT_EXISTS(BAD_REQUEST,"해당 유저의 즐겨찾기가 존재하지 않습니다."),
 	//auth
-	MISMATCHED_AUTHKEY(BAD_REQUEST, "올바른 인증키가 아닙니다.");
+	MISMATCHED_AUTHKEY(BAD_REQUEST, "올바른 인증키가 아닙니다."),
+	INVALID_TOKEN(UNAUTHORIZED, "유효하지 않은 토큰입니다.");
 
 	private final HttpStatus status;
 	private final String message;
