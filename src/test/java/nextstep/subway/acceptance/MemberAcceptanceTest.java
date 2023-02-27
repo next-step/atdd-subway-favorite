@@ -18,23 +18,23 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void createMember() {
         // when
-        ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        회원_생성됨(회원_생성_응답);
     }
 
     @DisplayName("회원 정보를 조회한다.")
     @Test
     void getMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 회원_생성됨 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
+        var 회원_정보_조회_응답 = 회원_정보_조회_요청(회원_생성됨);
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(회원_정보_조회_응답, EMAIL, AGE);
 
     }
 
@@ -42,26 +42,26 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        var 회원_정보_수정_응답 = 회원_정보_수정_요청(회원_생성_응답, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_수정됨(회원_정보_수정_응답);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
         // given
-        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
+        var 회원_삭제_응답 = 회원_삭제_요청(회원_생성_응답);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        회원_삭제됨(회원_삭제_응답);
     }
 
     @DisplayName("내 정보를 조회한다.")
@@ -69,10 +69,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo() {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().get("accessToken");
+        var 베어러_인증_로그인_응답 = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        var accessToken = Access_Token을_가져온다(베어러_인증_로그인_응답);
+
         // when
-        ExtractableResponse<Response> response = OAuth2_인증으로_내_회원_정보_조회_요청(accessToken);
+        var OAuth2_인증으로_내_회원_정보_조회_응답 = OAuth2_인증으로_내_회원_정보_조회_요청(accessToken);
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(OAuth2_인증으로_내_회원_정보_조회_응답, EMAIL, AGE);
     }
 }
