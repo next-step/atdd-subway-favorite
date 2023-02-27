@@ -21,13 +21,14 @@ public class AuthService {
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
     }
+
     public TokenResponse createGitHubToken(GithubTokenRequest tokenRequest) {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(tokenRequest);
         GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
 
-        MemberResponse memberResponse = memberService.findMemberByGithubEmailOrElseCreateMember(Long.toString(githubProfile.getId()), githubProfile.getEmail());
+        Member member = memberService.findMemberByGithubEmailOrElseCreateMember(Long.toString(githubProfile.getId()), githubProfile.getEmail());
 
-        String token = jwtTokenProvider.createToken(String.valueOf(memberResponse.getId()), memberResponse.getRoles());
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getRoles());
         return new TokenResponse(token);
     }
 }

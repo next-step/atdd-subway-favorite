@@ -67,10 +67,9 @@ public class MemberService {
 		return MemberResponse.of(member);
 	}
 
-	public MemberResponse findMemberByGithubEmailOrElseCreateMember(String id, String email) {
-		Member member = memberRepository.findByEmail(email)
+	public Member findMemberByGithubEmailOrElseCreateMember(String id, String email) {
+		return memberRepository.findByEmail(email)
 				.orElse(memberRepository.save(new Member(email, id, null)));
-		return MemberResponse.of(member);
 	}
 
 	public AuthMember findAuthMemberByEmail(String email) {
