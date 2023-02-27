@@ -1,5 +1,7 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,6 +80,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void showFavorites() {
         // given
         즐겨찾기_추가_요청(token, 강남역, 정자역);
+
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(token);
+
+        System.out.println("response = " + response);
 
         // when
         final var 즐겨찾기_목록 = 즐겨찾기_목록_조회_요청하고_목록_반환(token);
