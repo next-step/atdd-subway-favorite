@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INFO;
+import static nextstep.member.acceptance.AuthSteps.권한없는_요청_검증;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -106,6 +108,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
      * When 비로그인 상태에서 내 정보 조회를 요청하면
      * Then 예외가 발생한다.
      */
+    @Test
+    @DisplayName("비로그인 상태에서 내 정보 조회")
+    void getMyInfo_notLogin() {
+        // when
+        var response = 비로그인_내_회원_정보_조회_요청();
+
+        // then
+        권한없는_요청_검증(response, INVALID_AUTHENTICATION_INFO);
+    }
 
     /**
      * When 유효하지 않은 토큰으로 내 정보 조회를 요청하면

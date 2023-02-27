@@ -103,6 +103,10 @@ public class MemberSteps {
         return 토큰으로_내_회원_정보_조회_요청(token);
     }
 
+    public static ExtractableResponse<Response> 비로그인_내_회원_정보_조회_요청() {
+        return 토큰으로_내_회원_정보_조회_요청("");
+    }
+
     public static ExtractableResponse<Response> 토큰으로_내_회원_정보_조회_요청(final String token) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
