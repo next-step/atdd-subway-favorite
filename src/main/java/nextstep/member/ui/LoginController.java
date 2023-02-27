@@ -26,7 +26,7 @@ public class LoginController {
 
     @PostMapping("/login/token")
     public ResponseEntity<LoginResponse> login(@RequestBody TokenRequest request) {
-        Member member = memberService.findMember(request.getEmail(), request.getPassword());
+        Member member = memberService.login(request.getEmail(), request.getPassword());
         String principal = String.valueOf(member.getId());
         
         String token = jwtTokenProvider.createToken(principal, member.getRoles());
