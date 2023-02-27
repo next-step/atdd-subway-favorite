@@ -25,13 +25,13 @@ public class AuthenticationPrincipalResolver implements HandlerMethodArgumentRes
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterAnnotation(AuthenticationPrincipal.class) != null &&
-                parameter.getParameterType().equals(LoginMember.class);
+        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class)
+                && parameter.getParameterType().equals(LoginMember.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
+                                  WebDataBinderFactory binderFactory) {
         HttpServletRequest req = (HttpServletRequest) webRequest.getNativeRequest();
         String accessToken = req.getHeader(HttpHeaders.AUTHORIZATION);
 
