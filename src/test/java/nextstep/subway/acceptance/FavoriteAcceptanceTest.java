@@ -24,6 +24,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
     private static final String 비밀번호 = "password";
     public static final int 나이 = 20;
     String 로그인_토큰;
+    String 유효하지_않은_로그인_토큰 = "유효하지_않은_로그인_토큰";
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;
@@ -80,6 +81,25 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * given 출발역과 도착역이 주어지고
+     * when 인증되지 않은 로그인 토큰을 가지고 즐겨찾기를 추가하면
+     * then 즐겨찾기가 생성되지 않는다.
+     */
+    @DisplayName("인증되지 않은 로그인 토큰으로 즐겨찾기 추가 기능")
+    @Test
+    void createFavoritesWithInvalidToken() {
+        //given
+        출발역 = 교대역;
+        도착역 = 양재역;
+
+        //when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_추가(유효하지_않은_로그인_토큰,출발역 + "", 도착역 + "");
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
