@@ -24,9 +24,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private long 강남역;
     private long 잠실역;
 
-    /**
-     * Given 지하철역을 생성, 깃허브 인증 로그인 요청을 하고
-     */
     @Override
     @BeforeEach
     void setUp() {
