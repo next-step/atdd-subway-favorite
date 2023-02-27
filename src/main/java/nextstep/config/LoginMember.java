@@ -8,15 +8,9 @@ public class LoginMember {
     public LoginMember() {
     }
 
-    public void setId(Long id) {
+    public LoginMember(Long id, String email, Integer age) {
         this.id = id;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setAge(Integer age) {
         this.age = age;
     }
 
