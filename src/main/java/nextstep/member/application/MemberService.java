@@ -14,7 +14,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public Member findMemberByEmail(String email) {
+    public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
@@ -35,5 +35,10 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse findMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
     }
 }
