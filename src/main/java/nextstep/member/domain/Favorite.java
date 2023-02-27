@@ -1,6 +1,6 @@
 package nextstep.member.domain;
 
-import lombok.Builder;
+import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
 
@@ -14,22 +14,22 @@ public class Favorite {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id")
     private Member member;
-    private Long sourceId;
-    private String sourceName;
 
-    private Long targetId;
-    private String targetName;
+    @OneToOne
+    @JoinColumn(name = "source_id")
+    private Station source;
+
+    @OneToOne
+    @JoinColumn(name = "target_id")
+    private Station target;
 
     protected Favorite() {
     }
 
-    @Builder
-    public Favorite(Member member, Long sourceId, String sourceName, Long targetId, String targetName) {
+    public Favorite(Member member, Station source, Station target) {
         this.member = member;
-        this.sourceId = sourceId;
-        this.sourceName = sourceName;
-        this.targetId = targetId;
-        this.targetName = targetName;
+        this.source = source;
+        this.target = target;
     }
 
     public Long getId() {
@@ -40,19 +40,11 @@ public class Favorite {
         return member;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public Station getSource() {
+        return source;
     }
 
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    public Long getTargetId() {
-        return targetId;
-    }
-
-    public String getTargetName() {
-        return targetName;
+    public Station getTarget() {
+        return target;
     }
 }

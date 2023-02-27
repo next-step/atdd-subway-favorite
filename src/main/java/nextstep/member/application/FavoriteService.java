@@ -32,13 +32,7 @@ public class FavoriteService {
         Member member = memberService.findMemberByToken(token);
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
-        Favorite favorite = Favorite.builder()
-            .member(member)
-            .sourceId(source.getId())
-            .sourceName(source.getName())
-            .targetId(target.getId())
-            .targetName(target.getName())
-            .build();
+        Favorite favorite = new Favorite(member, source, target);
         favoriteRepository.save(favorite);
     }
 

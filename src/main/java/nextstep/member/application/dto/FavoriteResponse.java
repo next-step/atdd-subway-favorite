@@ -32,8 +32,8 @@ public class FavoriteResponse {
     public static FavoriteResponse from(Favorite favorite) {
         return FavoriteResponse.builder()
             .id(favorite.getId())
-            .source(new StationResponse(favorite.getSourceId(), favorite.getSourceName()))
-            .target(new StationResponse(favorite.getTargetId(), favorite.getTargetName()))
+            .source(StationResponse.of(favorite.getSource()))
+            .target(StationResponse.of(favorite.getTarget()))
             .build();
     }
 }

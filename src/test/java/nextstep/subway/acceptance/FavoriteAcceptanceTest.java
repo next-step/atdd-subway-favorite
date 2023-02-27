@@ -19,10 +19,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
 
     private String token;
-    private final String invalidToken = "invalid_token";
     private Long 강남역;
     private Long 양재역;
-    private final Long 없는역 = 999L;
 
     @Autowired
     private DataLoader dataLoader;
@@ -60,11 +58,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 존재하지 않는 역을 포함하여 즐겨찾기를 생성하면
+     * Given 존재하지 않는 역이 존재할 떄
+     * When 해당 역을 포함하여 즐겨찾기를 생성하면
      * Then 400에러를 반환한다
      */
     @Test
     void 존재하지_않는_역이_포함된_즐겨찾기_생성은_실패() {
+        // given
+        Long 없는역 = 999L;
+
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(token, 강남역, 없는역);
 
@@ -73,24 +75,32 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 잘못된 토큰을 가지고 즐겨찾기를 생성하면
+     * Given 잘못된 토큰이 존재할 때
+     * When 해당 토큰을 가지고 즐겨찾기를 생성하면
      * Then 401에러를 반환한다
      */
     @Test
     void 잘못된_토큰으로_즐겨찾기_생성은_실패() {
+        // given
+        String invalidToken = "invalid_token";
+
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(invalidToken, 강남역, 없는역);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(invalidToken, 강남역, 양재역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
-     * When 잘못된 토큰을 가지고 즐겨찾기를 조회하면
+     * Given 잘못된 토큰이 존재할 때
+     * When 해당 토큰을 가지고 즐겨찾기를 조회하면
      * Then 401에러를 반환한다
      */
     @Test
     void 잘못된_토큰으로_즐겨찾기_조회는_실패() {
+        // given
+        String invalidToken = "invalid_token";
+
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(invalidToken);
 
@@ -118,7 +128,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 즐겨찾기를 생성하고
-     * When 잘못된 토큰을 가지고 즐겨찾기를 삭제하면
+     * Given 잘못된 토큰이 존재할 때
+     * When 해당 토큰을 가지고 즐겨찾기를 삭제하면
      * Then 401에러를 반환한다
      */
     @Test
@@ -126,6 +137,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         createFavorite(token, 강남역, 양재역);
         Long favoriteId = 즐겨찾기_조회_요청(token).jsonPath().getLong("[0].id");
+
+        // given
+        String invalidToken = "invalid_token";
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(invalidToken, favoriteId);
