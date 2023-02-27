@@ -1,5 +1,10 @@
 package nextstep.member.acceptance;
 
+import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인_요청;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.연결되지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.존재하지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_검증;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.createSectionCreateParams;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.지하철_노선_생성_요청;
@@ -63,9 +68,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
          * When 즐겨찾기를 등록하면
          * Then 등록된 즐겨찾기를 찾을 수 있다.
          */
+        @DisplayName("즐겨찾기를 등록하면 등록된 즐겨잧기를 찾을 수 있다.")
         @Test
         void registerFavorite() {
+            // given
+            String accessToken = 베어러_인증_토큰();
 
+            // when
+            var response = 즐겨찾기_등록_요청(accessToken, 강남역, 양재역);
+
+            // then
+            즐겨찾기_등록_검증(accessToken, response, 1);
         }
 
         /**
@@ -73,9 +86,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
          * When 연결되지 않은 역으로 즐겨찾기를 등록하면
          * Then 예외 처리한다.
          */
+        @DisplayName("연결되지 않은 역으로 즐겨찾기를 등록하면 예외 처리한다.")
         @Test
         void registerFavoriteNotLinkedStations() {
+            // given
+            String accessToken = 베어러_인증_토큰();
 
+            // when
+            var response = 즐겨찾기_등록_요청(accessToken, 강남역, 양재역);
+
+            // then
+            연결되지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다(response);
         }
 
         /**
@@ -83,15 +104,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
          * When 존재하지 않는 역으로 즐겨찾기를 등록하면
          * Then 예외 처리한다.
          */
+        @DisplayName("존재하지 않는 역으로 즐겨찾기를 등록하면 예외 처리한다.")
         @Test
         void registerFavoriteNotExistsSourceStation() {
+            // given
+            long 존재하지_않는_역 = Long.MAX_VALUE;
+            String accessToken = 베어러_인증_토큰();
 
+            // when
+            var response = 즐겨찾기_등록_요청(accessToken, 강남역, 존재하지_않는_역);
+
+            // then
+            존재하지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다(response);
         }
     }
 
     @DisplayName("즐겨찾기 조회 관련 기능")
     @Nested
     class ShowFavoriteTest {
+
         /**
          * Given 베어러 인증 로그인 후
          * And 즐겨찾기를 등록하고
@@ -158,5 +189,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         void favoriteWithoutToken() {
 
         }
+    }
+
+    private static String 베어러_인증_토큰() {
+        return 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
     }
 }
