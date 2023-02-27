@@ -15,57 +15,57 @@ import java.util.List;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+	private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+	public MemberController(MemberService memberService) {
+		this.memberService = memberService;
+	}
 
-    @PostMapping("/members")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
-    }
+	@PostMapping("/members")
+	public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+		MemberResponse member = memberService.createMember(request);
+		return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+	}
 
-    @GetMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
-    }
+	@GetMapping("/members/{id}")
+	public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
+		MemberResponse member = memberService.findMember(id);
+		return ResponseEntity.ok().body(member);
+	}
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
-    }
+	@PutMapping("/members/{id}")
+	public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+		memberService.updateMember(id, param);
+		return ResponseEntity.ok().build();
+	}
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/members/{id}")
+	public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+		memberService.deleteMember(id);
+		return ResponseEntity.noContent().build();
+	}
 
-    @GetMapping("/members/me")
-    public ResponseEntity<AuthMember> findMemberOfMine(@Auth AuthMember authMember) {
-        return ResponseEntity.ok().body(authMember);
-    }
+	@GetMapping("/members/me")
+	public ResponseEntity<AuthMember> findMemberOfMine(@Auth AuthMember authMember) {
+		return ResponseEntity.ok().body(authMember);
+	}
 
-    @PostMapping("/favorites")
-    public ResponseEntity<Void> createFavorite(@Auth AuthMember authMember, @RequestBody FavoriteRequest request) {
-        FavoriteResponse favorite = memberService.createFavorite(authMember, request);
+	@PostMapping("/favorites")
+	public ResponseEntity<Void> createFavorite(@Auth AuthMember authMember, @RequestBody FavoriteRequest request) {
+		FavoriteResponse favorite = memberService.createFavorite(authMember, request);
 
-        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
-    }
+		return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+	}
 
-    @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> findFavoritesOfMine(@Auth AuthMember authMember) {
-        List<FavoriteResponse> favoriteResponsesOfMine = memberService.findFavoritesOfMine(authMember);
-        return ResponseEntity.ok().body(favoriteResponsesOfMine);
-    }
+	@GetMapping("/favorites")
+	public ResponseEntity<List<FavoriteResponse>> findFavoritesOfMine(@Auth AuthMember authMember) {
+		List<FavoriteResponse> favoriteResponsesOfMine = memberService.findFavoritesOfMine(authMember);
+		return ResponseEntity.ok().body(favoriteResponsesOfMine);
+	}
 
-    @DeleteMapping("/favorites/{favoriteId}")
-    public ResponseEntity<FavoriteResponse> deleteFavoriteOfMine(@Auth AuthMember authMember, @PathVariable String favoriteId) {
-        memberService.deleteFavoriteOfMine(favoriteId);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/favorites/{favoriteId}")
+	public ResponseEntity<FavoriteResponse> deleteFavoriteOfMine(@Auth AuthMember authMember, @PathVariable String favoriteId) {
+		memberService.deleteFavoriteOfMine(authMember, favoriteId);
+		return ResponseEntity.noContent().build();
+	}
 }

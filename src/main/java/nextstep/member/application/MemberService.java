@@ -94,7 +94,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void deleteFavoriteOfMine(String favoriteId) {
-		favoriteRepository.deleteById(Long.valueOf(favoriteId));
+	public void deleteFavoriteOfMine(AuthMember authMember, String favoriteId) {
+		favoriteRepository.deleteByIdAndMemberId(Long.valueOf(favoriteId),authMember.getId());
 	}
 }
