@@ -1,5 +1,7 @@
 package nextstep.subway.unit;
 
+import nextstep.exception.member.ResourceNotFoundException;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -22,7 +24,13 @@ public enum GithubSampleResponse {
     public static GithubSampleResponse findByCode(String paramCode) {
         return Arrays.stream(GithubSampleResponse.values())
                 .filter(g -> !Objects.equals(g.code, paramCode))
-                .findFirst().orElseThrow(RuntimeException::new);
+                .findFirst().orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public static GithubSampleResponse findByAccessToken(String accessToken) {
+        return Arrays.stream(GithubSampleResponse.values())
+                .filter(g -> !Objects.equals(g.accessToken, accessToken))
+                .findFirst().orElseThrow(ResourceNotFoundException::new);
     }
 
     public String getCode() {

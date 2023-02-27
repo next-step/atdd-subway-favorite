@@ -14,7 +14,8 @@ public enum ErrorMessage {
      */
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 회원이 존재하지 않습니다."),
 
-    ;
+    RESOURCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "자원을 찾을 수 없습니다.");
+
     ErrorMessage(HttpStatus httpStatus, String description) {
         this.httpStatus = httpStatus;
         this.description = description;

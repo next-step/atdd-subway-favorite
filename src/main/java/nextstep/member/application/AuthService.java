@@ -1,6 +1,8 @@
 package nextstep.member.application;
 
 import nextstep.exception.member.PasswordNotEqualException;
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
@@ -30,6 +32,16 @@ public class AuthService {
     }
 
     public TokenResponse loginGithub(String code) {
-        return new TokenResponse(githubClient.getAccessTokenFromGithub(code));
+        String accessToken = githubClient.getAccessTokenFromGithub(code);
+        GithubProfileResponse profile = githubClient.getGithubProfileFromGithub(accessToken);
+        if (isNotExistMemberEmail(memberService.isExistMemberByEmail(profile.getEmail()))) {
+            memberService.createMember(new MemberRequest(profile.getEmail(), null, null));
+        }
+
+        return new TokenResponse(accessToken);
+    }
+
+    private boolean isNotExistMemberEmail(boolean memberService) {
+        return !memberService;
     }
 }

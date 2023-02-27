@@ -6,6 +6,7 @@ import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.AuthenticationPrincipal;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +14,10 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
-    private AuthService authService;
+    private final MemberService memberService;
 
-    public MemberController(MemberService memberService, AuthService authService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.authService = authService;
     }
 
     @PostMapping("/members")

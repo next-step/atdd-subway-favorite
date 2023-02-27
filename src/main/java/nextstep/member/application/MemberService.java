@@ -34,6 +34,15 @@ public class MemberService {
         return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }
 
+    public boolean isExistMemberByEmail(String email) {
+        try {
+            findMemberByEmail(email);
+            return true;
+        } catch (MemberNotFoundException e) {
+            return false;
+        }
+    }
+
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
