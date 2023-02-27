@@ -89,3 +89,50 @@ Content-Type: application/json
 - 내 정보 조회 예외 인수 테스트
   - 토큰 발급 없이, 내 정보를 조회한다.
   - 예외가 발생한다.
+
+
+# 2단계 - 깃헙 로그인
+## 요구사항
+### 기능 요구사항
+- 깃허브를 이용한 로그인 구현(토큰 발행)
+- 가입이 되어있지 않은 경우, 회원 가입으로 진행 후 토큰 발행
+
+### 프로그래밍 요구사항
+- GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub 에 요청을 하지 않아도 됨)
+
+## 요구사항 설명
+### 깃헙 로그인 API
+- `AuthAcceptanceTest` 테스트 만들기
+
+#### Request
+```http request
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "code": "qwerasdfzxvcqwerasdfzxcv"
+}
+```
+
+#### Response
+- accessToken는 깃헙으로부터 받아온 정보가 아니라 subway 서비스에서 생성한 토큰
+- 아이디/패스워드를 이용한 로그인 시 응답받는 토큰과 동일한 토큰
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
+}
+```
+
+### code 별 응답 response
+- 매번 실제 깃헙 서비스에 요청을 보낼 수 없으니 어떤 코드로 요청이 오면 정해진 response 를 응답하는 구조를 만든다.
+
+
+### 요구사항 기반 시나리오
+- Github 에 이미 등록된 유저의 권한증서(code) 를 가지고
+  - Github Auth Server (fake) 로 로그인 요청한다.
+  - Github Auth Server 로 부터 발급받은 accessToken 으로 Github Resource Server (fake) 로 깃헙 프로필(이메일)을 요청한다.
+  - 받아온 이메일로 member 를 조회한다.
+    - member 가 존재하지 않으면 새로운 멤버를 우리 서버에 등록한다.
+      - 해당 멤버의 토큰을 발급한다.
+    - member 가 존재하면 해당 멤버의 토큰을 발급한다.
