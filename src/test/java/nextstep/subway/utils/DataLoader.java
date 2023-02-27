@@ -3,6 +3,7 @@ package nextstep.subway.utils;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
+import nextstep.subway.fake.GithubResponseFixture;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -18,5 +19,10 @@ public class DataLoader {
     public void loadMemberData() {
         memberRepository.save(new Member("admin@email.com", "password", 20, Arrays.asList(RoleType.ROLE_ADMIN.name())));
         memberRepository.save(new Member("member@email.com", "password", 20, Arrays.asList(RoleType.ROLE_MEMBER.name())));
+    }
+
+    public void loadGithubMemberData() {
+        memberRepository.save(GithubResponseFixture.Github사용자1.toMember());
+        memberRepository.save(GithubResponseFixture.Github사용자2.toMember());
     }
 }
