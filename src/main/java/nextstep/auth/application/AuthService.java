@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final GithubClient githubClient;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository, GithubClient githubClient) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberRepository = memberRepository;
+        this.githubClient = githubClient;
     }
 
     public TokenResponse login(TokenRequest tokenRequest) {
@@ -27,5 +29,20 @@ public class AuthService {
 
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
+    }
+
+    public TokenResponse loginGithub(String code) {
+        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(code);
+        String githubEmail = githubClient.getGithubProfileFromGithub(accessTokenFromGithub).getEmail();
+
+        Member member = findMemberOrElseGet(githubEmail);
+
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+        return new TokenResponse(token);
+    }
+
+    private Member findMemberOrElseGet(String githubEmail) {
+        return memberRepository.findByEmail(githubEmail)
+                .orElseGet(() -> memberRepository.save(new Member(githubEmail)));
     }
 }
