@@ -83,4 +83,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
     }
 
+    /**
+     * When 로그인안한 사용자가 내 정보를 조회 요청 시
+     * Then 조회 할 수 없다
+     */
+    @DisplayName("로그인 안한 사용자가 내 정보를 조회 시 조회 할 수 없다")
+    @Test
+    void 로그인_안한_사용자가_내_정보를_조회_시_조회_할_수_없다() {
+        // When
+        ExtractableResponse<Response> response = 토큰으로_내_정보_요청("wrongToken");
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }
