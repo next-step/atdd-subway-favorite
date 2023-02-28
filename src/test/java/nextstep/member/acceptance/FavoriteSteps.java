@@ -34,11 +34,14 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static void 경로_즐겨찾기_등록(final String token,
+    public static Long 경로_즐겨찾기_등록(final String token,
                                   final Long sourceId,
                                   final Long targetId) {
-        ExtractableResponse<Response> response = 경로_즐겨찾기_등록_요청(token, sourceId, targetId);
+        final ExtractableResponse<Response> response = 경로_즐겨찾기_등록_요청(token, sourceId, targetId);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        final String id = response.header("Location").substring("/favorite/".length());
+        return Long.parseLong(id);
     }
 
     public static ExtractableResponse<Response> 비로그인_즐겨찾기_조회_요청() {
@@ -51,6 +54,19 @@ public class FavoriteSteps {
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 비로그인_즐겨찾기_삭제_요청(final Long favoriteId) {
+        return 토큰으로_즐겨찾기_삭제_요청("", favoriteId);
+    }
+
+    public static ExtractableResponse<Response> 토큰으로_즐겨찾기_삭제_요청(final String token, final Long favoriteId) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/favorites/{id}", favoriteId)
                 .then().log().all()
                 .extract();
     }

@@ -131,15 +131,47 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 비로그인 상태에서 즐겨찾기 삭제를 요청하면
      * Then 예외가 발생한다.
      */
+    @Test
+    @DisplayName("비로그인 상태에서 즐겨찾기 삭제")
+    void deleteFavorite_notLogin() {
+        // when
+        var response = 비로그인_즐겨찾기_삭제_요청(-1L);
+
+        // then
+        권한없는_요청_검증(response, INVALID_AUTHENTICATION_INFO);
+    }
 
     /**
      * When 유효하지 않은 토큰으로 즐겨찾기 삭제를 요청하면
      * Then 예외가 발생한다.
      */
+    @Test
+    @DisplayName("유효하지 않은 토큰으로 즐겨찾기 삭제")
+    void deleteFavorite_invalidToken() {
+        // when
+        var response = 토큰으로_즐겨찾기_삭제_요청("invalidToken", -1L);
+
+        // then
+        권한없는_요청_검증(response, INVALID_AUTHENTICATION_INFO);
+    }
 
     /**
      * Given 즐겨찾기를 등록하고
      * When 등록한 즐겨찾기를 삭제하면
      * Then 즐겨찾기가 목록에서 삭제된다.
      */
+    @Test
+    @DisplayName("즐겨찾기 삭제")
+    void deleteFavorite() {
+        // given
+        final Long 강남_선릉_즐겨찾기 = 경로_즐겨찾기_등록(관리자, 강남역, 선릉역);
+        final Long 강남_역삼_즐겨찾기 = 경로_즐겨찾기_등록(관리자, 강남역, 역삼역);
+
+        // when
+        var response = 토큰으로_즐겨찾기_삭제_요청(관리자, 강남_선릉_즐겨찾기);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(토큰으로_즐겨찾기_조회_요청(관리자).jsonPath().getList("id", Long.class)).containsExactly(강남_역삼_즐겨찾기);
+    }
 }
