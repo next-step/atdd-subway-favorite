@@ -1,20 +1,15 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.lang.annotation.Target;
-import java.util.HashMap;
-import java.util.Map;
-
-import static nextstep.subway.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.acceptance.AuthAcceptanceTest.깃허브_인증_로그인_요청_파라미터_생성;
 import static nextstep.subway.acceptance.AuthSteps.깃허브_인증_로그인_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.*;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_등록_요청;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -40,8 +35,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         expectHttpStatus(response, HttpStatus.CREATED);
     }
 
-
-
     /**
      * Given : 깃허브 로그인을 하고
      * and   : 즐겨찾기 등록을 하고
@@ -60,9 +53,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         expectHttpStatus(response, HttpStatus.OK);
         assertThat(response.jsonPath().getLong("source.id")).isEqualTo(SOURCE_ID);
-        assertThat(response.jsonPath().getLong("source.id")).isEqualTo(TARGET_ID);
+        assertThat(response.jsonPath().getLong("target.id")).isEqualTo(TARGET_ID);
     }
-
 
 
     /**

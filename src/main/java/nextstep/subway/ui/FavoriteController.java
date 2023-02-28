@@ -1,6 +1,5 @@
 package nextstep.subway.ui;
 
-import io.jsonwebtoken.Header;
 import lombok.RequiredArgsConstructor;
 import nextstep.config.annotation.AuthHeader;
 import nextstep.subway.applicaion.FavoriteService;
@@ -32,7 +31,12 @@ public class FavoriteController {
     }
 
     @GetMapping("{id}")
-    public void get(@PathVariable Long id) {
+    public FavoriteResponse findById(@PathVariable Long id) {
+        return favoriteService.findById(id);
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable Long id) {
 
     }
 }
