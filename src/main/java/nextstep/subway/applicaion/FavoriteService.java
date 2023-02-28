@@ -18,6 +18,7 @@ public class FavoriteService {
     private final StationRepository stationRepository;
     private final AuthTypes authTypes;
 
+
     public Favorite save(FavoriteCreateRequest request, String header) {
         Member member = authTypes.findAuth(header).findMember(header);
         Favorite favorite = request.toEntity(stationRepository::findById, member); // request에서 station id를 꺼내서 조회하는게 좋을까?
@@ -29,5 +30,9 @@ public class FavoriteService {
                 .orElseThrow(() -> new IllegalArgumentException("즐겨찾기 조회 실패 id:" + id));
 
         return FavoriteResponse.of(favorite);
+    }
+
+    public void deleteById(Long id) {
+        favoriteRepository.deleteById(id);
     }
 }
