@@ -55,7 +55,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 즐겨찾기 등록 요청
+     * Given 즐겨찾기 등록 요청 후
      * When 즐겨찾기 조회 요청 시
      * Then 조회가 된다
      */
@@ -73,6 +73,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         List<FavoriteResponse> responses = response.jsonPath().getList(".", FavoriteResponse.class);
         assertThat(responses).containsExactly(new FavoriteResponse(1L, new StationResponse(1L, "강남역"), new StationResponse(3L, "가산역")));
+    }
+
+    /**
+     * Given 즐겨찾기 등록 요청 후
+     * When 즐겨찾기 조회 요청 시
+     * Then 조회가 된다
+     */
+    @DisplayName("즐겨찾기 삭제 요청 시 삭제가 된다")
+    @Test
+    void 즐겨찾기_조회_삭제_요청_시_삭제가_된다() {
+        // Given
+        String locationId = 즐겨찾기_등록_요청("1", "3")
+                .header("Location")
+                .replace("/favorites/", "");
+
+        // When
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(사용자_AccessToken)
+                .when().delete("/favorites/{id}", locationId)
+                .then().log().all().extract();
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
