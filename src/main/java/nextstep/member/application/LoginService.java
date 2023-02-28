@@ -36,15 +36,17 @@ public class LoginService {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(tokenRequest.getCode());
         GithubProfileResponse profileFromGithub = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
 
-        Member member;
-
-        try {
-            member = memberService.findMemberByEmail(profileFromGithub.getEmail());
-        } catch (NotFoundMemberException e) {
-            member = memberService.createMember(new MemberRequest(profileFromGithub.getEmail()));
-        }
+        Member member = getMember(profileFromGithub);
 
         return jwtTokenProvider.createToken(member.getId().toString(), member.getRoles());
+    }
+
+    private Member getMember(GithubProfileResponse profileFromGithub) {
+        try {
+            return memberService.findMemberByEmail(profileFromGithub.getEmail());
+        } catch (NotFoundMemberException e) {
+            return memberService.createMember(new MemberRequest(profileFromGithub.getEmail()));
+        }
     }
 
 }
