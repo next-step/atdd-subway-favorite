@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import nextstep.DataLoader;
+import nextstep.ProdDataLoader;
 import nextstep.subway.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
