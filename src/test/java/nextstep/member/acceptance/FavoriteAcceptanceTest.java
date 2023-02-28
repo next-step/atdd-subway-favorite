@@ -2,11 +2,14 @@ package nextstep.member.acceptance;
 
 import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인_요청;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.연결되지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.자신의_즐겨찾기_목록에_등록되지_않은_ID로_삭제하면_예외처리한다;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.존재하지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_검증;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_요청;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회_검증;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_삭제_검증;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.createSectionCreateParams;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.지하철_노선_생성_요청;
@@ -19,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -154,20 +158,41 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
          * When 즐겨찾기를 삭제하면
          * Then 해당 즐겨찾기는 삭제된다.
          */
+        @DisplayName("즐겨찾기를 삭제하면 해당 즐겨찾기는 삭제된다.")
         @Test
         void deleteFavorite() {
+            // given
+            String accessToken = 베어러_인증_토큰();
+            String location = 즐겨찾기_등록_요청(accessToken, 강남역, 양재역).header(HttpHeaders.LOCATION);
 
+            // when
+            var response = 즐겨찾기_삭제_요청(accessToken, location);
+
+            // then
+            즐겨찾기_삭제_검증(response);
         }
 
         /**
          * Given 베어러 인증 로그인 후
          * And 즐겨찾기를 등록하고
-         * When 자신의 즐겨찾기 목록에 등록되지 않은 식별자로 삭제하면
+         * When 자신의 즐겨찾기 목록에 등록되지 않은 ID로 삭제하면
          * Then 예외 처리한다.
          */
+        @DisplayName("자신의 즐겨찾기 목록에 등록되지 않은 ID로 삭제하면 예외 처리한다.")
         @Test
         void deleteFavoriteNotExistsId() {
+            // given
+            String accessToken = 베어러_인증_토큰();
+            String location = 즐겨찾기_등록_요청(accessToken, 강남역, 양재역).header(HttpHeaders.LOCATION);
+            String newAccessToken = 베어러_인증_로그인_요청("member@email.com", "password")
+                    .jsonPath()
+                    .getString("accessToken");
 
+            // when
+            var response = 즐겨찾기_삭제_요청(newAccessToken, location);
+
+            // then
+            자신의_즐겨찾기_목록에_등록되지_않은_ID로_삭제하면_예외처리한다(response);
         }
     }
 
