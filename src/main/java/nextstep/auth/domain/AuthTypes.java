@@ -1,7 +1,7 @@
-package nextstep.member.domain;
+package nextstep.auth.domain;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.config.exception.AuthenticationException;
+import nextstep.exception.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

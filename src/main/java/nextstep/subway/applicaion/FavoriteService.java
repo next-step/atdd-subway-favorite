@@ -1,7 +1,7 @@
 package nextstep.subway.applicaion;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.domain.AuthTypes;
+import nextstep.auth.domain.AuthTypes;
 import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;

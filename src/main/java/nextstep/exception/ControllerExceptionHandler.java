@@ -1,4 +1,4 @@
-package nextstep.config.exception;
+package nextstep.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package nextstep.config.exception;
+package nextstep.exception;
 
 import lombok.NoArgsConstructor;
 import org.springframework.web.client.HttpClientErrorException;

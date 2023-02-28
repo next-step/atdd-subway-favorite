@@ -1,7 +1,7 @@
 package nextstep.member.domain;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.config.exception.AuthenticationException;
+import nextstep.exception.AuthenticationException;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
@@ -13,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component

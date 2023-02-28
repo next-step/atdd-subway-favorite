@@ -3,7 +3,6 @@ package nextstep.subway.applicaion.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nextstep.subway.domain.Favorite;
-import nextstep.subway.domain.StationRepository;
 
 @Getter
 @AllArgsConstructor

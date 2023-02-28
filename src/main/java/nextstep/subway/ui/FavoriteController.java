@@ -1,7 +1,7 @@
 package nextstep.subway.ui;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.config.annotation.AuthHeader;
+import nextstep.auth.annotation.AuthHeader;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;

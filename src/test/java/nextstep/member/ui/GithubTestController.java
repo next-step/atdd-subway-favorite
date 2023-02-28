@@ -1,11 +1,11 @@
 package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.config.annotation.AuthHeader;
+import nextstep.auth.annotation.AuthHeader;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.domain.GithubAuthType;
+import nextstep.auth.domain.GithubAuthType;
 import nextstep.member.domain.GithubResponses;
 import org.springframework.web.bind.annotation.*;
 

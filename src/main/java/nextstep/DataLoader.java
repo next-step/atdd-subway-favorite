@@ -1,10 +1,12 @@
 package nextstep;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.domain.*;
+import nextstep.member.domain.GithubResponses;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.RoleType;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
-import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

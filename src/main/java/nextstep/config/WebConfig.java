@@ -1,9 +1,9 @@
 package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.config.Interceptor.AuthenticationInterceptor;
-import nextstep.config.resolver.AuthHeaderResolver;
-import nextstep.member.domain.AuthTypes;
+import nextstep.auth.Interceptor.AuthenticationInterceptor;
+import nextstep.auth.resolver.AuthHeaderResolver;
+import nextstep.auth.domain.AuthTypes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;

@@ -1,17 +1,13 @@
-package nextstep.config.Interceptor;
+package nextstep.auth.Interceptor;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import nextstep.member.domain.AuthType;
-import nextstep.member.domain.AuthTypes;
+import nextstep.auth.domain.AuthType;
+import nextstep.auth.domain.AuthTypes;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {

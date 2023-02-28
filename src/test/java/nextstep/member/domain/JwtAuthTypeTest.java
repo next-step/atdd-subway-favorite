@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import nextstep.DataLoader;
+import nextstep.auth.domain.JwtAuthType;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;

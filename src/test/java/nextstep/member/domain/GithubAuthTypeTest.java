@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import nextstep.DataLoader;
+import nextstep.auth.domain.GithubAuthType;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

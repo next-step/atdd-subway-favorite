@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.config.exception.AuthenticationException;
+import nextstep.exception.AuthenticationException;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -64,7 +64,7 @@ public class MemberService {
 
     private void updateAccessToken(String email, String accessToken) {
         Member member = memberRepository.findByEmail(email)
-                        .orElseGet(() -> new Member(email, accessToken));
+                .orElseGet(() -> new Member(email, accessToken));
 
         member.updateAccessToken(accessToken);
     }

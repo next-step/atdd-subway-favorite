@@ -3,7 +3,6 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.config.Interceptor.AuthenticationInterceptor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -106,5 +105,5 @@ public class MemberSteps {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
     }
-    
+
 }

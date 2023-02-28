@@ -2,18 +2,17 @@ package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nextstep.config.annotation.AuthHeader;
+import nextstep.auth.annotation.AuthHeader;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.*;
-import nextstep.member.domain.AuthType;
-import nextstep.member.domain.AuthTypes;
+import nextstep.auth.domain.AuthType;
+import nextstep.auth.domain.AuthTypes;
 import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
