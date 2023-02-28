@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.LoginSteps.깃헙_로그인_요청;
@@ -70,8 +71,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
-        assertThat(favoriteResponse).isEqualTo(new FavoriteResponse(1L, new StationResponse(1L, "교대역"), new StationResponse(3L, "양재역")));
+        List<FavoriteResponse> responses = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(responses).containsExactly(new FavoriteResponse(1L, new StationResponse(1L, "강남역"), new StationResponse(3L, "가산역")));
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
