@@ -1,11 +1,8 @@
 package nextstep.member.ui;
 
-import nextstep.member.application.AuthService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +11,9 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private MemberService memberService;
-    private AuthService authService;
 
-    public MemberController(MemberService memberService, AuthService authService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.authService = authService;
     }
 
     @PostMapping("/members")
@@ -50,11 +45,6 @@ public class MemberController {
         // TODO: 자신의 정보 조회
         MemberResponse member = null;
         return ResponseEntity.ok().body(member);
-    }
-
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
-        return ResponseEntity.ok().body(authService.createToken(request));
     }
 }
 
