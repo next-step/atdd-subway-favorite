@@ -1,7 +1,8 @@
-package nextstep.config;
+package nextstep.member.config;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.JwtTokenProvider;
+import nextstep.member.application.message.Message;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,15 +19,12 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("authorization");
         if (token == null) {
-            return HandlerInterceptor.super.preHandle(request, response, handler);
+            throw new IllegalArgumentException(Message.INVALID_TOKEN.getMessage());
         }
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new IllegalArgumentException(Message.INVALID_TOKEN.getMessage());
         }
-        String email = jwtTokenProvider.getPrincipal(token);
-        request.setAttribute("email", email);
-
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
     }
 
     @Override

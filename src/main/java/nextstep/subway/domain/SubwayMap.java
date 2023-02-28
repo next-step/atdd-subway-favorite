@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubwayMap {
-    private List<Line> lines;
+    private final List<Line> lines;
 
     public SubwayMap(List<Line> lines) {
         this.lines = lines;

@@ -2,10 +2,12 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.domain.stub.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.인가서버에_토큰_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -23,7 +25,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("Bearer Auth : invalid email")
     @Test
-    void test1() {
+    void bearer_auth_invalid_email() {
         // given
         MemberSteps.회원_생성_요청(EMAIL, PASSWORD, 3);
 
@@ -36,7 +38,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("Bearer Auth : invalid password")
     @Test
-    void test2() {
+    void bearer_auth_invalid_password() {
         // given
         MemberSteps.회원_생성_요청(EMAIL, PASSWORD, 3);
 
@@ -46,6 +48,26 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.body().asString()).contains("잘못된 비밀번호");
     }
+    
+    @Test
+    @DisplayName("깃헙 로그인 : 정상")
+    void github_login_success() {
+        // given
+        GithubResponses 사용자1 = GithubResponses.사용자1;
+        // when
+        ExtractableResponse<Response> response = 인가서버에_토큰_요청(사용자1.getCode());
+        // then
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo(사용자1.getAccessToken());
+    }
 
+    @Test
+    @DisplayName("깃헙 로그인 : 존재하지 않는 코드")
+    void github_login_fail() {
+        // given
+        // when
+        ExtractableResponse<Response> response = 인가서버에_토큰_요청("Invalid");
+        // then
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo("invalid_token");
+    }
 
 }
