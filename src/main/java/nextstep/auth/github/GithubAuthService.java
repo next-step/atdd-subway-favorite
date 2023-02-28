@@ -1,9 +1,8 @@
-package nextstep.login.github;
+package nextstep.auth.github;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.GithubClient;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.TokenResponse;

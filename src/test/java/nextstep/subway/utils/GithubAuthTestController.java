@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.login.github.GithubAccessTokenResponse;
-import nextstep.login.github.GithubLoginRequest;
-import nextstep.login.github.GithubProfileResponse;
+import nextstep.auth.github.GithubAccessTokenResponse;
+import nextstep.auth.github.GithubLoginRequest;
+import nextstep.auth.github.GithubProfileResponse;
 
 @RestController
 @RequiredArgsConstructor

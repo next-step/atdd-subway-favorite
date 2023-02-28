@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.github;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,9 +10,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import nextstep.login.github.GithubAccessTokenResponse;
-import nextstep.login.github.GithubLoginRequest;
-import nextstep.login.github.GithubProfileResponse;
+import nextstep.auth.github.GithubAccessTokenResponse;
+import nextstep.auth.github.GithubLoginRequest;
+import nextstep.auth.github.GithubProfileResponse;
 
 @Component
 public class GithubClient {
