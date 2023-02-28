@@ -1,13 +1,19 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.베어러_인증으로_내_회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_삭제_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_수정_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회_요청;
+import static nextstep.subway.acceptance.MemberSteps.회원_정보_조회됨;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static nextstep.subway.acceptance.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -45,7 +51,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL,
+            "new" + PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -64,8 +71,22 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * Given 로그인을 하고
+     * When 토큰 인증으로 내 회원 정보 조회를 요청하면
+     * Then 내 정보가 조회된다.
+     */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(token);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }

@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
+    }
+
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -31,5 +35,10 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse findMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
     }
 }
