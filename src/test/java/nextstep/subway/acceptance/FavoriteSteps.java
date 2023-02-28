@@ -10,8 +10,8 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class FavoriteSteps {
-    public static ExtractableResponse<Response> 로그인_상태에서_즐겨찾기_추가_요청(String accessToken, Long source, Long target) {
-        Map<String, String> params = createParams(source, target);
+    public static ExtractableResponse<Response> 로그인_상태에서_즐겨찾기_추가_요청(String accessToken, Long sourceId, Long targetId) {
+        Map<String, String> params = createParams(sourceId, targetId);
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .body(params)
@@ -20,8 +20,8 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 로그아웃_상태에서_즐겨찾기_추가(Long source, Long target) {
-        Map<String, String> params = createParams(source, target);
+    public static ExtractableResponse<Response> 로그아웃_상태에서_즐겨찾기_추가(Long sourceId, Long targetId) {
+        Map<String, String> params = createParams(sourceId, targetId);
         return given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -41,22 +41,22 @@ public class FavoriteSteps {
     public static ExtractableResponse<Response> 로그인_상태에서_즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
         return given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/favorite/{id}", favoriteId)
+                .when().delete("/favorites/{id}", favoriteId)
                 .then().log().all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 로그아웃_상태에서_즐겨찾기_삭제_요청(Long favoriteId) {
         return given().log().all()
-                .when().delete("/favorite/{id}", favoriteId)
+                .when().delete("/favorites/{id}", favoriteId)
                 .then().log().all()
                 .extract();
     }
 
-    private static Map<String, String> createParams(Long source, Long target) {
+    private static Map<String, String> createParams(Long sourceId, Long targetId) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", "" + source);
-        params.put("target", "" + target);
+        params.put("sourceId", "" + sourceId);
+        params.put("targetId", "" + targetId);
         return params;
     }
 }

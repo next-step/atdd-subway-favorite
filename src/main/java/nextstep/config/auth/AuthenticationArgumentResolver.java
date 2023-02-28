@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.config.auth;
 
 import io.jsonwebtoken.MalformedJwtException;
 import nextstep.member.application.JwtTokenProvider;
@@ -33,15 +33,15 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
         String authorization = webRequest.getHeader(AUTHORIZATION);
 
         if (Objects.nonNull(authorization) && !authorization.startsWith(AUTHENTICATION_TYPE)) {
-            throw new AuthenticationException("UnAuthorized token type.");
+            throw new AuthenticationException("UnAuthorized accessToken type.");
         }
 
-        String token = authorization.replace(String.format("%s ", AUTHENTICATION_TYPE), "");
+        String accessToken = authorization.replace(String.format("%s ", AUTHENTICATION_TYPE), "");
 
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new MalformedJwtException(String.format("%s is UnAuthorized token", token));
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new MalformedJwtException(String.format("%s is UnAuthorized accessToken", accessToken));
         }
 
-        return jwtTokenProvider.getPrincipal(token);
+        return jwtTokenProvider.getPrincipal(accessToken);
     }
 }

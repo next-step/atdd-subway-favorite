@@ -1,6 +1,6 @@
 package nextstep.member.ui;
 
-import nextstep.auth.Authentication;
+import nextstep.config.auth.Authentication;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;

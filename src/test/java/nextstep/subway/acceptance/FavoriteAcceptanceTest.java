@@ -65,11 +65,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         var response = 즐겨찾기_목록_조회_요청(관리자_토큰);
+        즐겨찾기_목록_조회_요청(관리자_토큰);
+        즐겨찾기_목록_조회_요청(관리자_토큰);
 
         // then
         assertAll(
-                () -> assertThat(response.jsonPath().getList("source.id").get(0)).isEqualTo(강남역),
-                () -> assertThat(response.jsonPath().getList("target.id").get(0)).isEqualTo(양재역)
+                () -> assertThat(response.jsonPath().getList("source.id", Long.class).get(0)).isEqualTo(강남역),
+                () -> assertThat(response.jsonPath().getList("target.id", Long.class).get(0)).isEqualTo(양재역)
         );
     }
 
@@ -106,6 +108,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var response = 로그아웃_상태에서_즐겨찾기_삭제_요청(즐겨찾기_Id);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
