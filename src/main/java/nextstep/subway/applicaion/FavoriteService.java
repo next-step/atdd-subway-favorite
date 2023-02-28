@@ -42,4 +42,9 @@ public class FavoriteService {
             return FavoriteResponse.make(favorite.getId(), StationResponse.from(source), StationResponse.from(target));
         }).collect(Collectors.toList());
     }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        favoriteRepository.deleteByIdAndMemberId(memberId, favoriteId);
+    }
+
 }
