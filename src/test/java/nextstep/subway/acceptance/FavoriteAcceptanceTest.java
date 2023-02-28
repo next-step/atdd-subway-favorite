@@ -65,8 +65,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         var response = 즐겨찾기_목록_조회_요청(관리자_토큰);
-        즐겨찾기_목록_조회_요청(관리자_토큰);
-        즐겨찾기_목록_조회_요청(관리자_토큰);
 
         // then
         assertAll(
