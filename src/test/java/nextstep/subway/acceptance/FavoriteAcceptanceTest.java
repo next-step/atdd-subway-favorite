@@ -24,13 +24,13 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private DataLoader dataLoader;
-    private String accessToken;
+    private String 사용자_AccessToken;
 
 
     @BeforeEach
     public void setUp() {
         dataLoader.loadDataWithGithubUser();
-        accessToken = 깃헙_로그인_요청(GithubResponses.사용자1.getCode()).jsonPath().getString("accessToken");
+        사용자_AccessToken = 깃헙_로그인_요청(GithubResponses.사용자1.getCode()).jsonPath().getString("accessToken");
         지하철역_생성_요청("강남역");
         지하철역_생성_요청("신주쿠역");
         지하철역_생성_요청("가산역");
@@ -51,6 +51,35 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isEqualTo("/favorites/1");
     }
 
+    /**
+     * Given 즐겨찾기 등록 요청
+     * When 즐겨찾기 조회 요청 시
+     * Then 조회가 된다
+     */
+    @DisplayName("즐겨찾기 조회 요청 시 조회가 된다")
+    @Test
+    void 즐겨찾기_조회_요청_시_조회가_된다() {
+        // Given
+        즐겨찾기_등록_요청("1", "3");
+
+        // When
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청();
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(사용자_AccessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all().extract();
+
+        return response;
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_등록_요청(String source, String target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
@@ -58,7 +87,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .auth().oauth2(사용자_AccessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
