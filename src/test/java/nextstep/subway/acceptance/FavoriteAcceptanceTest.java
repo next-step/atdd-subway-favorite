@@ -48,7 +48,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_생성_요청_시_등록이_된다() {
         // When
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청("1", "3");
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청("1", "3", 사용자_AccessToken);
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -64,10 +64,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_조회_요청_시_조회가_된다() {
         // Given
-        즐겨찾기_등록_요청("1", "3");
+        즐겨찾기_등록_요청("1", "3", 사용자_AccessToken);
 
         // When
-        ExtractableResponse<Response> response = 즐겨찾기_조회_요청();
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(사용자_AccessToken);
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -85,16 +85,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_조회_삭제_요청_시_삭제가_된다() {
         // Given
-        String locationId = 즐겨찾기_등록_요청("1", "3")
+        String locationId = 즐겨찾기_등록_요청("1", "3", 사용자_AccessToken)
                 .header("Location")
                 .replace("/favorites/", "");
 
         // When
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2(사용자_AccessToken)
-                .when().delete("/favorites/{id}", locationId)
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(locationId, 사용자_AccessToken);
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -108,11 +104,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_안한_사용자가_삭제_요청_시_삭제_할_수_없다() {
         // When
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2("Random")
-                .when().delete("/favorites/{id}", 1)
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청("1", "WrongAccessToken");
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -126,11 +118,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_안한_사용자가_조회_요청_시_조회_할_수_없다() {
         // When
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2("Random")
-                .when().get("/favorites")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청("WrongAccessToken");
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -144,41 +132,42 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_안한_사용자가_등록_요청_시_등록_할_수_없다() {
         // When
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2("Random")
-                .when().post("/favorites")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청("1", "3", "wrongToken");
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 
-    private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
-        ExtractableResponse<Response> response = RestAssured
+    private ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
+        return RestAssured
                 .given().log().all()
-                .auth().oauth2(사용자_AccessToken)
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all().extract();
-
-        return response;
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_등록_요청(String source, String target) {
+    private ExtractableResponse<Response> 즐겨찾기_등록_요청(String source, String target, String accessToken) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
 
-        ExtractableResponse<Response> response = RestAssured
+        return RestAssured
                 .given().log().all()
-                .auth().oauth2(사용자_AccessToken)
+                .auth().oauth2(accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all().extract();
-        return response;
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String favoriteId, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/favorites/{id}", favoriteId)
+                .then().log().all().extract();
     }
 
 }
