@@ -1,6 +1,7 @@
 package nextstep.member.ui.argumentresolver;
 
 import nextstep.member.application.MemberService;
+import nextstep.member.application.exception.UnAuthorizedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class BearerTokenArgumentResolver implements HandlerMethodArgumentResolve
     ) {
         String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
-            return null;
+            throw new UnAuthorizedException();
         }
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
         return memberService.findMember(token);

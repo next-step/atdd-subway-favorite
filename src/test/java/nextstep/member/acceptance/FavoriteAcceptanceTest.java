@@ -105,7 +105,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             String accessToken = 베어러_인증_토큰();
 
             // when
-            var response = 즐겨찾기_등록_요청(accessToken, 강남역, 양재역);
+            var response = 즐겨찾기_등록_요청(accessToken, 강남역, 정자역);
 
             // then
             연결되지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다(response);

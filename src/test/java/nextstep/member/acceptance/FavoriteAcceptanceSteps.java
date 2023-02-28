@@ -40,7 +40,7 @@ public class FavoriteAcceptanceSteps {
                 .contentType(ContentType.JSON)
                 .auth().oauth2(accessToken)
                 .when()
-                .post("/favorites")
+                .get("/favorites")
                 .then().log().all()
                 .extract();
     }
@@ -93,10 +93,7 @@ public class FavoriteAcceptanceSteps {
     }
 
     public static void 즐겨찾기_삭제_검증(final ExtractableResponse<Response> response) {
-        Assertions.assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
-                () -> assertThat(response.jsonPath().getList("id")).hasSize(0)
-        );
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static void 자신의_즐겨찾기_목록에_등록되지_않은_ID로_삭제하면_예외처리한다(final ExtractableResponse<Response> response) {

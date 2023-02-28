@@ -1,10 +1,10 @@
 package nextstep.member.domain;
 
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,6 +29,9 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    @Embedded
+    private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -73,13 +76,21 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
-    }
-
     public void validatePassword(final String password) {
         if (!this.password.equals(password)) {
             throw new PasswordMismatchException();
         }
+    }
+
+    public void addFavorite(final Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites.getFavorites();
+    }
+
+    public void deleteFavorite(final Long id) {
+        favorites.delete(id);
     }
 }

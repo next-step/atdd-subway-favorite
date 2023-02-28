@@ -4,7 +4,7 @@ import nextstep.member.application.dto.LoginMemberRequest;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.exception.InvalidTokenException;
-import nextstep.member.application.exception.UserNotFoundException;
+import nextstep.member.application.exception.MemberNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class MemberService {
             throw new InvalidTokenException();
         }
         String principal = jwtTokenProvider.getPrincipal(token);
-        Member member = memberRepository.findByEmail(principal).orElseThrow(UserNotFoundException::new);
+        Member member = memberRepository.findByEmail(principal).orElseThrow(MemberNotFoundException::new);
         return new LoginMemberRequest(member.getId(), member.getRoles());
     }
 
