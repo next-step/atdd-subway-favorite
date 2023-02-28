@@ -24,7 +24,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public Member findMember(String email, String password) {
+    public Member login(String email, String password) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NotExistsMemberException("존재하지 않는 이메일. email: " + email));
 
         if (!member.checkPassword(password)) {
@@ -32,6 +32,11 @@ public class MemberService {
         }
 
         return member;
+    }
+
+    public Member findByEmailOrCreateMember(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseGet(() -> memberRepository.save(new Member(email, "", 0)));
     }
 
     public void updateMember(Long id, MemberRequest param) {

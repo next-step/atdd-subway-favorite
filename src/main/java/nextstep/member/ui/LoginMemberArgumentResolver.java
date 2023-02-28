@@ -1,10 +1,6 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -17,13 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
-
     private JwtTokenProvider jwtTokenProvider;
-    private MemberRepository memberRepository;
 
-    public LoginMemberArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
+    public LoginMemberArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -41,9 +34,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new InvalidTokenException("유효하지 않은 토큰입니다. token: " + token);
         }
 
-        String email = jwtTokenProvider.getPrincipal(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new InvalidTokenException("유효하지 않은 토큰입니다. token: " + token));
+        Long memberId = Long.valueOf(jwtTokenProvider.getPrincipal(token));
 
-        return new LoginMember(member.getId());
+        return new LoginMember(memberId);
     }
 }

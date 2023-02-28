@@ -1,12 +1,12 @@
-package nextstep.member.application.dto;
+package nextstep;
 
-public class TokenResponse {
+public class GithubAccessTokenResponse {
     private String accessToken;
 
-    public TokenResponse() {
+    public GithubAccessTokenResponse() {
     }
 
-    public TokenResponse(String accessToken) {
+    public GithubAccessTokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 
