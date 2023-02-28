@@ -42,4 +42,20 @@ public class FavoriteSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(
+            ExtractableResponse<Response> 깃허브_로그인_응답,
+            ExtractableResponse<Response> 즐겨찾기_등록_응답) {
+
+        String accessToken = 깃허브_로그인_응답.jsonPath().getString("accessToken");
+        String url = 즐겨찾기_등록_응답.header(HttpHeaders.LOCATION);
+
+        return RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "token " + accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete(url)
+                .then().log().all()
+                .extract();
+    }
 }

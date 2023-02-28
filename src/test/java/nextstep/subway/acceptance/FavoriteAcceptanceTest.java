@@ -8,8 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.AuthAcceptanceTest.깃허브_인증_로그인_요청_파라미터_생성;
 import static nextstep.subway.acceptance.AuthSteps.깃허브_인증_로그인_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_등록_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -66,6 +65,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 삭제")
     @Test
     void favoriteDelete() {
+        //given
+        ExtractableResponse<Response> 깃허브_로그인_응답 = 깃허브_인증_로그인_요청(깃허브_인증_로그인_요청_파라미터_생성());
+        ExtractableResponse<Response> 즐겨찾기_등록_응답 = 즐겨찾기_등록_요청(깃허브_로그인_응답, SOURCE_ID, TARGET_ID);
+
+        //when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(깃허브_로그인_응답, 즐겨찾기_등록_응답);
+        expectHttpStatus(response, HttpStatus.NO_CONTENT);
     }
 
     private static void expectHttpStatus(ExtractableResponse<Response> response, HttpStatus httpStatus) {
