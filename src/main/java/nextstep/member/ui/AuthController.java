@@ -21,4 +21,9 @@ public class AuthController {
     public TokenResponse loginMember(@RequestBody TokenRequest tokenRequest) {
         return authService.loginMember(tokenRequest);
     }
+
+    @PostMapping("/github")
+    public TokenResponse loginGithub(@RequestBody String code) {
+        return authService.loginGithub(code);
+    }
 }

@@ -1,25 +1,25 @@
 package nextstep.member.application;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.exception.member.AuthTokenIsExpiredException;
 import nextstep.exception.member.PasswordNotEqualException;
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
+import nextstep.utils.ObjectStringMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ObjectMapper objectMapper;
+    private final GithubClient githubClient;
 
-    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.objectMapper = objectMapper;
+        this.githubClient = githubClient;
     }
 
     public TokenResponse loginMember(TokenRequest tokenRequest) {
@@ -27,36 +27,21 @@ public class AuthService {
         if (!member.checkPassword(tokenRequest.getPassword())) {
             throw new PasswordNotEqualException();
         }
-        String token = jwtTokenProvider.createToken(convertObjectAsString(MemberResponse.of(member)), member.getRoles());
+        String token = jwtTokenProvider.createToken(ObjectStringMapper.convertObjectAsString(MemberResponse.of(member)), member.getRoles());
         return new TokenResponse(token);
     }
 
-    public MemberResponse findMemberOfMine(String accessToken) {
-        if (tokenIsExpired(accessToken)) {
-            throw new AuthTokenIsExpiredException();
+    public TokenResponse loginGithub(String code) {
+        String accessToken = githubClient.getAccessTokenFromGithub(code);
+        GithubProfileResponse profile = githubClient.getGithubProfileFromGithub(accessToken);
+        if (isNotExistMemberEmail(memberService.isExistMemberByEmail(profile.getEmail()))) {
+            memberService.createMember(new MemberRequest(profile.getEmail(), null, null));
         }
-        String principal = jwtTokenProvider.getPrincipal(accessToken);
-        return convertStringToMemberResponse(principal);
+
+        return new TokenResponse(accessToken);
     }
 
-    private boolean tokenIsExpired(String accessToken) {
-        return !jwtTokenProvider.validateToken(accessToken);
-    }
-
-
-    private MemberResponse convertStringToMemberResponse(String principal) {
-        try {
-            return objectMapper.readValue(principal, MemberResponse.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String convertObjectAsString(MemberResponse memberResponse) {
-        try {
-            return objectMapper.writeValueAsString(memberResponse);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    private boolean isNotExistMemberEmail(boolean memberService) {
+        return !memberService;
     }
 }

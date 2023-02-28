@@ -1,9 +1,9 @@
 package nextstep.subway.unit;
 
+import nextstep.exception.member.MemberNotFoundException;
 import nextstep.exception.member.PasswordNotEqualException;
 import nextstep.member.application.AuthService;
 import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -30,51 +30,36 @@ class AuthServiceTest {
     @Test
     @DisplayName("이메일, 패스워드가 일치하는 멤버가 존재한다면 토큰반환")
     void createToken() {
+        //given
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+
+        //when
         TokenResponse tokenResponse = authService.loginMember(tokenRequest);
+
+        //then
         assertThat(tokenResponse).isNotNull();
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
     @Test
-    @DisplayName("패스워드가 일치하지 않는다면 예외 발생")
+    @DisplayName("패스워드가 일치하지 않는다면 예외 던짐")
     void passwordNotEqual() {
+        //given
         TokenRequest tokenRequest = new TokenRequest(EMAIL, "nopassword");
+
+        //when,then
         assertThatThrownBy(() -> authService.loginMember(tokenRequest))
                 .isExactlyInstanceOf(PasswordNotEqualException.class);
     }
 
     @Test
-    @DisplayName("일치하는 이메일의 회원이 존재하지 않는다면 예외 발생")
+    @DisplayName("일치하는 이메일의 회원이 존재하지 않는다면 예외 던짐")
     void nonExistEmail() {
+        //given
         TokenRequest tokenRequest = new TokenRequest("nonExist@email.com", "password");
+
+        //when,then
         assertThatThrownBy(() -> authService.loginMember(tokenRequest))
-                .isExactlyInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(MemberNotFoundException.class);
     }
-
-    @Test
-    @DisplayName("토큰으로 부터 멤버 정보 가져오기")
-    void getInfoFromToken() {
-        // given
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        TokenResponse tokenResponse = authService.loginMember(tokenRequest);
-
-        // when
-        MemberResponse memberInfo = authService.findMemberOfMine(tokenResponse.getAccessToken());
-
-        // then
-        assertThat(memberInfo.getEmail()).isEqualTo(EMAIL);
-    }
-
-    /*@Test
-    @DisplayName("토큰 만료 테스트")
-    void tokenIsExpired() {
-        // given
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        TokenResponse tokenResponse = authService.loginMember(tokenRequest);
-
-        // then
-        assertThatThrownBy(() -> authService.findMemberOfMine(tokenResponse.getAccessToken()))
-                .isExactlyInstanceOf(AuthTokenIsExpiredException.class);
-    }*/
 }
