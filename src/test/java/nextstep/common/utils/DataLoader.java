@@ -16,11 +16,16 @@ public class DataLoader {
     }
 
     public void loadData() {
-        memberRepository.save(new Member("admin@email.com", "password", 20, List.of(RoleType.ROLE_ADMIN.name())));
+        favoriteLoadData();
+
         memberRepository.save(new Member("member@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
 
         memberRepository.save(new Member("email1@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
         memberRepository.save(new Member("email2@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
         memberRepository.save(new Member("email3@email.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
+    }
+
+    public void favoriteLoadData() {
+        memberRepository.save(new Member("admin@email.com", "password", 20, List.of(RoleType.ROLE_ADMIN.name())));
     }
 }

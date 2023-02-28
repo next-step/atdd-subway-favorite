@@ -1,9 +1,11 @@
 package nextstep.member.acceptance;
 
 import nextstep.common.acceptance.AcceptanceTest;
+import nextstep.common.utils.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INFO;
@@ -25,9 +27,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 역삼역;
     private Long 선릉역;
 
+    @Autowired
+    private DataLoader dataLoader;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
+        dataLoader.loadData();
 
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         역삼역 = 지하철역_생성_요청("역삼역").jsonPath().getLong("id");
