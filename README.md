@@ -96,7 +96,7 @@ host: localhost:8080
 
 ### 요구사항
 
-- [ ] 즐겨찾기 생성
+- [x] 즐겨찾기 생성
 
 ``` Request
 POST /favorites HTTP/1.1
@@ -124,7 +124,7 @@ Date: Mon, 22 Mar 2021 14:27:37 GMT
 Location: /favorites/1
 ```
 
-- [ ] 즐겨찾기 조회
+- [x] 즐겨찾기 조회
 
 ``` Request
 GET /favorites HTTP/1.1
@@ -159,7 +159,7 @@ Connection: keep-alive
 ]
 ```
 
-- [ ] 즐겨찾기 삭제
+- [x] 즐겨찾기 삭제
 
 ``` Request
 DELETE /favorites/1 HTTP/1.1
@@ -178,6 +178,6 @@ Connection: keep-alive
 Date: Mon, 22 Mar 2021 14:27:37 GMT
 ```
 
-- [ ] 권한이 없는 경우 401 Unauthorized 응답
+- [x] 권한이 없는 경우 401 Unauthorized 응답
     - 내 정보 관리 / 즐겨 찾기 기능은 로그인 된 상태에서만 가능
     - 비로그인이거나 유효하지 않을 경우 401 Unauthorized 응답
