@@ -34,5 +34,12 @@ public class FavoriteService {
         return favorite.getId();
     }
 
-
+    public List<FavoriteResponse> loadFavorites(Long userId) {
+        Long memberId = memberService.findMember(userId).getId();
+        return favoriteRepository.findAllByMemberId(memberId).stream().map(favorite -> {
+            Station source = stationService.findById(favorite.getSourceId());
+            Station target = stationService.findById(favorite.getTargetId());
+            return FavoriteResponse.make(favorite.getId(), StationResponse.from(source), StationResponse.from(target));
+        }).collect(Collectors.toList());
+    }
 }
