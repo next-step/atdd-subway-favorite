@@ -27,3 +27,12 @@ security:
     token:
       secret-key: atdd-secret-key
       expire-length: 3600000
+
+github:
+  url:
+    authorize: https://github.com/login/oauth/authorize
+    access-token: https://github.com/login/oauth/access_token
+    profile: https://github.com/users/profile
+  client-id: 3f60ad455fd14780b3e0
+  client-secret: f2d576bcce46a08df81c4477fcc0e270f576001b
+  redirect-uri: http://localhost:8080/login/auth

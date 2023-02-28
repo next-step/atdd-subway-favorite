@@ -51,13 +51,5 @@ public class MemberController {
 
         return ResponseEntity.ok().body(memberService.findByEmail(email));
     }
-
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> createToken(
-            @RequestBody TokenRequest request){
-
-        return ResponseEntity.ok().body(authService.createToken(request));
-    }
-
 }
 
