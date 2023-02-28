@@ -3,6 +3,7 @@ package nextstep.member.infrastructure;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.domain.exception.NotFoundGitHubUserException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +45,7 @@ public class GithubClient {
                 .getBody()
                 .getAccessToken();
         if (accessToken == null) {
-            throw new RuntimeException();
+            throw new NotFoundGitHubUserException();
         }
         return accessToken;
     }

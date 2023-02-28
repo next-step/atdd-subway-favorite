@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.subway.stub;
 
 public enum GithubResponses {
 

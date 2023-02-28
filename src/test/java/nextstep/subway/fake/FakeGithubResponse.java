@@ -1,7 +1,7 @@
 package nextstep.subway.fake;
 
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.GithubResponses;
+import nextstep.subway.stub.GithubResponses;
 
 import java.util.Arrays;
 
