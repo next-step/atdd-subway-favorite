@@ -3,8 +3,10 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.utils.DataLoader;
+import nextstep.member.application.dto.FavoriteResponse;
+import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.stub.GithubResponses;
+import nextstep.subway.utils.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,6 +69,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
+        assertThat(favoriteResponse).isEqualTo(new FavoriteResponse(1L, new StationResponse(1L, "교대역"), new StationResponse(3L, "양재역")));
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
