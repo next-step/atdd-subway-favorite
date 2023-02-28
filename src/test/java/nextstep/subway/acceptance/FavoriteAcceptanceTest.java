@@ -28,6 +28,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	private final String EMAIL = "member@email.com";
 	private final String PASSWORD = "password";
 
+	private final String T_EMAIL = "test@email.com";
+	private final String T_PASSWORD = "password";
+
 	private Long 교대역;
 	private Long 강남역;
 	private Long 양재역;
@@ -39,6 +42,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private String AdminMember;
 	private String UserMember;
+	private String TestMember;
 
 	/**
 	 * 				(di:10, dr:2)
@@ -56,6 +60,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		AdminMember = 베어러_인증_로그인_요청(A_EMAIL, A_PASSWORD).jsonPath().getString("accessToken");
 		UserMember = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+		TestMember = 베어러_인증_로그인_요청(T_EMAIL, T_PASSWORD).jsonPath().getString("accessToken");
 
 		교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
 		강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
@@ -82,6 +87,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기 조회")
 	@Test
 	void showFavoriteTest() {
+		// given
+		ExtractableResponse<Response> createResponse = createFavorite(UserMember, 교대역, 양재역);
+
 		// when
 		ExtractableResponse<Response> showResponse = showFavorite(UserMember);
 
@@ -102,15 +110,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_삭제_성공(deleteResponse);
 	}
 
-	@DisplayName("즐겨찾기 기능 사용 시 권한이 없는 경우")
+	@DisplayName("올바르지 않는 토큰 사용하여 즐겨찾기 기능 사용 시 401 응답")
 	@ParameterizedTest
 	@ValueSource(strings = {"", "TEST_TEST_TEST"})
-	void unauthorizedFavoriteTest(String token) {
+	void wrongTokenFavoriteTest(String token) {
+		// given
+		ExtractableResponse<Response> createResponse = createFavorite(UserMember, 교대역, 양재역);
+
 		// when
-		ExtractableResponse<Response> showResponse = showFavorite(token);
+		ExtractableResponse<Response> deleteResponse = deleteFavorite(token, createResponse);
 
 		// then
-		assertThat(showResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	@DisplayName("권한이 없는 토큰 사용하여 즐겨찾기 기능 사용 시 401 응답")
+	@Test
+	void unauthorizedFavoriteTest() {
+		// given
+		ExtractableResponse<Response> createResponse = createFavorite(UserMember, 교대역, 양재역);
+
+		// when
+		ExtractableResponse<Response> deleteResponse = deleteFavorite(TestMember, createResponse);
+
+		// then
+		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 	private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {

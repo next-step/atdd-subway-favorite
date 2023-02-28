@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.common.exception.AuthorizationException;
 import nextstep.member.application.MemberService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -42,7 +43,7 @@ public class FavoriteService {
 		Long memberId = memberService.findByEmail(email).getId();
 		Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(FAVORITE_NOT_FOUND.isMessage()));
 		if (!favorite.isCreateBy(memberId)) {
-			throw new IllegalArgumentException(FAVORITE_NOT_MATCH_MEMBER.isMessage());
+			throw new AuthorizationException(FAVORITE_NOT_MATCH_MEMBER.isMessage());
 		}
 		favoriteRepository.deleteById(id);
 	}
