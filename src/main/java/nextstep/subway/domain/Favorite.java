@@ -28,4 +28,8 @@ public class Favorite {
 		this.sourceStationId = sourceStationId;
 		this.targetStationId = targetStationId;
 	}
+
+	public boolean isCreateBy(Long memberId) {
+		return this.memberId == memberId;
+	}
 }

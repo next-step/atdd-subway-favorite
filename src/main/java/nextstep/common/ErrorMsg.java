@@ -10,6 +10,9 @@ public enum ErrorMsg {
 
 	GITHUB_NOT_MATCH_CODE("해당 코드와 일치하는 유저 정보가 없습니다."),
 	GITHUB_NOT_MATCH_ACCESS_TOKEN("해당 토큰과 일치하는 유저 정보가 없습니다."),
+
+	FAVORITE_NOT_FOUND("해당 즐겨찾기를 찾지 못했습니다."),
+	FAVORITE_NOT_MATCH_MEMBER("해당 회원의 즐겨찾기가 아닙니다."),
 	;
 
 	private final String message;

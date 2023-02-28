@@ -41,6 +41,10 @@ public class MemberService {
 		return MemberResponse.of(findMember);
 	}
 
+	public Member findByEmail(String email) {
+		return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException(LOGIN_NOT_MATH_EMAIL.isMessage()));
+	}
+
 	public Member findByEmailOrCreateMember(String email) {
 		return memberRepository.findByEmail(email)
 			.orElseGet(() -> memberRepository.save(new Member(email, null, null)));
