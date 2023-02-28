@@ -2,6 +2,7 @@ package nextstep.member.unit;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static nextstep.common.constants.ErrorConstant.NOT_FOUND_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,6 +69,23 @@ public class FavoriteServiceTest {
         assertAll(
                 () -> assertThat(favorite.getSource()).isEqualTo(강남역),
                 () -> assertThat(favorite.getTarget()).isEqualTo(역삼역)
+        );
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회")
+    void showFavorites() {
+        // given
+        final Long id = favoriteService.saveFavorite(EMAIL, new FavoriteRequest(강남역.getId(), 역삼역.getId())).getId();
+
+        // when
+        final List<FavoriteResponse> favorites = favoriteService.showFavorites(EMAIL);
+
+        // then
+        assertAll(
+                () -> assertThat(favorites.get(0).getId()).isEqualTo(id),
+                () -> assertThat(favorites.get(0).getSource().getId()).isEqualTo(강남역.getId()),
+                () -> assertThat(favorites.get(0).getTarget().getId()).isEqualTo(역삼역.getId())
         );
     }
 }
