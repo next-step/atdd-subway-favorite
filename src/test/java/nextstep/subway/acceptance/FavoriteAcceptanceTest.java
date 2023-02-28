@@ -101,12 +101,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 권한이 없는 사용자가 삭제 요청 시
-     * Then 401 응답헤더가 온다.
+     * When 로그인 안한 사용자가 삭제 요청 시
+     * Then 삭제 할 수 없다
      */
-    @DisplayName("권한이 없는 사용자가 삭제 요청 시 401 응답헤더가 온다")
+    @DisplayName("로그인 안한 사용자가 삭제 요청 시 삭제 할 수 없다")
     @Test
-    void 권한이_없는_사용자가_삭제_요청_시_401_응답헤더가_온다() {
+    void 로그인_안한_사용자가_삭제_요청_시_삭제_할_수_없다() {
         // When
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -119,12 +119,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 권한이 없는 사용자가 조회 요청 시
-     * Then 401 응답헤더가 온다.
+     * When 로그인 안한 사용자가 조회 요청 시
+     * Then 조회 할 수 없다
      */
-    @DisplayName("권한이 없는 사용자가 조회 요청 시 401 응답헤더가 온다")
+    @DisplayName("로그인 안한 사용자가 조회 요청 시 조회 할 수 없다")
     @Test
-    void 권한이_없는_사용자가_조회_요청_시_401_응답헤더가_온다() {
+    void 로그인_안한_사용자가_조회_요청_시_조회_할_수_없다() {
         // When
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -137,12 +137,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 권한이 없는 사용자가 등록 요청 시
-     * Then 401 응답헤더가 온다.
+     * When 로그인 안한 사용자가 등록 요청 시
+     * Then 등록 할 수 없다
      */
-    @DisplayName("권한이 없는 사용자가 등록 요청 시 401 응답헤더가 온다")
+    @DisplayName("로그인 안한 사용자가 등록 요청 시 등록 할 수 없다")
     @Test
-    void 권한이_없는_사용자가_등록_요청_시_401_응답헤더가_온다() {
+    void 로그인_안한_사용자가_등록_요청_시_등록_할_수_없다() {
         // When
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
