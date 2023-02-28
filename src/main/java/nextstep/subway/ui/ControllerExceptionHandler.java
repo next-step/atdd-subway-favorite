@@ -1,9 +1,12 @@
 package nextstep.subway.ui;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import nextstep.common.exception.AuthorizationException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -16,4 +19,9 @@ public class ControllerExceptionHandler {
     public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
+
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<Void> handleAuthorizationException(AuthorizationException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}
 }
