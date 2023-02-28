@@ -27,6 +27,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+        super.setUp();
+
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         역삼역 = 지하철역_생성_요청("역삼역").jsonPath().getLong("id");
         선릉역 = 지하철역_생성_요청("선릉역").jsonPath().getLong("id");
