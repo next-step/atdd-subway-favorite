@@ -2,6 +2,7 @@ package nextstep.member.unit;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
@@ -16,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
 
 import static nextstep.common.constants.ErrorConstant.NOT_FOUND_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +74,7 @@ public class FavoriteServiceMockTest {
     @DisplayName("경로 즐겨찾기 등록")
     void createFavorite() {
         // given
-        Favorite returnValue = new Favorite(관리자, 강남역, 역삼역);
+        final Favorite returnValue = new Favorite(관리자, 강남역, 역삼역);
         ReflectionTestUtils.setField(returnValue, "id", 1L);
 
         when(memberService.findByEmail(EMAIL)).thenReturn(관리자);
@@ -85,5 +88,24 @@ public class FavoriteServiceMockTest {
         // then
         assertThat(favorite.getId()).isEqualTo(1L);
         verify(favoriteRepository, times(1)).save(any(Favorite.class));
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 조회")
+    void showFavorites() {
+        // given
+        final Favorite favorite = new Favorite(관리자, 강남역, 역삼역);
+        ReflectionTestUtils.setField(favorite, "id", 1L);
+
+        when(memberService.findByEmail(EMAIL)).thenReturn(관리자);
+        when(favoriteRepository.findByMember(관리자)).thenReturn(List.of(favorite));
+
+        // when
+        final List<FavoriteResponse> favorites = favoriteService.showFavorites(EMAIL);
+
+        // then
+        assertThat(favorites.get(0).getId()).isEqualTo(1L);
+        assertThat(favorites.get(0).getSource().getId()).isEqualTo(1L);
+        assertThat(favorites.get(0).getTarget().getId()).isEqualTo(2L);
     }
 }
