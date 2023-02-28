@@ -108,4 +108,14 @@ public class FavoriteServiceMockTest {
         assertThat(favorites.get(0).getSource().getId()).isEqualTo(1L);
         assertThat(favorites.get(0).getTarget().getId()).isEqualTo(2L);
     }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제")
+    void deleteFavorite() {
+        // when
+        favoriteService.deleteFavorite(-1L);
+
+        // then
+        verify(favoriteRepository, times(1)).deleteById(-1L);
+    }
 }
