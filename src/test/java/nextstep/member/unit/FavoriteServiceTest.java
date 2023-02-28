@@ -88,4 +88,18 @@ public class FavoriteServiceTest {
                 () -> assertThat(favorites.get(0).getTarget().getId()).isEqualTo(역삼역.getId())
         );
     }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제")
+    void deleteFavorite() {
+        // given
+        final Long id = favoriteService.saveFavorite(EMAIL, new FavoriteRequest(강남역.getId(), 역삼역.getId())).getId();
+
+        // when
+        favoriteService.deleteFavorite(id);
+
+        // then
+        List<FavoriteResponse> favorites = favoriteService.showFavorites(EMAIL);
+        assertThat(favorites.size()).isEqualTo(0);
+    }
 }
