@@ -29,9 +29,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private DataLoader dataLoader;
     private String 사용자_AccessToken;
 
-
     @BeforeEach
     public void setUp() {
+        super.setUp();
+
         dataLoader.loadDataWithGithubUser();
         사용자_AccessToken = 깃헙_로그인_요청(GithubResponses.사용자1.getCode()).jsonPath().getString("accessToken");
         지하철역_생성_요청("강남역");
@@ -98,6 +99,61 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    /**
+     * When 권한이 없는 사용자가 삭제 요청 시
+     * Then 401 응답헤더가 온다.
+     */
+    @DisplayName("권한이 없는 사용자가 삭제 요청 시 401 응답헤더가 온다")
+    @Test
+    void 권한이_없는_사용자가_삭제_요청_시_401_응답헤더가_온다() {
+        // When
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2("Random")
+                .when().delete("/favorites/{id}", 1)
+                .then().log().all().extract();
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * When 권한이 없는 사용자가 조회 요청 시
+     * Then 401 응답헤더가 온다.
+     */
+    @DisplayName("권한이 없는 사용자가 조회 요청 시 401 응답헤더가 온다")
+    @Test
+    void 권한이_없는_사용자가_조회_요청_시_401_응답헤더가_온다() {
+        // When
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2("Random")
+                .when().get("/favorites")
+                .then().log().all().extract();
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * When 권한이 없는 사용자가 등록 요청 시
+     * Then 401 응답헤더가 온다.
+     */
+    @DisplayName("권한이 없는 사용자가 등록 요청 시 401 응답헤더가 온다")
+    @Test
+    void 권한이_없는_사용자가_등록_요청_시_401_응답헤더가_온다() {
+        // When
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2("Random")
+                .when().post("/favorites")
+                .then().log().all().extract();
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 
     private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
         ExtractableResponse<Response> response = RestAssured
