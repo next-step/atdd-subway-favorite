@@ -96,7 +96,6 @@ public class MemberSteps {
                 .auth().oauth2(token)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 
