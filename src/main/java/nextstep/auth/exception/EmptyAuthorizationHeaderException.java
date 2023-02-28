@@ -1,8 +1,8 @@
 package nextstep.auth.exception;
 
-public class EmptyAuthorizationHeaderException extends RuntimeException {
+public class EmptyAuthorizationHeaderException extends AuthorizationException {
 
-    public static final String MESSAGE = "유효하지 않은 요청입니다.";
+    public static final String MESSAGE = "로그인을 진행해주세요.";
 
     public EmptyAuthorizationHeaderException() {
         super(MESSAGE);

@@ -1,5 +1,7 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.member.domain.exception.BadCredentialException;
 
 import javax.persistence.CollectionTable;
@@ -14,6 +16,10 @@ import javax.persistence.JoinColumn;
 import java.util.List;
 import java.util.Objects;
 
+import static lombok.AccessLevel.PROTECTED;
+
+@Getter
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class Member {
     @Id
@@ -29,9 +35,6 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
-
-    public Member() {
-    }
 
     public Member(String email, String password, Integer age) {
         this.email = email;
@@ -49,26 +52,6 @@ public class Member {
 
     public Member(final String email) {
         this(email, null, null);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public List<String> getRoles() {
-        return roles;
     }
 
     public void update(Member member) {
