@@ -2,6 +2,7 @@ package nextstep.auth.application;
 
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,9 @@ public class AuthService {
         this.memberService = memberService;
     }
 
-    public String getToken(String email) {
-        Member member = memberService.findByEmail(email);
-        return jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+    public TokenResponse getToken(String email, String password) {
+        Member member = memberService.findByEmailAndPassword(email, password);
+        String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+        return new TokenResponse(token);
     }
 }

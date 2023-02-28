@@ -33,7 +33,13 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    public Member findByEmailAndPassword(String email, String password) {
+        return memberRepository.findByEmail(email)
+                .filter(member -> member.checkPassword(password))
+                .orElseThrow(() -> new IllegalArgumentException("조회된 회원이 존재하지 않습니다."));
+    }
+
     public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("조회된 회원이 존재하지 않습니다."));
+        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 }

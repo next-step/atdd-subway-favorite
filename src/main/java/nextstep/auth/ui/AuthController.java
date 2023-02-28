@@ -19,8 +19,6 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> loginWithToken(@RequestBody MemberRequest request) {
-        String token = authService.getToken(request.getEmail());
-        TokenResponse tokenResponse = new TokenResponse(token);
-        return ResponseEntity.ok().body(tokenResponse);
+        return ResponseEntity.ok().body(authService.getToken(request.getEmail(), request.getPassword()));
     }
 }
