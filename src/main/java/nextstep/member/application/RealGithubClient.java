@@ -17,12 +17,17 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class RealGithubClient implements GithubClient {
 
+    private static final String BEARER = "Bearer";
+
     @Value("${github.client.id}")
     private String clientId;
+
     @Value("${github.client.secret}")
     private String clientSecret;
+
     @Value("${github.url.access-token}")
     private String tokenUrl;
+
     @Value("${github.url.profile}")
     private String profileUrl;
 
@@ -40,7 +45,7 @@ public class RealGithubClient implements GithubClient {
         );
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
                 githubAccessTokenRequest, headers);
@@ -57,7 +62,7 @@ public class RealGithubClient implements GithubClient {
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + " " + accessToken);
 
         HttpEntity httpEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();

@@ -34,14 +34,14 @@ public class AuthService {
     public TokenResponse loginGithub(String code) {
         String accessToken = githubClient.getAccessTokenFromGithub(code);
         GithubProfileResponse profile = githubClient.getGithubProfileFromGithub(accessToken);
-        if (isNotExistMemberEmail(memberService.isExistMemberByEmail(profile.getEmail()))) {
-            memberService.createMember(new MemberRequest(profile.getEmail(), null, null));
+        if (isNotExistMemberEmail(profile.getEmail())) {
+            memberService.createMember(MemberRequest.from(profile));
         }
 
         return new TokenResponse(accessToken);
     }
 
-    private boolean isNotExistMemberEmail(boolean memberService) {
-        return !memberService;
+    private boolean isNotExistMemberEmail(String email) {
+        return !memberService.isExistMemberByEmail(email);
     }
 }

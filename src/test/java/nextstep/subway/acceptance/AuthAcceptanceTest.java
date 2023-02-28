@@ -54,11 +54,9 @@ class AuthAcceptanceTest {
     void signUpByGithubIfNotExistMember() {
         // given
         GithubSampleResponse 사용자 = GithubSampleResponse.사용자1;
-        Map<String, String> params = new HashMap<>();
-        params.put("code", 사용자.getCode());
 
         // when -> 토큰 만료 예외 (테스트용 stub처리 필요?)
-        ExtractableResponse<Response> response = 깃허브_로그인_요청(params);
+        ExtractableResponse<Response> response = 깃허브_로그인_요청(사용자.getCode());
         String accessToken = response.jsonPath().getString("accessToken");
         ExtractableResponse<Response> memberInfoResponse = 토큰으로_회원_정보_조회(accessToken);
 
@@ -71,11 +69,10 @@ class AuthAcceptanceTest {
     @Test
     void githubAuth() {
         // given
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubSampleResponse.사용자1.getCode());
+        GithubSampleResponse 사용자 = GithubSampleResponse.사용자1;
 
         // when
-        ExtractableResponse<Response> response = 깃허브_로그인_요청(params);
+        ExtractableResponse<Response> response = 깃허브_로그인_요청(사용자.getCode());
 
         // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
