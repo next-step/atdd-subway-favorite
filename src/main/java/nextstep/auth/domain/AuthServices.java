@@ -2,19 +2,20 @@ package nextstep.auth.domain;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.exception.AuthenticationException;
+import nextstep.util.AuthUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class AuthTypes {
+public class AuthServices {
 
-    private final List<AuthType> values;
+    private final List<AuthService> values;
 
-    public AuthType findAuth(String header) {
+    public AuthService findAuth(String header) {
         return values.stream()
-                .filter(a -> a.match(header))
+                .filter(s -> AuthUtil.match(header, s.getPrefix()))
                 .findAny()
                 .orElseThrow(AuthenticationException::new);
     }

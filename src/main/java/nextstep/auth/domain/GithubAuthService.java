@@ -4,31 +4,32 @@ import lombok.RequiredArgsConstructor;
 import nextstep.exception.AuthenticationException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
-import org.springframework.stereotype.Component;
+import nextstep.util.AuthUtil;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class GithubAuthType extends AbstractAuthType {
+public class GithubAuthService implements AuthService {
 
-    private static final String PREFIX = "token ";
+    private static final String AUTH_HEADER_PREFIX = "token ";
 
     private final MemberService memberService;
 
     @Override
     public Member findMember(String header) {
-        String token = parseAccessToken(header);
+        String token = AuthUtil.parseAccessToken(header, AUTH_HEADER_PREFIX);
         return memberService.findByAccessToken(token);
     }
 
     @Override
     public void validate(String header) {
-        if (!match(header)) {
+        if (!AuthUtil.match(header, AUTH_HEADER_PREFIX)) {
             throw new AuthenticationException();
         }
     }
 
     @Override
-    protected String getPrefix() {
-        return PREFIX;
+    public String getPrefix() {
+        return AUTH_HEADER_PREFIX;
     }
 }

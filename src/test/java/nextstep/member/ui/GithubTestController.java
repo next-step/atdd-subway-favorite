@@ -2,11 +2,12 @@ package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.annotation.AuthHeader;
+import nextstep.auth.domain.GithubAuthService;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.auth.domain.GithubAuthType;
 import nextstep.member.domain.GithubResponses;
+import nextstep.util.AuthUtil;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GithubTestController {
 
-    private final GithubAuthType githubAuthType;
+    private final GithubAuthService githubAuthType;
 
     @PostMapping("access-token")
     public GithubAccessTokenResponse createAccessToken(@RequestBody GithubAccessTokenRequest request) {
@@ -24,7 +25,7 @@ public class GithubTestController {
 
     @GetMapping("profile")
     public GithubProfileResponse getProfile(@AuthHeader String header) {
-        String accessToken = githubAuthType.parseAccessToken(header);
+        String accessToken = AuthUtil.parseAccessToken(header, githubAuthType.getPrefix());
         GithubResponses githubResponses = GithubResponses.ofAccessToken(accessToken);
         return GithubProfileResponse.of(githubResponses.getEmail());
     }

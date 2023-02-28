@@ -3,10 +3,10 @@ package nextstep.member.ui;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.auth.annotation.AuthHeader;
+import nextstep.auth.domain.AuthService;
+import nextstep.auth.domain.AuthServices;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.*;
-import nextstep.auth.domain.AuthType;
-import nextstep.auth.domain.AuthTypes;
 import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private final MemberService memberService;
-    private final AuthTypes authTypes;
+    private final AuthServices authServices;
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
@@ -47,7 +47,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthHeader String header) {
-        AuthType auth = authTypes.findAuth(header);
+        AuthService auth = authServices.findAuth(header);
         Member member = auth.findMember(header);
         return ResponseEntity.ok().body(MemberResponse.of(member));
     }

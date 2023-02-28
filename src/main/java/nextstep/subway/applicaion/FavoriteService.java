@@ -1,7 +1,7 @@
 package nextstep.subway.applicaion;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.domain.AuthTypes;
+import nextstep.auth.domain.AuthServices;
 import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -16,11 +16,11 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
-    private final AuthTypes authTypes;
+    private final AuthServices authServices;
 
 
     public Favorite save(FavoriteCreateRequest request, String header) {
-        Member member = authTypes.findAuth(header).findMember(header);
+        Member member = authServices.findAuth(header).findMember(header);
         Favorite favorite = request.toEntity(stationRepository::findById, member); // request에서 station id를 꺼내서 조회하는게 좋을까?
         return favoriteRepository.save(favorite);
     }
