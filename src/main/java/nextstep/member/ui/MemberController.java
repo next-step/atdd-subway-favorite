@@ -5,11 +5,13 @@ import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
+import nextstep.member.exception.UnAuthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +46,9 @@ public class MemberController {
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(final HttpServletRequest request) {
         final Member member = (Member) request.getAttribute("user");
+        if (Objects.isNull(member)) {
+            throw new UnAuthorizedException();
+        }
         final MemberResponse memberResponse = new MemberResponse(member.getId(), member.getEmail(), member.getAge());
         return ResponseEntity.ok().body(memberResponse);
     }

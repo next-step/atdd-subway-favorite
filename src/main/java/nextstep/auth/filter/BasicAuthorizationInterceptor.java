@@ -9,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -19,8 +20,7 @@ public class BasicAuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
         final String authorization = request.getHeader("Authorization");
-        final String authorizationType = authorization.split(" ")[0];
-        if (!authorizationType.equals("Basic")) {
+        if (Objects.isNull(authorization) || !getAuthorizationType(authorization).equals("Basic")) {
             return true;
         }
         final String token = authorization.split(" ")[1];
@@ -29,5 +29,9 @@ public class BasicAuthorizationInterceptor implements HandlerInterceptor {
         final Member member = memberService.getMember(principal);
         request.setAttribute("user", member);
         return true;
+    }
+
+    private String getAuthorizationType(final String authorizationHeader) {
+        return authorizationHeader.split(" ")[0];
     }
 }
