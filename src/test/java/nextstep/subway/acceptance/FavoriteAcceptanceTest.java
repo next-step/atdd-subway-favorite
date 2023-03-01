@@ -5,12 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
-import nextstep.subway.stub.GithubResponses;
-import nextstep.subway.utils.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -18,26 +15,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.subway.acceptance.LoginSteps.깃헙_로그인_요청;
+import static nextstep.subway.acceptance.LineSteps.createLineCreateParams;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 생성 요청 시 등록이 된다")
 class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private DataLoader dataLoader;
-    private String 사용자_AccessToken;
+    private long 강남역;
+    private long 신주쿠역;
+    private long 교대역;
+    private long 이호선;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        dataLoader.loadDataWithGithubUser();
-        사용자_AccessToken = 깃헙_로그인_요청(GithubResponses.사용자1.getCode()).jsonPath().getString("accessToken");
-        지하철역_생성_요청("강남역");
-        지하철역_생성_요청("신주쿠역");
-        지하철역_생성_요청("가산역");
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        신주쿠역 = 지하철역_생성_요청("신주쿠역").jsonPath().getLong("id");
+        교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
+
+
+        Map<String, String> lineCreateParams = createLineCreateParams(강남역, 교대역);
+        이호선 = 지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
     }
 
     /**
@@ -48,11 +49,25 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_생성_요청_시_등록이_된다() {
         // When
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청("1", "3", 사용자_AccessToken);
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(강남역, 교대역, 사용자_AccessToken);
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isEqualTo("/favorites/1");
+    }
+
+    /**
+     * When 연결되어 있지 않은 경로 즐겨찾기 생성 요청 시
+     * Then 등록이 안된다
+     */
+    @DisplayName("연결되어 있지 않은 경로로 즐겨찾기 생성 요청 시 등록이 안된다")
+    @Test
+    void 연결되어_있지_않은_경로_즐겨찾기_생성_요청_시_등록이_안된다() {
+        // When
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(강남역, 신주쿠역, 사용자_AccessToken);
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     /**
@@ -64,7 +79,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_조회_요청_시_조회가_된다() {
         // Given
-        즐겨찾기_등록_요청("1", "3", 사용자_AccessToken);
+        즐겨찾기_등록_요청(강남역, 교대역, 사용자_AccessToken);
 
         // When
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(사용자_AccessToken);
@@ -73,7 +88,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<FavoriteResponse> responses = response.jsonPath().getList(".", FavoriteResponse.class);
-        assertThat(responses).containsExactly(new FavoriteResponse(1L, new StationResponse(1L, "강남역"), new StationResponse(3L, "가산역")));
+        assertThat(responses).containsExactly(new FavoriteResponse(1L, new StationResponse(1L, "강남역"), new StationResponse(3L, "교대역")));
     }
 
     /**
@@ -85,7 +100,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_조회_삭제_요청_시_삭제가_된다() {
         // Given
-        String locationId = 즐겨찾기_등록_요청("1", "3", 사용자_AccessToken)
+        String locationId = 즐겨찾기_등록_요청(강남역, 교대역, 사용자_AccessToken)
                 .header("Location")
                 .replace("/favorites/", "");
 
@@ -132,12 +147,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_안한_사용자가_등록_요청_시_등록_할_수_없다() {
         // When
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청("1", "3", "wrongToken");
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(강남역, 교대역, "wrongToken");
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
-
 
     private ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
         return RestAssured
@@ -148,10 +162,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_등록_요청(String source, String target, String accessToken) {
+    private ExtractableResponse<Response> 즐겨찾기_등록_요청(Long source, Long target, String accessToken) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
+        params.put("source", source + "");
+        params.put("target", target + "");
 
         return RestAssured
                 .given().log().all()
