@@ -86,6 +86,29 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         });
     }
 
+    /**
+     * GIVEN 로그인한 회원이 즐겨찾기를 하고 <br>
+     * WHEN 즐겨찾기를 삭제하는 경우 <br>
+     * THEN 즐겨찾기가 삭제된다 <br>
+     */
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        // given
+        즐겨찾기_추가_요청(강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/favorites")
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_추가_요청(Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source + "");
