@@ -1,9 +1,9 @@
 package nextstep.auth.domain;
 
-import nextstep.member.domain.Member;
+import nextstep.auth.dto.AuthMember;
 
 public interface AuthService {
-    Member findMember(String header);
+    AuthMember findMember(String header);
 
     void validate(String header);
 

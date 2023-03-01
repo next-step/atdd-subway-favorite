@@ -1,8 +1,9 @@
 package nextstep.auth.resolver;
 
+
 import nextstep.auth.Interceptor.AuthenticationInterceptor;
 import nextstep.auth.annotation.MyInfo;
-import nextstep.member.domain.Member;
+import nextstep.auth.dto.AuthMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -24,7 +25,7 @@ public class MyInfoResolver implements HandlerMethodArgumentResolver {
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
-        Member myInfo = (Member) httpServletRequest.getAttribute(AuthenticationInterceptor.MY_INFO_ATTR_NAME);
+        AuthMember myInfo = (AuthMember) httpServletRequest.getAttribute(AuthenticationInterceptor.MY_INFO_ATTR_NAME);
 
         if (myInfo == null) {
             throw new IllegalArgumentException(HttpHeaders.AUTHORIZATION);

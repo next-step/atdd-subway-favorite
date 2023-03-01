@@ -1,6 +1,7 @@
 package nextstep.auth.domain;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.dto.AuthMember;
 import nextstep.exception.AuthenticationException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
@@ -16,9 +17,10 @@ public class GithubAuthService implements AuthService {
     private final MemberService memberService;
 
     @Override
-    public Member findMember(String header) {
+    public AuthMember findMember(String header) {
         String token = AuthUtil.parseAccessToken(header, AUTH_HEADER_PREFIX);
-        return memberService.findByAccessToken(token);
+        Member member = memberService.findByAccessToken(token);
+        return AuthMember.of(member);
     }
 
     @Override

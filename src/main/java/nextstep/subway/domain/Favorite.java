@@ -3,7 +3,6 @@ package nextstep.subway.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.member.domain.Member;
 
 import javax.persistence.*;
 
@@ -16,8 +15,7 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Station source;
@@ -25,14 +23,14 @@ public class Favorite {
     @ManyToOne(fetch = FetchType.LAZY)
     private Station target;
 
-    public Favorite(Member member, Station source, Station target) {
-        this.member = member;
+    public Favorite(Long memberId, Station source, Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
 
-    public static Favorite of(Member member, Station source, Station target) {
-        return new Favorite(member, source, target);
+    public static Favorite of(Long memberId, Station source, Station target) {
+        return new Favorite(memberId, source, target);
     }
 
     public void validateMyFavorite(Long memberId) {

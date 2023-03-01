@@ -38,7 +38,6 @@ class JwtAuthServiceTest extends AcceptanceTest {
 
     @Test
     void 내정보_조회() {
-        Member member = jwtAuthType.findMember(validHeader);
-        assertThat(member).isNotNull();
+        assertThat(jwtAuthType.findMember(validHeader)).isNotNull();
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.auth.domain;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.dto.AuthMember;
 import nextstep.exception.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
@@ -17,11 +18,13 @@ public class JwtAuthService implements AuthService {
     private final MemberService memberService;
 
     @Override
-    public Member findMember(String header) {
+    public AuthMember findMember(String header) {
         String token = AuthUtil.parseAccessToken(header, AUTH_HEADER_PREFIX);
         String principal = jwtTokenProvider.getPrincipal(token);
-        return memberService.findByEmail(principal)
+        Member member = memberService.findByEmail(principal)
                 .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + principal));
+
+        return AuthMember.of(member);
     }
 
     @Override

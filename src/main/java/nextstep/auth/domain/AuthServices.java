@@ -13,7 +13,7 @@ public class AuthServices {
 
     private final List<AuthService> values;
 
-    public AuthService findAuth(String header) {
+    public AuthService findService(String header) {
         return values.stream()
                 .filter(s -> AuthUtil.match(header, s.getPrefix()))
                 .findAny()

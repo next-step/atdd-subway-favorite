@@ -14,11 +14,10 @@ class GithubAuthServiceTest extends AcceptanceTest {
 
     public static final String PREFIX = "token ";
     public static final String VALID_HEADER = PREFIX + DataLoader.ACCESS_TOKEN;
-    public static final String INVALID_HEADER = "no gg";
 
     @Autowired
     private GithubAuthService githubAuthType;
-    
+
     @Test
     void 검증() {
         githubAuthType.validate(VALID_HEADER);
@@ -26,7 +25,6 @@ class GithubAuthServiceTest extends AcceptanceTest {
 
     @Test
     void 내정보_조회() {
-        Member member = githubAuthType.findMember(VALID_HEADER);
-        assertThat(member).isNotNull();
+        assertThat(githubAuthType.findMember(VALID_HEADER)).isNotNull();
     }
 }

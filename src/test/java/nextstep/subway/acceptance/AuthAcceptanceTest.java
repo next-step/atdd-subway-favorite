@@ -87,7 +87,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 하지 않은 사용자는 즐겨찾기 기능 사용불가")
     @Test
     void favoriteUnauthorized() {
-        ExtractableResponse<Response> response = 단순_조회_요청("/favorites/1");
+        ExtractableResponse<Response> response = 단순_조회_요청("/favorites");
 
         expectHttpStatus(response, HttpStatus.UNAUTHORIZED);
     }

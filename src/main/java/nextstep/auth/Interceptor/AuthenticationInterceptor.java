@@ -3,7 +3,6 @@ package nextstep.auth.Interceptor;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.domain.AuthService;
 import nextstep.auth.domain.AuthServices;
-import nextstep.member.domain.Member;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -19,10 +18,9 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        AuthService authService = authServices.findAuth(header);
+        AuthService authService = authServices.findService(header);
         authService.validate(header);
-        Member myInfo = authService.findMember(header);
-        request.setAttribute(MY_INFO_ATTR_NAME, myInfo);
+        request.setAttribute(MY_INFO_ATTR_NAME, authService.findMember(header));
 
         return true;
     }

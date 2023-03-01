@@ -2,7 +2,7 @@ package nextstep.subway.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.annotation.MyInfo;
-import nextstep.member.domain.Member;
+import nextstep.auth.dto.AuthMember;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -21,19 +21,19 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid FavoriteCreateRequest request, @MyInfo Member member) {
-        request.addMember(member);
+    public ResponseEntity<Void> create(@RequestBody @Valid FavoriteCreateRequest request, @MyInfo AuthMember member) {
+        request.addMemberId(member.getId());
         Favorite favorite = favoriteService.save(request);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
     @GetMapping
-    public FavoriteResponse findMyFavoriteById(@MyInfo Member member) {
+    public FavoriteResponse findMyFavoriteById(@MyInfo AuthMember member) {
         return favoriteService.findByMemberId(member.getId());
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id, @MyInfo Member member) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id, @MyInfo AuthMember member) {
         favoriteService.deleteMyFavoriteById(id, member.getId());
         return ResponseEntity.noContent().build();
     }
