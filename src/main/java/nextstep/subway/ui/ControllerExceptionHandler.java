@@ -2,6 +2,7 @@ package nextstep.subway.ui;
 
 import nextstep.member.ui.InvalidTokenException;
 import nextstep.member.ui.NotExistsTokenException;
+import nextstep.subway.applicaion.exceptions.NotFoundFavoriteException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,10 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({InvalidTokenException.class, NotExistsTokenException.class})
     public ResponseEntity<Void> handleUnauthorizedException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(NotFoundFavoriteException.class)
+    public ResponseEntity<Void> handleNotFoundException(NotFoundFavoriteException e) {
+        return ResponseEntity.notFound().build();
     }
 }

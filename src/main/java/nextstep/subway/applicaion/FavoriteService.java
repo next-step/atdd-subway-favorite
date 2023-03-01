@@ -1,6 +1,7 @@
 package nextstep.subway.applicaion;
 
 import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.subway.applicaion.exceptions.NotFoundFavoriteException;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -40,7 +41,7 @@ public class FavoriteService {
     @Transactional
     public void deleteFavorite(Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
-                .orElseThrow(() -> new RuntimeException(""));
+                .orElseThrow(() -> new NotFoundFavoriteException("존재하지 않는 즐겨찾기 아이디 입니다. favoriteId: " + favoriteId));
 
         favoriteRepository.delete(favorite);
     }
