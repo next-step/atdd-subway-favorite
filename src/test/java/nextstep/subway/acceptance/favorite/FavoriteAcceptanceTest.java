@@ -4,25 +4,22 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.acceptance.AcceptanceTest;
 import nextstep.subway.acceptance.MemberSteps;
-import nextstep.subway.acceptance.StationSteps;
-import nextstep.subway.applicaion.dto.FavoriteResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.StationSteps.*;
-import static org.assertj.core.api.Assertions.*;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final String email = "test@email.com";
+    private static final String password = "password";
+
     private long 신논현역;
     private long 강남역;
     private long 양재역;
-
-    private String email;
-    private String password;
 
     @BeforeEach
     public void setUp() {
@@ -32,6 +29,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         MemberSteps.회원_생성_요청(email, password, 20);
     }
 
+    /**
+     * Given 회원의 token이 주어졌을 때
+     * When 즐겨찾기를 생성하면
+     * Then 즐겨찾기를 생성할 수 있다.
+     */
     @DisplayName("즐겨찾기 생성")
     @Test
     void createFavorite() {
@@ -46,6 +48,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    /**
+     * Given 잘못된 토큰이 주어졌을 때
+     * When 즐겨찾기를 생성하면
+     * Then 권한 예외를 받는다
+     */
     @DisplayName("즐겨찾기 생성 비로그인")
     @Test
     void createFavoriteNoLogin() {
@@ -58,6 +65,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    /**
+     * Given 즐겨찾기를 등록하고
+     * When 즐겨찾기를 조회하면
+     * Then 회원의 즐겨찾기가 모두 조회된다.
+     */
     @DisplayName("즐겨찾기 조회")
     @Test
     void getFavorites() {
@@ -79,6 +91,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .containsOnly("양재역", "양재역");
     }
 
+    /**
+     * Given 즐겨찾기를 등록하고
+     * When 즐겨찾기를 삭제하면
+     * Then 삭제한 즐겨찾기를 제외한 즐겨찾
+     */
     @DisplayName("즐겨찾기 삭제")
     @Test
     void deleteFavorite() {
