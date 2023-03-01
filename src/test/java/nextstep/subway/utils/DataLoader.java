@@ -1,9 +1,9 @@
-package nextstep;
+package nextstep.subway.utils;
 
-import nextstep.member.application.dto.GithubResponses;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
+import nextstep.subway.stub.GithubResponses;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,21 +1,17 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.DataLoader;
-import nextstep.member.application.dto.GithubResponses;
+import nextstep.subway.stub.GithubResponses;
+import nextstep.subway.utils.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
+import static nextstep.subway.acceptance.LoginSteps.깃헙_로그인_요청;
 
-import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.LoginSteps.베어러_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.토큰으로_내_정보_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,19 +71,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(accessToken).isNotBlank();
         assertThat(response.jsonPath().getString("email")).isEqualTo(GithubResponses.사용자1.getEmail());
-    }
-
-    private static ExtractableResponse<Response> 깃헙_로그인_요청(String code) {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", code);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-        return response;
     }
 
 }
