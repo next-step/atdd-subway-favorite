@@ -6,6 +6,9 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -47,14 +50,30 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * WHEN 로그인한 회원이 출발역과 도착역을 즐겨찾기 하는 경우 <br>
      * THEN 즐겨찾기가 추가된다 <br>
      */
-    @DisplayName("즐겨찾기 추가")
+    @DisplayName("로그인한 유저가 즐겨찾기 추가")
     @Test
-    void addFavorite() {
+    void addFavoriteLoginUser() {
         // when
-        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(강남역, 양재역);
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
 
         // then
         assertThat(즐겨찾기_추가_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * WHEN 로그인하지 않거나, 유효하지 않은 회원 인증정보로 출발역과 도착역을 즐겨찾기 하는 경우 <br>
+     * THEN 예외가 발생한다 <br>
+     */
+    @DisplayName("로그인 하지 않은 유저가 즐겨찾기 추가")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"Bearer abcd"})
+    void addFavoriteNotLoginUser(String illegalAccessToken) {
+        // when
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(illegalAccessToken, 강남역, 양재역);
+
+        // then
+        assertThat(즐겨찾기_추가_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -62,12 +81,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * WHEN 로그인한 회원이 즐겨찾기 조회하는 경우 <br>
      * THEN 2개의 즐겨찾기 목록이 조회된다 <br>
      */
-    @DisplayName("즐겨찾기 조회")
+    @DisplayName("로그인한 유저가 즐겨찾기 조회")
     @Test
-    void readFavorite() {
+    void readFavoriteLoginUser() {
         // given
-        즐겨찾기_추가_요청(강남역, 양재역);
-        즐겨찾기_추가_요청(양재시민의숲역, 청계산입구역);
+        즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
+        즐겨찾기_추가_요청(accessToken, 양재시민의숲역, 청계산입구역);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -86,15 +105,40 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * WHEN 로그인하지 않거나, 유효하지 않은 회원 인증정보로 즐겨찾기 조회하는 경우 <br>
+     * THEN 예외가 발생한다 <br>
+     */
+    @DisplayName("로그인하지 않은 유저가 즐겨찾기 조회")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"Bearer abcd"})
+    void readFavoriteNotLoginUser(String illegalAccessToken) {
+        // when
+        var given = RestAssured.given().log().all();
+
+        if (illegalAccessToken != null) {
+            given.auth().oauth2(illegalAccessToken);
+        }
+
+        var 즐겨찾기_조회_응답 = given.when()
+                .get("/favorites")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
      * GIVEN 로그인한 회원이 즐겨찾기를 하고 <br>
      * WHEN 즐겨찾기를 삭제하는 경우 <br>
      * THEN 즐겨찾기가 삭제된다 <br>
      */
-    @DisplayName("즐겨찾기 삭제")
+    @DisplayName("로그인한 유저가 즐겨찾기 삭제")
     @Test
-    void deleteFavorite() {
+    void deleteFavoriteLoginUser() {
         // given
-        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(강남역, 양재역);
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
         String location = 즐겨찾기_추가_응답.header("location");
 
         // when
@@ -109,16 +153,51 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_추가_요청(Long source, Long target) {
+    /**
+     * WHEN 로그인하지 않거나, 유효하지 않은 회원 인증정보로 즐겨찾기 삭제하는 경우 <br>
+     * THEN 예외가 발생한다 <br>
+     */
+    @DisplayName("로그인하지 않은 유저가 즐겨찾기 삭제")
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"Bearer abcd"})
+    void deleteFavoriteNotLoginUser(String illegalAccessToken) {
+        // given
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
+        String location = 즐겨찾기_추가_응답.header("location");
+
+        // when
+        var given = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        if (illegalAccessToken != null) {
+            given.auth().oauth2(illegalAccessToken);
+        }
+
+        var 즐겨찾기_삭제_응답 = given.when()
+                .delete(location)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source + "");
         params.put("target", target + "");
 
-        // when
-        return RestAssured.given().log().all()
+        var given = RestAssured.given().log().all()
                 .body(params)
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        if (accessToken != null) {
+            given = given.auth().oauth2(accessToken);
+        }
+
+        // when
+        return given
                 .when()
                 .post("/favorites")
                 .then().log().all()
