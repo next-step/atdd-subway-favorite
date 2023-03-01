@@ -45,10 +45,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void favoriteList() {
         //given
         ExtractableResponse<Response> 깃허브_로그인_응답 = 깃허브_인증_로그인_요청(깃허브_인증_로그인_요청_파라미터_생성());
-        ExtractableResponse<Response> 즐겨찾기_등록_응답 = 즐겨찾기_등록_요청(깃허브_로그인_응답, SOURCE_ID, TARGET_ID);
+        즐겨찾기_등록_요청(깃허브_로그인_응답, SOURCE_ID, TARGET_ID);
 
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(깃허브_로그인_응답, 즐겨찾기_등록_응답);
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(깃허브_로그인_응답);
 
         expectHttpStatus(response, HttpStatus.OK);
         assertThat(response.jsonPath().getLong("source.id")).isEqualTo(SOURCE_ID);

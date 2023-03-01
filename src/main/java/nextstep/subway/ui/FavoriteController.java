@@ -27,9 +27,9 @@ public class FavoriteController {
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
-    @GetMapping("{favoriteId}")
-    public FavoriteResponse findMyFavoriteById(@PathVariable Long favoriteId, @MyInfo Member member) {
-        return favoriteService.findMyFavoriteById(favoriteId, member.getId());
+    @GetMapping
+    public FavoriteResponse findMyFavoriteById(@MyInfo Member member) {
+        return favoriteService.findByMemberId(member.getId());
     }
 
     @DeleteMapping("{id}")
