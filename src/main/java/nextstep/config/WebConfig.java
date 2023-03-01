@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.Interceptor.AuthenticationInterceptor;
 import nextstep.auth.domain.AuthServices;
 import nextstep.auth.resolver.AuthHeaderResolver;
+import nextstep.auth.resolver.MyInfoResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new AuthHeaderResolver());
+        resolvers.add(new MyInfoResolver());
     }
 
     @Override

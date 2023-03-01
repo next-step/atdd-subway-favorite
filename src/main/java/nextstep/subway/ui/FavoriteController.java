@@ -1,7 +1,8 @@
 package nextstep.subway.ui;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.annotation.AuthHeader;
+import nextstep.auth.annotation.MyInfo;
+import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -19,25 +20,21 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-    /*
-        argument resolver를 이용해 내정보를 조회하는게 좋을까?
-        가독성은 좋으나 회원을 조회하는 argument resolver를 회원패키지에 추가하면 서로다른 패키지를 참조하게 된다.
-        헤더에서 내정보를 조회하는더 좋은 방법이 있을까??
-     */
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid FavoriteCreateRequest request, @AuthHeader String header) {
-        Favorite favorite = favoriteService.save(request, header);
+    public ResponseEntity<Void> create(@RequestBody @Valid FavoriteCreateRequest request, @MyInfo Member member) {
+        request.addMember(member);
+        Favorite favorite = favoriteService.save(request);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
-    @GetMapping("{id}")
-    public FavoriteResponse findById(@PathVariable Long id) {
-        return favoriteService.findById(id);
+    @GetMapping("{favoriteId}")
+    public FavoriteResponse findMyFavoriteById(@PathVariable Long favoriteId, @MyInfo Member member) {
+        return favoriteService.findMyFavoriteById(favoriteId, member.getId());
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        favoriteService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id, @MyInfo Member member) {
+        favoriteService.deleteMyFavoriteById(id, member.getId());
         return ResponseEntity.noContent().build();
     }
 }

@@ -17,8 +17,9 @@ public class FavoriteCreateRequest {
 
     @NotNull(message = "target is null")
     private Long target;
+    private Member member;
 
-    public Favorite toEntity(Function<Long, Optional<Station>> findFunction, Member member) {
+    public Favorite toEntity(Function<Long, Optional<Station>> findFunction) {
         return Favorite.of(
                 member,
                 findStation(source, findFunction),
@@ -27,5 +28,9 @@ public class FavoriteCreateRequest {
 
     private Station findStation(Long id, Function<Long, Optional<Station>> findFunction) {
         return findFunction.apply(id).orElseThrow(() -> new IllegalArgumentException("역을 조회 할 수 없습니다. " + id));
+    }
+
+    public void addMember(Member member) {
+        this.member = member;
     }
 }

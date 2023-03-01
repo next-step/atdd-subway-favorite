@@ -35,11 +35,11 @@ public class Favorite {
         return new Favorite(member, source, target);
     }
 
-    public Long getSourceId() {
-        return source.getId();
-    }
+    public void validateMyFavorite(Long memberId) {
+        if (memberId.equals(memberId)) {
+            return;
+        }
 
-    public Long getTargetId() {
-        return target.getId();
+        throw new IllegalArgumentException("자신의 즐겨찾기만 조회가능 합니다");
     }
 }

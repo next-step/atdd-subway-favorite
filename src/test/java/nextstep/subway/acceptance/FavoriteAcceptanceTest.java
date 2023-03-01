@@ -55,7 +55,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getLong("target.id")).isEqualTo(TARGET_ID);
     }
 
-
     /**
      * Given : 깃허브 로그인을 하고
      * and   : 즐겨찾기 등록을 하고
