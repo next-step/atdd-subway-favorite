@@ -26,7 +26,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 양재시민의숲역;
     private Long 청계산입구역;
 
-    private String accessToken;
+    private String myAccessToken;
+    private String otherAccessToken;
 
     /**
      * GIVEN 지하철 역을 두개 생성하고
@@ -42,8 +43,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         청계산입구역 = 지하철역_생성_요청("청계산입구역").jsonPath().getLong("id");
 
         회원_생성_요청("bactoria@gmail.com", "qwe123", 20);
-        var 베어러_인증_로그인_응답 = 베어러_인증_로그인_요청("bactoria@gmail.com", "qwe123");
-        accessToken = Access_Token을_가져온다(베어러_인증_로그인_응답);
+        var 나의_베어러_인증_로그인_응답 = 베어러_인증_로그인_요청("bactoria@gmail.com", "qwe123");
+        myAccessToken = Access_Token을_가져온다(나의_베어러_인증_로그인_응답);
+
+        회원_생성_요청("vivi@gmail.com", "qwe123", 20);
+        var 다른_사람의_베어러_인증_로그인_응답 = 베어러_인증_로그인_요청("vivi@gmail.com", "qwe123");
+        otherAccessToken = Access_Token을_가져온다(다른_사람의_베어러_인증_로그인_응답);
     }
 
     /**
@@ -54,7 +59,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void addFavoriteLoginUser() {
         // when
-        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(myAccessToken, 강남역, 양재역);
 
         // then
         assertThat(즐겨찾기_추가_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -85,12 +90,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void readFavoriteLoginUser() {
         // given
-        즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
-        즐겨찾기_추가_요청(accessToken, 양재시민의숲역, 청계산입구역);
+        즐겨찾기_추가_요청(myAccessToken, 강남역, 양재역);
+        즐겨찾기_추가_요청(myAccessToken, 양재시민의숲역, 청계산입구역);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+                .auth().oauth2(myAccessToken)
                 .when()
                 .get("/favorites")
                 .then().log().all()
@@ -138,12 +143,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoriteLoginUser() {
         // given
-        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(myAccessToken, 강남역, 양재역);
         String location = 즐겨찾기_추가_응답.header("location");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+                .auth().oauth2(myAccessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .delete(location)
@@ -163,7 +168,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"Bearer abcd"})
     void deleteFavoriteNotLoginUser(String illegalAccessToken) {
         // given
-        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(accessToken, 강남역, 양재역);
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(myAccessToken, 강남역, 양재역);
         String location = 즐겨찾기_추가_응답.header("location");
 
         // when
@@ -195,7 +200,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+                .auth().oauth2(myAccessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .delete("/favorites/" + 존재하지_않는_즐겨찾기_아이디)
@@ -203,6 +208,29 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    /**
+     * WHEN 로그인한 유저가 다른 유저의 즐겨찾기를 삭제하는 경우 <br>
+     * THEN 예외가 발생한다 <br>
+     */
+    @DisplayName("로그인한 유저가 다른 사람의 즐겨찾기 삭제")
+    @Test
+    void deleteOtherUserFavorite() {
+        // given
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(otherAccessToken, 강남역, 양재역);
+        String location = 즐겨찾기_추가_응답.header("location");
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(myAccessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete(location)
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, Long source, Long target) {
