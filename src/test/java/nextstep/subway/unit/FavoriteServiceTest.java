@@ -47,30 +47,10 @@ public class FavoriteServiceTest {
 
     @BeforeEach
     public void setUp() {
-        station1 = new Station("강남역");
-        ReflectionTestUtils.setField(station1, "id", 1L);
-        station2 = new Station("판교역");
-        ReflectionTestUtils.setField(station2, "id", 2L);
-
-        stationRepository.save(station1);
-        stationRepository.save(station2);
+        station1 = stationRepository.save(new Station("강남역"));
+        station2 = stationRepository.save(new Station("판교역"));
 
         request = new FavoriteCreateRequest(station1.getId(), station2.getId());
-    }
-
-    @AfterEach
-    public void setDown() {
-        List<String> tableNames = entityManager.getMetamodel().getEntities().stream()
-                .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
-                .map(EntityType::getName)
-                .collect(Collectors.toList());
-        entityManager.flush();
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
-        for (String tableName : tableNames) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
-        }
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 
     @Test
