@@ -1,8 +1,5 @@
 package nextstep.subway.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,15 +7,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 강남역;
@@ -62,7 +57,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(myAccessToken, 강남역, 양재역);
 
         // then
-        assertThat(즐겨찾기_추가_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        즐겨찾기_추가됨(즐겨찾기_추가_응답);
     }
 
     /**
@@ -78,11 +73,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(illegalAccessToken, 강남역, 양재역);
 
         // then
-        assertThat(즐겨찾기_추가_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        인증_예외_발생함(즐겨찾기_추가_응답);
     }
 
     /**
-     * GIVEN 로그인한 회원이 즐겨찾기를 2번 하고
+     * GIVEN 로그인한 회원이 즐겨찾기를 2번 하고 <br>
      * WHEN 로그인한 회원이 즐겨찾기 조회하는 경우 <br>
      * THEN 2개의 즐겨찾기 목록이 조회된다 <br>
      */
@@ -94,19 +89,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_추가_요청(myAccessToken, 양재시민의숲역, 청계산입구역);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(myAccessToken)
-                .when()
-                .get("/favorites")
-                .then().log().all()
-                .extract();
+        var 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(myAccessToken);
 
         // then
-        assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(response.body().jsonPath().getList("source.id", Long.class)).containsExactly(강남역, 양재시민의숲역);
-            assertThat(response.body().jsonPath().getList("target.id", Long.class)).containsExactly(양재역, 청계산입구역);
-        });
+        즐겨찾기_조회됨(즐겨찾기_조회_응답, List.of(강남역, 양재시민의숲역), List.of(양재역, 청계산입구역));
     }
 
     /**
@@ -119,16 +105,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"Bearer abcd"})
     void readFavoriteNotLoginUser(String illegalAccessToken) {
         // when
-        var given = RestAssured.given().log().all();
-
-        if (illegalAccessToken != null) {
-            given.auth().oauth2(illegalAccessToken);
-        }
-
-        var 즐겨찾기_조회_응답 = given.when()
-                .get("/favorites")
-                .then().log().all()
-                .extract();
+        var 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(illegalAccessToken);
 
         // then
         assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -147,15 +124,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         String location = 즐겨찾기_추가_응답.header("location");
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(myAccessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(myAccessToken, location);
+
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
 
     /**
@@ -172,20 +144,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         String location = 즐겨찾기_추가_응답.header("location");
 
         // when
-        var given = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
-
-        if (illegalAccessToken != null) {
-            given.auth().oauth2(illegalAccessToken);
-        }
-
-        var 즐겨찾기_삭제_응답 = given.when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(illegalAccessToken, location);
 
         // then
-        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        인증_예외_발생함(즐겨찾기_삭제_응답);
     }
 
     /**
@@ -197,17 +159,13 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void deleteNotExistsFavorite() {
         // given
         Long 존재하지_않는_즐겨찾기_아이디 = Long.MAX_VALUE;
+        String location = "/favorites/" + 존재하지_않는_즐겨찾기_아이디;
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(myAccessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .delete("/favorites/" + 존재하지_않는_즐겨찾기_아이디)
-                .then().log().all()
-                .extract();
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(myAccessToken, location);
+
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        찾을_수_없는_예외_발생함(즐겨찾기_삭제_응답);
     }
 
     /**
@@ -222,35 +180,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         String location = 즐겨찾기_추가_응답.header("location");
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(myAccessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .delete(location)
-                .then().log().all()
-                .extract();
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(myAccessToken, location);
+
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, Long source, Long target) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source + "");
-        params.put("target", target + "");
-
-        var given = RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
-
-        if (accessToken != null) {
-            given = given.auth().oauth2(accessToken);
-        }
-
-        // when
-        return given
-                .when()
-                .post("/favorites")
-                .then().log().all()
-                .extract();
+        권한_예외_발생함(즐겨찾기_삭제_응답);
     }
 }
