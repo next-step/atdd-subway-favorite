@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
+@Profile("test")
 @RequestMapping("/github")
 public class GithubFakeController {
 
