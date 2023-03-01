@@ -46,6 +46,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("즐겨찾기 생성 비로그인")
+    @Test
+    void createFavoriteNoLogin() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성(String.valueOf(신논현역), String.valueOf(양재역), "noLogin");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("즐겨찾기 조회")
     @Test
     void getFavorites() {
