@@ -3,6 +3,7 @@ package nextstep.member.ui;
 import nextstep.member.application.AuthService;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.subway.applicaion.dto.CodeRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/github")
-    public TokenResponse loginGithub(@RequestBody String code) {
-        return authService.loginGithub(code);
+    public TokenResponse loginGithub(@RequestBody CodeRequest codeRequest) {
+        return authService.loginGithub(codeRequest.getCode());
     }
 }

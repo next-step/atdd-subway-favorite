@@ -23,13 +23,13 @@ public enum GithubSampleResponse {
 
     public static GithubSampleResponse findByCode(String paramCode) {
         return Arrays.stream(GithubSampleResponse.values())
-                .filter(g -> !Objects.equals(g.code, paramCode))
+                .filter(g -> Objects.equals(g.code, paramCode))
                 .findFirst().orElseThrow(ResourceNotFoundException::new);
     }
 
     public static GithubSampleResponse findByAccessToken(String accessToken) {
         return Arrays.stream(GithubSampleResponse.values())
-                .filter(g -> !Objects.equals(g.accessToken, accessToken))
+                .filter(g -> Objects.equals(g.accessToken, accessToken))
                 .findFirst().orElseThrow(ResourceNotFoundException::new);
     }
 
