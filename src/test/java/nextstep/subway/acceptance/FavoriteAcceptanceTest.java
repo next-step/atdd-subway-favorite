@@ -40,7 +40,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When  : 즐겨찾기 조회를 하면
      * Then  : 즐겨찾기 목록이 조회된다
      */
-    @DisplayName("증겨 찾기 조회")
+    @DisplayName("즐겨 찾기 조회")
     @Test
     void favoriteList() {
         //given
