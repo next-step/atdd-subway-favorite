@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.StationSteps.*;
@@ -45,7 +46,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("즐겨찾기 생성")
+    @DisplayName("즐겨찾기 조회")
     @Test
     void getFavorites() {
         // given
@@ -59,18 +60,43 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(accessToken);
 
         // then
-        즐겨찾기_조회_검증(response);
-    }
-
-    private static void 즐겨찾기_조회_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList("source.name", String.class))
-                .contains("신논현역", "강남역");
+                .containsOnly("신논현역", "강남역");
         assertThat(response.jsonPath().getList("target.name", String.class))
-                .contains("양재역", "양재역");
+                .containsOnly("양재역", "양재역");
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> tokenResponse = MemberSteps.베어러_인증_로그인_요청(email, password);
+        String accessToken = tokenResponse.jsonPath().getString("accessToken");
+
+        long createdFavoriteId =
+                getCreatedFavoriteLocation(FavoriteSteps.즐겨찾기_생성(String.valueOf(신논현역), String.valueOf(양재역), accessToken));
+        FavoriteSteps.즐겨찾기_생성(String.valueOf(강남역), String.valueOf(양재역), accessToken);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = FavoriteSteps.즐겨찾기_삭제(createdFavoriteId, accessToken);
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(accessToken);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("source.name", String.class))
+                .containsOnly("강남역");
+        assertThat(response.jsonPath().getList("target.name", String.class))
+                .containsOnly("양재역");
     }
 
     private long getStationId(ExtractableResponse<Response> response) {
         return response.jsonPath().getLong("id");
+    }
+
+    private long getCreatedFavoriteLocation(ExtractableResponse<Response> response) {
+        String location = response.header(HttpHeaders.LOCATION);
+        return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 }

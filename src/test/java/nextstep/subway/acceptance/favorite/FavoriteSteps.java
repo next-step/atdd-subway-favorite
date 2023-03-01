@@ -31,4 +31,13 @@ public class FavoriteSteps {
                 .when().get("/favorites")
                 .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(long deleteId, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites" + "/" + deleteId)
+                .then().log().all().extract();
+    }
 }
