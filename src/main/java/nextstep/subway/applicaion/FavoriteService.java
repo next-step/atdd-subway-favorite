@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.common.exception.AuthorizationException;
-import nextstep.member.application.MemberService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
@@ -21,26 +20,21 @@ import nextstep.subway.domain.Station;
 @RequiredArgsConstructor
 public class FavoriteService {
 
-	private final MemberService memberService;
+	private final PathService pathService;
 	private final StationService stationService;
 	private final FavoriteRepository favoriteRepository;
 
-	public Long createFavorite(String email, FavoriteRequest request) {
-		Long memberId = memberService.findByEmail(email).getId();
-		Long sourceStationId = stationService.findById(request.getSource()).getId();
-		Long targetStationId = stationService.findById(request.getTarget()).getId();
-		Long favoriteId = favoriteRepository.save(new Favorite(memberId, sourceStationId, targetStationId)).getId();
-		return favoriteId;
+	public Long createFavorite(Long memberId, FavoriteRequest request) {
+		pathService.findPath(request.getSource(), request.getTarget());
+		return favoriteRepository.save(new Favorite(memberId, request.getSource(), request.getTarget())).getId();
 	}
 
-	public List<FavoriteResponse> showFavorite(String email) {
-		Long memberId = memberService.findByEmail(email).getId();
+	public List<FavoriteResponse> showFavorite(Long memberId) {
 		List<Favorite> favorite = favoriteRepository.findByMemberId(memberId);
 		return favorite.stream().map(this::createFavoriteResponse).collect(Collectors.toList());
 	}
 
-	public void deleteFavorite(String email, Long id) {
-		Long memberId = memberService.findByEmail(email).getId();
+	public void deleteFavorite(Long memberId, Long id) {
 		Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(FAVORITE_NOT_FOUND.isMessage()));
 		if (!favorite.isCreateBy(memberId)) {
 			throw new AuthorizationException(FAVORITE_NOT_MATCH_MEMBER.isMessage());

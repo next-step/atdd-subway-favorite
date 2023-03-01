@@ -137,6 +137,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
+	/**
+	 * When 연결되지 않은 경로 즐겨찾기 생성 요청 시
+	 * Then 등록 안됨
+	 */
+	@DisplayName("연결되지 않은 경로 즐겨찾기 생성 안됨")
+	@Test
+	void notCreateFavoriteTest() {
+		// given
+		Long TEST_Station = 지하철역_생성_요청("TEST").jsonPath().getLong("id");
+
+		// When
+		ExtractableResponse<Response> createResponse = createFavorite(UserMember, 강남역, TEST_Station);
+
+		// Then
+		assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
+
 	private Long 지하철_노선_생성_요청(String name, String color, Long upStation, Long downStation, int distance) {
 		Map<String, String> lineCreateParams;
 		lineCreateParams = new HashMap<>();

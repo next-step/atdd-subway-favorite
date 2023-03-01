@@ -22,7 +22,7 @@ public class MemberAuthService {
 		Member findMember = memberRepository.findByEmail(tokenRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException(LOGIN_NOT_MATH_EMAIL.isMessage()));
 		findMember.checkPassword(tokenRequest.getPassword());
 
-		String token = jwtTokenProvider.createToken(tokenRequest.getEmail(), findMember.getRoles());
+		String token = jwtTokenProvider.createToken(findMember.getId().toString(), tokenRequest.getEmail(), findMember.getRoles());
 		return new TokenResponse(token);
 	}
 }

@@ -45,7 +45,7 @@ public class ArgumentResolverMockTest {
 		// given
 		when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
 		when(jwtTokenProvider.validateToken(TEST_TOKEN)).thenReturn(true);
-		when(jwtTokenProvider.getPrincipal(TEST_TOKEN)).thenReturn(EMAIL);
+		when(jwtTokenProvider.getEmail(TEST_TOKEN)).thenReturn(EMAIL);
 		when(jwtTokenProvider.getRoles(TEST_TOKEN)).thenReturn(ROLES);
 
 		// when

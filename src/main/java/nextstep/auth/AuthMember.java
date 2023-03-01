@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthMember {
+	private Long id;
 	private String email;
 	private List<String> roles;
 }

@@ -36,9 +36,10 @@ public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver
 
 		String accessToken = checkHeaderAuth(headerAuth);
 
-		String email = jwtTokenProvider.getPrincipal(accessToken);
+		Long id = jwtTokenProvider.getPrincipal(accessToken);
+		String email = jwtTokenProvider.getEmail(accessToken);
 		List<String> roles = jwtTokenProvider.getRoles(accessToken);
-		return new AuthMember(email, roles);
+		return new AuthMember(id, email, roles);
 	}
 
 	private String checkHeaderAuth(String headerAuth) {
