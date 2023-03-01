@@ -32,6 +32,10 @@ public class Favorite {
         return id;
     }
 
+    public Long getMemberId() {
+        return memberId;
+    }
+
     public Station getSource() {
         return source;
     }

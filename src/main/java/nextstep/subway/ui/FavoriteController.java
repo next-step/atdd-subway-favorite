@@ -42,7 +42,7 @@ public class FavoriteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(LoginMember loginMember, @PathVariable Long id) {
-        favoriteService.deleteFavorite(id);
+        favoriteService.deleteFavorite(id, loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }

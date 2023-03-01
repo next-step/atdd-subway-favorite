@@ -2,6 +2,7 @@ package nextstep.subway.ui;
 
 import nextstep.member.ui.InvalidTokenException;
 import nextstep.member.ui.NotExistsTokenException;
+import nextstep.subway.applicaion.exceptions.CanNotDeleteFavoriteException;
 import nextstep.subway.applicaion.exceptions.NotFoundFavoriteException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -29,5 +30,10 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(NotFoundFavoriteException.class)
     public ResponseEntity<Void> handleNotFoundException(NotFoundFavoriteException e) {
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(CanNotDeleteFavoriteException.class)
+    public ResponseEntity<Void> handleForbiddenException(CanNotDeleteFavoriteException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }
