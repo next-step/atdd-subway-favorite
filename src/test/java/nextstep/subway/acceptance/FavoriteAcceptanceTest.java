@@ -183,6 +183,28 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    /**
+     * WHEN 로그인한 유저가 존재하지 않는 즐겨찾기를 삭제하는 경우 <br>
+     * THEN 예외가 발생한다 <br>
+     */
+    @DisplayName("로그인한 유저가 존재하지 않는 즐겨찾기 삭제")
+    @Test
+    void deleteNotExistsFavorite() {
+        // given
+        Long 존재하지_않는_즐겨찾기_아이디 = Long.MAX_VALUE;
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/favorites/" + 존재하지_않는_즐겨찾기_아이디)
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source + "");
