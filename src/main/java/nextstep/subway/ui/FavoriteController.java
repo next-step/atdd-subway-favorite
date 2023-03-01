@@ -2,16 +2,16 @@ package nextstep.subway.ui;
 
 import nextstep.member.ui.LoginMember;
 import nextstep.subway.applicaion.StationService;
+import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/favorites")
@@ -31,5 +31,48 @@ public class FavoriteController {
 
         Favorite favorite = favoriteRepository.save(new Favorite(loginMember.getId(), sourceStation, targetStation));
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> readLine(LoginMember loginMember) {
+        List<Favorite> myFavorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+
+        List<FavoriteResponse> response = myFavorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+}
+
+class FavoriteResponse {
+    private Long id;
+    private StationResponse source;
+    private StationResponse target;
+
+    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
+        this.id = id;
+        this.source = source;
+        this.target = target;
+    }
+
+    public static FavoriteResponse of(Favorite favorite) {
+        return new FavoriteResponse(
+                favorite.getId(),
+                StationResponse.of(favorite.getSource()),
+                StationResponse.of(favorite.getTarget())
+        );
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public StationResponse getSource() {
+        return source;
+    }
+
+    public StationResponse getTarget() {
+        return target;
     }
 }
