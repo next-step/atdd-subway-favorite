@@ -56,4 +56,18 @@ public class AuthServiceTest extends SpringTest {
         assertThat(tokenResponse.getAccessToken()).isNotNull();
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
+
+    @DisplayName("회원가입 되어있지 않은 사용자로 github 로그인")
+    @Test
+    void githubOAuthWithUnRegisteredMember() {
+        // given
+        final GithubLoginRequest githubLoginRequest = new GithubLoginRequest(GithubResponses.사용자2.getCode());
+
+        // when
+        final TokenResponse tokenResponse = authService.githubLogin(githubLoginRequest);
+
+        // then
+        assertThat(tokenResponse.getAccessToken()).isNotNull();
+        assertThat(tokenResponse.getAccessToken()).isNotBlank();
+    }
 }
