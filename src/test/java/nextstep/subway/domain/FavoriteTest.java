@@ -1,6 +1,6 @@
 package nextstep.subway.domain;
 
-import nextstep.subway.applicaion.exceptions.CanNotDeleteFavoriteException;
+import nextstep.subway.domain.exceptions.CanNotDeleteFavoriteException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

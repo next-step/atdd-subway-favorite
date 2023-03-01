@@ -1,7 +1,6 @@
 package nextstep.subway.applicaion;
 
 import nextstep.subway.applicaion.dto.FavoriteResponse;
-import nextstep.subway.applicaion.exceptions.CanNotDeleteFavoriteException;
 import nextstep.subway.applicaion.exceptions.NotFoundFavoriteException;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,10 +43,8 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new NotFoundFavoriteException("존재하지 않는 즐겨찾기 아이디 입니다. favoriteId: " + favoriteId));
 
-        if (!Objects.equals(favorite.getMemberId(), memberId)) {
-            throw new CanNotDeleteFavoriteException("다른 사람의 즐겨찾기를 삭제할 수 없습니다. memberId: " + memberId);
-        }
-        
+        favorite.delete(memberId);
+
         favoriteRepository.delete(favorite);
     }
 

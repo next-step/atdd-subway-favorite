@@ -1,6 +1,9 @@
 package nextstep.subway.domain;
 
+import nextstep.subway.domain.exceptions.CanNotDeleteFavoriteException;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Favorite {
@@ -28,12 +31,14 @@ public class Favorite {
     public Favorite() {
     }
 
-    public Long getId() {
-        return id;
+    public void delete(Long memberId) {
+        if (!Objects.equals(this.memberId, memberId)) {
+            throw new CanNotDeleteFavoriteException("다른 사람의 즐겨찾기를 삭제할 수 없습니다. memberId: " + memberId);
+        }
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Long getId() {
+        return id;
     }
 
     public Station getSource() {

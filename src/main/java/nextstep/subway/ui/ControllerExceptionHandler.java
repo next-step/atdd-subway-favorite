@@ -2,7 +2,7 @@ package nextstep.subway.ui;
 
 import nextstep.member.ui.InvalidTokenException;
 import nextstep.member.ui.NotExistsTokenException;
-import nextstep.subway.applicaion.exceptions.CanNotDeleteFavoriteException;
+import nextstep.subway.domain.exceptions.CanNotDeleteFavoriteException;
 import nextstep.subway.applicaion.exceptions.NotFoundFavoriteException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
