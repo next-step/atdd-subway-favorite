@@ -15,8 +15,6 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
-    private final AuthServices authServices;
-
 
     public Favorite save(FavoriteCreateRequest request) {
         Favorite favorite = request.toEntity(stationRepository::findById); // request에서 station id를 꺼내서 조회하는게 좋을까?
@@ -35,11 +33,15 @@ public class FavoriteService {
     }
 
     public void deleteMyFavoriteById(Long id, Long memberId) {
-        // 이렇게 호출하면 불필요하게 response 객체를 한번더 만든다.
-        // 조회 ~ 검증 로직까지 처리하는 메서드를 추가하는게 좋을까? 아니면 response객체를 컨트롤러에서 생성하도록 변경하는게 좋을까?
-        // 아니면 객체하나 정도 생성하는 정도는 무시하고 이대로하는게 좋을까?
-        findByMemberId(id);
+        validateFavoriteForDelete(memberId);
 
         favoriteRepository.deleteById(id);
+    }
+
+    private void validateFavoriteForDelete(Long memberId) {
+        Favorite favorite = favoriteRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기 조회 실패 id:" + memberId));
+
+        favorite.validateMyFavorite(memberId);
     }
 }
