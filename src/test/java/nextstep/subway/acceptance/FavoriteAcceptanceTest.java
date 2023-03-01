@@ -80,7 +80,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(() -> {
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(response.body().jsonPath().getList("source.id", Long.class)).containsExactly(강남역, 양재시민의숲역);
             assertThat(response.body().jsonPath().getList("target.id", Long.class)).containsExactly(양재역, 청계산입구역);
         });
