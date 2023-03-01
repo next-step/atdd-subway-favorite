@@ -26,6 +26,7 @@ public enum FieldFixture {
     회원_권한_목록("roles"),
 
     Access_Token("accessToken"),
+    권한_증서("code"),
     ;
 
     private final String value;
