@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
+    private static String AUTHORIZATION_HEADER_PREFIX = "Bearer ";
+
     private JwtTokenProvider jwtTokenProvider;
 
     public LoginMemberArgumentResolver(JwtTokenProvider jwtTokenProvider) {
@@ -28,7 +30,14 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
+
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        
+        if (authorizationHeader == null || !authorizationHeader.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
+            throw new NotExistsTokenException("로그인 토큰이 존재하지 않습니다");
+        }
+
+        String token = authorizationHeader.split(AUTHORIZATION_HEADER_PREFIX)[1];
 
         if (!jwtTokenProvider.validateToken(token)) {
             throw new InvalidTokenException("유효하지 않은 토큰입니다. token: " + token);

@@ -45,7 +45,7 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(LoginMember loginMember, @PathVariable Long id) {
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(""));
 
