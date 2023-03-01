@@ -14,10 +14,11 @@ import org.springframework.stereotype.Service;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final StationRepository stationRepository;
+    private final StationService stationService;
+
 
     public Favorite save(FavoriteCreateRequest request) {
-        Favorite favorite = request.toEntity(stationRepository::findById); // request에서 station id를 꺼내서 조회하는게 좋을까?
+        Favorite favorite = request.toEntity(stationService::findById);
         return favoriteRepository.save(favorite);
     }
 

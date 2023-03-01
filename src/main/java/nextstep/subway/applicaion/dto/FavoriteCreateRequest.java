@@ -19,15 +19,11 @@ public class FavoriteCreateRequest {
     private Long target;
     private Member member;
 
-    public Favorite toEntity(Function<Long, Optional<Station>> findFunction) {
+    public Favorite toEntity(Function<Long, Station> findFunction) {
         return Favorite.of(
                 member,
-                findStation(source, findFunction),
-                findStation(target, findFunction));
-    }
-
-    private Station findStation(Long id, Function<Long, Optional<Station>> findFunction) {
-        return findFunction.apply(id).orElseThrow(() -> new IllegalArgumentException("역을 조회 할 수 없습니다. " + id));
+                findFunction.apply(source),
+                findFunction.apply(target));
     }
 
     public void addMember(Member member) {
