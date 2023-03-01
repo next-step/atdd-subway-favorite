@@ -31,7 +31,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String principal = AuthenticationContextHolder.getAuthentication();
+        String principal = AuthenticationContextHolder.getAuthentication(null);
 
         if (ObjectUtils.isEmpty(principal)) {
             String accessToken = extractCredentialsFromAuthorization(request);

@@ -11,9 +11,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+    private static final int AGE = 20;
 
     @DisplayName("회원가입을 한다.")
     @Test
@@ -32,7 +30,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청(createResponse);
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(관리자_토큰, createResponse);
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
@@ -46,7 +44,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        ExtractableResponse<Response> response = 회원_정보_수정_요청(관리자_토큰, createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -59,7 +57,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 회원_삭제_요청(createResponse);
+        ExtractableResponse<Response> response = 회원_삭제_요청(관리자_토큰, createResponse);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -73,9 +71,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
-        // given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // when
         var token = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
         var response = 토큰_인증으로_내_회원_정보_조회_요청(token);
@@ -97,7 +92,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo_WithUnAuthorizedToken() {
         // when
         var response = 토큰_인증으로_내_회원_정보_조회_요청("invalid token");
-        
+
         // then
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());

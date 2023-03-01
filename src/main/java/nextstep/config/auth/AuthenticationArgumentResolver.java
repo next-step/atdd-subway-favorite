@@ -42,6 +42,6 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
             throw new MalformedJwtException(String.format("%s is UnAuthorized accessToken", accessToken));
         }
 
-        return jwtTokenProvider.getPrincipal(accessToken);
+        return jwtTokenProvider.getPrincipal(AuthenticationContextHolder.getAuthentication(accessToken));
     }
 }
