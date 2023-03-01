@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.member.domain.Member;
 
 @Entity
 public class Favorite {
@@ -14,7 +15,10 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long memberId;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "source_id")
@@ -27,22 +31,24 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Long memberId, Station source, Station target) {
-        this.memberId = memberId;
+    public Favorite(Member member, Station source, Station target) {
+        this.member = member;
         this.source = source;
         this.target = target;
     }
 
-    public boolean isSameMember(Long memberId) {
-        return this.memberId.equals(memberId);
+    public void validMember(Member member) {
+        if (!this.member.equals(member)) {
+            throw new IllegalArgumentException("본인의 favorite가 아닙니다.");
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
     public Station getSource() {

@@ -24,6 +24,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private long 강남역;
     private long 잠실역;
 
+    private Long favoriteId;
+
     @Override
     @BeforeEach
     void setUp() {
@@ -31,6 +33,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         accessToken = 깃허브_인증_로그인_요청(user.getCode()).jsonPath().getString("accessToken");
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         잠실역 = 지하철역_생성_요청("잠실역").jsonPath().getLong("id");
+        favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
     }
 
     /**
@@ -67,8 +70,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기_조회")
     @Test
     void 즐겨찾기_조회() {
-        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
-
         final ExtractableResponse<Response> response = 즐겨찾기_조회_한다(accessToken, favoriteId);
 
         즐겨찾기_조회에_성공한다(response, favoriteId, 강남역, 잠실역);
@@ -82,7 +83,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지_않은경우_즐겨찾기_등록_실패")
     @Test
     void 로그인하지_않은경우_즐겨찾기_조회_실패() {
-        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
         final ExtractableResponse<Response> response = 즐겨찾기_조회_한다("notLogin", favoriteId);
 
         로그인하지_않은경우_즐겨찾기_조회_실패한다(response);
@@ -96,8 +96,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기_삭제")
     @Test
     void 즐겨찾기_삭제() {
-        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
-
         final ExtractableResponse<Response> response = 즐겨찾기_삭제_한다(accessToken, favoriteId);
 
         즐겨찾기_삭제에_성공한다(response);
@@ -111,8 +109,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지_않은경우_즐겨찾기_삭제_실패")
     @Test
     void 로그인하지_않은경우_즐겨찾기_삭제_실패() {
-        Long favoriteId = 즐겨찾기_등록_한다(accessToken, 강남역, 잠실역).jsonPath().getLong("id");
-
         final ExtractableResponse<Response> response = 즐겨찾기_삭제_한다("notLogin", favoriteId);
 
         로그인하지_않은경우_즐겨찾기_삭제_실패한다(response);

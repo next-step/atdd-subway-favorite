@@ -33,7 +33,7 @@ public class FavoriteService {
         final Station target = stationService.findById(targetId);
         final Station source = stationService.findById(sourceId);
 
-        final Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
+        final Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
         return FavoriteResponse.toDto(favorite);
     }
 
@@ -41,7 +41,7 @@ public class FavoriteService {
         final Favorite favorite = findFavoriteById(favoriteId);
         final Member member = findMemberByEmail(email);
 
-        validFavorite(favorite, member);
+        favorite.validMember(member);
 
         return FavoriteResponse.toDto(favorite);
     }
@@ -50,15 +50,9 @@ public class FavoriteService {
         final Favorite favorite = findFavoriteById(favoriteId);
         final Member member = findMemberByEmail(email);
 
-        validFavorite(favorite, member);
+        favorite.validMember(member);
 
         favoriteRepository.deleteById(favoriteId);
-    }
-
-    private void validFavorite(Favorite favorite, Member member) {
-        if (!favorite.isSameMember(member.getId())) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private Favorite findFavoriteById(Long favoriteId) {
