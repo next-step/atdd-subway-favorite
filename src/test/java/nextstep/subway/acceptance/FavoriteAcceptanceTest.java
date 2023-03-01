@@ -94,14 +94,15 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         // given
-        즐겨찾기_추가_요청(강남역, 양재역);
+        var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(강남역, 양재역);
+        String location = 즐겨찾기_추가_응답.header("location");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .delete("/favorites")
+                .delete(location)
                 .then().log().all()
                 .extract();
         // then
