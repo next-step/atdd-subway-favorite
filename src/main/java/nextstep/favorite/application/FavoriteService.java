@@ -32,21 +32,21 @@ public class FavoriteService {
 
     public Favorite saveFavorite(final String email, final FavoriteRequest favoriteRequest) {
         final Member member = memberService.findByEmail(email);
-        return favoriteRepository.save(createFavoriteEntity(member, favoriteRequest));
+        return favoriteRepository.save(createFavoriteEntity(member.getId(), favoriteRequest));
     }
 
     public List<FavoriteResponse> showFavorites(final String email) {
         final Member member = memberService.findByEmail(email);
-        List<Favorite> favorites = favoriteRepository.findByMember(member);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
         return createFavoriteResponse(favorites);
     }
 
-    private Favorite createFavoriteEntity(Member member, FavoriteRequest favoriteRequest) {
+    private Favorite createFavoriteEntity(Long memberId, FavoriteRequest favoriteRequest) {
         try {
             final Station source = stationService.findById(favoriteRequest.getSource());
             final Station target = stationService.findById(favoriteRequest.getTarget());
 
-            return new Favorite(member, source, target);
+            return new Favorite(memberId, source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(NOT_FOUND_STATION);
         }

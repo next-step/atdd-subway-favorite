@@ -74,13 +74,13 @@ public class FavoriteServiceMockTest {
     @DisplayName("경로 즐겨찾기 등록")
     void createFavorite() {
         // given
-        final Favorite returnValue = new Favorite(관리자, 강남역, 역삼역);
+        final Favorite returnValue = new Favorite(관리자.getId(), 강남역, 역삼역);
         ReflectionTestUtils.setField(returnValue, "id", 1L);
 
         when(memberService.findByEmail(EMAIL)).thenReturn(관리자);
         when(stationService.findById(강남역.getId())).thenReturn(강남역);
         when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
-        when(favoriteRepository.save(new Favorite(관리자, 강남역, 역삼역))).thenReturn(returnValue);
+        when(favoriteRepository.save(new Favorite(관리자.getId(), 강남역, 역삼역))).thenReturn(returnValue);
 
         // when
         final Favorite favorite = favoriteService.saveFavorite(EMAIL, new FavoriteRequest(강남역.getId(), 역삼역.getId()));
@@ -94,11 +94,11 @@ public class FavoriteServiceMockTest {
     @DisplayName("즐겨찾기 조회")
     void showFavorites() {
         // given
-        final Favorite favorite = new Favorite(관리자, 강남역, 역삼역);
+        final Favorite favorite = new Favorite(관리자.getId(), 강남역, 역삼역);
         ReflectionTestUtils.setField(favorite, "id", 1L);
 
         when(memberService.findByEmail(EMAIL)).thenReturn(관리자);
-        when(favoriteRepository.findByMember(관리자)).thenReturn(List.of(favorite));
+        when(favoriteRepository.findByMemberId(관리자.getId())).thenReturn(List.of(favorite));
 
         // when
         final List<FavoriteResponse> favorites = favoriteService.showFavorites(EMAIL);

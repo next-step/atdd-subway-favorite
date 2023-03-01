@@ -1,6 +1,5 @@
 package nextstep.favorite.domain;
 
-import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
@@ -13,9 +12,7 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_id")
@@ -28,8 +25,8 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station source, Station target) {
-        this.member = member;
+    public Favorite(Long memberId, Station source, Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
@@ -38,8 +35,8 @@ public class Favorite {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Station getSource() {
@@ -55,11 +52,11 @@ public class Favorite {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Favorite favorite = (Favorite) o;
-        return Objects.equals(id, favorite.id) && Objects.equals(member, favorite.member) && Objects.equals(source, favorite.source) && Objects.equals(target, favorite.target);
+        return Objects.equals(getId(), favorite.getId()) && Objects.equals(getMemberId(), favorite.getMemberId()) && Objects.equals(getSource(), favorite.getSource()) && Objects.equals(getTarget(), favorite.getTarget());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, member, source, target);
+        return Objects.hash(getId(), getMemberId(), getSource(), getTarget());
     }
 }
