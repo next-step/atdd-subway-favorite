@@ -1,14 +1,17 @@
 package nextstep.subway.unit;
 
 import nextstep.auth.application.AuthService;
+import nextstep.auth.application.dto.GithubLoginRequest;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +31,10 @@ public class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(new Member("test@test.com", "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
+        member = memberRepository.save(new Member(GithubResponses.사용자1.getEmail(), "password", 20, List.of(RoleType.ROLE_MEMBER.name())));
     }
 
+    @DisplayName("일반 로그인")
     @Test
     void login() {
         // given
@@ -38,6 +42,20 @@ public class AuthServiceTest {
 
         // when
         final TokenResponse tokenResponse = authService.login(tokenRequest);
+
+        // then
+        assertThat(tokenResponse.getAccessToken()).isNotNull();
+        assertThat(tokenResponse.getAccessToken()).isNotBlank();
+    }
+
+    @DisplayName("Github 로그인")
+    @Test
+    void githubOAuth() {
+        // given
+        final GithubLoginRequest githubLoginRequest = new GithubLoginRequest(GithubResponses.사용자1.getEmail());
+
+        // when
+        final TokenResponse tokenResponse = authService.githubLogin(githubLoginRequest);
 
         // then
         assertThat(tokenResponse.getAccessToken()).isNotNull();
