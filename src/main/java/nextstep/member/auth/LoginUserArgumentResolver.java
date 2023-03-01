@@ -39,6 +39,10 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
         final String accessToken = getAccessToken(authorization);
 
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new AuthorizationException();
+        }
+
         final String principal = jwtTokenProvider.getPrincipal(accessToken);
         return new LoginUser(principal);
     }

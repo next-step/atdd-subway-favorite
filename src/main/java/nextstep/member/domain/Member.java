@@ -72,4 +72,21 @@ public class Member {
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Member)) {
+            return false;
+        }
+        Member member = (Member) o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

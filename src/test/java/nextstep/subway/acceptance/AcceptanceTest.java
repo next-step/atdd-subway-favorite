@@ -12,11 +12,12 @@ import org.springframework.test.context.ActiveProfiles;
 @Import(TestConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AcceptanceTest {
+
     @Autowired
     private DatabaseCleanup databaseCleanup;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         databaseCleanup.execute();
     }
 }
