@@ -7,23 +7,16 @@ import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
-import nextstep.subway.GithubClientTestContextConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Import(GithubClientTestContextConfiguration.class)
-@Transactional
-public class AuthServiceTest {
+public class AuthServiceTest extends SpringTest {
 
     @Autowired
     private MemberRepository memberRepository;

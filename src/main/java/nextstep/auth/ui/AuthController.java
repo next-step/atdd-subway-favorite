@@ -1,6 +1,5 @@
 package nextstep.auth.ui;
 
-import antlr.Token;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.application.AuthService;
 import nextstep.auth.application.dto.GithubLoginRequest;
