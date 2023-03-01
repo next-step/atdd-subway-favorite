@@ -6,6 +6,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -24,6 +26,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
@@ -35,5 +38,13 @@ public class MemberService {
 
     public Member getMember(final String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
+    public Member getMemberOrCreate(final String email) {
+        final Optional<Member> findMember = memberRepository.findByEmail(email);
+        if (findMember.isEmpty()) {
+            return memberRepository.save(new Member(email, "!nopassword"));
+        }
+        return findMember.get();
     }
 }
