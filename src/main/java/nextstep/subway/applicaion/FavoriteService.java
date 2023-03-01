@@ -19,17 +19,22 @@ public class FavoriteService {
     private final MemberService memberService;
     private final StationService stationService;
     private final FavoriteRepository favoriteRepository;
+    private final PathService pathService;
 
-    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
+    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository, PathService pathService) {
         this.memberService = memberService;
         this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
+        this.pathService = pathService;
     }
 
     public Long createFavorite(Long userId, Long source, Long target) {
         Long memberId = memberService.findMember(userId).getId();
         Long sourceId = stationService.findById(source).getId();
         Long targetId = stationService.findById(target).getId();
+
+        pathService.findPath(source, target);
+
         Favorite favorite = favoriteRepository.save(new Favorite(memberId, sourceId, targetId));
         return favorite.getId();
     }
