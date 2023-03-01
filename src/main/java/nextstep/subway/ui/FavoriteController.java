@@ -43,6 +43,16 @@ public class FavoriteController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(""));
+
+        favoriteRepository.delete(favorite);
+
+        return ResponseEntity.noContent().build();
+    }
 }
 
 class FavoriteResponse {
