@@ -72,7 +72,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/favorites")
                 .then().log().all()
