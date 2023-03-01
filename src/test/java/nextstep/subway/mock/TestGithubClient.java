@@ -22,6 +22,9 @@ public class TestGithubClient implements GithubClient {
         if (code.equals(GithubResponses.사용자4.getCode())) {
             return GithubResponses.사용자4.getAccessToken();
         }
+        if (code.equals(GithubResponses.사용자5.getCode())) {
+            return GithubResponses.사용자5.getAccessToken();
+        }
         throw new RuntimeException();
     }
 
@@ -38,6 +41,9 @@ public class TestGithubClient implements GithubClient {
         }
         if (accessToken.equals(GithubResponses.사용자4.getAccessToken())) {
             return new GithubProfileResponse(GithubResponses.사용자4.getEmail());
+        }
+        if (accessToken.equals(GithubResponses.사용자5.getAccessToken())) {
+            return new GithubProfileResponse(GithubResponses.사용자5.getEmail());
         }
         throw new RuntimeException();
     }
