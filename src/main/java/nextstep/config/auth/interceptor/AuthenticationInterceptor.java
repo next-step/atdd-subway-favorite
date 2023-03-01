@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,8 +44,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-//        AuthenticationContextHolder.clearContext();
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        AuthenticationContextHolder.clearContext();
     }
 
     private void validateAuthorization(String accessToken) {
@@ -54,7 +53,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             throw new InvalidTokenException("UnAuthorized accessToken type.");
         }
 
-        if (Objects.nonNull(accessToken) && !accessToken.startsWith(AUTHENTICATION_TYPE)) {
+        if (!accessToken.startsWith(AUTHENTICATION_TYPE)) {
             throw new InvalidTokenException("UnAuthorized accessToken type.");
         }
     }

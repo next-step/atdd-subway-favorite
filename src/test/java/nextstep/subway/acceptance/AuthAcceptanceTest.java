@@ -2,12 +2,10 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.DataLoader;
 import nextstep.subway.utils.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.MemberSteps.깃허브_로그인_요청;
@@ -19,13 +17,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
 
-    @Autowired
-    private DataLoader dataLoader;
-
     @BeforeEach
     public void setUp() {
         super.setUp();
-        dataLoader.loadData();
     }
 
     /**

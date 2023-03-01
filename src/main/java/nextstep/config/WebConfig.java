@@ -23,7 +23,11 @@ public class WebConfig implements WebMvcConfigurer {
                 "/login/token",
                 "/login/github",
                 "/stations/**",
-                "/members/**"
+                "/members/**",
+                "/lines/**",
+                "/paths",
+                "/access-token",
+                "/profile"
         );
     }
 

@@ -11,6 +11,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
     @DisplayName("회원가입을 한다.")
@@ -95,12 +97,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo_WithUnAuthorizedToken() {
         // when
         var response = 토큰_인증으로_내_회원_정보_조회_요청("invalid token");
-
-        System.out.println(response.jsonPath().getString("errorMessage"));
+        
         // then
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-            assertThat(response.jsonPath().getString("errorMessage")).contains("is UnAuthorized token");
+            assertThat(response.jsonPath().getString("errorMessage")).contains("invalid token is UnAuthorized accessToken");
         });
     }
 }

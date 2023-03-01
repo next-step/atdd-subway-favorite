@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.FavoriteSteps.*;
+import static nextstep.subway.acceptance.MemberSteps.로그인_되어_있음;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -14,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 강남역;
     private Long 양재역;
+    private String 관리자_토큰;
+
 
     @Override
     @BeforeEach
@@ -21,6 +24,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+        관리자_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
     /**
