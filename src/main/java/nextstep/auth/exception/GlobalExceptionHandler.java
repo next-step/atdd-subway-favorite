@@ -20,6 +20,13 @@ public class GlobalExceptionHandler {
                 .body(makeErrorResponse(errorCode));
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode));
+    }
+
     private ErrorResponse makeErrorResponse(ErrorCode errorCode) {
         return new ErrorResponse(errorCode.name(), errorCode.getMessage());
     }

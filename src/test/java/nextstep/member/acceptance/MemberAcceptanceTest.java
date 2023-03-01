@@ -3,7 +3,6 @@ package nextstep.member.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTest;
-import nextstep.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -96,10 +95,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo() {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 베어러_인증_로그인_요청_성공(EMAIL, PASSWORD).response().as(TokenResponse.class);
+        String accessToken = 베어러_인증_로그인_요청_성공(EMAIL, PASSWORD).response().jsonPath().getString("accessToken");
 
         // when
-        ExtractableResponse<Response> getMyInfoResponse = 베이러_인증으로_내_회원_정보_조회_요청(tokenResponse.getAccessToken());
+        ExtractableResponse<Response> getMyInfoResponse = 베이러_인증으로_내_회원_정보_조회_요청(accessToken);
 
         // then
         Long id = getMyInfoResponse.jsonPath().getLong("id");
