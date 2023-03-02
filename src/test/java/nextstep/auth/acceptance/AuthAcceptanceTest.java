@@ -23,15 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
     private static final String PASSWORD = "password";
-    private static final int AGE = 29;
-
-    // given
-    @BeforeEach
-    protected void setUp() {
-        super.setUp();
-
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-    }
 
     /**
      * given 회원이 있을 때
@@ -88,7 +79,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"사용자1", "사용자2", "사용자3", "사용자4"})
     void githubAuthLoginAlreadyMember(FakeGithubResponses fakeGithubResponses) {
         // given
-        회원_생성_요청(fakeGithubResponses.getEmail(), PASSWORD, AGE);
         Map<String, String> params = new HashMap<>();
         params.put("code", fakeGithubResponses.getCode());
 
@@ -105,12 +95,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * then 우리 서버의 토큰을 발급받을 수 있다.
      */
     @DisplayName("Github Auth : Github 에서 받은 서버에 등록되지 않은 유저의 권한증서(code)를 이용하여 로그인 요청 하면 액세스 토큰을 받는다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"사용자1", "사용자2", "사용자3", "사용자4"})
-    void githubAuthLoginCreateMember(FakeGithubResponses fakeGithubResponses) {
+    @Test
+    void githubAuthLoginCreateMember() {
         // given
         Map<String, String> params = new HashMap<>();
-        params.put("code", fakeGithubResponses.getCode());
+        params.put("code", FakeGithubResponses.비회원.getCode());
 
         // when
         ExtractableResponse<Response> response = 깃헙_로그인_요청_성공(params);
