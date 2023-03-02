@@ -19,6 +19,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import nextstep.auth.AuthMember;
 import nextstep.auth.AuthMemberArgumentResolver;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.common.exception.AuthorizationException;
 
 @ExtendWith(MockitoExtension.class)
 public class ArgumentResolverMockTest {
@@ -44,7 +45,7 @@ public class ArgumentResolverMockTest {
 		// given
 		when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(AUTH_HEADER);
 		when(jwtTokenProvider.validateToken(TEST_TOKEN)).thenReturn(true);
-		when(jwtTokenProvider.getPrincipal(TEST_TOKEN)).thenReturn(EMAIL);
+		when(jwtTokenProvider.getEmail(TEST_TOKEN)).thenReturn(EMAIL);
 		when(jwtTokenProvider.getRoles(TEST_TOKEN)).thenReturn(ROLES);
 
 		// when
@@ -62,7 +63,7 @@ public class ArgumentResolverMockTest {
 		when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(NOT_AUTH_HEADER);
 
 		// then
-		assertThrows(IllegalArgumentException.class,
+		assertThrows(AuthorizationException.class,
 			() -> argumentResolver.resolveArgument(null, null, request, null)
 		);
 	}

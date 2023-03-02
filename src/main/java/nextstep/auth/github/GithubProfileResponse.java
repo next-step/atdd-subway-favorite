@@ -1,4 +1,4 @@
-package nextstep.login.github;
+package nextstep.auth.github;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GithubAccessTokenResponse {
-	private String accessToken;
+public class GithubProfileResponse {
+	private String email;
 }

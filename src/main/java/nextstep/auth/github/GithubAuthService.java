@@ -1,9 +1,8 @@
-package nextstep.login.github;
+package nextstep.auth.github;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.GithubClient;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.TokenResponse;
@@ -22,7 +21,7 @@ public class GithubAuthService {
 		GithubProfileResponse githubProfile = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
 		Member member = memberService.findByEmailOrCreateMember(githubProfile.getEmail());
 
-		String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
+		String token = jwtTokenProvider.createToken(member.getId().toString(), member.getEmail(), member.getRoles());
 		return new TokenResponse(token);
 	}
 }

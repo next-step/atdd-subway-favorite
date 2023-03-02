@@ -92,6 +92,6 @@ public class MemberSteps {
     }
 
 	public static void 회원_정보_실패(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 }

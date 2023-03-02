@@ -13,6 +13,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.common.exception.AuthorizationException;
 
 @Component
 @RequiredArgsConstructor
@@ -30,29 +31,30 @@ public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver
 	}
 
 	@Override
-	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 		String headerAuth = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
 		String accessToken = checkHeaderAuth(headerAuth);
 
-		String email = jwtTokenProvider.getPrincipal(accessToken);
+		Long id = jwtTokenProvider.getPrincipal(accessToken);
+		String email = jwtTokenProvider.getEmail(accessToken);
 		List<String> roles = jwtTokenProvider.getRoles(accessToken);
-		return new AuthMember(email, roles);
+		return new AuthMember(id, email, roles);
 	}
 
 	private String checkHeaderAuth(String headerAuth) {
 		if (headerAuth == null || headerAuth.length() == BEARER_TOKEN.length() - 1) {
-			throw new IllegalArgumentException(HEADER_AUTH_IS_NULL.isMessage());
+			throw new AuthorizationException(HEADER_AUTH_IS_NULL.isMessage());
 		}
 
 		String containBearer = headerAuth.substring(0, BEARER_TOKEN.length());
 		if (!containBearer.equals(BEARER_TOKEN)) {
-			throw new IllegalArgumentException(HEADER_AUTH_NOT_BEARER.isMessage());
+			throw new AuthorizationException(HEADER_AUTH_NOT_BEARER.isMessage());
 		}
 
 		String accessToken = headerAuth.replace(BEARER_TOKEN, "");
 		if (!jwtTokenProvider.validateToken(accessToken)) {
-			throw new IllegalArgumentException(HEADER_AUTH_INVALID_TOKEN.isMessage());
+			throw new AuthorizationException(HEADER_AUTH_INVALID_TOKEN.isMessage());
 		}
 		return accessToken;
 	}

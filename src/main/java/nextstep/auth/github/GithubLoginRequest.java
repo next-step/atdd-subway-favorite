@@ -1,4 +1,4 @@
-package nextstep.login.github;
+package nextstep.auth.github;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
