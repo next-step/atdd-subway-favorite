@@ -1,6 +1,8 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.domain.AuthMemberService;
+import nextstep.auth.dto.AuthMember;
 import nextstep.exception.AuthenticationException;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
@@ -11,12 +13,10 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberService implements AuthMemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
@@ -69,12 +69,18 @@ public class MemberService {
         member.updateAccessToken(accessToken);
     }
 
-    public Member findByAccessToken(String token) {
-        return memberRepository.findByAccessToken(token)
-                .orElseThrow(IllegalArgumentException::new);
+    @Override
+    public AuthMember findJwtMember(String token) {
+        String principal = jwtTokenProvider.getPrincipal(token);
+        return memberRepository.findByEmail(principal)
+                .map(AuthMember::of)
+                .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + principal));
     }
 
-    public Optional<Member> findByEmail(String principal) {
-        return memberRepository.findByEmail(principal);
+    @Override
+    public AuthMember findGitHubMember(String token) {
+        return memberRepository.findByAccessToken(token)
+                .map(AuthMember::of)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
