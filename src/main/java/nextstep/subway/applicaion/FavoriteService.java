@@ -48,6 +48,7 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(String email, Long favoriteId) {
-
+        Member member = memberService.findByEmail(email);
+        favoriteRepository.deleteByIdAndMemberId(favoriteId, member.getId());
     }
 }

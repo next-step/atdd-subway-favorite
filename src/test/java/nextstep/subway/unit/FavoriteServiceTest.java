@@ -80,6 +80,19 @@ public class FavoriteServiceTest {
                 () -> assertThat(responses.get(0).getDepartureStationResponse()).isEqualTo(StationResponse.from(강남역)),
                 () -> assertThat(responses.get(0).getDestinationStationResponse()).isEqualTo(StationResponse.from(역삼역))
         );
+    }
 
+    @DisplayName("계정에 저장된 즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // Given
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorite(본인.getEmail(), 강남역.getId(), 역삼역.getId());
+
+        // When
+        favoriteService.deleteFavorite(본인.getEmail(), favoriteResponse.getId());
+
+        //Then
+        List<FavoriteResponse> responses = favoriteService.findFavorites(본인.getEmail());
+        assertThat(responses.size()).isEqualTo(0);
     }
 }

@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<List<Favorite>> findAllByMemberId(Long memberId);
+
+    void deleteByIdAndMemberId(Long favoriteId, Long id);
 }
