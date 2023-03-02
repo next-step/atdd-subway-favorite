@@ -2,20 +2,19 @@ package nextstep.member.acceptance;
 
 import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인_요청;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.연결되지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다;
-import static nextstep.member.acceptance.FavoriteAcceptanceSteps.유효하지_않은_토큰으로_즐겨찾기를_등록하면_예외_처리한다;
-import static nextstep.member.acceptance.FavoriteAcceptanceSteps.유효하지_않은_토큰으로_즐겨찾기를_삭제하면_예외_처리한다;
-import static nextstep.member.acceptance.FavoriteAcceptanceSteps.유효하지_않은_토큰으로_즐겨찾기를_조회하면_예외_처리한다;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.유효하지_않은_토큰이면_예외_처리한다;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.자신의_즐겨찾기_목록에_등록되지_않은_ID로_삭제하면_예외처리한다;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.존재하지_않은_역으로_즐겨찾기를_등록하면_예외_처리한다;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_검증;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_등록_요청;
-import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회_검증;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_삭제_검증;
 import static nextstep.member.acceptance.FavoriteAcceptanceSteps.즐겨찾기_삭제_요청;
-import static nextstep.member.acceptance.FavoriteAcceptanceSteps.토큰_없이_즐겨찾기를_등록하면_예외_처리한다;
-import static nextstep.member.acceptance.FavoriteAcceptanceSteps.토큰_없이_즐겨찾기를_삭제하면_예외_처리한다;
-import static nextstep.member.acceptance.FavoriteAcceptanceSteps.토큰_없이_즐겨찾기를_조회하면_예외_처리한다;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.토큰_없이_즐겨찾기를_등록_요청;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.토큰_없이_즐겨찾기를_삭제_요청;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.토큰_없이_즐겨찾기를_조회_요청;
+import static nextstep.member.acceptance.FavoriteAcceptanceSteps.토큰이_없으면_예외_처리한다;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.createSectionCreateParams;
 import static nextstep.subway.acceptance.PathAcceptanceSteps.지하철_노선_생성_요청;
@@ -218,16 +217,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         void favoriteInvalidToken() {
             String accessToken = "유효하지 않은 토큰";
 
-            // when & then
-            유효하지_않은_토큰으로_즐겨찾기를_등록하면_예외_처리한다(accessToken, 강남역, 양재역);
+            // when
+            var registerFavoriteInvalidTokenResponse = 즐겨찾기_등록_요청(accessToken, 강남역, 양재역);
+            // then
+            유효하지_않은_토큰이면_예외_처리한다(registerFavoriteInvalidTokenResponse);
 
-            // when & then
-            유효하지_않은_토큰으로_즐겨찾기를_조회하면_예외_처리한다(accessToken);
+            // when
+            var findFavoriteInvalidTokenResponse = 즐겨찾기_목록_조회_요청(accessToken);
+            // then
+            유효하지_않은_토큰이면_예외_처리한다(findFavoriteInvalidTokenResponse);
 
             // given
             String location = 즐겨찾기_등록_요청(베어러_인증_토큰(), 강남역, 양재역).header(HttpHeaders.LOCATION);
-            // when & then
-            유효하지_않은_토큰으로_즐겨찾기를_삭제하면_예외_처리한다(accessToken, location);
+            // when
+            var deleteFavoriteInvalidTokenResponse = 즐겨찾기_삭제_요청(accessToken, location);
+            // then
+            유효하지_않은_토큰이면_예외_처리한다(deleteFavoriteInvalidTokenResponse);
         }
 
         /**
@@ -241,16 +246,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("토큰 없이 즐겨찾기 기능을 요청한다.")
         @Test
         void favoriteWithoutToken() {
-            // when & then
-            토큰_없이_즐겨찾기를_등록하면_예외_처리한다(강남역, 양재역);
+            // when
+            var registerFavoriteWithoutTokenResponse = 토큰_없이_즐겨찾기를_등록_요청(강남역, 양재역);
+            // then
+            토큰이_없으면_예외_처리한다(registerFavoriteWithoutTokenResponse);
 
-            // when & then
-            토큰_없이_즐겨찾기를_조회하면_예외_처리한다();
+            // when
+            var findFavoriteWithoutTokenResponse = 토큰_없이_즐겨찾기를_조회_요청();
+            // then
+            토큰이_없으면_예외_처리한다(findFavoriteWithoutTokenResponse);
 
             // given
             String location = 즐겨찾기_등록_요청(베어러_인증_토큰(), 강남역, 양재역).header(HttpHeaders.LOCATION);
-            // when & then
-            토큰_없이_즐겨찾기를_삭제하면_예외_처리한다(location);
+            // when
+            var deleteFavoriteWithoutTokenResponse = 토큰_없이_즐겨찾기를_삭제_요청(location);
+            // then
+            토큰이_없으면_예외_처리한다(deleteFavoriteWithoutTokenResponse);
         }
     }
 
