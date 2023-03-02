@@ -30,6 +30,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:4.5.1'
 
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
     runtimeOnly 'com.h2database:h2'
 }
 

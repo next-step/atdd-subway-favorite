@@ -1,16 +1,16 @@
-package nextstep.subway.acceptance;
+package nextstep.member;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.DataLoader;
 import nextstep.member.application.dto.MemberResponse;
-import org.junit.jupiter.api.BeforeEach;
+import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.member.LoginSteps.베어러_인증_내_정보_조회;
+import static nextstep.member.LoginSteps.베어러_인증_로그인_요청;
+import static nextstep.member.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {

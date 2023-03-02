@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.member;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -14,26 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
 
-    public static ExtractableResponse<Response> 베어러_인증_로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
 
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-    }
-
-    public static ExtractableResponse<Response> 베어러_인증_내_정보_조회(String token) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .given().header(HttpHeaders.AUTHORIZATION, token)
-                .when().get("/members/me")
-                .then().log().all().extract();
-    }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
