@@ -31,6 +31,7 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
+    @Transactional
     public TokenResponse loginGithub(String code) {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(code);
         String githubEmail = githubClient.getGithubProfileFromGithub(accessTokenFromGithub).getEmail();
