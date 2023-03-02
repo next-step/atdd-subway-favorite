@@ -83,8 +83,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.jsonPath().getList("")).hasSize(1),
-                () -> assertThat(response.jsonPath().getLong("source.id")).isEqualTo(교대역),
-                () -> assertThat(response.jsonPath().getLong("target.id")).isEqualTo(양재역)
+                () -> assertThat(response.jsonPath().getLong("source.id[0]")).isEqualTo(교대역.intValue()),
+                () -> assertThat(response.jsonPath().getLong("target.id[0]")).isEqualTo(양재역.intValue())
         );
     }
 

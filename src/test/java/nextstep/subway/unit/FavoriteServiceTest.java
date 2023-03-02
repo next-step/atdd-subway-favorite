@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static nextstep.member.fake.ui.GithubResponses.사용자3;
 import static nextstep.utils.DataLoader.MEMBER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,5 +62,24 @@ public class FavoriteServiceTest {
                 () -> assertThat(response.getDepartureStationResponse()).isEqualTo(StationResponse.from(강남역)),
                 () -> assertThat(response.getDestinationStationResponse()).isEqualTo(StationResponse.from(역삼역))
         );
+    }
+
+    @DisplayName("계정에 저장된 즐겨찾기 목록을 조회한다.")
+    @Test
+    void findFavorites() {
+        // Given
+        favoriteService.saveFavorite(본인.getEmail(), 강남역.getId(), 역삼역.getId());
+
+        // When
+        List<FavoriteResponse> responses = favoriteService.findFavorites(본인.getEmail());
+
+        // Then
+        assertAll(
+                () -> assertThat(responses.size()).isEqualTo(1),
+                () -> assertThat(responses.get(0).getId()).isEqualTo(1),
+                () -> assertThat(responses.get(0).getDepartureStationResponse()).isEqualTo(StationResponse.from(강남역)),
+                () -> assertThat(responses.get(0).getDestinationStationResponse()).isEqualTo(StationResponse.from(역삼역))
+        );
+
     }
 }
