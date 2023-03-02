@@ -18,16 +18,12 @@ public class WebConfig implements WebMvcConfigurer {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
     private final MemberService memberService;
-    private static List<String> whiteList;
+    private static List<String> blackList;
 
     static {
-        whiteList = List.of(
-                "/login/**",
-                "/stations/**",
-                "/lines/**",
-                "/paths",
-                "/github/**",
-                "/members/**"
+        blackList = List.of(
+                "/favorites/**",
+                "/members/me"
         );
     }
 
@@ -41,8 +37,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AuthenticationInterceptor(jwtTokenProvider, objectMapper, memberService))
-                .addPathPatterns("/**", "/members/me")
-                .excludePathPatterns(whiteList);
+                .addPathPatterns(blackList);
     }
 
     @Override
