@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,7 +29,7 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public FavoriteResponse findMyFavoriteById(@MyInfo AuthMember member) {
+    public List<FavoriteResponse> findMyFavoriteById(@MyInfo AuthMember member) {
         return favoriteService.findByMemberId(member.getId());
     }
 

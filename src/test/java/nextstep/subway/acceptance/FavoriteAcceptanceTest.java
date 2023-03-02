@@ -51,8 +51,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(깃허브_로그인_응답);
 
         expectHttpStatus(response, HttpStatus.OK);
-        assertThat(response.jsonPath().getLong("source.id")).isEqualTo(SOURCE_ID);
-        assertThat(response.jsonPath().getLong("target.id")).isEqualTo(TARGET_ID);
+        assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(SOURCE_ID);
+        assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(TARGET_ID);
     }
 
     /**
