@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.exception.AuthenticationException;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
@@ -12,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -33,13 +32,14 @@ public class GithubClient {
     public String getAccessTokenFromGithub(String code) {
         HttpEntity<GithubAccessTokenRequest> httpEntity = createHttpEntityForGithubAccessTokenRequest(code);
 
-        GithubAccessTokenResponse response = restTemplate
-                .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-                .getBody();
-
-        return Optional.ofNullable(response)
-                .map(GithubAccessTokenResponse::getAccessToken)
-                .orElseThrow(() -> new RuntimeException("Access token is null"));
+        try {
+            return restTemplate
+                    .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                    .getBody()
+                    .getAccessToken();
+        } catch (HttpClientErrorException e) {
+            throw new AuthenticationException("Failed to get profile from Github", e);
+        }
     }
 
     private HttpEntity<GithubAccessTokenRequest> createHttpEntityForGithubAccessTokenRequest(String code) {
@@ -63,7 +63,7 @@ public class GithubClient {
                     .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                     .getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("Failed to get profile from Github", e);
+            throw new AuthenticationException("Failed to get profile from Github", e);
         }
     }
 

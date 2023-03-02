@@ -1,6 +1,6 @@
-package nextstep.config.resolver;
+package nextstep.auth.resolver;
 
-import nextstep.config.annotation.AuthHeader;
+import nextstep.auth.annotation.AuthHeader;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;

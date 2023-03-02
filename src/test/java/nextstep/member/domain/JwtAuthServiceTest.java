@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import nextstep.DataLoader;
+import nextstep.auth.domain.JwtAuthService;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.subway.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class JwtAuthTypeTest extends AcceptanceTest {
+class JwtAuthServiceTest extends AcceptanceTest {
 
     public static final String PREFIX = "Bearer ";
     public static String validHeader;
 
     @Autowired
-    private JwtAuthType jwtAuthType;
+    private JwtAuthService jwtAuthType;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -31,23 +32,12 @@ class JwtAuthTypeTest extends AcceptanceTest {
     }
 
     @Test
-    void jwt인증이다() {
-        assertThat(jwtAuthType.match(PREFIX + "gg")).isTrue();
-    }
-
-    @Test
-    void jwt인증이_아니다() {
-        assertThat(jwtAuthType.match("test a")).isFalse();
-    }
-
-    @Test
     void 검증() {
         jwtAuthType.validate(validHeader);
     }
 
     @Test
     void 내정보_조회() {
-        Member member = jwtAuthType.findMember(validHeader);
-        assertThat(member).isNotNull();
+        assertThat(jwtAuthType.findMember(validHeader)).isNotNull();
     }
 }

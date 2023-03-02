@@ -59,7 +59,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         List<StationResponse> stations = stationResponse.jsonPath().getList(".", StationResponse.class);
-        assertThat(stations).hasSize(2);
+        assertThat(stations).hasSize(4);
     }
 
     /**

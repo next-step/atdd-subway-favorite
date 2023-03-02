@@ -1,6 +1,9 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.domain.AuthMemberService;
+import nextstep.auth.dto.AuthMember;
+import nextstep.exception.AuthenticationException;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -13,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberService implements AuthMemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
@@ -41,17 +44,14 @@ public class MemberService {
     }
 
     public String jwtLogin(String email, String password) {
-        Member member = findByEmail(email);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthenticationException("이메일로 회원을 찾을 수 업습니다. " + email));
+
         if (!member.checkPassword(password)) {
-            throw new IllegalArgumentException("유효하지 않은 비밀번호 입니다.");
+            throw new AuthenticationException("유효하지 않은 비밀번호 입니다.");
         }
 
         return jwtTokenProvider.createToken(email, member.getRoles());
-    }
-
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + email));
     }
 
     @Transactional
@@ -64,13 +64,23 @@ public class MemberService {
 
     private void updateAccessToken(String email, String accessToken) {
         Member member = memberRepository.findByEmail(email)
-                        .orElseGet(() -> new Member(email, accessToken));
+                .orElseGet(() -> new Member(email, accessToken));
 
         member.updateAccessToken(accessToken);
     }
 
-    public Member findByAccessToken(String token) {
+    @Override
+    public AuthMember findJwtMember(String token) {
+        String principal = jwtTokenProvider.getPrincipal(token);
+        return memberRepository.findByEmail(principal)
+                .map(AuthMember::of)
+                .orElseThrow(() -> new IllegalArgumentException("이메일로 회원을 찾을 수 업습니다. " + principal));
+    }
+
+    @Override
+    public AuthMember findGitHubMember(String token) {
         return memberRepository.findByAccessToken(token)
+                .map(AuthMember::of)
                 .orElseThrow(IllegalArgumentException::new);
     }
 }

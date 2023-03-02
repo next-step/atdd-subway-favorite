@@ -1,7 +1,12 @@
 package nextstep;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.domain.*;
+import nextstep.member.domain.GithubResponses;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.RoleType;
+import nextstep.subway.domain.Station;
+import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,10 +22,13 @@ public class DataLoader { // 이렇게 하는 이유가 뭘까? 테스트코드�
     public static final int AGE = 20;
 
     private final MemberRepository memberRepository;
+    private final StationRepository stationRepository;
 
     public void loadData() {
         memberRepository.save(createMember(EMAIL, RoleType.ROLE_ADMIN, ACCESS_TOKEN));
         memberRepository.save(createMember("member@email.com", RoleType.ROLE_MEMBER, ACCESS_TOKEN + 1));
+        stationRepository.save(new Station("출발역"));
+        stationRepository.save(new Station("도착역"));
     }
 
     private Member createMember(String email, RoleType roleAdmin, String accessToken) {
