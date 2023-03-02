@@ -10,7 +10,7 @@ import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
+    public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
@@ -67,5 +67,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> response = JWT_인증으로_내_회원_정보_조회_요청(token);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }

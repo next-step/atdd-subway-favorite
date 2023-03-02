@@ -41,10 +41,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute String email) {
+        return ResponseEntity.ok().body(memberService.findByEmail(email));
     }
 }
 

@@ -4,6 +4,7 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,5 +32,11 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse findByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException("회원 정보를 찾을 수 없습니다."));
+        return MemberResponse.of(member);
     }
 }
