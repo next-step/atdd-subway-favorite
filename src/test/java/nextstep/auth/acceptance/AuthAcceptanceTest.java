@@ -104,7 +104,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * when Github 로 로그인 요청하면
      * then 우리 서버의 토큰을 발급받을 수 있다.
      */
-    @DisplayName("Github Auth : Github 에서 받은 이미 등록된 유저의 권한증서(code)를 이용하여 로그인 요청 하면 액세스 토큰을 받는다.")
+    @DisplayName("Github Auth : Github 에서 받은 서버에 등록되지 않은 유저의 권한증서(code)를 이용하여 로그인 요청 하면 액세스 토큰을 받는다.")
     @ParameterizedTest
     @ValueSource(strings = {"사용자1", "사용자2", "사용자3", "사용자4"})
     void githubAuthLoginCreateMember(FakeGithubResponses fakeGithubResponses) {
