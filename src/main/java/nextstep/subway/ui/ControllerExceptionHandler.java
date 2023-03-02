@@ -22,6 +22,6 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }

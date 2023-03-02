@@ -12,4 +12,9 @@ public class AuthSteps {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
+
+    public static void 권한없는_요청_검증(final ExtractableResponse<Response> response, final String message) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.body().asString()).isEqualTo(message);
+    }
 }

@@ -39,11 +39,16 @@ public class AuthenticationUserArgumentResolver implements HandlerMethodArgument
 
         final String authorization = webRequest.getHeader(AUTHORIZATION_HEADER);
 
-        if (StringUtils.hasText(authorization) && !authorization.startsWith(SCHEME_TYPE)) {
+        if (!StringUtils.hasText(authorization)) {
             throw new AuthenticationException(INVALID_AUTHENTICATION_INFO);
         }
 
-        final String token = authorization.substring(SCHEME_TYPE.length() + 1);
+        final String[] splitAuthorization = authorization.split(" ");
+        if (!(splitAuthorization[0].equals(SCHEME_TYPE) && splitAuthorization.length == 2)) {
+            throw new AuthenticationException(INVALID_AUTHENTICATION_INFO);
+        }
+
+        final String token = splitAuthorization[1];
 
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthenticationException(INVALID_AUTHENTICATION_INFO);
