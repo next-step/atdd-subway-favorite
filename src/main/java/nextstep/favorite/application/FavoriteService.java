@@ -9,6 +9,7 @@ import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INF
 import static nextstep.common.constants.ErrorConstant.NOT_FOUND_STATION;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
@@ -31,6 +33,7 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public Favorite saveFavorite(final String email, final FavoriteRequest favoriteRequest) {
         final Member member = memberService.findByEmail(email);
         return favoriteRepository.save(createFavoriteEntity(member.getId(), favoriteRequest));
@@ -59,6 +62,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteFavorite(final String email,
                                final Long id) {
         final Member member = memberService.findByEmail(email);
