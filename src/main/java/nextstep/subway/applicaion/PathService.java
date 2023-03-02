@@ -28,4 +28,18 @@ public class PathService {
 
         return PathResponse.of(path);
     }
+
+    public boolean isConnected(Long source, Long target){
+        Station upStation = stationService.findById(source);
+        Station downStation = stationService.findById(target);
+        List<Line> lines = lineService.findLines();
+        SubwayMap subwayMap = new SubwayMap(lines);
+        try {
+            subwayMap.findPath(upStation, downStation);
+        } catch (Exception e){
+            return false;
+        }
+
+        return true;
+    }
 }

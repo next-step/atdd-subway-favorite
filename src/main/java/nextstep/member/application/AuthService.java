@@ -27,7 +27,7 @@ public class AuthService {
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
+        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString(), member.getEmail(), member.getRoles()));
     }
 
     public GithubLoginResponse githubAuthorize(GithubLoginRequest request){
@@ -43,6 +43,6 @@ public class AuthService {
             member = memberRepository.save(new Member(profileFromGithub.getEmail()));
         }
 
-        return new GithubLoginResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
+        return new GithubLoginResponse(jwtTokenProvider.createToken(member.getId().toString(), member.getEmail(), member.getRoles()));
     }
 }
