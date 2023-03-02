@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INFO;
 import static nextstep.common.constants.ErrorConstant.NOT_FOUND_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -90,13 +91,26 @@ public class FavoriteServiceTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기 삭제 실패-다른 사용자의 즐겨찾기")
+    void deleteFavorite_notMine() {
+        // given
+        final Long id = favoriteService.saveFavorite(EMAIL, new FavoriteRequest(강남역.getId(), 역삼역.getId())).getId();
+
+        // when
+        // then
+        assertThatThrownBy(() -> favoriteService.deleteFavorite("member@email.com", id))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INVALID_AUTHENTICATION_INFO);
+    }
+
+    @Test
     @DisplayName("즐겨찾기 삭제")
     void deleteFavorite() {
         // given
         final Long id = favoriteService.saveFavorite(EMAIL, new FavoriteRequest(강남역.getId(), 역삼역.getId())).getId();
 
         // when
-        favoriteService.deleteFavorite(id);
+        favoriteService.deleteFavorite(EMAIL, id);
 
         // then
         List<FavoriteResponse> favorites = favoriteService.showFavorites(EMAIL);

@@ -19,7 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
+import java.util.Optional;
 
+import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INFO;
 import static nextstep.common.constants.ErrorConstant.NOT_FOUND_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -110,12 +112,37 @@ public class FavoriteServiceMockTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기 삭제 실패-다른 사용자의 즐겨찾기")
+    void deleteFavorite_notMine() {
+        // given
+        final Favorite favorite = new Favorite(-1L, 강남역, 역삼역);
+        ReflectionTestUtils.setField(favorite, "id", 1L);
+
+        when(memberService.findByEmail(EMAIL)).thenReturn(관리자);
+        when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+
+        // when
+        // then
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(EMAIL, 1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INVALID_AUTHENTICATION_INFO);
+    }
+
+    @Test
     @DisplayName("즐겨찾기 삭제")
     void deleteFavorite() {
+        // given
+        ReflectionTestUtils.setField(관리자, "id", 1L);
+        final Favorite favorite = new Favorite(1L, 강남역, 역삼역);
+        ReflectionTestUtils.setField(favorite, "id", 1L);
+
+        when(memberService.findByEmail(EMAIL)).thenReturn(관리자);
+        when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+
         // when
-        favoriteService.deleteFavorite(-1L);
+        favoriteService.deleteFavorite(EMAIL, 1L);
 
         // then
-        verify(favoriteRepository, times(1)).deleteById(-1L);
+        verify(favoriteRepository, times(1)).delete(favorite);
     }
 }

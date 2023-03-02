@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.common.constants.ErrorConstant.INVALID_AUTHENTICATION_INFO;
 import static nextstep.common.constants.ErrorConstant.NOT_FOUND_STATION;
 
 @Service
@@ -58,7 +59,21 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(final Long favoriteId) {
-        favoriteRepository.deleteById(favoriteId);
+    public void deleteFavorite(final String email,
+                               final Long id) {
+        final Member member = memberService.findByEmail(email);
+        final Favorite favorite = findFavoriteById(id);
+
+        if (!favorite.getMemberId().equals(member.getId())) {
+            throw new IllegalArgumentException(INVALID_AUTHENTICATION_INFO);
+        }
+
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite findFavoriteById(final Long id) {
+        return favoriteRepository.findById(id).orElseThrow(() -> {
+            throw new IllegalArgumentException();
+        });
     }
 }
