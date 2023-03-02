@@ -14,7 +14,7 @@ public enum GitHubProfileFixture {
         this.token = token;
     }
 
-    public String 코드() {
+    public String 권한_증서_코드() {
         return code;
     }
 

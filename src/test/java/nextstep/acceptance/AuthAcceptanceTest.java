@@ -21,7 +21,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     class Context_with_request_bearer_authentication {
 
         @Test
-        @DisplayName("JWT 토큰 형식의 AccessToken이 반환된다")
+        @DisplayName("AccessToken이 반환된다")
         void it_returns_access_token() throws Exception {
             ExtractableResponse<Response> 로그인_요청_결과 = 베어러_인증_로그인_요청(알렉스);
 
@@ -39,7 +39,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         class Context_with_registered_member {
 
             @Test
-            @DisplayName("JWT 토큰 형식의 AccessToken이 반환된다")
+            @DisplayName("AccessToken이 반환된다")
             void it_returns_access_token() throws Exception {
                 ExtractableResponse<Response> 로그인_요청_결과 = Github_로그인_요청(알렉스);
 

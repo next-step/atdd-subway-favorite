@@ -56,7 +56,7 @@ public enum AuthFixture {
 
     public Map<String, String> Github_로그인_요청_데이터_생성() {
         Map<String, String> params = new HashMap<>();
-        params.put(권한_증서.필드명(), Github_정보().코드());
+        params.put(권한_증서.필드명(), Github_정보().권한_증서_코드());
 
         return params;
     }

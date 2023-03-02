@@ -1,7 +1,7 @@
 package nextstep.unit.login;
 
 import nextstep.login.application.AuthenticationService;
-import nextstep.login.application.dto.LoginResponse;
+import nextstep.login.application.dto.response.LoginResponse;
 import nextstep.member.application.exception.InvalidPasswordException;
 import nextstep.member.application.exception.MemberNotFoundException;
 import nextstep.utils.DataLoader;
@@ -13,8 +13,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static nextstep.fixture.GitHubProfileFixture.ALEX_GITHUB;
 import static nextstep.fixture.MemberFixture.비회원;
 import static nextstep.fixture.MemberFixture.회원_ALEX;
 import static nextstep.fixture.MemberFixture.회원_JADE;
@@ -22,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("로그인 인증 기능")
+@ActiveProfiles("test")
 @SpringBootTest
 @Transactional
 class AuthenticationServiceTest {
@@ -39,18 +42,18 @@ class AuthenticationServiceTest {
 
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-    class 로그인_진행_시 {
+    class 이메일과_비밀번호로_로그인_진행_시 {
 
         @Nested
         @DisplayName("로그인이 성공하면")
         class Context_with_success_login {
 
             @Test
-            @DisplayName("Jwt 토큰으로 생성된 AccessToken을 반환한다")
-            void it_returns_access_token_made_with_jwt_token() throws Exception {
+            @DisplayName("AccessToken을 반환한다")
+            void it_returns_access_token() throws Exception {
                 LoginResponse login = authenticationService.login(회원_ALEX.이메일(), 회원_ALEX.비밀번호());
 
-                JWT_토큰_형식으로_반환된다(login);
+                AccessToken이_반환된다(login);
             }
         }
 
@@ -79,8 +82,25 @@ class AuthenticationServiceTest {
         }
     }
 
+    @Nested
+    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    class 권한_증서_code로_로그인_진행_시 {
 
-    private void JWT_토큰_형식으로_반환된다(LoginResponse login) {
+        @Nested
+        @DisplayName("로그인이 성공하면")
+        class Context_with_success_login {
+
+            @Test
+            @DisplayName("AccessToken을 반환한다")
+            void it_returns_access_token() throws Exception {
+                LoginResponse login = authenticationService.login(ALEX_GITHUB.권한_증서_코드());
+
+                AccessToken이_반환된다(login);
+            }
+        }
+    }
+
+    private void AccessToken이_반환된다(LoginResponse login) {
         assertThat(login.getAccessToken()).isNotBlank();
     }
 }

@@ -1,7 +1,7 @@
 package nextstep.unit.login;
 
 import nextstep.fixture.MemberFixture;
-import nextstep.login.application.JwtTokenProvider;
+import nextstep.login.infra.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;

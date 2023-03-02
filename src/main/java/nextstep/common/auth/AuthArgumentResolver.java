@@ -1,6 +1,6 @@
 package nextstep.common.auth;
 
-import nextstep.login.application.JwtTokenProvider;
+import nextstep.login.infra.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

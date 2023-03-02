@@ -1,0 +1,63 @@
+# 디폴트로 사용하는 프로파일은 product
+spring.profiles.active: product
+
+
+---
+# 현재 프로파일이 product인 경우, 해당 프로퍼티들을 사용
+spring.config.activate.on-profile: product
+
+spring:
+  jpa:
+    hibernate:
+      show_sql: true
+      format_sql: true
+
+security:
+  jwt:
+    token:
+      secret-key: ${token-secret-key}
+      expire-length: 3600000
+
+github:
+  client:
+    id: ${github.client-id}
+    secret: ${github.client-secret}
+  url:
+    access-token: ${github.token-url}
+    profile: ${github.profile-url}
+
+---
+# 현재 프로파일이 test인 경우, 해당 프로퍼티들을 사용
+spring.config.activate.on-profile: test
+
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/data/nextstep/subwayFavorite
+    username: sa
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging.level:
+  # 로거를 통해 sql문 출력
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 86400000
+
+github:
+  client:
+    id: giibeom-id
+    secret: giibeom-secret
+  url:
+    access-token: giibeom-token-url
+    profile: giibeom-profile-url
