@@ -1,13 +1,14 @@
 package nextstep.config.auth.interceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.common.exception.InvalidTokenException;
-import nextstep.config.auth.AuthenticationContextHolder;
+import nextstep.config.auth.context.Authentication;
+import nextstep.config.auth.context.AuthenticationContextHolder;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,26 +19,24 @@ import java.util.Objects;
 public class AuthenticationInterceptor implements HandlerInterceptor {
     public static final String AUTHENTICATION_TYPE = "Bearer";
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
     private final MemberService memberService;
 
-    public AuthenticationInterceptor(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
+    public AuthenticationInterceptor(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
         this.memberService = memberService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (!(handler instanceof HandlerMethod)) {
+        if (Objects.nonNull(AuthenticationContextHolder.getContext().getAccessToken())) {
             return true;
         }
 
-        String principal = AuthenticationContextHolder.getAuthentication(null);
-
-        if (ObjectUtils.isEmpty(principal)) {
-            String accessToken = extractCredentialsFromAuthorization(request);
-            memberService.findMemberByEmail(jwtTokenProvider.getPrincipal(accessToken));
-
-            AuthenticationContextHolder.setAuthentication(accessToken);
+        Authentication authentication = extractAuthenticationContext(request);
+        if (Objects.nonNull(authentication)) {
+            AuthenticationContextHolder.setContext(authentication);
         }
 
         return true;
@@ -58,17 +57,22 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
     }
 
-    private String extractCredentialsFromAuthorization(HttpServletRequest request) {
-        String value = request.getHeader(HttpHeaders.AUTHORIZATION);
+    private Authentication extractAuthenticationContext(HttpServletRequest request) {
+        try {
+            String value = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        validateAuthorization(value);
+            validateAuthorization(value);
+            String accessToken = value.replace(String.format("%s ", AUTHENTICATION_TYPE), "");
+            if (!jwtTokenProvider.validateToken(accessToken)) {
+                throw new InvalidTokenException(String.format("%s is UnAuthorized token", value));
+            }
 
-        String accessToken = value.replace(String.format("%s ", AUTHENTICATION_TYPE), "");
+            MemberResponse findMember = memberService.findMemberByEmail(jwtTokenProvider.getPrincipal(accessToken));
 
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new InvalidTokenException(String.format("%s is UnAuthorized token", value));
+            return Authentication.of(accessToken, findMember);
+
+        } catch (Exception e) {
+            throw new InvalidTokenException(e);
         }
-
-        return accessToken;
     }
 }

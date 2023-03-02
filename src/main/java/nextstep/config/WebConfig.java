@@ -1,5 +1,6 @@
 package nextstep.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.config.auth.AuthenticationArgumentResolver;
 import nextstep.config.auth.interceptor.AuthenticationInterceptor;
 import nextstep.member.application.JwtTokenProvider;
@@ -15,31 +16,32 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
     private final AuthenticationArgumentResolver authenticationArgumentResolver;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
     private final MemberService memberService;
     private static List<String> whiteList;
 
     static {
         whiteList = List.of(
-                "/login/token",
-                "/login/github",
+                "/login/**",
                 "/stations/**",
-                "/members/**",
                 "/lines/**",
                 "/paths",
-                "/access-token",
-                "/profile"
+                "/github/**",
+                "/members/**"
         );
     }
 
-    public WebConfig(AuthenticationArgumentResolver authenticationArgumentResolver, JwtTokenProvider jwtTokenProvider, MemberService memberService) {
+    public WebConfig(AuthenticationArgumentResolver authenticationArgumentResolver, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper, MemberService memberService) {
         this.authenticationArgumentResolver = authenticationArgumentResolver;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
         this.memberService = memberService;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthenticationInterceptor(jwtTokenProvider, memberService))
+        registry.addInterceptor(new AuthenticationInterceptor(jwtTokenProvider, objectMapper, memberService))
+                .addPathPatterns("/**")
                 .excludePathPatterns(whiteList);
     }
 

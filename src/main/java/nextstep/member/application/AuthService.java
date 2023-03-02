@@ -25,7 +25,7 @@ public class AuthService {
         Member findMember = memberService.findByEmail(request.getEmail());
         findMember.checkPassword(request.getPassword());
 
-        return TokenResponse.of(jwtTokenProvider.createToken(findMember.getEmail(), findMember.getRoles()));
+        return TokenResponse.of(jwtTokenProvider.createToken(findMember.getEmail()));
     }
 
     @Transactional
@@ -34,6 +34,6 @@ public class AuthService {
         GithubProfileResponse githubProfileResponse = githubClient.getGithubProfileFromGithub(accessToken);
         Member member = memberService.findOrCreateMember(githubProfileResponse.getEmail(), request.getCode());
 
-        return TokenResponse.of(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
+        return TokenResponse.of(jwtTokenProvider.createToken(member.getEmail()));
     }
 }

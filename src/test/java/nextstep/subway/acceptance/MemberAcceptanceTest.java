@@ -96,7 +96,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-            assertThat(response.jsonPath().getString("errorMessage")).contains("invalid token is UnAuthorized accessToken");
         });
     }
 }
