@@ -27,6 +27,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private DataLoader dataLoader;
 
     private String 사용자;
+    private final String 잘못된_토큰 = "wrong token";
 
     private Long 교대역;
     private Long 강남역;
@@ -64,6 +65,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("인증없이, 즐겨찾기 추가시 UNAUTHORIZED")
+    @Test
+    void addFavoriteWithoutAuthorization() {
+        // When
+        ExtractableResponse<Response> response = 즐겨찾기_추가_요청(잘못된_토큰, 교대역, 양재역);
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     /**
      * Given 로그인한 사용자가
      *  And 지하철 경로를 즐겨찾기 추가하고
@@ -88,6 +99,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("인증없이, 즐겨찾기 목록 조회시 UNAUTHORIZED")
+    @Test
+    void findFavoriteWithoutAuthorization() {
+        // When
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(잘못된_토큰);
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     /**
      * Given 로그인한 사용자가
      *  And 지하철 경로를 즐겨찾기 추가하고
@@ -105,5 +126,18 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("인증없이, 즐겨찾기 삭제시 UNAUTHORIZED")
+    @Test
+    void removeFavoriteWithoutAuthorization() {
+        // Given
+        ExtractableResponse<Response> responseOf즐겨찾기_추가_요청 = 즐겨찾기_추가_요청(사용자, 교대역, 양재역);
+
+        // When
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(잘못된_토큰, responseOf즐겨찾기_추가_요청);
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
