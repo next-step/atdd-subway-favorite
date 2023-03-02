@@ -1,9 +1,9 @@
-package nextstep.member.ui;
+package nextstep.favorite.ui;
 
 import java.net.URI;
 import java.util.List;
-import nextstep.member.application.FavoriteService;
-import nextstep.member.application.dto.FavoriteRequest;
+import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.LoginMemberRequest;
 import nextstep.member.ui.argumentresolver.LoginMember;
 import org.springframework.http.ResponseEntity;

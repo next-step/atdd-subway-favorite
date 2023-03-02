@@ -1,17 +1,19 @@
-package nextstep.member.application;
+package nextstep.favorite.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.member.application.dto.FavoriteRequest;
-import nextstep.member.application.dto.FavoriteResponse;
+import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.application.dto.LoginMemberRequest;
 import nextstep.member.application.exception.MemberNotFoundException;
 import nextstep.member.application.exception.StationNotFoundException;
-import nextstep.member.domain.Favorite;
+import nextstep.member.application.exception.UnAuthorizedException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -23,15 +25,18 @@ public class FavoriteService {
 
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
+    private final FavoriteRepository favoriteRepository;
     private final PathService pathService;
 
     public FavoriteService(
             final MemberRepository memberRepository,
             final StationRepository stationRepository,
+            final FavoriteRepository favoriteRepository,
             final PathService pathService
     ) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
+        this.favoriteRepository = favoriteRepository;
         this.pathService = pathService;
     }
 
@@ -46,9 +51,8 @@ public class FavoriteService {
 
         validateStationConnected(source, target);
 
-        Favorite favorite = new Favorite(source, target);
-        member.addFavorite(favorite);
-        memberRepository.flush();
+        Favorite favorite = new Favorite(member.getId(), source, target);
+        favoriteRepository.save(favorite);
         return favorite.getId();
     }
 
@@ -60,7 +64,7 @@ public class FavoriteService {
         Member member = memberRepository.findById(loginMemberRequest.getMemberId())
                 .orElseThrow(MemberNotFoundException::new);
 
-        return member.getFavorites().stream()
+        return favoriteRepository.findByMemberId(member.getId()).stream()
                 .map(this::createFavoriteResponse)
                 .collect(Collectors.toUnmodifiableList());
     }
@@ -78,6 +82,11 @@ public class FavoriteService {
         Member member = memberRepository.findById(loginMemberRequest.getMemberId())
                 .orElseThrow(MemberNotFoundException::new);
 
-        member.deleteFavorite(id);
+        Favorite favorite = favoriteRepository.findByMemberId(member.getId()).stream()
+                .filter(f -> f.getId().equals(id))
+                .findFirst()
+                .orElseThrow(UnAuthorizedException::new);
+
+        favoriteRepository.delete(favorite);
     }
 }

@@ -1,4 +1,4 @@
-package nextstep.member.domain;
+package nextstep.favorite.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +15,8 @@ public class Favorite {
     @Id
     private Long id;
 
+    private Long memberId;
+
     @ManyToOne
     @JoinColumn(name = "source")
     private Station source;
@@ -26,7 +28,8 @@ public class Favorite {
     public Favorite() {
     }
 
-    public Favorite(final Station source, final Station target) {
+    public Favorite(final Long memberId, final Station source, final Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
