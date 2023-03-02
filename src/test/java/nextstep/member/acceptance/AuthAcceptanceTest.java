@@ -3,16 +3,16 @@ package nextstep.member.acceptance;
 import static nextstep.member.acceptance.AuthAcceptanceSteps.Github_로그인_검증;
 import static nextstep.member.acceptance.AuthAcceptanceSteps.Github_로그인_요청;
 import static nextstep.member.acceptance.AuthAcceptanceSteps.Github에_가입이_되어있지_않은_경우_예외_처리_검증;
+import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인_요청;
 import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인에_실패하면_예외_처리한다;
-import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Map;
 import java.util.UUID;
-import nextstep.DataLoader;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.DataLoader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

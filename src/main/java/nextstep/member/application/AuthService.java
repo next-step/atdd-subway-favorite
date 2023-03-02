@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import nextstep.member.application.dto.GithubLoginRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.application.exception.UserNotFoundException;
+import nextstep.member.application.exception.MemberNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class AuthService {
     }
 
     public TokenResponse createTokenFrom(final TokenRequest tokenRequest, final LocalDateTime localDateTime) {
-        Member member = memberRepository.findByEmail(tokenRequest.getEmail()).orElseThrow(UserNotFoundException::new);
+        Member member = memberRepository.findByEmail(tokenRequest.getEmail()).orElseThrow(MemberNotFoundException::new);
 
         member.validatePassword(tokenRequest.getPassword());
 

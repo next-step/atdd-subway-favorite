@@ -9,8 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    private final BearerTokenArgumentResolver bearerTokenArgumentResolver;
+
+    public WebConfig(final BearerTokenArgumentResolver bearerTokenArgumentResolver) {
+        this.bearerTokenArgumentResolver = bearerTokenArgumentResolver;
+    }
+
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new BearerTokenArgumentResolver());
+        resolvers.add(bearerTokenArgumentResolver);
     }
 }

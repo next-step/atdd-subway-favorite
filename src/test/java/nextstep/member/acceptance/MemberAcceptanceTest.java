@@ -1,7 +1,8 @@
 package nextstep.member.acceptance;
 
-import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.member.acceptance.AuthAcceptanceSteps.베어러_인증_로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.베어러_인증으로_내_회원_정보_조회_요청;
+import static nextstep.member.acceptance.MemberSteps.유효하지_않은_토큰으로_내_정보를_조회시_예외_처리한다;
 import static nextstep.member.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_정보_수정_요청;
@@ -84,5 +85,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    /**
+     * when 유효하지 않은 토큰으로 내 정보를 조회시
+     * then 예외 처리한다.
+     */
+    @DisplayName("유효하지 않은 토큰으로 내 정보를 조회시 예외 처리한다.")
+    @Test
+    void getMyInfoUnAuthorizedException() {
+        // when & then
+        유효하지_않은_토큰으로_내_정보를_조회시_예외_처리한다("유효하지 않은 토큰");
     }
 }

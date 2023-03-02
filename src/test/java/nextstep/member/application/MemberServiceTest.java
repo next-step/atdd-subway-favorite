@@ -1,10 +1,12 @@
 package nextstep.member.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.LoginMemberRequest;
+import nextstep.member.application.exception.InvalidTokenException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.domain.RoleType;
@@ -44,12 +46,19 @@ class MemberServiceTest {
         memberRepository.save(member);
         String token = jwtTokenProvider.createToken(member, LocalDateTime.now());
 
-        MemberResponse member = memberService.findMember(token);
+        LoginMemberRequest loginMemberRequest = memberService.findMember(token);
 
         Assertions.assertAll(
-                () -> assertThat(member.getId()).isEqualTo(member.getId()),
-                () -> assertThat(member.getEmail()).isEqualTo(member.getEmail()),
-                () -> assertThat(member.getAge()).isEqualTo(member.getAge())
+                () -> assertThat(loginMemberRequest.getMemberId()).isEqualTo(member.getId()),
+                () -> assertThat(loginMemberRequest.getRoles())
+                        .containsExactly(member.getRoles().toArray(String[]::new))
         );
+    }
+
+    @DisplayName("토큰이 유효하지 않을 경우 예외처리한다.")
+    @Test
+    void findMemberInvalidToken() {
+        assertThatThrownBy(() -> memberService.findMember("유효하지 않은 토큰 값 입니다."))
+                .isInstanceOf(InvalidTokenException.class);
     }
 }

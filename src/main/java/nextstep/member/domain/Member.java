@@ -1,7 +1,6 @@
 package nextstep.member.domain;
 
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -71,10 +70,6 @@ public class Member {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
-    }
-
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
     }
 
     public void validatePassword(final String password) {
