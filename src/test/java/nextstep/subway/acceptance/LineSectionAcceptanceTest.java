@@ -75,7 +75,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("이미 존재하는 구간을 추가")
     @Test
-    void addSectionAlreadyIncluded() {
+    void  addSectionAlreadyIncluded() {
         // when
         ExtractableResponse<Response> response = 지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(강남역, 양재역));
 

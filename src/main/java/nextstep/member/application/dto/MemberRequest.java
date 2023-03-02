@@ -16,6 +16,18 @@ public class MemberRequest {
         this.age = age;
     }
 
+    public MemberRequest(String email) {
+        this.email = email;
+    }
+
+    public Member toMember() {
+        return new Member(email, password, age);
+    }
+
+    public static MemberRequest from(GithubProfileResponse profileResponse) {
+        return new MemberRequest(profileResponse.getEmail());
+    }
+
     public String getEmail() {
         return email;
     }
@@ -26,9 +38,5 @@ public class MemberRequest {
 
     public Integer getAge() {
         return age;
-    }
-
-    public Member toMember() {
-        return new Member(email, password, age);
     }
 }

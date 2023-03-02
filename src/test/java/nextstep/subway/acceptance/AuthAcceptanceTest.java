@@ -11,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static nextstep.subway.acceptance.MemberSteps.깃허브_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.응답_상태코드_검증;
@@ -49,33 +46,14 @@ class AuthAcceptanceTest {
         응답_예외_메시지_검증(response, ErrorMessage.MEMBER_PASSWORD_NOT_EQUAL);
     }
 
-    @DisplayName("Github 로그인 후 회원가입이 되어있지않다면 회원가입 진행 후 토큰 발행")
-    @Test
-    void signUpByGithubIfNotExistMember() {
-        // given
-        GithubSampleResponse 사용자 = GithubSampleResponse.사용자1;
-        Map<String, String> params = new HashMap<>();
-        params.put("code", 사용자.getCode());
-
-        // when -> 토큰 만료 예외 (테스트용 stub처리 필요?)
-        ExtractableResponse<Response> response = 깃허브_로그인_요청(params);
-        String accessToken = response.jsonPath().getString("accessToken");
-        ExtractableResponse<Response> memberInfoResponse = 토큰으로_회원_정보_조회(accessToken);
-
-        // then
-        assertThat(accessToken).isNotBlank();
-        assertThat(memberInfoResponse.jsonPath().getString("email")).isEqualTo(사용자.getEmail());
-    }
-
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
         // given
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubSampleResponse.사용자1.getCode());
+        GithubSampleResponse 사용자 = GithubSampleResponse.사용자1;
 
         // when
-        ExtractableResponse<Response> response = 깃허브_로그인_요청(params);
+        ExtractableResponse<Response> response = 깃허브_로그인_요청(사용자.getCode());
 
         // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();

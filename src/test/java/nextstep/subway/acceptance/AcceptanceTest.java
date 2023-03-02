@@ -14,6 +14,7 @@ public class AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+
         databaseCleanup.execute();
     }
 }
