@@ -57,4 +57,15 @@ class AuthAcceptanceTest extends AcceptanceTest {
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
 	}
+
+	@DisplayName("Github Auth")
+	@Test
+	void githubAuth() {
+		// When
+		ExtractableResponse<Response> response = github_로그인_요청("code");
+
+		// Then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+	}
 }
