@@ -69,4 +69,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
 	}
+
+	@DisplayName("Github Auth - 예외 - AccessToken 을 발급 받지 못한 사용자일 경우 예외를 던진다.")
+	@Test
+	void githubAuth_fail_IF_GITHUB_ACCESS_TOKEN_IS_NULL() {
+		// When
+		ExtractableResponse<Response> response = github_로그인_요청(GithubResponses.ACCESS_TOKEN_없는_사용자5.getCode());
+
+		// Then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
 }
