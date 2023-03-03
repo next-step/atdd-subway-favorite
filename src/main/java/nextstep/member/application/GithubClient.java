@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.exception.UnAuthorizationException;
 
 @Component
 public class GithubClient {
@@ -40,19 +41,16 @@ public class GithubClient {
 
 		HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
 			githubAccessTokenRequest, headers);
-		RestTemplate restTemplate = new RestTemplate();
 
-		GithubAccessTokenResponse response = restTemplate
-			.exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-			.getBody();
+		GithubAccessTokenResponse response = requestGithubAccessToken(httpEntity);
 
 		if (Objects.isNull(response)) {
-			throw new RuntimeException();
+			throw new UnAuthorizationException();
 		}
 
 		String accessToken = response.getAccessToken();
 		if (Objects.isNull(accessToken)) {
-			throw new RuntimeException();
+			throw new UnAuthorizationException();
 		}
 		return new GithubAccessTokenResponse(accessToken);
 	}
@@ -62,6 +60,23 @@ public class GithubClient {
 		headers.add("Authorization", "token " + accessToken);
 
 		HttpEntity httpEntity = new HttpEntity<>(headers);
+
+		return requestGithubProfile(httpEntity);
+	}
+
+	private GithubAccessTokenResponse requestGithubAccessToken(HttpEntity<MultiValueMap<String, String>> httpEntity) {
+		RestTemplate restTemplate = new RestTemplate();
+
+		try {
+			return restTemplate
+				.exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+				.getBody();
+		} catch (HttpClientErrorException e) {
+			throw new UnAuthorizationException();
+		}
+	}
+
+	private GithubProfileResponse requestGithubProfile(HttpEntity httpEntity) {
 		RestTemplate restTemplate = new RestTemplate();
 
 		try {
@@ -69,7 +84,7 @@ public class GithubClient {
 				.exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
 				.getBody();
 		} catch (HttpClientErrorException e) {
-			throw new RuntimeException();
+			throw new UnAuthorizationException();
 		}
 	}
 }
