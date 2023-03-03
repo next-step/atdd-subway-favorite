@@ -62,7 +62,6 @@ public class AuthenticationService {
         }
 
         Member findMember = findMemberByEmail(githubProfile.getEmail());
-        findMember.validatePassword(findMember.getPassword());
         return new LoginResponse(jwtTokenProvider.createToken(findMember.getEmail(), findMember.getRoles()));
     }
 
