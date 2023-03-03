@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.DataLoader;
+import nextstep.subway.utils.GithubResponses;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 	private static final String EMAIL = "admin@email.com";
@@ -62,7 +63,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void githubAuth() {
 		// When
-		ExtractableResponse<Response> response = github_로그인_요청("code");
+		ExtractableResponse<Response> response = github_로그인_요청(GithubResponses.사용자1.getCode());
 
 		// Then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

@@ -11,12 +11,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 
 import nextstep.member.exception.ErrorMessage;
 import nextstep.member.exception.NotFoundException;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +56,10 @@ public class Member {
 		this.password = password;
 		this.age = age;
 		this.roles = roles;
+	}
+
+	public static Member ofCreatedByGithub(String email) {
+		return new Member(email, null, null);
 	}
 
 	public Long getId() {

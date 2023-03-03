@@ -12,7 +12,7 @@ import nextstep.member.application.LoginService;
 import nextstep.member.application.dto.GithubLoginRequest;
 import nextstep.subway.utils.GithubResponses;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Transactional
 class LoginServiceTest {
 	@Autowired
