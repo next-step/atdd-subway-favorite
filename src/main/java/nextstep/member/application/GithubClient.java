@@ -19,6 +19,7 @@ import nextstep.member.exception.UnAuthorizationException;
 
 @Component
 public class GithubClient {
+	private final static String AUTHORIZATION_HEADER_TYPE = "token ";
 
 	@Value("${github.client.id}")
 	private String clientId;
@@ -57,7 +58,7 @@ public class GithubClient {
 
 	public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "token " + accessToken);
+		headers.add("Authorization", AUTHORIZATION_HEADER_TYPE + accessToken);
 
 		HttpEntity httpEntity = new HttpEntity<>(headers);
 
