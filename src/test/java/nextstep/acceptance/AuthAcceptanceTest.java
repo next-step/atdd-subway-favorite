@@ -12,6 +12,7 @@ import static nextstep.acceptance.support.AuthSteps.Github_로그인_요청;
 import static nextstep.acceptance.support.AuthSteps.로그인이_성공한다;
 import static nextstep.acceptance.support.AuthSteps.베어러_인증_로그인_요청;
 import static nextstep.fixture.AuthFixture.알렉스;
+import static nextstep.fixture.AuthFixture.제이드;
 
 @DisplayName("로그인 인증 인수 테스트")
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -42,6 +43,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
             @DisplayName("AccessToken이 반환된다")
             void it_returns_access_token() throws Exception {
                 ExtractableResponse<Response> 로그인_요청_결과 = Github_로그인_요청(알렉스);
+
+                로그인이_성공한다(로그인_요청_결과);
+                AccessToken이_반환된다(로그인_요청_결과);
+            }
+        }
+
+        @Nested
+        @DisplayName("가입이 되어 있지 않은 회원인 경우")
+        class Context_with_not_registered_member {
+
+            @Test
+            @DisplayName("회원 가입 진행 후 AccessToken이 반환된다")
+            void it_register_member_and_returns_accessToken() throws Exception {
+                ExtractableResponse<Response> 로그인_요청_결과 = Github_로그인_요청(제이드);
 
                 로그인이_성공한다(로그인_요청_결과);
                 AccessToken이_반환된다(로그인_요청_결과);

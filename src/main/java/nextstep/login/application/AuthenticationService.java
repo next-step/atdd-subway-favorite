@@ -8,6 +8,7 @@ import nextstep.member.application.exception.MemberNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthenticationService {
@@ -25,6 +26,13 @@ public class AuthenticationService {
         this.socialClient = socialClient;
     }
 
+    /**
+     * 사용자 이메일과 비밀번호를 사용하여 로그인 인증을 진행합니다.
+     *
+     * @param email    사용자 이메일
+     * @param password 사용자 비밀번호
+     * @return 사용자 인증 토큰
+     */
     public LoginResponse login(final String email, final String password) {
         Member findMember = findMemberByEmail(email);
         findMember.validatePassword(password);
@@ -37,19 +45,32 @@ public class AuthenticationService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-
-    /*
-        1. Github에 code(권한 증서)를 가지고 accessToken 발급
-        2. 발급받은 accessToken에서 email을 사용해서 member 테이블 조회
-        3. member 테이블에서 조회한 권한 목록(roles)와 email을 사용하여 JWT Token 발급
-        4. 발급한 JWT Token 반환
+    /**
+     * 사용자 권한 증서를 사용하여 로그인 인증을 진행합니다.
+     *
+     * @param code 사용자 권한 증서
+     * @return 사용자 인증 토큰
      */
+    @Transactional
     public LoginResponse login(final String code) {
         String accessToken = socialClient.getAccessTokenFromGithub(code);
-        GithubProfileResponse githubProfileResponse = socialClient.getGithubProfileFromGithub(accessToken);
-        Member findMember = findMemberByEmail(githubProfileResponse.getEmail());
-        findMember.validatePassword(findMember.getPassword());
+        GithubProfileResponse githubProfile = socialClient.getGithubProfileFromGithub(accessToken);
 
+        if (isNotRegisteredMember(githubProfile.getEmail())) {
+            Member member = saveNewOauthMember(githubProfile);
+            return new LoginResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
+        }
+
+        Member findMember = findMemberByEmail(githubProfile.getEmail());
+        findMember.validatePassword(findMember.getPassword());
         return new LoginResponse(jwtTokenProvider.createToken(findMember.getEmail(), findMember.getRoles()));
+    }
+
+    private boolean isNotRegisteredMember(final String email) {
+        return !memberRepository.existsByEmail(email);
+    }
+
+    private Member saveNewOauthMember(final GithubProfileResponse githubProfileResponse) {
+        return memberRepository.save(Member.createMemberThroughOauth(githubProfileResponse.getEmail()));
     }
 }

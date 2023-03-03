@@ -17,12 +17,15 @@ import static nextstep.fixture.FieldFixture.Access_Token;
 import static nextstep.fixture.FieldFixture.권한_증서;
 import static nextstep.fixture.GitHubProfileFixture.ADMIN_GITHUB;
 import static nextstep.fixture.GitHubProfileFixture.ALEX_GITHUB;
+import static nextstep.fixture.GitHubProfileFixture.JADE_GITHUB;
 import static nextstep.fixture.MemberFixture.관리자_ADMIN;
 import static nextstep.fixture.MemberFixture.회원_ALEX;
+import static nextstep.fixture.MemberFixture.회원_JADE;
 import static nextstep.utils.JsonPathUtil.문자열로_추출;
 
 public enum AuthFixture {
     알렉스(회원_ALEX, ALEX_GITHUB),
+    제이드(회원_JADE, JADE_GITHUB),
     어드민(관리자_ADMIN, ADMIN_GITHUB),
     ;
 

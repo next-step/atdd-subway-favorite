@@ -86,12 +86,6 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        assertThat(response.jsonPath().getString("id")).isNotNull();
-        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
-    }
-
     public static void 회원_정보_조회됨(ExtractableResponse<Response> 내_정보_조회_결과, MemberFixture 회원) {
         assertThat(문자열로_추출(내_정보_조회_결과, 식별자_아이디)).isNotNull();
         assertThat(문자열로_추출(내_정보_조회_결과, 회원_이메일)).isEqualTo(회원.이메일());

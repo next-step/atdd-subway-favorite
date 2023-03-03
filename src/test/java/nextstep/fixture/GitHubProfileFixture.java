@@ -3,6 +3,7 @@ package nextstep.fixture;
 public enum GitHubProfileFixture {
 
     ALEX_GITHUB("alex-code", "alex-token"),
+    JADE_GITHUB("jade-code", "jade-token"),
     ADMIN_GITHUB("admin-code", "admin-token"),
     ;
 
