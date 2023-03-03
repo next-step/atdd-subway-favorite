@@ -19,7 +19,7 @@ public class LoginController {
 	}
 
 	@PostMapping("/login/token")
-	public ResponseEntity<TokenResponse> createMember(@RequestBody TokenRequest request) {
+	public ResponseEntity<TokenResponse> loginWithToken(@RequestBody TokenRequest request) {
 		TokenResponse token = loginService.createToken(request);
 		return ResponseEntity.ok(token);
 	}
