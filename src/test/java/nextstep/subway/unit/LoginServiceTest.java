@@ -14,7 +14,7 @@ import nextstep.subway.utils.GithubResponses;
 
 @SpringBootTest
 @Transactional
-public class LoginServiceTest {
+class LoginServiceTest {
 	@Autowired
 	private LoginService loginService;
 
