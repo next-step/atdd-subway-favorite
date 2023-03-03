@@ -9,7 +9,8 @@ public enum GithubResponses {
 	사용자2("code2", "access_token_2", "email2@email.com"),
 	사용자3("code3", "access_token_3", "email3@email.com"),
 	사용자4("code4", "access_token_4", "email4@email.com"),
-	ACCESS_TOKEN_없는_사용자5("code5", null, "email5@email.com");
+	ACCESS_TOKEN_없는_사용자5("code5", null, "email5@email.com"),
+	PROFILE_없는_사용자6("code5", "access_token_non_profile", null);
 
 	private final String code;
 	private final String accessToken;
@@ -23,7 +24,7 @@ public enum GithubResponses {
 
 	public static String getAccessTokenFromCode(final String code) {
 		return Arrays.stream(GithubResponses.values())
-			.filter(user -> user.code.equals(code))
+			.filter(user -> user.code != null && user.code.equals(code))
 			.findFirst()
 			.map(GithubResponses::getAccessToken)
 			.orElseThrow(() -> {
@@ -33,7 +34,7 @@ public enum GithubResponses {
 
 	public static String getEmailFromAccessToken(final String accessToken) {
 		return Arrays.stream(GithubResponses.values())
-			.filter(user -> user.accessToken.equals(accessToken))
+			.filter(user -> user.accessToken != null && user.accessToken.equals(accessToken))
 			.findFirst()
 			.map(GithubResponses::getEmail)
 			.orElseThrow(() -> {
