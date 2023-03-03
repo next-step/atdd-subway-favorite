@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
-import nextstep.auth.Authentication;
+import nextstep.config.auth.Auth;
+import nextstep.config.auth.context.Authentication;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -29,11 +30,6 @@ public class MemberController {
         return ResponseEntity.ok().body(member);
     }
 
-    @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@Authentication String principal) {
-        return ResponseEntity.ok().body(memberService.findMemberByEmail(principal));
-    }
-
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
@@ -43,6 +39,23 @@ public class MemberController {
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/members/me")
+    public ResponseEntity<MemberResponse> findMemberOfMine(@Auth Authentication authentication) {
+        return ResponseEntity.ok().body(memberService.findMemberByEmail(authentication.getMemberResponse().getEmail()));
+    }
+
+    @PutMapping("/members/me")
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@Auth Authentication authentication, @RequestBody MemberRequest param) {
+        memberService.updateMember(authentication.getMemberResponse().getId(), param);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/members/me")
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@Auth Authentication authentication) {
+        memberService.deleteMember(authentication.getMemberResponse().getId());
         return ResponseEntity.noContent().build();
     }
 }

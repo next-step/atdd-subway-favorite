@@ -1,9 +1,9 @@
 package nextstep.member.application;
 
+import nextstep.common.exception.AuthorizationException;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.domain.exception.AuthorizationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;

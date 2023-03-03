@@ -6,6 +6,7 @@ import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -19,18 +20,20 @@ public class AuthService {
         this.githubClient = githubClient;
     }
 
+    @Transactional(readOnly = true)
     public TokenResponse createToken(TokenRequest request) {
         Member findMember = memberService.findByEmail(request.getEmail());
         findMember.checkPassword(request.getPassword());
 
-        return TokenResponse.of(jwtTokenProvider.createToken(findMember.getEmail(), findMember.getRoles()));
+        return TokenResponse.of(jwtTokenProvider.createToken(findMember.getEmail()));
     }
 
+    @Transactional
     public TokenResponse createTokenWithGithub(GithubTokenRequest request) {
         String accessToken = githubClient.getAccessTokenFromGithub(request.getCode());
         GithubProfileResponse githubProfileResponse = githubClient.getGithubProfileFromGithub(accessToken);
-        Member member = memberService.findOrCreateMember(githubProfileResponse.getEmail());
+        Member member = memberService.findOrCreateMember(githubProfileResponse.getEmail(), request.getCode());
 
-        return TokenResponse.of(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
+        return TokenResponse.of(jwtTokenProvider.createToken(member.getEmail()));
     }
 }

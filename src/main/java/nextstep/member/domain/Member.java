@@ -1,6 +1,6 @@
 package nextstep.member.domain;
 
-import nextstep.member.domain.exception.InvalidUserInfoException;
+import nextstep.common.exception.InvalidUserInfoException;
 
 import javax.persistence.*;
 import java.util.List;
@@ -33,8 +33,8 @@ public class Member {
         this.roles = roles;
     }
 
-    public Member(String email) {
-        this(null, email, null, null, List.of(RoleType.ROLE_MEMBER.name()));
+    public Member(String email, String password) {
+        this(null, email, password, null, List.of(RoleType.ROLE_MEMBER.name()));
     }
 
     public Member(String email, String password, Integer age) {

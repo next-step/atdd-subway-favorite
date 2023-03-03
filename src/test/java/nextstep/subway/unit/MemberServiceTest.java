@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberServiceTest extends ApplicationContextTest {
     public static final String EMAIL = "email@email.com";
+    public static final String GITHUB_CODE = "a8sd97f9sdfiukl";
     @Autowired
     private MemberService memberService;
 
@@ -18,7 +19,7 @@ public class MemberServiceTest extends ApplicationContextTest {
     @Test
     void findOrCreateMember() {
         // when
-        var response = memberService.findOrCreateMember(EMAIL);
+        var response = memberService.findOrCreateMember(EMAIL, GITHUB_CODE);
 
         // then
         assertAll(

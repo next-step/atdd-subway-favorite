@@ -1,8 +1,8 @@
 package nextstep.subway.unit;
 
+import nextstep.common.exception.AuthorizationException;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.domain.exception.AuthorizationException;
 import nextstep.subway.ApplicationContextTest;
 import nextstep.subway.utils.GithubResponses;
 import org.assertj.core.api.Assertions;

@@ -1,8 +1,9 @@
-package nextstep;
+package nextstep.common;
 
 import io.jsonwebtoken.MalformedJwtException;
-import nextstep.member.domain.exception.EntityNotFoundException;
-import nextstep.member.domain.exception.InvalidUserInfoException;
+import nextstep.common.exception.EntityNotFoundException;
+import nextstep.common.exception.InvalidTokenException;
+import nextstep.common.exception.InvalidUserInfoException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Void> handleAuthenticationException(AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<Void> handleInvalidTokenException(InvalidTokenException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

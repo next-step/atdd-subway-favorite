@@ -1,11 +1,11 @@
 package nextstep.member.application;
 
+import nextstep.common.exception.EntityNotFoundException;
+import nextstep.common.exception.InvalidUserInfoException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.domain.exception.EntityNotFoundException;
-import nextstep.member.domain.exception.InvalidUserInfoException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +21,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public Member findOrCreateMember(String principal) {
-        return memberRepository.findByEmail(principal).orElseGet(() -> new Member(principal));
+    public Member findOrCreateMember(String principal, String code) {
+        return memberRepository.findByEmail(principal).orElseGet(() -> memberRepository.save(new Member(principal, code)));
     }
 
     public MemberResponse findMember(Long id) {

@@ -1,4 +1,4 @@
-package nextstep.member.domain.exception;
+package nextstep.common.exception;
 
 public class AuthorizationException extends RuntimeException {
     public AuthorizationException() {
