@@ -1,10 +1,11 @@
-package nextstep.subway.applicaion;
+package nextstep.favorite.application;
 
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
-import nextstep.subway.applicaion.dto.FavoriteResponse;
-import nextstep.subway.domain.Favorite;
-import nextstep.subway.domain.FavoriteRepository;
+import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.subway.applicaion.StationService;
+import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

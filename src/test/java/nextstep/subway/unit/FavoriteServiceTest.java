@@ -2,8 +2,8 @@ package nextstep.subway.unit;
 
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.subway.applicaion.FavoriteService;
-import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;

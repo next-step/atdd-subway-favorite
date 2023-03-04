@@ -1,7 +1,8 @@
-package nextstep.subway.applicaion.dto;
+package nextstep.favorite.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import nextstep.subway.domain.Favorite;
+import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.favorite.domain.Favorite;
 import nextstep.subway.domain.Station;
 
 public class FavoriteResponse {

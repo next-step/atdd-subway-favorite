@@ -1,4 +1,4 @@
-package nextstep.subway.applicaion.dto;
+package nextstep.favorite.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

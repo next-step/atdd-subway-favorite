@@ -1,10 +1,10 @@
-package nextstep.subway.ui;
+package nextstep.favorite.ui;
 
 import nextstep.member.domain.auth.AuthenticationPrincipal;
 import nextstep.member.domain.auth.LoginMember;
-import nextstep.subway.applicaion.FavoriteService;
-import nextstep.subway.applicaion.dto.FavoriteRequest;
-import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +30,6 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
         FavoriteResponse favorite = favoriteService.saveFavorite(loginMember.getEmail(), request.getDepartureStationId(), request.getDestinationStationId());
-        System.out.println("favorite = " + favorite);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
