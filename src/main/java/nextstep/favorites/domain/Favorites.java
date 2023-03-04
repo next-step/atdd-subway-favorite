@@ -18,4 +18,8 @@ public class Favorites {
     public void addFavorite(Favorite favorite) {
         this.favorites.add(favorite);
     }
+
+    public List<Favorite> get() {
+        return favorites;
+    }
 }

@@ -7,6 +7,7 @@ import nextstep.member.application.TokenService;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/favorites")
@@ -28,9 +30,15 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> addFavorites(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestBody FavoriteRequest favoriteRequest) {
+    public ResponseEntity<String> addFavorites(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestBody FavoriteRequest favoriteRequest) {
         MemberResponse member = tokenService.getMember(accessToken);
         Long favoriteId = favoriteService.addFavorite(member.getId(), favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        MemberResponse member = tokenService.getMember(accessToken);
+        return ResponseEntity.ok(favoriteService.getFavorites(member.getId()));
     }
 }

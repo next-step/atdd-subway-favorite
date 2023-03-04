@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
 import java.util.Map;
 
 import static nextstep.favorites.FavoritesSteps.*;
@@ -59,20 +60,30 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 조회할 수 있다.")
     @Test
     void favoritesFind() {
-        ExtractableResponse<Response> response = 즐겨찾기_조회(인증정보);
-        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(favoriteResponse.getSource().getId()).isEqualTo(강남역);
-        assertThat(favoriteResponse.getTarget().getId()).isEqualTo(양재역);
+        즐겨찾기_추가(인증정보, 강남역, 양재역);
+        ExtractableResponse<Response> response = 즐겨찾기_조회(인증정보);
+        List<Long> sourceList = response.jsonPath().getList("source.id", Long.class);
+        List<Long> targetList = response.jsonPath().getList("target.id", Long.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(sourceList.get(0)).isEqualTo(강남역);
+        assertThat(targetList.get(0)).isEqualTo(양재역);
     }
 
     @DisplayName("즐겨찾기를 삭제할 수 있다.")
     @Test
     void favoritesDelete() {
-        ExtractableResponse<Response> response = 즐겨찾기_삭제(1L);
+
+        즐겨찾기_추가(인증정보, 강남역, 양재역);
+        Long id = 즐겨찾기_조회(인증정보).jsonPath().getList("id", Long.class).get(0);
+
+        ExtractableResponse<Response> response = 즐겨찾기_삭제(인증정보, id);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        List<Long> ids = 즐겨찾기_조회(인증정보).jsonPath().getList("id", Long.class);
+        assertThat(ids).hasSize(0);
 
     }
 

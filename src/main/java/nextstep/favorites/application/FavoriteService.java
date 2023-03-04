@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,7 +44,7 @@ public class FavoriteService {
         Member member = getMemberById(memberId);
         Station targetStation = getStationById(favoriteRequest.getTarget());
         Station sourceStation = getStationById(favoriteRequest.getSource());
-        Favorite favorite = new Favorite(member, targetStation, sourceStation);
+        Favorite favorite = new Favorite(member, sourceStation, targetStation);
         favoriteRepository.save(favorite);
 
         member.addFavorite(favorite);
@@ -55,5 +56,11 @@ public class FavoriteService {
     }
     private Station getStationById(Long stationId) {
         return stationRepository.findById(stationId).orElseThrow(() -> new BusinessException(ErrorResponse.NOT_FOUND_EMAIL));
+    }
+
+    public List<FavoriteResponse> getFavorites(Long memberId) {
+        Member member = getMemberById(memberId);
+        List<Favorite> favorites = member.getFavorites();
+        return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 }
