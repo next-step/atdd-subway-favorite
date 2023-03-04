@@ -1,6 +1,6 @@
 package nextstep.auth.application;
 
-import nextstep.auth.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 
 public interface GithubClient {
     String getAccessTokenFromGithub(String code);

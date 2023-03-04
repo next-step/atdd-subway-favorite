@@ -1,4 +1,4 @@
-package nextstep.auth.exception;
+package nextstep.common.exception;
 
 import org.springframework.http.HttpStatus;
 

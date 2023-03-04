@@ -1,6 +1,6 @@
 package nextstep.member.domain;
 
-import nextstep.auth.exception.AuthenticationException;
+import nextstep.common.exception.AuthenticationException;
 
 import javax.persistence.*;
 import java.util.List;

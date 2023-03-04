@@ -1,9 +1,9 @@
 package nextstep.auth.application;
 
-import nextstep.auth.exception.AuthenticationException;
+import nextstep.common.exception.AuthenticationException;
 import nextstep.common.config.JwtTokenProvider;
-import nextstep.auth.dto.TokenRequest;
-import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
