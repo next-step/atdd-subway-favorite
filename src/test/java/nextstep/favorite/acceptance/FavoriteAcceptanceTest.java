@@ -8,17 +8,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_목록_조회_성공;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_목록_조회_실패_BY_UNAUTHORIZED;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_성공;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_실패_BY_UNAUTHORIZED;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_추가_성공;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_추가_실패_BY_UNAUTHORIZED;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
 import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static nextstep.utils.DataLoader.MEMBER_EMAIL;
 import static nextstep.utils.DataLoader.MEMBER_PASSWORD;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 경로 즐겨찾기 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -62,7 +65,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_추가_요청(사용자, 교대역, 양재역);
 
         // Then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        즐겨찾기_추가_성공(response);
     }
 
     @DisplayName("인증없이, 즐겨찾기 추가시 UNAUTHORIZED")
@@ -72,7 +75,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_추가_요청(잘못된_토큰, 교대역, 양재역);
 
         // Then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        즐겨찾기_추가_실패_BY_UNAUTHORIZED(response);
     }
 
     /**
@@ -91,12 +94,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(사용자);
 
         // Then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.jsonPath().getList("")).hasSize(1),
-                () -> assertThat(response.jsonPath().getLong("source.id[0]")).isEqualTo(교대역.intValue()),
-                () -> assertThat(response.jsonPath().getLong("target.id[0]")).isEqualTo(양재역.intValue())
-        );
+        즐겨찾기_목록_조회_성공(response, 교대역, 양재역);
     }
 
     /**
@@ -111,7 +109,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(잘못된_토큰);
 
         // Then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        즐겨찾기_목록_조회_실패_BY_UNAUTHORIZED(response);
     }
 
     /**
@@ -130,7 +128,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(사용자, responseOf즐겨찾기_추가_요청);
 
         // Then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        즐겨찾기_삭제_성공(response);
     }
 
     /**
@@ -148,6 +146,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(잘못된_토큰, responseOf즐겨찾기_추가_요청);
 
         // Then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        즐겨찾기_삭제_실패_BY_UNAUTHORIZED(response);
     }
 }
