@@ -1,10 +1,10 @@
 package nextstep.favorite.ui;
 
-import nextstep.member.domain.auth.AuthenticationPrincipal;
-import nextstep.member.domain.auth.LoginMember;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.member.domain.auth.AuthenticationPrincipal;
+import nextstep.member.domain.auth.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
