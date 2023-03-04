@@ -20,6 +20,7 @@ import java.util.List;
 import static nextstep.member.fake.ui.GithubResponses.사용자3;
 import static nextstep.utils.DataLoader.MEMBER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ActiveProfiles("test")
@@ -94,5 +95,26 @@ public class FavoriteServiceTest {
         //Then
         List<FavoriteResponse> responses = favoriteService.findFavorites(본인.getEmail());
         assertThat(responses.size()).isEqualTo(0);
+    }
+
+    @DisplayName("타인의 계정에서 즐겨찾기를 삭제해도, 본인의 계정에 저장된 즐겨찾기에는 영향이 없다.")
+    @Test
+    void deleteFavoriteOtherAccount() {
+        // Given
+        favoriteService.saveFavorite(본인.getEmail(), 강남역.getId(), 역삼역.getId());
+        FavoriteResponse otherFavoriteResponse = favoriteService.saveFavorite(타인.getEmail(), 강남역.getId(), 역삼역.getId());
+
+        // When
+        favoriteService.deleteFavorite(타인.getEmail(), otherFavoriteResponse.getId());
+
+        //Then
+        List<FavoriteResponse> myFavoriteResponses = favoriteService.findFavorites(본인.getEmail());
+        assertThat(myFavoriteResponses).hasSize(1);
+        assertThat(myFavoriteResponses)
+                .extracting(FavoriteResponse::getDepartureStationResponse, FavoriteResponse::getDestinationStationResponse)
+                .contains(tuple(StationResponse.from(강남역), StationResponse.from(역삼역)));
+
+        List<FavoriteResponse> otherFavoriteResponses = favoriteService.findFavorites(타인.getEmail());
+        assertThat(otherFavoriteResponses).hasSize(0);
     }
 }
