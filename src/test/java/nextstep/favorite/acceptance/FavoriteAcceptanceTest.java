@@ -99,6 +99,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    /**
+     * Given 로그인없이
+     * When 지하철 경로 즐겨찾기 목록 조회 요청을 하면
+     * Then UNAUTHORIZED 상태코드 메세지를 응답받는다
+     */
     @DisplayName("인증없이, 즐겨찾기 목록 조회시 UNAUTHORIZED")
     @Test
     void findFavoriteWithoutAuthorization() {
@@ -128,6 +133,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * Given 로그인한 사용자가 지하철 경로를 즐겨찾기 추가하고
+     * When 로그인없이, 해당 지하철 경로를 즐겨찾기에서 삭제 요청을 하면
+     * Then UNAUTHORIZED 상태코드 메세지를 응답받는다
+     */
     @DisplayName("인증없이, 즐겨찾기 삭제시 UNAUTHORIZED")
     @Test
     void removeFavoriteWithoutAuthorization() {
