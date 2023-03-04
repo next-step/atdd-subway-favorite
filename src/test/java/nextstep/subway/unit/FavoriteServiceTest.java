@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FavoriteServiceTest extends SpringTest {
 
@@ -42,9 +43,7 @@ public class FavoriteServiceTest extends SpringTest {
     @Test
     void saveFavorite() {
         // given
-        final FavoriteRequest favoriteRequest = new FavoriteRequest(
-                String.valueOf(sourceStation.getId()),
-                String.valueOf(targetStation.getId()));
+        final FavoriteRequest favoriteRequest = createFavoriteRequest(sourceStation.getId(), targetStation.getId());
 
         // when
         favoriteService.saveFavorite(member.getEmail(), favoriteRequest);
@@ -58,11 +57,30 @@ public class FavoriteServiceTest extends SpringTest {
                 .findFirst()).isPresent();
     }
 
+    @DisplayName("이미 존재하는 즐겨찾기 항목 재저장 시, 오류 발생")
+    @Test
+    void saveFavoriteWhenIsAlreadyExists() {
+        // given
+        final FavoriteRequest favoriteRequest = createFavoriteRequest(sourceStation.getId(), targetStation.getId());
+        favoriteService.saveFavorite(member.getEmail(), favoriteRequest);
+
+        // when, then
+        assertThatThrownBy(() -> {
+            favoriteService.saveFavorite(member.getEmail(), favoriteRequest);
+        }).isInstanceOf(RuntimeException.class);
+    }
+
     private Member createMember(final String email, final String password, final int age) {
         return memberRepository.save(new Member(email, password, age));
     }
 
     private Station createStation(final String name) {
         return stationRepository.save(new Station(name));
+    }
+
+    private FavoriteRequest createFavoriteRequest(final long sourceStationId, final long targetStationId) {
+        return new FavoriteRequest(
+                String.valueOf(sourceStationId),
+                String.valueOf(targetStationId));
     }
 }
