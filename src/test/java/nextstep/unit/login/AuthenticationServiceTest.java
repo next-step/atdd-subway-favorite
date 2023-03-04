@@ -4,6 +4,7 @@ import nextstep.login.application.AuthenticationService;
 import nextstep.login.application.dto.response.LoginResponse;
 import nextstep.member.application.exception.InvalidPasswordException;
 import nextstep.member.application.exception.MemberNotFoundException;
+import nextstep.unit.support.ServiceTest;
 import nextstep.utils.DataLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,9 +13,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import static nextstep.fixture.GitHubProfileFixture.ALEX_GITHUB;
 import static nextstep.fixture.MemberFixture.비회원;
@@ -24,10 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("로그인 인증 기능")
-@ActiveProfiles("test")
-@SpringBootTest
-@Transactional
-class AuthenticationServiceTest {
+class AuthenticationServiceTest extends ServiceTest {
 
     @Autowired
     private AuthenticationService authenticationService;
