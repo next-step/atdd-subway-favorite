@@ -1,11 +1,11 @@
 package nextstep.favorite.application;
 
-import nextstep.member.application.MemberService;
-import nextstep.member.domain.Member;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.subway.applicaion.StationService;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.Member;
+import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,10 +41,14 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavorites(String email) {
         Member member = memberService.findByEmail(email);
         return favoriteRepository.findAllByMemberId(member.getId())
-                .map(favorites -> favorites.stream()
-                        .map(favorite -> FavoriteResponse.of(favorite, stationService.findById(favorite.getDepartureStationId()), stationService.findById(favorite.getDestinationStationId())))
-                        .collect(Collectors.toList())
-                ).orElseThrow(() -> new FavoriteNotFoundException(member.getId()));
+                .map(this::makeFavoritesResponse)
+                .orElseThrow(() -> new FavoriteNotFoundException(member.getId()));
+    }
+
+    private List<FavoriteResponse> makeFavoritesResponse(List<Favorite> favorites) {
+        return favorites.stream()
+                .map(favorite -> FavoriteResponse.of(favorite, stationService.findById(favorite.getDepartureStationId()), stationService.findById(favorite.getDestinationStationId())))
+                .collect(Collectors.toList());
     }
 
     @Transactional
