@@ -7,7 +7,9 @@ import nextstep.member.application.TokenService;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -40,5 +42,12 @@ public class FavoriteController {
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
         MemberResponse member = tokenService.getMember(accessToken);
         return ResponseEntity.ok(favoriteService.getFavorites(member.getId()));
+    }
+
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<Void> removeFavorite(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @PathVariable Long favoriteId) {
+        MemberResponse member = tokenService.getMember(accessToken);
+        favoriteService.remove(member.getId(), favoriteId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -80,10 +80,10 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 즐겨찾기_삭제(인증정보, id);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
-        List<Long> ids = 즐겨찾기_조회(인증정보).jsonPath().getList("id", Long.class);
-        assertThat(ids).hasSize(0);
+        List list = 즐겨찾기_조회(인증정보).as(List.class);
+        assertThat(list).hasSize(0);
 
     }
 

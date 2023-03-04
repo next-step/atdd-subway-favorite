@@ -22,4 +22,8 @@ public class Favorites {
     public List<Favorite> get() {
         return favorites;
     }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
+    }
 }

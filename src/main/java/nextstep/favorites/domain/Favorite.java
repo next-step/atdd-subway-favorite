@@ -2,6 +2,7 @@ package nextstep.favorites.domain;
 
 import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -56,5 +57,9 @@ public class Favorite {
 
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    public void delete() {
+        member.removeFavorite(this);
     }
 }

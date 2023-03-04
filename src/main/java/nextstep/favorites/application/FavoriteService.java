@@ -63,4 +63,17 @@ public class FavoriteService {
         List<Favorite> favorites = member.getFavorites();
         return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
+
+    @Transactional
+    public void remove(Long memberId, Long favoriteId) {
+        Member member = getMemberById(memberId);
+
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new BusinessException(ErrorResponse.NOT_FOUND_FAVORITE));
+
+        if (!member.getFavorites().contains(favorite)) {
+            throw new BusinessException(ErrorResponse.FORBIDDEN);
+        }
+        favorite.delete();
+        favoriteRepository.deleteById(favoriteId);
+    }
 }
