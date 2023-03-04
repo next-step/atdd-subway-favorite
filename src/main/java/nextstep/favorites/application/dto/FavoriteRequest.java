@@ -1,13 +1,16 @@
 package nextstep.favorites.application.dto;
 
 public class FavoriteRequest {
-    private final Long source;
-    private final Long target;
+    private Long source;
+    private Long target;
 
     public FavoriteRequest(Long source, Long target) {
         this.source = source;
         this.target = target;
     }
+
+
+    public FavoriteRequest() {}
 
     public Long getSource() {
         return source;

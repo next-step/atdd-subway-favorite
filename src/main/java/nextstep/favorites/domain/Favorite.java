@@ -31,8 +31,7 @@ public class Favorite {
     @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
-    public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
-        this.id = id;
+    public Favorite(Member member, Station sourceStation, Station targetStation) {
         this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;

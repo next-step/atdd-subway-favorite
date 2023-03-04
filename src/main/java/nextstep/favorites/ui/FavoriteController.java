@@ -2,23 +2,35 @@ package nextstep.favorites.ui;
 
 import nextstep.favorites.application.FavoriteService;
 import nextstep.favorites.application.dto.FavoriteRequest;
+import nextstep.favorites.application.dto.FavoriteResponse;
+import nextstep.member.application.TokenService;
+import nextstep.member.application.dto.MemberResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/favorites")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
+    private final TokenService tokenService;
 
-    public FavoriteController(FavoriteService favoriteService) {
+    public FavoriteController(FavoriteService favoriteService, TokenService tokenService) {
         this.favoriteService = favoriteService;
+        this.tokenService = tokenService;
     }
 
     @PostMapping
-    public void addFavorites(@RequestBody FavoriteRequest favoriteRequest) {
-        
+    public ResponseEntity<FavoriteResponse> addFavorites(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestBody FavoriteRequest favoriteRequest) {
+        MemberResponse member = tokenService.getMember(accessToken);
+        Long favoriteId = favoriteService.addFavorite(member.getId(), favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
     }
 }

@@ -1,6 +1,8 @@
 package nextstep.member.domain;
 
+import nextstep.favorites.domain.Favorite;
 import nextstep.favorites.domain.Favorites;
+import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
@@ -68,6 +70,9 @@ public class Member {
         this.age = member.age;
     }
 
+    public void addFavorite(Favorite favorite) {
+        favorites.addFavorite(favorite);
+    }
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }
