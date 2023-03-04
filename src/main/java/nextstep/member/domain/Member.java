@@ -1,5 +1,7 @@
 package nextstep.member.domain;
 
+import nextstep.favorites.domain.Favorites;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +14,9 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
+
+    @Embedded
+    private Favorites favorites = new Favorites();
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "MEMBER_ROLE",

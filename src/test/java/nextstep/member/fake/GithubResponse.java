@@ -1,7 +1,7 @@
 package nextstep.member.fake;
 
-import nextstep.member.common.exception.ErrorResponse;
-import nextstep.member.common.exception.LoginException;
+import nextstep.common.exception.ErrorResponse;
+import nextstep.common.exception.LoginException;
 
 import java.util.Arrays;
 

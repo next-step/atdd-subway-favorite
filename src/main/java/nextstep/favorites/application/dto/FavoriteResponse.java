@@ -1,4 +1,6 @@
-package nextstep.subway.applicaion.dto;
+package nextstep.favorites.application.dto;
+
+import nextstep.subway.applicaion.dto.StationResponse;
 
 public class FavoriteResponse {
     private final Long id;

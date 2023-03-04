@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.favorites;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

@@ -1,15 +1,15 @@
-package nextstep.member;
+package nextstep.favorites;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.acceptance.AcceptanceTest;
-import nextstep.subway.applicaion.dto.FavoriteResponse;
+import nextstep.favorites.application.dto.FavoriteResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.FavoritesSteps.*;
+import static nextstep.favorites.FavoritesSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoritesAcceptanceTest extends AcceptanceTest {
