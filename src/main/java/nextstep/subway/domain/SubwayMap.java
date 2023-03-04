@@ -1,5 +1,7 @@
 package nextstep.subway.domain;
 
+import nextstep.common.exception.ErrorCode;
+import nextstep.common.exception.NoPathException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
@@ -34,7 +36,11 @@ public class SubwayMap {
     private static GraphPath<Station, SectionEdge> findShortedPath(Station source, Station target, SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
         // 다익스트라 최단 경로 찾기
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
+        if (result == null) {
+            throw new NoPathException(ErrorCode.NO_PATH);
+        }
+        return result;
     }
 
     private void addEdge(SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
