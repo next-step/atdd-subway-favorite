@@ -1,4 +1,4 @@
-package nextstep.subway.unit;
+package nextstep.favorite.unit;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteResponse;

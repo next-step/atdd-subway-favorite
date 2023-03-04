@@ -1,4 +1,4 @@
-package nextstep.subway.acceptance;
+package nextstep.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
 import static nextstep.member.acceptance.MemberSteps.베어러_인증_로그인_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static nextstep.utils.DataLoader.MEMBER_EMAIL;
 import static nextstep.utils.DataLoader.MEMBER_PASSWORD;
