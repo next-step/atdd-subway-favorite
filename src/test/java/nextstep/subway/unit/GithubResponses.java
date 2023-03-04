@@ -1,5 +1,7 @@
 package nextstep.subway.unit;
 
+import java.util.stream.Stream;
+
 public enum GithubResponses {
     사용자1("832ovnq039hfjn", "access_token_1", "email1@email.com"),
     사용자2("mkfo0aFa03m", "access_token_2", "email2@email.com"),
@@ -28,5 +30,21 @@ public enum GithubResponses {
 
     public String getEmail() {
         return email;
+    }
+
+    public static String getAccessTokenFromCode(final String code) {
+        return Stream.of(GithubResponses.values())
+                .filter(githubResponse -> githubResponse.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .getAccessToken();
+    }
+
+    public static String getEmailFromAccessToken(final String accessToken) {
+        return Stream.of(GithubResponses.values())
+                .filter(githubResponse -> githubResponse.getAccessToken().equals(accessToken))
+                .findFirst()
+                .orElseThrow(RuntimeException::new)
+                .getEmail();
     }
 }
