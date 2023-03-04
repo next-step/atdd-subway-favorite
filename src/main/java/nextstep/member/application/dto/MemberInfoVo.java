@@ -6,7 +6,7 @@ import nextstep.member.application.dto.abstractive.MemberProvider;
 import java.util.List;
 
 @AllArgsConstructor
-public class FindMemberOfMineRequest implements MemberProvider {
+public class MemberInfoVo implements MemberProvider {
     private String principal;
     private List<String> roles;
 

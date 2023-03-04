@@ -2,6 +2,7 @@ package nextstep.subway.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.member.domain.Member;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,9 +25,18 @@ public class Favorite {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target", referencedColumnName = "id")
     private Station target;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member", referencedColumnName = "id")
+    private Member member;
 
-    public Favorite(Station source, Station target) {
+    public Favorite(Station source, Station target, Member member) {
         this.source = source;
         this.target = target;
+        this.member = member;
     }
+
+    public boolean isThisYourFavorite(String email) {
+        return member.isThisYourMember(email);
+    }
+
 }

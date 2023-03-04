@@ -1,6 +1,8 @@
 package nextstep.subway.ui;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.member.application.dto.abstractive.MemberProvider;
+import nextstep.member.config.argument.annotation.MemberInfo;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteReadResponse;
@@ -23,24 +25,26 @@ import java.util.List;
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
-    @PostMapping("")
-    public ResponseEntity<Void> createFavorite(@RequestBody FavoriteCreateRequest request) {
-        Favorite favorite = favoriteService.createFavorite(request);
+    @PostMapping
+    public ResponseEntity<Void> createFavorite(@MemberInfo MemberProvider member,
+                                               @RequestBody FavoriteCreateRequest request) {
+        Favorite favorite = favoriteService.createFavorite(member, request);
         return ResponseEntity
                 .created(URI.create("/favorites/" + favorite.getId()))
                 .build();
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<FavoriteReadResponse>> readFavorites() {
-        List<FavoriteReadResponse> favorites = favoriteService.readFavorites();
+    @GetMapping
+    public ResponseEntity<List<FavoriteReadResponse>> readFavorites(@MemberInfo MemberProvider member) {
+        List<FavoriteReadResponse> favorites = favoriteService.readFavorites(member);
         return ResponseEntity
                 .ok(favorites);
     }
 
     @DeleteMapping("/{favoriteId}")
-    public ResponseEntity<Void> deleteFavorite(@PathVariable Long favoriteId) {
-        favoriteService.deleteFavorite(favoriteId);
+    public ResponseEntity<Void> deleteFavorite(@MemberInfo MemberProvider memberProvider,
+                                               @PathVariable Long favoriteId) {
+        favoriteService.deleteFavorite(memberProvider, favoriteId);
         return ResponseEntity
                 .noContent()
                 .build();

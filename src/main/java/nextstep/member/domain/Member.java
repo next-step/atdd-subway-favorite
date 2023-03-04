@@ -67,4 +67,8 @@ public class Member {
         return StringUtils.equals(this.password, password);
     }
 
+    public boolean isThisYourMember(String email) {
+        return email.equals(this.email);
+    }
+
 }
