@@ -29,7 +29,7 @@ public class FavoriteService {
         final Station sourceStation = stationService.findById(Long.valueOf(favoriteRequest.getSourceStationId()));
         final Station targetStation = stationService.findById(Long.valueOf(favoriteRequest.getTargetStationId()));
 
-        final Favorite favorite = new Favorite(member.getId(), sourceStation.getId(), targetStation.getId());
+        final Favorite favorite = new Favorite(favoriteRepository, member.getId(), sourceStation.getId(), targetStation.getId());
         favoriteRepository.save(favorite);
     }
 }

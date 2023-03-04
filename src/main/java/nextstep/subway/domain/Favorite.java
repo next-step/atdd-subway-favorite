@@ -19,7 +19,8 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(final Long memberId, final Long sourceStationId, final Long targetStationId) {
+    public Favorite(final FavoriteRepository favoriteRepository, final long memberId, final long sourceStationId, final long targetStationId) {
+        validateBeforeCreate(favoriteRepository, memberId, sourceStationId, targetStationId);
         this.memberId = memberId;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
@@ -39,5 +40,12 @@ public class Favorite {
 
     public Long getTargetStationId() {
         return targetStationId;
+    }
+
+    private void validateBeforeCreate(final FavoriteRepository favoriteRepository, final long memberId, final long sourceStationId, final long targetStationId) {
+        favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(memberId, sourceStationId, targetStationId)
+                .ifPresent(result -> {
+                    throw new RuntimeException();
+                });
     }
 }
