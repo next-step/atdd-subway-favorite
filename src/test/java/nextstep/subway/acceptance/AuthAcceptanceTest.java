@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.DataLoader;
+import nextstep.subway.utils.GithubResponses;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 	private static final String EMAIL = "admin@email.com";
@@ -56,5 +57,26 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+	}
+
+	@DisplayName("Github Auth")
+	@Test
+	void githubAuth() {
+		// When
+		ExtractableResponse<Response> response = github_로그인_요청(GithubResponses.사용자1.getCode());
+
+		// Then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+	}
+
+	@DisplayName("Github Auth - 예외 - AccessToken 을 발급 받지 못한 사용자일 경우 예외를 던진다.")
+	@Test
+	void githubAuth_fail_IF_GITHUB_ACCESS_TOKEN_IS_NULL() {
+		// When
+		ExtractableResponse<Response> response = github_로그인_요청(GithubResponses.ACCESS_TOKEN_없는_사용자5.getCode());
+
+		// Then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 }

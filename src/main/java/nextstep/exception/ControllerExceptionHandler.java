@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import nextstep.member.exception.InvalidTokenException;
 import nextstep.member.exception.NotFoundException;
 import nextstep.member.exception.UnAuthenticationException;
+import nextstep.member.exception.UnAuthorizationException;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
@@ -34,6 +35,11 @@ public class ControllerExceptionHandler {
 
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<Void> handleInvalidTokenException(InvalidTokenException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}
+
+	@ExceptionHandler(UnAuthorizationException.class)
+	public ResponseEntity<Void> handleAuthorizationException(UnAuthorizationException e) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
 }
