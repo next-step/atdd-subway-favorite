@@ -1,4 +1,4 @@
-package nextstep.auth.dto;
+package nextstep.auth.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

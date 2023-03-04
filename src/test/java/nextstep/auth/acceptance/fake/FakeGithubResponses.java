@@ -1,6 +1,6 @@
 package nextstep.auth.acceptance.fake;
 
-import nextstep.auth.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.exception.AuthenticationException;
 
 import java.util.Arrays;
