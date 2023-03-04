@@ -25,6 +25,12 @@ public class Sections {
         return sections;
     }
 
+    public List<Section> getOppositeSections() {
+        return sections.stream()
+                .map(section -> new Section(section.getLine(), section.getDownStation(), section.getUpStation(), section.getDistance()))
+                .collect(Collectors.toList());
+    }
+
     public void add(Section section) {
         if (this.sections.isEmpty()) {
             this.sections.add(section);
