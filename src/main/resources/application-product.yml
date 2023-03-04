@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    hibernate:
+      show_sql: true
+      format_sql: true
+
+security:
+  jwt:
+    token:
+      secret-key: ${token-secret-key}
+      expire-length: 3600000
+
+github:
+  client:
+    id: ${github.client-id}
+    secret: ${github.client-secret}
+  url:
+    access-token: ${github.token-url}
+    profile: ${github.profile-url}

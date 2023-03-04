@@ -1,0 +1,27 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging.level:
+  # 로거를 통해 sql문 출력
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 86400000
+
+github:
+  client:
+    id: giibeom-id
+    secret: giibeom-secret
+  url:
+    access-token: giibeom-token-url
+    profile: giibeom-profile-url
