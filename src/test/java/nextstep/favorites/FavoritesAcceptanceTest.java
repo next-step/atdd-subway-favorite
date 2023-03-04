@@ -59,7 +59,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 조회할 수 있다.")
     @Test
     void favoritesFind() {
-        ExtractableResponse<Response> response = 즐겨찾기_조회();
+        ExtractableResponse<Response> response = 즐겨찾기_조회(인증정보);
         FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);

@@ -27,8 +27,9 @@ public class FavoritesSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_조회() {
+    public static ExtractableResponse<Response> 즐겨찾기_조회(String token) {
         return RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
