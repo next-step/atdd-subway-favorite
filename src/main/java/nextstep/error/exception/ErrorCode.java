@@ -25,6 +25,10 @@ public enum ErrorCode {
 	//path
 	SAME_SOURCE_AND_TARGET(BAD_REQUEST, "출발지와 도착지가 같습니다."),
 
+	//FAVORITE
+
+	NOT_DELETE_OTHER_FAVORITE(BAD_REQUEST,"다른 사람의 즐겨찾기를 삭제할 수 없습니다"),
+
 	//member
 	MEMBER_NOT_EXISTS(BAD_REQUEST, "해당 유저는 존재하지 않습니다."),
 	MISMATCHED_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다."),

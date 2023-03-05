@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("즐겨찾기 기능")
-class FavoriteAcceptanceTest extends AcceptanceTest{
+class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String 이메일 = "email@email.com";
     private static final String 비밀번호 = "password";
     public static final int 나이 = 20;
@@ -34,9 +34,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
     private Long 삼호선;
     private Long 출발역;
     private Long 도착역;
+
     /**
      * 초기 맴버, 역 노선 세팅
-     *
+     * <p>
      * 교대역    --- *2호선* ---   강남역
      * |                        |
      * *3호선*                   *신분당선*
@@ -77,7 +78,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         도착역 = 양재역;
 
         //when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_추가(로그인_토큰,출발역 + "", 도착역 + "");
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_추가(로그인_토큰, Long.toString(출발역), Long.toString(도착역));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -96,7 +97,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         도착역 = 양재역;
 
         //when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_추가(유효하지_않은_로그인_토큰,출발역 + "", 도착역 + "");
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_추가(유효하지_않은_로그인_토큰, Long.toString(출발역), Long.toString(도착역));
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -114,7 +115,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         출발역 = 교대역;
         도착역 = 양재역;
 
-        FavoriteSteps.즐겨찾기_추가(로그인_토큰,출발역 + "", 도착역 + "");
+        FavoriteSteps.즐겨찾기_추가(로그인_토큰, Long.toString(출발역), Long.toString(도착역));
 
         //when
         ExtractableResponse<Response> response = FavoriteSteps.내_즐겨찾기_조회(로그인_토큰);
@@ -141,7 +142,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest{
         도착역 = 양재역;
         String 삭제할_즐겨찾기 = "1";
 
-        FavoriteSteps.즐겨찾기_추가(로그인_토큰,출발역 + "", 도착역 + "");
+        FavoriteSteps.즐겨찾기_추가(로그인_토큰, Long.toString(출발역), Long.toString(도착역));
 
         //when
         ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_삭제(로그인_토큰, 삭제할_즐겨찾기);

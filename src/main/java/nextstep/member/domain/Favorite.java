@@ -1,8 +1,12 @@
 package nextstep.member.domain;
 
+import nextstep.error.exception.BusinessException;
 import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
+
+import static nextstep.error.exception.ErrorCode.NOT_DELETE_OTHER_FAVORITE;
 
 @Entity
 public class Favorite {
@@ -26,7 +30,11 @@ public class Favorite {
         this.source = source;
         this.target = target;
     }
-
+    public void validateFavorite(Long memberId) {
+        if (!Objects.equals(this.memberId, memberId)) {
+            throw new BusinessException(NOT_DELETE_OTHER_FAVORITE);
+        }
+    }
     public Long getId() {
         return id;
     }
