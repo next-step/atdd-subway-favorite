@@ -43,7 +43,7 @@ public class GithubClient {
                 .getBody()
                 .getAccessToken();
         if (accessToken == null) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("Github Authorization 에서 토큰을 받지 못하였습니다.");
         }
         return accessToken;
     }
