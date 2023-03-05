@@ -24,12 +24,13 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void saveFavorite(final String email, final FavoriteRequest favoriteRequest) {
+    public Long saveFavorite(final String email, final FavoriteRequest favoriteRequest) {
         final Member member = memberService.getMember(email);
         final Station sourceStation = stationService.findById(Long.valueOf(favoriteRequest.getSourceStationId()));
         final Station targetStation = stationService.findById(Long.valueOf(favoriteRequest.getTargetStationId()));
 
         final Favorite favorite = new Favorite(favoriteRepository, member.getId(), sourceStation.getId(), targetStation.getId());
         favoriteRepository.save(favorite);
+        return favorite.getId();
     }
 }

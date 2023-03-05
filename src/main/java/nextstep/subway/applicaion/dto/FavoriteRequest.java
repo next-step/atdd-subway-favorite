@@ -6,7 +6,7 @@ public class FavoriteRequest {
 
     @JsonProperty("source")
     private String sourceStationId;
-    @JsonProperty
+    @JsonProperty("target")
     private String targetStationId;
 
     private FavoriteRequest() {
