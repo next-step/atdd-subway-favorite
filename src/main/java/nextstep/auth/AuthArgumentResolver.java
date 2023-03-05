@@ -1,9 +1,9 @@
 package nextstep.auth;
 
+import nextstep.error.exception.AuthException;
 import nextstep.error.exception.BusinessException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -12,6 +12,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import static nextstep.error.exception.ErrorCode.INVALID_TOKEN;
 import static nextstep.error.exception.ErrorCode.MISMATCHED_AUTHKEY;
 
 @Component
@@ -42,7 +43,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 		String accessToken = authorization.split(" ")[1];
 
 		if (!jwtTokenProvider.validateToken(accessToken)) {
-			throw new IllegalArgumentException(accessToken);
+			throw new AuthException(INVALID_TOKEN);
 		}
 		String email = jwtTokenProvider.getPrincipal(accessToken);
 
