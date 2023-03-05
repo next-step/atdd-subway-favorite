@@ -1,4 +1,4 @@
-package nextstep.utils;
+package nextstep.member.fake.ui;
 
 import java.util.Arrays;
 import java.util.Objects;

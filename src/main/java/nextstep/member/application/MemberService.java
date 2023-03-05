@@ -67,4 +67,9 @@ public class MemberService {
 
         return member.get();
     }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
+    }
 }
