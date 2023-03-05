@@ -1,8 +1,9 @@
 package nextstep.login.ui;
 
 import nextstep.login.application.AuthenticationService;
-import nextstep.login.application.dto.LoginRequest;
-import nextstep.login.application.dto.LoginResponse;
+import nextstep.login.application.dto.request.OAuthLoginRequest;
+import nextstep.login.application.dto.request.TokenLoginRequest;
+import nextstep.login.application.dto.response.LoginResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +21,14 @@ public class LoginController {
     }
 
     @PostMapping("/token")
-    ResponseEntity<LoginResponse> login(@RequestBody final LoginRequest loginRequest) {
-        LoginResponse loginResponse = authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
+    ResponseEntity<LoginResponse> tokenLogin(@RequestBody final TokenLoginRequest tokenLoginRequest) {
+        LoginResponse loginResponse = authenticationService.login(tokenLoginRequest.getEmail(), tokenLoginRequest.getPassword());
+        return ResponseEntity.ok().body(loginResponse);
+    }
+
+    @PostMapping("/github")
+    ResponseEntity<LoginResponse> githubLogin(@RequestBody final OAuthLoginRequest oAuthLoginRequest) {
+        LoginResponse loginResponse = authenticationService.login(oAuthLoginRequest.getCode());
         return ResponseEntity.ok().body(loginResponse);
     }
 }

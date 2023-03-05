@@ -1,4 +1,4 @@
-package nextstep.login.application.dto;
+package nextstep.login.application.dto.response;
 
 import lombok.Getter;
 

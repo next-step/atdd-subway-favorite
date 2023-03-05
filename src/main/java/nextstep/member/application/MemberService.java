@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.exception.MemberNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public Member findMemberByEmail(final String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
+    public MemberResponse findMemberByEmail(final String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+        return MemberResponse.of(member);
     }
 
     @Transactional
@@ -46,6 +48,6 @@ public class MemberService {
 
     private Member findById(final Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

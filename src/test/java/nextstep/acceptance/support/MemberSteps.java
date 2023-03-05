@@ -86,24 +86,10 @@ public class MemberSteps {
                 .extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        assertThat(response.jsonPath().getString("id")).isNotNull();
-        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
-    }
-
     public static void 회원_정보_조회됨(ExtractableResponse<Response> 내_정보_조회_결과, MemberFixture 회원) {
         assertThat(문자열로_추출(내_정보_조회_결과, 식별자_아이디)).isNotNull();
         assertThat(문자열로_추출(내_정보_조회_결과, 회원_이메일)).isEqualTo(회원.이메일());
         assertThat(Integer로_추출(내_정보_조회_결과, 회원_나이)).isEqualTo(회원.나이());
-    }
-
-    public static void AccessToken이_JWT_토큰_형식으로_반환된다(ExtractableResponse<Response> 로그인_요청_결과) {
-        assertThat(로그인_요청_결과.jsonPath().getString("accessToken").split("\\.")).hasSize(3);
-    }
-
-    public static void 로그인이_성공한다(ExtractableResponse<Response> 로그인_요청_결과) {
-        assertThat(로그인_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 내_정보_조회가_성공한다(ExtractableResponse<Response> 내_정보_조회_결과) {

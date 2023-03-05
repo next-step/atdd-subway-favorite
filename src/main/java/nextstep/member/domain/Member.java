@@ -2,6 +2,7 @@ package nextstep.member.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.member.application.exception.InvalidPasswordException;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static lombok.AccessLevel.PROTECTED;
+import static nextstep.member.domain.RoleType.ROLE_MEMBER;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -39,7 +41,7 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.roles = List.of(RoleType.ROLE_MEMBER.name());
+        this.roles = List.of(ROLE_MEMBER.name());
     }
 
     public Member(final String email, final String password, final Integer age, final List<String> roles) {
@@ -47,6 +49,10 @@ public class Member {
         this.password = password;
         this.age = age;
         this.roles = roles;
+    }
+
+    public static Member createMemberThroughOauth(final String email) {
+        return new Member(email, "", null, List.of(ROLE_MEMBER.name()));
     }
 
     public void update(final Member member) {
@@ -57,7 +63,7 @@ public class Member {
 
     public void validatePassword(final String password) {
         if (!Objects.equals(this.password, password)) {
-            throw new RuntimeException();
+            throw new InvalidPasswordException();
         }
     }
 }

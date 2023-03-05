@@ -1,4 +1,4 @@
-package nextstep.login.application;
+package nextstep.login.infra;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
