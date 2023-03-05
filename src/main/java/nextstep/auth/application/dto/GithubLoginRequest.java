@@ -1,4 +1,4 @@
-package nextstep.auth.dto;
+package nextstep.auth.application.dto;
 
 public class GithubLoginRequest {
     private String code;

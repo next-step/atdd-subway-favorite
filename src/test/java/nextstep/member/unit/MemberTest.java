@@ -1,15 +1,14 @@
 package nextstep.member.unit;
 
-import nextstep.auth.exception.AuthenticationException;
-import nextstep.auth.exception.AuthorizationException;
-import nextstep.auth.exception.ErrorCode;
+import nextstep.common.exception.AuthenticationException;
+import nextstep.common.exception.ErrorCode;
 import nextstep.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class MemberTest {
+class MemberTest {
 
     @DisplayName("일치하지 않는 비밀번호 요청 시 예외가 발생한다.")
     @Test

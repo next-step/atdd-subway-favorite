@@ -38,6 +38,10 @@ public class Line {
         return sections.getSections();
     }
 
+    public List<Section> getOppositeSections() {
+        return sections.getOppositeSections();
+    }
+
     public void update(String name, String color) {
         if (name != null) {
             this.name = name;

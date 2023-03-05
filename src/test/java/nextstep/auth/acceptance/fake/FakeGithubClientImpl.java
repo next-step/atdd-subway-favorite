@@ -1,7 +1,7 @@
 package nextstep.auth.acceptance.fake;
 
 import nextstep.auth.application.GithubClient;
-import nextstep.auth.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

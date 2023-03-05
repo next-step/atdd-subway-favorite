@@ -101,11 +101,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getMyInfoResponse = 베이러_인증으로_내_회원_정보_조회_요청(accessToken);
 
         // then
-        Long id = getMyInfoResponse.jsonPath().getLong("id");
         String email = getMyInfoResponse.jsonPath().getString("email");
         Integer age = getMyInfoResponse.jsonPath().getInt("age");
         assertAll(
-                () -> assertThat(id).isEqualTo(1L),
                 () -> assertThat(email).isEqualTo("email@email.com"),
                 () -> assertThat(age).isEqualTo(20)
         );

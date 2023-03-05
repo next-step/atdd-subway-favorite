@@ -1,4 +1,4 @@
-package nextstep.auth.exception;
+package nextstep.common.exception;
 
 public class ErrorResponse {
     private final String code;

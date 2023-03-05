@@ -1,6 +1,6 @@
 package nextstep.auth.ui;
 
-import nextstep.auth.exception.AuthorizationException;
+import nextstep.common.exception.AuthorizationException;
 import nextstep.common.config.JwtTokenProvider;
 import nextstep.auth.domain.AppMember;
 import nextstep.auth.domain.AuthenticationMember;

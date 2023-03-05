@@ -1,9 +1,9 @@
-package nextstep.auth.exception;
+package nextstep.common.exception;
 
-public class NotFoundException extends RuntimeException{
+public class NoPathException extends RuntimeException {
     private final ErrorCode errorCode;
 
-    public NotFoundException(ErrorCode errorCode) {
+    public NoPathException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 

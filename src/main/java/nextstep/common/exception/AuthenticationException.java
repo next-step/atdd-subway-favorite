@@ -1,4 +1,4 @@
-package nextstep.auth.exception;
+package nextstep.common.exception;
 
 public class AuthenticationException extends RuntimeException {
     private final ErrorCode errorCode;

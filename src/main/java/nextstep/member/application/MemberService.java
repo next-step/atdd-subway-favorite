@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
-import nextstep.auth.exception.ErrorCode;
-import nextstep.auth.exception.NotFoundException;
+import nextstep.common.exception.ErrorCode;
+import nextstep.common.exception.NotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;

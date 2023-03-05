@@ -1,4 +1,4 @@
-package nextstep.auth.exception;
+package nextstep.common.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,21 +8,30 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(AuthorizationException.class)
     protected ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
-        final ErrorCode errorCode = e.getErrorCode();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode));
+        return getErrorResponseResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {
-        final ErrorCode errorCode = e.getErrorCode();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode));
+        return getErrorResponseResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler(NotFoundException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
-        final ErrorCode errorCode = e.getErrorCode();
+        return getErrorResponseResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(NoPathException.class)
+    protected ResponseEntity<ErrorResponse> handleNoPathException(NoPathException e) {
+        return getErrorResponseResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(CanNotDeleteFavoriteException.class)
+    protected ResponseEntity<ErrorResponse> handleCanNotDeleteFavoriteException(CanNotDeleteFavoriteException e) {
+        return getErrorResponseResponseEntity(e.getErrorCode());
+    }
+
+    private ResponseEntity<ErrorResponse> getErrorResponseResponseEntity(ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(makeErrorResponse(errorCode));
     }

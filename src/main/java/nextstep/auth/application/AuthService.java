@@ -1,9 +1,9 @@
 package nextstep.auth.application;
 
-import nextstep.auth.exception.AuthenticationException;
+import nextstep.common.exception.AuthenticationException;
 import nextstep.common.config.JwtTokenProvider;
-import nextstep.auth.dto.TokenRequest;
-import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -31,17 +31,18 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
+    @Transactional
     public TokenResponse loginGithub(String code) {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(code);
         String githubEmail = githubClient.getGithubProfileFromGithub(accessTokenFromGithub).getEmail();
 
-        Member member = findMemberOrElseGet(githubEmail);
+        Member member = findMemberOrCreateMember(githubEmail);
 
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRoles());
         return new TokenResponse(token);
     }
 
-    private Member findMemberOrElseGet(String githubEmail) {
+    private Member findMemberOrCreateMember(String githubEmail) {
         return memberRepository.findByEmail(githubEmail)
                 .orElseGet(() -> memberRepository.save(new Member(githubEmail)));
     }
