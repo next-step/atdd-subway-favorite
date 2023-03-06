@@ -1,7 +1,6 @@
 package nextstep.fixture;
 
 
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -50,7 +49,8 @@ public enum AuthFixture {
     public static RequestSpecification 로그인된_상태(AuthFixture 인증_주체) {
         ExtractableResponse<Response> 베어러_인증_로그인_결과 = 베어러_인증_로그인_요청(인증_주체);
 
-        return RestAssured.requestSpecification = new RequestSpecBuilder()
+// RequestSpecBuilder를 통해 추가한 헤더 값이 비로그인 테스트에서도 공유되는 문제 -> 매번 새로운 인스턴스를 생성함으로써 독립적으로 분리
+        return new RequestSpecBuilder()
                 .setAccept(MediaType.APPLICATION_JSON_VALUE)
                 .setContentType(MediaType.APPLICATION_JSON_VALUE)
                 .addHeader(HttpHeaders.AUTHORIZATION, AUTH_TYPE_OAUTH + 문자열로_추출(베어러_인증_로그인_결과, Access_Token))
