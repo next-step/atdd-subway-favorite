@@ -1,12 +1,12 @@
 package nextstep.member.application.dto;
 
-public class TokenResponse {
+public class JwtTokenResponse {
     private String accessToken;
 
-    public TokenResponse() {
+    public JwtTokenResponse() {
     }
 
-    public TokenResponse(String accessToken) {
+    public JwtTokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 

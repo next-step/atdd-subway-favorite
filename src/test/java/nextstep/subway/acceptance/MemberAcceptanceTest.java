@@ -2,7 +2,7 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.JwtTokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MemberAcceptanceTest extends AcceptanceTest {
+class MemberAcceptanceTest extends AcceptanceSetting {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
@@ -78,8 +78,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
-        String accessToken = tokenResponse.getAccessToken();
+        JwtTokenResponse jwtTokenResponse = response.as(JwtTokenResponse.class);
+        String accessToken = jwtTokenResponse.getAccessToken();
         ExtractableResponse<Response> resultResponse = 토큰으로_내_회원_정보_조회_요청(accessToken);
 
         //then

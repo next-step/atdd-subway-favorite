@@ -1,7 +1,7 @@
 package nextstep.subway.unit;
 
 import nextstep.auth.application.AuthService;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.JwtTokenResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ public class AuthServiceTest {
     @Test
     void getToken() {
         //when
-        TokenResponse response = authService.getToken(EMAIL, PASSWORD);
+        JwtTokenResponse response = authService.getToken(EMAIL, PASSWORD);
 
         //then
         Assertions.assertThat(response).isNotNull();

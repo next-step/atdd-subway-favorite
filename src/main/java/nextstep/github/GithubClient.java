@@ -49,9 +49,9 @@ public class GithubClient {
         return accessToken;
     }
 
-    public GithubProfileResponse getUsersProfile(String accessToken) {
+    public GithubProfileResponse getUsersProfileFromGithub(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", accessToken);
+        headers.add("Authorization", "token " + accessToken);
 
         HttpEntity httpEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();

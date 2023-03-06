@@ -4,8 +4,8 @@ import nextstep.auth.application.AuthService;
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.GithubTokenRequest;
+import nextstep.member.application.dto.JwtTokenResponse;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> loginWithToken(@RequestBody MemberRequest request) {
+    public ResponseEntity<JwtTokenResponse> loginWithToken(@RequestBody MemberRequest request) {
         return ResponseEntity.ok().body(authService.getToken(request.getEmail(), request.getPassword()));
     }
 
@@ -32,5 +32,11 @@ public class AuthController {
     @GetMapping("github/profile")
     public ResponseEntity<GithubProfileResponse> getUsersProfile(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         return ResponseEntity.ok().body(authService.getUsersProfile(authorization));
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<JwtTokenResponse> loginWithGithub(@RequestBody GithubTokenRequest request) {
+        JwtTokenResponse jwtTokenResponse = authService.loginAndGetJwtToken(request);
+        return ResponseEntity.ok().body(jwtTokenResponse);
     }
 }
