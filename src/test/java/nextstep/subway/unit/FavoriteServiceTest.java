@@ -4,6 +4,7 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
+import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -70,12 +72,33 @@ public class FavoriteServiceTest extends SpringTest {
         }).isInstanceOf(RuntimeException.class);
     }
 
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void findFavorites() {
+        // given
+        final Favorite favorite1 = createFavorite(member.getId(), sourceStation.getId(), targetStation.getId());
+        final Favorite favorite2 = createFavorite(member.getId(), sourceStation.getId(), targetStation.getId());
+
+        // when
+        final List<FavoriteResponse> favoriteResponses = favoriteService.findFavorites(member.getEmail());
+
+        // then
+        final List<Long> favoriteIds = favoriteResponses.stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+        assertThat(favoriteIds).containsOnly(favorite1.getId(), favorite2.getId());
+    }
+
     private Member createMember(final String email, final String password, final int age) {
         return memberRepository.save(new Member(email, password, age));
     }
 
     private Station createStation(final String name) {
         return stationRepository.save(new Station(name));
+    }
+
+    private Favorite createFavorite(final long memberId, final long sourceStationId, final long targetStationId) {
+        return favoriteRepository.save(new Favorite(memberId, sourceStationId, targetStationId));
     }
 
     private FavoriteRequest createFavoriteRequest(final long sourceStationId, final long targetStationId) {
