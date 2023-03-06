@@ -44,6 +44,17 @@ public class FavoriteService {
         return createFavoriteResponses(favorites);
     }
 
+    @Transactional
+    public void deleteFavorite(final String email, final Long favoriteId) {
+        final Member member = memberService.getMember(email);
+        final Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(RuntimeException::new);
+        if (!favorite.getMemberId().equals(member.getId())) {
+            throw new RuntimeException("해당 즐겨찾기의 등록자가 아닙니다.");
+        }
+        favoriteRepository.delete(favorite);
+    }
+
     private List<FavoriteResponse> createFavoriteResponses(final List<Favorite> favorites) {
         return favorites.stream()
                 .map(favorite -> {
