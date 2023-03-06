@@ -31,12 +31,14 @@ public class FavoriteServiceTest extends SpringTest {
     @Autowired
     private FavoriteRepository favoriteRepository;
     private Member member;
+    private Member etcMember;
     private Station sourceStation;
     private Station targetStation;
 
     @BeforeEach
     void setUp() {
         member = createMember("email@email.com", "password", 20);
+        etcMember = createMember("etc@email.com", "password", 20);
         sourceStation = createStation("강남역");
         targetStation = createStation("역삼역");
     }
@@ -104,6 +106,28 @@ public class FavoriteServiceTest extends SpringTest {
                 .map(FavoriteResponse::getId)
                 .collect(Collectors.toList());
         assertThat(favoriteIds).doesNotContain(favorite.getId());
+    }
+
+    @DisplayName("존재하지 않는 즐겨찾기 삭제 시, 에러 발생")
+    @Test
+    void deleteFavoriteWhatIsNotExists() {
+        // when, then
+        assertThatThrownBy(() -> {
+            favoriteService.deleteFavorite(member.getEmail(), 1L);
+        }).isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("자신이 등록하지 않은 즐겨찾기 삭제 시, 에러 발생")
+    @Test
+    void deleteFavoriteWithNotOwn() {
+        // given
+        final Favorite favorite = createFavorite(etcMember.getId(), sourceStation.getId(), targetStation.getId());
+
+        // when, then
+        assertThatThrownBy(() -> {
+            favoriteService.deleteFavorite(member.getEmail(), favorite.getId());
+        }).isInstanceOf(RuntimeException.class)
+                .hasMessage("해당 즐겨찾기의 등록자가 아닙니다.");
     }
 
     private Member createMember(final String email, final String password, final int age) {
