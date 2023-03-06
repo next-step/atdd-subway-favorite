@@ -57,13 +57,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회가_정상적으로_되었는지_확인(즐겨찾기_목록_조회_응답, 2);
     }
 
+    /**
+     * Given 사용자가 즐겨찾기를 추가하고
+     * When 사용자가 추가하였던 즐겨찾기를 삭제하면
+     * Then 즐겨찾기 목록 시, 추가하였던 즐겨찾기를 찾을 수 없습니다.
+     */
     @DisplayName("즐겨찾기 삭제")
     @Test
     void deleteFavorite() {
         // given
+        final String location = 즐겨찾기_추가_요청함(인증_토큰, 강남역, 역삼역);
 
         // when
+        final ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(인증_토큰, location);
 
         // then
+        즐겨찾기가_정상적으로_삭제되었는지_확인(인증_토큰, 즐겨찾기_삭제_응답);
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
@@ -40,9 +41,10 @@ public class FavoriteSteps extends Steps {
                 }).count()).isEqualTo(1);
     }
 
-    public static void 즐겨찾기_추가_요청함(final String accessToken, final long source, final long target) {
+    public static String 즐겨찾기_추가_요청함(final String accessToken, final long source, final long target) {
         final ExtractableResponse<Response> response = 즐겨찾기_추가_요청(accessToken, source, target);
         응답_코드_검증(response, HttpStatus.CREATED);
+        return response.header("location");
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final String accessToken) {
@@ -60,5 +62,18 @@ public class FavoriteSteps extends Steps {
     public static void 즐겨찾기_목록_조회가_정상적으로_되었는지_확인(final ExtractableResponse<Response> response, final int size) {
         응답_코드_검증(response, HttpStatus.OK);
         assertThat(response.jsonPath().getList("id").size()).isEqualTo(size);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(final String accessToken, final String location) {
+        return 사용자_인증_요청(accessToken)
+                .when().delete(location)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기가_정상적으로_삭제되었는지_확인(final String accessToken, final ExtractableResponse<Response> response) {
+        응답_코드_검증(response, HttpStatus.NO_CONTENT);
+        final ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회함(accessToken);
+        assertThat(listResponse.jsonPath().getList("").size()).isEqualTo(0);
     }
 }
