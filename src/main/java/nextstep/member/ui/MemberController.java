@@ -59,7 +59,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> findMemberOfMine(
             @VerifiedMember final MemberPayload memberPayload
     ) {
-        MemberResponse member = memberService.findMemberByEmail(memberPayload.getEmail());
+        MemberResponse member = memberService.findMemberResponseByEmail(memberPayload.getEmail());
         return ResponseEntity.ok().body(member);
     }
 }
