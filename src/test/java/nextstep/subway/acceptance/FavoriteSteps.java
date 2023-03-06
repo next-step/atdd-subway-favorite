@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,10 +28,16 @@ public class FavoriteSteps extends Steps {
                 .extract();
     }
 
-    public static void 즐겨찾기가_정상적으로_추가되었음을_확인(final String accessToken, final ExtractableResponse<Response> response, final long source, final long target) {
+    public static void 즐겨찾기가_정상적으로_추가되었음을_확인(final String accessToken, final ExtractableResponse<Response> response, final Long source, final Long target) {
         응답_코드_검증(response, HttpStatus.CREATED);
         final ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회함(accessToken);
-        assertThat(listResponse.jsonPath().getList("$.findAll{it -> it.source.id ==" + source + " && it.target.id ==" + target + "}").size()).isEqualTo(1);
+        final List<Map<String, Object>> favorites = listResponse.jsonPath().getList("");
+        assertThat(favorites.stream()
+                .filter(favorite -> {
+                    final Map<String, Object> sourceMap = (Map<String, Object>) favorite.get("source");
+                    final Map<String, Object> targetMap = (Map<String, Object>) favorite.get("target");
+                    return (sourceMap.get("id").equals(source.intValue()) && targetMap.get("id").equals(target.intValue()));
+                }).count()).isEqualTo(1);
     }
 
     public static void 즐겨찾기_추가_요청함(final String accessToken, final long source, final long target) {

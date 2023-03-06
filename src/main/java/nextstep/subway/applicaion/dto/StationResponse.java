@@ -23,8 +23,8 @@ public class StationResponse {
     }
 
     public StationResponse(final Station station) {
-        this.id = id;
-        this.name = name;
+        this.id = station.getId();
+        this.name = station.getName();
     }
 
     public Long getId() {
