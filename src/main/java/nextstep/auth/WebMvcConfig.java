@@ -23,6 +23,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/favorites");
         registry.addInterceptor(new BearerAuthorizationInterceptor(memberService, jwtTokenProvider))
                 .addPathPatterns("/members/me")
-                .addPathPatterns("/favorites");
+                .addPathPatterns("/favorites/**");
     }
 }

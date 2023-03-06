@@ -5,6 +5,7 @@ import nextstep.member.exception.UnAuthorizedException;
 import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +45,17 @@ public class FavoriteController {
         }
         final List<FavoriteResponse> favoriteResponses = favoriteService.findFavorites(member.getEmail());
         return ResponseEntity.ok(favoriteResponses);
+    }
+
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<Void> deleteFavorite(
+            @PathVariable final Long favoriteId,
+            final HttpServletRequest request) {
+        final Member member = (Member) request.getAttribute("user");
+        if (Objects.isNull(member)) {
+            throw new UnAuthorizedException();
+        }
+        favoriteService.deleteFavorite(member.getEmail(), favoriteId);
+        return ResponseEntity.noContent().build();
     }
 }
