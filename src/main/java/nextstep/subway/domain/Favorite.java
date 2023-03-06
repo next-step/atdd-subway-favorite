@@ -19,6 +19,12 @@ public class Favorite {
     protected Favorite() {
     }
 
+    public Favorite(final long memberId, final long sourceStationId, final long targetStationId) {
+        this.memberId = memberId;
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
+    }
+
     public Favorite(final FavoriteRepository favoriteRepository, final long memberId, final long sourceStationId, final long targetStationId) {
         validateBeforeCreate(favoriteRepository, memberId, sourceStationId, targetStationId);
         this.memberId = memberId;
