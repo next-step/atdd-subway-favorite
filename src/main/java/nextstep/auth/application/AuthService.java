@@ -1,6 +1,7 @@
 package nextstep.auth.application;
 
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.GithubTokenRequest;
 import nextstep.github.GithubClient;
 import nextstep.member.application.JwtTokenProvider;
@@ -32,5 +33,9 @@ public class AuthService {
 
     public GithubAccessTokenResponse getAccessToken(GithubTokenRequest tokenRequest) {
         return new GithubAccessTokenResponse(githubClient.getAccessTokenFromGithub(tokenRequest));
+    }
+
+    public GithubProfileResponse getUsersProfile(String authorization) {
+        return githubClient.getUsersProfile(authorization);
     }
 }

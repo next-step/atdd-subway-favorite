@@ -17,6 +17,16 @@ public class AuthSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/github/access-token")
-                .then().log().all().extract();
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_프로필_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .header("Authorization", "token " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/github/profile")
+                .then().log().all()
+                .extract();
     }
 }

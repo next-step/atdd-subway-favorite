@@ -2,6 +2,7 @@ package nextstep.github;
 
 import nextstep.auth.application.dto.GithubAccessTokenRequest;
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.GithubTokenRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -45,5 +47,20 @@ public class GithubClient {
             throw new RuntimeException();
         }
         return accessToken;
+    }
+
+    public GithubProfileResponse getUsersProfile(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", accessToken);
+
+        HttpEntity httpEntity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            return restTemplate
+                    .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                    .getBody();
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException();
+        }
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.test.context.TestPropertySource;
 
 import static nextstep.subway.acceptance.AuthSteps.깃허브_액세스_토큰_요청;
+import static nextstep.subway.acceptance.AuthSteps.회원_프로필_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,5 +52,22 @@ class AuthAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
         assertThat(response.jsonPath().getString("accessToken")).isEqualTo(fakeUser.getAccessToken());
+    }
+
+    /**
+     * when : 엑세스 토큰으로 깃허브 프로필을 요청하면
+     * then : 사용자의 프로필의 아이디와 이메일을 확인할 수 있다.
+     */
+    @ParameterizedTest
+    @EnumSource(GithubFakeResponses.class)
+    void getUsersProfile(GithubFakeResponses fakeUser) {
+        //when
+        ExtractableResponse<Response> response = 회원_프로필_요청(fakeUser.getAccessToken());
+
+        //then
+        assertThat(response.jsonPath().getLong("id")).isNotNull();
+        assertThat(response.jsonPath().getLong("id")).isEqualTo(fakeUser.getId());
+        assertThat(response.jsonPath().getString("email")).isNotBlank();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(fakeUser.getEmail());
     }
 }
