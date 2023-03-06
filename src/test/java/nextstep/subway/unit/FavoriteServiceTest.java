@@ -89,6 +89,23 @@ public class FavoriteServiceTest extends SpringTest {
         assertThat(favoriteIds).containsOnly(favorite1.getId(), favorite2.getId());
     }
 
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        // given
+        final Favorite favorite = createFavorite(member.getId(), sourceStation.getId(), targetStation.getId());
+
+        // when
+        favoriteService.deleteFavorite(member.getEmail(), favorite.getId());
+
+        // then
+        final List<FavoriteResponse> favoriteResponses = favoriteService.findFavorites(member.getEmail());
+        final List<Long> favoriteIds = favoriteResponses.stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+        assertThat(favoriteIds).doesNotContain(favorite.getId());
+    }
+
     private Member createMember(final String email, final String password, final int age) {
         return memberRepository.save(new Member(email, password, age));
     }
