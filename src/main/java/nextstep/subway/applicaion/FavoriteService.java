@@ -50,4 +50,17 @@ public class FavoriteService {
 
         return favorite.getId();
     }
+
+    @Transactional
+    public void deleteFavorite(final String email, final Long favoriteId) {
+        Member member = memberService.findMemberByEmail(email);
+        Favorite favorite = findFavoriteById(favoriteId);
+
+        member.deleteFavorite(favorite);
+    }
+
+    private Favorite findFavoriteById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }

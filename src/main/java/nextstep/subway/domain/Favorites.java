@@ -16,4 +16,8 @@ public class Favorites {
     public List<Favorite> getList() {
         return new ArrayList<>(favoriteList);
     }
+
+    public void remove(final Favorite favorite) {
+        favoriteList.remove(favorite);
+    }
 }

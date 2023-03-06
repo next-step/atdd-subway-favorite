@@ -7,7 +7,9 @@ import nextstep.subway.applicaion.FavoriteService;
 import nextstep.subway.applicaion.dto.FavoriteCreateRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +43,15 @@ public class FavoriteController {
     ResponseEntity<List<FavoriteResponse>> showFavorites(@VerifiedMember final MemberPayload memberPayload) {
         List<FavoriteResponse> favoriteResponses = favoriteService.findFavoriteResponses(memberPayload.getEmail());
         return ResponseEntity.ok().body(favoriteResponses);
+    }
+
+    @DeleteMapping("/{id}")
+    @LoginRequired
+    ResponseEntity<Void> deleteFavorite(
+            @VerifiedMember final MemberPayload memberPayload,
+            @PathVariable final Long id
+    ) {
+        favoriteService.deleteFavorite(memberPayload.getEmail(), id);
+        return ResponseEntity.noContent().build();
     }
 }

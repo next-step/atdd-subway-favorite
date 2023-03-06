@@ -78,4 +78,8 @@ public class Member {
     public List<Favorite> getFavoriteList() {
         return this.favorites.getList();
     }
+
+    public void deleteFavorite(final Favorite favorite) {
+        this.favorites.remove(favorite);
+    }
 }
