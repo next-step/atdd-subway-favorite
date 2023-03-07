@@ -22,10 +22,15 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMemberByEmail(final String email) {
+    public MemberResponse findMemberResponseByEmail(final String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member findMemberByEmail(final String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Transactional

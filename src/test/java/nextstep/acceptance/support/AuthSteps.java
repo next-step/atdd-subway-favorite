@@ -35,7 +35,11 @@ public class AuthSteps {
         assertThat(로그인_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void AccessToken이_반환된다(ExtractableResponse<Response> response) {
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    public static void AccessToken이_반환된다(ExtractableResponse<Response> 요청_결과) {
+        assertThat(요청_결과.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    public static void 사용자_인증에_실패한다(ExtractableResponse<Response> 요청_결과) {
+        assertThat(요청_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

@@ -6,7 +6,13 @@
 
 - Step 1 : [https://github.com/next-step/atdd-subway-favorite/pull/413](https://github.com/next-step/atdd-subway-favorite/pull/413)
 - Step 2 : [https://github.com/next-step/atdd-subway-favorite/pull/440](https://github.com/next-step/atdd-subway-favorite/pull/440)
+- Step 3 : [https://github.com/next-step/atdd-subway-favorite/pull/451](https://github.com/next-step/atdd-subway-favorite/pull/451)
 
+
+## 미션 관련 ERD
+- ERD Cloud - https://www.erdcloud.com/d/tquYyrSeEHaqpZThG
+
+<img src="images/DB-ERD.png">
 
 ## 미션 내용
 
@@ -21,3 +27,12 @@
 - [x] GitHub 로그인 검증 인수 테스트
 - [x] Github를 이용한 로그인 구현 (토큰 발행)
 - [x] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
+
+### STEP 3
+- [x] 경로 즐겨 찾기
+  - [x] 즐겨 찾기 생성
+  - [x] 즐겨 찾기 조회
+  - [x] 즐겨 찾기 삭제
+  - [x] 내 정보 관리 / 즐겨 찾기 기능은 로그인 된 상태에서만 가능
+- [x] 예외
+  - [x] 비로그인이거나 유효하지 않을 경우 401 Unauthorized 응답

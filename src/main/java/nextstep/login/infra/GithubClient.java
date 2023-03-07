@@ -7,7 +7,9 @@ import nextstep.login.application.exception.FailAuthorizationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -37,61 +39,72 @@ public class GithubClient implements SocialClient {
         this.profileUrl = profileUrl;
     }
 
+    /**
+     * Github 인증 서버에 사용자 인증 토큰(Access Token)을 요청합니다.
+     *
+     * @param code 사용자 권한 증서
+     * @return 사용자 인증 토큰
+     */
     @Override
     public String getAccessTokenFromGithub(final String code) {
-        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(code, clientId, clientSecret);
-        HttpEntity<MultiValueMap<String, String>> httpEntity = createHttpEntityBody(githubAccessTokenRequest);
-        GithubAccessTokenResponse response = httpRequestToGithubAuthServer(httpEntity);
+        GithubAccessTokenResponse response = httpRequestToGithubAuthServer(code);
 
         return Optional.ofNullable(response.getAccessToken())
                 .orElseThrow(FailAuthorizationException::new);
     }
 
-    private <T> HttpEntity<MultiValueMap<String, String>> createHttpEntityBody(final T body) {
+    private GithubAccessTokenResponse httpRequestToGithubAuthServer(final String code) {
+        try {
+            HttpEntity<MultiValueMap<String, String>> httpEntity = createEntityForGithubAccessTokenRequest(code);
+
+            return Optional.ofNullable(
+                            httpRequest(tokenUrl, POST, httpEntity, GithubAccessTokenResponse.class)
+                                    .getBody())
+                    .orElseThrow(FailAuthorizationException::new);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("HTTP 요청이 실패하였습니다." + e.getMessage());
+        }
+    }
+
+    private HttpEntity<MultiValueMap<String, String>> createEntityForGithubAccessTokenRequest(final String code) {
+        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(code, clientId, clientSecret);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        return new HttpEntity(body, headers);
+        return new HttpEntity(githubAccessTokenRequest, headers);
     }
 
-    private GithubAccessTokenResponse httpRequestToGithubAuthServer(
-            final HttpEntity<MultiValueMap<String, String>> httpEntity
+    private <T> ResponseEntity<T> httpRequest(
+            final String url,
+            final HttpMethod method,
+            final HttpEntity<MultiValueMap<String, String>> httpEntity,
+            final Class<T> responseType
     ) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-
-            return Optional.ofNullable(
-                            restTemplate.exchange(tokenUrl, POST, httpEntity, GithubAccessTokenResponse.class)
-                                    .getBody())
-                    .orElseThrow(FailAuthorizationException::new);
+            return restTemplate.exchange(url, method, httpEntity, responseType);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("HTTP 요청이 실패하였습니다." + e.getMessage());
         }
     }
 
-
+    /**
+     * Github의 프로필 정보를 조회합니다.
+     *
+     * @param accessToken 사용자 인증 토큰
+     * @return Github 프로필 정보
+     */
     @Override
     public GithubProfileResponse getGithubProfileFromGithub(final String accessToken) {
-        HttpEntity<MultiValueMap<String, String>> httpEntity = createHttpEntityHeader(accessToken);
-        GithubProfileResponse githubProfileResponse = httpRequestToGithubResourceServer(httpEntity);
-
-        return createGithubProfileResponse(githubProfileResponse);
+        return httpRequestToGithubResourceServer(accessToken);
     }
 
-    private <T> HttpEntity<MultiValueMap<String, String>> createHttpEntityHeader(final T header) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "token " + header);
-
-        return new HttpEntity(headers);
-    }
-
-    private GithubProfileResponse httpRequestToGithubResourceServer(
-            final HttpEntity<MultiValueMap<String, String>> httpEntity
-    ) {
+    private GithubProfileResponse httpRequestToGithubResourceServer(final String accessToken) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<MultiValueMap<String, String>> httpEntity = createEntityForGithubProfileRequest(accessToken);
+
             return Optional.ofNullable(
-                            restTemplate.exchange(profileUrl, GET, httpEntity, GithubProfileResponse.class)
+                            httpRequest(profileUrl, GET, httpEntity, GithubProfileResponse.class)
                                     .getBody())
                     .orElseThrow(FailAuthorizationException::new);
         } catch (IllegalArgumentException e) {
@@ -99,10 +112,10 @@ public class GithubClient implements SocialClient {
         }
     }
 
-    private GithubProfileResponse createGithubProfileResponse(final GithubProfileResponse githubProfileResponse) {
-        String email = Optional.ofNullable(githubProfileResponse.getEmail())
-                .orElseThrow(FailAuthorizationException::new);
+    private HttpEntity<MultiValueMap<String, String>> createEntityForGithubProfileRequest(final String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "token " + accessToken);
 
-        return new GithubProfileResponse(email);
+        return new HttpEntity(headers);
     }
 }

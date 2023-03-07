@@ -3,10 +3,13 @@ package nextstep.member.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.member.application.exception.InvalidPasswordException;
+import nextstep.subway.domain.Favorite;
+import nextstep.subway.domain.Favorites;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,6 +19,7 @@ import javax.persistence.JoinColumn;
 import java.util.List;
 import java.util.Objects;
 
+import static lombok.AccessLevel.NONE;
 import static lombok.AccessLevel.PROTECTED;
 import static nextstep.member.domain.RoleType.ROLE_MEMBER;
 
@@ -36,6 +40,10 @@ public class Member {
     )
     @Column(name = "role")
     private List<String> roles;
+
+    @Embedded
+    @Getter(NONE)
+    private final Favorites favorites = new Favorites();
 
     public Member(final String email, final String password, final Integer age) {
         this.email = email;
@@ -65,5 +73,13 @@ public class Member {
         if (!Objects.equals(this.password, password)) {
             throw new InvalidPasswordException();
         }
+    }
+
+    public List<Favorite> getFavoriteList() {
+        return this.favorites.getList();
+    }
+
+    public void deleteFavorite(final Favorite favorite) {
+        this.favorites.remove(favorite);
     }
 }

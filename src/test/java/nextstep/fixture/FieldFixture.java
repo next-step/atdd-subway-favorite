@@ -3,6 +3,8 @@ package nextstep.fixture;
 
 public enum FieldFixture {
     식별자_아이디("id"),
+    데이터_생성_결과_로케이션("Location"),
+
     역_아이디("stationId"),
     역_이름("name"),
 
@@ -27,6 +29,13 @@ public enum FieldFixture {
 
     Access_Token("accessToken"),
     권한_증서("code"),
+
+    즐겨찾기_출발지_아이디("source"),
+    즐겨찾기_도착지_아이디("target"),
+    즐겨찾기_목록_전체(""),
+    즐겨찾기_목록_내_첫번째_식별자_아이디("[0].id"),
+    즐겨찾기_목록_내_첫번째_출발지_이름("[0].source.name"),
+    즐겨찾기_목록_내_첫번째_도착지_이름("[0].target.name"),
     ;
 
     private final String value;
