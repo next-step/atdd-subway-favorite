@@ -1,5 +1,7 @@
 package nextstep.auth.argumentResolver;
 
+import nextstep.global.error.exception.ErrorCode;
+import nextstep.global.error.exception.InvalidValueException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
@@ -37,7 +39,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     private MemberResponse bearerResolver(String authorization) {
         if (authorization == null || !BEARER_PREFIX.equals(authorization.split(" ")[0])) {
-            throw new RuntimeException();
+            throw new InvalidValueException(ErrorCode.MISMATCH_BEARER_PREFIX_OF_JWT_TOKEN);
         }
 
         String accessToken = authorization.split(" ")[1];
