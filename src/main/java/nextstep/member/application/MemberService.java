@@ -41,10 +41,7 @@ public class MemberService {
     }
 
     public Member getMemberOrCreate(final String email) {
-        final Optional<Member> findMember = memberRepository.findByEmail(email);
-        if (findMember.isEmpty()) {
-            return memberRepository.save(new Member(email, "!nopassword"));
-        }
-        return findMember.get();
+        return memberRepository.findByEmail(email)
+                .orElseGet(() -> memberRepository.save(new Member(email, "!nopassword")));
     }
 }

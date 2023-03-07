@@ -14,6 +14,11 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Import(GithubClientTestContextConfiguration.class)
 public class AcceptanceTest {
+
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
+
     @Autowired
     private DatabaseCleanup databaseCleanup;
     @Autowired

@@ -2,49 +2,21 @@ package nextstep.subway.mock;
 
 import nextstep.member.infra.GithubClient;
 import nextstep.member.infra.dto.GithubProfileResponse;
-import nextstep.subway.unit.GithubResponses;
 import org.springframework.stereotype.Component;
+
+import static nextstep.subway.unit.GithubResponses.getAccessTokenFromCode;
+import static nextstep.subway.unit.GithubResponses.getEmailFromAccessToken;
 
 @Component
 public class TestGithubClient implements GithubClient {
 
     @Override
     public String getAccessTokenFromGithub(final String code) {
-        if (code.equals(GithubResponses.사용자1.getCode())) {
-            return GithubResponses.사용자1.getAccessToken();
-        }
-        if (code.equals(GithubResponses.사용자2.getCode())) {
-            return GithubResponses.사용자2.getAccessToken();
-        }
-        if (code.equals(GithubResponses.사용자3.getCode())) {
-            return GithubResponses.사용자3.getAccessToken();
-        }
-        if (code.equals(GithubResponses.사용자4.getCode())) {
-            return GithubResponses.사용자4.getAccessToken();
-        }
-        if (code.equals(GithubResponses.사용자5.getCode())) {
-            return GithubResponses.사용자5.getAccessToken();
-        }
-        throw new RuntimeException();
+        return getAccessTokenFromCode(code);
     }
 
     @Override
     public GithubProfileResponse getGithubProfileFromGithub(final String accessToken) {
-        if (accessToken.equals(GithubResponses.사용자1.getAccessToken())) {
-            return new GithubProfileResponse(GithubResponses.사용자1.getEmail());
-        }
-        if (accessToken.equals(GithubResponses.사용자2.getAccessToken())) {
-            return new GithubProfileResponse(GithubResponses.사용자2.getEmail());
-        }
-        if (accessToken.equals(GithubResponses.사용자3.getAccessToken())) {
-            return new GithubProfileResponse(GithubResponses.사용자3.getEmail());
-        }
-        if (accessToken.equals(GithubResponses.사용자4.getAccessToken())) {
-            return new GithubProfileResponse(GithubResponses.사용자4.getEmail());
-        }
-        if (accessToken.equals(GithubResponses.사용자5.getAccessToken())) {
-            return new GithubProfileResponse(GithubResponses.사용자5.getEmail());
-        }
-        throw new RuntimeException();
+        return new GithubProfileResponse(getEmailFromAccessToken(accessToken));
     }
 }

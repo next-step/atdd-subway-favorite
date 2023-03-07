@@ -10,7 +10,7 @@ public class StationResponse {
     private String name;
 
     public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(station);
     }
 
     public static List<StationResponse> listOf(List<Station> stations) {
@@ -22,9 +22,9 @@ public class StationResponse {
     public StationResponse() {
     }
 
-    public StationResponse(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    public StationResponse(final Station station) {
+        this.id = station.getId();
+        this.name = station.getName();
     }
 
     public Long getId() {
