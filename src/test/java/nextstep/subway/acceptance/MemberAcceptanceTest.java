@@ -64,8 +64,25 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * given 사용자 정보를 등록하고 해당 정보로 토큰을 생성한다.
+     * when 생성된 토큰으로 사용자 정보를 조회한다.
+     * then 조회된 사용자 정보가 토큰을 생성할 때 사용된 사용자 정보와 일치한다.
+     */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, 20);
+        var 로그인_요청_응답 = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        String token = 로그인_요청_응답.jsonPath().getString("accessToken");
+        assertThat(token).isNotBlank();
+
+        // when
+        var 회원_정보_조회_응답 = 베이직_인증으로_내_회원_정보_조회_요청(token);
+
+        // then
+        String email = 회원_정보_조회_응답.jsonPath().get("email");
+        assertThat(email).isEqualTo(EMAIL);
     }
 }

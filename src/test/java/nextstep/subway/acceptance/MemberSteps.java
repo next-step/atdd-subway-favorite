@@ -84,6 +84,16 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 베이직_인증으로_내_회원_정보_조회_요청(String token) {
+        return RestAssured.given().log().all()
+                .auth().preemptive().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);

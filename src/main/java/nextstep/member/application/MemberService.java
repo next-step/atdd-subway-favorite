@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    private final JwtTokenProvider tokenProvider;
+    private final MemberRepository memberRepository;
+
+    public MemberService(JwtTokenProvider tokenProvider, MemberRepository memberRepository) {
+        this.tokenProvider = tokenProvider;
         this.memberRepository = memberRepository;
     }
 
@@ -24,6 +27,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMember(String email, String password) {
+        Member member = memberRepository.findByEmailAndPassword(email, password).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
@@ -32,4 +40,16 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public MemberResponse findMemberByToken(String accessToken) {
+        if (!tokenProvider.validateToken(accessToken)) {
+            throw new RuntimeException();
+        }
+
+        String email = tokenProvider.getPrincipal(accessToken);
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+
+        return MemberResponse.of(member);
+    }
+
 }
