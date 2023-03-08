@@ -27,7 +27,7 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse create(FavoriteRequest request, Long userId) {
-        if(pathService.isConnected(request.getSource(), request.getTarget())){
+        if (!pathService.isConnected(request.getSource(), request.getTarget())) {
             throw new IllegalArgumentException("두 역은 서로 연결되지 않았습니다.");
         }
 

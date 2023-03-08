@@ -63,7 +63,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3));
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(교대역, 남부터미널역, 5));
         지하철_노선에_지하철_구간_생성_요청(이호선, createSectionCreateParams(교대역, 강남역, 6));
-        지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(남부터미널역, 양재역, 7));
+        지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(강남역, 양재역, 7));
+
+        dataLoader.loadMemberData();
     }
 
     /**
@@ -74,10 +76,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 생성 테스트")
     void createFavorite(){
         // given
-        dataLoader.loadMemberData();
         String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
-        System.out.println("check");
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(token, 강남역, 남부터미널역);
 
@@ -94,12 +94,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 조회 테스트")
     void showFavorites(){
         // given
-        dataLoader.loadMemberData();
-        System.out.println("check");
         String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
-        System.out.println("check");
         즐겨찾기_생성_요청(token, 강남역, 남부터미널역);
-        System.out.println("check");
+
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(token);
 
@@ -120,7 +117,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 조회 실패: Token 인증 실패")
     void showFavorites_UnauthorizedFail(){
         // given
-        dataLoader.loadMemberData();
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청("NO TOKEN");
@@ -137,7 +133,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 삭제 테스트")
     void deleteFavorite(){
         // given
-        dataLoader.loadMemberData();
         String token = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
         Long favoriteId = 즐겨찾기_생성_요청(token, 강남역, 남부터미널역).jsonPath().getLong("id");
 

@@ -7,9 +7,6 @@ public class LoginUser {
     private String email;
     private List<String> roles;
 
-    public LoginUser() {
-    }
-
     public LoginUser(String id, String email, List<String> roles) {
         this.id = Long.valueOf(id);
         this.email = email;

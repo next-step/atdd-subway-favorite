@@ -1,12 +1,6 @@
 package nextstep.member.application.dto;
 
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-
-
 public class ErrorResponse {
-
-    private HttpStatus status;
 
     private String errorCode;
 
@@ -14,15 +8,11 @@ public class ErrorResponse {
 
     private Object data;
 
-    public ErrorResponse(HttpStatus status, String errorCode, String errorMessage, Object data) {
-        this.status = status;
+    public ErrorResponse(String errorCode, String errorMessage, Object data) {
+
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
         this.data = data;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
     }
 
     public String getErrorCode() {

@@ -24,15 +24,10 @@ public class ControllerExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
         ErrorResponse response =
                 new ErrorResponse(
-                        HttpStatus.UNAUTHORIZED,
                         e.getCode(),
                         e.getMessage(),
                         e.getData());
 
         return ResponseEntity.badRequest().body(response);
-    }
-
-    private ResponseEntity<ErrorResponse> buildResponseEntity(ErrorResponse errorResponse) {
-        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
 }
