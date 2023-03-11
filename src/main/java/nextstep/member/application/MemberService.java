@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.application.client.GithubClient;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -11,10 +12,12 @@ public class MemberService {
 
     private final JwtTokenProvider tokenProvider;
     private final MemberRepository memberRepository;
+    private final GithubClient githubClient;
 
-    public MemberService(JwtTokenProvider tokenProvider, MemberRepository memberRepository) {
+    public MemberService(JwtTokenProvider tokenProvider, MemberRepository memberRepository, GithubClient githubClient) {
         this.tokenProvider = tokenProvider;
         this.memberRepository = memberRepository;
+        this.githubClient = githubClient;
     }
 
     public MemberResponse createMember(MemberRequest request) {
@@ -42,14 +45,18 @@ public class MemberService {
     }
 
     public MemberResponse findMemberByToken(String accessToken) {
-        if (!tokenProvider.validateToken(accessToken)) {
-            throw new RuntimeException();
-        }
+        validateToken(accessToken);
 
         String email = tokenProvider.getPrincipal(accessToken);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
 
         return MemberResponse.of(member);
+    }
+
+    private void validateToken(String accessToken) {
+        if (!tokenProvider.validateToken(accessToken)) {
+            throw new RuntimeException();
+        }
     }
 
 }
