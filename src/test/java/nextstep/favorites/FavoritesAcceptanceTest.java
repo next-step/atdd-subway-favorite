@@ -47,6 +47,11 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
          인증정보 = 베어러_인증_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
     }
 
+    /**
+     * given 유저의 인증 정보를 가지고
+     * when 강남역을 시작지점으로해서 양재역을 도착지점으로 즐겨찾기를 추가하면
+     * then 즐겨찾기를 추가 할 수 있다.
+     */
     @DisplayName("즐겨찾기를 추가 할 수 있다.")
     @Test
     void favoriteAdd() {
@@ -57,6 +62,11 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
     }
 
+    /**
+     * given 유저의 인증 정보를 가지고 강남역과 양재역을 즐겨찾기를 추가하고
+     * when 유저에 대한 즐겨찾기를 조회하면
+     * then 강남역과 양재역에 관한 경로를 조회할 수 있다.
+     */
     @DisplayName("즐겨찾기를 조회할 수 있다.")
     @Test
     void favoritesFind() {
@@ -71,6 +81,11 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         assertThat(targetList.get(0)).isEqualTo(양재역);
     }
 
+    /**
+     * given 유저의 인증 정보를 가지고 강남역과 양재역을 즐겨찾기를 추가하고
+     * when 해당 즐겨찾기를 삭제하면
+     * then 해당 즐겨찾기를 조회할 수 없다.
+     */
     @DisplayName("즐겨찾기를 삭제할 수 있다.")
     @Test
     void favoritesDelete() {
@@ -85,6 +100,25 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         List list = 즐겨찾기_조회(인증정보).as(List.class);
         assertThat(list).hasSize(0);
 
+    }
+
+    /**
+     * given 유저 정보 없이
+     * when 즐겨찾기 기능을 사용할 시
+     * then 401 에러 메세지를 응답 받는다.
+     *
+     */
+    @DisplayName("즐겨찾기 권한 테스트")
+    @Test
+    void favoritesAuthorizedTest() {
+        즐겨찾기_추가(인증정보, 강남역, 양재역);
+        String 가짜_인증_정보 = "";
+
+        final ExtractableResponse<Response> createResponse = 즐겨찾기_추가(가짜_인증_정보, 강남역, 양재역);
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        final ExtractableResponse<Response> findResponse = 즐겨찾기_조회(가짜_인증_정보);
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 
