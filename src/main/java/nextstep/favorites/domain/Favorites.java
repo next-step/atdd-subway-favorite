@@ -1,13 +1,10 @@
 package nextstep.favorites.domain;
 
-import nextstep.member.domain.Member;
-import nextstep.subway.domain.Station;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 @Embeddable
 public class Favorites {

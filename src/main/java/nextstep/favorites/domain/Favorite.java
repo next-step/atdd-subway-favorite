@@ -1,10 +1,5 @@
 package nextstep.favorites.domain;
 
-import nextstep.member.domain.Member;
-import nextstep.subway.domain.Station;
-import org.hibernate.annotations.Cascade;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.member.domain.Member;
+import nextstep.subway.domain.Station;
 
 @Entity
 public class Favorite {

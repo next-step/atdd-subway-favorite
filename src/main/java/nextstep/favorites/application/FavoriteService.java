@@ -1,5 +1,7 @@
 package nextstep.favorites.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.common.exception.BusinessException;
 import nextstep.common.exception.ErrorResponse;
 import nextstep.common.exception.LoginException;
@@ -7,20 +9,12 @@ import nextstep.favorites.application.dto.FavoriteRequest;
 import nextstep.favorites.application.dto.FavoriteResponse;
 import nextstep.favorites.domain.Favorite;
 import nextstep.favorites.domain.FavoriteRepository;
-import nextstep.member.application.TokenService;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
