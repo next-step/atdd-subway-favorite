@@ -1,5 +1,7 @@
 package nextstep.favorites.ui;
 
+import java.net.URI;
+import java.util.List;
 import nextstep.favorites.application.FavoriteService;
 import nextstep.favorites.application.dto.FavoriteRequest;
 import nextstep.favorites.application.dto.FavoriteResponse;
@@ -15,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/favorites")

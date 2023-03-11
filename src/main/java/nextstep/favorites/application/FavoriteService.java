@@ -27,7 +27,8 @@ public class FavoriteService {
     private final MemberRepository memberRepository;
 
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository, MemberRepository memberRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository,
+            StationRepository stationRepository, MemberRepository memberRepository) {
         this.favoriteRepository = favoriteRepository;
         this.stationRepository = stationRepository;
         this.memberRepository = memberRepository;
@@ -46,10 +47,13 @@ public class FavoriteService {
     }
 
     private Member getMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new LoginException(ErrorResponse.INVALID_TOKEN_VALUE));
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new LoginException(ErrorResponse.INVALID_TOKEN_VALUE));
     }
+
     private Station getStationById(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(() -> new BusinessException(ErrorResponse.NOT_FOUND_EMAIL));
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new BusinessException(ErrorResponse.NOT_FOUND_EMAIL));
     }
 
     public List<FavoriteResponse> getFavorites(Long memberId) {
@@ -62,7 +66,8 @@ public class FavoriteService {
     public void remove(Long memberId, Long favoriteId) {
         Member member = getMemberById(memberId);
 
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new BusinessException(ErrorResponse.NOT_FOUND_FAVORITE));
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new BusinessException(ErrorResponse.NOT_FOUND_FAVORITE));
 
         if (!member.getFavorites().contains(favorite)) {
             throw new BusinessException(ErrorResponse.FORBIDDEN);

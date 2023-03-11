@@ -35,7 +35,7 @@ public class Favorite {
         this.targetStation = targetStation;
     }
 
-    public Favorite() {
+    protected Favorite() {
 
     }
 
