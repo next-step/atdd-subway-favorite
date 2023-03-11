@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.common.exception.TokenException;
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
@@ -46,7 +47,7 @@ public class GithubClient {
                 .getBody()
                 .getAccessToken();
         if (accessToken == null) {
-            throw new LoginException(ErrorResponse.INVALID_TOKEN_VALUE);
+            throw new TokenException(ErrorResponse.INVALID_TOKEN_VALUE);
         }
         return accessToken;
     }

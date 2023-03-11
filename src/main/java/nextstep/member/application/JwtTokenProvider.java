@@ -1,6 +1,9 @@
 package nextstep.member.application;
 
 import io.jsonwebtoken.*;
+import nextstep.common.exception.ErrorResponse;
+import nextstep.common.exception.LoginException;
+import nextstep.common.exception.TokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +32,12 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        try {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                    .getSubject();
+        } catch (IllegalArgumentException e) {
+            throw new TokenException(ErrorResponse.INVALID_TOKEN_VALUE);
+        }
     }
 
     public List<String> getRoles(String token) {

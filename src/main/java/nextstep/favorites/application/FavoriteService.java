@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import nextstep.common.exception.BusinessException;
 import nextstep.common.exception.ErrorResponse;
 import nextstep.common.exception.LoginException;
+import nextstep.common.exception.TokenException;
 import nextstep.favorites.application.dto.FavoriteRequest;
 import nextstep.favorites.application.dto.FavoriteResponse;
 import nextstep.favorites.domain.Favorite;
@@ -48,7 +49,7 @@ public class FavoriteService {
 
     private Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new LoginException(ErrorResponse.INVALID_TOKEN_VALUE));
+                .orElseThrow(() -> new TokenException(ErrorResponse.INVALID_TOKEN_VALUE));
     }
 
     private Station getStationById(Long stationId) {
