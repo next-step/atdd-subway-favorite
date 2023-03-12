@@ -122,7 +122,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청("NO TOKEN");
 
         // then
-        assertThat(response.jsonPath().getString("errorMessage")).isEqualTo("인증 토큰이 유효하지 않습니다.");
+        assertAll(
+                () -> assertThat(response.jsonPath().getString("errorMessage")).isEqualTo("인증 토큰이 유효하지 않습니다."),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
+        );
     }
 
     /**

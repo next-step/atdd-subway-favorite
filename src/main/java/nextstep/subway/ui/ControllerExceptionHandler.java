@@ -28,6 +28,6 @@ public class ControllerExceptionHandler {
                         e.getMessage(),
                         e.getData());
 
-        return ResponseEntity.badRequest().body(response);
+        return new ResponseEntity(response, HttpStatus.UNAUTHORIZED);
     }
 }
