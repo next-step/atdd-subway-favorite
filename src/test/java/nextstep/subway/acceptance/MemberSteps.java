@@ -107,6 +107,13 @@ public class MemberSteps {
 			.extract();
 	}
 
+	public static String 회원_생성과_베어러_인증_로그인_요청(String email, String password, Integer age) {
+		회원_생성_요청(email, password, age);
+		String token = 베어러_인증_로그인_요청(email, password).jsonPath().getString("accessToken");
+
+		return token;
+	}
+
 	public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.jsonPath().getString("id")).isNotNull();
