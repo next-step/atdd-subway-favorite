@@ -42,6 +42,11 @@ public class MemberService {
         throw new ApiException(HttpStatus.UNAUTHORIZED, MEMBER_INFO_NOT_MATCH);
     }
 
+    public Member findMemberByEmailOrCreate(String email) {
+        return memberRepository.findByEmail(email)
+            .orElse(memberRepository.save(new Member(email, "", 0)));
+    }
+
     public MemberResponse findByEmail(String email) {
         return MemberResponse.of(findMemberByEmail(email));
     }
