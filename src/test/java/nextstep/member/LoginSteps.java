@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashMap;
 import java.util.Map;
 
-@ActiveProfiles("test")
 public class LoginSteps {
 
     @DisplayName("Fake Github Auth")

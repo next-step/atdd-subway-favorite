@@ -1,5 +1,9 @@
 package nextstep.member.domain;
 
+import nextstep.favorites.domain.Favorite;
+import nextstep.favorites.domain.Favorites;
+import nextstep.subway.domain.Station;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +16,9 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
+
+    @Embedded
+    private Favorites favorites = new Favorites();
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "MEMBER_ROLE",
@@ -63,7 +70,18 @@ public class Member {
         this.age = member.age;
     }
 
+    public void addFavorite(Favorite favorite) {
+        favorites.addFavorite(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.removeFavorite(favorite);
+    }
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites.get();
     }
 }
