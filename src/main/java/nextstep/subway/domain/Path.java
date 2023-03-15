@@ -5,7 +5,7 @@ import java.util.List;
 public class Path {
     private Sections sections;
 
-    public Path(Sections sections) {
+    protected Path(Sections sections) {
         this.sections = sections;
     }
 

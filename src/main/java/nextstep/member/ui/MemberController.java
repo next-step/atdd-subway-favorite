@@ -2,10 +2,7 @@ package nextstep.member.ui;
 
 import nextstep.member.application.AuthService;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +44,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@RequestAttribute String email) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(LoginUser user) {
 
-        return ResponseEntity.ok().body(memberService.findByEmail(email));
+        return ResponseEntity.ok().body(memberService.findByEmail(user.getEmail()));
     }
 }
 
