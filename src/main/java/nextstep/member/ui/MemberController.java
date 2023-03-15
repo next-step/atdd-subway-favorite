@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.MemberService;
+import nextstep.member.application.config.AuthToken;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -48,8 +48,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization").trim().replace("Bearer", "");
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthToken String accessToken) {
         MemberResponse member = memberService.findMemberByToken(accessToken);
         return ResponseEntity.ok().body(member);
     }

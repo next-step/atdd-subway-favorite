@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.AuthService;
+import nextstep.member.application.config.AuthToken;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubLoginRequest;
 import nextstep.member.application.dto.GithubProfileResponse;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class AuthController {
@@ -36,8 +35,7 @@ public class AuthController {
     }
 
     @GetMapping("/users/github")
-    public ResponseEntity<GithubProfileResponse> getUserProfileFromGithub(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization").trim().replace("Bearer", "");
+    public ResponseEntity<GithubProfileResponse> getUserProfileFromGithub(@AuthToken String accessToken) {
         GithubProfileResponse response = authService.getUserInfoFromGithub(accessToken);
         return ResponseEntity.ok().body(response);
     }
