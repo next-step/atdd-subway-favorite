@@ -72,7 +72,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 		로그인_회원의_즐겨찾기_생성_요청(token, 양재역, 강남역);
 		// Then
 		ExtractableResponse<Response> response = 로그인_회원의_즐겨찾기_목록_조회_요청(token);
-		즐겨찾기_목록_조회_검증(response, List.of(강남역), List.of(양재역));
+		즐겨찾기_목록_조회_검증(response, List.of(강남역, 양재역), List.of(양재역, 강남역));
 	}
 
 	/**
