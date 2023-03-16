@@ -39,7 +39,7 @@ public class FavoriteSteps {
 	public static ExtractableResponse<Response> 로그인_회원의_즐겨찾기_제거_요청(String token, Long favoriteId) {
 		return RestAssured.given().log().all()
 			.header("authorization", "Bearer " + token)
-			.when().delete("/favorites/", favoriteId)
+			.when().delete("/favorites/" + favoriteId)
 			.then().log().all()
 			.extract();
 	}
@@ -82,7 +82,7 @@ public class FavoriteSteps {
 
 	public static void 즐겨찾기_목록_조회_검증(ExtractableResponse<Response> response, List<Long> sources, List<Long> targets) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(sources.toArray(new Long[0]));
-		assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(targets.toArray(new Long[0]));
+		assertThat(response.jsonPath().getList("source.id", Long.class)).containsOnly(sources.toArray(new Long[0]));
+		assertThat(response.jsonPath().getList("target.id", Long.class)).containsOnly(targets.toArray(new Long[0]));
 	}
 }

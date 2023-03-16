@@ -1,7 +1,7 @@
 package nextstep.member.exception;
 
 public class UnAuthenticationException extends RuntimeException {
-	public UnAuthenticationException(ErrorMessage message) {
+	public UnAuthenticationException(MemberErrorMessage message) {
 		super(message.getMessage());
 	}
 }

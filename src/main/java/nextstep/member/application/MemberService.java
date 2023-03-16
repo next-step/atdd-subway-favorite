@@ -7,7 +7,7 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.exception.ErrorMessage;
+import nextstep.member.exception.MemberErrorMessage;
 import nextstep.member.exception.NotFoundException;
 
 @Service
@@ -42,8 +42,8 @@ public class MemberService {
 		return MemberResponse.of(member);
 	}
 
-	private Member findMemberByEmail(String email) {
+	public Member findMemberByEmail(String email) {
 		return memberRepository.findByEmail(email)
-			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_MEMBER_BY_EMAIL));
+			.orElseThrow(() -> new NotFoundException(MemberErrorMessage.NOT_FOUND_MEMBER_BY_EMAIL));
 	}
 }

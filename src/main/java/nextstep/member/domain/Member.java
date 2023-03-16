@@ -15,7 +15,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 
-import nextstep.member.exception.ErrorMessage;
+import nextstep.member.exception.MemberErrorMessage;
 import nextstep.member.exception.NotFoundException;
 
 @Entity
@@ -94,7 +94,24 @@ public class Member {
 
 	public void validPassword(String password) {
 		if (!this.checkPassword(password)) {
-			throw new NotFoundException(ErrorMessage.NOT_FOUND_MEMBER_BY_PASSWORD);
+			throw new NotFoundException(MemberErrorMessage.NOT_FOUND_MEMBER_BY_PASSWORD);
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Member member = (Member)o;
+		return Objects.equals(id, member.id)
+			&& Objects.equals(email, member.email)
+			&& Objects.equals(roles, member.roles);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, email, roles);
 	}
 }

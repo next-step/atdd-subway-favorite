@@ -1,7 +1,7 @@
 package nextstep.member.exception;
 
 public class InvalidTokenException extends RuntimeException {
-	public InvalidTokenException(ErrorMessage message) {
+	public InvalidTokenException(MemberErrorMessage message) {
 		super(message.getMessage());
 	}
 }

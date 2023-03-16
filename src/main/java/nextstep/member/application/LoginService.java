@@ -9,7 +9,7 @@ import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.exception.ErrorMessage;
+import nextstep.member.exception.MemberErrorMessage;
 import nextstep.member.exception.NotFoundException;
 
 @Service
@@ -36,7 +36,7 @@ public class LoginService {
 
 	private Member findMemberByEmail(String email) {
 		return memberRepository.findByEmail(email)
-			.orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_MEMBER_BY_EMAIL));
+			.orElseThrow(() -> new NotFoundException(MemberErrorMessage.NOT_FOUND_MEMBER_BY_EMAIL));
 	}
 
 	private Member findMemberByEmailOrElseCreate(String email) {
