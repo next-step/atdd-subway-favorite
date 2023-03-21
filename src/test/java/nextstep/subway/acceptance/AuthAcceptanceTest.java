@@ -57,7 +57,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given Github 의 회원일 때
+     * given Github 의 회원이 아닐 때
      * when Github 로그인을 하면
      * then 토큰을 발급 받을 수 있다.
      */

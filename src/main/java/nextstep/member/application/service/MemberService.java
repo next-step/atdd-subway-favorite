@@ -43,15 +43,6 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findByToken(String token) {
-        String principal = null;
-        if (jwtTokenProvider.validateToken(token)) {
-            principal = jwtTokenProvider.getPrincipal(token);
-        }
-        Member member = memberRepository.findByEmail(principal).orElseThrow(IllegalArgumentException::new);
-        return MemberResponse.of(member);
-    }
-
     public Optional<Member> findMemberByEmail(String emailFromGithub) {
         return memberRepository.findByEmail(emailFromGithub);
     }

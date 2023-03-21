@@ -78,7 +78,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 토큰으로_내_회원_정보_조회_요청(String token) {
         return RestAssured.given().log().all()
             .headers(
-                "Authorization", token,
+                "Authorization", String.format("Bearer %s", token),
                 "Content-Type", ContentType.JSON,
                 "Accept", ContentType.JSON)
             .when().get("/members/me")
