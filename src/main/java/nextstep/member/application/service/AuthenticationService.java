@@ -21,7 +21,7 @@ public class AuthenticationService {
 
     public TokenResponse basicLogin(TokenRequest request) {
         MemberResponse member = memberService.findMember(request.getEmail(), request.getPassword());
-        String token = tokenProvider.createToken(member.getId(), member.getEmail(), RoleType.memberUser());
+        String token = tokenProvider.createToken(member.getEmail(), RoleType.memberUser());
         return TokenResponse.of(token);
     }
 
@@ -31,7 +31,7 @@ public class AuthenticationService {
         Member member = memberService.findMemberByEmail(email)
             .orElseGet(() -> memberService.saveMember(email));
 
-        String serverToken = tokenProvider.createToken(member.getId(), member.getEmail(), RoleType.memberUser());
+        String serverToken = tokenProvider.createToken(member.getEmail(), RoleType.memberUser());
         return new GithubAccessTokenResponse(serverToken);
     }
 }
