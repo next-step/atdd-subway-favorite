@@ -10,6 +10,10 @@ public class TokenResponse {
         this.accessToken = accessToken;
     }
 
+    public static TokenResponse of(String token) {
+        return new TokenResponse(token);
+    }
+
     public String getAccessToken() {
         return accessToken;
     }
