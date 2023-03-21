@@ -4,7 +4,10 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.NoArgsConstructor;
+
 @Entity
+@NoArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +23,8 @@ public class Member {
     @Column(name = "role")
     private List<String> roles;
 
-    public Member() {
+    public Member(String email) {
+        this.email = email;
     }
 
     public Member(String email, String password, Integer age) {
@@ -28,13 +32,6 @@ public class Member {
         this.password = password;
         this.age = age;
         this.roles = List.of(RoleType.ROLE_MEMBER.name());
-    }
-
-    public Member(String email, String password, Integer age, List<String> roles) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.roles = roles;
     }
 
     public Long getId() {
