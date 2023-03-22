@@ -1,7 +1,7 @@
 package nextstep.argumentResolver;
 
-import java.util.Optional;
-
+import nextstep.exception.AuthorizationException;
+import nextstep.exception.InvalidValueException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.service.MemberService;
@@ -47,7 +47,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         String accessToken = authorization.split(" ")[1];
 
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new IllegalArgumentException(accessToken);
+            throw new AuthorizationException("인증되지 않은 사용자입니다", accessToken);
         }
         String email = jwtTokenProvider.getPrincipal(accessToken);
         Member member = memberService.findMemberByEmail(email).orElseThrow(() -> new InvalidValueException(ErrorCode.UNVERIFIED_BEARER_TOKEN));
