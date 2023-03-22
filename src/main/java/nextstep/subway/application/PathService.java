@@ -5,6 +5,7 @@ import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Path;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.SubwayMap;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,5 +28,15 @@ public class PathService {
         Path path = subwayMap.findPath(upStation, downStation);
 
         return PathResponse.of(path);
+    }
+
+    public boolean isConnected(Station source, Station target) {
+        List<Line> lines = lineService.findLines();
+        SubwayMap subwayMap = new SubwayMap(lines);
+
+        List<Station> stations = subwayMap.findPath(source, target)
+            .getSections()
+            .getStations();
+        return !stations.isEmpty();
     }
 }
