@@ -1,7 +1,6 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_API;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_API;
+import static nextstep.subway.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
 import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.DataLoader;
@@ -31,8 +31,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private DatabaseCleanup databaseCleanup;
 
     private static final String EMAIL = "admin@email.com";
+    private static final String EMAIL2 = "admin22@email.com";
 
     private static final String PASSWORD = "password";
+    private static final String PASSWORD2 = "password2";
 
     private static final int AGE = 20;
 
@@ -45,6 +47,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 신분당선;
     private Long 삼호선;
     private String 토큰;
+    private String 토큰2;
 
     /**
      * 교대역    --- *2호선* ---   강남역 --- *2호선* --- 역삼역
@@ -72,7 +75,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(강남역, 양재역));
 
         dataLoader.loadMemberData(EMAIL, PASSWORD, AGE);
+        dataLoader.loadMemberData(EMAIL2, PASSWORD2, AGE);
         토큰 = ACCESS_TOKEN_발급(EMAIL, PASSWORD);
+        토큰2 = ACCESS_TOKEN_발급(EMAIL2, PASSWORD2);
     }
 
     @Test
@@ -129,11 +134,55 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_삭제_테스트() {
 
+        // given
+        long favoriteId = 즐겨찾기_생성_API(토큰, 강남역, 교대역)
+            .jsonPath()
+            .<Integer>get("id")
+            .longValue();
+
+        // when
+        int statusCode = 즐겨찾기_삭제_API(토큰, favoriteId).statusCode();
+
+        // then
+        assertThat(statusCode).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 즐겨찾기_삭제_예외_테스트() {
+
+        // given
+        String 유저1의_토큰 = 토큰;
+        long 유저1의_즐겨찾기 = 즐겨찾기_생성_API(유저1의_토큰, 강남역, 교대역)
+            .jsonPath()
+            .<Integer>get("id")
+            .longValue();
+
+        long 유저2의_즐겨찾기 = 즐겨찾기_생성_API(토큰2, 강남역, 교대역)
+            .jsonPath()
+            .<Integer>get("id")
+            .longValue();
+
+        // when
+        int statusCode = 즐겨찾기_삭제_API(유저1의_토큰, 유저2의_즐겨찾기).statusCode();
+
+        // then
+        assertThat(statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @Test
     void 비인증_유저_즐겨찾기_예외_테스트() {
+        // given
+        long 유저1의_즐겨찾기 = 즐겨찾기_생성_API(토큰, 강남역, 교대역)
+            .jsonPath()
+            .<Integer>get("id")
+            .longValue();
 
+        // when
+        String 유사토큰 = "2312kjsadfl124123123";
+        int statusCode = 즐겨찾기_삭제_API(유사토큰, 유저1의_즐겨찾기).statusCode();
+
+        // then
+        assertThat(statusCode).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private static String ACCESS_TOKEN_발급(String email, String password) {

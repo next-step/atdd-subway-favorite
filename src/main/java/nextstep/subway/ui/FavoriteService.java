@@ -1,10 +1,11 @@
 package nextstep.subway.ui;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.argumentResolver.ErrorCode;
-import nextstep.argumentResolver.InvalidValueException;
+import nextstep.exception.InvalidValueException;
 import nextstep.subway.application.PathService;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
@@ -21,14 +22,14 @@ public class FavoriteService {
     private final StationRepository stationRepository;
     private final PathService pathService;
 
+    @Transactional(readOnly = true)
     public FavoriteResponse getFavorite(Long memberId, long favoriteId) {
 
-        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
-            .orElseThrow(() -> new InvalidValueException("등록되지 않은 값 입니다"));
-
+        Favorite favorite = getOwnFavorite(memberId, favoriteId);
         return FavoriteResponse.of(favorite);
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
@@ -39,6 +40,17 @@ public class FavoriteService {
 
         Favorite favorite = createFavorite(memberId, sourceStation, targetStation);
         return FavoriteResponse.of(favorite);
+    }
+
+    @Transactional
+    public void deleteFavorite(Long memberId, long favoriteId) {
+        Favorite favorite = getOwnFavorite(memberId, favoriteId);
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite getOwnFavorite(Long memberId, long favoriteId) {
+        return favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
+            .orElseThrow(() -> new InvalidValueException("자신이 등록한 즐겨찾기가 아닙니다."));
     }
 
     private Favorite createFavorite(Long memberId, Station sourceStation, Station targetStation) {

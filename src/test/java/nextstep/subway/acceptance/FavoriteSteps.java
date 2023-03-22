@@ -44,7 +44,7 @@ public class FavoriteSteps {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_API(String token, String favoriteId) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_API(String token, long favoriteId) {
 
         return RestAssured.given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)

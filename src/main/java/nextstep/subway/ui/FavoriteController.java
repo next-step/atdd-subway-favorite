@@ -3,6 +3,7 @@ package nextstep.subway.ui;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +31,16 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites/{favoriteId}")
-    public ResponseEntity<FavoriteResponse> createFavorites(@Login MemberResponse member,
+    public ResponseEntity<FavoriteResponse> getFavorites(@Login MemberResponse member,
         @PathVariable(value = "favoriteId") long favoriteId) {
         FavoriteResponse response = favoriteService.getFavorite(member.getId(), favoriteId);
         return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity<FavoriteResponse> deleteFavorites(@Login MemberResponse member,
+        @PathVariable(value = "favoriteId") long favoriteId) {
+        favoriteService.deleteFavorite(member.getId(), favoriteId);
+        return ResponseEntity.noContent().build();
     }
 }
