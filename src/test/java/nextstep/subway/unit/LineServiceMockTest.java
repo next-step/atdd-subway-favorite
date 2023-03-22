@@ -1,8 +1,8 @@
 package nextstep.subway.unit;
 
-import nextstep.subway.applicaion.LineService;
-import nextstep.subway.applicaion.StationService;
-import nextstep.subway.applicaion.dto.SectionRequest;
+import nextstep.subway.application.LineService;
+import nextstep.subway.application.StationService;
+import nextstep.subway.application.dto.SectionRequest;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;

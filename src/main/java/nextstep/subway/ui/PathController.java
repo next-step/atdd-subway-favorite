@@ -1,7 +1,7 @@
 package nextstep.subway.ui;
 
-import nextstep.subway.applicaion.PathService;
-import nextstep.subway.applicaion.dto.PathResponse;
+import nextstep.subway.application.PathService;
+import nextstep.subway.application.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
