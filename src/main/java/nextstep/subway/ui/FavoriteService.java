@@ -1,14 +1,11 @@
 package nextstep.subway.ui;
 
-import javax.lang.model.type.ErrorType;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.argumentResolver.ErrorCode;
 import nextstep.argumentResolver.InvalidValueException;
 import nextstep.subway.application.PathService;
-import nextstep.subway.application.dto.StationResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.application.dto.FavoriteRequest;
@@ -24,6 +21,14 @@ public class FavoriteService {
     private final StationRepository stationRepository;
     private final PathService pathService;
 
+    public FavoriteResponse getFavorite(Long memberId, long favoriteId) {
+
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
+            .orElseThrow(() -> new InvalidValueException("등록되지 않은 값 입니다"));
+
+        return FavoriteResponse.of(favorite);
+    }
+
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
@@ -33,7 +38,7 @@ public class FavoriteService {
         }
 
         Favorite favorite = createFavorite(memberId, sourceStation, targetStation);
-        return FavoriteResponse.of(favorite, sourceStation, targetStation);
+        return FavoriteResponse.of(favorite);
     }
 
     private Favorite createFavorite(Long memberId, Station sourceStation, Station targetStation) {

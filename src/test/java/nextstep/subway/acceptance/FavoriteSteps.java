@@ -30,7 +30,7 @@ public class FavoriteSteps {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_조회_API(String token, String favoriteId) {
+    public static ExtractableResponse<Response> 즐겨찾기_조회_API(String token, Long favoriteId) {
         return RestAssured.given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .auth().oauth2(token)

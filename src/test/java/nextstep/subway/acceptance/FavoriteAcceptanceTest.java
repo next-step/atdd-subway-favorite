@@ -1,12 +1,13 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.acceptance.FavoriteSteps.*;
-import static nextstep.subway.acceptance.LineSectionAcceptanceTest.*;
-import static nextstep.subway.acceptance.LineSteps.*;
-import static nextstep.subway.acceptance.MemberSteps.*;
-import static nextstep.subway.acceptance.StationSteps.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_API;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_API;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선에_지하철_구간_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,20 +17,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.DataLoader;
-import nextstep.argumentResolver.InvalidValueException;
 import nextstep.subway.utils.DatabaseCleanup;
 
-public class FavoriteAcceptanceTest extends AcceptanceTest{
+public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private DataLoader dataLoader;
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
+
+    private static final String EMAIL = "admin@email.com";
+
+    private static final String PASSWORD = "password";
+
+    private static final int AGE = 20;
 
     private Long 교대역;
     private Long 강남역;
@@ -39,10 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
     private Long 이호선;
     private Long 신분당선;
     private Long 삼호선;
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final int AGE = 20;
-
+    private String 토큰;
 
     /**
      * 교대역    --- *2호선* ---   강남역 --- *2호선* --- 역삼역
@@ -52,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
      * 남부터미널역  --- *3호선* ---   양재  --- *3호선* ---   매봉
      */
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         databaseCleanup.execute();
 
         교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
@@ -60,7 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
         양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
         남부터미널역 = 지하철역_생성_요청("남부터미널역").jsonPath().getLong("id");
 
-        이호선 = 지하철_노선_생성_요청("2호선", "green" ).jsonPath().getLong("id");
+        이호선 = 지하철_노선_생성_요청("2호선", "green").jsonPath().getLong("id");
         신분당선 = 지하철_노선_생성_요청("신분당선", "red").jsonPath().getLong("id");
         삼호선 = 지하철_노선_생성_요청("3호선", "orange").jsonPath().getLong("id");
 
@@ -70,11 +72,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
         지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(강남역, 양재역));
 
         dataLoader.loadMemberData(EMAIL, PASSWORD, AGE);
+        토큰 = ACCESS_TOKEN_발급(EMAIL, PASSWORD);
     }
+
     @Test
     void 즐겨찾기_생성_테스트() {
         // given
-        String 토큰 = ACCESS_TOKEN_발급(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_API(토큰, 강남역, 교대역);
@@ -88,7 +91,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
     void 즐겨찾기_생성_예외_테스트() {
 
         // given
-        String 토큰 = ACCESS_TOKEN_발급(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_API(토큰, 강남역, 역삼역);
@@ -98,6 +100,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest{
     @Test
     void 즐겨찾기_조회_테스트() {
 
+        // given
+        long favoriteId = 즐겨찾기_생성_API(토큰, 강남역, 교대역)
+            .jsonPath()
+            .<Integer>get("id")
+            .longValue();
+
+        // when
+        Integer id = 즐겨찾기_조회_API(토큰, favoriteId).jsonPath().get("id");
+
+        // then
+        assertThat(id).isEqualTo(favoriteId);
+    }
+
+    @Test
+    void 즐겨찾기_조회_예외_테스트() {
+
+        // given
+        즐겨찾기_생성_API(토큰, 강남역, 교대역);
+
+        // when
+        Integer statusCode = 즐겨찾기_조회_API(토큰, 2L).statusCode();
+
+        // then
+        assertThat(statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @Test

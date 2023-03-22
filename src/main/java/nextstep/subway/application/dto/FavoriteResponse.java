@@ -19,7 +19,10 @@ public class FavoriteResponse {
         this.target = targetResponse;
     }
 
-    public static FavoriteResponse of(Favorite favorite, Station source, Station target) {
+    public static FavoriteResponse of(Favorite favorite) {
+
+        Station source = favorite.getSource();
+        Station target = favorite.getTarget();
 
         return FavoriteResponse.builder()
             .id(favorite.getId())
