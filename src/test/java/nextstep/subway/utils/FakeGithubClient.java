@@ -3,10 +3,12 @@ package nextstep.subway.utils;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+@Profile("test")
 @Primary
 @Component
 public class FakeGithubClient extends GithubClient {
