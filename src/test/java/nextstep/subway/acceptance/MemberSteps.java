@@ -78,7 +78,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 토큰으로_내_회원_정보_조회_요청(String token) {
         return RestAssured.given().log().all()
             .headers(
-                "Authorization", token,
+                "Authorization", String.format("Bearer %s", token),
                 "Content-Type", ContentType.JSON,
                 "Accept", ContentType.JSON)
             .when().get("/members/me")
@@ -95,6 +95,21 @@ public class MemberSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 깃허브_로그인(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+            .when()
+                .post("/login/github")
+            .then()
+                .log()
+                .all()
+            .statusCode(HttpStatus.OK.value()).extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
