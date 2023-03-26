@@ -11,8 +11,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.dto.AuthUser;
-import nextstep.member.exception.ErrorMessage;
 import nextstep.member.exception.InvalidTokenException;
+import nextstep.member.exception.MemberErrorMessage;
 import nextstep.member.exception.UnAuthenticationException;
 import nextstep.member.ui.annotations.AuthToken;
 
@@ -55,19 +55,19 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
 
 	private void validateAuthorizationNonNull(String authorization) {
 		if (!Objects.nonNull(authorization)) {
-			throw new UnAuthenticationException(ErrorMessage.UNAUTHENTICATED_TOKEN);
+			throw new UnAuthenticationException(MemberErrorMessage.UNAUTHENTICATED_TOKEN);
 		}
 	}
 
 	private void validateTokenType(String authorization) {
 		if (!authorization.startsWith(AUTHENTICATION_TYPE)) {
-			throw new UnAuthenticationException(ErrorMessage.UNAUTHENTICATED_TOKEN);
+			throw new UnAuthenticationException(MemberErrorMessage.UNAUTHENTICATED_TOKEN);
 		}
 	}
 
 	private void validateToken(String token) {
 		if (!jwtTokenProvider.validateToken(token)) {
-			throw new InvalidTokenException(ErrorMessage.INVALID_TOKEN);
+			throw new InvalidTokenException(MemberErrorMessage.INVALID_TOKEN);
 		}
 	}
 

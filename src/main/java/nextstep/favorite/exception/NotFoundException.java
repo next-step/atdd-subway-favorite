@@ -1,4 +1,4 @@
-package nextstep.member.exception;
+package nextstep.favorite.exception;
 
 public class NotFoundException extends RuntimeException {
 	private static final String DEFAULT_MESSAGE = "요청한 데이터를 찾을 수 없습니다.";
@@ -7,7 +7,7 @@ public class NotFoundException extends RuntimeException {
 		super(DEFAULT_MESSAGE);
 	}
 
-	public NotFoundException(MemberErrorMessage message) {
+	public NotFoundException(FavoriteErrorMessage message) {
 		super(message.getMessage());
 	}
 }

@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.exception.ErrorMessage;
+import nextstep.member.exception.MemberErrorMessage;
 import nextstep.member.exception.UnAuthorizationException;
 import nextstep.subway.utils.GithubResponses;
 
@@ -61,7 +61,7 @@ public class GithubClientTest {
 		assertThatThrownBy(
 			() -> githubClient.getAccessTokenFromGithub(GithubResponses.ACCESS_TOKEN_없는_사용자5.getCode()))
 			.isInstanceOf(UnAuthorizationException.class)
-			.hasMessage(ErrorMessage.UNAUTHORIZATION_CODE.getMessage());
+			.hasMessage(MemberErrorMessage.UNAUTHORIZATION_CODE.getMessage());
 	}
 
 	@DisplayName("유효한 accessToken을 통해 github의 profile을 획득한다.")
@@ -82,6 +82,6 @@ public class GithubClientTest {
 		assertThatThrownBy(
 			() -> githubClient.getGithubProfileFromGithub(GithubResponses.PROFILE_없는_사용자6.getAccessToken()))
 			.isInstanceOf(UnAuthorizationException.class)
-			.hasMessage(ErrorMessage.UNAUTHORIZATION_CODE.getMessage());
+			.hasMessage(MemberErrorMessage.UNAUTHORIZATION_CODE.getMessage());
 	}
 }

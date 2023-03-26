@@ -1,6 +1,6 @@
 package nextstep.member.exception;
 
-public enum ErrorMessage {
+public enum MemberErrorMessage {
 	NOT_FOUND_MEMBER_BY_EMAIL("이메일을 잘못 입력하셨거나, 없는 계정 입니다."),
 	NOT_FOUND_MEMBER_BY_PASSWORD("비밀번호를 잘못 입력하셨습니다."),
 	UNAUTHENTICATED_TOKEN("유효하지 않은 인증 정보입니다."),
@@ -9,7 +9,7 @@ public enum ErrorMessage {
 
 	private String message;
 
-	ErrorMessage(String message) {
+	MemberErrorMessage(String message) {
 		this.message = message;
 	}
 
