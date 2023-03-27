@@ -15,13 +15,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.DataLoader;
 import nextstep.subway.utils.DatabaseCleanup;
 
+@ActiveProfiles("test")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Autowired
@@ -152,7 +153,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // given
         String 유저1의_토큰 = 토큰;
-        long 유저1의_즐겨찾기 = 즐겨찾기_생성_API(유저1의_토큰, 강남역, 교대역)
+        즐겨찾기_생성_API(유저1의_토큰, 강남역, 교대역)
             .jsonPath()
             .<Integer>get("id")
             .longValue();
