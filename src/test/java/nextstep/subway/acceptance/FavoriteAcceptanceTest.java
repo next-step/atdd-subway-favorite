@@ -36,6 +36,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String PASSWORD = "password";
     private static final String PASSWORD2 = "password2";
+    private String 유사토큰 = "%_this_token_means_nothing_%";
 
     private static final int AGE = 20;
 
@@ -179,7 +180,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .longValue();
 
         // when
-        String 유사토큰 = "2312kjsadfl124123123";
         int statusCode = 즐겨찾기_삭제_API(유사토큰, 유저1의_즐겨찾기).statusCode();
 
         // then
