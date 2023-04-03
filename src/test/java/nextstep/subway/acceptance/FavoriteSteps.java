@@ -17,7 +17,7 @@ public class FavoriteSteps {
         params.put("target", target);
 
         return RestAssured.given()
-            .header("Authorization", String.format("Bearer %s", token))
+            .auth().oauth2(token)
             .log()
             .all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
