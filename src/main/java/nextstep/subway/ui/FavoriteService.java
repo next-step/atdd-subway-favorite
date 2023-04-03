@@ -1,18 +1,24 @@
 package nextstep.subway.ui;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.argumentResolver.ErrorCode;
 import nextstep.exception.InvalidValueException;
+import nextstep.subway.application.LineService;
 import nextstep.subway.application.PathService;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.application.dto.FavoriteRequest;
 import nextstep.subway.application.dto.FavoriteResponse;
+import nextstep.subway.domain.Line;
+import nextstep.subway.domain.Path;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import nextstep.subway.domain.SubwayMap;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +40,7 @@ public class FavoriteService {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
 
-        if (!pathService.isConnected(sourceStation, targetStation)) {
-            throw new IllegalArgumentException("서로 연결되지 역입니다.");
-        }
+        validateStations(sourceStation, targetStation);
 
         Favorite favorite = createFavorite(memberId, sourceStation, targetStation);
         return FavoriteResponse.of(favorite);
@@ -63,4 +67,7 @@ public class FavoriteService {
             .orElseThrow(() -> new InvalidValueException(ErrorCode.UNREGISTERED_STATION));
     }
 
+    private void validateStations(Station sourceStation, Station targetStation) {
+        pathService.findPath(sourceStation.getId(), targetStation.getId());
+    }
 }

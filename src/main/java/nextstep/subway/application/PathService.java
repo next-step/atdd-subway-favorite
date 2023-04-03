@@ -29,14 +29,4 @@ public class PathService {
 
         return PathResponse.of(path);
     }
-
-    public boolean isConnected(Station source, Station target) {
-        List<Line> lines = lineService.findLines();
-        SubwayMap subwayMap = new SubwayMap(lines);
-
-        List<Station> stations = subwayMap.findPath(source, target)
-            .getSections()
-            .getStations();
-        return !stations.isEmpty();
-    }
 }
