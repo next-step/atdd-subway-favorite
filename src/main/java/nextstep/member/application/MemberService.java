@@ -1,9 +1,12 @@
 package nextstep.member.application;
 
+import static nextstep.exception.ExceptionMsg.MEMBER_DOES_NOT_EXIST;
+import static nextstep.exception.ExceptionMsg.MEMBER_INFO_NOT_MATCH;
+
 import nextstep.exception.ApiException;
+import nextstep.member.application.dto.AuthInfo;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.http.HttpStatus;
@@ -31,12 +34,17 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    public Member validateMemberAndReturn(TokenRequest request) {
-        Member member = findMemberByEmail(request.getEmail());
-        if (member.checkPassword(request.getPassword())) {
+    public Member validateMemberAndReturn(AuthInfo authInfo) {
+        Member member = findMemberByEmail(authInfo.getEmail());
+        if (member.checkPassword(authInfo.getPassword())) {
             return member;
         }
-        throw new ApiException(HttpStatus.UNAUTHORIZED, "회원정보가 일치하지 않습니다.");
+        throw new ApiException(HttpStatus.UNAUTHORIZED, MEMBER_INFO_NOT_MATCH);
+    }
+
+    public Member findMemberByEmailOrCreate(String email) {
+        return memberRepository.findByEmail(email)
+            .orElse(memberRepository.save(new Member(email, "", 0)));
     }
 
     public MemberResponse findByEmail(String email) {
@@ -45,7 +53,7 @@ public class MemberService {
 
     private Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(
-            () -> new ApiException(HttpStatus.NOT_FOUND, "회원정보가 존재하지 않습니다.")
+            () -> new ApiException(HttpStatus.NOT_FOUND, MEMBER_DOES_NOT_EXIST)
         );
     }
 
