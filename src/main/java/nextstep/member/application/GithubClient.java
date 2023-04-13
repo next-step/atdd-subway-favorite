@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.LoginRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,11 @@ public class GithubClient {
     private String tokenUrl;
     @Value("${github.url.profile}")
     private String profileUrl;
+
+    public GithubProfileResponse callLoginApi(LoginRequest loginRequest) {
+        String accessTokenFromGithub = getAccessTokenFromGithub(loginRequest.getCode());
+        return getGithubProfileFromGithub(accessTokenFromGithub);
+    }
 
     public String getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(

@@ -55,7 +55,7 @@ class AuthServiceTest {
     @ParameterizedTest
     @CsvSource({"member@test.com, password", "member2@test.com, password"})
     @DisplayName("DB에 등록되지 않은 멤버면 에러를 발생한다.")
-    void test2(String newEmail, String password) {
+    void unregisterMemberLoginTest(String newEmail, String password) {
         // given
         TokenRequest tokenRequest = new TokenRequest(newEmail, password);
 
@@ -69,7 +69,7 @@ class AuthServiceTest {
     @ParameterizedTest
     @CsvSource({"admin@test.com, 1234password", "admin@test.com, @#$123",})
     @DisplayName("비밀번호가 일치하지 않을 경우 에러를 발생한다.")
-    void test3(String email, String wrongPassword) {
+    void mismatchPasswordLoginTest(String email, String wrongPassword) {
         // given
         TokenRequest tokenRequest = new TokenRequest(email, wrongPassword);
 
