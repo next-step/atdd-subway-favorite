@@ -44,7 +44,7 @@ public class GithubClient {
                 .getBody();
 
         if (response == null) {
-            throw new RuntimeException("아무것도 없엉...");
+            throw new IllegalStateException("Github에서 토큰정보를 가져오는데 실패했습니다.");
         }
         return response.getAccessToken();
     }
@@ -61,7 +61,7 @@ public class GithubClient {
                     .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                     .getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException();
+            throw new IllegalStateException("GitHub 에서 회원의 프로필을 가져오는데 실패했습니다.");
         }
     }
 }
