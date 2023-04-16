@@ -38,7 +38,7 @@ public class MemberService {
         return MemberResponse.of(findByEmail(email));
     }
 
-    private Member findByEmail(String email) {
+    public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
     }
