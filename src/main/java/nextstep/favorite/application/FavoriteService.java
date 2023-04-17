@@ -23,12 +23,12 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void create(String email, FavoriteRequestDto favoriteRequestDto) {
+    public Favorite create(String email, FavoriteRequestDto favoriteRequestDto) {
         Member member = findMember(email);
         Station sourceStation = stationService.findById(favoriteRequestDto.getSource());
         Station targetStation = stationService.findById(favoriteRequestDto.getTarget());
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
-        favoriteRepository.save(favorite);
+        return favoriteRepository.save(favorite);
     }
 
     private Member findMember(String email) {
