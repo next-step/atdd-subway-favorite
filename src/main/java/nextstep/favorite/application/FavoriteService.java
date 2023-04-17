@@ -42,4 +42,18 @@ public class FavoriteService {
     private Member findMember(String email) {
         return memberService.findByEmail(email);
     }
+
+
+
+    @Transactional
+    public void deleteById(String email, Long id) {
+        Member member = findMember(email);
+        if(existsByIdAndMember(id, member)){
+            favoriteRepository.deleteById(id);
+        }
+    }
+
+    private boolean existsByIdAndMember(Long id, Member member) {
+        return favoriteRepository.existsByIdAndMember(id, member);
+    }
 }
