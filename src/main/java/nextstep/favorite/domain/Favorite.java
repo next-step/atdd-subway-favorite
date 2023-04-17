@@ -42,7 +42,7 @@ public class Favorite {
     }
 
     private void validateStation(Station source, Station target) {
-        if (source == null && target == null) {
+        if (source == null || target == null) {
             throw new SubwayIllegalArgumentException("출발역과, 도착역 둘다 입력해줘야 합니다.");
         }
     }

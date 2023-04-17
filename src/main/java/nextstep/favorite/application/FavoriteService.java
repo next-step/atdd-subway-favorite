@@ -43,8 +43,6 @@ public class FavoriteService {
         return memberService.findByEmail(email);
     }
 
-
-
     @Transactional
     public void deleteById(String email, Long id) {
         Member member = findMember(email);
