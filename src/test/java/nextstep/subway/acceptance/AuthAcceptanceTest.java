@@ -7,9 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.깃헙_로그인_요청;
-import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
+import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -31,5 +32,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 깃헙_로그인_요청(user.getCode());
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    @DisplayName("Github Auth Fail")
+    @ValueSource(strings = {"832ovnq039hfjz", "abc", "zzzzzz", "코드"})
+    @ParameterizedTest
+    void githubAuth2(String code) {
+        ExtractableResponse<Response> response = 깃헙_로그인_실패(code);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

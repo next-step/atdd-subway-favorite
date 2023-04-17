@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.LoginRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,11 @@ public class GithubClient {
     @Value("${github.url.profile}")
     private String profileUrl;
 
+    public GithubProfileResponse callLoginApi(LoginRequest loginRequest) {
+        String accessTokenFromGithub = getAccessTokenFromGithub(loginRequest.getCode());
+        return getGithubProfileFromGithub(accessTokenFromGithub);
+    }
+
     public String getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
@@ -44,7 +50,7 @@ public class GithubClient {
                 .getBody();
 
         if (response == null) {
-            throw new RuntimeException("아무것도 없엉...");
+            throw new IllegalStateException("Github에서 토큰정보를 가져오는데 실패했습니다.");
         }
         return response.getAccessToken();
     }
@@ -61,7 +67,7 @@ public class GithubClient {
                     .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                     .getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException();
+            throw new IllegalStateException("GitHub 에서 회원의 프로필을 가져오는데 실패했습니다.");
         }
     }
 }

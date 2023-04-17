@@ -9,6 +9,7 @@ import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -31,12 +32,12 @@ public class AuthService {
         return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
     }
 
+    @Transactional
     public TokenResponse loginByGithub(final LoginRequest loginRequest) {
-        String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(loginRequest.getCode());
-        GithubProfileResponse githubProfileFromGithub = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
+        GithubProfileResponse profile = githubClient.callLoginApi(loginRequest);
 
-        Member member = memberRepository.findByEmail(githubProfileFromGithub.getEmail())
-                .orElse(memberRepository.save(new Member(githubProfileFromGithub.getEmail(), "password", 20)));
+        Member member = memberRepository.findByEmail(profile.getEmail())
+                .orElse(memberRepository.save(new Member(profile.getEmail(), "password", 20)));
         return new TokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
     }
 
