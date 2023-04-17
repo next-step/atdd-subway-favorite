@@ -10,6 +10,8 @@ import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
@@ -29,6 +31,12 @@ public class FavoriteService {
         Station targetStation = stationService.findById(favoriteRequestDto.getTarget());
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
         return favoriteRepository.save(favorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Favorite> getList(String email) {
+        Member member = findMember(email);
+        return favoriteRepository.findAllByMember(member);
     }
 
     private Member findMember(String email) {

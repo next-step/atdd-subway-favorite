@@ -33,16 +33,18 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public List<FavoriteResponseDto> getListFavorite(@PreAuthorize MemberResponse member) {
-        return favoriteService.getList(member.getEmail())
+    public ResponseEntity<List<FavoriteResponseDto>> getListFavorite(@PreAuthorize MemberResponse member) {
+        List<FavoriteResponseDto> favorites = favoriteService.getList(member.getEmail())
                 .stream()
                 .map(FavoriteResponseDto::of)
                 .collect(Collectors.toUnmodifiableList());
+        return ResponseEntity.ok(favorites);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFavorite(@PreAuthorize MemberResponse member, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteFavorite(@PreAuthorize MemberResponse member, @PathVariable Long id) {
         favoriteService.deleteById(member.getEmail(), id);
+        return ResponseEntity.noContent().build();
     }
 }
