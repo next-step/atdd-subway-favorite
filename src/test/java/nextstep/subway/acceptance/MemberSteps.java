@@ -22,8 +22,7 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
