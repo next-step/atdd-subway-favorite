@@ -3,7 +3,6 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -23,6 +22,10 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all().extract();
+    }
+
+    public static String 베어러_인증_응답에서_AccessToken_가져오기(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("accessToken");
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
@@ -79,8 +82,15 @@ public class MemberSteps {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 토큰_인증으로_내_회원_정보_조회_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .header("Authorization", accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all().extract();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
