@@ -17,8 +17,9 @@ public class AuthService {
     public Member signIn(TokenRequest tokenRequest) {
         Member member = memberRepository.findByEmail(tokenRequest.
                 getEmail()).orElseThrow(() -> new InvalidSigninInformation("email", "가입된 이메일이 존재하지 않습니다."));
-        if (!member.getPassword().equals(tokenRequest.getPassword())) {
+        if (!member.checkPassword(tokenRequest.getPassword())) {
             throw new InvalidSigninInformation("password", "비밀번호가 올바르지 않습니다.");
+
         }
         return member;
     }
