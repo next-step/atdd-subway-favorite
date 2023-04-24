@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import nextstep.config.data.UserSession;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -41,9 +42,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        // TODO: 자신의 정보 조회
-        MemberResponse member = null;
+    public ResponseEntity<MemberResponse> findMemberOfMine(UserSession userSession) {
+        MemberResponse member = memberService.findMember(userSession.getId());
         return ResponseEntity.ok().body(member);
     }
 }

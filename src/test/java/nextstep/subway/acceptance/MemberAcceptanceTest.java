@@ -64,8 +64,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("내 정보를 조회한다.")
+    @DisplayName("유효한 토큰을 사용하여 나의 정보를 조회할 수 있다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 베어러_인증_로그인_응답 = 베어러_인증_로그인_요청(EMAIL, PASSWORD);
+        var accessToken = 베어러_인증_응답에서_AccessToken_가져오기(베어러_인증_로그인_응답);
+        // when
+        var response = 토큰_인증으로_내_회원_정보_조회_요청(accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
