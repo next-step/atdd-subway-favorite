@@ -5,7 +5,7 @@ public class InvalidSigninInformation extends AuthException {
     private static final String MESSAGE = "로그인 정보가 올바르지 않습니다.";
 
 
-    public InvalidSigninInformation(String message) {
+    public InvalidSigninInformation() {
         super(MESSAGE);
     }
 
