@@ -2,14 +2,17 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.utils.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.베어러_인증_로그인_요청;
-import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "admin@email.com";
@@ -44,6 +47,32 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void loginExceptionTest2() {
         // when
         ExtractableResponse<Response> response = 베어러_인증_로그인_요청(EMAIL, "kkkkkk");
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+
+    @DisplayName("깃허브에 가입된 사용자라면 코드를 이용하여 토큰을 응답받을 수 있다.")
+    @EnumSource(GithubResponses.class)
+    @ParameterizedTest
+    void githubLoginTest(GithubResponses user) {
+        // when
+        ExtractableResponse<Response> response = 깃허브_인증_로그인_요청(user.getCode());
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getString("accessToken")).isNotBlank()
+        )
+        ;
+    }
+
+    @DisplayName("깃허브에 가입된 사용자가 아니라면 토큰을 응답받을 수 없다.")
+    @Test
+    void githubLoginExceptionTest() {
+        // when
+        ExtractableResponse<Response> response = 깃허브_인증_로그인_요청("kkk111222");
+
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
