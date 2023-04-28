@@ -23,6 +23,10 @@ public class Member {
     public Member() {
     }
 
+    public Member(String email) {
+        this.email = email;
+    }
+
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -64,6 +68,6 @@ public class Member {
     }
 
     public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+        return this.password.equals(password);
     }
 }

@@ -2,10 +2,12 @@ package nextstep.auth.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.application.AuthService;
-import nextstep.member.application.JwtTokenProvider;
+
+import nextstep.github.application.dto.GithubAccessTokenResponse;
+import nextstep.github.application.dto.GithubRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,12 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login/token")
-    public TokenResponse login(@RequestBody TokenRequest tokenRequest) {
-        Member member = authService.signIn(tokenRequest);
-        String jws = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getRoles());
-        return new TokenResponse(jws);
+    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
+        TokenResponse tokenResponse = authService.signIn(tokenRequest);
+        return ResponseEntity.ok().body(tokenResponse);
+    }
+
+    @PostMapping("/login/github")
+    private ResponseEntity<GithubAccessTokenResponse> loginByGithub(@RequestBody GithubRequest githubRequest) {
+        GithubAccessTokenResponse githubAccessTokenResponse = authService.signInByGithub(githubRequest);
+        return ResponseEntity.ok().body(githubAccessTokenResponse);
     }
 }

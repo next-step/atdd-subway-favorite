@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -83,6 +84,17 @@ public class MemberSteps {
                 .when().get("/members/me")
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 깃허브_인증_로그인_요청(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 토큰_인증으로_내_회원_정보_조회_요청(String accessToken) {
