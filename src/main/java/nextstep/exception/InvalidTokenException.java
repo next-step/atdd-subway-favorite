@@ -1,5 +1,7 @@
 package nextstep.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class InvalidTokenException extends AuthException{
 
     private static final String MESSAGE = "유효하지 않은 토큰입니다.";
@@ -10,6 +12,6 @@ public class InvalidTokenException extends AuthException{
 
     @Override
     public int getStatusCode() {
-        return 401;
+        return HttpStatus.UNAUTHORIZED.value();
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.exception;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class Unauthorized extends AuthException{
@@ -18,6 +19,6 @@ public class Unauthorized extends AuthException{
 
     @Override
     public int getStatusCode() {
-        return 401;
+        return HttpStatus.UNAUTHORIZED.value();
     }
 }
