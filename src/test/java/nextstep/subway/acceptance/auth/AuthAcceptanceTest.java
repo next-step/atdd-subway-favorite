@@ -1,7 +1,8 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.auth;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.acceptance.AcceptanceTest;
 import nextstep.subway.utils.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.MemberSteps.*;
+import static nextstep.subway.acceptance.member.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

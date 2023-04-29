@@ -1,7 +1,7 @@
 package nextstep.subway.utils;
 
 import nextstep.exception.InvalidCodeException;
-import nextstep.exception.InvalidTokenException;
+import nextstep.exception.Unauthorized;
 import nextstep.github.GithubClient;
 import nextstep.github.application.dto.GithubProfileResponse;
 import org.springframework.context.annotation.Primary;
@@ -27,7 +27,7 @@ public class FakeGithubClient extends GithubClient {
         return new GithubProfileResponse(Arrays.stream(GithubResponses.values())
                 .filter(it -> it.getAccessToken().equals(accessToken))
                 .findFirst()
-                .orElseThrow(() -> new InvalidTokenException())
+                .orElseThrow(() -> new Unauthorized())
                 .getEmail());
     }
 }
