@@ -2,7 +2,7 @@ package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.config.data.UserSession;
-import nextstep.exception.InvalidTokenException;
+import nextstep.exception.Unauthorized;
 import nextstep.member.application.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -27,7 +27,7 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
         String jws = webRequest.getHeader(AUTHORIZATION);
 
         if (!jwtTokenProvider.validateToken(jws)) {
-            throw new InvalidTokenException();
+            throw new Unauthorized();
         }
         String principal = jwtTokenProvider.getPrincipal(jws);
 
