@@ -19,7 +19,7 @@ public class FavoritesSteps {
                 .header("Authorization", accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/favorites")
+                .when().post("/favorite")
                 .then().log().all().extract();
     }
 
@@ -27,7 +27,7 @@ public class FavoritesSteps {
         return RestAssured.given().log().all()
                 .header("Authorization", accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/favorites")
+                .when().get("/favorite")
                 .then().log().all().extract();
     }
 
@@ -35,7 +35,7 @@ public class FavoritesSteps {
         return RestAssured.given().log().all()
                 .header("Authorization", accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/favorites/{id}", id)
+                .when().delete("/favorite/{id}", id)
                 .then().log().all().extract();
     }
 }

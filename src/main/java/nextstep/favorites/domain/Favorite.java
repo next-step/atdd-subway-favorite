@@ -1,13 +1,14 @@
 package nextstep.favorites.domain;
 
 import lombok.Getter;
+import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-public class Favorites {
+public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,17 +19,22 @@ public class Favorites {
     @ManyToOne
     private Station target;
 
-    public Favorites() {
+    @ManyToOne
+    private Member member;
+
+    public Favorite() {
     }
 
-    public Favorites(Long id, Station source, Station target) {
+    public Favorite(Long id, Station source, Station target, Member member) {
         this.id = id;
         this.source = source;
         this.target = target;
+        this.member = member;
     }
 
-    public Favorites(Station source, Station target) {
+    public Favorite(Station source, Station target, Member member) {
         this.source = source;
         this.target = target;
+        this.member = member;
     }
 }
