@@ -1,5 +1,7 @@
 package nextstep.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class InvalidSigninInformation extends AuthException {
 
     private static final String MESSAGE = "로그인 정보가 올바르지 않습니다.";
@@ -11,7 +13,7 @@ public class InvalidSigninInformation extends AuthException {
 
     @Override
     public int getStatusCode() {
-        return 400;
+        return HttpStatus.BAD_REQUEST.value();
     }
 
     public InvalidSigninInformation(String fieldName, String message) {

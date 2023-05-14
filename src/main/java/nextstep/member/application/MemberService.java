@@ -1,5 +1,7 @@
 package nextstep.member.application;
 
+import nextstep.exception.InvalidSigninInformation;
+import nextstep.exception.MemberNotFound;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -20,7 +22,7 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id).orElseThrow(MemberNotFound::new);
         return MemberResponse.of(member);
     }
 

@@ -46,4 +46,11 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
+
+    public List<Station> findById(String sourceId, String targetId) {
+        Station sourceStation = findById(Long.parseLong(sourceId));
+        Station targetStation = findById(Long.parseLong(targetId));
+        return List.of(sourceStation, targetStation);
+    }
+
 }

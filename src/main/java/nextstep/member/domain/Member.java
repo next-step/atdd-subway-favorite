@@ -1,8 +1,9 @@
 package nextstep.member.domain;
 
+import nextstep.favorites.domain.Favorite;
+
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Member {

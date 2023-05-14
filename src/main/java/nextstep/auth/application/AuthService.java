@@ -37,7 +37,7 @@ public class AuthService {
         String accessTokenFromGithub = githubClient.getAccessTokenFromGithub(githubRequest.getCode());
         GithubProfileResponse githubProfileFromGithub = githubClient.getGithubProfileFromGithub(accessTokenFromGithub);
         Member member = memberRepository.findByEmail(githubProfileFromGithub.getEmail())
-                .orElse(memberRepository.save(new Member(githubProfileFromGithub.getEmail())));
+                .orElseGet(() -> memberRepository.save(new Member(githubProfileFromGithub.getEmail())));
         return new GithubAccessTokenResponse(jwtTokenProvider.createToken(member.getEmail(), member.getRoles()));
     }
 
