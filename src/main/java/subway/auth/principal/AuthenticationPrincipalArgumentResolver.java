@@ -1,6 +1,6 @@
 package subway.auth.principal;
 
-import subway.auth.AuthenticationException;
+import subway.exception.AuthenticationException;
 import subway.auth.token.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -24,7 +24,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(9999L, "request header inbound error"); // TODO: constant
         }
         String token = authorization.split(" ")[1];
 

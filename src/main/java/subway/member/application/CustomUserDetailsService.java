@@ -1,6 +1,6 @@
 package subway.member.application;
 
-import subway.auth.AuthenticationException;
+import subway.exception.AuthenticationException;
 import subway.auth.userdetails.UserDetails;
 import subway.auth.userdetails.UserDetailsService;
 import subway.member.domain.CustomUserDetails;
@@ -18,7 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Member member = memberRepository.findByEmail(username).orElseThrow(AuthenticationException::new);
+        Member member = memberRepository.findByEmail(username)
+                .orElseThrow(() -> new AuthenticationException(9999L, "회원 정보가 존재하지 않습니다."));  // TODO: constant
         return new CustomUserDetails(member.getEmail(), member.getPassword(), member.getRole());
     }
 }
