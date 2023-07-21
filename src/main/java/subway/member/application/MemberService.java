@@ -15,18 +15,18 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+        Member member = memberRepository.save(request.to());
+        return MemberResponse.from(member);
     }
 
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.toMember());
+        member.update(param.to());
     }
 
     public void deleteMember(Long id) {
@@ -35,7 +35,7 @@ public class MemberService {
 
     public MemberResponse findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .map(MemberResponse::of)
+                .map(MemberResponse::from)
                 .orElseThrow(RuntimeException::new);
     }
 }

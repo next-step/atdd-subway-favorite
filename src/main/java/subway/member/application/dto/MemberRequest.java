@@ -1,7 +1,9 @@
 package subway.member.application.dto;
 
+import lombok.Getter;
 import subway.member.domain.Member;
 
+@Getter
 public class MemberRequest {
     private String email;
     private String password;
@@ -16,19 +18,11 @@ public class MemberRequest {
         this.age = age;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public Member toMember() {
-        return new Member(email, password, age);
+    public Member to() {
+        return Member.builder()
+                .email(this.email)
+                .password(this.password)
+                .age(this.age)
+                .build();
     }
 }

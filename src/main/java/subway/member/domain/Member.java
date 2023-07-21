@@ -1,5 +1,9 @@
 package subway.member.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
+@Getter
+@Builder
+@AllArgsConstructor
 @Entity
 public class Member {
     @Id
@@ -26,33 +33,6 @@ public class Member {
         this.password = password;
         this.age = age;
         this.role = RoleType.ROLE_MEMBER.name();
-    }
-
-    public Member(String email, String password, Integer age, String role) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.role = role;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public String getRole() {
-        return role;
     }
 
     public void update(Member member) {
