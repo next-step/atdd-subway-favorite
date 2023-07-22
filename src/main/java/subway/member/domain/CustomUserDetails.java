@@ -1,7 +1,9 @@
 package subway.member.domain;
 
+import lombok.Builder;
 import subway.auth.userdetails.UserDetails;
 
+@Builder
 public class CustomUserDetails implements UserDetails {
     private String email;
     private String password;
@@ -26,5 +28,13 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getRole() {
         return role;
+    }
+
+    public static CustomUserDetails from(Member member) {
+        return CustomUserDetails.builder()
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .role(member.getRole())
+                .build();
     }
 }

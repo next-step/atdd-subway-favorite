@@ -22,6 +22,6 @@ public class CustomOAuth2UserService implements OAuth2UserService {
         Member member = memberRepository.findByEmail(oAuth2UserRequest.getUsername())
                 .orElseGet(() -> memberRepository.save(memberRequest));
 
-        return new CustomOAuth2User(member.getEmail(), member.getRole());
+        return CustomOAuth2User.from(member);
     }
 }

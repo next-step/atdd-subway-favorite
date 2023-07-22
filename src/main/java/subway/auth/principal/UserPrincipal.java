@@ -8,12 +8,4 @@ public class UserPrincipal {
         this.username = username;
         this.role = role;
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getRole() {
-        return role;
-    }
 }

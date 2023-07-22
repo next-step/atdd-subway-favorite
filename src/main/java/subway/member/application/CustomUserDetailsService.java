@@ -20,6 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new AuthenticationException(9999L, "회원 정보가 존재하지 않습니다."));  // TODO: constant
-        return new CustomUserDetails(member.getEmail(), member.getPassword(), member.getRole());
+        return CustomUserDetails.from(member);
     }
 }

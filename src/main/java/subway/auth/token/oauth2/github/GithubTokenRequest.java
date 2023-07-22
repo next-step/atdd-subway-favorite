@@ -1,16 +1,8 @@
 package subway.auth.token.oauth2.github;
 
+import lombok.Getter;
+
+@Getter
 public class GithubTokenRequest {
     private String code;
-
-    public GithubTokenRequest() {
-    }
-
-    public GithubTokenRequest(String code) {
-        this.code = code;
-    }
-
-    public String getCode() {
-        return code;
-    }
 }

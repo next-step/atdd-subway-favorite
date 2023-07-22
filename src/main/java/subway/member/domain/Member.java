@@ -28,13 +28,6 @@ public class Member {
     public Member() {
     }
 
-    public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.role = RoleType.ROLE_MEMBER.name();
-    }
-
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;

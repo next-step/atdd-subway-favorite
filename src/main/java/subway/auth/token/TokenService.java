@@ -36,7 +36,7 @@ public class TokenService {
 
         String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getRole());
 
-        return new TokenResponse(token);
+        return TokenResponse.builder().accessToken(token).build();
     }
 
     public TokenResponse createTokenFromGithub(String code) {
@@ -47,6 +47,6 @@ public class TokenService {
 
         String token = jwtTokenProvider.createToken(oAuth2User.getUsername(), oAuth2User.getRole());
 
-        return new TokenResponse(token);
+        return TokenResponse.builder().accessToken(token).build();
     }
 }

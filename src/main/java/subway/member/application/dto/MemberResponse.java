@@ -13,7 +13,6 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
-
     public static MemberResponse from(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
