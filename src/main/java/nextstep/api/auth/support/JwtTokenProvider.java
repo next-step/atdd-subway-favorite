@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.api.auth.aop.principal.UserPrincipal;
 
 @Component
 public class JwtTokenProvider {
@@ -34,12 +35,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(final String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
+    public UserPrincipal getUserPrincipal(final String token) {
+        final var claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 
-    public String getRoles(final String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role", String.class);
+        final var username = claims.getSubject();
+        final var role = claims.get("role", String.class);
+
+        return new UserPrincipal(username, role);
     }
 
     public boolean validateToken(final String token) {

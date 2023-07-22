@@ -1,5 +1,7 @@
 package nextstep.api.auth.aop.principal;
 
+import java.util.Optional;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -22,15 +24,21 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
                                   final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
-        final var authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+        final var authorizationHeader = getAuthorizationHeader(webRequest);
+        final var token = extractBearerToken(authorizationHeader);
+        return jwtTokenProvider.getUserPrincipal(token);
+    }
+
+    private String getAuthorizationHeader(final NativeWebRequest webRequest) {
+        final var authorization = Optional.ofNullable(webRequest.getHeader("Authorization"));
+        return authorization.orElseThrow(AuthenticationException::new);
+    }
+
+    private String extractBearerToken(final String authorizationHeader) {
+        final var parts = authorizationHeader.split(" ");
+        if (parts.length < 2 && !"bearer".equalsIgnoreCase(parts[0])) {
             throw new AuthenticationException();
         }
-        final var token = authorization.split(" ")[1];
-
-        final var username = jwtTokenProvider.getPrincipal(token);
-        final var role = jwtTokenProvider.getRoles(token);
-
-        return new UserPrincipal(username, role);
+        return parts[1];
     }
 }
