@@ -1,6 +1,6 @@
 package subway.acceptance.station;
 
-import subway.station.model.Station;
+import subway.station.domain.Station;
 
 import java.util.HashMap;
 import java.util.List;

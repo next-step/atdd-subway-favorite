@@ -4,10 +4,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.exception.SubwayBadRequestException;
 import subway.exception.SubwayNotFoundException;
-import subway.line.model.Line;
-import subway.line.model.LineSections;
-import subway.line.model.Section;
-import subway.station.model.Station;
+import subway.line.domain.Line;
+import subway.line.domain.LineSections;
+import subway.line.domain.Section;
+import subway.station.domain.Station;
 
 import java.util.List;
 

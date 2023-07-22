@@ -3,8 +3,8 @@ package subway.unit.section;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.exception.SubwayBadRequestException;
-import subway.line.model.Section;
-import subway.station.model.Station;
+import subway.line.domain.Section;
+import subway.station.domain.Station;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;

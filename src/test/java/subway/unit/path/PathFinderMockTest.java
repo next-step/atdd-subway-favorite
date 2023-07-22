@@ -5,12 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.acceptance.station.StationFixture;
 import subway.exception.SubwayBadRequestException;
-import subway.line.model.Line;
-import subway.line.model.Section;
-import subway.path.component.PathFinder;
-import subway.path.dto.PathRetrieveResponse;
-import subway.station.dto.StationResponse;
-import subway.station.model.Station;
+import subway.line.domain.Line;
+import subway.line.domain.Section;
+import subway.path.application.PathFinder;
+import subway.path.application.dto.PathRetrieveResponse;
+import subway.station.application.dto.StationResponse;
+import subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
