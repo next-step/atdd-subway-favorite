@@ -1,17 +1,17 @@
 package nextstep.api.auth.application.token.oauth2.github.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class GithubAccessTokenResponse {
-    @JsonProperty("access_token")
     private String accessToken;
-    @JsonProperty("token_type")
     private String tokenType;
     private String scope;
     private String bearer;
