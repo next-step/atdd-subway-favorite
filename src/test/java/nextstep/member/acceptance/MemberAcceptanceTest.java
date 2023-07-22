@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.study.AuthSteps.내_정보_조회;
+import static nextstep.study.AuthSteps.토큰_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -72,6 +74,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        // and
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        var tokenResponse = 토큰_요청(EMAIL, PASSWORD);
+        var accessToken = tokenResponse.jsonPath().getString("accessToken");
+
+        // when
+        var memberResponse = 내_정보_조회(accessToken);
+
+        // then
+        회원_정보_조회됨(memberResponse, EMAIL, AGE);
     }
 }
