@@ -3,11 +3,11 @@ package nextstep.api.member.application.auth;
 import nextstep.api.auth.application.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
-    private String email;
-    private String password;
-    private String role;
+    private final String email;
+    private final String password;
+    private final String role;
 
-    public CustomUserDetails(String email, String password, String role) {
+    public CustomUserDetails(final String email, final String password, final String role) {
         this.email = email;
         this.password = password;
         this.role = role;

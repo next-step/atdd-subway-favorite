@@ -5,23 +5,25 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    private final String secretKey;
+    private final long validityInMilliseconds;
 
-    public String createToken(String principal, String role) {
-        Claims claims = Jwts.claims().setSubject(principal);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+    public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") final String secretKey,
+                            @Value("${security.jwt.token.expire-length}") final long validityInMilliseconds) {
+        this.secretKey = secretKey;
+        this.validityInMilliseconds = validityInMilliseconds;
+    }
+
+    public String createToken(final String principal, final String role) {
+        final var claims = Jwts.claims().setSubject(principal);
+        final var now = new Date();
+        final var validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -32,17 +34,17 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
+    public String getPrincipal(final String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String getRoles(String token) {
+    public String getRoles(final String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role", String.class);
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(final String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            final var claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {

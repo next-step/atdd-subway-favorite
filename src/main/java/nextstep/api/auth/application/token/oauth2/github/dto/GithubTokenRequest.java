@@ -1,16 +1,15 @@
 package nextstep.api.auth.application.token.oauth2.github.dto;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class GithubTokenRequest {
     private String code;
 
-    public GithubTokenRequest() {
-    }
-
     public GithubTokenRequest(String code) {
         this.code = code;
-    }
-
-    public String getCode() {
-        return code;
     }
 }

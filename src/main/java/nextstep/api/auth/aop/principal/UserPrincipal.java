@@ -1,19 +1,14 @@
 package nextstep.api.auth.aop.principal;
 
-public class UserPrincipal {
-    private String username;
-    private String role;
+import lombok.Getter;
 
-    public UserPrincipal(String username, String role) {
+@Getter
+public class UserPrincipal {
+    private final String username;
+    private final String role;
+
+    public UserPrincipal(final String username, final String role) {
         this.username = username;
         this.role = role;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getRole() {
-        return role;
     }
 }

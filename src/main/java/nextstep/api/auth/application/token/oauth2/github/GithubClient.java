@@ -16,51 +16,57 @@ import nextstep.api.auth.application.token.oauth2.github.dto.GithubProfileRespon
 
 @Component
 public class GithubClient {
+    private final String clientId;
+    private final String clientSecret;
+    private final String tokenUrl;
+    private final String profileUrl;
 
-    @Value("${github.client.id}")
-    private String clientId;
-    @Value("${github.client.secret}")
-    private String clientSecret;
-    @Value("${github.url.access-token}")
-    private String tokenUrl;
-    @Value("${github.url.profile}")
-    private String profileUrl;
+    public GithubClient(@Value("${github.client.id}") final String clientId,
+                        @Value("${github.client.secret}") final String clientSecret,
+                        @Value("${github.url.access-token}") final String tokenUrl,
+                        @Value("${github.url.profile}") final String profileUrl
+    ) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.tokenUrl = tokenUrl;
+        this.profileUrl = profileUrl;
+    }
 
-    public String getAccessTokenFromGithub(String code) {
-        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
-            code,
-            clientId,
-            clientSecret
+    public String getAccessTokenFromGithub(final String code) {
+        final var githubAccessTokenRequest = new GithubAccessTokenRequest(
+                code,
+                clientId,
+                clientSecret
         );
 
-        HttpHeaders headers = new HttpHeaders();
+        final var headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
-            githubAccessTokenRequest, headers);
-        RestTemplate restTemplate = new RestTemplate();
+        final HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+                githubAccessTokenRequest, headers);
+        final var restTemplate = new RestTemplate();
 
-        String accessToken = restTemplate
-            .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-            .getBody()
-            .getAccessToken();
+        final var accessToken = restTemplate
+                .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                .getBody()
+                .getAccessToken();
         if (accessToken == null) {
             throw new RuntimeException();
         }
         return accessToken;
     }
 
-    public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
+    public GithubProfileResponse getGithubProfileFromGithub(final String accessToken) {
+        final var headers = new HttpHeaders();
         headers.add("Authorization", "token " + accessToken);
 
-        HttpEntity httpEntity = new HttpEntity<>(headers);
-        RestTemplate restTemplate = new RestTemplate();
+        final var httpEntity = new HttpEntity<>(headers);
+        final var restTemplate = new RestTemplate();
 
         try {
             return restTemplate
-                .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
-                .getBody();
+                    .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                    .getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException();
         }

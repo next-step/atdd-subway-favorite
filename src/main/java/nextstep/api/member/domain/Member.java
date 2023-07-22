@@ -8,7 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 @Entity
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,41 +25,18 @@ public class Member {
     private Integer age;
     private String role;
 
-    public Member() {
-    }
-
-    public Member(String email, String password, Integer age) {
+    public Member(final String email, final String password, final Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
         this.role = RoleType.ROLE_MEMBER.name();
     }
 
-    public Member(String email, String password, Integer age, String role) {
+    public Member(final String email, final String password, final Integer age, final String role) {
         this.email = email;
         this.password = password;
         this.age = age;
         this.role = role;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public String getRole() {
-        return role;
     }
 
     public void update(Member member) {
