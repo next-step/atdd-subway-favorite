@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class GithubTokenRequest {
     private String code;
 
-    public GithubTokenRequest(String code) {
+    public GithubTokenRequest(final String code) {
         this.code = code;
     }
 }
