@@ -17,9 +17,12 @@ public class CustomOAuth2UserService implements OAuth2UserService {
     @Override
     public OAuth2User loadUser(final OAuth2UserRequest oAuth2UserRequest) {
         final var member = memberRepository.findByEmail(oAuth2UserRequest.getUsername())
-                .orElseGet(() -> memberRepository.save(
-                        new Member(oAuth2UserRequest.getUsername(), "", oAuth2UserRequest.getAge())));
+                .orElseGet(() -> save(oAuth2UserRequest));
 
         return new CustomOAuth2User(member.getEmail(), member.getRole());
+    }
+
+    private Member save(final OAuth2UserRequest request) {
+        return memberRepository.save(new Member(request.getUsername(), "", request.getAge()));
     }
 }
