@@ -1,9 +1,16 @@
 package nextstep.member.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +79,39 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", PASSWORD);
+
+        // and
+        ExtractableResponse<Response> loginTokenResponse = RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/login/token")
+                .then().log().all()
+                .extract();
+
+        String accessToken = loginTokenResponse.jsonPath().getString("accessToken");
+        assertThat(accessToken).isNotBlank();
+
+        // when
+        ExtractableResponse<Response> membersMeResponse = RestAssured
+                .given().log().all()
+                .header("Authorization", "Bearer " + accessToken)
+                .when()
+                .get("/members/me")
+                .then().log().all()
+                .extract();
+
+        assertThat(membersMeResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        // then
+        assertThat(membersMeResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(membersMeResponse.jsonPath().getInt("age")).isEqualTo(AGE);
     }
 }
