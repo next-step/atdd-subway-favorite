@@ -63,19 +63,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("토큰 발급을 요청한다.")
-    @Test
-    void createToken() {
-        // given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        // when
-        var response = 토큰_발급_요청(EMAIL, PASSWORD);
-
-        // then
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
-    }
-
     /**
      * Given 회원 가입을 생성하고
      * And 로그인을 하고
