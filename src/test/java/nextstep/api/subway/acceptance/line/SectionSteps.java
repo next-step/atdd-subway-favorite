@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
+import nextstep.api.ExceptionResponse;
 import nextstep.api.subway.applicaion.line.dto.request.SectionRequest;
 import nextstep.api.subway.applicaion.line.dto.response.LineResponse;
-import nextstep.api.ExceptionResponse;
 
 public class SectionSteps {
 

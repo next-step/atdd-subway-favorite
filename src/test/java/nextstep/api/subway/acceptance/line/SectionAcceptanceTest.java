@@ -2,8 +2,6 @@ package nextstep.api.subway.acceptance.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static nextstep.api.subway.acceptance.line.LineSteps.지하철노선을_생성한다;
-import static nextstep.api.subway.acceptance.line.SectionSteps.지하철구간을_등록한다;
 import static nextstep.api.subway.acceptance.station.StationSteps.지하철역을_생성한다;
 import static nextstep.api.subway.unit.LineFixture.DEFAULT_LINE_LENGTH;
 

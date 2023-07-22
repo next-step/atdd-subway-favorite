@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
-import static nextstep.api.subway.unit.LineFixture.makeLine;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,13 +16,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.api.SubwayException;
 import nextstep.api.subway.applicaion.path.PathService;
 import nextstep.api.subway.applicaion.station.dto.StationResponse;
 import nextstep.api.subway.domain.line.LineRepository;
 import nextstep.api.subway.domain.station.Station;
 import nextstep.api.subway.domain.station.StationRepository;
 import nextstep.api.subway.domain.station.exception.NoSuchStationException;
-import nextstep.api.SubwayException;
 import nextstep.api.subway.unit.LineFixture;
 import nextstep.api.subway.unit.StationFixture;
 

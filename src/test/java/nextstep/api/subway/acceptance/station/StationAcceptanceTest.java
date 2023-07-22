@@ -2,8 +2,6 @@ package nextstep.api.subway.acceptance.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static nextstep.api.subway.acceptance.station.StationSteps.지하철역을_생성한다;
-
 import java.util.List;
 
 import org.assertj.core.api.Assertions;

@@ -3,7 +3,6 @@ package nextstep.api.subway.acceptance.path;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import static nextstep.api.subway.acceptance.line.LineSteps.지하철노선을_생성한다;
 import static nextstep.api.subway.acceptance.line.SectionSteps.지하철구간을_등록한다;
 import static nextstep.api.subway.acceptance.station.StationSteps.지하철역을_생성한다;
 
@@ -14,8 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import nextstep.api.subway.acceptance.line.LineSteps;
 import nextstep.api.subway.acceptance.AcceptanceTest;
+import nextstep.api.subway.acceptance.line.LineSteps;
 import nextstep.api.subway.applicaion.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 관리 기능")

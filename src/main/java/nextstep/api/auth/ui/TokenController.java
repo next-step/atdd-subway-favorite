@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.api.auth.application.token.TokenService;
 import nextstep.api.auth.application.token.dto.TokenRequest;
 import nextstep.api.auth.application.token.dto.TokenResponse;
-import nextstep.api.auth.application.token.TokenService;
 import nextstep.api.auth.application.token.oauth2.github.dto.GithubTokenRequest;
 
 @RestController

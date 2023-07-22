@@ -7,9 +7,9 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.api.SubwayException;
 import nextstep.api.subway.domain.line.Section;
 import nextstep.api.subway.domain.station.Station;
-import nextstep.api.SubwayException;
 
 public class SubwayShortestPath {
     private final GraphPath<Station, DefaultWeightedEdge> path;
