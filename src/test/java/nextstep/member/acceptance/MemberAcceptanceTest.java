@@ -1,16 +1,9 @@
 package nextstep.member.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +63,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("토큰 발급을 요청한다.")
+    @Test
+    void createToken() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        var response = 토큰_발급_요청(EMAIL, PASSWORD);
+
+        // then
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
     /**
      * Given 회원 가입을 생성하고
      * And 로그인을 하고
@@ -82,36 +88,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-
         // and
-        ExtractableResponse<Response> loginTokenResponse = RestAssured
-                .given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/login/token")
-                .then().log().all()
-                .extract();
-
-        String accessToken = loginTokenResponse.jsonPath().getString("accessToken");
-        assertThat(accessToken).isNotBlank();
+        var tokenResponse = 토큰_발급_요청(EMAIL, PASSWORD);
+        String accessToken = tokenResponse.jsonPath().getString("accessToken");
 
         // when
-        ExtractableResponse<Response> membersMeResponse = RestAssured
-                .given().log().all()
-                .header("Authorization", "Bearer " + accessToken)
-                .when()
-                .get("/members/me")
-                .then().log().all()
-                .extract();
-
-        assertThat(membersMeResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        var membersMeResponse = 회원_정보_조회_요청_토큰사용(accessToken);
 
         // then
-        assertThat(membersMeResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
-        assertThat(membersMeResponse.jsonPath().getInt("age")).isEqualTo(AGE);
+        회원_정보_조회됨(membersMeResponse, EMAIL, AGE);
     }
 }
