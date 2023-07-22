@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,8 +37,7 @@ public class JwtTokenProvider {
     }
 
     public UserPrincipal getUserPrincipal(final String token) {
-        final var claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-
+        final var claims = extractClaims(token);
         final var username = claims.getSubject();
         final var role = claims.get("role", String.class);
 
@@ -46,12 +46,16 @@ public class JwtTokenProvider {
 
     public boolean validateToken(final String token) {
         try {
-            final var claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            final var claims = extractClaims(token);
+            return !claims.getExpiration().before(new Date());
 
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (final JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Claims extractClaims(final String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 }
 
