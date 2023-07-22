@@ -61,12 +61,14 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_본인_정보_조회(String token) {
+    public static ExtractableResponse<Response> 회원_본인_정보_조회(String token, HttpStatus status) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
                 .when().get("/members/me")
-                .then().log().all().extract();
+                .then().log().all()
+                .statusCode(status.value())
+                .extract();
     }
 
     public static void 회원_본인_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
