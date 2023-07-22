@@ -1,4 +1,4 @@
-package nextstep.api.auth.application.token;
+package nextstep.api.auth.application.token.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

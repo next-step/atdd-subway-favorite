@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.api.auth.AuthenticationException;
+import nextstep.api.auth.application.token.dto.TokenResponse;
 import nextstep.api.auth.application.token.oauth2.OAuth2UserService;
 import nextstep.api.auth.application.token.oauth2.github.GithubClient;
 import nextstep.api.auth.application.userdetails.UserDetailsService;
