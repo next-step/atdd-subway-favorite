@@ -3,6 +3,8 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -57,6 +59,22 @@ public class MemberSteps {
                 .given().log().all()
                 .when().delete(uri)
                 .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_본인_정보_조회(String token, HttpStatus status) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(status.value())
+                .extract();
+    }
+
+    public static void 회원_본인_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.jsonPath().getLong("id")).isNotNull();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
