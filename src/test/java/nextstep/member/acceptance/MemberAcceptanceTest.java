@@ -1,14 +1,21 @@
 package nextstep.member.acceptance;
 
-import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.auth.AuthSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-class MemberAcceptanceTest extends AcceptanceTest {
+@ActiveProfiles("test")
+@Sql(scripts = "classpath:reset.sql", executionPhase = BEFORE_TEST_METHOD)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+class MemberAcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
@@ -72,6 +79,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        //given
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_토큰_생성(EMAIL, PASSWORD);
 
+        //when
+        var myInfo = 회원_본인_정보_조회(accessToken);
+
+        //then
+        회원_본인_정보_조회됨(myInfo, EMAIL, AGE);
     }
 }
