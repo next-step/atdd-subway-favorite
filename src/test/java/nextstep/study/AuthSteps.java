@@ -28,7 +28,7 @@ public class AuthSteps {
   public static ExtractableResponse<Response> 내_정보_조회(String accessToken) {
 
     ExtractableResponse<Response> response = RestAssured.given().log().all()
-        .header("Authorization", "Bearer " + accessToken)
+        .auth().oauth2(accessToken)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when().get("/members/me")
         .then().log().all()
