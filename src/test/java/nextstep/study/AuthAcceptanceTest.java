@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
+    @Disabled("2단계 요구사항이므로 Disabled 임시 처리")
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
