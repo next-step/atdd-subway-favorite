@@ -1,13 +1,12 @@
 package nextstep.member.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.utils.AcceptanceTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
@@ -17,22 +16,13 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/members")
-                .then().log().all().extract();
+        return post("/members", params);
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+        return get(uri);
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
@@ -43,20 +33,12 @@ public class MemberSteps {
         params.put("password", password);
         params.put("age", age + "");
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
-                .then().log().all().extract();
+        return put(uri, params);
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all().extract();
+        return delete(uri);
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
@@ -68,21 +50,11 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response) {
         String accessToken = response.jsonPath().getString("accessToken");
 
-        return getMyInfoResponse(accessToken);
+        return getOauth2("/members/me", accessToken);
     }
 
     public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
-        return getMyInfoResponse(accessToken);
-    }
-
-    private static ExtractableResponse<Response> getMyInfoResponse(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
+        return getOauth2("/members/me", accessToken);
     }
 
 }
