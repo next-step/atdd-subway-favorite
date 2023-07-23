@@ -1,4 +1,4 @@
-package nextstep.subway.exception;
+package nextstep.exception.removesectionexception;
 
 public class RemoveSectionException extends RuntimeException {
 

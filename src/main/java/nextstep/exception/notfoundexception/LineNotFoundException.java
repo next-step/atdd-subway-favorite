@@ -1,4 +1,6 @@
-package nextstep.subway.exception;
+package nextstep.exception.notfoundexception;
+
+import nextstep.exception.notfoundexception.NotFoundException;
 
 public class LineNotFoundException extends NotFoundException {
 
