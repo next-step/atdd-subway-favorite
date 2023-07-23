@@ -1,5 +1,10 @@
 package subway.auth.principal;
 
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
 public class UserPrincipal {
     private String username;
     private String role;

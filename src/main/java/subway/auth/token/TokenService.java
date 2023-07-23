@@ -1,5 +1,7 @@
 package subway.auth.token;
 
+import lombok.RequiredArgsConstructor;
+import subway.constant.SubwayMessage;
 import subway.exception.AuthenticationException;
 import subway.auth.token.oauth2.OAuth2User;
 import subway.auth.token.oauth2.OAuth2UserService;
@@ -10,32 +12,19 @@ import subway.auth.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
-    private UserDetailsService userDetailsService;
-    private OAuth2UserService oAuth2UserService;
-    private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
-
-    public TokenService(
-            UserDetailsService userDetailsService,
-            OAuth2UserService oAuth2UserService,
-            JwtTokenProvider jwtTokenProvider,
-            GithubClient githubClient
-    ) {
-        this.userDetailsService = userDetailsService;
-        this.oAuth2UserService = oAuth2UserService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.githubClient = githubClient;
-    }
+    private final UserDetailsService userDetailsService;
+    private final OAuth2UserService oAuth2UserService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
     public TokenResponse createToken(String email, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         if (!userDetails.getPassword().equals(password)) {
-            throw new AuthenticationException(9999L, "로그인 정보가 일치하지 않습니다."); // TODO: constant
+            throw new AuthenticationException(SubwayMessage.AUTH_PASSWORD_IS_NOT_VALID);
         }
-
         String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getRole());
-
         return TokenResponse.builder().accessToken(token).build();
     }
 

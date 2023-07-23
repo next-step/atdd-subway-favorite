@@ -1,5 +1,6 @@
 package subway.auth.principal;
 
+import subway.constant.SubwayMessage;
 import subway.exception.AuthenticationException;
 import subway.auth.token.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
@@ -21,16 +22,31 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  WebDataBinderFactory binderFactory) {
         String authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException(9999L, "request header inbound error"); // TODO: constant
-        }
+        validAuthorization(authorization);
         String token = authorization.split(" ")[1];
-
+        validToken(token);
         String username = jwtTokenProvider.getPrincipal(token);
         String role = jwtTokenProvider.getRoles(token);
 
         return new UserPrincipal(username, role);
+    }
+
+    private void validToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException(SubwayMessage.AUTH_INVALID_TOKEN);
+        }
+    }
+
+    private static void validAuthorization(String authorization) {
+        if (authorization == null) {
+            throw new AuthenticationException(SubwayMessage.AUTH_TOKEN_NOT_FOUND_FROM_HEADERS);
+        }
+        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+            throw new AuthenticationException(SubwayMessage.AUTH_TOKEN_NOT_FOUND_FROM_HEADERS);
+        }
     }
 }

@@ -1,14 +1,25 @@
 package subway.member.ui;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import subway.auth.principal.AuthenticationPrincipal;
+import subway.auth.principal.UserPrincipal;
+import subway.exception.SubwayBadRequestException;
 import subway.member.application.MemberService;
 import subway.member.application.dto.MemberRequest;
 import subway.member.application.dto.MemberResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
 @RestController
+@RequestMapping("/members")
 public class MemberController {
     private MemberService memberService;
 
@@ -16,33 +27,32 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
-    @GetMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse> findMember(@AuthenticationPrincipal UserPrincipal principal,
+                                                     @PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberResponse> updateMember(@AuthenticationPrincipal UserPrincipal principal,
+                                                       @PathVariable Long id,
+                                                       @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MemberResponse> deleteMember(@AuthenticationPrincipal UserPrincipal principal,
+                                                       @PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
     }
 }
 
