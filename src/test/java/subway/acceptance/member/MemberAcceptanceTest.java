@@ -1,10 +1,8 @@
 package subway.acceptance.member;
 
-import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import subway.acceptance.auth.AuthFixture;
 import subway.acceptance.auth.AuthSteps;
 import subway.utils.AcceptanceTest;
@@ -50,11 +48,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var accessToken = loginResponse.jsonPath().getString("accessToken");
 
         // when
-        var response = RestAssured.given().log().all()
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
-                .when().get(memberLocation)
-                .then().log().all()
-                .extract();
+        var response = MemberSteps.회원_조회_API(memberLocation, accessToken);
 
         // then
         assertThat(response.jsonPath().getString("id")).isNotBlank();
@@ -84,19 +78,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         params.put("email", newEmail);
         params.put("password", PASSWORD);
         params.put("age", String.valueOf(AGE));
-        RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
-                .when().put(memberLocation)
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        MemberSteps.회원_수정_API(memberLocation, accessToken, params);
 
-        var response = RestAssured.given().log().all()
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
-                .when().get(memberLocation)
-                .then().log().all()
-                .extract();
+        var response = MemberSteps.회원_조회_API(memberLocation, accessToken);
 
         // then
         assertThat(response.jsonPath().getString("id")).isNotBlank();
@@ -121,18 +105,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var accessToken = loginResponse.jsonPath().getString("accessToken");
 
         // when
-        RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
-                .when().delete(memberLocation)
-                .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value()).extract();
+        MemberSteps.회원_삭제_API(memberLocation, accessToken);
 
-        var response = RestAssured.given().log().all()
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
-                .when().get(memberLocation)
-                .then().log().all()
-                .extract();
+        var response = MemberSteps.회원_조회_API(memberLocation, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
