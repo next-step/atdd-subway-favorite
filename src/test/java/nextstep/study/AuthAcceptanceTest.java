@@ -36,11 +36,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", EMAIL);
         params.put("password", PASSWORD);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
@@ -53,11 +53,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("code", "code");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/github")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();

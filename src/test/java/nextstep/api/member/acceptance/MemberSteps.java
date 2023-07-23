@@ -13,30 +13,30 @@ import nextstep.api.member.application.dto.MemberRequest;
 public class MemberSteps {
     public static ExtractableResponse<Response> 회원_생성_요청(final String email, final String password, final Integer age) {
         return RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new MemberRequest(email, password, age))
                 .when().post("/members")
-                .then().log().all().extract();
+                .then().extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(final ExtractableResponse<Response> response) {
         final String uri = response.header("Location");
 
-        return RestAssured.given().log().all()
+        return RestAssured.given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
-                .then().log().all()
+                .then()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 내_정보_조회_요청(final String token) {
         return RestAssured
-                .given().log().all()
+                .given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
-                .then().log().all().extract();
+                .then().extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(final ExtractableResponse<Response> response,
@@ -46,19 +46,19 @@ public class MemberSteps {
     ) {
         final String uri = response.header("Location");
         return RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new MemberRequest(email, password, age))
                 .when().put(uri)
-                .then().log().all().extract();
+                .then().extract();
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(final ExtractableResponse<Response> response) {
         final String uri = response.header("Location");
         return RestAssured
-                .given().log().all()
+                .given()
                 .when().delete(uri)
-                .then().log().all().extract();
+                .then().extract();
     }
 
     public static void 회원_정보_조회됨(final ExtractableResponse<Response> response, final String email, final int age) {
