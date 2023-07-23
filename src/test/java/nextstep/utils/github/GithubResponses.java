@@ -35,6 +35,10 @@ public enum GithubResponses {
         return email;
     }
 
+    public String getCode() {
+        return code;
+    }
+
     public static GithubResponses ofCode(String code) {
         return Arrays.stream(GithubResponses.values())
                 .filter(githubResponses -> githubResponses.code.equals(code))
@@ -42,7 +46,7 @@ public enum GithubResponses {
                 .orElseThrow(() -> new DataIntegrityViolationException("코드가 존재하지 않습니다."));
     }
 
-    public static GithubResponses ofAceessToken(String accessToken) {
+    public static GithubResponses ofAccessToken(String accessToken) {
         return Arrays.stream(GithubResponses.values())
                 .filter(githubResponses -> githubResponses.accessToken.equals(accessToken))
                 .findFirst()

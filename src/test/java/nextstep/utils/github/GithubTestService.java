@@ -23,7 +23,7 @@ public class GithubTestService {
         }
 
         String accessToken = authorization.split(" ")[1];
-        GithubResponses githubResponses = GithubResponses.ofAceessToken(accessToken);
+        GithubResponses githubResponses = GithubResponses.ofAccessToken(accessToken);
 
         return new GithubProfileResponse(githubResponses.getEmail(), githubResponses.getAge());
     }
