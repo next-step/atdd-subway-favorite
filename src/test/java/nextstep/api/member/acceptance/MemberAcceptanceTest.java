@@ -8,10 +8,16 @@ import static nextstep.api.member.acceptance.MemberSteps.회원_정보_수정_�
 import static nextstep.api.member.acceptance.MemberSteps.회원_정보_조회_요청;
 import static nextstep.api.member.acceptance.MemberSteps.회원_정보_조회됨;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import io.restassured.RestAssured;
+import nextstep.api.auth.application.token.dto.TokenResponse;
+import nextstep.api.member.application.dto.MemberResponse;
 import nextstep.utils.AcceptanceTest;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -78,6 +84,33 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        final var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        final var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(Map.of(
+                        "email", EMAIL,
+                        "password", PASSWORD
+                ))
+                .when().post("/login/token")
+                .then().log().all().extract();
+
+        final var token = tokenResponse.body().as(TokenResponse.class).getAccessToken();
+
+        // when
+        final var response = RestAssured
+                .given().log().all()
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all().extract();
+
+        final var actualEmail = response.body().as(MemberResponse.class).getEmail();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actualEmail).isEqualTo(EMAIL);
     }
 }
