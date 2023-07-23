@@ -25,18 +25,19 @@ public class Member {
     private Integer age;
     private String role;
 
-    public Member(final String email, final String password, final Integer age) {
+    private Member(final String email, final String password, final Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
         this.role = RoleType.ROLE_MEMBER.name();
     }
 
-    public Member(final String email, final String password, final Integer age, final String role) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.role = role;
+    public static Member basic(final String email, final String password, final Integer age) {
+        return new Member(email, password, age);
+    }
+
+    public static Member oAuth2User(final String email, final Integer age) {
+        return new Member(email, "", age);
     }
 
     public void update(Member member) {

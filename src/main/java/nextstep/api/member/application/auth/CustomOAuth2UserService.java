@@ -23,6 +23,6 @@ public class CustomOAuth2UserService implements OAuth2UserService {
     }
 
     private Member save(final OAuth2UserRequest request) {
-        return memberRepository.save(new Member(request.getUsername(), "", request.getAge()));
+        return memberRepository.save(Member.oAuth2User(request.getUsername(), request.getAge()));
     }
 }

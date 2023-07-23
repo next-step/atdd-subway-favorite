@@ -19,6 +19,6 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, password, age);
+        return Member.basic(email, password, age);
     }
 }
