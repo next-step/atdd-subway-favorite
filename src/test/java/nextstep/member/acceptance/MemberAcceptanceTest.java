@@ -1,6 +1,9 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -14,24 +17,25 @@ class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
+    private ExtractableResponse<Response> 회원_생성_응답;
+
+    @BeforeEach
+    void setUpFixture() {
+        회원_생성_응답 = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+    }
+
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
-        // when
-        var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(회원_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("회원 정보를 조회한다.")
     @Test
     void getMember() {
-        // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // when
-        var response = 회원_정보_조회_요청(createResponse);
+        var response = 회원_정보_조회_요청(회원_생성_응답);
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
@@ -41,11 +45,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 수정한다.")
     @Test
     void updateMember() {
-        // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // when
-        var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        var response = 회원_정보_수정_요청(회원_생성_응답, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -54,11 +55,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
-        // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // when
-        var response = 회원_삭제_요청(createResponse);
+        var response = 회원_삭제_요청(회원_생성_응답);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -74,11 +72,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void getMyInfo() {
         // given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
         var loginResponse = 로그인(EMAIL, PASSWORD);
 
         // when
-        var myInfoResponse = 내_정보_조회_요청(loginResponse.jsonPath().getString("accessToken"));
+        var myInfoResponse = 내_정보_조회_요청(loginResponse);
 
         // then
         assertThat(myInfoResponse.jsonPath().getLong("id")).isEqualTo(1L);

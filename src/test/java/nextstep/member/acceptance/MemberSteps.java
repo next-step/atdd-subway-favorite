@@ -65,7 +65,9 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+    public static ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response) {
+        String accessToken = response.jsonPath().getString("accessToken");
+
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
