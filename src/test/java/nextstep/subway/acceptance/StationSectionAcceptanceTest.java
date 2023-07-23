@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,9 +16,7 @@ import static nextstep.utils.AcceptanceUtils.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @DisplayName("지하철 구간 관리 기능")
-@Sql(scripts = "classpath:reset.sql", executionPhase = BEFORE_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class StationSectionAcceptanceTest {
+public class StationSectionAcceptanceTest extends AcceptanceTest {
 
     private Long aStationId;
     private Long bStationId;

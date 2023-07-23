@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.path.json.JsonPath;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,7 @@ import static nextstep.utils.AcceptanceUtils.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @DisplayName("지하철 노선 관련 기능")
-@Sql(scripts = "classpath:reset.sql", executionPhase = BEFORE_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class StationLineAcceptanceTest {
+public class StationLineAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 수유역,강변역을 생성한다

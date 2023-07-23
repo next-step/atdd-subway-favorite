@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @DisplayName("지하철역 관련 기능")
-@Sql(scripts = "classpath:reset.sql", executionPhase = BEFORE_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class StationAcceptanceTest {
+public class StationAcceptanceTest extends AcceptanceTest {
 
     /**
      * When 지하철역을 생성하면

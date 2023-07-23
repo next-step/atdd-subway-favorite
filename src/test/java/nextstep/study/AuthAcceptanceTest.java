@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @ActiveProfiles("test")
-@Sql(scripts = "classpath:reset.sql", executionPhase = BEFORE_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthAcceptanceTest {
     public static final String EMAIL = "admin@email.com";
