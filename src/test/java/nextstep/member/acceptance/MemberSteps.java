@@ -68,7 +68,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 회원_정보_조회_요청_토큰사용(String accessToken) {
         return RestAssured
                 .given().log().all()
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/members/me")
                 .then().log().all()
