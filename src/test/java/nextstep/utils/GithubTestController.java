@@ -1,11 +1,12 @@
 package nextstep.utils;
 
-import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
-import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import nextstep.api.auth.application.token.oauth2.github.dto.GithubAccessTokenResponse;
+import nextstep.api.auth.application.token.oauth2.github.dto.GithubProfileResponse;
 
 @RestController
 public class GithubTestController {
@@ -20,4 +21,3 @@ public class GithubTestController {
         return ResponseEntity.ok().build();
     }
 }
-
