@@ -76,11 +76,11 @@ class MemberAcceptanceTest {
     @Test
     void getMyInfo() {
         // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
         var signInResponse = 로그인(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
-        var response = 내_정보_조회_요청(createResponse, signInResponse.getAccessToken()).as(MemberResponse.class);
+        var response = 내_정보_조회_요청(signInResponse.getAccessToken()).as(MemberResponse.class);
 
         // then
         assertThat(response.getEmail()).isEqualTo(EMAIL);

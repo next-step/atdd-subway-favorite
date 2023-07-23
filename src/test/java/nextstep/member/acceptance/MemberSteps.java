@@ -79,12 +79,11 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response, String token) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .when().get(uri)
+                .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
+                .when().get("/members/me")
                 .then().log().all().extract();
     }
 }
