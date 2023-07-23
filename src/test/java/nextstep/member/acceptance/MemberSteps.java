@@ -68,6 +68,14 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response) {
         String accessToken = response.jsonPath().getString("accessToken");
 
+        return getMyInfoResponse(accessToken);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return getMyInfoResponse(accessToken);
+    }
+
+    private static ExtractableResponse<Response> getMyInfoResponse(String accessToken) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)

@@ -82,4 +82,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(myInfoResponse.jsonPath().getString("email")).isEqualTo(EMAIL);
         assertThat(myInfoResponse.jsonPath().getInt("age")).isEqualTo(AGE);
     }
+
+    /**
+     * When 조작된 토큰으로 내 정보를 조회하면
+     * Then 예외를 발생한다.
+     */
+    @DisplayName("조작된 토큰으로 내 정보를 조회한다.")
+    @Test
+    void getMyInfoByManipulatedToken() {
+        // when
+        var myInfoResponse = 내_정보_조회_요청("manipulatedToken");
+
+        // then
+        assertThat(myInfoResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
