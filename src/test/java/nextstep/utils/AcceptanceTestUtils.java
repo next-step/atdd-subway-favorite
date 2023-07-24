@@ -20,6 +20,17 @@ public class AcceptanceTestUtils {
                 .extract();
     }
 
+    public static <T> ExtractableResponse<Response> post(String path, T request, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(path)
+                .then().log().all()
+                .extract();
+    }
+
     public static <T> ExtractableResponse<Response> post(String path, Long id, T request) {
         return RestAssured
                 .given().log().all()
