@@ -1,5 +1,6 @@
 package subway.auth.token.oauth2.github;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@RequiredArgsConstructor
 public class GithubClient {
 
     @Value("${github.client.id}")
@@ -21,6 +23,7 @@ public class GithubClient {
     private String tokenUrl;
     @Value("${github.url.profile}")
     private String profileUrl;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public String getAccessTokenFromGithub(String code) {
 
@@ -35,7 +38,6 @@ public class GithubClient {
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
                 githubAccessTokenRequest, headers);
-        RestTemplate restTemplate = new RestTemplate();
 
         String accessToken = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
@@ -52,7 +54,6 @@ public class GithubClient {
         headers.add("Authorization", "token " + accessToken);
 
         HttpEntity httpEntity = new HttpEntity<>(headers);
-        RestTemplate restTemplate = new RestTemplate();
 
         try {
             return restTemplate

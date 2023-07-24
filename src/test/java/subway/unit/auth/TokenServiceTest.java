@@ -50,7 +50,7 @@ public class TokenServiceTest {
         Member member = Member.builder().email(EMAIL).password(PASSWORD).age(AGE).build();
         memberRepository.save(member);
 
-        // when
+        // when/then
         assertThatThrownBy(() -> tokenService.createToken(EMAIL, "FAILED_PASSWORD"))
                 .isInstanceOf(AuthenticationException.class);
 
