@@ -59,6 +59,5 @@ class AuthAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
-
     }
 }
