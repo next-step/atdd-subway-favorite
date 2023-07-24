@@ -7,13 +7,7 @@ import subway.auth.userdetails.UserDetails;
 public class CustomUserDetails implements UserDetails {
     private String email;
     private String password;
-    private String role;
-
-    public CustomUserDetails(String email, String password, String role) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
+    private RoleType role;
 
     @Override
     public String getUsername() {
@@ -26,7 +20,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public String getRole() {
+    public RoleType getRole() {
         return role;
     }
 

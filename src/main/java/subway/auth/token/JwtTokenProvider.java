@@ -3,6 +3,7 @@ package subway.auth.token;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import subway.member.domain.RoleType;
 
 import java.util.Date;
 
@@ -13,7 +14,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(String principal, String role) {
+    public String createToken(String principal, RoleType role) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
