@@ -30,11 +30,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    /**
-     * Given 아이디와 패스워드가 있고
-     * When 로그인을 하면
-     * Then 토큰이 발급된다.
-     */
     @DisplayName("로그인에 성공하면 토큰이 발급된다")
     @Test
     void getTokenWithSuccessLogin() {
@@ -53,10 +48,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
-    /**
-     * When 비밀번호가 잘못 되었을 때
-     * Then 로그인이 되지 않는다
-     */
     @DisplayName("비밀번호가 틀리면 로그인이 되지 않는다")
     @Test
     void failLoginWithInvalidPassword() {
@@ -68,10 +59,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    /**
-     * When 없는 아이디로 로그인을 할 때
-     * Then 로그인이 되지 않는다
-     */
     @DisplayName("아이디가 틀리면 로그인이 되지 않는다")
     @Test
     void failLoginWithInvalidLoginEmail() {
@@ -83,10 +70,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    /**
-     * When 위조 토큰으로 인가를 시도하면
-     * Then 인가가 되지 않는다.
-     */
     @DisplayName("위조 토큰으로 시도하는 인가는 실패한다")
     @Test
     void validTokenWithInvalidToken() {

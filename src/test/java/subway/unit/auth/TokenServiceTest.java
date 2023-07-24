@@ -29,11 +29,6 @@ public class TokenServiceTest {
     private MemberRepository memberRepository;
 
 
-    /**
-     * Given 로그인 정보가 있고
-     * When 로그인 정보가 올바르면
-     * Then 토큰이 발급된다.
-     */
     @DisplayName("토큰 발급")
     @Test
     void createToken() {
@@ -48,11 +43,6 @@ public class TokenServiceTest {
         assertThat(token.getAccessToken()).isNotBlank();
     }
 
-    /**
-     * Given 로그인 정보가 있고
-     * When 비밀번호가 일치하지 않는 정보로 요청하면
-     * Then 토큰이 생성되지 않는다.
-     */
     @DisplayName("잘못된 정보를 포함한 토큰 발급")
     @Test
     void createTokenWithNotMatchPassword() {

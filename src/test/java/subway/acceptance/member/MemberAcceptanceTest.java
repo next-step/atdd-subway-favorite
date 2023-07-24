@@ -17,10 +17,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
-    /**
-     * When 회원가입을 하면
-     * Then 회원 가입이 된다.
-     */
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
@@ -31,12 +27,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    /**
-     * Given 회원 가입을 생성하고
-     * And 로그인을 하고
-     * When 토큰을 통해 내 정보를 조회하면
-     * Then 내 정보를 조회할 수 있다
-     */
     @DisplayName("회원 정보를 조회한다.")
     @Test
     void getMember() {
@@ -54,8 +44,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 회원 가입을 생성하고
-     * And 로그인을 하고
      * When 토큰을 통해 내 정보를 조회하면
      * Then 내 정보를 조회할 수 있다
      */
@@ -77,12 +65,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("age")).isEqualTo(String.valueOf(AGE));
     }
 
-    /**
-     * Given 회원 가입을 생성하고
-     * And 로그인을 하고
-     * When 토큰을 통해 내 정보를 수정하면
-     * Then 내 정보를 수정할 수 있다
-     */
     @DisplayName("회원 정보를 수정한다.")
     @Test
     void changeMyInfo() {
@@ -106,12 +88,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("age")).isEqualTo(String.valueOf(AGE));
     }
 
-    /**
-     * Given 회원 가입을 생성하고
-     * And 로그인을 하고
-     * When 토큰을 통해 나를 삭제 하면
-     * Then 삭제 할 수 있다
-     */
     @DisplayName("회원을 삭제한다.")
     @Test
     void deleteMyInfo() {
