@@ -53,6 +53,7 @@ public class TokenServiceTest {
      * When 비밀번호가 일치하지 않는 정보로 요청하면
      * Then 토큰이 생성되지 않는다.
      */
+    @DisplayName("잘못된 정보를 포함한 토큰 발급")
     @Test
     void createTokenWithNotMatchPassword() {
         // given

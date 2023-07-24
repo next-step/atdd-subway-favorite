@@ -93,7 +93,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // when
         var response = RestAssured.given().log().all()
                 .header("Authorization", AuthFixture.BEARER_만들기("asdf.asdf.asdf"))
-                .when().get("/members/1")
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
 
