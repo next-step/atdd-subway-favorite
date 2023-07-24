@@ -59,8 +59,8 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
         //then
         var 즐겨찾기_조회 = 즐겨찾기_조회(accessToken);
-        assertThat(즐겨찾기_조회.jsonPath().getString("$[0].source.name")).isEqualTo(중계역명);
-        assertThat(즐겨찾기_조회.jsonPath().getString("$[0].target.name")).isEqualTo(마들역명);
+        assertThat(즐겨찾기_조회.jsonPath().getString("[0].source.name")).isEqualTo(중계역명);
+        assertThat(즐겨찾기_조회.jsonPath().getString("[0].target.name")).isEqualTo(마들역명);
     }
 
     /**
