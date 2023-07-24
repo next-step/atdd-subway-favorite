@@ -88,4 +88,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_조회됨(memberResponse, EMAIL, AGE);
     }
+
+    /**
+     * Given 임의 토큰을 만들었을 때,
+     * When 해당 토큰을 통해 내 정보를 조회하면
+     * Then 내 정보를 조회에 실패한다.
+     */
+    @DisplayName("임의 토큰으로 내 정보를 조회한다.")
+    @Test
+    void getMyInfoWithBadToken() {
+        // when
+        var memberResponse = 내_정보_조회("mynameis.wrongtoke.n");
+
+        // then
+        assertThat(memberResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
