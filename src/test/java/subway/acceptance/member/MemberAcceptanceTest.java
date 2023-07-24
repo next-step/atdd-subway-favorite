@@ -39,16 +39,37 @@ class MemberAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("회원 정보를 조회한다.")
     @Test
-    void getMyInfo() {
+    void getMember() {
         // given
         var memberCreateResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
         String memberLocation = memberCreateResponse.response().getHeader("Location");
+
+        // when
+        var response = MemberSteps.회원_조회_API(memberLocation);
+
+        // then
+        assertThat(response.jsonPath().getString("id")).isNotBlank();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(response.jsonPath().getString("age")).isEqualTo(String.valueOf(AGE));
+    }
+
+    /**
+     * Given 회원 가입을 생성하고
+     * And 로그인을 하고
+     * When 토큰을 통해 내 정보를 조회하면
+     * Then 내 정보를 조회할 수 있다
+     */
+    @DisplayName("내 정보를 조회한다.")
+    @Test
+    void getMyInfo() {
+        // given
+        MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
         var 로그인 = AuthFixture.로그인_요청_만들기(EMAIL, PASSWORD);
         var loginResponse = AuthSteps.로그인_API(로그인);
         var accessToken = loginResponse.jsonPath().getString("accessToken");
 
         // when
-        var response = MemberSteps.회원_조회_API(memberLocation, accessToken);
+        var response = MemberSteps.내_정보_조회_API(accessToken);
 
         // then
         assertThat(response.jsonPath().getString("id")).isNotBlank();
@@ -68,9 +89,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         var memberCreateResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
         String memberLocation = memberCreateResponse.response().getHeader("Location");
-        var 로그인 = AuthFixture.로그인_요청_만들기(EMAIL, PASSWORD);
-        var loginResponse = AuthSteps.로그인_API(로그인);
-        var accessToken = loginResponse.jsonPath().getString("accessToken");
 
         // when
         final String newEmail = "new@gmail.com";
@@ -78,9 +96,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         params.put("email", newEmail);
         params.put("password", PASSWORD);
         params.put("age", String.valueOf(AGE));
-        MemberSteps.회원_수정_API(memberLocation, accessToken, params);
+        MemberSteps.회원_수정_API(memberLocation, params);
 
-        var response = MemberSteps.회원_조회_API(memberLocation, accessToken);
+        var response = MemberSteps.회원_조회_API(memberLocation);
 
         // then
         assertThat(response.jsonPath().getString("id")).isNotBlank();
@@ -100,73 +118,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         var memberCreateResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
         String memberLocation = memberCreateResponse.response().getHeader("Location");
-        var 로그인 = AuthFixture.로그인_요청_만들기(EMAIL, PASSWORD);
-        var loginResponse = AuthSteps.로그인_API(로그인);
-        var accessToken = loginResponse.jsonPath().getString("accessToken");
 
         // when
-        MemberSteps.회원_삭제_API(memberLocation, accessToken);
-
-        var response = MemberSteps.회원_조회_API(memberLocation, accessToken);
+        MemberSteps.회원_삭제_API(memberLocation);
+        var response = MemberSteps.회원_조회_API(memberLocation);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-
-    /**
-     * Given 회원 가입을 생성하고
-     * When 토큰 없이 내 정보를 조회하면
-     * Then 내 정보를 조회할 수 없다
-     */
-    @DisplayName("로그인 없이 회원 정보를 조회할 수 없다.")
-    @Test
-    void getMember() {
-        // given
-        var createResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        // when
-        var response = MemberSteps.회원_정보_조회_요청(createResponse);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-
-    }
-
-    /**
-     * Given 회원 가입을 생성하고
-     * When 토큰 없이 내 정보를 수정하면
-     * Then 내 정보를 수정할 수 없다
-     */
-    @DisplayName("로그인 없이 회원 정보를 수정할 수 없다.")
-    @Test
-    void updateMember() {
-        // given
-        var createResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        // when
-        var response = MemberSteps.회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    /**
-     * Given 회원 가입을 생성하고
-     * When 토큰 없이 회원을 삭제하면
-     * Then 회원을 삭제할 수 없다
-     */
-    @DisplayName("로그인 없이 회원을 삭제할 수 없다.")
-    @Test
-    void deleteMember() {
-        // given
-        var createResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-        // when
-        var response = MemberSteps.회원_삭제_요청(createResponse);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
 
 }

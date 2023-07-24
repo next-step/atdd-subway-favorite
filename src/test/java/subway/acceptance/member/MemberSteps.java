@@ -76,10 +76,35 @@ public class MemberSteps {
         return response;
     }
 
+    public static ExtractableResponse<Response> 회원_조회_API(String memberLocation) {
+        var response = RestAssured.given().log().all()
+                .when().get(memberLocation)
+                .then().log().all()
+                .extract();
+        return response;
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_API(String accessToken) {
+        var response = RestAssured.given().log().all()
+                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        return response;
+    }
+
     public static ExtractableResponse<Response> 회원_삭제_API(String memberLocation, String accessToken) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
+                .when().delete(memberLocation)
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_삭제_API(String memberLocation) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(memberLocation)
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value()).extract();
@@ -90,6 +115,15 @@ public class MemberSteps {
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
+                .when().put(memberLocation)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_수정_API(String memberLocation, Map<String, String> params) {
+        return RestAssured.given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(memberLocation)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();

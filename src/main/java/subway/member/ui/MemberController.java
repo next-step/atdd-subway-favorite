@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.auth.principal.AuthenticationPrincipal;
 import subway.auth.principal.UserPrincipal;
-import subway.exception.SubwayBadRequestException;
 import subway.member.application.MemberService;
 import subway.member.application.dto.MemberRequest;
 import subway.member.application.dto.MemberResponse;
@@ -34,23 +33,26 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponse> findMember(@AuthenticationPrincipal UserPrincipal principal,
-                                                     @PathVariable Long id) {
+    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> findMemberByToken(@AuthenticationPrincipal UserPrincipal principal) {
+        MemberResponse member = memberService.findMember(principal);
+        return ResponseEntity.ok().body(member);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@AuthenticationPrincipal UserPrincipal principal,
-                                                       @PathVariable Long id,
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
                                                        @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@AuthenticationPrincipal UserPrincipal principal,
-                                                       @PathVariable Long id) {
+    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
