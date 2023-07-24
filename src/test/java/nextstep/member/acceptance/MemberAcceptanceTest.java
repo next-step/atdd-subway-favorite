@@ -1,30 +1,35 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
+import static nextstep.auth.AuthSteps.회원_토큰_생성;
 import static nextstep.member.acceptance.MemberSteps.*;
-import static nextstep.auth.AuthSteps.*;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@ActiveProfiles("test")
-@Sql(scripts = "classpath:reset.sql", executionPhase = BEFORE_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class MemberAcceptanceTest {
+class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
+
+    ExtractableResponse<Response> createResponse;
+
+    @BeforeEach
+    public void setUp2() {
+        createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+    }
 
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
         // when
-        var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var response = 회원_생성_요청("test@email.com", "password", 12);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -33,9 +38,6 @@ class MemberAcceptanceTest {
     @DisplayName("회원 정보를 조회한다.")
     @Test
     void getMember() {
-        // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // when
         var response = 회원_정보_조회_요청(createResponse);
 
@@ -47,9 +49,6 @@ class MemberAcceptanceTest {
     @DisplayName("회원 정보를 수정한다.")
     @Test
     void updateMember() {
-        // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // when
         var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
@@ -60,9 +59,6 @@ class MemberAcceptanceTest {
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
-        // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
         // when
         var response = 회원_삭제_요청(createResponse);
 
@@ -80,11 +76,10 @@ class MemberAcceptanceTest {
     @Test
     void getMyInfo() {
         //given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
         var accessToken = 회원_토큰_생성(EMAIL, PASSWORD);
 
         //when
-        var myInfo = 회원_본인_정보_조회(accessToken, HttpStatus.OK);
+        var myInfo = 토큰으로_회원_본인_정보_조회(accessToken, HttpStatus.OK);
 
         //then
         회원_본인_정보_조회됨(myInfo, EMAIL, AGE);
@@ -100,10 +95,9 @@ class MemberAcceptanceTest {
     @Test
     void getMyInfo_With_Invalid_Token() {
         //given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
         var invalidToken = "invalidToken";
 
         //when
-        회원_본인_정보_조회(invalidToken, HttpStatus.UNAUTHORIZED);
+        토큰으로_회원_본인_정보_조회(invalidToken, HttpStatus.UNAUTHORIZED);
     }
 }

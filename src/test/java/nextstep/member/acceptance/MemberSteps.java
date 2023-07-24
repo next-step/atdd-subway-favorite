@@ -3,7 +3,6 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -61,7 +60,7 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_본인_정보_조회(String token, HttpStatus status) {
+    public static ExtractableResponse<Response> 토큰으로_회원_본인_정보_조회(String token, HttpStatus status) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)

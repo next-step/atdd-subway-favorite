@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.path.json.JsonPath;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,9 +18,7 @@ import static nextstep.utils.AcceptanceUtils.*;
 
 
 @DisplayName("지하철 경로 조회 기능")
-@Sql(scripts = "classpath:reset.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class StationPathSearchAcceptanceTest {
+public class StationPathSearchAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 1호선 (종로3가 -3KM- 종로5가 -5KM- 동대문 -5KM- 동묘앞)로 이뤄진 노선을 생성한다
@@ -29,7 +28,7 @@ public class StationPathSearchAcceptanceTest {
     Map<String, Long> stationIdByName;
 
     @BeforeEach
-    void setUp() {
+     public void setUp2() {
         //given
         stationIdByName = createStationsAndGetStationMap(List.of("혜화", "동대문", "동대문역사문화공원", "종로3가", "종로5가", "동묘앞", "양산", "남양산"));
 
