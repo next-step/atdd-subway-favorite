@@ -23,16 +23,9 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
-    private String role;
+    private RoleType role;
 
     public Member() {
-    }
-
-    public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.role = RoleType.ROLE_MEMBER.name();
     }
 
     public void update(Member member) {
