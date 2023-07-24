@@ -1,4 +1,6 @@
-package nextstep.subway.exception;
+package nextstep.exception.newsectionexception;
+
+import nextstep.exception.newsectionexception.NewSectionException;
 
 public class AnyNewSectionException extends NewSectionException {
 

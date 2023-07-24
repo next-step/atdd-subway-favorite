@@ -1,5 +1,7 @@
 package nextstep.subway.applicaion;
 
+import nextstep.exception.notfoundexception.LineNotFoundException;
+import nextstep.exception.notfoundexception.SectionNotFoundException;
 import nextstep.subway.applicaion.dto.LineRequest;
 import nextstep.subway.applicaion.dto.LineResponse;
 import nextstep.subway.applicaion.dto.SectionRequest;
@@ -7,8 +9,6 @@ import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
-import nextstep.subway.exception.LineNotFoundException;
-import nextstep.subway.exception.SectionNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

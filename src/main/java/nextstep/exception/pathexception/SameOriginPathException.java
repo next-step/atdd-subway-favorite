@@ -1,4 +1,6 @@
-package nextstep.subway.exception;
+package nextstep.exception.pathexception;
+
+import nextstep.exception.pathexception.PathException;
 
 public class SameOriginPathException extends PathException {
 

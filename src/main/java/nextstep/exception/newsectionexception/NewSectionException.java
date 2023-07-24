@@ -1,4 +1,4 @@
-package nextstep.subway.exception;
+package nextstep.exception.newsectionexception;
 
 public class NewSectionException extends RuntimeException {
 

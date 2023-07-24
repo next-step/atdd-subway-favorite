@@ -1,4 +1,4 @@
-package nextstep.subway.exception;
+package nextstep.exception.pathexception;
 
 public class NotConnectedPathException extends PathException {
 

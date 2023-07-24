@@ -1,9 +1,11 @@
-package nextstep.subway.ui;
+package nextstep.exception;
 
-import nextstep.subway.exception.NewSectionException;
-import nextstep.subway.exception.NotFoundException;
-import nextstep.subway.exception.PathException;
-import nextstep.subway.exception.RemoveSectionException;
+import io.jsonwebtoken.MalformedJwtException;
+import nextstep.exception.newsectionexception.NewSectionException;
+import nextstep.exception.notfoundexception.NotFoundException;
+import nextstep.exception.pathexception.PathException;
+import nextstep.exception.removesectionexception.RemoveSectionException;
+import nextstep.subway.ui.ExceptionResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(PathException.class)
     public ResponseEntity<ExceptionResponse> handleRemoveSectionException(PathException e) {
         return getResponseEntity(e.getMessage());
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ExceptionResponse> handleMalformedJwtException(MalformedJwtException e) {
+        return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     private ResponseEntity<ExceptionResponse> getResponseEntity(String e) {

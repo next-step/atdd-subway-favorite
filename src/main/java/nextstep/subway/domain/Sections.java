@@ -1,6 +1,12 @@
 package nextstep.subway.domain;
 
-import nextstep.subway.exception.*;
+import nextstep.exception.newsectionexception.AnyNewSectionException;
+import nextstep.exception.newsectionexception.DuplicationNewSectionException;
+import nextstep.exception.newsectionexception.NotExistedNewSectionException;
+import nextstep.exception.notfoundexception.SectionNotFoundException;
+import nextstep.exception.notfoundexception.StationNotFoundException;
+import nextstep.exception.removesectionexception.MinimumSizeRemoveSectionException;
+import nextstep.exception.removesectionexception.NotExistedRemoveSectionException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

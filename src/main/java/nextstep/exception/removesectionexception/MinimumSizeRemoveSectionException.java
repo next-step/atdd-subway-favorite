@@ -1,4 +1,6 @@
-package nextstep.subway.exception;
+package nextstep.exception.removesectionexception;
+
+import nextstep.exception.removesectionexception.RemoveSectionException;
 
 public class MinimumSizeRemoveSectionException extends RemoveSectionException {
 
