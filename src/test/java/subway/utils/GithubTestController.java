@@ -15,7 +15,7 @@ import java.util.Map;
 public class GithubTestController {
 
     /**
-     * getAccessTokenFromGithub
+     * GithubClient.getAccessTokenFromGithub()
      */
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(@RequestBody Map<String, String> request) {
@@ -25,13 +25,13 @@ public class GithubTestController {
                 .accessToken(responseByCode.getAccessToken())
                 .tokenType("none")
                 .scope("none")
-                .bearer("asdf.asdf.asdf")
+                .bearer("none.none.none")
                 .build();
         return ResponseEntity.ok().body(response);
     }
 
     /**
-     * getGithubProfileFromGithub
+     * GithubClient.getGithubProfileFromGithub()
      */
     @GetMapping("/github/user")
     public ResponseEntity<GithubProfileResponse> user(@RequestHeader(value = "Authorization") String authorization) {

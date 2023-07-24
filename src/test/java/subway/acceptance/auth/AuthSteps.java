@@ -18,5 +18,22 @@ public class AuthSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> GITHUB_CODE_API(final Map<String, String> auth) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(auth)
+                .when().post("/login/github")
+                .then().log().all()
+                .extract();
+    }
 
+
+    public static ExtractableResponse<Response> 임의의_로그인_API() {
+        var response = RestAssured.given().log().all()
+                .header("Authorization", AuthFixture.BEARER_만들기("asdf.asdf.asdf"))
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        return response;
+    }
 }

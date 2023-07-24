@@ -23,18 +23,9 @@ public class LoginController {
         return ResponseEntity.ok().body(response);
     }
 
-    // for week3 - step2
-//    @PostMapping("/login/github")
-//    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody GithubTokenRequest request) {
-//        TokenResponse response = tokenService.createTokenFromGithub(request.getCode());
-//
-//        return ResponseEntity.ok(response);
-//    }
-
-        @PostMapping("/github")
+    @PostMapping("/github")
     public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody GithubTokenRequest request) {
         TokenResponse response = tokenService.createTokenFromGithub(request.getCode());
-
         return ResponseEntity.ok(response);
     }
 

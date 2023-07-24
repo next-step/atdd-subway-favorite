@@ -18,10 +18,10 @@ public enum GithubResponses {
     private final String email;
 
     public static GithubResponses findByCode(final String code){
-        return Arrays.stream(values()).filter(value -> value.getCode().equals(code)).findFirst().orElse(null);
+        return Arrays.stream(values()).filter(value -> value.getCode().equals(code)).findAny().orElse(null);
     }
 
     public static GithubResponses findByAccessToken(final String accessToken){
-        return Arrays.stream(values()).filter(value -> value.getAccessToken().equals(accessToken)).findFirst().orElse(null);
+        return Arrays.stream(values()).filter(value -> value.getAccessToken().equals(accessToken)).findAny().orElse(null);
     }
 }

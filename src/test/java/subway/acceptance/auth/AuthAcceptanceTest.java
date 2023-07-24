@@ -1,17 +1,17 @@
 package subway.acceptance.auth;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import subway.member.domain.Member;
 import subway.member.domain.MemberRepository;
 import subway.utils.AcceptanceTest;
+import subway.utils.GithubResponses;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,12 +37,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         var 로그인_요청 = AuthFixture.로그인_요청_만들기(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(로그인_요청)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        var response = AuthSteps.로그인_API(로그인_요청);
 
         // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
@@ -74,14 +69,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void validTokenWithInvalidToken() {
         // when
-        var response = RestAssured.given().log().all()
-                .header("Authorization", AuthFixture.BEARER_만들기("asdf.asdf.asdf"))
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
+        var response = AuthSteps.임의의_로그인_API();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("code로 GitHub 인증을 할 수 있다")
+    @Test
+    void githubAuth() {
+        // given
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponses.사용자1.getCode());
+
+        // when
+        var response = AuthSteps.GITHUB_CODE_API(params);
+
+        // then
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
 }
