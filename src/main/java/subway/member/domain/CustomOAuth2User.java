@@ -24,4 +24,11 @@ public class CustomOAuth2User implements OAuth2User {
     public RoleType getRole() {
         return role;
     }
+
+    public static CustomOAuth2User from (Member member) {
+        return CustomOAuth2User.builder()
+                .email(member.getEmail())
+                .role(member.getRole())
+                .build();
+    }
 }
