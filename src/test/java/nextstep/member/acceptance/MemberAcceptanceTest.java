@@ -1,11 +1,15 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.auth.acceptance.step.TokenSteps.로그인_요청;
+import static nextstep.auth.acceptance.step.TokenSteps.토큰_추출;
+import static nextstep.member.acceptance.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -64,7 +68,20 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 회원 가입을 생성하고
+     * # API
+     * ## 요청
+     * GET /members/me
+     * authorization: Bearer {token}
+     * ---
+     * ## 응답
+     * {
+     *     "id": 1,
+     *     "email": "admin@email.com",
+     *     "age": 20
+     * }
+     * ---
+     * # 시나리오
+     * Given 회원을 생성하고
      * And 로그인을 하고
      * When 토큰을 통해 내 정보를 조회하면
      * Then 내 정보를 조회할 수 있다
@@ -72,6 +89,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 토큰_추출(로그인_요청(EMAIL, PASSWORD));
 
+        // when
+        ExtractableResponse<Response> getMyInfoResponse = 내_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(getMyInfoResponse, EMAIL, AGE);
     }
 }
