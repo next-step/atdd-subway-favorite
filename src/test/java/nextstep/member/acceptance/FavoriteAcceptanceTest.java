@@ -97,11 +97,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인을 하지 않고 즐겨찾기를 생성하면 에러가 발생한다")
     @Test
     void createFavorite_notLogin_exception() {
-        Long sourceId = 1L;
-        Long targetId = 3L;
-
         // when
-        var createResponse = 즐겨찾기_생성_요청(sourceId, targetId);
+        var createResponse = 즐겨찾기_생성_요청(교대역, 강남역);
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
