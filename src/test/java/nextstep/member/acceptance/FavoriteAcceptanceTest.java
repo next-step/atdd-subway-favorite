@@ -1,5 +1,7 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
 import nextstep.subway.applicaion.dto.SectionRequest;
@@ -133,9 +135,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given: 역과 구간을 등록한다.
-     * When: 로그인 한다.
-     * When: 즐겨찾기를 등록한다.
+     * Given: 로그인 한다.
+     * Given: 즐겨찾기를 등록한다.
      * When: 다른 계정으로 로그인 한다.
      * Then: 등록한 즐겨찾기를 삭제하면 예외가 발생한다.
      */
+    @Test
+    void deleteOtherMemberFavorite() {
+        //given
+        var response = 즐겨찾기_생성(중계역_id, 마들역_id, accessToken);
+
+        //when
+        String otherMemberEmail = "otherMember@gmail.com";
+        String otherMemberPassword = "password";
+        MemberSteps.회원_생성_요청(otherMemberEmail, otherMemberPassword, 80);
+        String otherMemberAccessToken = TokenSteps.로그인(otherMemberEmail, otherMemberPassword)
+                .jsonPath().getString("accessToken");
+
+        //then
+        ExtractableResponse<Response> 즐겨찾기_삭제 = 즐겨찾기_삭제(response.header("Location"), otherMemberAccessToken);
+        assertThat(즐겨찾기_삭제.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
 }
