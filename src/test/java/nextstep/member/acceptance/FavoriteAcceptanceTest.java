@@ -108,4 +108,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When: 토큰 없이 즐겨찾기를 삭제한다.
      * Then: 예외가 발생한다.
      */
+
+    /**
+     * Given: 역과 구간을 등록한다.
+     * When: 로그인 한다.
+     * When: 즐겨찾기를 등록한다.
+     * When: 다른 계정으로 로그인 한다.
+     * Then: 등록한 즐겨찾기를 삭제하면 예외가 발생한다.
+     */
 }
