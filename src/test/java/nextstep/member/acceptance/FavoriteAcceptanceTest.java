@@ -63,8 +63,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var selectResponse = 즐겨찾기_조회_요청(accessToken);
 
         assertThat(selectResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(selectResponse.jsonPath().getLong(".[0].source.id")).isEqualTo(교대역);
-        assertThat(selectResponse.jsonPath().getLong(".[0].target.id")).isEqualTo(강남역);
+        assertThat(selectResponse.jsonPath().getLong("[0].source.id")).isEqualTo(교대역);
+        assertThat(selectResponse.jsonPath().getLong("[0].target.id")).isEqualTo(강남역);
     }
 
 
