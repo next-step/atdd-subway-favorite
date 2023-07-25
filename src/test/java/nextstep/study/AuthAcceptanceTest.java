@@ -48,8 +48,10 @@ class AuthAcceptanceTest {
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
+        String code = "code";
+
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", code);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
