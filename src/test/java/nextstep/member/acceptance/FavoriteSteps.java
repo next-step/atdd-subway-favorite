@@ -6,8 +6,7 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.utils.AcceptanceTestUtils.getOauth2;
-import static nextstep.utils.AcceptanceTestUtils.post;
+import static nextstep.utils.AcceptanceTestUtils.*;
 
 public class FavoriteSteps {
 
@@ -23,6 +22,10 @@ public class FavoriteSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_조회(String accessToken) {
         return getOauth2("/favorites", accessToken);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(String path, String accessToken) {
+        return delete(path, accessToken);
     }
 
     private static Map<String, String> getCreateFavoriteRequest(Long source, Long target) {

@@ -97,6 +97,15 @@ public class AcceptanceTestUtils {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> delete(String path, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(path)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> delete(String path) {
         return RestAssured
                 .given().log().all()

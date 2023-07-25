@@ -1,5 +1,7 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
 import nextstep.subway.applicaion.dto.SectionRequest;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.member.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.FavoriteSteps.즐겨찾기_생성;
 import static nextstep.member.acceptance.FavoriteSteps.즐겨찾기_조회;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,11 +98,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given: 역과 구간을 등록한다.
-     * When: 로그인 한다.
-     * When: 즐겨찾기를 등록한다.
+     * Given: 로그인 한다.
+     * Given: 즐겨찾기를 등록한다.
      * When: 즐겨찾기를 삭제한다.
      * Then: 즐겨찾기를 조회 하면 삭제한 즐겨찾기는 존재하지 않는다.
      */
+    @Test
+    void deleteFavorite() {
+        //given
+        var response = 즐겨찾기_생성(중계역_id, 마들역_id, accessToken);
+
+        //when
+        즐겨찾기_삭제(response.header("Location"), accessToken);
+
+        //then
+        var 즐겨찾기_조회 = 즐겨찾기_조회(accessToken);
+        assertThat(즐겨찾기_조회.jsonPath().getList("").size()).isEqualTo(0);
+    }
 
     /**
      * Given: 역과 구간을 등록한다.
