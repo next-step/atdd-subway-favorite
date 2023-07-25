@@ -56,4 +56,14 @@ public class FavoriteTest {
         assertThatThrownBy(() -> Favorite.of(1L, 마들역, 상계역, List.of(노원_마들, 상계_당고계)))
                 .isInstanceOf(FavoriteException.class);
     }
+
+    @Test
+    void hasMemberId() {
+        //given
+        Favorite favorite = Favorite.of(1L, 노원역, 마들역, List.of(노원_마들, 상계_당고계));
+
+        //then
+        assertThat(favorite.hasMemberId(1L)).isTrue();
+        assertThat(favorite.hasMemberId(2L)).isFalse();
+    }
 }

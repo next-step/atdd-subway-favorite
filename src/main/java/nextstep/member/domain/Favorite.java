@@ -8,6 +8,7 @@ import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Favorite {
@@ -55,5 +56,9 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public boolean hasMemberId(Long memberId) {
+        return Objects.equals(this.memberId, memberId);
     }
 }
