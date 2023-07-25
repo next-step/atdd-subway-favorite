@@ -4,6 +4,7 @@ import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.oauth2.OAuth2User;
 import nextstep.auth.token.oauth2.OAuth2UserService;
 import nextstep.auth.token.oauth2.github.GithubClient;
+import nextstep.auth.token.oauth2.github.GithubClientInterface;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
@@ -14,13 +15,13 @@ public class TokenService {
     private UserDetailsService userDetailsService;
     private OAuth2UserService oAuth2UserService;
     private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
+    private GithubClientInterface githubClient;
 
     public TokenService(
             UserDetailsService userDetailsService,
             OAuth2UserService oAuth2UserService,
             JwtTokenProvider jwtTokenProvider,
-            GithubClient githubClient
+            GithubClientInterface githubClient
     ) {
         this.userDetailsService = userDetailsService;
         this.oAuth2UserService = oAuth2UserService;
