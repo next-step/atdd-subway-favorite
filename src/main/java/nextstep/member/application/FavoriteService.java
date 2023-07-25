@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.exception.AccessDeniedException;
 import nextstep.exception.notfoundexception.FavoriteNotFoundException;
 import nextstep.exception.notfoundexception.MemberNotFoundException;
 import nextstep.exception.notfoundexception.StationNotFoundException;
@@ -54,7 +55,16 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long favoriteId, String username) {
-        favoriteRepository.deleteById(favoriteId);
+        Favorite favorite = findFavoriteId(favoriteId);
+        Member member = findMemberByUsername(username);
+        if (!favorite.hasMemberId(member.getId())) {
+            throw new AccessDeniedException();
+        }
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite findFavoriteId(Long id) {
+        return favoriteRepository.findById(id).orElseThrow(FavoriteNotFoundException::new);
     }
 
     private Member findMemberByUsername(String username) {

@@ -55,6 +55,11 @@ public class ControllerExceptionHandler {
         return getResponseEntity(e.getMessage());
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ExceptionResponse> handleAccessDeniedException(AccessDeniedException e) {
+        return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
     private ResponseEntity<ExceptionResponse> getResponseEntity(String e) {
         return new ResponseEntity<>(new ExceptionResponse(e), HttpStatus.BAD_REQUEST);
     }
