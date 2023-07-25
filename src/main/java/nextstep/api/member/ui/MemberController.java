@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.api.auth.aop.principal.AuthenticationPrincipal;
+import nextstep.api.auth.aop.principal.UserPrincipal;
 import nextstep.api.member.application.MemberService;
 import nextstep.api.member.application.dto.MemberRequest;
 import nextstep.api.member.application.dto.MemberResponse;
@@ -47,7 +49,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal final UserPrincipal userPrincipal) {
+        final var response = memberService.findMember(userPrincipal.getUsername());
+        return ResponseEntity.ok().body(response);
     }
 }

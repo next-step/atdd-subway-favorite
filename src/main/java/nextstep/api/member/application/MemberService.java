@@ -22,6 +22,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMember(final String email) {
+        final var member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return MemberResponse.of(member);
+    }
+
     public void updateMember(final Long id, final MemberRequest param) {
         final var member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());

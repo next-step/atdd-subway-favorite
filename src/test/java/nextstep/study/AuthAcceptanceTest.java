@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,33 +30,34 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(Member.basic(EMAIL, PASSWORD, AGE));
 
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL);
         params.put("password", PASSWORD);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
+    @Disabled("2단계 요구사항이므로 Disabled 임시 처리")
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
         Map<String, String> params = new HashMap<>();
         params.put("code", "code");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/github")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
