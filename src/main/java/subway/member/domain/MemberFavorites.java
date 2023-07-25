@@ -26,7 +26,14 @@ public class MemberFavorites {
         add(newFavorite);
     }
 
-    public void removeFavorite(Favorite favorite) {
+    public boolean IsExistFavorite(Favorite favorite) {
+        return favorites.contains(favorite);
+    }
+
+    public void removeFavorite(Member member, Favorite favorite) {
+        if (!member.IsExistFavorite(favorite)) {
+            throw new SubwayBadRequestException(9999L, "내가 소유한 즐겨찾기가 아닙니다.");// TODO : constant
+        }
         remove(favorite);
     }
 

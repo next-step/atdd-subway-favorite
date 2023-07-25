@@ -9,11 +9,9 @@ import subway.acceptance.auth.AuthFixture;
 import subway.acceptance.member.MemberSteps;
 import subway.acceptance.path.PathFixture;
 import subway.acceptance.station.StationFixture;
-import subway.exception.SubwayBadRequestException;
 import subway.utils.AcceptanceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
     private String accessToken = "";
@@ -108,9 +106,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("없는 즐겨찾기를 삭제할 수 없다.")
     @Test
     void removeFavoriteWithNotExist() {
-        // when/then
-        assertThatThrownBy(() -> FavoriteSteps.즐겨찾기_삭제_API(accessToken, "999"))
-                .isInstanceOf(SubwayBadRequestException.class);
+        // when
+        var response = FavoriteSteps.즐겨찾기_삭제_API(accessToken, "999");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
 
@@ -125,17 +125,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final String passwordAnotherMember = "password2";
         final int ageAnotherMember = 30;
         MemberSteps.회원_생성_요청(emailAnotherMember, passwordAnotherMember, ageAnotherMember);
-        var response = AuthFixture.로그인_호출(emailAnotherMember, passwordAnotherMember);
-        var accessTokenAnotherMember = response.jsonPath().getString("accessToken");
+        var loginResponse = AuthFixture.로그인_호출(emailAnotherMember, passwordAnotherMember);
+        var accessTokenAnotherMember = loginResponse.jsonPath().getString("accessToken");
 
         FavoriteFixture.강남역_남부터미널역_즐겨찾기_등록(accessToken);
         var retrieveResponse = FavoriteSteps.즐겨찾기_조회_API(accessToken);
         var ids = retrieveResponse.body().jsonPath().getList("id", String.class);
         var id = ids.get(0);
 
-        // when/then
-        assertThatThrownBy(() -> FavoriteSteps.즐겨찾기_삭제_API(accessTokenAnotherMember, id))
-                .isInstanceOf(SubwayBadRequestException.class); // TODO : UNAUTHORIZED 어떻게좀 해보기
+        // when
+        var response = FavoriteSteps.즐겨찾기_삭제_API(accessTokenAnotherMember, id);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }

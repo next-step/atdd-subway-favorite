@@ -28,7 +28,7 @@ public class AuthSteps {
     }
 
 
-    public static ExtractableResponse<Response> 임의의_로그인_API() {
+    public static ExtractableResponse<Response> 유효하지_않은_로그인_API() {
         var response = RestAssured.given().log().all()
                 .auth().oauth2("none.none.none")
                 .when().get("/members/me")

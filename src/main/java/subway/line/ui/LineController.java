@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.application.dto.LineCreateRequest;
 import subway.line.application.dto.LineModifyRequest;
-import subway.line.application.dto.LineResponse;
+import subway.line.application.dto.LineRetrieveResponse;
 import subway.line.application.dto.SectionCreateRequest;
 import subway.line.application.dto.SectionDeleteRequest;
 import subway.line.application.LineService;
@@ -29,21 +29,21 @@ public class LineController {
     private final LineService lineService;
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineCreateRequest lineRequest) {
-        LineResponse line = lineService.createLine(lineRequest);
+    public ResponseEntity<LineRetrieveResponse> createLine(@RequestBody LineCreateRequest lineRequest) {
+        LineRetrieveResponse line = lineService.createLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> retrieveLines() {
-        List<LineResponse> lineResponses = lineService.findAll();
-        return ResponseEntity.ok().body(lineResponses);
+    public ResponseEntity<List<LineRetrieveResponse>> retrieveLines() {
+        List<LineRetrieveResponse> lineRetrieveRespons = lineService.findAll();
+        return ResponseEntity.ok().body(lineRetrieveRespons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> retrieveLine(@PathVariable Long id) {
-        LineResponse lineResponse = lineService.findById(id);
-        return ResponseEntity.ok().body(lineResponse);
+    public ResponseEntity<LineRetrieveResponse> retrieveLine(@PathVariable Long id) {
+        LineRetrieveResponse lineRetrieveResponse = lineService.findById(id);
+        return ResponseEntity.ok().body(lineRetrieveResponse);
     }
 
     @PutMapping("/{id}")

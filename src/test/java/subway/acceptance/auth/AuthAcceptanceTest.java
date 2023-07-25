@@ -69,7 +69,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void validTokenWithInvalidToken() {
         // when
-        var response = AuthSteps.임의의_로그인_API();
+        var response = AuthSteps.유효하지_않은_로그인_API();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());

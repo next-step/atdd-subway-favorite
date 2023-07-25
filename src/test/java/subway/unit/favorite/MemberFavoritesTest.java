@@ -36,17 +36,16 @@ public class MemberFavoritesTest {
     @DisplayName("즐겨찾기 추가 기능")
     @Test
     void add() {
-        // TODO : 정리 하세요.
-
-        //given
+        // given
         Station 강남역 = Station.builder().name("강남역").build();
         Station 역삼역 = Station.builder().name("역삼역").build();
-        Favorite build = Favorite.builder().member(member).sourceStation(강남역).targetStation(역삼역).build();
 
-        memberFavorites.add(build, member);
+        // when
+        Favorite favorite = Favorite.builder().member(member).sourceStation(강남역).targetStation(역삼역).build();
+        memberFavorites.add(favorite, member);
 
+        // then
         var favorites = memberFavorites.getFavorites();
-
         assertThat(favorites.size()).isEqualTo(1L);
     }
 
@@ -57,14 +56,15 @@ public class MemberFavoritesTest {
     @DisplayName("즐겨찾기 추가 기능 : 중복 불가")
     @Test
     void addWithAlreadyFavorite() {
-        // TODO : 정리 하세요.
-
-        //given
+        // given
         Station 강남역 = Station.builder().name("강남역").build();
         Station 역삼역 = Station.builder().name("역삼역").build();
+
+        // when
         Favorite build = Favorite.builder().member(member).sourceStation(강남역).targetStation(역삼역).build();
         memberFavorites.add(build, member);
 
+        // then
         assertThatThrownBy(() -> memberFavorites.add(build, member)).isInstanceOf(SubwayBadRequestException.class);
     }
 
@@ -76,19 +76,19 @@ public class MemberFavoritesTest {
     @DisplayName("즐겨찾기 삭제 기능")
     @Test
     void remove() {
-        // TODO : 정리 하세요.
-
-        //given
+        // given
         Station 강남역 = Station.builder().name("강남역").build();
         Station 역삼역 = Station.builder().name("역삼역").build();
-        Favorite build = Favorite.builder().member(member).sourceStation(강남역).targetStation(역삼역).build();
-        memberFavorites.add(build, member);
+        Favorite favorite = Favorite.builder().member(member).sourceStation(강남역).targetStation(역삼역).build();
+        memberFavorites.add(favorite, member);
 
-        memberFavorites.removeFavorite(build);
+        // when
+        memberFavorites.removeFavorite(member, favorite);
 
+        // then
         assertThat(memberFavorites.getFavorites().size()).isEqualTo(0L);
-//        assertThatThrownBy(() -> memberFavorites.add(build, member)).isInstanceOf(SubwayBadRequestException.class);
     }
 
+    // TODO : 내꺼 아닌거 추가해야됨
 
 }

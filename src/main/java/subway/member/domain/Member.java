@@ -32,12 +32,16 @@ public class Member {
     @Embedded
     private MemberFavorites memberFavorites = new MemberFavorites();
 
-    public void addFavorite(Favorite newFavorite) {
+    public void appendFavorite(Favorite newFavorite) {
         this.memberFavorites.add(newFavorite, this);
     }
 
-    public void deleteFavoriteById(Favorite favorite) {
-        this.memberFavorites.removeFavorite(favorite);
+    public void deleteFavoriteByFavorite(Member member, Favorite favorite) {
+        this.memberFavorites.removeFavorite(member, favorite);
+    }
+
+    public boolean IsExistFavorite(Favorite favorite) {
+        return this.memberFavorites.IsExistFavorite(favorite);
     }
 
     public void update(Member member) {

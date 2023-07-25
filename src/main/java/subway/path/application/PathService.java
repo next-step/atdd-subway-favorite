@@ -28,6 +28,12 @@ public class PathService {
         return pathFinder.findShortestPath(sections, sourceStation, targetStation);
     }
 
+    public PathRetrieveResponse getShortestPath(Station sourceStation, Station targetStation) {
+        List<Line> lines = lineService.findByStation(sourceStation, targetStation);
+        List<Section> sections = getAllSections(lines);
+        return pathFinder.findShortestPath(sections, sourceStation, targetStation);
+    }
+
     private List<Section> getAllSections(List<Line> lines) {
         return lines.stream()
                 .flatMap(line -> line.getLineSections().getSections().stream())

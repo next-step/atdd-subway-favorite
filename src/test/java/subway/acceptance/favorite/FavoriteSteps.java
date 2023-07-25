@@ -3,6 +3,7 @@ package subway.acceptance.favorite;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.MediaType;
 
 import java.util.Map;
 
@@ -10,6 +11,7 @@ public class FavoriteSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_API(final String accessToken, Map<String, String> request) {
         return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessToken)
                 .body(request)
                 .when().post("/favorites")
