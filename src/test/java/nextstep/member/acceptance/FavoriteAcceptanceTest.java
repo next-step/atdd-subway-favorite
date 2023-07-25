@@ -29,6 +29,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     Long 교대역;
     Long 강남역;
+    Long 양재역;
 
     @BeforeEach
     public void setUp() {
@@ -43,6 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .getLong("id");
         교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
         강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
         지하철_노선에_지하철_구간_생성_요청(신분당선, createSectionCreateParams(교대역, 강남역));
     }
 
@@ -150,10 +152,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite_notExistSection_exception() {
         Long sourceId = -999L;
-        Long targetId = 1L;
 
         // when
-        var createResponse = 즐겨찾기_생성_요청(sourceId, targetId);
+        var createResponse = 즐겨찾기_생성_요청(accessToken, sourceId, 강남역);
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -166,13 +167,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 에러가 발생한다
      */
     @DisplayName("연결되지 않은 경로를 즐겨찾기로 생성하면 에러가 발생한다")
+    @Test
     void createFavorite_notConnectSection_exception() {
-        // given
-        Long sourceId = 1L;
-        Long targetId = 10L;
-
         // when
-        var createResponse = 즐겨찾기_생성_요청(sourceId, targetId);
+        var createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

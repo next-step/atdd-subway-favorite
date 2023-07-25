@@ -150,4 +150,9 @@ public class Sections {
     public int totalDistance() {
         return sections.stream().mapToInt(Section::getDistance).sum();
     }
+
+    public boolean contains(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.equalsUpStation(station) || section.equalsDownStation(station));
+    }
 }

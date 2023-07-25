@@ -7,8 +7,11 @@ import nextstep.member.domain.Favorite;
 import nextstep.member.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.domain.Line;
+import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,24 +23,33 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
 
     public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository
-            , StationRepository stationRepository) {
+            , StationRepository stationRepository, LineRepository lineRepository) {
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
     }
 
     @Transactional
     public FavoriteResponse createFavorites(FavoriteRequest request, UserPrincipal userPrincipal) {
         Member member = memberRepository.findByEmail(userPrincipal.getUsername())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new DataIntegrityViolationException("사용자가 존재하지 않습니다."));
         Station source = stationRepository.findById(request.getSource())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new DataIntegrityViolationException("역이 존재하지 않습니다."));
         Station target = stationRepository.findById(request.getTarget())
-                .orElseThrow(() -> new RuntimeException());
-        Favorite favorite = favoriteRepository.save(new Favorite(source, target, member.getId()));
+                .orElseThrow(() -> new DataIntegrityViolationException("역이 존재하지 않습니다."));
 
+        List<Line> lines = lineRepository.findAll();
+        for (Line line : lines) {
+            if (!line.containsSection(source) || !line.containsSection(target)) {
+                throw new DataIntegrityViolationException("");
+            }
+        }
+
+        Favorite favorite = favoriteRepository.save(new Favorite(source, target, member.getId()));
         return FavoriteResponse.of(favorite);
     }
 
