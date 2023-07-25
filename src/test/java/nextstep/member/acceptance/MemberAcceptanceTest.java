@@ -94,7 +94,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
      * When 해당 토큰을 통해 내 정보를 조회하면
      * Then 내 정보를 조회에 실패한다.
      */
-    @DisplayName("임의 토큰으로 내 정보를 조회한다.")
+    @DisplayName("오류케이스: 임의 토큰으로 내 정보를 조회한다.")
     @Test
     void getMyInfoWithBadToken() {
         // when
