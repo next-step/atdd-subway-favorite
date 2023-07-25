@@ -75,6 +75,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //when
         var response = 즐겨찾기_생성(중계역_id, 해운대역_id, accessToken);
 
+        //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -83,6 +84,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When: 로그인 하지 않고 즐겨찾기를 등록한다.
      * Then: 예외가 발생한다.
      */
+    @Test
+    void createFavoritesWithoutLogin() {
+        //when
+        var response = 즐겨찾기_생성(중계역_id, 마들역_id);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 
     /**
      * Given: 역과 구간을 등록한다.
