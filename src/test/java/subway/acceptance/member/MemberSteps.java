@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.acceptance.auth.AuthFixture;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 회원_조회_API(String memberLocation, String accessToken) {
         var response = RestAssured.given().log().all()
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
+                .auth().oauth2(accessToken)
                 .when().get(memberLocation)
                 .then().log().all()
                 .extract();
@@ -86,7 +85,7 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 내_정보_조회_API(String accessToken) {
         var response = RestAssured.given().log().all()
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
+                .auth().oauth2(accessToken)
                 .when().get("/members/me")
                 .then().log().all()
                 .extract();
@@ -96,7 +95,7 @@ public class MemberSteps {
     public static ExtractableResponse<Response> 회원_삭제_API(String memberLocation, String accessToken) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
+                .auth().oauth2(accessToken)
                 .when().delete(memberLocation)
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value()).extract();
@@ -114,7 +113,7 @@ public class MemberSteps {
         return RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", AuthFixture.BEARER_만들기(accessToken))
+                .auth().oauth2(accessToken)
                 .when().put(memberLocation)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();

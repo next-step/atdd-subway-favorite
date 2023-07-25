@@ -1,8 +1,8 @@
 # 지하철 노선도 미션
+
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
-
-## 1단계 
+## 1단계
 
 **인증/인가 기능 인수 테스트**
 
@@ -21,3 +21,15 @@
 - [ ] ~~로그인 없이 회원 정보를 조회할 수 없다.~~
 - [ ] ~~로그인 없이 회원 정보를 수정할 수 없다.~~
 - [ ] ~~로그인 없이 회원을 삭제할 수 없다.~~
+
+## 2단계
+
+**요구사항**
+
+- [x] AuthAcceptanceTest의 githubAuth 테스트를 성공시키기
+- [x] GithubClient의 요청이 Github이 아닌 GithubTestController에서 처리하게 하기
+- [x] code에 해당하는 사용자 정보를 이용하여 AccessToken을 응답받기
+
+**GitHub 기능 인수 테스트**
+
+- [x] code로 GitHub 인증을 할 수 있다

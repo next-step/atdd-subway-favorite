@@ -1,5 +1,6 @@
 package subway.auth.principal;
 
+import lombok.RequiredArgsConstructor;
 import subway.constant.SubwayMessage;
 import subway.exception.AuthenticationException;
 import subway.auth.token.JwtTokenProvider;
@@ -9,12 +10,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@RequiredArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private JwtTokenProvider jwtTokenProvider;
-
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
