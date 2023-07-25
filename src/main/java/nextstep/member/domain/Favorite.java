@@ -1,8 +1,13 @@
 package nextstep.member.domain;
 
+import nextstep.exception.favoriteException.FavoriteException;
+import nextstep.exception.pathexception.NotConnectedPathException;
+import nextstep.subway.applicaion.PathFinder;
+import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Favorite {
@@ -29,6 +34,15 @@ public class Favorite {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
+    }
+
+    public static Favorite of(Long memberId, Station source, Station target, List<Section> sections) {
+        try {
+            PathFinder.find(source.getId(), target.getId(), sections);
+            return new Favorite(memberId, source, target);
+        } catch (NotConnectedPathException e) {
+            throw new FavoriteException(e.getMessage());
+        }
     }
 
     public Long getId() {

@@ -9,7 +9,7 @@ import java.util.Map;
 import static nextstep.utils.AcceptanceTestUtils.getOauth2;
 import static nextstep.utils.AcceptanceTestUtils.post;
 
-public class FavoritesSteps {
+public class FavoriteSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_생성(Long source, Long target, String accessToken) {
         Map<String, String> params = new HashMap<>();

@@ -1,7 +1,5 @@
 package nextstep.member.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
 import nextstep.subway.applicaion.dto.SectionRequest;
@@ -10,12 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.FavoritesSteps.즐겨찾기_생성;
-import static nextstep.member.acceptance.FavoritesSteps.즐겨찾기_조회;
+import static nextstep.member.acceptance.FavoriteSteps.즐겨찾기_생성;
+import static nextstep.member.acceptance.FavoriteSteps.즐겨찾기_조회;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class FavoritesAcceptanceTest extends AcceptanceTest {
+public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String 마들역명 = "마들역";
     private static final String 중계역명 = "중계역";
