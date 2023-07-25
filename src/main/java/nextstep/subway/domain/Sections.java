@@ -119,7 +119,7 @@ public class Sections {
         return upStations.stream()
                 .filter(it -> !downStations.contains(it))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 하행역 입니다."));
     }
 
     private void addNewSectionForDelete(Optional<Section> upSection, Optional<Section> downSection) {
