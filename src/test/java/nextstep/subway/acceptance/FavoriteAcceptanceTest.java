@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-// commit 1 -- 인수테스트 리스트
 @DisplayName("즐겨찾기 관리 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
