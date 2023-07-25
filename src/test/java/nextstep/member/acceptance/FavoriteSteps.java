@@ -28,6 +28,10 @@ public class FavoriteSteps {
         return delete(path, accessToken);
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(String path) {
+        return delete(path);
+    }
+
     private static Map<String, String> getCreateFavoriteRequest(Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source.toString());
