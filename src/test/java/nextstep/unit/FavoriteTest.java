@@ -13,16 +13,17 @@ import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 @DisplayName("즐겨찾기에 대한 테스트")
 class FavoriteTest {
-  private Member 회원;
+  private Long 회원아이디;
   private Station 첫번째역;
   private Station 두번째역;
 
 
   @BeforeEach
   void setUp(){
-    회원 = new Member();
-    첫번째역 = new Station();
-    두번째역 = new Station();
+    Member member = new Member("asdfasdf", "sadfasdf",123);
+    회원아이디 = 1L;
+    첫번째역 = new Station("첫번째역");
+    두번째역 = new Station("두번째역");
   }
   /**
    * Given 회원과 역 2개가 주어졌을 때,
@@ -35,11 +36,11 @@ class FavoriteTest {
     // given
 
     // when
-    Favorite favorite = Favorite.of(회원 ,첫번째역, 두번째역);
+    Favorite favorite = Favorite.of(회원아이디 ,첫번째역, 두번째역);
     // then
     assertThat(favorite.getSource().equals(첫번째역));
     assertThat(favorite.getTarget().equals(두번째역));
-    assertThat(favorite.getMember().equals(회원));
+    assertThat(favorite.getMemberId().equals(회원아이디));
   }
   /**
    * Given 회원과 역 2개가 주어졌을 때,
@@ -52,7 +53,7 @@ class FavoriteTest {
     // given
 
     // when
-    Throwable thrown = catchThrowable(() -> { Favorite.of(회원 ,첫번째역, 첫번째역); });
+    Throwable thrown = catchThrowable(() -> { Favorite.of(회원아이디 ,첫번째역, 첫번째역); });
 
     // then
     assertThat(thrown).isInstanceOf(IllegalArgumentException.class);

@@ -1,6 +1,7 @@
 package nextstep.subway.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,25 +24,23 @@ public class Favorite {
   @ManyToOne
   @JoinColumn(name = "target_id")
   private Station target;
-
-  @ManyToOne
-  @JoinColumn(name = "member_id")
-  private Member member;
+  @Column
+  private Long memberId;
 
 
   public Favorite() {
 
   }
 
-  public Favorite(Member member, Station source, Station target) {
+  public Favorite(Long memberId, Station source, Station target) {
     this.source = source;
     this.target = target;
-    this.member = member;
+    this.memberId = memberId;
   }
 
-  public static Favorite of(Member member, Station source, Station target) {
+  public static Favorite of(Long memberId, Station source, Station target) {
     isNotSame(source, target);
-    return new Favorite(member, source, target);
+    return new Favorite(memberId, source, target);
   }
 
   public static void isNotSame(Station source, Station target) {
@@ -50,10 +49,12 @@ public class Favorite {
     }
   }
 
-  public Member getMember() {
-    return member;
+  public Long getMemberId() {
+    return memberId;
   }
-
+  public Long getId() {
+    return id;
+  }
   @Override
   public boolean equals(Object o) {
     if (this == o) {

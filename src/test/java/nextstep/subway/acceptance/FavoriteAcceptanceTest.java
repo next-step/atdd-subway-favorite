@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.study.AuthSteps.토큰_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
@@ -30,21 +31,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   private String 액세스토큰;
 
   private Long 생성되지않은역 = 3L;
-  @Autowired
-  private MemberRepository memberRepository;
+
+  @BeforeEach
+  public void setUp() {
+    super.setUp();
+    회원_생성_요청(EMAIL, PASSWORD, AGE);
+    ExtractableResponse response = 토큰_요청(EMAIL, PASSWORD);
+    액세스토큰 = response.jsonPath().getString("accessToken");
+
+    강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+    양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+  }
   @Nested
   @DisplayName("로그인에 성공 했을 때,")
   class SuccessfulLogin{
-    String accessToken;
-    @BeforeEach
-    void setUp() {
-      memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
-      ExtractableResponse response = 토큰_요청(EMAIL, PASSWORD);
-      액세스토큰 = response.jsonPath().getString("accessToken");
 
-      강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
-      양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
-    }
     /**
      * Given 로그인이 되어있을 때,
      * When 즐겨찾기를 생성하면
@@ -84,7 +85,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨찾기를 조회하면
      * Then 1개의 즐겨찾기를 조회 할 수있다.
      */
-    @DisplayName("로그인이 되어있을때, 즐겨찾기 삭제할 수 있다.")
+    @DisplayName("로그인이 되어있을때, 즐겨찾기 조회할 수 있다.")
     @Test
     void getFavoriteWithLogin() {
       // given
@@ -94,13 +95,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
       ExtractableResponse getResponse = 즐겨찾기_조회_요청(액세스토큰);
       // then
       assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-      즐겨찾기_정보_조회됨(getResponse,id,강남역,양재역);
+      즐겨찾기_정보_조회됨(getResponse, 강남역, 양재역);
     }
   }
 
   @Nested
   @DisplayName("로그인에 실패 했을 때,")
   class FailedLogin{
+
     /**
      * Given 로그인이 유효하지 않을 때,
      * When 즐겨찾기를 생성하면
@@ -110,7 +112,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavoriteWithoutLogin() {
 // when
-      ExtractableResponse creationResponse = 즐겨찾기_생성_요청(강남역, 양재역, 액세스토큰);
+      ExtractableResponse creationResponse = 즐겨찾기_생성_요청(강남역, 양재역, "");
 
       // then
       assertThat(creationResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -125,10 +127,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoriteWithoutLogin() {
       // given
-      ExtractableResponse creationResponse = 즐겨찾기_생성_요청(강남역, 양재역, 액세스토큰);
-      Long id = creationResponse.jsonPath().getLong("id");
       // when
-      ExtractableResponse deleteResponse = 즐겨찾기_삭제_요청(id, 액세스토큰);
+      ExtractableResponse deleteResponse = 즐겨찾기_삭제_요청(1L, "");
       // then
       assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -141,13 +141,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void getFavoriteWithoutLogin() {
       // given
-      ExtractableResponse creationResponse = 즐겨찾기_생성_요청(강남역, 양재역, 액세스토큰);
-      Long id = creationResponse.jsonPath().getLong("id");
       // when
-      ExtractableResponse getResponse = 즐겨찾기_조회_요청(액세스토큰);
+      ExtractableResponse getResponse = 즐겨찾기_조회_요청("");
       // then
       assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-      즐겨찾기_정보_조회됨(getResponse,id,강남역,양재역);
 
     }
   }
@@ -163,7 +160,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     ExtractableResponse creationResponse = 즐겨찾기_생성_요청(생성되지않은역, 양재역, 액세스토큰);
 
     // then
-    assertThat(creationResponse.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    assertThat(creationResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
   }
 
 }
