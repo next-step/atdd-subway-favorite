@@ -1,15 +1,19 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
 import nextstep.subway.applicaion.dto.SectionRequest;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.member.acceptance.FavoritesSteps.즐겨찾기_생성;
 import static nextstep.member.acceptance.FavoritesSteps.즐겨찾기_조회;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FavoritesAcceptanceTest extends AcceptanceTest {
 
@@ -69,6 +73,13 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
      * When: 이어져 있지 않은 역을 즐겨찾기로 등록한다.
      * Then: 예외가 발생한다.
      */
+    @Test
+    void createFavoritesWithUnconnectedStation() {
+        //when
+        var response = 즐겨찾기_생성(중계역_id, 해운대역_id, accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
     /**
      * Given: 역과 구간을 등록한다.
