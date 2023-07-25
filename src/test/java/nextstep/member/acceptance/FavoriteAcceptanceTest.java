@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import static nextstep.member.acceptance.FavoriteSteps.즐겨찾기_생성;
 import static nextstep.member.acceptance.FavoriteSteps.즐겨찾기_조회;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 

@@ -1,6 +1,7 @@
 package nextstep.exception;
 
 import io.jsonwebtoken.MalformedJwtException;
+import nextstep.exception.favoriteException.FavoriteException;
 import nextstep.exception.newsectionexception.NewSectionException;
 import nextstep.exception.notfoundexception.NotFoundException;
 import nextstep.exception.pathexception.PathException;
@@ -47,6 +48,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<ExceptionResponse> handleMalformedJwtException(MalformedJwtException e) {
         return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(FavoriteException.class)
+    public ResponseEntity<ExceptionResponse> handleFavoriteException(FavoriteException e) {
+        return getResponseEntity(e.getMessage());
     }
 
     private ResponseEntity<ExceptionResponse> getResponseEntity(String e) {

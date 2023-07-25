@@ -8,6 +8,7 @@ import nextstep.member.domain.Favorite;
 import nextstep.member.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.domain.SectionRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,19 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class FavoriteService {
 
+    private SectionRepository sectionRepository;
     private StationRepository stationRepository;
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
 
     public FavoriteService(StationRepository stationRepository,
                            FavoriteRepository favoriteRepository,
-                           MemberRepository memberRepository) {
+                           MemberRepository memberRepository,
+                           SectionRepository sectionRepository) {
         this.stationRepository = stationRepository;
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
@@ -37,7 +41,7 @@ public class FavoriteService {
         Station source = findSectionById(request.getSource());
         Station target = findSectionById(request.getTarget());
         Member member = findMemberByUsername(username);
-        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
+        Favorite favorite = favoriteRepository.save(Favorite.of(member.getId(), source, target, sectionRepository.findAll()));
         return FavoriteResponse.from(favorite);
     }
 

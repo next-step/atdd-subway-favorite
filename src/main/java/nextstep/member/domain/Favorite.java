@@ -27,10 +27,10 @@ public class Favorite {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    public Favorite() {
+    protected Favorite() {
     }
 
-    public Favorite(Long memberId, Station source, Station target) {
+    protected Favorite(Long memberId, Station source, Station target) {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
