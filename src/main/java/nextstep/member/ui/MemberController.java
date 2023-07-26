@@ -21,7 +21,7 @@ import java.net.URI;
 public class MemberController {
     private MemberService memberService;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
