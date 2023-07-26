@@ -68,7 +68,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(selectResponse.jsonPath().getLong("[0].target.id")).isEqualTo(강남역);
     }
 
-
     /**
      * Given 로그인을 하고
      * And 즐겨찾기를 생성하고
@@ -170,6 +169,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void createFavorite_notConnectSection_exception() {
         // when
         var createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * Given 로그인을 하고
+     * When 중복된 즐겨찾기 경로를 요청하면
+     * Then 에러가 발생한다
+     */
+    @DisplayName("중복된 경로를 즐겨찾기로 생성하면 에러가 발생한다")
+    @Test
+    void createFavorite_duplicatePath_exception() {
+        즐겨찾기_생성_요청(accessToken, 강남역, 교대역);
+
+        // when
+        var createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 교대역);
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

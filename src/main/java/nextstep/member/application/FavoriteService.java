@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Service
@@ -36,13 +37,20 @@ public class FavoriteService {
                 .orElseThrow(() -> new EntityNotFoundException("출발역이 존재하지 않습니다."));
         Station target = stationRepository.findById(request.getTarget())
                 .orElseThrow(() -> new EntityNotFoundException("도착역이 존재하지 않습니다."));
-        validatePath(source, target);
+        validatePath(source, target, member);
 
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member.getId()));
         return FavoriteResponse.of(favorite);
     }
 
-    private void validatePath(Station source, Station target) {
+    private void validatePath(Station source, Station target, Member member) {
+        Optional<Favorite> favorite = favoriteRepository
+                .findBySourceAndTargetAndMemberId(source, target, member.getId());
+
+        if(favorite.isPresent()) {
+            throw new DataIntegrityViolationException("이미 존재하는 즐겨찾기 경로입니다.");
+        }
+
         List<Line> lines = lineRepository.findAll();
         boolean containsPath = lines.stream()
                 .anyMatch(line -> line.containsPath(source, target));
