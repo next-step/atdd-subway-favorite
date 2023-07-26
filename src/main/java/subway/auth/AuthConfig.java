@@ -1,9 +1,9 @@
 package subway.auth;
 
-import subway.auth.principal.AuthenticationPrincipalArgumentResolver;
-import subway.auth.token.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import subway.auth.principal.AuthenticationPrincipalArgumentResolver;
+import subway.auth.token.JwtTokenProvider;
 
 import java.util.List;
 

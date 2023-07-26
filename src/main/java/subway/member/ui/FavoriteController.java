@@ -16,6 +16,7 @@ import subway.member.application.dto.FavoriteCreateRequest;
 import subway.member.application.dto.FavoriteCreateResponse;
 import subway.member.application.dto.FavoriteRetrieveResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class FavoriteController {
 
     @PostMapping
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal UserPrincipal principal,
-                                               @RequestBody FavoriteCreateRequest request) {
+                                               @RequestBody @Valid FavoriteCreateRequest request) {
         FavoriteCreateResponse favoriteResponse = favoriteService.createFavorite(principal, request);
         return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
     }

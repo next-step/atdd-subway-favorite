@@ -43,20 +43,10 @@ public class FavoriteService {
                 .build();
 
         member.appendFavorite(favorite);
-        // question comment : 이부분에서 repository.save()가 일어나지 않으면 favorite에 insert가 일어나지 않네요.. (다 끝나야 커밋됨)
-        // lineSection의 경우 appendSeciton 응답에서 비슷한 로직이 있지만 반환이 void니까 그냥 지나갔는데요.. LineController.appendSection()
-        // 이부분은 favorite의 id를 쓰려면 강제로 save로 쿼리를 일으켜야 하나요? 참고로 바로 아래서 트랜잭션을 쪼개서 전파기법으로 해결해보려 했는데 잘 안되네요.
         favoriteRepository.save(favorite);
 
-//        appendFavorite(member, favorite);
         return FavoriteCreateResponse.from(favorite);
     }
-
-//    @Transactional(propagation = Propagation.NESTED)
-//    void appendFavorite(Member member, Favorite favorite) {
-//        member.appendFavorite(favorite);
-//        favoriteRepository.save(favorite);
-//    }
 
     public List<FavoriteRetrieveResponse> retrieveFavorite(UserPrincipal principal) {
         Member member = getMember(principal);
@@ -79,7 +69,6 @@ public class FavoriteService {
 
     private Member getMember(UserPrincipal principal) {
         String email = principal.getUsername();
-        // question comment : 이부분은 memberRepository가 맞을까요 memberService가 맞을까요? 일단 memberRepository로 했습니다.
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new SubwayNotFoundException(SubwayMessage.MEMBER_NOT_FOUND));
     }

@@ -1,8 +1,10 @@
-package subway.unit.favorite;
+package subway.unit.member;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import subway.exception.SubwayBadRequestException;
 import subway.member.domain.Favorite;
 import subway.member.domain.Member;
@@ -13,6 +15,9 @@ import subway.station.domain.Station;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("MemberFavoritesTest 단위 테스트 (spring integration test)")
+@SpringBootTest
+@Transactional
 public class MemberFavoritesTest {
 
     private Member member;
@@ -77,7 +82,7 @@ public class MemberFavoritesTest {
 
     @DisplayName("즐겨찾기 삭제 기능 : 다른 소유자의 즐겨찾기 삭제 불가")
     @Test
-    void removeWithNotMyOwn(){
+    void removeWithNotMyOwn() {
         // given
         final String email = "email2@email.com";
         final String password = "password2";

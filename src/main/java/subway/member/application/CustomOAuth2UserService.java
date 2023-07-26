@@ -1,13 +1,13 @@
 package subway.member.application;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import subway.auth.token.oauth2.OAuth2User;
 import subway.auth.token.oauth2.OAuth2UserRequest;
 import subway.auth.token.oauth2.OAuth2UserService;
 import subway.member.domain.CustomOAuth2User;
 import subway.member.domain.Member;
 import subway.member.domain.MemberRepository;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

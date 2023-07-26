@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import subway.constant.SubwayMessage;
+import subway.exception.SubwayBadRequestException;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -37,11 +39,14 @@ public class Member {
     }
 
     public void deleteFavoriteByFavorite(Favorite favorite) {
-        this.memberFavorites.removeFavorite(this, favorite);
+        if (!this.isExistFavorite(favorite)) {
+            throw new SubwayBadRequestException(SubwayMessage.FAVORITE_NOT_MY_OWN);
+        }
+        memberFavorites.remove(favorite);
     }
 
-    public boolean IsExistFavorite(Favorite favorite) {
-        return this.memberFavorites.IsExistFavorite(favorite);
+    public boolean isExistFavorite(Favorite favorite) {
+        return this.memberFavorites.isExistFavorite(favorite);
     }
 
     public void update(Member member) {

@@ -15,12 +15,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Getter
+
 @Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 public class Favorite {
+
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,10 +32,12 @@ public class Favorite {
     @JoinColumn
     private Member member;
 
+    @Getter
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Station sourceStation;
 
+    @Getter
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Station targetStation;

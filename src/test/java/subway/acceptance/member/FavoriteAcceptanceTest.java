@@ -1,4 +1,4 @@
-package subway.acceptance.favorite;
+package subway.acceptance.member;
 
 
 import org.junit.jupiter.api.BeforeEach;
@@ -6,12 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import subway.acceptance.auth.AuthFixture;
-import subway.acceptance.member.MemberSteps;
 import subway.acceptance.path.PathFixture;
 import subway.acceptance.station.StationFixture;
 import subway.utils.AcceptanceTest;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +34,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         Long 강남역_ID = StationFixture.getStationId("강남역");
         Long 남부터미널역_ID = StationFixture.getStationId("남부터미널역");
-        var request = FavoriteFixture.즐겨찾기_등록_요청(강남역_ID, 남부터미널역_ID);
+        var request = FavoriteFixture.즐겨찾기_등록_요청_만들기(강남역_ID, 남부터미널역_ID);
 
         // when
         var response = FavoriteSteps.즐겨찾기_생성_API(accessToken, request);
@@ -58,6 +55,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.jsonPath().getString("source[0].name")).isEqualTo("강남역");
         assertThat(response.jsonPath().getString("target[0].name")).isEqualTo("남부터미널역");
+    }
+
+    @DisplayName("인가되지 않은 사용자가 즐겨찾기를 조회한다.")
+    @Test
+    void retrieveFavoritesWithoutAuthorization() {
+        // given
+        FavoriteFixture.강남역_남부터미널역_즐겨찾기_등록(accessToken);
+
+        // when
+        var response = FavoriteSteps.즐겨찾기_조회_인가제외_API();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("즐겨찾기를 삭제한다.")
@@ -82,7 +92,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         Long 강남역_ID = StationFixture.getStationId("강남역");
         Long 왕십리역_ID = StationFixture.getStationId("왕십리역");
-        var request = FavoriteFixture.즐겨찾기_등록_요청(강남역_ID, 왕십리역_ID);
+        var request = FavoriteFixture.즐겨찾기_등록_요청_만들기(강남역_ID, 왕십리역_ID);
 
         // when
         var response = FavoriteSteps.즐겨찾기_생성_API(accessToken, request);

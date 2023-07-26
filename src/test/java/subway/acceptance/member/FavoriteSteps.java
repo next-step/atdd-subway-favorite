@@ -1,4 +1,4 @@
-package subway.acceptance.favorite;
+package subway.acceptance.member;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -22,6 +22,13 @@ public class FavoriteSteps {
     public static ExtractableResponse<Response> 즐겨찾기_조회_API(final String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_조회_인가제외_API() {
+        return RestAssured.given().log().all()
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();

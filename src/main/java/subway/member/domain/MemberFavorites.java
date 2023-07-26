@@ -10,7 +10,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Embeddable
@@ -27,36 +26,26 @@ public class MemberFavorites {
         add(newFavorite);
     }
 
-    public boolean IsExistFavorite(Favorite favorite) {
+    public boolean isExistFavorite(Favorite favorite) {
         return favorites.contains(favorite);
     }
 
-    public void removeFavorite(Member member, Favorite favorite) {
-        if (!member.IsExistFavorite(favorite)) {
-            throw new SubwayBadRequestException(SubwayMessage.FAVORITE_NOT_MY_OWN);
-        }
-        remove(favorite);
+    public void remove(Favorite favorite) {
+        this.favorites.remove(favorite);
     }
 
     private void validAlreadyExist(Favorite newFavorite) {
-        Optional<Favorite> findAnyFavorite = findFavoriteBySourceAndTarget(newFavorite);
-        if (findAnyFavorite.isPresent()) {
+        if (findFavoriteBySourceAndTarget(newFavorite)) {
             throw new SubwayBadRequestException(SubwayMessage.FAVORITE_IS_ALREADY_EXIST);
         }
-
     }
 
-    private Optional<Favorite> findFavoriteBySourceAndTarget(Favorite newFavorite) {
+    private boolean findFavoriteBySourceAndTarget(Favorite newFavorite) {
         return favorites.stream()
-                .filter(favorite -> favorite.getSourceStation().equals(newFavorite.getSourceStation()) || favorite.getTargetStation().equals(newFavorite.getTargetStation()))
-                .findAny();
+                .anyMatch(favorite -> favorite.getSourceStation().equals(newFavorite.getSourceStation()) || favorite.getTargetStation().equals(newFavorite.getTargetStation()));
     }
 
     private void add(Favorite newFavorite) {
         this.favorites.add(newFavorite);
-    }
-
-    private void remove(Favorite favorite) {
-        this.favorites.remove(favorite);
     }
 }

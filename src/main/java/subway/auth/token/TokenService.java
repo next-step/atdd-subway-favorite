@@ -1,15 +1,15 @@
 package subway.auth.token;
 
 import lombok.RequiredArgsConstructor;
-import subway.constant.SubwayMessage;
-import subway.exception.AuthenticationException;
+import org.springframework.stereotype.Service;
 import subway.auth.token.oauth2.OAuth2User;
 import subway.auth.token.oauth2.OAuth2UserService;
 import subway.auth.token.oauth2.github.GithubClient;
 import subway.auth.token.oauth2.github.GithubProfileResponse;
 import subway.auth.userdetails.UserDetails;
 import subway.auth.userdetails.UserDetailsService;
-import org.springframework.stereotype.Service;
+import subway.constant.SubwayMessage;
+import subway.exception.AuthenticationException;
 
 @Service
 @RequiredArgsConstructor

@@ -1,7 +1,6 @@
 package subway.line.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import subway.line.domain.Section;
 import subway.station.domain.Station;
 
 import java.util.List;
