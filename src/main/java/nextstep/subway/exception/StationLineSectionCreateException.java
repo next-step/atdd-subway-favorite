@@ -1,6 +1,8 @@
 package nextstep.subway.exception;
 
-public class StationLineSectionCreateException extends RuntimeException {
+import nextstep.common.StationBusinessException;
+
+public class StationLineSectionCreateException extends StationBusinessException {
 	public StationLineSectionCreateException(String message) {
 		super(message);
 	}

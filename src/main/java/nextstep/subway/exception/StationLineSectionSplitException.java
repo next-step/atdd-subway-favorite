@@ -1,6 +1,8 @@
 package nextstep.subway.exception;
 
-public class StationLineSectionSplitException extends RuntimeException {
+import nextstep.common.StationBusinessException;
+
+public class StationLineSectionSplitException extends StationBusinessException {
     public StationLineSectionSplitException(String message) {
         super(message);
     }

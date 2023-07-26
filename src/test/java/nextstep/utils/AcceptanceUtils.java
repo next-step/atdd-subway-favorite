@@ -17,6 +17,10 @@ public class AcceptanceUtils {
     private AcceptanceUtils() {
     }
 
+    public static void createStationLineSection(Long lineId, String upStationName, String downStationName, BigDecimal distance, Map<String, Long> stationIdByName) {
+        createStationLineSection(lineId, stationIdByName.get(upStationName), stationIdByName.get(downStationName), distance, HttpStatus.OK);
+    }
+
     public static void createStationLineSection(Long lineId, Long upStationId, Long downStationId, BigDecimal distance) {
         createStationLineSection(lineId, upStationId, downStationId, distance, HttpStatus.OK);
     }
@@ -44,6 +48,10 @@ public class AcceptanceUtils {
                 .then().log().all()
                 .statusCode(expectedStatus.value())
                 .extract();
+    }
+
+    public static Long createStationLine(String name, String color, String upStationName, String downStationName, BigDecimal distance, Map<String, Long> stationIdByName) {
+        return createStationLine(name, color, stationIdByName.get(upStationName), stationIdByName.get(downStationName), distance);
     }
 
     public static Long createStationLine(String name, String color, Long upStationId, Long downStationId, BigDecimal distance) {
