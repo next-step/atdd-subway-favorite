@@ -2,12 +2,12 @@ package subway.path.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import subway.line.application.LineService;
 import subway.line.domain.Line;
 import subway.line.domain.Section;
-import subway.line.application.LineService;
 import subway.path.application.dto.PathRetrieveResponse;
-import subway.station.domain.Station;
 import subway.station.application.StationService;
+import subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +23,12 @@ public class PathService {
     public PathRetrieveResponse getShortestPath(long sourceStationId, long targetStationId) {
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
+        List<Line> lines = lineService.findByStation(sourceStation, targetStation);
+        List<Section> sections = getAllSections(lines);
+        return pathFinder.findShortestPath(sections, sourceStation, targetStation);
+    }
+
+    public PathRetrieveResponse getShortestPath(Station sourceStation, Station targetStation) {
         List<Line> lines = lineService.findByStation(sourceStation, targetStation);
         List<Section> sections = getAllSections(lines);
         return pathFinder.findShortestPath(sections, sourceStation, targetStation);

@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.exception.SubwayNotFoundException;
+import subway.line.application.LineService;
 import subway.line.application.dto.LineModifyRequest;
 import subway.line.application.dto.SectionCreateRequest;
 import subway.line.application.dto.SectionDeleteRequest;
 import subway.line.domain.Line;
 import subway.line.domain.LineRepository;
-import subway.line.application.LineService;
 import subway.station.domain.Station;
 import subway.station.domain.StationRepository;
 

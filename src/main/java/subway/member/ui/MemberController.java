@@ -13,7 +13,7 @@ import subway.auth.principal.AuthenticationPrincipal;
 import subway.auth.principal.UserPrincipal;
 import subway.member.application.MemberService;
 import subway.member.application.dto.MemberRequest;
-import subway.member.application.dto.MemberResponse;
+import subway.member.application.dto.MemberRetrieveResponse;
 
 import java.net.URI;
 
@@ -28,31 +28,32 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
-        MemberResponse member = memberService.createMember(request);
+        MemberRetrieveResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
+    public ResponseEntity<MemberRetrieveResponse> findMember(@PathVariable Long id) {
+        MemberRetrieveResponse member = memberService.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMemberByToken(@AuthenticationPrincipal UserPrincipal principal) {
-        MemberResponse member = memberService.findMember(principal);
+    public ResponseEntity<MemberRetrieveResponse> findMemberByToken(@AuthenticationPrincipal UserPrincipal principal) {
+        MemberRetrieveResponse member = memberService.findMember(principal);
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
-                                                       @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberRetrieveResponse> updateMember(@PathVariable Long id,
+                                                               @RequestBody MemberRequest param) {
+        // TODO : 이거 DTO 쪼개야됨...
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<MemberRetrieveResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }

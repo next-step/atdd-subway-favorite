@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
-public class LineResponse {
+public class LineRetrieveResponse {
     private Long id;
 
     private String name;
@@ -20,12 +20,12 @@ public class LineResponse {
 
     private List<StationResponse> stations;
 
-    public static LineResponse from(Line line) {
+    public static LineRetrieveResponse from(Line line) {
         List<Station> stationsInSections = line.getStations();
         List<StationResponse> stationResponses = stationsInSections.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        return LineResponse.builder()
+        return LineRetrieveResponse.builder()
                 .id(line.getId())
                 .name(line.getName())
                 .color(line.getColor())

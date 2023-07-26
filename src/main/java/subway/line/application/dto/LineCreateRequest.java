@@ -3,7 +3,6 @@ package subway.line.application.dto;
 import lombok.Builder;
 import lombok.Getter;
 import subway.line.domain.Line;
-import subway.station.domain.Station;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -20,19 +19,16 @@ public class LineCreateRequest {
     @NotBlank
     private String color;
 
-    @NotBlank
+    @Min(value = 1)
     private Long upStationId;
 
-    @NotBlank
+    @Min(value = 1)
     private Long downStationId;
 
-    @NotBlank
     @Min(value = 1L, message = DISTANCE_MIN_MESSAGE)
     private Long distance;
 
-    public static Line to(LineCreateRequest request,
-                          Station upStation,
-                          Station downStation) {
+    public static Line to(LineCreateRequest request) {
         return Line.builder()
                 .name(request.getName())
                 .color(request.getColor())

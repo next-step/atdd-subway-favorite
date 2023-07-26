@@ -3,8 +3,12 @@ package subway.member.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import subway.constant.SubwayMessage;
+import subway.exception.SubwayBadRequestException;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +18,7 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Member {
     @Id
@@ -25,7 +30,23 @@ public class Member {
     private Integer age;
     private RoleType role;
 
-    public Member() {
+    @Builder.Default
+    @Embedded
+    private MemberFavorites memberFavorites = new MemberFavorites();
+
+    public void appendFavorite(Favorite newFavorite) {
+        this.memberFavorites.add(newFavorite, this);
+    }
+
+    public void deleteFavoriteByFavorite(Favorite favorite) {
+        if (!this.isExistFavorite(favorite)) {
+            throw new SubwayBadRequestException(SubwayMessage.FAVORITE_NOT_MY_OWN);
+        }
+        memberFavorites.remove(favorite);
+    }
+
+    public boolean isExistFavorite(Favorite favorite) {
+        return this.memberFavorites.isExistFavorite(favorite);
     }
 
     public void update(Member member) {

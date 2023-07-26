@@ -11,6 +11,8 @@ import subway.auth.token.TokenResponse;
 import subway.auth.token.TokenService;
 import subway.auth.token.oauth2.github.GithubTokenRequest;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor
@@ -18,13 +20,13 @@ public class LoginController {
     private final TokenService tokenService;
 
     @PostMapping("/token")
-    public ResponseEntity<TokenResponse> loginWithToken(@RequestBody TokenRequest request) {
+    public ResponseEntity<TokenResponse> loginWithToken(@RequestBody @Valid TokenRequest request) {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/github")
-    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody GithubTokenRequest request) {
+    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody @Valid GithubTokenRequest request) {
         TokenResponse response = tokenService.createTokenFromGithub(request.getCode());
         return ResponseEntity.ok(response);
     }

@@ -8,12 +8,12 @@ import subway.member.domain.Member;
 @Getter
 @Builder
 @AllArgsConstructor
-public class MemberResponse {
+public class MemberRetrieveResponse {
     private Long id;
     private String email;
     private Integer age;
 
-    public static MemberResponse from(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+    public static MemberRetrieveResponse from(Member member) {
+        return new MemberRetrieveResponse(member.getId(), member.getEmail(), member.getAge());
     }
 }

@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import subway.line.application.LineService;
 import subway.line.application.dto.LineCreateRequest;
 import subway.line.application.dto.LineModifyRequest;
-import subway.line.application.dto.LineResponse;
+import subway.line.application.dto.LineRetrieveResponse;
 import subway.line.application.dto.SectionCreateRequest;
 import subway.line.application.dto.SectionDeleteRequest;
-import subway.line.application.LineService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -29,25 +30,25 @@ public class LineController {
     private final LineService lineService;
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineCreateRequest lineRequest) {
-        LineResponse line = lineService.createLine(lineRequest);
+    public ResponseEntity<LineRetrieveResponse> createLine(@RequestBody @Valid LineCreateRequest lineRequest) {
+        LineRetrieveResponse line = lineService.createLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> retrieveLines() {
-        List<LineResponse> lineResponses = lineService.findAll();
-        return ResponseEntity.ok().body(lineResponses);
+    public ResponseEntity<List<LineRetrieveResponse>> retrieveLines() {
+        List<LineRetrieveResponse> lineRetrieveRespons = lineService.findAll();
+        return ResponseEntity.ok().body(lineRetrieveRespons);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> retrieveLine(@PathVariable Long id) {
-        LineResponse lineResponse = lineService.findById(id);
-        return ResponseEntity.ok().body(lineResponse);
+    public ResponseEntity<LineRetrieveResponse> retrieveLine(@PathVariable Long id) {
+        LineRetrieveResponse lineRetrieveResponse = lineService.findById(id);
+        return ResponseEntity.ok().body(lineRetrieveResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> modifyLine(@PathVariable Long id, @RequestBody LineModifyRequest request) {
+    public ResponseEntity<Void> modifyLine(@PathVariable Long id, @RequestBody @Valid LineModifyRequest request) {
         lineService.updateLine(id, request);
         return ResponseEntity.ok().build();
     }
@@ -59,7 +60,7 @@ public class LineController {
     }
 
     @PostMapping("/{id}/sections")
-    public ResponseEntity<Void> appendSection(@PathVariable(name = "id") Long lineId, @RequestBody SectionCreateRequest request) {
+    public ResponseEntity<Void> appendSection(@PathVariable(name = "id") Long lineId, @RequestBody @Valid SectionCreateRequest request) {
         lineService.appendSection(lineId, request);
         return ResponseEntity.ok().build();
     }

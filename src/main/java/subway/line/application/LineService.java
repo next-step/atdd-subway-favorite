@@ -7,7 +7,7 @@ import subway.constant.SubwayMessage;
 import subway.exception.SubwayNotFoundException;
 import subway.line.application.dto.LineCreateRequest;
 import subway.line.application.dto.LineModifyRequest;
-import subway.line.application.dto.LineResponse;
+import subway.line.application.dto.LineRetrieveResponse;
 import subway.line.application.dto.SectionCreateRequest;
 import subway.line.application.dto.SectionDeleteRequest;
 import subway.line.domain.Line;
@@ -48,15 +48,15 @@ public class LineService {
         line.updateLine(request.getName(), request.getColor());
     }
 
-    public List<LineResponse> findAll() {
+    public List<LineRetrieveResponse> findAll() {
         return lineRepository.findAll().stream()
-                .map(LineResponse::from)
+                .map(LineRetrieveResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public LineResponse findById(Long id) {
+    public LineRetrieveResponse findById(Long id) {
         return lineRepository.findById(id)
-                .map(LineResponse::from)
+                .map(LineRetrieveResponse::from)
                 .orElseThrow(() -> new SubwayNotFoundException(SubwayMessage.LINE_NOT_FOUND));
     }
 
@@ -73,7 +73,7 @@ public class LineService {
     }
 
     @Transactional
-    public LineResponse createLine(LineCreateRequest lineRequest) {
+    public LineRetrieveResponse createLine(LineCreateRequest lineRequest) {
         Station upStation = stationService.findStationById(lineRequest.getUpStationId());
         Station downStation = stationService.findStationById(lineRequest.getDownStationId());
 
@@ -86,7 +86,7 @@ public class LineService {
                 .distance(lineRequest.getDistance())
                 .build();
         line.addSection(section);
-        return LineResponse.from(line);
+        return LineRetrieveResponse.from(line);
     }
 
     @Transactional

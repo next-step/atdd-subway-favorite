@@ -62,14 +62,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         var 로그인_응답 = AuthSteps.로그인_API(로그인);
 
         // then
-        assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("위조 토큰으로 시도하는 인가는 실패한다")
     @Test
     void validTokenWithInvalidToken() {
         // when
-        var response = AuthSteps.임의의_로그인_API();
+        var response = AuthSteps.유효하지_않은_로그인_API();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
