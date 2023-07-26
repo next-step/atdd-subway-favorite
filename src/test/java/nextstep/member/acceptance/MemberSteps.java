@@ -67,6 +67,25 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 
+    public static ExtractableResponse<Response> login(String email, String password) {
+        Map<String, String> parameter = new HashMap<>();
+        parameter.put("email", email);
+        parameter.put("password", password);
+
+        return RestAssured
+                .given()
+                    .body(parameter).log().all()
+                .when()
+                    .post("/login/token")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> getMemberByMe(ExtractableResponse<Response> loginResponse) {
+        String token = loginResponse.jsonPath().getString("accessToken");
+        return getMemberByMe(token);
+    }
+
     public static ExtractableResponse<Response> getMemberByMe(String token) {
         return RestAssured
                 .given().header(AUTHORIZATION, token).log().all()

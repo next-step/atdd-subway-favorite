@@ -75,16 +75,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void getMyInfo() {
         // given 회원 가입을 하고
-        ExtractableResponse<Response> joinResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // 로그인을 한 후
         ExtractableResponse<Response> loginResponse = login(EMAIL, PASSWORD);
 
-        // When 토큰 검증
-        ExtractableResponse<Response> verifyToken = verifyToken(EMAIL, PASSWORD);
-
-        // 정보 조회
-        ExtractableResponse<Response> memberResponse = getMemberByMe("token");
+        // When 정보 조회(토큰을 통해)
+        ExtractableResponse<Response> memberResponse = getMemberByMe(loginResponse);
 
         // Then
         회원_정보_조회됨(memberResponse, EMAIL, AGE);
