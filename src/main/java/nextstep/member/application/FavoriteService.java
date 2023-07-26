@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -32,9 +33,9 @@ public class FavoriteService {
     @Transactional
     public FavoriteResponse createFavorites(FavoriteRequest request, Member member) {
         Station source = stationRepository.findById(request.getSource())
-                .orElseThrow(() -> new DataIntegrityViolationException("역이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("출발역이 존재하지 않습니다."));
         Station target = stationRepository.findById(request.getTarget())
-                .orElseThrow(() -> new DataIntegrityViolationException("역이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("도착역이 존재하지 않습니다."));
         validatePath(source, target);
 
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member.getId()));
