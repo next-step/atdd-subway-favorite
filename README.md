@@ -37,3 +37,11 @@ Content-Type: application/json
     "age": 20
 }
 ```
+
+## 1단계에서 신경쓰려고 했던 부분
+- 가독성
+  - RestAssured given, when, then을 작성할 때 indent를 두어 각 파트별로 무엇을 하는지 구분이 되도록 하였음
+  - 한글 사용에 대한 고민 : 한글이 익숙하기 때문에 가독성이 올라가는 것에는 이견이 없으나, 경고 메세지와 같은 아쉬운? 점이 있어 테스트 코드를 읽기에 오히려 방해가 되는게 아닌가라는 생각이 들었음. 이런 고민으로 인해 개발할 때 더 익숙한 영어를 사용하여 네이밍을 하기로 선택하였음
+    ![img_1.png](img_1.png)
+- ArgumentResolver에 대한 이해
+  - Controller Argument를 Annotation이나 Type에 따라 Resolver를 타게 하여 원하는 Argument 형태로 만들어 전달하는 역할

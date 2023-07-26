@@ -1,10 +1,19 @@
 package nextstep.member.ui;
 
+import nextstep.auth.principal.AuthenticationPrincipal;
+import nextstep.auth.principal.UserPrincipal;
+import nextstep.auth.token.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
@@ -12,7 +21,7 @@ import java.net.URI;
 public class MemberController {
     private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
     }
 
@@ -41,8 +50,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return ResponseEntity.ok(memberService.findMemberByEmail(userPrincipal.getUsername()));
     }
 }
-

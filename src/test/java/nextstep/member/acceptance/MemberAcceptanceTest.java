@@ -81,9 +81,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> loginResponse = login(EMAIL, PASSWORD);
 
         // When 정보 조회(토큰을 통해)
-        ExtractableResponse<Response> memberResponse = getMemberByMe(loginResponse);
+        ExtractableResponse<Response> memberResponse = getMemberOfMine(loginResponse);
 
         // Then
-        회원_정보_조회됨(memberResponse, EMAIL, AGE);
+        assertMemberResponse(memberResponse, EMAIL, AGE);
     }
 }
