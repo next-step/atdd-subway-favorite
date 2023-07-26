@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.member.acceptance.step;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -63,5 +63,13 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .header("authorization", "Bearer " + accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
     }
 }
