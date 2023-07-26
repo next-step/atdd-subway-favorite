@@ -6,6 +6,7 @@ import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class FavoriteTest {
     }
 
     @Test
+    @DisplayName("Favorite 생성")
     void createFavorite() {
         //given
         Favorite favorite = Favorite.of(1L, 노원역, 마들역, List.of(노원_마들, 상계_당고계));
@@ -51,6 +53,7 @@ public class FavoriteTest {
     }
 
     @Test
+    @DisplayName("Favorite 생성 시 연결되어 있지 않은 역이면 예외처리")
     void createFavoriteWithUnconnectedStation() {
         //then
         assertThatThrownBy(() -> Favorite.of(1L, 마들역, 상계역, List.of(노원_마들, 상계_당고계)))
@@ -58,6 +61,7 @@ public class FavoriteTest {
     }
 
     @Test
+    @DisplayName("Favorite 가 어떤 MemberId 를 갖고 있는지 확인")
     void hasMemberId() {
         //given
         Favorite favorite = Favorite.of(1L, 노원역, 마들역, List.of(노원_마들, 상계_당고계));
