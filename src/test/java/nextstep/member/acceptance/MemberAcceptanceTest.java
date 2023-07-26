@@ -86,4 +86,20 @@ class MemberAcceptanceTest {
         assertThat(response.getEmail()).isEqualTo(EMAIL);
         assertThat(response.getAge()).isEqualTo(AGE);
     }
+
+    /**
+     * Given 회원 가입을 생성하고
+     * When 토큰 없이 내 정보를 조회하면
+     * Then 403 실패 응답이 돌아 온다
+     */
+    @DisplayName("정보를 조회했으나 토큰이 없으면 실패.")
+    @Test
+    void getMyInfoForbidden() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var signInResponse = 로그인(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        // when
+        assertThat(내_정보_조회_요청(null).statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }

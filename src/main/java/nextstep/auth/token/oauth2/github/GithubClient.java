@@ -10,8 +10,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@Component
-public class GithubClient {
+public class GithubClient implements GithubClientInterface {
 
     @Value("${github.client.id}")
     private String clientId;
