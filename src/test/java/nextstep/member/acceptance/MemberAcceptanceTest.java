@@ -68,18 +68,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * # API
-     * ## 요청
-     * GET /members/me
-     * authorization: Bearer {token}
-     * ---
-     * ## 응답
-     * {
-     *     "id": 1,
-     *     "email": "admin@email.com",
-     *     "age": 20
-     * }
-     * ---
      * # 시나리오
      * Given 회원을 생성하고
      * And 로그인을 하고
