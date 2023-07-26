@@ -44,6 +44,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
+    /**
+     * # 요구사항
+     * - GitHubClient의 요청이 Github이 아닌 GithubTestController에서 처리하게 하기
+     * - code에 해당하는 사용자 정보를 이용하여 AccessToken 응답받기
+     */
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
