@@ -35,7 +35,7 @@ public class FavoritePathService {
     private final StationRepository stationRepository;
 
     @Transactional
-    public void createFavoritePath(String email, FavoritePathRequest request) {
+    public Long createFavoritePath(String email, FavoritePathRequest request) {
         final Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("member entity not found"));
 
@@ -54,7 +54,9 @@ public class FavoritePathService {
                 .targetId(targetStationId)
                 .build();
 
-        favoritePathRepository.save(favoritePath);
+        final FavoritePath savedFavoritePath = favoritePathRepository.save(favoritePath);
+
+        return savedFavoritePath.getId();
     }
 
     @Transactional(readOnly = true)
@@ -90,5 +92,16 @@ public class FavoritePathService {
                 .map(StationResponse::fromEntity)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(StationResponse::getId, Function.identity()));
+    }
+
+    @Transactional
+    public void deleteFavoritePath(Long favoritePathId, String email) {
+        final Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("member entity not found"));
+
+        final FavoritePath favoritePath = favoritePathRepository.findByIdAndMember(favoritePathId, member)
+                .orElseThrow(() -> new EntityNotFoundException("favorite path not found"));
+
+        favoritePathRepository.delete(favoritePath);
     }
 }

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.favorite.accpetance.FavoriteSteps.즐겨찾기_경로_등록;
+import static nextstep.favorite.accpetance.FavoriteSteps.*;
 import static nextstep.favorite.accpetance.FavoriteSteps.즐겨찾기_경로_등록됨;
 import static nextstep.utils.AcceptanceUtils.*;
 
@@ -87,6 +87,24 @@ public class FavoritePathAcceptanceTest extends AcceptanceTest {
         //when & then
         즐겨찾기_경로_등록됨(사용자1_토큰, "종로3가", "종로5가", 0);
         즐겨찾기_경로_등록됨(사용자1_토큰, "동대문", "동묘앞", 1);
+    }
+
+    /**
+     * Given (종로3가, 동대문) 경로 즐겨찾기 추가
+     * When (종로3가, 동대문) 경로 즐겨찾기 삭제
+     * Then 즐겨찾기 목록 조회 시 경로에 존재하지 않는다
+     */
+    @DisplayName("경로 즐겨찾기 삭제")
+    @Test
+    void deleteFavoritePath() {
+        //given
+        var createResponse = 즐겨찾기_경로_등록(사용자1_토큰, "종로3가", "동대문", stationIdByName);
+
+        //when
+        즐겨찾기_경로_삭제(사용자1_토큰, createResponse);
+
+        //then
+        즐겨찾기_경로_존재하지않음(사용자1_토큰);
     }
 
 }

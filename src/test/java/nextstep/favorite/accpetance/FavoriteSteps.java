@@ -51,4 +51,24 @@ public class FavoriteSteps {
         Assertions.assertEquals(targetStationName, jsonPath.getString(target));
     }
 
+    public static void 즐겨찾기_경로_존재하지않음(String accessToken) {
+        final JsonPath jsonPath = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/favorites")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath();
+
+        Assertions.assertEquals(0, jsonPath.getList("").size());
+    }
+
+    public static void 즐겨찾기_경로_삭제(String 사용자1_토큰, ExtractableResponse<Response> response) {
+        final String uri = response.header("Location");
+
+        RestAssured.given().log().all()
+                .auth().oauth2(사용자1_토큰)
+                .when().delete(uri)
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }

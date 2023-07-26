@@ -5,6 +5,7 @@ import nextstep.auth.GithubTestAccount;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenRequest;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +41,7 @@ public class GithubTestController {
 
     @GetMapping("/github/user")
     public ResponseEntity<GithubProfileResponse> user(HttpServletRequest request) {
-        final String authorization = request.getHeader("Authorization");
+        final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!"token".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new IllegalArgumentException("empty token");
         }
