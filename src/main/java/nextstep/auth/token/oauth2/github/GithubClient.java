@@ -6,7 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,14 +31,16 @@ public class GithubClient {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity<>(
             githubAccessTokenRequest, headers);
+
         RestTemplate restTemplate = new RestTemplate();
 
         String accessToken = restTemplate
             .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
             .getBody()
             .getAccessToken();
+
         if (accessToken == null) {
             throw new RuntimeException();
         }
@@ -50,7 +51,7 @@ public class GithubClient {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "token " + accessToken);
 
-        HttpEntity httpEntity = new HttpEntity<>(headers);
+        HttpEntity<HttpHeaders> httpEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
 
         try {
