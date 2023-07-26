@@ -1,7 +1,6 @@
 package subway.member.application;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.source.spi.EmbeddedAttributeMapping;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,7 +74,7 @@ public class FavoriteService {
 
     public Favorite findById(Long id) {
         return favoriteRepository.findById(id)
-                .orElseThrow(() -> new SubwayNotFoundException(9999L, "즐겨찾기를 찾을 수 없습니다")); // TODO : constant
+                .orElseThrow(() -> new SubwayNotFoundException(SubwayMessage.FAVORITE_NOT_FOUND));
     }
 
     private Member getMember(UserPrincipal principal) {

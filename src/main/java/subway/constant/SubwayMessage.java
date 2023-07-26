@@ -26,7 +26,8 @@ public enum SubwayMessage {
     AUTH_INVALID_TOKEN(5002L, "올바른 토큰이 아닙니다."),
     MEMBER_NOT_FOUND(6000L, "회원을 찾을 수 없습니다."),
     FAVORITE_NOT_MY_OWN(7000L, "내가 소유한 즐겨찾기가 아닙니다."),
-    FAVORITE_IS_ALREADY_EXIST(7001L, "이미 같은 경로의 즐겨찾기가 존재합니다.");
+    FAVORITE_IS_ALREADY_EXIST(7001L, "이미 같은 경로의 즐겨찾기가 존재합니다."),
+    FAVORITE_NOT_FOUND(7002L, "즐겨찾기를 찾을 수 없습니다.");
 
     private final long code;
     private final String message;

@@ -34,7 +34,6 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteRetrieveResponse>> retrieveFavorites(@AuthenticationPrincipal UserPrincipal principal) {
-        // TODO: 이것도 일급컬렉션으로 바꾸셈
         List<FavoriteRetrieveResponse> favorites = favoriteService.retrieveFavorite(principal);
         return ResponseEntity.ok().body(favorites);
     }
