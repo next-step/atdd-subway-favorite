@@ -23,9 +23,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 중계역_id;
     private Long 칠호선_id;
 
-    private Long 동백역_id;
     private Long 해운대역_id;
-    private Long 부산_이호선_id;
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -40,9 +38,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         칠호선_id = LineSteps.지하철_노선_생성_요청("7호선", 중계역_id, 마들역_id, 10);
         LineSteps.지하철_노선_구간_등록_요청(칠호선_id, new SectionRequest(중계역_id, 노원역_id, 3));
 
-        동백역_id = StationSteps.지하철역_생성_요청("동백역");
         해운대역_id = StationSteps.지하철역_생성_요청("해운대역");
-        부산_이호선_id = LineSteps.지하철_노선_생성_요청("신분당선", 동백역_id, 해운대역_id, 10);
 
         MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
         accessToken = TokenSteps.로그인(EMAIL, PASSWORD).jsonPath().getString("accessToken");
