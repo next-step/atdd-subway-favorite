@@ -2,6 +2,7 @@ package subway.member.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import subway.constant.SubwayMessage;
 import subway.exception.SubwayBadRequestException;
 
 import javax.persistence.CascadeType;
@@ -32,7 +33,7 @@ public class MemberFavorites {
 
     public void removeFavorite(Member member, Favorite favorite) {
         if (!member.IsExistFavorite(favorite)) {
-            throw new SubwayBadRequestException(9999L, "내가 소유한 즐겨찾기가 아닙니다.");// TODO : constant
+            throw new SubwayBadRequestException(SubwayMessage.FAVORITE_NOT_MY_OWN);
         }
         remove(favorite);
     }
@@ -40,7 +41,7 @@ public class MemberFavorites {
     private void validAlreadyExist(Favorite newFavorite) {
         Optional<Favorite> findAnyFavorite = findFavoriteBySourceAndTarget(newFavorite);
         if (findAnyFavorite.isPresent()) {
-            throw new SubwayBadRequestException(9999L, "이미 같은 경로의 즐겨찾기가 존재합니다."); // TODO : constant
+            throw new SubwayBadRequestException(SubwayMessage.FAVORITE_IS_ALREADY_EXIST);
         }
 
     }

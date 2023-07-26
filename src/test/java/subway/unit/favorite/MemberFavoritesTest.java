@@ -28,11 +28,6 @@ public class MemberFavoritesTest {
         memberFavorites = new MemberFavorites();
     }
 
-    /**
-     * 회원에
-     * 즐겨찾기를 추가하면
-     * 추가된다.
-     */
     @DisplayName("즐겨찾기 추가 기능")
     @Test
     void add() {
@@ -49,10 +44,6 @@ public class MemberFavoritesTest {
         assertThat(favorites.size()).isEqualTo(1L);
     }
 
-    /**
-     * 중복된 즐겨찾기를 추가하면
-     * 예외가 발생한다.
-     */
     @DisplayName("즐겨찾기 추가 기능 : 중복 불가")
     @Test
     void addWithAlreadyFavorite() {
@@ -68,11 +59,6 @@ public class MemberFavoritesTest {
         assertThatThrownBy(() -> memberFavorites.add(build, member)).isInstanceOf(SubwayBadRequestException.class);
     }
 
-    /**
-     * 회원에
-     * 즐겨찾기를 삭제하면
-     * 삭제된다.
-     */
     @DisplayName("즐겨찾기 삭제 기능")
     @Test
     void remove() {
@@ -80,15 +66,35 @@ public class MemberFavoritesTest {
         Station 강남역 = Station.builder().name("강남역").build();
         Station 역삼역 = Station.builder().name("역삼역").build();
         Favorite favorite = Favorite.builder().member(member).sourceStation(강남역).targetStation(역삼역).build();
-        memberFavorites.add(favorite, member);
+        member.appendFavorite(favorite);
 
         // when
-        memberFavorites.removeFavorite(member, favorite);
+        member.deleteFavoriteByFavorite(favorite);
 
         // then
         assertThat(memberFavorites.getFavorites().size()).isEqualTo(0L);
     }
 
-    // TODO : 내꺼 아닌거 추가해야됨
+    @DisplayName("즐겨찾기 삭제 기능 : 다른 소유자의 즐겨찾기 삭제 불가")
+    @Test
+    void removeWithNotMyOwn(){
+        // given
+        final String email = "email2@email.com";
+        final String password = "password2";
+        final int age = 30;
+        final RoleType role = RoleType.ROLE_MEMBER;
+        Member anotherMember = Member.builder().age(age).password(password).email(email).role(role).build();
+
+
+        Station 강남역 = Station.builder().name("강남역").build();
+        Station 역삼역 = Station.builder().name("역삼역").build();
+        Favorite favorite = Favorite.builder().member(member).sourceStation(강남역).targetStation(역삼역).build();
+        member.appendFavorite(favorite);
+
+        // when/then
+        assertThatThrownBy(() -> anotherMember.deleteFavoriteByFavorite(favorite))
+                .isInstanceOf(SubwayBadRequestException.class);
+    }
+
 
 }

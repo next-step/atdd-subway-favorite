@@ -36,8 +36,8 @@ public class Member {
         this.memberFavorites.add(newFavorite, this);
     }
 
-    public void deleteFavoriteByFavorite(Member member, Favorite favorite) {
-        this.memberFavorites.removeFavorite(member, favorite);
+    public void deleteFavoriteByFavorite(Favorite favorite) {
+        this.memberFavorites.removeFavorite(this, favorite);
     }
 
     public boolean IsExistFavorite(Favorite favorite) {

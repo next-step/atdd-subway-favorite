@@ -24,7 +24,9 @@ public enum SubwayMessage {
     AUTH_PASSWORD_IS_NOT_VALID(5000L, "로그인 정보가 일치하지 않습니다"),
     AUTH_TOKEN_NOT_FOUND_FROM_HEADERS(5001L, "토큰을 헤더에서 가져올 수 없습니다."),
     AUTH_INVALID_TOKEN(5002L, "올바른 토큰이 아닙니다."),
-    MEMBER_NOT_FOUND(6000L, "회원을 찾을 수 없습니다.");
+    MEMBER_NOT_FOUND(6000L, "회원을 찾을 수 없습니다."),
+    FAVORITE_NOT_MY_OWN(7000L, "내가 소유한 즐겨찾기가 아닙니다."),
+    FAVORITE_IS_ALREADY_EXIST(7001L, "이미 같은 경로의 즐겨찾기가 존재합니다.");
 
     private final long code;
     private final String message;

@@ -68,9 +68,9 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(UserPrincipal principal, Long id) {
-        Member member = getMember(principal);
+        Member targetMember = getMember(principal);
         Favorite favorite = findById(id);
-        member.deleteFavoriteByFavorite(member, favorite);
+        targetMember.deleteFavoriteByFavorite(favorite);
     }
 
     public Favorite findById(Long id) {

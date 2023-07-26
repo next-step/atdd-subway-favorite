@@ -11,6 +11,8 @@ import subway.acceptance.path.PathFixture;
 import subway.acceptance.station.StationFixture;
 import subway.utils.AcceptanceTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -29,9 +31,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
-    /**
-     * 즐겨찾기 생성
-     */
     @DisplayName("즐겨찾기를 만든다.")
     @Test
     void createFavorite() {
@@ -47,9 +46,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    /**
-     * 즐겨찾기 조회
-     */
     @DisplayName("즐겨찾기를 조회한다.")
     @Test
     void retrieveFavorites() {
@@ -60,12 +56,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var response = FavoriteSteps.즐겨찾기_조회_API(accessToken);
 
         // then
-//        response.body().jsonPath(). // TODO : 이거 짜야됨
+        assertThat(response.jsonPath().getString("source[0].name")).isEqualTo("강남역");
+        assertThat(response.jsonPath().getString("target[0].name")).isEqualTo("남부터미널역");
     }
 
-    /**
-     * 즐겨찾기 삭제
-     */
     @DisplayName("즐겨찾기를 삭제한다.")
     @Test
     void removeFavorite() {
@@ -82,9 +76,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    /**
-     * 이어지지 않는 경로로 생성을 할 수 없다. (문서 스팩)
-     */
     @DisplayName("이어지지 않는 경로로 즐겨찾기를 생성 할 수 없다.")
     @Test
     void createFavoriteWithNotConnectedSections() {
@@ -100,9 +91,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    /**
-     * 없는 즐겨찾기를 삭제할 수 없다.
-     */
     @DisplayName("없는 즐겨찾기를 삭제할 수 없다.")
     @Test
     void removeFavoriteWithNotExist() {
@@ -113,9 +101,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-
     /**
-     * 자신의 소유가 아닌 즐겨찾기는 삭제 할 수 없다.
+     * Given 두 회원이 있고
+     * Given 회원이 즐겨찾기를 등록하고
+     * When 다른 회원이 그 즐겨찾기를 제거하려 하면
+     * Then 제거 할 수 없다.
      */
     @DisplayName("자신의 소유가 아닌 즐겨찾기는 삭제 할 수 없다.")
     @Test
