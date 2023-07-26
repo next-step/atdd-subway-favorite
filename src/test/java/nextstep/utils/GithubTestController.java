@@ -29,6 +29,10 @@ public class GithubTestController {
             return ResponseEntity.badRequest().build();
         }
 
+        if (!githubTestRepository.isUserExist(code)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         GithubAccessTokenResponse response = new GithubAccessTokenResponse("githubAccessToken: " + code, "bearer", "testScope", "test");
         return ResponseEntity.ok().body(response);
     }
@@ -39,7 +43,13 @@ public class GithubTestController {
             return ResponseEntity.badRequest().build();
         }
 
-        GithubProfileResponse response = new GithubProfileResponse("email", 12);
+        String code = githubAccessToken.split(": ")[1];
+        if (!githubTestRepository.isUserExist(code)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        GithubTestUser user = githubTestRepository.findByCode(code);
+        GithubProfileResponse response = new GithubProfileResponse(user.getEmail(), user.getAge());
         return ResponseEntity.ok().body(response);
     }
 }
