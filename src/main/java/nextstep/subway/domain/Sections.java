@@ -151,8 +151,12 @@ public class Sections {
         return sections.stream().mapToInt(Section::getDistance).sum();
     }
 
-    public boolean contains(Station station) {
-        return sections.stream()
-                .anyMatch(section -> section.equalsUpStation(station) || section.equalsDownStation(station));
+    public boolean containsPath(Station source, Station target) {
+        boolean containsSource = sections.stream()
+                .anyMatch(section -> section.equalsUpStation(source) || section.equalsDownStation(source));
+        boolean containsTarget = sections.stream()
+                .anyMatch(section -> section.equalsUpStation(target) || section.equalsDownStation(target));
+
+        return containsSource && containsTarget;
     }
 }

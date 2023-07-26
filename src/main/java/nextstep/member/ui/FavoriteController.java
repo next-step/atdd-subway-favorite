@@ -1,10 +1,10 @@
 package nextstep.member.ui;
 
-import nextstep.auth.LoginRequired;
-import nextstep.auth.principal.UserPrincipal;
+import nextstep.auth.LoginMember;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
+import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,24 +24,24 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @LoginRequired
+    @LoginMember
     @PostMapping("/favorites")
-    public ResponseEntity<Void> createFavorites(@RequestBody FavoriteRequest request, UserPrincipal userPrincipal) {
-        FavoriteResponse favorite = favoriteService.createFavorites(request, userPrincipal);
+    public ResponseEntity<Void> createFavorites(@RequestBody FavoriteRequest request, Member member) {
+        FavoriteResponse favorite = favoriteService.createFavorites(request, member);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
-    @LoginRequired
+    @LoginMember
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> selectFavorites(UserPrincipal userPrincipal) {
-        List<FavoriteResponse> favorites = favoriteService.selectFavorites(userPrincipal);
+    public ResponseEntity<List<FavoriteResponse>> selectFavorites(Member member) {
+        List<FavoriteResponse> favorites = favoriteService.selectFavorites(member);
         return ResponseEntity.ok().body(favorites);
     }
 
-    @LoginRequired
+    @LoginMember
     @DeleteMapping("/favorites/{id}")
-    public ResponseEntity<Void> deleteFavorites(@PathVariable Long id, UserPrincipal userPrincipal) {
-        favoriteService.deleteFavorites(id, userPrincipal);
+    public ResponseEntity<Void> deleteFavorites(@PathVariable Long id, Member member) {
+        favoriteService.deleteFavorites(id, member);
         return ResponseEntity.noContent().build();
     }
 }

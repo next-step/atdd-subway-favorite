@@ -25,11 +25,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
-    String accessToken;
-
-    Long 교대역;
-    Long 강남역;
-    Long 양재역;
+    private String accessToken;
+    private Long 교대역;
+    private Long 강남역;
+    private Long 양재역;
 
     @BeforeEach
     public void setUp() {

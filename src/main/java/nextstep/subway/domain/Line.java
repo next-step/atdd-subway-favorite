@@ -63,7 +63,7 @@ public class Line {
         sections.delete(station);
     }
 
-    public boolean containsSection(Station station) {
-        return sections.contains(station);
+    public boolean containsPath(Station source, Station target) {
+        return sections.containsPath(source, target);
     }
 }
