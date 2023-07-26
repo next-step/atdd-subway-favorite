@@ -6,6 +6,7 @@ import nextstep.member.domain.MemberRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Component
 public class LoginMemberAspect {
-    public static final String AUTHORIZATION_BEARER = "bearer";
-    public static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String AUTHORIZATION_BEARER = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 
@@ -28,36 +28,38 @@ public class LoginMemberAspect {
 
     @Around("@annotation(loginMember)")
     public Object validateTokenAndInjectMember(ProceedingJoinPoint joinPoint, LoginMember loginMember) throws Throwable {
-        String username = validateTokenAndReturnUsername();
+        validateToken();
+        String username = extractUsername();
+
         Object[] args = injectMember(joinPoint, username);
 
         return joinPoint.proceed(args);
     }
 
-    private String validateTokenAndReturnUsername() {
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String authorization = request.getHeader(HEADER_AUTHORIZATION);
+    private void validateToken() {
+        String authorization = extractAuthorizationHeader();
         validateAuthorization(authorization);
-
-        String token = authorization.split(" ")[1];
-        String username = jwtTokenProvider.getPrincipal(token);
-
-        return username;
     }
 
-    private static void validateAuthorization(String authorization) {
+    private String extractAuthorizationHeader() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader(HttpHeaders.AUTHORIZATION);
+    }
+
+    private void validateAuthorization(String authorization) {
         if (!StringUtils.hasText(authorization)) {
             throw new AuthenticationException();
         }
 
-        if (authorization.split(" ").length != 2) {
+        if (!authorization.startsWith(AUTHORIZATION_BEARER)) {
             throw new AuthenticationException();
         }
+    }
 
-        if (!AUTHORIZATION_BEARER.equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException();
-        }
+    private String extractUsername() {
+        String authorization = extractAuthorizationHeader();
+        String token = authorization.replace(AUTHORIZATION_BEARER, "");
+        return jwtTokenProvider.getPrincipal(token);
     }
 
     private Object[] injectMember(ProceedingJoinPoint joinPoint, String username) {
