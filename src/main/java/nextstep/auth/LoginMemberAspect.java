@@ -66,13 +66,10 @@ public class LoginMemberAspect {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new AuthenticationException());
 
-        Object[] args = joinPoint.getArgs();
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] instanceof Member) {
-                args[i] = member;
-                break;
-            }
-        }
+        IntStream.range(0, args.length)
+                .filter(i -> args[i] instanceof Member)
+                .findFirst()
+                .ifPresent(i -> args[i] = member);
         return args;
     }
 }
