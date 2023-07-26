@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class FavoriteService {
 
-    private SectionRepository sectionRepository;
-    private StationRepository stationRepository;
-    private FavoriteRepository favoriteRepository;
-    private MemberRepository memberRepository;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final MemberRepository memberRepository;
 
     public FavoriteService(StationRepository stationRepository,
                            FavoriteRepository favoriteRepository,
