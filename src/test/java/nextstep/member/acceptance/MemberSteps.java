@@ -63,8 +63,7 @@ public class MemberSteps {
 
         return RestAssured
                 .given().log().all()
-//                .auth().oauth2(accessToken)
-                .header("Authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all().extract();
