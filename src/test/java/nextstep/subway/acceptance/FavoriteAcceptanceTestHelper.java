@@ -1,7 +1,9 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ValidatableResponse;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +14,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 class FavoriteAcceptanceTestHelper extends PathAcceptanceTestHelper {
 
     protected static final String FAVORITE_RESOURCE_URL = "/favorites";
+
+    protected ValidatableResponse createMember(String email, String password, int age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/members")
+                .then().log().all();
+    }
+
+    protected ValidatableResponse getToken(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all();
+    }
 
 
     protected ValidatableResponse createFavorite(Long sourceStationId, Long targetStationId, String token) {
@@ -26,12 +55,13 @@ class FavoriteAcceptanceTestHelper extends PathAcceptanceTestHelper {
         return getResource(String.format("%s/%d", FAVORITE_RESOURCE_URL, favoriteId), token);
     }
 
-    protected ValidatableResponse deleteFavorite(Long favoriteId) {
-        return deleteResource(String.format("%s/%d", FAVORITE_RESOURCE_URL, favoriteId));
+    protected ValidatableResponse deleteFavorite(Long favoriteId, String token) {
+        return deleteResource(String.format("%s/%d", FAVORITE_RESOURCE_URL, favoriteId), token);
     }
 
-    protected void verifyFoundFavorite(ValidatableResponse foundPathResponse, String... stationNames) {
+    protected void verifyFoundFavorite(ValidatableResponse foundPathResponse, String sourceName, String targetName) {
         JsonPath jsonPath = foundPathResponse.extract().jsonPath();
-        assertThat(jsonPath.getList("stationResponses.name", String.class)).containsExactly(stationNames);
+        assertThat(jsonPath.getString("source.name")).isEqualTo(sourceName);
+        assertThat(jsonPath.getString("target.name")).isEqualTo(targetName);
     }
 }

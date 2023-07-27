@@ -14,7 +14,9 @@ import nextstep.subway.domain.Station;
 import nextstep.subway.repository.FavoriteRepository;
 import nextstep.subway.repository.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @Service
 public class FavoriteService {
 
@@ -75,6 +77,7 @@ public class FavoriteService {
         }
     }
 
+    @Transactional
     public void deleteFavorite(String memberEmail, Long favoriteId) {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new NotFoundMemberException(memberEmail));

@@ -1,20 +1,16 @@
 package nextstep.subway.acceptance;
 
 import io.restassured.response.ValidatableResponse;
-import nextstep.auth.token.oauth2.github.GithubClientInterface;
 import nextstep.marker.AcceptanceTest;
 import nextstep.utils.AcceptanceTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @AcceptanceTest
 public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
 
-    @Autowired
-    private GithubClientInterface githubClient;
 
     private Long 교대역;
     private Long 강남역;
@@ -25,6 +21,9 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
 
     private String 토큰;
     private String 다른_토큰;
+
+    private String 회원;
+    private String 다른_회원;
 
 
     /**
@@ -42,8 +41,12 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
 
         이호선 = AcceptanceTestUtils.getId(createLines("2호선", "green", 교대역, 강남역, 10L));
         삼호선 = AcceptanceTestUtils.getId(createLines("3호선", "orange", 남부터미널역, 양재역, 2L));
-        토큰 = githubClient.getAccessTokenFromGithub("aofijeowifjaoief");
-        다른_토큰 = githubClient.getAccessTokenFromGithub("afnm93fmdodf");
+
+        회원 = AcceptanceTestUtils.getResource(AcceptanceTestUtils.getLocation(createMember("email", "password", 20))).extract().jsonPath().getString("email");
+        다른_회원 = AcceptanceTestUtils.getResource(AcceptanceTestUtils.getLocation(createMember("other-email", "password", 20))).extract().jsonPath().getString("email");
+
+        토큰 = getToken("email", "password").extract().jsonPath().getString("accessToken");
+        다른_토큰 = getToken("other-email", "password").extract().jsonPath().getString("accessToken");
     }
 
     @Nested
@@ -65,7 +68,7 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
             AcceptanceTestUtils.verifyResponseStatus(favoriteCreatedResponse, HttpStatus.CREATED);
 
             ValidatableResponse foundFavoriteResponse = getFavorite(AcceptanceTestUtils.getId(favoriteCreatedResponse), 토큰);
-            verifyFoundFavorite(foundFavoriteResponse, "교대역", "양재역");
+            verifyFoundFavorite(foundFavoriteResponse, "교대역", "강남역");
         }
 
         /**
@@ -86,7 +89,7 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
             ValidatableResponse foundFavoriteResponse = getFavorite(AcceptanceTestUtils.getId(favoriteCreatedResponse), 토큰);
 
             //then
-            verifyFoundFavorite(foundFavoriteResponse, "교대역", "양재역");
+            verifyFoundFavorite(foundFavoriteResponse, "교대역", "강남역");
         }
 
         /**
@@ -101,10 +104,9 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
         void 즐겨찾기_삭제() {
             // given
             ValidatableResponse favoriteCreatedResponse = createFavorite(교대역, 강남역, 토큰);
-            String location = AcceptanceTestUtils.getLocation(favoriteCreatedResponse);
 
             //when
-            ValidatableResponse deleteFavoriteResponse = deleteFavorite(AcceptanceTestUtils.getId(favoriteCreatedResponse));
+            ValidatableResponse deleteFavoriteResponse = deleteFavorite(AcceptanceTestUtils.getId(favoriteCreatedResponse), 토큰);
             AcceptanceTestUtils.verifyResponseStatus(deleteFavoriteResponse, HttpStatus.NO_CONTENT);
 
             //then
@@ -149,7 +151,7 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
             ValidatableResponse favoriteCreatedResponse = createFavorite(unRegisteredStationId, 강남역, 토큰);
 
             //then
-            AcceptanceTestUtils.verifyResponseStatus(favoriteCreatedResponse, HttpStatus.BAD_REQUEST);
+            AcceptanceTestUtils.verifyResponseStatus(favoriteCreatedResponse, HttpStatus.NOT_FOUND);
         }
 
         /**

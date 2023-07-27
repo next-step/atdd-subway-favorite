@@ -34,7 +34,7 @@ public class FavoriteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long id) {
-        favoriteService.findFavorite(principal.getUserMail(), id);
+        favoriteService.deleteFavorite(principal.getUserMail(), id);
         return ResponseEntity.noContent().build();
     }
 }

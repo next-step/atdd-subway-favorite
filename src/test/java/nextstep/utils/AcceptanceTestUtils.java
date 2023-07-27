@@ -33,7 +33,7 @@ public final class AcceptanceTestUtils {
     public static ValidatableResponse getResource(String url, String token) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
                 .when()
                 .get(url)
                 .then().log().all();
@@ -60,7 +60,7 @@ public final class AcceptanceTestUtils {
     public static <T> ValidatableResponse createResource(String url, T params, String token) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
                 .body(AcceptanceTestUtils.convertToJsonString(params)).contentType(ContentType.JSON)
                 .when()
                 .post(url)
@@ -87,7 +87,7 @@ public final class AcceptanceTestUtils {
     public static <T> ValidatableResponse deleteResource(String url, String token) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
                 .when()
                 .delete(url)
                 .then().log().all();
