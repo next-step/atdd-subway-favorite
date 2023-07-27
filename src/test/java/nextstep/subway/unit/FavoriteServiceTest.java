@@ -1,5 +1,6 @@
 package nextstep.subway.unit;
 
+import nextstep.common.ForbiddenException;
 import nextstep.common.NotFoundStationException;
 import nextstep.marker.ClassicUnitTest;
 import nextstep.member.domain.Member;
@@ -37,6 +38,7 @@ class FavoriteServiceTest {
     private Station 성수역;
     private Station 신설동역;
     private Member 회원;
+    private Member 다른_회원;
 
     @BeforeEach
     void setUp() {
@@ -47,6 +49,7 @@ class FavoriteServiceTest {
         이호선 = getLine("2호선", "bg-green-300", 강남역, 언주역, 10L);
         신설동선 = getLine("신설동선", "bg-red-300", 성수역, 신설동역, 7L);
         회원 = getMember("email", "password", 20);
+        다른_회원 = getMember("other-email", "password", 20);
     }
 
     @Test
@@ -78,6 +81,28 @@ class FavoriteServiceTest {
 
         // when & then
         Assertions.assertThrows(NotFoundStationException.class, () -> favoriteService.createFavorite(회원.getEmail(), request));
+    }
+
+    @Test
+    void 즐겨찾기_조회_성공() {
+        // given
+        FavoriteCreateRequest request = new FavoriteCreateRequest(강남역.getId(), 언주역.getId());
+        FavoriteResponse createdFavoriteResponse = favoriteService.createFavorite(회원.getEmail(), request);
+
+        // when
+        FavoriteResponse foundFavoriteResponse = favoriteService.findFavorite(회원.getEmail(), createdFavoriteResponse.getId());
+        // then
+        verifyFavoriteResponse(foundFavoriteResponse, 강남역.getName(), 언주역.getName());
+    }
+
+    @Test
+    void 본인_즐겨찾기가_아닌경우_조회_실패() {
+        // given
+        FavoriteCreateRequest request = new FavoriteCreateRequest(강남역.getId(), 언주역.getId());
+        FavoriteResponse favoriteResponse = favoriteService.createFavorite(회원.getEmail(), request);
+
+        // when & then
+        Assertions.assertThrows(ForbiddenException.class, () -> favoriteService.findFavorite(다른_회원.getEmail(), favoriteResponse.getId()));
     }
 
     private Line getLine(String name, String color, Station upStation, Station downStation, long distance) {
