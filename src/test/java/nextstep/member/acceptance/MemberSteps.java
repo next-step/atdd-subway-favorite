@@ -3,6 +3,9 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.token.TokenResponse;
+import nextstep.member.application.dto.MemberResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -60,8 +63,21 @@ public class MemberSteps {
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response) {
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().get("/members/me")
+            .then().log().all().extract();
+    }
+
 }
