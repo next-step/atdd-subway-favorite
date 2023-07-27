@@ -25,7 +25,7 @@ public class GithubTestController {
         String clientSecret = githubAccessTokenRequest.getClient_secret();
         String code = githubAccessTokenRequest.getCode();
 
-        if (StringUtils.isBlank(clientId) || StringUtils.isBlank(clientSecret) || StringUtils.isBlank(code)) {
+        if (validateNotBlank(clientId, clientSecret, code)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -35,6 +35,10 @@ public class GithubTestController {
 
         GithubAccessTokenResponse response = new GithubAccessTokenResponse("githubAccessToken: " + code, "bearer", "testScope", "test");
         return ResponseEntity.ok().body(response);
+    }
+
+    private boolean validateNotBlank(String clientId, String clientSecret, String code) {
+        return StringUtils.isBlank(clientId) || StringUtils.isBlank(clientSecret) || StringUtils.isBlank(code);
     }
 
     @GetMapping("/github/user")

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.auth.acceptance.step.TokenSteps.로그인_요청;
+import static nextstep.auth.acceptance.step.TokenSteps.일반_로그인_요청;
 import static nextstep.auth.acceptance.step.TokenSteps.토큰_추출;
 import static nextstep.member.acceptance.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,7 +79,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo() {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 토큰_추출(로그인_요청(EMAIL, PASSWORD));
+        String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
         // when
         ExtractableResponse<Response> getMyInfoResponse = 내_정보_조회_요청(accessToken);
