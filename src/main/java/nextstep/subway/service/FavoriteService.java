@@ -74,4 +74,15 @@ public class FavoriteService {
             throw new ForbiddenException();
         }
     }
+
+    public void deleteFavorite(String memberEmail, Long favoriteId) {
+        Member member = memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() -> new NotFoundMemberException(memberEmail));
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new NotFoundFavoriteException(favoriteId));
+
+        validateFavoriteOwner(member, favorite);
+
+        favoriteRepository.delete(favorite);
+    }
 }
