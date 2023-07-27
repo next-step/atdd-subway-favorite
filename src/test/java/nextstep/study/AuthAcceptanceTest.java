@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.GithubResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
-import static nextstep.utils.GithubTestController.CODE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AuthAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "admin@email.com";
-    public static final String PASSWORD = "password";
-    public static final Integer AGE = 20;
+class AuthAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "admin@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
+
+    private GithubResponse githubResponse = GithubResponse.사용자;
 
     @DisplayName("Bearer Auth")
     @Test
@@ -46,7 +48,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         Map<String, String> params = new HashMap<>();
-        params.put("code", CODE);
+        params.put("code", githubResponse.getCode());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
