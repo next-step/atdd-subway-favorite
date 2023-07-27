@@ -1,6 +1,8 @@
 package nextstep.subway.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import nextstep.common.StationBusinessException;
+import nextstep.favorite.exception.StationFavoriteCreateFailException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,11 +19,7 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({StationLineCreateException.class,
-            StationLineSectionCreateException.class,
-            StationLineSectionDeleteException.class,
-            StationLineSectionSplitException.class,
-            StationLineSearchFailException.class})
+    @ExceptionHandler(StationBusinessException.class)
     public void businessErrorExceptionHandler(RuntimeException exception) {
         log.info("error occurred: {}", exception.getMessage());
     }
