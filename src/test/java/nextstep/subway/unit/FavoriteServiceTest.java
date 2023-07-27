@@ -1,6 +1,7 @@
 package nextstep.subway.unit;
 
 import nextstep.common.ForbiddenException;
+import nextstep.common.NotFoundFavoriteException;
 import nextstep.common.NotFoundStationException;
 import nextstep.marker.ClassicUnitTest;
 import nextstep.member.domain.Member;
@@ -103,6 +104,29 @@ class FavoriteServiceTest {
 
         // when & then
         Assertions.assertThrows(ForbiddenException.class, () -> favoriteService.findFavorite(다른_회원.getEmail(), favoriteResponse.getId()));
+    }
+
+    @Test
+    void 즐겨찾기_삭제_성공() {
+        // given
+        FavoriteCreateRequest request = new FavoriteCreateRequest(강남역.getId(), 언주역.getId());
+        FavoriteResponse createdFavoriteResponse = favoriteService.createFavorite(회원.getEmail(), request);
+
+        // when
+        favoriteService.deleteFavorite(회원.getEmail(), createdFavoriteResponse.getId());
+
+        // then
+        Assertions.assertThrows(NotFoundFavoriteException.class, () -> favoriteService.findFavorite(회원.getEmail(), createdFavoriteResponse.getId()));
+    }
+
+    @Test
+    void 본인_즐겨찾기가_아닌경우_삭제_실패() {
+        // given
+        FavoriteCreateRequest request = new FavoriteCreateRequest(강남역.getId(), 언주역.getId());
+        FavoriteResponse createdFavoriteResponse = favoriteService.createFavorite(회원.getEmail(), request);
+
+        // when & then
+        Assertions.assertThrows(ForbiddenException.class, () -> favoriteService.deleteFavorite(다른_회원.getEmail(), createdFavoriteResponse.getId()));
     }
 
     private Line getLine(String name, String color, Station upStation, Station downStation, long distance) {
