@@ -14,7 +14,6 @@ public class TokenController {
         this.tokenService = tokenService;
     }
 
-    //todo. 이거 왜 Post 지?
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
