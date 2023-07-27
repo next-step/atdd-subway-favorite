@@ -3,6 +3,7 @@ package nextstep.subway.domain;
 import nextstep.member.domain.Member;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Favorite {
@@ -52,4 +53,13 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean isNotOwned(Member member) {
+        return !isOwned(member);
+    }
+
+    private boolean isOwned(Member member) {
+        return Objects.equals(this.member, member);
+    }
+
 }
