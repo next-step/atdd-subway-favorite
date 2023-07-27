@@ -4,10 +4,12 @@ import nextstep.marker.ClassicUnitTest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.controller.request.FavoriteCreateRequest;
+import nextstep.subway.controller.resonse.FavoriteResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Station;
 import nextstep.subway.repository.LineRepository;
 import nextstep.subway.repository.StationRepository;
+import nextstep.subway.service.FavoriteService;
 import nextstep.subway.service.PathFindService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +55,7 @@ class FavoriteServiceTest {
         FavoriteCreateRequest request = new FavoriteCreateRequest(강남역.getId(), 언주역.getId());
 
         // when
-        FavoriteResponse favoriteResponse = favoriteService.createFavorite(request);
+        FavoriteResponse favoriteResponse = favoriteService.createFavorite(회원.getEmail(), request);
 
         // then
         verifyFavoriteResponse(favoriteResponse, 강남역.getName(), 언주역.getName());
