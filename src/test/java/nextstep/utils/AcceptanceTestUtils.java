@@ -30,6 +30,15 @@ public final class AcceptanceTestUtils {
                 .then().log().all();
     }
 
+    public static ValidatableResponse getResource(String url, String token) {
+        return RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .when()
+                .get(url)
+                .then().log().all();
+    }
+
     public static <V> ValidatableResponse getResource(String url, Map<String, V> params) {
         return RestAssured
                 .given().log().all()
@@ -48,6 +57,16 @@ public final class AcceptanceTestUtils {
                 .then().log().all();
     }
 
+    public static <T> ValidatableResponse createResource(String url, T params, String token) {
+        return RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .body(AcceptanceTestUtils.convertToJsonString(params)).contentType(ContentType.JSON)
+                .when()
+                .post(url)
+                .then().log().all();
+    }
+
     public static <T> ValidatableResponse modifyResource(String url, T params) {
         return RestAssured
                 .given().log().all()
@@ -60,6 +79,15 @@ public final class AcceptanceTestUtils {
     public static ValidatableResponse deleteResource(String url) {
         return RestAssured
                 .given().log().all()
+                .when()
+                .delete(url)
+                .then().log().all();
+    }
+
+    public static <T> ValidatableResponse deleteResource(String url, String token) {
+        return RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .when()
                 .delete(url)
                 .then().log().all();
