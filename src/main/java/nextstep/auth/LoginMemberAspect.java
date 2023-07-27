@@ -13,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.stream.IntStream;
 
 @Aspect
 @Component
@@ -66,10 +67,12 @@ public class LoginMemberAspect {
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new AuthenticationException());
 
+        Object[] args = joinPoint.getArgs();
         IntStream.range(0, args.length)
                 .filter(i -> args[i] instanceof Member)
                 .findFirst()
                 .ifPresent(i -> args[i] = member);
+
         return args;
     }
 }
