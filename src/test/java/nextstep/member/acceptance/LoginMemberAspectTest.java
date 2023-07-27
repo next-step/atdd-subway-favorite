@@ -35,18 +35,18 @@ public class LoginMemberAspectTest {
     @Mock
     private MemberRepository memberRepository;
 
-    private String token;
     private MockHttpServletRequest request;
     private LoginMemberAspect loginMemberAspect;
     private static final String AUTHORIZATION_BEARER = "Bearer ";
+    private static final String token = "myToken";
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
 
     @BeforeEach
     public void setUp() {
-        token = "myToken";
-
-        lenient().when(jwtTokenProvider.getPrincipal(token)).thenReturn("username");
-        lenient().when(memberRepository.findByEmail("username"))
-                .thenReturn(Optional.of(new Member("username", "password", 20)));
+        lenient().when(jwtTokenProvider.getPrincipal(token)).thenReturn(EMAIL);
+        lenient().when(memberRepository.findByEmail(EMAIL)).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
         lenient().when(joinPoint.getArgs()).thenReturn(new Object[]{});
 
         loginMemberAspect = new LoginMemberAspect(jwtTokenProvider, memberRepository);
@@ -57,8 +57,7 @@ public class LoginMemberAspectTest {
     @Test
     public void validateTokenAndInjectMember() throws Throwable {
         // given
-        String expectedAuthorizationHeader = AUTHORIZATION_BEARER + token;
-        request.addHeader(HttpHeaders.AUTHORIZATION, expectedAuthorizationHeader);
+        request.addHeader(HttpHeaders.AUTHORIZATION, AUTHORIZATION_BEARER + token);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
         // when
