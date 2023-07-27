@@ -4,5 +4,8 @@
             <pattern>%fullRequest%n%n%fullResponse</pattern>
         </encoder>
     </appender>
+
+    <springProfile name="local">
     <appender-ref ref="STDOUT"/>
+    </springProfile>
 </configuration>
