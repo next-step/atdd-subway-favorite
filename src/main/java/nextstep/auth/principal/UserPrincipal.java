@@ -9,7 +9,7 @@ public class UserPrincipal {
         this.role = role;
     }
 
-    public String getUsername() {
+    public String getUserMail() {
         return username;
     }
 
