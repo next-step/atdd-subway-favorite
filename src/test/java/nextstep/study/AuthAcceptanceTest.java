@@ -40,6 +40,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void githubSetUp() {
+        githubTestRepository.cleanUp();
         githubTestRepository.addUser(userCode, new GithubTestUser(userEmail, 10));
     }
 

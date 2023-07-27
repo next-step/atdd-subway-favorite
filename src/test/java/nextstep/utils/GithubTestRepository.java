@@ -24,4 +24,8 @@ public class GithubTestRepository {
     public GithubTestUser findByCode(String code) {
         return USER_REPOSITORY.get(code);
     }
+
+    public void cleanUp() {
+        USER_REPOSITORY.clear();
+    }
 }
