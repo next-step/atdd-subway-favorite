@@ -42,11 +42,7 @@ public class GithubTestController {
         if (split.length != 2) {
             return false;
         }
-        if (!TOKEN.equalsIgnoreCase(split[0])) {
-            return false;
-        }
-
-        return true;
+        return TOKEN.equalsIgnoreCase(split[0]);
     }
 }
 
