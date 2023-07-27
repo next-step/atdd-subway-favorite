@@ -6,6 +6,7 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.controller.request.FavoriteCreateRequest;
 import nextstep.subway.controller.resonse.FavoriteResponse;
+import nextstep.subway.controller.resonse.PathResponse;
 import nextstep.subway.controller.resonse.StationResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Station;
@@ -19,12 +20,14 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
+    private final PathFindService pathFindService;
 
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository, PathFindService pathFindService) {
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
+        this.pathFindService = pathFindService;
     }
 
 
@@ -36,11 +39,11 @@ public class FavoriteService {
         Station source = stationRepository.findById(sourceId)
                 .orElseThrow(() -> new NotFoundStationException(sourceId));
 
-        Long targetId = request.getSource();
+        Long targetId = request.getTarget();
         Station target = stationRepository.findById(targetId)
                 .orElseThrow(() -> new NotFoundStationException(targetId));
 
-        validatePath(source, target);
+        validatePath(sourceId, targetId);
 
         Favorite createdFavorite = favoriteRepository.save(Favorite.of(member, source, target));
 
@@ -51,7 +54,11 @@ public class FavoriteService {
         );
     }
 
-    private void validatePath(Station source, Station target) {
+    public void validatePath(Long sourceId, Long targetId) {
+        PathResponse shortestPath = pathFindService.getShortestPath(sourceId, targetId);
+        if (shortestPath == null) {
+            throw new IllegalArgumentException();
+        }
     }
 
 }
