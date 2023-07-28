@@ -11,7 +11,12 @@ git rebase upstream/songteaheon
 
 
 # 할 일
-## 1단계 - 지하철 구간 추가 기능 개션
+## 1단계 - 내 정보 조회 기능 구현
 - [X] 인수 테스트 목록 작성
 - [X] 인수 테스트 작성
 - [X] 코드 구현
+
+## 2단계 - 깃헙 로그인 인수 테스트
+- [X] AuthAcceptanceTest의 githubAuth 테스트를 성공시키기 (step1)
+- [X] GithubClient의 요청이 Github이 아닌 GithubTestController에서 처리하게 하기(step1)
+- [X] 코드 구현 (code에 해당하는 사용자 정보를 이용하여 AccessToken을 응답받기)
