@@ -92,4 +92,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 .isEqualTo(createResponse.jsonPath().getInt("age"))
         );
     }
+
+    @DisplayName("내 정보를 조회요청시 토큰값을 검증한다.")
+    @Test
+    void validTokenAtGettingMyInfo() {
+
+        //given
+        var createResponse = 회원_정보_조회_요청(회원_생성_요청(EMAIL, PASSWORD, AGE));
+
+        //when
+        var response = 내정보_조회_요청("아무토큰~~~");
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
