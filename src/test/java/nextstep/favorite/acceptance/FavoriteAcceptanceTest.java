@@ -66,21 +66,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
 
     /**
-     * # 생성 API
-     * ## 요청
-     * - POST /favorites
-     * - authorization: Bearer
-     * - content-type : application/json
-     * - body
-     * {
-     *     "source": "1",
-     *     "target": "3"
-     * }
-     * ---
-     * ## 응답
-     * - 201 Created
-     * - Location: /favorites/1
-     * ---
      * ## 시나리오
      * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
      * And : 회원을 생성하고
@@ -102,6 +87,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //TODO: 즐겨찾기 조회 요청 구현후 작성
+    }
+
+    /**
+     * ## 시나리오
+     * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
+     * And : 가짜 토큰을 사용하여
+     * When : 출발역 id와 도착역 id를 전송하면
+     * Then : 401 UnAuthorized가 발생한다.
+     */
+    @DisplayName("즐겨찾기 생성 실패 : 올바른 토큰이 아닌 경우")
+    @Test
+    void createFailByFakeToken() {
+        // given
+        String fakeToken = "가짜 토큰";
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(fakeToken, 교대역, 양재역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        ErrorTestUtils.예외_메세지_검증(response, ErrorCode.INVALID_TOKEN_EXCEPTION);
     }
 
     /**
