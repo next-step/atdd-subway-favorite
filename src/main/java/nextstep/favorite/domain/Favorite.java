@@ -8,13 +8,15 @@ import javax.persistence.*;
 public class Favorite {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "Favorite", fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "source_id")
     private Station source;
 
-    @OneToOne(mappedBy = "Favorite", fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "target_id")
     private Station target;
 
     public Favorite(Long id, Station source, Station target) {
