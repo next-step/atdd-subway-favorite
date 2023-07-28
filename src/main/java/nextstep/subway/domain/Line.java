@@ -1,6 +1,10 @@
 package nextstep.subway.domain;
 
-import javax.persistence.*;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
@@ -57,5 +61,9 @@ public class Line {
 
     public void deleteSection(Station station) {
         sections.delete(station);
+    }
+
+    public boolean containsPath(Station source, Station target) {
+        return sections.containsPath(source, target);
     }
 }
