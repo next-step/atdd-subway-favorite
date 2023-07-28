@@ -25,3 +25,8 @@ git rebase upstream/songteaheon
 - [X] 인수 테스트 목록 작성
 - [ ] 인수 테스트 작성
 - [ ] 코드 구현
+
+
+## 패키지 의존성
+- favorite -> subway, auth
+- member -> auth
