@@ -13,7 +13,9 @@ public enum ErrorCode {
     STATION_NOT_FOUND(404, "없는 지하철역입니다."),
     LINE_NOT_FOUND(404, "없는 지하철 노선입니다."),
     SECTION_NOT_FOUND(404, "없는 지하철 구간입니다."),
-    PATH_NOT_FOUND(404, "지하철 경로를 탐색하지 못했습니다. (출발역과 도착역이 연결되어 있는지 확인)"),;
+    PATH_NOT_FOUND(404, "지하철 경로를 탐색하지 못했습니다. (출발역과 도착역이 연결되어 있는지 확인)"),
+    MEMBER_NOT_FOUND(404, "없는 회원입니다."),
+    ;
 
     private final int status;
     private final String message;
