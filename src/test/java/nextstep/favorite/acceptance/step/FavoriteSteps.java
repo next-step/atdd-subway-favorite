@@ -8,23 +8,47 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 
 public class FavoriteSteps {
-    private static final String ACCESS_TOKEN_PREFIX = "Bearer ";
+    public enum TokenType {
+        BEARER("Bearer "),
+        BASIC("Basic "),;
+
+        private final String prefix;
+
+        TokenType(String prefix) {
+            this.prefix = prefix;
+        }
+    }
 
     private FavoriteSteps() {
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceStationId, Long targetStationId) {
-        Map<String, Long> params = Map.of(
-                "source", sourceStationId,
-                "target", targetStationId
-        );
+    public static ExtractableResponse<Response> 토큰_헤더_없이_즐겨찾기_생성_요청(Long sourceStationId, Long targetStationId) {
+        Map<String, Long> params = createParams(sourceStationId, targetStationId);
 
         return RestAssured.given().log().all()
-                .header("authorization", ACCESS_TOKEN_PREFIX + accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenType type, String accessToken, Long sourceStationId, Long targetStationId) {
+        Map<String, Long> params = createParams(sourceStationId, targetStationId);
+
+        return RestAssured.given().log().all()
+                .header("authorization", type.prefix + accessToken)
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    private static Map<String, Long> createParams(Long sourceStationId, Long targetStationId) {
+        return Map.of(
+                "source", sourceStationId,
+                "target", targetStationId
+        );
     }
 }
