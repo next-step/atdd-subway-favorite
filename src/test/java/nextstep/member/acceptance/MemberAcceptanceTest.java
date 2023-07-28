@@ -1,9 +1,15 @@
 package nextstep.member.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.HashMap;
 
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +78,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        String accessToken = 토큰_기반_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        var getMyInfoResponse = 내_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(getMyInfoResponse, EMAIL, AGE);
     }
 }
