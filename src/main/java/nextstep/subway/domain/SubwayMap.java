@@ -1,14 +1,14 @@
 package nextstep.subway.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class SubwayMap {
-    private List<Line> lines;
+
+    private final List<Line> lines;
 
     public SubwayMap(List<Line> lines) {
         this.lines = lines;
@@ -22,7 +22,7 @@ public class SubwayMap {
                 .flatMap(it -> it.getStations().stream())
                 .distinct()
                 .collect(Collectors.toList())
-                .forEach(it -> graph.addVertex(it));
+                .forEach(graph::addVertex);
 
         // 지하철 역의 연결 정보(간선)을 등록
         lines.stream()

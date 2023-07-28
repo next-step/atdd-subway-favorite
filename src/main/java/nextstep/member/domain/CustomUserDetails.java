@@ -3,9 +3,10 @@ package nextstep.member.domain;
 import nextstep.auth.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
-    private String email;
-    private String password;
-    private String role;
+
+    private final String email;
+    private final String password;
+    private final String role;
 
     public CustomUserDetails(String email, String password, String role) {
         this.email = email;

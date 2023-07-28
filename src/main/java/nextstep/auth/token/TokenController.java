@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TokenController {
-    private TokenService tokenService;
+
+    private final TokenService tokenService;
 
     public TokenController(TokenService tokenService) {
         this.tokenService = tokenService;
