@@ -1,12 +1,34 @@
 package nextstep.favorties.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.member.acceptance.TokenSteps.로그인_요청;
+import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 기능")
 public class FavoritesAcceptanceTest extends AcceptanceTest {
+
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
+
+    private Long 교대역;
+    private Long 강남역;
+    private Long 양재역;
+    private Long 남부터미널역;
+    private Long 이호선;
+    private Long 신분당선;
+    private Long 삼호선;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -16,8 +38,19 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
      * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
-    public void init() {
+    public void setUp() {
+        super.setUp();
 
+        교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+        남부터미널역 = 지하철역_생성_요청("남부터미널역").jsonPath().getLong("id");
+
+        이호선 = 지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10);
+        신분당선 = 지하철_노선_생성_요청("신분당선", "red", 강남역, 양재역, 10);
+        삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
+
+        지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3));
     }
 
     /**
@@ -35,6 +68,47 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     @Test
     void saveAndDeleteFavorites() {
 
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> responseSave = 즐겨찾기_생성(accessToken, 교대역, 양재역);
+
+        // then
+        assertThat(responseSave.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        // when
+        ExtractableResponse<Response> responseFavorites = 즐겨찾기_목록_조회(accessToken);
+
+        // then
+        assertThat(responseFavorites.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        Long favoriteId = responseFavorites.jsonPath().getLong("$.[0].id");
+
+        assertThat(favoriteId).isNotNull();
+        assertThat(responseFavorites.jsonPath().getLong("$.[0].source.id")).isEqualTo(교대역);
+        assertThat(responseFavorites.jsonPath().getLong("$.[0].target.id")).isEqualTo(양재역);
+
+        // when
+        ExtractableResponse<Response> responseDelete = 즐겨찾기_삭제(accessToken, favoriteId);
+
+        // then
+        assertThat(responseDelete.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        ExtractableResponse<Response> responseFavoritesForVerify = 즐겨찾기_목록_조회(accessToken);
+        assertThat(responseFavoritesForVerify.jsonPath().getList("$")).hasSize(0);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, Long favoriteId) {
+        return null;
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회(String accessToken) {
+        return null;
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Long 교대역, Long 양재역) {
+        return null;
     }
 
     /**

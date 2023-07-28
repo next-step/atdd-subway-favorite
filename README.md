@@ -22,6 +22,6 @@ git rebase upstream/songteaheon
 - [X] 코드 구현 (code에 해당하는 사용자 정보를 이용하여 AccessToken을 응답받기)
 
 ## 3단계 - 즐겨찾기 기능 구현
-- [ ] 인수 테스트 목록 작성
+- [X] 인수 테스트 목록 작성
 - [ ] 인수 테스트 작성
 - [ ] 코드 구현
