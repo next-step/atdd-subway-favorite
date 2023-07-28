@@ -1,5 +1,6 @@
 package nextstep.favorties.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
@@ -8,6 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.member.acceptance.TokenSteps.로그인_요청;
@@ -32,10 +37,10 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
     /**
      * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     *                         |
+     *                       *신분당선*
+     *                         |
+     * 남부터미널역               양재
      */
     @BeforeEach
     public void setUp() {
@@ -48,7 +53,6 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
 
         이호선 = 지하철_노선_생성_요청("2호선", "green", 교대역, 강남역, 10);
         신분당선 = 지하철_노선_생성_요청("신분당선", "red", 강남역, 양재역, 10);
-        삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
 
         지하철_노선에_지하철_구간_생성_요청(삼호선, createSectionCreateParams(남부터미널역, 양재역, 3));
     }
@@ -100,15 +104,33 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, Long favoriteId) {
-        return null;
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/favorites/{favoriteId}", favoriteId)
+                .then().log().all().extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회(String accessToken) {
-        return null;
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/favorites")
+                .then().log().all().extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Long 교대역, Long 양재역) {
-        return null;
+        Map<String, String> params = new HashMap<>();
+        params.put("source", 교대역.toString());
+        params.put("target", 양재역.toString());
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/favorites")
+                .then().log().all().extract();
     }
 
     /**
@@ -123,7 +145,26 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지 않은 사용자가 즐겨찾기를 생성/조회/삭제한다.")
     @Test
     void saveAndDeleteFavorites_noLogin() {
+        // given
+        String accessToken = "wrong-access-token";
 
+        // when
+        ExtractableResponse<Response> responseSave = 즐겨찾기_생성(accessToken, 교대역, 양재역);
+
+        // then
+        assertThat(responseSave.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        // when
+        ExtractableResponse<Response> responseFavorites = 즐겨찾기_목록_조회(accessToken);
+
+        // then
+        assertThat(responseFavorites.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        // when
+        ExtractableResponse<Response> responseDelete = 즐겨찾기_삭제(accessToken, 1L);
+
+        // then
+        assertThat(responseDelete.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -135,5 +176,14 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     @Test
     void saveFavorites_wrongPath() {
 
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> responseSave = 즐겨찾기_생성(accessToken, 교대역, 남부터미널역);
+
+        // then
+        assertThat(responseSave.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
