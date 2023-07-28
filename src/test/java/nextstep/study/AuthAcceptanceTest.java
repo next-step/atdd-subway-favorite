@@ -74,7 +74,26 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> githubLoginResponse = 깃허브_로그인_요청(userCode);
 
         // then
+        assertThat(githubLoginResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(토큰_추출(githubLoginResponse)).isNotBlank();
+    }
+
+    /**
+     * Given : Github에 등록되지 않은 사용자가
+     * When : Github 로그인을 요청하면
+     * Then : 500 Internal server Error가 발생한다.
+     */
+    @DisplayName("Github Auth Fail")
+    @Test
+    void githubAuthFail() {
+        // given
+        String notRegisteredUserCode = "notRegistered";
+
+        // when
+        ExtractableResponse<Response> githubLoginResponse = 깃허브_로그인_요청(notRegisteredUserCode);
+
+        // then
+        assertThat(githubLoginResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     /**
