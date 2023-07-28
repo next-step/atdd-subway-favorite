@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.mock;
 import static org.mockito.BDDMockito.verify;
 
 import java.util.Optional;
@@ -39,11 +38,8 @@ class MemberServiceTest {
     void createMember() {
         // given
         MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
-        Member member = mock(Member.class);
+        Member member = new Member(EMAIL, PASSWORD, AGE);
         given(memberRepository.save(any(Member.class))).willReturn(member);
-        given(member.getId()).willReturn(1L);
-        given(member.getEmail()).willReturn(EMAIL);
-        given(member.getAge()).willReturn(AGE);
 
         // when
         MemberResponse createdMember = memberService.createMember(memberRequest);
