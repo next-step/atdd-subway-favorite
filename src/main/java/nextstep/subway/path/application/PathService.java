@@ -27,18 +27,22 @@ public class PathService {
     public PathResponse searchPath(Long source, Long target) {
         validateSourceAndTargetId(source, target);
 
-        Station sourceStation = findStation(source);
-        Station targetStation = findStation(target);
-
-        List<Line> lines = lineRepository.findAll();
-
-        ShortestPath shortestPath = new ShortestPath(lines, sourceStation, targetStation);
+        ShortestPath shortestPath = createShortestPath(source, target);
 
         List<StationResponse> stationResponses = shortestPath.getPath().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
 
         return new PathResponse(stationResponses, shortestPath.getDistance());
+    }
+
+    private ShortestPath createShortestPath(Long source, Long target) {
+        Station sourceStation = findStation(source);
+        Station targetStation = findStation(target);
+
+        List<Line> lines = lineRepository.findAll();
+
+        return new ShortestPath(lines, sourceStation, targetStation);
     }
 
     private void validateSourceAndTargetId(Long source, Long target) {
@@ -50,5 +54,17 @@ public class PathService {
     private Station findStation(Long source) {
         return stationRepository.findById(source)
                 .orElseThrow(StationNotFoundException::new);
+    }
+
+    public void validatePath(Long source, Long target) {
+        validateSourceAndTargetId(source, target);
+        validateExistenceOfStation(source, target);
+        createShortestPath(source, target);
+    }
+
+    private void validateExistenceOfStation(Long source, Long target) {
+        if (!stationRepository.existsById(source) || !stationRepository.existsById(target)) {
+            throw new StationNotFoundException();
+        }
     }
 }
