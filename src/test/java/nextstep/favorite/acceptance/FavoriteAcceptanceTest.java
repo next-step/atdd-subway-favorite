@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.auth.acceptance.step.TokenSteps.일반_로그인_요청;
 import static nextstep.auth.acceptance.step.TokenSteps.토큰_추출;
-import static nextstep.favorite.acceptance.step.FavoriteSteps.즐겨찾기_생성_요청;
+import static nextstep.favorite.acceptance.step.FavoriteSteps.*;
 import static nextstep.member.acceptance.step.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.step.LineStep.지하철_노선을_생성한다;
 import static nextstep.subway.acceptance.step.StationStep.지하철역을_생성한다;
@@ -81,7 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 양재역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -92,8 +92,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * ## 시나리오
      * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
-     * And : 가짜 토큰을 사용하여
-     * When : 출발역 id와 도착역 id를 전송하면
+     * When : 가짜 토큰과 출발역 id와 도착역 id를 전송하면
      * Then : 401 UnAuthorized가 발생한다.
      */
     @DisplayName("즐겨찾기 생성 실패 : 올바른 토큰이 아닌 경우")
@@ -103,11 +102,49 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String fakeToken = "가짜 토큰";
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(fakeToken, 교대역, 양재역);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TokenType.BEARER, fakeToken, 교대역, 양재역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         ErrorTestUtils.예외_메세지_검증(response, ErrorCode.INVALID_TOKEN_EXCEPTION);
+    }
+
+    /**
+     * ## 시나리오
+     * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
+     * When : 토큰 없이 출발역 id와 도착역 id를 전송하면
+     * Then : 401 UnAuthorized가 발생한다.
+     */
+    @DisplayName("즐겨찾기 생성 실패 : 토큰을 보내지 않는 경우")
+    @Test
+    void createFailByNoToken() {
+        // when
+        ExtractableResponse<Response> response = 토큰_헤더_없이_즐겨찾기_생성_요청(교대역, 양재역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * ## 시나리오
+     * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
+     * And : 회원을 생성하고
+     * And : 토큰을 발급받은 후
+     * When : Bearer가 아닌 Basic 토큰과 출발역 id와 도착역 id를 전송하면
+     * Then : 401 UnAuthorized가 발생한다.
+     */
+    @DisplayName("즐겨찾기 생성 실패 : Basic 토큰을 보내는 경우")
+    @Test
+    void createFailByNoBearer() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TokenType.BASIC, accessToken, 교대역, 양재역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -125,7 +162,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역, 교대역);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 교대역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -149,7 +186,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역, 없는역);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 없는역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -176,7 +213,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역, 등촌역);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 등촌역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -201,7 +238,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역, 노선에_없는역);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 노선에_없는역);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
