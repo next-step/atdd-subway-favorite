@@ -72,4 +72,8 @@ public class MemberSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static String 이메일_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("email");
+    }
 }
