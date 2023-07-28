@@ -87,7 +87,6 @@ public class MemberSteps {
             .header("authorization", "Bearer " + accessToken)
             .when().get("/members/me")
             .then().log().all()
-            .statusCode(HttpStatus.OK.value())
             .extract();
     }
 }

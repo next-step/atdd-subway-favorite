@@ -1,6 +1,7 @@
 package nextstep.auth.token;
 
 import io.jsonwebtoken.*;
+import nextstep.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +29,20 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return getClaims(token).getSubject();
+    }
+
+    private Claims getClaims(String token) {
+
+        try {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        } catch (SecurityException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new AuthenticationException();
+        }
     }
 
     public String getRoles(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role", String.class);
+        return getClaims(token).get("role", String.class);
     }
 
     public boolean validateToken(String token) {
