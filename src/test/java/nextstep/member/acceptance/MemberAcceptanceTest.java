@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import static nextstep.member.acceptance.MemberSteps.로그인_요청_및_토큰_발급;
 import static nextstep.member.acceptance.MemberSteps.토큰을_통한_내_정보_조회;
 import static nextstep.member.acceptance.MemberSteps.회원_삭제_요청;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_검증;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_정보_수정_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_정보_조회_요청;
@@ -27,7 +28,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        회원_생성_검증(response);
     }
 
     @DisplayName("회원 정보를 조회한다.")

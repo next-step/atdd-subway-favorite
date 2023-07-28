@@ -7,6 +7,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MemberSteps {
@@ -23,6 +26,13 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/members")
                 .then().log().all().extract();
+    }
+
+    public static void 회원_생성_검증(ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> assertThat(response.header(HttpHeaders.LOCATION)).isEqualTo("/members/1"),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
+        );
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
