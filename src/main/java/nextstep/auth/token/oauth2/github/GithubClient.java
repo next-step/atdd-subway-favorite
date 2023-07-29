@@ -24,22 +24,22 @@ public class GithubClient {
 
     public String getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
-            code,
-            clientId,
-            clientSecret
+                code,
+                clientId,
+                clientSecret
         );
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
-            githubAccessTokenRequest, headers);
+                githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         String accessToken = restTemplate
-            .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-            .getBody()
-            .getAccessToken();
+                .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                .getBody()
+                .getAccessToken();
         if (accessToken == null) {
             throw new RuntimeException();
         }
@@ -55,8 +55,8 @@ public class GithubClient {
 
         try {
             return restTemplate
-                .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
-                .getBody();
+                    .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                    .getBody();
         } catch (HttpClientErrorException e) {
             throw new RuntimeException();
         }

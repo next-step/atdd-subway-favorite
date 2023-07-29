@@ -1,6 +1,7 @@
 package nextstep.auth.token.oauth2.github;
 
 public class GithubTokenRequest {
+
     private String code;
 
     public GithubTokenRequest() {

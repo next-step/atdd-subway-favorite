@@ -1,8 +1,9 @@
 package nextstep.auth.principal;
 
 public class UserPrincipal {
-    private String username;
-    private String role;
+
+    private final String username;
+    private final String role;
 
     public UserPrincipal(String username, String role) {
         this.username = username;

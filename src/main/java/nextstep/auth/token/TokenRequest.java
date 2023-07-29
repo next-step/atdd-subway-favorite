@@ -1,6 +1,7 @@
 package nextstep.auth.token;
 
 public class TokenRequest {
+
     private String email;
     private String password;
 

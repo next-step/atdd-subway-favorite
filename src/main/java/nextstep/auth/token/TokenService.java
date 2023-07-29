@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private UserDetailsService userDetailsService;
-    private OAuth2UserService oAuth2UserService;
-    private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
+
+    private final UserDetailsService userDetailsService;
+    private final OAuth2UserService oAuth2UserService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
     public TokenService(
             UserDetailsService userDetailsService,
