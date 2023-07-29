@@ -44,7 +44,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        MemberResponse memberResponse = memberService.findMemberByEmail(userPrincipal.getUsername());
+        MemberResponse memberResponse = memberService.findMemberByEmail(userPrincipal.getMemberEmail());
         return ResponseEntity.ok(memberResponse);
     }
 }

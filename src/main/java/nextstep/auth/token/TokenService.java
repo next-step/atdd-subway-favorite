@@ -3,7 +3,6 @@ package nextstep.auth.token;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.oauth2.OAuth2User;
 import nextstep.auth.token.oauth2.OAuth2UserService;
-import nextstep.auth.token.oauth2.github.GithubClient;
 import nextstep.auth.token.oauth2.github.GithubClientInterface;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 import nextstep.auth.userdetails.UserDetails;

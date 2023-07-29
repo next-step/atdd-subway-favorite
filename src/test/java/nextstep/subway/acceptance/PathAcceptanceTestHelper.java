@@ -2,7 +2,6 @@ package nextstep.subway.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ValidatableResponse;
-import nextstep.utils.AcceptanceTestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ class PathAcceptanceTestHelper extends SectionAcceptanceTestHelper {
         params.put("source", sourceStationId);
         params.put("target", targetStationId);
 
-        return AcceptanceTestUtils.getResource(PATH_RESOURCE_URL, params);
+        return getResource(PATH_RESOURCE_URL, params);
     }
 
     protected void verifyFoundPath(ValidatableResponse foundPathResponse, long distance, String... stationNames) {

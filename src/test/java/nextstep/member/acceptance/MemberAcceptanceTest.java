@@ -97,7 +97,7 @@ class MemberAcceptanceTest {
     void getMyInfoForbidden() {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        var signInResponse = 로그인(EMAIL, PASSWORD).as(TokenResponse.class);
+        로그인(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
         assertThat(내_정보_조회_요청(null).statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());

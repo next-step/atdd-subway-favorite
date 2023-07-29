@@ -2,11 +2,14 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ValidatableResponse;
 import nextstep.marker.AcceptanceTest;
-import nextstep.utils.AcceptanceTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import static nextstep.utils.AcceptanceTestUtils.getId;
+import static nextstep.utils.AcceptanceTestUtils.verifyResponseStatus;
+
 
 @AcceptanceTest
 public class PathAcceptanceTest extends PathAcceptanceTestHelper {
@@ -29,14 +32,14 @@ public class PathAcceptanceTest extends PathAcceptanceTestHelper {
      */
     @BeforeEach
     void setUp() {
-        교대역 = AcceptanceTestUtils.getId(createStation("교대역"));
-        강남역 = AcceptanceTestUtils.getId(createStation("강남역"));
-        양재역 = AcceptanceTestUtils.getId(createStation("양재역"));
-        남부터미널역 = AcceptanceTestUtils.getId(createStation("남부터미널역"));
+        교대역 = getId(createStation("교대역"));
+        강남역 = getId(createStation("강남역"));
+        양재역 = getId(createStation("양재역"));
+        남부터미널역 = getId(createStation("남부터미널역"));
 
-        이호선 = AcceptanceTestUtils.getId(createLines("2호선", "green", 교대역, 강남역, 10L));
-        신분당선 = AcceptanceTestUtils.getId(createLines("신분당선", "red", 강남역, 양재역, 10L));
-        삼호선 = AcceptanceTestUtils.getId(createLines("3호선", "orange", 교대역, 남부터미널역, 2L));
+        이호선 = getId(createLines("2호선", "green", 교대역, 강남역, 10L));
+        신분당선 = getId(createLines("신분당선", "red", 강남역, 양재역, 10L));
+        삼호선 = getId(createLines("3호선", "orange", 교대역, 남부터미널역, 2L));
 
         createSection(삼호선, 남부터미널역, 양재역, 3);
     }
@@ -82,17 +85,17 @@ public class PathAcceptanceTest extends PathAcceptanceTestHelper {
             ValidatableResponse pathResponse = getPath(강남역, 강남역);
 
             // then
-            AcceptanceTestUtils.verifyResponseStatus(pathResponse, HttpStatus.BAD_REQUEST);
+            verifyResponseStatus(pathResponse, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void 출발역과_도착역이_연결되지_않은_경우() {
             // when
-            Long 까치산역 = AcceptanceTestUtils.getId(createStation("까치산역"));
+            Long 까치산역 = getId(createStation("까치산역"));
             ValidatableResponse pathResponse = getPath(까치산역, 강남역);
 
             // then
-            AcceptanceTestUtils.verifyResponseStatus(pathResponse, HttpStatus.BAD_REQUEST);
+            verifyResponseStatus(pathResponse, HttpStatus.BAD_REQUEST);
         }
 
         @Test
@@ -101,7 +104,7 @@ public class PathAcceptanceTest extends PathAcceptanceTestHelper {
             ValidatableResponse pathResponse = getPath(10000L, 강남역);
 
             // then
-            AcceptanceTestUtils.verifyResponseStatus(pathResponse, HttpStatus.NOT_FOUND);
+            verifyResponseStatus(pathResponse, HttpStatus.NOT_FOUND);
         }
     }
 }
