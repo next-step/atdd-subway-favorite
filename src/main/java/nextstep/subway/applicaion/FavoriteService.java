@@ -2,7 +2,7 @@ package nextstep.subway.applicaion;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.member.domain.MemberRepository;
+import nextstep.auth.AuthenticationException;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
@@ -18,7 +18,8 @@ public class FavoriteService {
   private FavoriteRepository favoriteRepository;
   private StationRepository stationRepository;
 
-  public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository) {
+  public FavoriteService(FavoriteRepository favoriteRepository,
+      StationRepository stationRepository) {
     this.favoriteRepository = favoriteRepository;
     this.stationRepository = stationRepository;
   }
@@ -43,7 +44,13 @@ public class FavoriteService {
   }
 
   @Transactional
-  public void deleteLine(Long id) {
+  public void deleteFavorite(Long userId, Long id) {
+    Favorite deletedFavorite = favoriteRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("해당 역은 존재 하지 않습니다."));
+    if (!deletedFavorite.getMemberId().equals(userId)) {
+      throw new AuthenticationException("내 즐겨찾기 목록에 있지 않습니다.");
+    }
+
     favoriteRepository.deleteById(id);
   }
 }

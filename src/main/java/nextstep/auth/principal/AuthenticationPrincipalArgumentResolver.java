@@ -27,7 +27,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String authorization = webRequest.getHeader("Authorization");
         emptyValidate(authorization);
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException();
+            throw new AuthenticationException("오류가 있는 토큰 값입니다.");
         }
         String token = authorization.split(" ")[1];
 
