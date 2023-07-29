@@ -6,6 +6,7 @@ import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요�
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_정보_조회됨;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
+import static nextstep.subway.acceptance.PathSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,12 +26,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   public static final Integer AGE = 20;
   public static final String EMAIL1 = "sample@email.com";
   public static final String BAD_PASSWORD = "bad_password";
-  private Long 강남역;
-  private Long 양재역;
+
   private String 액세스토큰;
   private String 액세스토큰2;
-
-  private Long 생성되지않은역 = 3L;
+  private Long 교대역;
+  private Long 강남역;
+  private Long 양재역;
+  private Long 남부터미널역;
+  private Long 이호선;
+  private Long 신분당선;
+  private Long 삼호선;
+  private Long 생성되지않은역 = 255L;
 
   @BeforeEach
   public void setUp() {
@@ -39,8 +45,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     ExtractableResponse response = 토큰_요청(EMAIL, PASSWORD);
     액세스토큰 = response.jsonPath().getString("accessToken");
 
+    교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
     강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
     양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+
+    양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+    남부터미널역 = 지하철역_생성_요청("남부터미널역").jsonPath().getLong("id");
+
+    이호선 = 지하철_노선_생성_요청("2호선", "green", 강남역, 양재역, 10);
+    삼호선 = 지하철_노선_생성_요청("3호선", "orange", 교대역, 남부터미널역, 2);
+
   }
   @Nested
   @DisplayName("로그인에 성공 했을 때,")
@@ -61,7 +75,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
       assertThat(creationResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
     }
+    /**
+     * Given 로그인이 되어있을 때,
+     * When 비정상(존재하지않는) 경로를 즐겨찾기로 생성하면
+     * Then 즐겨찾기를 생성할 수 없다.
+     *
+     * When 비정상(연결되어있지않은) 경로를 즐겨찾기로 생성하면
+     * Then 즐겨찾기를 생성할 수 없다.
+     */
+    @DisplayName("오류 케이스: 로그인이 되어있을때, 비정상 경로는 즐겨찾기로 생성할 수 없다.")
+    @Test
+    void createBadFavoriteThrowsError() {
+      // when
+      ExtractableResponse NotExistingResponse = 즐겨찾기_생성_요청(43242L, 23542L, 액세스토큰);
+      // then
+      assertThat(NotExistingResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
+      // when
+      ExtractableResponse UnconnectedResponse = 즐겨찾기_생성_요청(교대역, 양재역, 액세스토큰);
+      // then
+      assertThat(UnconnectedResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
     /**
      * Given 로그인이 되어있을 때,
      * AND 즐겨찾기가 1개 추가되었고
@@ -105,7 +139,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *         즐겨찾기를 삭제하면,
      * Then 처음의 즐겨찾기를 삭제 할 수 없다.
      */
-    @DisplayName("로그인이 되어있을때, 다른 유저의 즐겨찾기를 삭제할 수 없다.")
+    @DisplayName("오류 케이스: 로그인이 되어있을때, 다른 유저의 즐겨찾기를 삭제할 수 없다.")
     @Test
     void deleteFavoriteWithDifferentLogin() {
       // given
