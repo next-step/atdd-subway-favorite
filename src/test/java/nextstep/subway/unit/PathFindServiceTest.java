@@ -131,6 +131,17 @@ class PathFindServiceTest {
             verifyShortestPathResponse(shortestPath, 10L, 강남역Id, 양재역Id);
         }
 
+        @Test
+        void 유효한_경로() {
+            // given
+            given(stationRepository.findById(강남역Id)).willReturn(Optional.of(강남역));
+            given(stationRepository.findById(양재역Id)).willReturn(Optional.of(양재역));
+            givenLines();
+
+            // when & then
+            Assertions.assertTrue(pathFindService.isValidPath(강남역Id, 양재역Id));
+        }
+
         private void givenLines() {
             given(이호선.getSections()).willReturn(Collections.singletonList(Section.of(교대역, 강남역, 5L)));
             given(삼호선.getSections()).willReturn(List.of(Section.of(교대역, 남부터미널역, 7L), Section.of(남부터미널역, 양재역, 2L)));
@@ -177,6 +188,15 @@ class PathFindServiceTest {
 
             // when & then
             thenCode(() -> pathFindService.getShortestPath(8L, 남부터미널역Id)).isInstanceOf(NotFoundStationException.class);
+        }
+
+        @Test
+        void 유효하지_않은_경로() {
+            // given
+            given(stationRepository.findById(강남역Id)).willReturn(Optional.of(강남역));
+
+            // when & then
+            Assertions.assertTrue(pathFindService.isInValidPath(강남역Id, 강남역Id));
         }
     }
 

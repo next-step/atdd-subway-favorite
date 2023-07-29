@@ -72,6 +72,27 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
         }
 
         /**
+         * 즐겨찾기 목록 조회
+         * Given 지하철 노선을 생성하고
+         * And 즐겨찾기를 생성하고
+         * And 토큰을 헤더에 담아
+         * When 즐겨찾기를 조회하면
+         * Then 즐겨찾기 목록 정보가 응답된다.
+         */
+        @Test
+        void 즐겨찾기_목록_조회() {
+            // given
+            ValidatableResponse favoriteCreatedResponse = createFavorite(교대역, 강남역, 토큰);
+            AcceptanceTestUtils.verifyResponseStatus(favoriteCreatedResponse, HttpStatus.CREATED);
+
+            //when
+            ValidatableResponse foundFavoriteResponse = getFavorites(토큰);
+
+            //then
+            verifyFoundFavorites(foundFavoriteResponse, "교대역", "강남역");
+        }
+
+        /**
          * 즐겨찾기 조회
          * Given 지하철 노선을 생성하고
          * And 즐겨찾기를 생성하고
@@ -83,7 +104,6 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestHelper {
         void 즐겨찾기_조회() {
             // given
             ValidatableResponse favoriteCreatedResponse = createFavorite(교대역, 강남역, 토큰);
-            String location = AcceptanceTestUtils.getLocation(favoriteCreatedResponse);
 
             //when
             ValidatableResponse foundFavoriteResponse = getFavorite(AcceptanceTestUtils.getId(favoriteCreatedResponse), 토큰);

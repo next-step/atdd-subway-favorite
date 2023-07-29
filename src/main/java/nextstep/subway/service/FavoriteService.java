@@ -8,13 +8,15 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.controller.request.FavoriteCreateRequest;
 import nextstep.subway.controller.resonse.FavoriteResponse;
-import nextstep.subway.controller.resonse.PathResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.Station;
 import nextstep.subway.repository.FavoriteRepository;
 import nextstep.subway.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -54,10 +56,20 @@ public class FavoriteService {
     }
 
     public void validatePath(Long sourceId, Long targetId) {
-        PathResponse shortestPath = pathFindService.getShortestPath(sourceId, targetId);
-        if (shortestPath == null) {
+        if (pathFindService.isInValidPath(sourceId, targetId)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public List<FavoriteResponse> findFavorites(String memberEmail) {
+        Member member = memberRepository.findByEmail(memberEmail)
+                .orElseThrow(() -> new NotFoundMemberException(memberEmail));
+
+        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
+
+        return favorites.stream()
+                .map(FavoriteResponse::new)
+                .collect(Collectors.toList());
     }
 
     public FavoriteResponse findFavorite(String memberEmail, Long favoriteId) {

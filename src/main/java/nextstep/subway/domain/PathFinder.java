@@ -16,14 +16,8 @@ public class PathFinder {
         this.sections = sections;
     }
 
-    public Path getShortestPath(Station sourceStation, Station targetStation) {
-        return initializePath(sourceStation, targetStation)
-                .map(path -> {
-                    List<Station> stations = path.getVertexList();
-                    long distance = (long) path.getWeight();
-                    return new Path(stations, distance);
-                })
-                .orElseThrow(IllegalArgumentException::new);
+    public boolean isValidPath(Station sourceStation, Station targetStation) {
+        return initializePath(sourceStation, targetStation).map(PathFinder::mapToPath).isPresent();
     }
 
     private Optional<GraphPath<Station, DefaultWeightedEdge>> initializePath(Station sourceStation, Station targetStation) {
@@ -38,6 +32,18 @@ public class PathFinder {
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation));
+    }
+
+    public Path getShortestPath(Station sourceStation, Station targetStation) {
+        return initializePath(sourceStation, targetStation)
+                .map(PathFinder::mapToPath)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private static Path mapToPath(GraphPath<Station, DefaultWeightedEdge> path) {
+        List<Station> stations = path.getVertexList();
+        long distance = (long) path.getWeight();
+        return new Path(stations, distance);
     }
 
     private void addStationVertexes(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {

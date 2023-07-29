@@ -91,6 +91,12 @@ public class PathFinderTest {
             verifyShortestPath(shortestPath, 10L, "강남역", "양재역");
         }
 
+        @Test
+        void 유효한_경로() {
+            // when & then
+            Assertions.assertTrue(pathFinder.isValidPath(강남역, 양재역));
+        }
+
         private void verifyShortestPath(Path shortestPath, long distance, String... stationNames) {
             Assertions.assertEquals(distance, shortestPath.getDistance());
             assertThat(shortestPath.getStations()).hasSize(stationNames.length)
@@ -116,6 +122,12 @@ public class PathFinderTest {
 
             // when & then
             thenCode(() -> pathFinder.getShortestPath(강남역, 다른역)).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 유효하지_않은__경로() {
+            // when & then
+            Assertions.assertFalse(pathFinder.isValidPath(강남역, 강남역));
         }
     }
 

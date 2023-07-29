@@ -55,13 +55,24 @@ class FavoriteAcceptanceTestHelper extends PathAcceptanceTestHelper {
         return getResource(String.format("%s/%d", FAVORITE_RESOURCE_URL, favoriteId), token);
     }
 
+    protected ValidatableResponse getFavorites(String token) {
+        return getResource(FAVORITE_RESOURCE_URL, token);
+    }
+
     protected ValidatableResponse deleteFavorite(Long favoriteId, String token) {
         return deleteResource(String.format("%s/%d", FAVORITE_RESOURCE_URL, favoriteId), token);
     }
 
-    protected void verifyFoundFavorite(ValidatableResponse foundPathResponse, String sourceName, String targetName) {
-        JsonPath jsonPath = foundPathResponse.extract().jsonPath();
+    protected void verifyFoundFavorite(ValidatableResponse foundFavoriteResponse, String sourceName, String targetName) {
+        JsonPath jsonPath = foundFavoriteResponse.extract().jsonPath();
         assertThat(jsonPath.getString("source.name")).isEqualTo(sourceName);
         assertThat(jsonPath.getString("target.name")).isEqualTo(targetName);
     }
+
+    protected void verifyFoundFavorites(ValidatableResponse foundFavoriteResponse, String sourceName, String targetName) {
+        JsonPath jsonPath = foundFavoriteResponse.extract().jsonPath();
+        assertThat(jsonPath.getString("source.name[0]")).isEqualTo(sourceName);
+        assertThat(jsonPath.getString("target.name[0]")).isEqualTo(targetName);
+    }
+
 }

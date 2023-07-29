@@ -43,14 +43,30 @@ public class PathFindService {
                         .collect(Collectors.toList()),
                 shortestPath.getDistance()
         );
+    }
 
+    public boolean isInValidPath(Long sourceStationId, Long targetStationId) {
+        return !isValidPath(sourceStationId, targetStationId);
+    }
+
+    public boolean isValidPath(Long sourceStationId, Long targetStationId) {
+        Station sourceStation = stationRepository.findById(sourceStationId)
+                .orElseThrow(() -> new NotFoundStationException(sourceStationId));
+        Station targetStation = stationRepository.findById(targetStationId)
+                .orElseThrow(() -> new NotFoundStationException(targetStationId));
+
+        return getPathFinder().isValidPath(sourceStation, targetStation);
     }
 
     private Path getShortestPath(Station sourceStation, Station targetStation) {
+        return getPathFinder().getShortestPath(sourceStation, targetStation);
+    }
+
+    private PathFinder getPathFinder() {
         List<Section> sections = lineRepository.findAll().stream()
                 .map(Line::getSections)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        return new PathFinder(sections).getShortestPath(sourceStation, targetStation);
+        return new PathFinder(sections);
     }
 }
