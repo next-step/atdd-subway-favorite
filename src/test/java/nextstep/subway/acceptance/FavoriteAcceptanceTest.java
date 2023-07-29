@@ -10,14 +10,11 @@ import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("즐겨찾기 관리 기능")
@@ -26,9 +23,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   public static final String EMAIL = "admin@email.com";
   public static final String PASSWORD = "password";
   public static final Integer AGE = 20;
+  public static final String EMAIL1 = "sample@email.com";
+  public static final String BAD_PASSWORD = "bad_password";
   private Long 강남역;
   private Long 양재역;
   private String 액세스토큰;
+  private String 액세스토큰2;
 
   private Long 생성되지않은역 = 3L;
 
@@ -97,6 +97,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
       assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
       즐겨찾기_정보_조회됨(getResponse, 강남역, 양재역);
     }
+
+    /**
+     * Given 로그인이 되어있을 때,
+     * AND 즐겨찾기가 1개 추가하고
+     * When 다른 아이디로 로그인하고
+     *         즐겨찾기를 삭제하면,
+     * Then 처음의 즐겨찾기를 삭제 할 수 없다.
+     */
+    @DisplayName("로그인이 되어있을때, 다른 유저의 즐겨찾기를 삭제할 수 없다.")
+    @Test
+    void deleteFavoriteWithDifferentLogin() {
+      // given
+      ExtractableResponse creationResponse = 즐겨찾기_생성_요청(강남역, 양재역, 액세스토큰);
+      Long id = creationResponse.jsonPath().getLong("id");
+
+      회원_생성_요청(EMAIL1, BAD_PASSWORD, 15);
+      ExtractableResponse response = 토큰_요청(EMAIL1, BAD_PASSWORD);
+      액세스토큰2 = response.jsonPath().getString("accessToken");
+
+      // when
+      ExtractableResponse deleteResponse = 즐겨찾기_삭제_요청(id, 액세스토큰2);
+
+      // then
+      assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
   }
 
   @Nested
@@ -162,5 +187,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     // then
     assertThat(creationResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
   }
+
 
 }
