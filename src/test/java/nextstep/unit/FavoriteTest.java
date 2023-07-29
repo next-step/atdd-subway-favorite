@@ -45,7 +45,7 @@ class FavoriteTest {
   /**
    * Given 회원과 역 2개가 주어졌을 때,
    * When 동일한 역으로 즐겨찾기를 생성하면
-   * Then 즐겨찾기 생성에 성공한다.
+   * Then 즐겨찾기 생성에 실패한다.
    */
   @Test
   @DisplayName("오류 테스트: 같은 역으로는 즐겨찾기를 생성할 수 없다.")
