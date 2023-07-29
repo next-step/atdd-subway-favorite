@@ -46,7 +46,9 @@ public class SubwayMap {
         // 다익스트라 최단 경로 찾기
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
-
+        if(result == null){
+          throw new IllegalArgumentException("연결되어 있지 않은 구간입니다.");
+        }
         List<Section> sections = result.getEdgeList().stream()
                 .map(it -> it.getSection())
                 .collect(Collectors.toList());

@@ -17,11 +17,13 @@ public class FavoriteService {
 
   private FavoriteRepository favoriteRepository;
   private StationRepository stationRepository;
+  private PathService pathService;
 
   public FavoriteService(FavoriteRepository favoriteRepository,
-      StationRepository stationRepository) {
+      StationRepository stationRepository, PathService pathService) {
     this.favoriteRepository = favoriteRepository;
     this.stationRepository = stationRepository;
+    this.pathService = pathService;
   }
 
   @Transactional
@@ -32,6 +34,7 @@ public class FavoriteService {
     Station target = stationRepository.findById(request.getTarget())
         .orElseThrow(() -> new IllegalArgumentException("마지막역이 존재 하지 않습니다."));
 
+    pathService.findPath(request.getSource(), request.getTarget());
     Favorite favorite = favoriteRepository.save(Favorite.of(userId, source, target));
     return FavoriteResponse.of(favorite);
   }
