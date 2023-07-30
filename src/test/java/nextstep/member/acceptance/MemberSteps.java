@@ -69,7 +69,7 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
         return RestAssured.given().log().all()
-                .header("authorization", token)
+                .header("authorization", "Bearer " + token)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
