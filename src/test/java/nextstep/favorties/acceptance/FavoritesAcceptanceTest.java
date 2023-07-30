@@ -1,22 +1,17 @@
 package nextstep.favorties.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.favorties.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.member.acceptance.TokenSteps.로그인_요청;
-import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -99,36 +94,6 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         assertThat(responseDelete.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         ExtractableResponse<Response> responseFavoritesForVerify = 즐겨찾기_목록_조회(accessToken);
         assertThat(responseFavoritesForVerify.jsonPath().getList("$")).hasSize(0);
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, Long favoriteId) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/favorites/{favoriteId}", favoriteId)
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/favorites")
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Long 교대역, Long 양재역) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", 교대역.toString());
-        params.put("target", 양재역.toString());
-
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/favorites")
-                .then().log().all().extract();
     }
 
     /**
