@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Member member = memberRepository.findByEmail(username).orElseThrow(AuthenticationException::new);
+        Member member = memberRepository.findByEmail(username).orElseThrow(() -> new AuthenticationException("없는 유저이름입니다."));
         return new CustomUserDetails(member.getEmail(), member.getPassword(), member.getRole());
     }
 }

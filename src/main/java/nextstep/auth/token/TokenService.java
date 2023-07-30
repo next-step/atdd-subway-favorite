@@ -31,7 +31,7 @@ public class TokenService {
     public TokenResponse createToken(String email, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         if (!userDetails.getPassword().equals(password)) {
-            throw new AuthenticationException();
+            throw new AuthenticationException("아이디와 비번이 틀렸습니다.");
         }
 
         String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getRole());
