@@ -22,6 +22,10 @@ public class GithubTestController {
     public ResponseEntity<GithubProfileResponse> user(@RequestHeader("authorization") String authorization) {
         String accessToken = authorization.split(" ")[1];
         GithubResponse githubResponse = GithubResponse.fromToken(accessToken);
+
+        if (githubResponse == GithubResponse.잘못된_토큰) {
+            throw new RuntimeException("잘못된 토큰");
+        }
         return ResponseEntity.ok().body(new GithubProfileResponse(githubResponse.getEmail(), githubResponse.getAge()));
     }
 }

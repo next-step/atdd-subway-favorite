@@ -41,9 +41,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("Github Auth")
-    @EnumSource(GithubResponse.class)
-    @ParameterizedTest
-    void githubAuth(GithubResponse githubResponse) {
+    @Test
+    void githubAuth() {
+
+        // given
+        GithubResponse githubResponse = GithubResponse.사용자1;
 
         // when
         ExtractableResponse<Response> response = code로_깃허브_로그인(githubResponse.getCode());
@@ -65,6 +67,21 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = code로_깃허브_로그인(wrongCode);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+    }
+
+    @DisplayName("Github Auth - fail - wrong access token")
+    @Test
+    void githubAuth_wrongAccessToken() {
+
+        // given
+        GithubResponse githubResponse = GithubResponse.잘못된_토큰;
+
+        // when
+        ExtractableResponse<Response> response = code로_깃허브_로그인(githubResponse.getCode());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
