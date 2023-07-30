@@ -3,21 +3,18 @@ package nextstep.utils;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Map;
 
 @RestController
 public class GithubTestController {
 
+    private static final String PARAMETER_CODE = "code";
+
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(@RequestBody Map<String, String> body) {
-        String code = body.get("code");
+        String code = body.get(PARAMETER_CODE);
         GithubResponse githubResponse = GithubResponse.fromCode(code);
         return ResponseEntity.ok().body(new GithubAccessTokenResponse(githubResponse.getAccessToken(), "tokenType", "scope", "bearer"));
     }
@@ -28,9 +25,10 @@ public class GithubTestController {
         GithubResponse githubResponse = GithubResponse.fromToken(accessToken);
 
         if (githubResponse == GithubResponse.잘못된_토큰) {
-            throw new RuntimeException("잘못된 토큰");
+            throw new IllegalArgumentException("잘못된 토큰입니다.");
         }
-        return ResponseEntity.ok().body(new GithubProfileResponse(githubResponse.getEmail(), githubResponse.getAge()));
+        GithubProfileResponse response = new GithubProfileResponse(githubResponse.getEmail(), githubResponse.getAge());
+        return ResponseEntity.ok().body(response);
     }
 }
 
