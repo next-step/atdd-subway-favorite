@@ -147,6 +147,6 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> responseSave = 즐겨찾기_생성(accessToken, 교대역, 남부터미널역);
 
         // then
-        assertThat(responseSave.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(responseSave.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
