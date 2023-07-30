@@ -3,6 +3,8 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.token.TokenRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -63,5 +65,26 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
+        return RestAssured.given().log().all()
+                .header("authorization", token)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static String 로그인_요청_후_토큰발급(String email, String password) {
+        return RestAssured.given().log().all()
+                .body(new TokenRequest(email, password))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getString("accessToken");
     }
 }

@@ -72,6 +72,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
-
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var token = MemberSteps.로그인_요청_후_토큰발급(EMAIL, PASSWORD);
+        // when
+        var response = MemberSteps.내_정보_조회_요청(token);
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }
