@@ -37,13 +37,13 @@ public enum GithubResponse {
         return Arrays.stream(values())
                 .filter(response -> response.getCode().equals(code))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("code가 잘못되었습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("code가 잘못되었습니다."));
     }
 
     public static GithubResponse fromToken(String accessToken) {
         return Arrays.stream(values())
                 .filter(response -> response.getAccessToken().equals(accessToken))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("accessToken이 잘못되었습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("accessToken이 잘못되었습니다."));
     }
 }
