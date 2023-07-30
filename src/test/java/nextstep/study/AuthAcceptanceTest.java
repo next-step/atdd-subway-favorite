@@ -1,6 +1,5 @@
 package nextstep.study;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.acceptance.MemberSteps;
@@ -14,10 +13,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static nextstep.study.LoginSteps.code로_깃허브_로그인;
 import static nextstep.study.LoginSteps.비밀번호로_로그인;
@@ -38,12 +33,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // given
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-
         // when
-        ExtractableResponse<Response> response = 비밀번호로_로그인(params);
+        ExtractableResponse<Response> response = 비밀번호로_로그인(EMAIL, PASSWORD);
 
         // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
@@ -54,18 +45,29 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     void githubAuth(GithubResponse githubResponse) {
 
-        // given
-        Map<String, String> params = new HashMap<>();
-        params.put("code", githubResponse.getCode());
-
         // when
-        ExtractableResponse<Response> response = code로_깃허브_로그인(params);
+        ExtractableResponse<Response> response = code로_깃허브_로그인(githubResponse.getCode());
 
         // then
         String accessToken = response.jsonPath().getString("accessToken");
         ExtractableResponse<Response> profileResponse = MemberSteps.토큰으로_회원_정보_조회_요청(accessToken);
         assertThat(profileResponse.jsonPath().getString("email")).isEqualTo(githubResponse.getEmail());
         assertThat(profileResponse.jsonPath().getInt("age")).isEqualTo(githubResponse.getAge());
+
+    }
+
+    @DisplayName("Github Auth - fail - wrong code")
+    @Test
+    void githubAuth_wrongCode() {
+
+        // given
+        String wrongCode = "wrongCode";
+
+        // when
+        ExtractableResponse<Response> response = code로_깃허브_로그인(wrongCode);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
     }
 }
