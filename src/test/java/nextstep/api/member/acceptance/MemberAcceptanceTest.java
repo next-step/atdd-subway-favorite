@@ -2,7 +2,7 @@ package nextstep.api.member.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static nextstep.api.auth.acceptance.AuthSteps.로그인_요청;
+import static nextstep.api.auth.acceptance.AuthSteps.일반_로그인_요청;
 import static nextstep.api.member.acceptance.MemberSteps.내_정보_조회_요청;
 import static nextstep.api.member.acceptance.MemberSteps.회원_삭제_요청;
 import static nextstep.api.member.acceptance.MemberSteps.회원_생성_요청;
@@ -82,7 +82,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void getMyInfo() {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        final var token = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+        final var token = 일반_로그인_요청(EMAIL, PASSWORD).extract()
+                .jsonPath().getString("accessToken");
 
         // when
         final var response = 내_정보_조회_요청(token);

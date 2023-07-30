@@ -2,6 +2,7 @@ package nextstep.utils;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -20,11 +21,19 @@ public class AcceptanceTest {
     private DatabaseCleanup databaseCleanup;
     @Autowired
     private DataLoader dataLoader;
+    @Value("${enabled.logging}")
+    private boolean enableLogging;
 
     @BeforeEach
     public void setUp() {
         databaseCleanup.execute();
         dataLoader.loadData();
-        RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
+        logRestAssured();
+    }
+
+    private void logRestAssured() {
+        if (enableLogging) {
+            RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
+        }
     }
 }
