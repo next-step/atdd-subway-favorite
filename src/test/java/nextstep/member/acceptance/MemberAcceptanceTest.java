@@ -1,10 +1,12 @@
 package nextstep.member.acceptance;
 
+import nextstep.auth.AuthSteps;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.auth.AuthSteps.*;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,6 +74,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
-
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var token = 로그인_요청_후_토큰발급(EMAIL, PASSWORD);
+        // when
+        var response = 내_정보_조회_요청(token);
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }
