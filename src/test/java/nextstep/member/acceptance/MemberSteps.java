@@ -21,8 +21,10 @@ public class MemberSteps {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/members")
-                .then().log().all().extract();
+                .when()
+                .post("/members")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
