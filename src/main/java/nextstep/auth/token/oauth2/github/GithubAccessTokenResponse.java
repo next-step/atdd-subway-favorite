@@ -1,6 +1,7 @@
 package nextstep.auth.token.oauth2.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
 public class GithubAccessTokenResponse {
 
@@ -15,7 +16,8 @@ public class GithubAccessTokenResponse {
 
     }
 
-    public GithubAccessTokenResponse(
+    @Builder
+    private GithubAccessTokenResponse(
             String accessToken,
             String tokenType,
             String scope,

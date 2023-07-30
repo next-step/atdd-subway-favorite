@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GithubTestController {
 
+    public static final String TOKEN_TYPE = "access_token";
+    public static final String SCOPE = "profile";
+    public static final String BEARER = "bearer";
+
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(
             @RequestBody GithubAccessTokenRequest githubAccessTokenRequest) {
@@ -27,8 +31,12 @@ public class GithubTestController {
         if (accessToken.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        GithubAccessTokenResponse githubAccessTokenResponse =
-                new GithubAccessTokenResponse(accessToken.get(), "access_token", "profile", "bearer");
+        GithubAccessTokenResponse githubAccessTokenResponse = GithubAccessTokenResponse.builder()
+                .accessToken(accessToken.get())
+                .tokenType(TOKEN_TYPE)
+                .scope(SCOPE)
+                .bearer(BEARER)
+                .build();
         return ResponseEntity.ok().body(githubAccessTokenResponse);
     }
 
