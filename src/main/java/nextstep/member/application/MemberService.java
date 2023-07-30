@@ -24,6 +24,12 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public MemberResponse findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .map(MemberResponse::of)
+            .orElseThrow(RuntimeException::new);
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
@@ -31,11 +37,5 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
-    }
-
-    public MemberResponse findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .map(MemberResponse::of)
-                .orElseThrow(RuntimeException::new);
     }
 }
