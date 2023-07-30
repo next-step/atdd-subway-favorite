@@ -9,6 +9,10 @@ import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Service
 public class FavoriteService {
 
@@ -34,5 +38,25 @@ public class FavoriteService {
         pathService.validatePath(sourceStation, targetStation);
 
         favoriteRepository.save(Favorite.create(sourceStation, targetStation, member));
+    }
+
+    public List<FavoriteResponse> findFavoritesByEmail(String email) {
+
+        Member member = memberService.findByEmail(email);
+
+        return favoriteRepository.findByMember(member).stream().map(FavoriteResponse::of).collect(Collectors.toList());
+    }
+
+    public void deleteById(Long favoriteId, String email) {
+
+        Member member = memberService.findByEmail(email);
+
+        favoriteRepository.findByMember(member)
+                .stream()
+                .filter(it -> Objects.equals(it.getId(), favoriteId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("id에 해당하는 즐겨찾기가 해당 사용자에 존재하지 않습니다."));
+
+        favoriteRepository.deleteById(favoriteId);
     }
 }

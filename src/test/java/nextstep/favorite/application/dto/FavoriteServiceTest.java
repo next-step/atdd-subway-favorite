@@ -69,6 +69,7 @@ class FavoriteServiceTest {
         verify(favoriteRepository).save(any());
         verify(pathService).validatePath(any(), any());
     }
+
     @DisplayName("즐겨찾기 저장 실패 - 존재하지 않는 경로")
     @Test
     void saveFavorite_fail() {

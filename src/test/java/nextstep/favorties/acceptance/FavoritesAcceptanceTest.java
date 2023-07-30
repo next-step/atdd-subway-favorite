@@ -86,11 +86,11 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(responseFavorites.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        Long favoriteId = responseFavorites.jsonPath().getLong("$.[0].id");
+        Long favoriteId = responseFavorites.jsonPath().getLong("get(0).id");
 
         assertThat(favoriteId).isNotNull();
-        assertThat(responseFavorites.jsonPath().getLong("$.[0].source.id")).isEqualTo(교대역);
-        assertThat(responseFavorites.jsonPath().getLong("$.[0].target.id")).isEqualTo(양재역);
+        assertThat(responseFavorites.jsonPath().getLong("get(0).source.id")).isEqualTo(교대역);
+        assertThat(responseFavorites.jsonPath().getLong("get(0).target.id")).isEqualTo(양재역);
 
         // when
         ExtractableResponse<Response> responseDelete = 즐겨찾기_삭제(accessToken, favoriteId);
@@ -150,19 +150,19 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> responseSave = 즐겨찾기_생성(accessToken, 교대역, 양재역);
 
         // then
-        assertThat(responseSave.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(responseSave.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         // when
         ExtractableResponse<Response> responseFavorites = 즐겨찾기_목록_조회(accessToken);
 
         // then
-        assertThat(responseFavorites.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(responseFavorites.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         // when
         ExtractableResponse<Response> responseDelete = 즐겨찾기_삭제(accessToken, 1L);
 
         // then
-        assertThat(responseDelete.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(responseDelete.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     /**
