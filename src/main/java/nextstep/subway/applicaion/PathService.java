@@ -33,7 +33,7 @@ public class PathService {
         try {
             findPath(sourceStation.getId(), targetStation.getId());
         } catch (Exception e) {
-            throw new RuntimeException("존재하지 않는 path입니다.");
+            throw new IllegalArgumentException("존재하지 않는 path입니다.");
         }
     }
 }

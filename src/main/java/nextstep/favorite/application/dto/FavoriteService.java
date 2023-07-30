@@ -55,7 +55,7 @@ public class FavoriteService {
                 .stream()
                 .filter(it -> Objects.equals(it.getId(), favoriteId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("id에 해당하는 즐겨찾기가 해당 사용자에 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 즐겨찾기가 해당 사용자에 존재하지 않습니다."));
 
         favoriteRepository.deleteById(favoriteId);
     }
