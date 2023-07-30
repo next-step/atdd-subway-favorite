@@ -13,6 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -27,7 +29,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 		var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
 		// then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		응답_상태코드_검증(response, HttpStatus.CREATED);
 	}
 
 	@DisplayName("회원 정보를 조회한다.")
@@ -40,8 +42,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
 		var response = 회원_정보_조회_요청(createResponse);
 
 		// then
+		응답_상태코드_검증(response, HttpStatus.OK);
 		회원_정보_조회됨(response, EMAIL, AGE);
-
 	}
 
 	@DisplayName("회원 정보를 수정한다.")
@@ -54,7 +56,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 		var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
 		// then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		응답_상태코드_검증(response, HttpStatus.OK);
 	}
 
 	@DisplayName("회원 정보를 삭제한다.")
@@ -67,7 +69,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 		var response = 회원_삭제_요청(createResponse);
 
 		// then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+		응답_상태코드_검증(response, HttpStatus.NO_CONTENT);
 	}
 
 	/**
@@ -87,7 +89,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
 		var response = 내_정보_조회_요청(tokenResponse.jsonPath().getString("accessToken"));
 
 		// then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		응답_상태코드_검증(response, HttpStatus.OK);
 		회원_정보_조회됨(response, EMAIL, AGE);
+	}
+
+	private void 응답_상태코드_검증(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+		assertThat(response.statusCode()).isEqualTo(httpStatus.value());
 	}
 }
