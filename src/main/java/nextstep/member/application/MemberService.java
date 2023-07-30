@@ -38,4 +38,9 @@ public class MemberService {
                 .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
     }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(RuntimeException::new);
+    }
 }

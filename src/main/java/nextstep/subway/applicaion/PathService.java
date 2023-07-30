@@ -28,4 +28,12 @@ public class PathService {
 
         return PathResponse.of(path);
     }
+
+    public void validatePath(Station sourceStation, Station targetStation) {
+        try {
+            findPath(sourceStation.getId(), targetStation.getId());
+        } catch (Exception e) {
+            throw new RuntimeException("존재하지 않는 path입니다.");
+        }
+    }
 }

@@ -4,17 +4,26 @@ import nextstep.auth.principal.AuthenticationPrincipal;
 import nextstep.auth.principal.UserPrincipal;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.dto.FavoriteSaveRequest;
+import nextstep.favorite.application.dto.FavoriteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 public class FavoriteController {
 
-    @PostMapping("/favorites")
-    public void saveFavorites(@RequestBody FavoriteSaveRequest request, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    private final FavoriteService favoriteService;
 
+    public FavoriteController(FavoriteService favoriteService) {
+        this.favoriteService = favoriteService;
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> saveFavorites(@RequestBody FavoriteSaveRequest request, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        favoriteService.saveFavorite(request, userPrincipal.getUsername());
+        return ResponseEntity.created(URI.create("/favorites")).build();
     }
 
     @GetMapping("/favorites")
