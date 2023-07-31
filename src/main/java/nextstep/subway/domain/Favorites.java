@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 
 @Entity
@@ -55,5 +56,15 @@ public class Favorites {
 
     public Member getMember() {
         return member;
+    }
+
+    public void validDelete(Member member) {
+        if(!isEqualsMember(member)){
+            throw new AuthenticationException();
+        }
+    }
+
+    private boolean isEqualsMember(Member member) {
+        return this.member.equals(member);
     }
 }

@@ -60,4 +60,16 @@ public class FavoritesService {
             .map(FavoritesResponse::of)
             .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void delete(long favoritesId, String username) {
+
+        Member member = getMember(username);
+        Favorites favorites = favoritesRepository.findById(favoritesId)
+            .orElseThrow(IllegalArgumentException::new);
+
+        favorites.validDelete(member);
+
+        favoritesRepository.delete(favorites);
+    }
 }
