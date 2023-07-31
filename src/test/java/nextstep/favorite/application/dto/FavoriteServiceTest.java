@@ -1,6 +1,7 @@
 package nextstep.favorite.application.dto;
 
 import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.PathService;
@@ -19,11 +20,12 @@ import static org.mockito.Mockito.*;
 
 class FavoriteServiceTest {
 
+    private FavoriteRepository favoriteRepository = mock(FavoriteRepository.class);
     private StationService stationService = mock(StationService.class);
     private PathService pathService = mock(PathService.class);
     private MemberService memberService = mock(MemberService.class);
 
-    private FavoriteService favoriteService = new FavoriteService(stationService, pathService, memberService);
+    private FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationService, pathService, memberService);
 
     private Station station1;
     private Station station2;
@@ -53,17 +55,22 @@ class FavoriteServiceTest {
     void saveFavorite() {
 
         // given
+        Favorite favorite = new Favorite(station1, station2, member);
+
         when(memberService.findByEmail(email)).thenReturn(member);
         when(stationService.findById(station1Id)).thenReturn(station1);
         when(stationService.findById(station2Id)).thenReturn(station2);
+        when(favoriteRepository.save(any())).thenReturn(favorite);
 
         doNothing().when(pathService).validatePath(any(), any());
 
         // when
-        favoriteService.saveFavorite(new FavoriteSaveRequest(station1Id, station2Id), email);
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorite(new FavoriteSaveRequest(station1Id, station2Id), email);
+        System.out.println(favoriteResponse.getId());
 
         // then
         verify(pathService).validatePath(any(), any());
+        verify(favoriteRepository).save(any());
     }
 
     @DisplayName("즐겨찾기 저장 실패 - 존재하지 않는 경로")

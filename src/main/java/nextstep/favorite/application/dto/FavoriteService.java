@@ -1,6 +1,7 @@
 package nextstep.favorite.application.dto;
 
 import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.PathService;
@@ -15,18 +16,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
+    private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
     private final PathService pathService;
     private final MemberService memberService;
 
-    public FavoriteService( StationService stationService, PathService pathService, MemberService memberService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, PathService pathService, MemberService memberService) {
+        this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
         this.pathService = pathService;
         this.memberService = memberService;
     }
 
     @Transactional
-    public void saveFavorite(FavoriteSaveRequest favoriteSaveRequest, String email) {
+    public FavoriteResponse saveFavorite(FavoriteSaveRequest favoriteSaveRequest, String email) {
 
         Member member = memberService.findByEmail(email);
 
@@ -35,7 +38,17 @@ public class FavoriteService {
 
         pathService.validatePath(sourceStation, targetStation);
 
-        member.addFavorite(new Favorite(sourceStation, targetStation, member));
+        Favorite favorite = new Favorite(sourceStation, targetStation, member);
+        Favorite savedFavorite = favoriteRepository.save(favorite);
+
+        return FavoriteResponse.of(savedFavorite);
+    }
+
+    public FavoriteResponse findFavoritesById(Long favoriteId, String email) {
+
+        Member member = memberService.findByEmail(email);
+
+        return FavoriteResponse.of(member.getFavorite(favoriteId));
     }
 
     public List<FavoriteResponse> findFavoritesByEmail(String email) {
@@ -50,9 +63,7 @@ public class FavoriteService {
 
         Member member = memberService.findByEmail(email);
 
-        Favorite favorite = member.getFavorites().stream()
-                .filter(it -> Objects.equals(it.getId(), favoriteId)).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 즐겨찾기가 해당 사용자에 존재하지 않습니다."));
+        Favorite favorite = member.getFavorite(favoriteId);
 
         member.removeFavorite(favorite);
     }
