@@ -33,4 +33,8 @@ public class FavoriteService {
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
+
+    public void delete(String email, Long id) {
+        favoriteRepository.deleteById(id);
+    }
 }

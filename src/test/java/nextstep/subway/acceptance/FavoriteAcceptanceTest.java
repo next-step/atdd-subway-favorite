@@ -2,15 +2,22 @@ package nextstep.subway.acceptance;
 
 import static nextstep.subway.acceptance.FavoriteSteps.깃헙_AccessToken으로_즐겨_찾기_생성한다;
 import static nextstep.subway.acceptance.FavoriteSteps.깃헙_로그인하고_AccessToken_받아온다;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨_찾기_삭제_검증;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨_찾기_삭제한다;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨_찾기_생성_검증;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨_찾기_조회;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨_찾기_조회_검증;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 @DisplayName("즐겨 찾기 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -33,7 +40,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨 찾기를 생성하면
      * Then 응답코드는 201로 받고 Location 헤더에 주소를 보내준다
      */
-    @DisplayName("즐겨 찾기 생성")
+    @DisplayName("즐겨 찾기 생성한다")
     @Test
     void createFavorite() {
         // when
@@ -48,7 +55,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨 찾기를 조회하면
      * Then 저장된 즐겨 찾기를 가져올다 스테이션 정보도 가져온다
      */
-    @DisplayName("즐겨 찾기 조회")
+    @DisplayName("즐겨 찾기를 조회한다")
     @Test
     void getFavorite() {
         // given
@@ -60,5 +67,23 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨_찾기_조회_검증(response);
+    }
+
+    /**
+     * Given 즐겨 찾기를 생성하고
+     * When 해당 즐겨 찾기를 삭제하면
+     * Then 204 코드를 응답한다
+     */
+    @DisplayName("즐겨 찾기를 삭제한다")
+    @Test
+    void deleteFavorite() {
+        // given
+        깃헙_AccessToken으로_즐겨_찾기_생성한다(accessToken, 교대역_아이디, 양재역_아이디);
+
+        // when
+        var response = 즐겨_찾기_삭제한다(accessToken);
+
+        // then
+        즐겨_찾기_삭제_검증(response);
     }
 }

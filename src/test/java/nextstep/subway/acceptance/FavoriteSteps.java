@@ -66,4 +66,16 @@ public class FavoriteSteps {
                 .extract();
     }
 
+    public static void 즐겨_찾기_삭제_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨_찾기_삭제한다(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/favorites/1")
+                .then().log().all()
+                .extract();
+    }
+
 }
