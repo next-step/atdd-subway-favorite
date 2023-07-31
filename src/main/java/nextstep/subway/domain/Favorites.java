@@ -1,6 +1,5 @@
 package nextstep.subway.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,11 +16,13 @@ public class Favorites {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long source;
+    @JoinColumn(name = "source_id")
+    @ManyToOne
+    private Station source;
 
-    @Column
-    private Long target;
+    @JoinColumn(name = "target_id")
+    @ManyToOne
+    private Station target;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,13 +31,13 @@ public class Favorites {
     public Favorites() {
     }
 
-    public Favorites(Long source, Long target, Member member) {
+    public Favorites(Station source, Station target, Member member) {
         this.source = source;
         this.target = target;
         this.member = member;
     }
 
-    public static Favorites of(Long source, Long target, Member member) {
+    public static Favorites of(Station source, Station target, Member member) {
         return new Favorites(source, target, member);
     }
 
@@ -44,11 +45,11 @@ public class Favorites {
         return id;
     }
 
-    public Long getSource() {
+    public Station getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public Station getTarget() {
         return target;
     }
 
