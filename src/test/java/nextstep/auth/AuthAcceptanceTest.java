@@ -1,63 +1,63 @@
-package nextstep.study;
+package nextstep.auth;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.auth.AuthSteps.*;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "admin@email.com";
-    public static final String PASSWORD = "password";
-    public static final Integer AGE = 20;
+    private final String EMAIL = "admin@email.com";
+    private final String PASSWORD = "password";
+    private final Integer AGE = 20;
+    private final String LOCAL_ADDRESS = "http://localhost:8080";
+
+
+    @Value("${github.url.access-token}")
+    private String tokenUrl;
+
+    @Value("${github.url.profile}")
+    private String profileUrl;
 
     @Autowired
     private MemberRepository memberRepository;
 
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        tokenUrl = tokenUrl.replace(LOCAL_ADDRESS, "");
+        profileUrl = profileUrl.replace(LOCAL_ADDRESS, "");
+
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
+        // given
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
+        // when
+        ExtractableResponse<Response> response = 토큰_로그인_요청(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        // then
+        access_token_응답을_받음(response);
     }
 
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        // when
+        ExtractableResponse<Response> response = 깃허브_로그인_요청();
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        // then
+        access_token_응답을_받음(response);
     }
 
     /**
@@ -66,7 +66,16 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * And POST 요청을 https://github.com/login/oauth/access_token에 보내면
      * Then access_token, scope, token_type이 json으로 body에 담겨 응답이 온다.
      * Ref. https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#2-users-are-redirected-back-to-your-site-by-github
-     * */
+     */
+    @DisplayName("Github Auth, post for access_token")
+    @Test
+    void githubAuthPostForAccessToken() {
+        // when
+        ExtractableResponse<Response> response = oauth2_깃허브에_토큰_요청(tokenUrl);
+
+        // then
+        oauth2_깃허브_토큰_응답_받음(response);
+    }
 
     /**
      * Given POST 요청 https://github.com/login/oauth/access_token으로 깃허브로 부터 받은 accessToken이 있을 때
@@ -77,4 +86,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * Then email 값이 json으로 body에 담겨 응답이 온다.
      * Ref. https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
      * */
+    @DisplayName("Github Auth, get user info")
+    @Test
+    void githubAuthGetUserInfo() {
+        // when
+        ExtractableResponse<Response> response = oauth2_깃허브_리소스_조회_요청(profileUrl);
+
+        // then
+        이메일_응답_받음(response, "email");
+    }
 }
