@@ -27,29 +27,29 @@ public class FavoriteService {
     }
 
     public Favorite createFavorite(FavoriteRequest favoriteRequest, String userEmail) {
-        Member member = getMemberIdByEmail(userEmail);
+        Long memberId = getMemberIdByEmail(userEmail);
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Favorite favorite = Favorite.of(member.getId(), source, target);
+        Favorite favorite = Favorite.of(memberId, source, target);
         favoriteRepository.save(favorite);
         return favorite;
     }
 
     public List<FavoriteResponse> findFavorites(String userEmail) {
-        Member member = getMemberIdByEmail(userEmail);
-        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+        Long memberId = getMemberIdByEmail(userEmail);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
         return favorites.stream().map(this::createFavoriteResponse).collect(Collectors.toList());
     }
 
     public void deleteFavorite(Long id, String userEmail) {
-        Member member = getMemberIdByEmail(userEmail);
-        favoriteRepository.findByMemberId(member.getId())
+        Long memberId = getMemberIdByEmail(userEmail);
+        favoriteRepository.findByMemberId(memberId)
                 .stream().filter(f -> f.getId().equals(id))
                 .findFirst().ifPresent(f -> favoriteRepository.deleteById(id));
     }
 
-    private Member getMemberIdByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(UnauthorizedException::new);
+    private Long getMemberIdByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(UnauthorizedException::new).getId();
     }
 
     private FavoriteResponse createFavoriteResponse(Favorite favorite) {
