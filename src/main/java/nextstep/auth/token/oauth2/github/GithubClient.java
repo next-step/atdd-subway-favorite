@@ -35,14 +35,15 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
             githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
-
         String accessToken = restTemplate
             .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
             .getBody()
             .getAccessToken();
+
         if (accessToken == null) {
             throw new RuntimeException();
         }
+
         return accessToken;
     }
 

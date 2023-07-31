@@ -7,12 +7,8 @@ public class GithubProfileResponse implements OAuth2UserRequest {
     private String email;
     private Integer age;
 
-    public GithubProfileResponse() {
-    }
-
-    public GithubProfileResponse(String email, Integer age) {
+    public GithubProfileResponse(String email) {
         this.email = email;
-        this.age = age;
     }
 
     public String getEmail() {

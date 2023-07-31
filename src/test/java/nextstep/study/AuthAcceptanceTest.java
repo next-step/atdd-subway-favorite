@@ -21,6 +21,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final Integer AGE = 20;
+    private static final String CODE = "aofijeowifjaoief";
 
     @Autowired
     private MemberRepository memberRepository;
@@ -34,12 +35,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         params.put("email", EMAIL);
         params.put("password", PASSWORD);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> response = this.getExtractableResponse(params, "/login/token");
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
@@ -48,15 +44,19 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void githubAuth() {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", CODE);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> response = this.getExtractableResponse(params, "/login/github");
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    private ExtractableResponse<Response> getExtractableResponse(Map<String, String> params, String path) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post(path)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
     }
 }
