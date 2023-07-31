@@ -3,6 +3,8 @@ package nextstep.favorite.application.dto;
 import nextstep.favorite.domain.Favorite;
 import nextstep.subway.applicaion.dto.StationResponse;
 
+import java.util.Objects;
+
 public class FavoriteResponse {
 
     private Long id;
