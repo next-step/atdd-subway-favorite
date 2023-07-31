@@ -41,5 +41,5 @@ git rebase upstream/songteaheon
 
 
 ## 패키지 의존성
-- favorite -> subway, auth
+- favorite -> member, subway, auth
 - member -> auth
