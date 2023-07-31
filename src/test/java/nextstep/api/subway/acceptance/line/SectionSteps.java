@@ -1,7 +1,7 @@
 package nextstep.api.subway.acceptance.line;
 
-import static nextstep.api.subway.acceptance.AcceptanceHelper.asExceptionResponse;
-import static nextstep.api.subway.acceptance.AcceptanceHelper.statusCodeShouldBe;
+import static nextstep.utils.AcceptanceHelper.asExceptionResponse;
+import static nextstep.utils.AcceptanceHelper.statusCodeShouldBe;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

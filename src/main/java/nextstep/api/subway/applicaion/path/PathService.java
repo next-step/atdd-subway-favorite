@@ -23,6 +23,19 @@ public class PathService {
     private final StationRepository stationRepository;
 
     public PathResponse findShortestPath(final Long sourceId, final Long targetId) {
+        final var shortestPath = shortestPathOf(sourceId, targetId);
+
+        return new PathResponse(
+                StationResponse.toResponses(shortestPath.getStation()),
+                shortestPath.getDistance()
+        );
+    }
+
+    public void validateConnected(final Long sourceId, final Long targetId) {
+        shortestPathOf(sourceId, targetId);
+    }
+
+    private SubwayShortestPath shortestPathOf(final Long sourceId, final Long targetId) {
         if (Objects.equals(sourceId, targetId)) {
             throw new SubwayException(String.format("출발역과 도착역이 동일합니다: 출발역id=%d, 도착역id=%d", sourceId, targetId));
         }
@@ -30,12 +43,7 @@ public class PathService {
         final var source = stationRepository.getById(sourceId);
         final var target = stationRepository.getById(targetId);
 
-        final var shortestPath = shortestPathOf(source, target);
-
-        return new PathResponse(
-                StationResponse.toResponses(shortestPath.getStation()),
-                shortestPath.getDistance()
-        );
+        return shortestPathOf(source, target);
     }
 
     private SubwayShortestPath shortestPathOf(final Station source, final Station target) {

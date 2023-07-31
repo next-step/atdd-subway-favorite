@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import nextstep.api.subway.acceptance.AcceptanceTest;
 import nextstep.api.subway.applicaion.line.dto.request.LineCreateRequest;
 import nextstep.api.subway.applicaion.line.dto.request.SectionRequest;
 import nextstep.api.subway.applicaion.station.dto.StationResponse;
+import nextstep.utils.AcceptanceTest;
 
 @DisplayName("지하철 구간 관리 기능")
 class SectionAcceptanceTest extends AcceptanceTest {

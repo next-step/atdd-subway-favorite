@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import nextstep.api.subway.acceptance.AcceptanceTest;
 import nextstep.api.subway.applicaion.line.dto.request.LineCreateRequest;
 import nextstep.api.subway.applicaion.line.dto.request.LineUpdateRequest;
+import nextstep.utils.AcceptanceTest;
 
 @DisplayName("지하철 노선 관리 기능")
 class LineAcceptanceTest extends AcceptanceTest {

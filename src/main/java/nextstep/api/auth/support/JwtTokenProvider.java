@@ -9,6 +9,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.api.auth.AuthenticationException;
 import nextstep.api.auth.aop.principal.UserPrincipal;
 
 @Component
@@ -37,6 +38,10 @@ public class JwtTokenProvider {
     }
 
     public UserPrincipal getUserPrincipal(final String token) {
+        if (!validateToken(token)) {
+            throw new AuthenticationException();
+        }
+
         final var claims = extractClaims(token);
         final var username = claims.getSubject();
         final var role = claims.get("role", String.class);
