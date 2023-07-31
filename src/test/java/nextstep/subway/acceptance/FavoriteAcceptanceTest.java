@@ -99,7 +99,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @DisplayName("즐겨찾기 조회")
+    @DisplayName("즐겨찾기 삭제(성공)")
     @Test
     void deleteFavorites() {
 
@@ -129,4 +129,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         );
 
     }
+
+    @DisplayName("즐겨찾기 삭제(실패) - 내 즐겨찾기가 아닌경우 권한 인증 실패")
+    @Test
+    void deleteFavorites_failAuth() {
+
+        //given
+        final String userToken = getAccessToken();
+
+        var 교대역 = 지하철역_생성_요청_후_id_추출("교대역");
+        var 강남역 = 지하철역_생성_요청_후_id_추출("강남역");
+        var 이호선 = 지하철_노선_생성_요청("2호선", "green").jsonPath().getLong("id");
+        지하철_노선에_지하철_구간_생성_요청(이호선, Map.of(
+            "upStationId", 교대역 + "",
+            "downStationId", 강남역 + "",
+            "distance", 10 + ""
+        ));
+
+        var createResponse = 즐겨찾기_생성_요청(교대역, 강남역, getAccessToken());
+
+        //when
+        var deleteResponse = 즐겨찾기_삭제_요청(createResponse, "-1");
+
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+    }
+
 }
