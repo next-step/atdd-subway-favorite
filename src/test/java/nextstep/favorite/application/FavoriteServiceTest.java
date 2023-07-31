@@ -61,7 +61,7 @@ class FavoriteServiceTest {
     @Test
     void deleteOthersFavorite() {
         // given
-        favoriteService.createFavorite(OTHER_EMAIL, GYODAE_STATION_ID, YANGJAE_STATION_ID);
+        favoriteService.create(OTHER_EMAIL, GYODAE_STATION_ID, YANGJAE_STATION_ID);
 
         // when,then
         assertThatThrownBy(() -> favoriteService.delete(TEST_EMAIL, TEST_FAVORITE_ID))
@@ -73,10 +73,10 @@ class FavoriteServiceTest {
     void createFavoriteThatContainsNotExistsStationId() {
         Assertions.assertAll(
                 () -> assertThatThrownBy(
-                        () -> favoriteService.createFavorite(OTHER_EMAIL, NOT_EXISTS_STATION_ID, YANGJAE_STATION_ID))
+                        () -> favoriteService.create(OTHER_EMAIL, NOT_EXISTS_STATION_ID, YANGJAE_STATION_ID))
                         .isInstanceOf(BadRequestException.class),
                 () -> assertThatThrownBy(
-                        () -> favoriteService.createFavorite(OTHER_EMAIL, YANGJAE_STATION_ID, NOT_EXISTS_STATION_ID))
+                        () -> favoriteService.create(OTHER_EMAIL, YANGJAE_STATION_ID, NOT_EXISTS_STATION_ID))
                         .isInstanceOf(BadRequestException.class)
         );
     }

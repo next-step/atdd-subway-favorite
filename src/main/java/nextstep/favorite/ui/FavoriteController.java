@@ -26,21 +26,21 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal UserPrincipal user,
+    public ResponseEntity<Void> create(@AuthenticationPrincipal UserPrincipal user,
             @RequestBody FavoriteCreateRequest favoriteCreateRequest) {
         long source = favoriteCreateRequest.getSource();
         long target = favoriteCreateRequest.getTarget();
         String email = user.getUsername();
-        long favoriteId = favoriteService.createFavorite(email, source, target);
+        long favoriteId = favoriteService.create(email, source, target);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header(HttpHeaders.LOCATION, "/favorites/" + favoriteId)
                 .build();
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal UserPrincipal user) {
+    public ResponseEntity<List<FavoriteResponse>> getAll(@AuthenticationPrincipal UserPrincipal user) {
         String email = user.getUsername();
-        List<FavoriteResponse> favoriteResponses = favoriteService.getFavorites(email);
+        List<FavoriteResponse> favoriteResponses = favoriteService.getAll(email);
         return ResponseEntity.ok().body(favoriteResponses);
     }
 

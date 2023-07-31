@@ -21,7 +21,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public long createFavorite(String email, long source, long target) {
+    public long create(String email, long source, long target) {
         Station sourceStation = stationRepository.findById(source).orElseThrow(BadRequestException::new);
         Station tartgetStation = stationRepository.findById(target).orElseThrow(BadRequestException::new);
         Favorite favorite = new Favorite(email, sourceStation, tartgetStation);
@@ -29,7 +29,7 @@ public class FavoriteService {
         return savedFavorite.getId();
     }
 
-    public List<FavoriteResponse> getFavorites(String email) {
+    public List<FavoriteResponse> getAll(String email) {
         List<Favorite> favorites = favoriteRepository.findAllByEmail(email);
         return favorites.stream()
                 .map(FavoriteResponse::from)
