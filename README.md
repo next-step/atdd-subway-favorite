@@ -33,9 +33,9 @@ git rebase upstream/songteaheon
 - [X] 삭제 인수 코드 작성
 - [ ] 리뷰 반영
   - [ ] Favorite Service 테스트 
-  - [ ] Member에 favorite 개념 종속 시키기
-  - [ ] Favorite Eager 삭제
-  - [ ] Favorite 불필요 팩토리 메서드 제거
+  - [X] Member에 favorite 개념 종속 시키기
+  - [ ] Favorite Eager 삭제 -> 질문
+  - [X] Favorite 불필요 팩토리 메서드 제거
   - [ ] save 후 location 내려주기
   - [X] 불필요한 개행 삭제
 

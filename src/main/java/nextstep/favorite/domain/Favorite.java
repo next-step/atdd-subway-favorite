@@ -20,7 +20,7 @@ public class Favorite {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

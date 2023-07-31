@@ -1,6 +1,10 @@
 package nextstep.member.domain;
 
+import nextstep.favorite.domain.Favorite;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,6 +17,9 @@ public class Member {
     private String password;
     private Integer age;
     private String role;
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -51,6 +58,10 @@ public class Member {
         return role;
     }
 
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -59,5 +70,13 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        this.favorites.remove(favorite);
     }
 }
