@@ -31,12 +31,12 @@ git rebase upstream/songteaheon
 - [X] 생성 인수 코드 작성
 - [X] 조회 인수 코드 작성
 - [X] 삭제 인수 코드 작성
-- [ ] 리뷰 반영
+- [X] 리뷰 반영
   - [X] Favorite Service 테스트 
   - [X] Member에 favorite 개념 종속 시키기
   - [X] Favorite Eager 삭제 -> 질문
   - [X] Favorite 불필요 팩토리 메서드 제거
-  - [ ] save 후 location 내려주기
+  - [X] save 후 location 내려주기
   - [X] 불필요한 개행 삭제
 
 
