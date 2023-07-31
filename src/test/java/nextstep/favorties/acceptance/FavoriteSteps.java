@@ -10,8 +10,6 @@ import java.util.Map;
 
 public class FavoriteSteps {
 
-
-
     public static ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, Long favoriteId) {
         return RestAssured
                 .given().log().all()
