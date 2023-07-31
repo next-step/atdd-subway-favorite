@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 import static nextstep.auth.acceptance.step.TokenSteps.일반_로그인_요청;
 import static nextstep.auth.acceptance.step.TokenSteps.토큰_추출;
 import static nextstep.favorite.acceptance.step.FavoriteSteps.*;
@@ -265,10 +267,41 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *         }
      *     }
      * ]
+     * ---
+     * ## 시나리오
+     * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
+     * And : 회원을 생성하고
+     * And : 토큰을 발급받은 후
+     * When : 즐겨찾기 목록 조회를 요청하면
+     * Then : 즐겨찾기 목록이 조회된다.
      */
+    @DisplayName("즐겨찾기 목록 조회")
     @Test
     void show() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(TokenType.BEARER, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(즐겨찾기_목록_추출(response)).hasSize(1);
+        assertThat(즐겨찾기_시작역_목록_추출(response)).containsExactly(교대역);
+        assertThat(즐겨찾기_도착역_목록_추출(response)).containsExactly(양재역);
+    }
+
+    private List<String> 즐겨찾기_목록_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList("", String.class);
+    }
+
+    private List<Long> 즐겨찾기_시작역_목록_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList("source.id", Long.class);
+    }
+
+    private List<Long> 즐겨찾기_도착역_목록_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList("target.id", Long.class);
     }
 
     /**

@@ -51,4 +51,12 @@ public class FavoriteSteps {
                 "target", targetStationId
         );
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(TokenType type, String accessToken) {
+        return RestAssured.given().log().all()
+                .header("authorization", type.prefix + accessToken)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
 }
