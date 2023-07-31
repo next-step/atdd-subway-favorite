@@ -3,10 +3,12 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.applicaion.dto.FavoriteResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FavoriteSteps {
@@ -37,6 +39,10 @@ public class FavoriteSteps {
                 .when().delete("/favorites/" + id)
                 .then().log().all()
                 .extract();
+    }
+
+    public static List<FavoriteResponse> 즐겨찾기_목록_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList(".", FavoriteResponse.class);
     }
 
     private static String getAuthorizationValue(String token) {
