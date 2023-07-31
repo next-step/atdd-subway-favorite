@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.auth.principal.UserPrincipal;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
@@ -38,4 +39,5 @@ public class MemberService {
                 .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
     }
+
 }
