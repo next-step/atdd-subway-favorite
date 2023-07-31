@@ -248,26 +248,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * # 조회 API
-     * ## 요청
-     * - GET /favorites
-     * - authorization: Bearer
-     * ---
-     * ## 응답
-     * [
-     *     {
-     *         "id": 1,
-     *         "source": {
-     *             "id": 1,
-     *             "name": "교대역"
-     *         },
-     *         "target": {
-     *             "id": 3,
-     *             "name": "양재역"
-     *         }
-     *     }
-     * ]
-     * ---
      * ## 시나리오
      * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
      * And : 회원을 생성하고
@@ -315,11 +295,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * ---
      * ## 응답
      * - 204 No Content
+     * ---
+     * ## 시나리오
+     * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
+     * And : 회원을 생성하고
+     * And : 토큰을 발급받고
+     * And : 즐겨찾기를 등록한 후
+     * When : 즐겨찾기 삭제를 요청하면
+     * Then : 즐겨찾기가 삭제된다.
      */
     @Test
     void delete() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
+        ExtractableResponse<Response> responseOfCreate = 즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 양재역);
+        Long id = 즐겨찾기_Id_추출(responseOfCreate);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(TokenType.BEARER, accessToken, id);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        ExtractableResponse<Response> responseOfShowFavorites = 즐겨찾기_조회_요청(TokenType.BEARER, accessToken);
+        assertThat(즐겨찾기_목록_추출(responseOfShowFavorites)).hasSize(0);
     }
 
-
+    private Long 즐겨찾기_Id_추출(ExtractableResponse<Response> response) {
+        String[] locations = response.header("location").split("/favorites/");
+        String favoriteId = locations[1];
+        return Long.parseLong(favoriteId);
+    }
 }

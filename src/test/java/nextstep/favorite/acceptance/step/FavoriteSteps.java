@@ -59,4 +59,13 @@ public class FavoriteSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenType type, String accessToken, Long id) {
+        return RestAssured.given().log().all()
+                .header("authorization", type.prefix + accessToken)
+                .pathParam("id", id)
+                .when().delete("/favorites/{id}")
+                .then().log().all()
+                .extract();
+    }
 }
