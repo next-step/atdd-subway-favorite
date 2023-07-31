@@ -72,7 +72,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
      * When 토큰을 통해 내 정보를 조회하면
      * Then 내 정보를 조회할 수 있다
      */
-    @DisplayName("내 정보를 조회한다.")
+    @DisplayName("로그인 후 내 정보를 조회한다.")
     @Test
     void getMyInfo() {
 
@@ -88,4 +88,5 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(member.getEmail()).isEqualTo(EMAIL);
         assertThat(member.getAge()).isEqualTo(AGE);
     }
+
 }
