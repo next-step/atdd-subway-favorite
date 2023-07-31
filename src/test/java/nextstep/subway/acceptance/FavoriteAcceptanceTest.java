@@ -81,7 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 존재하지 않은 역으로 즐겨찾기 생성하면
      * Then 에러 응답한다
      */
-    @DisplayName("즐겨찾기 생성")
+    @DisplayName("존재하지 않은 역으로 즐겨찾기 생성")
     @Test
     void createFavoriteByNoStationId() {
         // given
