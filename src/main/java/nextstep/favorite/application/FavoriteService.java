@@ -4,6 +4,7 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.dto.FavoriteCreateRequest;
 import nextstep.favorite.dto.FavoriteResponse;
+import nextstep.favorite.exception.FavoriteNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.MemberNotFoundException;
@@ -64,5 +65,14 @@ public class FavoriteService {
     private Member findMember(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public void deleteFavorite(String email, Long id) {
+        Member member = findMember(email);
+
+        Favorite favorite = favoriteRepository.findByMemberAndId(member, id)
+                .orElseThrow(FavoriteNotFoundException::new);
+
+        favoriteRepository.delete(favorite);
     }
 }

@@ -270,13 +270,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(즐겨찾기_목록_추출(response)).hasSize(1);
+        assertThat(즐겨찾기_Id_목록_추출(response)).hasSize(1);
         assertThat(즐겨찾기_시작역_목록_추출(response)).containsExactly(교대역);
         assertThat(즐겨찾기_도착역_목록_추출(response)).containsExactly(양재역);
     }
 
-    private List<Object> 즐겨찾기_목록_추출(ExtractableResponse<Response> response) {
-        return response.jsonPath().getList("");
+    private List<Long> 즐겨찾기_Id_목록_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList("id", Long.class);
     }
 
     private List<Long> 즐겨찾기_시작역_목록_추출(ExtractableResponse<Response> response) {
@@ -300,7 +300,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
      * And : 회원을 생성하고
      * And : 토큰을 발급받고
-     * And : 즐겨찾기를 등록한 후
+     * And : 즐겨찾기를 2개 등록한 후
      * When : 즐겨찾기 삭제를 요청하면
      * Then : 즐겨찾기가 삭제된다.
      */
@@ -310,20 +310,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
 
-        ExtractableResponse<Response> responseOfCreate = 즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 양재역);
-        Long id = 즐겨찾기_Id_추출(responseOfCreate);
+        Long targetId = Location에서_즐겨찾기_Id_추출(즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 양재역));
+        Long nonTargetId = Location에서_즐겨찾기_Id_추출(즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 남부터미널역, 양재역));
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(TokenType.BEARER, accessToken, id);
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(TokenType.BEARER, accessToken, targetId);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
         ExtractableResponse<Response> responseOfShowFavorites = 즐겨찾기_조회_요청(TokenType.BEARER, accessToken);
-        assertThat(즐겨찾기_목록_추출(responseOfShowFavorites)).hasSize(0);
+
+        List<Long> 즐겨찾기_Id_목록 = 즐겨찾기_Id_목록_추출(responseOfShowFavorites);
+        assertThat(즐겨찾기_Id_목록).hasSize(1);
+        assertThat(즐겨찾기_Id_목록).containsExactly(nonTargetId);
     }
 
-    private Long 즐겨찾기_Id_추출(ExtractableResponse<Response> response) {
+    private Long Location에서_즐겨찾기_Id_추출(ExtractableResponse<Response> response) {
         String[] locations = response.header("location").split("/favorites/");
         String favoriteId = locations[1];
         return Long.parseLong(favoriteId);

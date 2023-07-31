@@ -6,10 +6,7 @@ import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.dto.FavoriteCreateRequest;
 import nextstep.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
@@ -32,5 +29,12 @@ public class FavoriteController {
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> showFavorites(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         return ResponseEntity.ok(favoriteService.findAllFavorites(userPrincipal.getUsername()));
+    }
+
+    @DeleteMapping("/favorites/{id}")
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                               @PathVariable Long id) {
+        favoriteService.deleteFavorite(userPrincipal.getUsername(), id);
+        return ResponseEntity.noContent().build();
     }
 }
