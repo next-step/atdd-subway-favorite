@@ -10,6 +10,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
+    public static final int TOKEN_KEY = 0;
+    public static final int TOKEN_INDEX = 1;
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
@@ -23,12 +25,16 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+        if (authorization == null) {
             throw new AuthenticationException();
         }
-        String token = authorization.split(" ")[1];
+        String[] tokenInfo = authorization.split(" ");
+        if (tokenInfo.length == 1 || !"bearer".equalsIgnoreCase(tokenInfo[TOKEN_KEY])) {
+            throw new AuthenticationException();
+        }
+        String token = tokenInfo[TOKEN_INDEX];
 
         String username = jwtTokenProvider.getPrincipal(token);
         String role = jwtTokenProvider.getRoles(token);

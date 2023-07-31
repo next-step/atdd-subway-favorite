@@ -39,8 +39,8 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static String 깃헙_로그인하고_AccessToken_받아온다() {
-        var response = 깃헙_로그인("aofijeowifjaoief");
+    public static String 깃헙_로그인하고_AccessToken_받아온다(String code) {
+        var response = 깃헙_로그인(code);
         return response.jsonPath().getString("accessToken");
     }
 
@@ -66,16 +66,24 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static void 즐겨_찾기_삭제_검증(ExtractableResponse<Response> response) {
+    public static void 즐겨_찾기_삭제_성공_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static ExtractableResponse<Response> 즐겨_찾기_삭제한다(String accessToken) {
+    public static void 권한_없음_결과_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨_찾기_삭제한다(String accessToken, int 아이디) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/favorites/1")
+                .when().delete("/favorites/"+ 아이디)
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 잘못된_요청_결과_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(400);
     }
 
 }

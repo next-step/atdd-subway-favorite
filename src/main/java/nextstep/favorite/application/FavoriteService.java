@@ -2,6 +2,8 @@ package nextstep.favorite.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.BadRequestException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
@@ -20,8 +22,8 @@ public class FavoriteService {
     }
 
     public long createFavorite(String email, long source, long target) {
-        Station sourceStation = stationRepository.findById(source).orElseThrow();
-        Station tartgetStation = stationRepository.findById(target).orElseThrow();
+        Station sourceStation = stationRepository.findById(source).orElseThrow(BadRequestException::new);
+        Station tartgetStation = stationRepository.findById(target).orElseThrow(BadRequestException::new);
         Favorite favorite = new Favorite(email, sourceStation, tartgetStation);
         Favorite savedFavorite = favoriteRepository.save(favorite);
         return savedFavorite.getId();
@@ -35,6 +37,10 @@ public class FavoriteService {
     }
 
     public void delete(String email, Long id) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(BadRequestException::new);
+        if (!favorite.isSameOf(email)) {
+            throw new AuthenticationException();
+        }
         favoriteRepository.deleteById(id);
     }
 }

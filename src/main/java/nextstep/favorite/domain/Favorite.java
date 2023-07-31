@@ -46,4 +46,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean isSameOf(String email) {
+        return this.email.equals(email);
+    }
 }
