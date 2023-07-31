@@ -271,7 +271,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * ## 시나리오
      * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
      * And : 회원을 생성하고
-     * And : 토큰을 발급받은 후
+     * And : 토큰을 발급받고
+     * And : 즐겨찾기를 등록한 후
      * When : 즐겨찾기 목록 조회를 요청하면
      * Then : 즐겨찾기 목록이 조회된다.
      */
@@ -281,6 +282,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         String accessToken = 토큰_추출(일반_로그인_요청(EMAIL, PASSWORD));
+
+        즐겨찾기_생성_요청(TokenType.BEARER, accessToken, 교대역, 양재역);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(TokenType.BEARER, accessToken);
@@ -292,8 +295,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(즐겨찾기_도착역_목록_추출(response)).containsExactly(양재역);
     }
 
-    private List<String> 즐겨찾기_목록_추출(ExtractableResponse<Response> response) {
-        return response.jsonPath().getList("", String.class);
+    private List<Object> 즐겨찾기_목록_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList("");
     }
 
     private List<Long> 즐겨찾기_시작역_목록_추출(ExtractableResponse<Response> response) {
