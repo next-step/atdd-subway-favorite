@@ -24,7 +24,7 @@ public class Favorite {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private Favorite(Station source, Station target, Member member) {
+    public Favorite(Station source, Station target, Member member) {
         this.source = source;
         this.target = target;
         this.member = member;
@@ -42,9 +42,5 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
-    }
-
-    public static Favorite create(Station source, Station target, Member member) {
-        return new Favorite(source, target, member);
     }
 }

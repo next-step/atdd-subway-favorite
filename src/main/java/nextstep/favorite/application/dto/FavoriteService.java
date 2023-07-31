@@ -37,7 +37,7 @@ public class FavoriteService {
 
         pathService.validatePath(sourceStation, targetStation);
 
-        favoriteRepository.save(Favorite.create(sourceStation, targetStation, member));
+        favoriteRepository.save(new Favorite(sourceStation, targetStation, member));
     }
 
     public List<FavoriteResponse> findFavoritesByEmail(String email) {
