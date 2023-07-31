@@ -1,4 +1,4 @@
-package nextstep.favorite.ui;
+package nextstep.favorite.application;
 
 public class FavoriteCreateRequest {
 

@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import nextstep.subway.domain.Station;
 
 @Entity
 public class Favorite {
@@ -12,13 +15,17 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
-    private long source;
-    private long target;
+    @ManyToOne
+    @JoinColumn(name = "source_id")
+    private Station source;
+    @ManyToOne
+    @JoinColumn(name = "target_id")
+    private Station target;
 
     public Favorite() {
     }
 
-    public Favorite(String email, long source, long target) {
+    public Favorite(String email, Station source, Station target) {
         this.email = email;
         this.source = source;
         this.target = target;
@@ -32,11 +39,11 @@ public class Favorite {
         return email;
     }
 
-    public long getSource() {
+    public Station getSource() {
         return source;
     }
 
-    public long getTarget() {
+    public Station getTarget() {
         return target;
     }
 }
