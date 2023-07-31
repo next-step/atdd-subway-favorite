@@ -31,6 +31,11 @@ public class FavoriteController {
         List<FavoriteResponse> results = favoriteService.findFavoritesByEmail(userPrincipal.getUsername());
         return ResponseEntity.ok(results);
     }
+    @GetMapping("/favorites/{favoriteId}")
+    public ResponseEntity<FavoriteResponse> findFavorite(@PathVariable Long favoriteId, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        FavoriteResponse results = favoriteService.findFavoritesById(favoriteId, userPrincipal.getUsername());
+        return ResponseEntity.ok(results);
+    }
 
     @DeleteMapping("/favorites/{favoriteId}")
     public ResponseEntity<Void> deleteFavorites(@PathVariable Long favoriteId, @AuthenticationPrincipal UserPrincipal userPrincipal) {

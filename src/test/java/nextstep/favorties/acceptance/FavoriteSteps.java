@@ -26,6 +26,14 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_단건_조회(Long favoriteId, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/favorites/{favoriteId}", favoriteId)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Long 교대역, Long 양재역) {
         Map<String, String> params = new HashMap<>();
         params.put("source", 교대역.toString());

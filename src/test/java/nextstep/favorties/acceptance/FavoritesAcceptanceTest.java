@@ -56,6 +56,8 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기가 생성되고
      * When 즐겨찾기를 조회하면
      * Then 생성된 즐겨찾기가 조회되고
+     * When 해당 id에 대해 즐겨찾기 단건을 조회하면
+     * Then 해당 즐겨찾기가 조회되고
      * When 즐겨찾기를 삭제하면
      * Then 즐겨찾기가 삭제되고
      * When 즐겨찾기를 조회하면
@@ -86,6 +88,15 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         assertThat(favoriteId).isNotNull();
         assertThat(responseFavorites.jsonPath().getLong("get(0).source.id")).isEqualTo(교대역);
         assertThat(responseFavorites.jsonPath().getLong("get(0).target.id")).isEqualTo(양재역);
+
+        // when
+        ExtractableResponse<Response> responseFavorite = 즐겨찾기_단건_조회(favoriteId, accessToken);
+
+        // then
+        assertThat(responseFavorite.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseFavorite.jsonPath().getLong("id")).isEqualTo(favoriteId);
+        assertThat(responseFavorite.jsonPath().getLong("source.id")).isEqualTo(교대역);
+        assertThat(responseFavorite.jsonPath().getLong("target.id")).isEqualTo(양재역);
 
         // when
         ExtractableResponse<Response> responseDelete = 즐겨찾기_삭제(accessToken, favoriteId);

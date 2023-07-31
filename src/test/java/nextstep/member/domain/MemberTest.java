@@ -6,6 +6,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
 class MemberTest {
 
     private Station station1 = new Station();
@@ -23,8 +27,8 @@ class MemberTest {
         member.addFavorite(favorite);
 
         // then
-        Assertions.assertThat(member.getFavorites()).hasSize(1);
-        Assertions.assertThat(member.getFavorites()).containsExactly(favorite);
+        assertThat(member.getFavorites()).hasSize(1);
+        assertThat(member.getFavorites()).containsExactly(favorite);
     }
 
     @DisplayName("즐겨찾기 삭제")
@@ -39,7 +43,25 @@ class MemberTest {
         member.removeFavorite(favorite);
 
         // then
-        Assertions.assertThat(member.getFavorites()).hasSize(0);
+        assertThat(member.getFavorites()).hasSize(0);
+    }
+
+    @DisplayName("즐겨찾기 단건 조회")
+    @Test
+    void getFavorite() {
+        // given
+        Favorite favorite = spy(Favorite.class);
+
+        long favoriteId = 1L;
+        when(favorite.getId()).thenReturn(favoriteId);
+
+        member.addFavorite(favorite);
+
+        // when
+        Favorite result = member.getFavorite(favoriteId);
+
+        // then
+        assertThat(result.getId()).isEqualTo(favoriteId);
     }
 
 }
