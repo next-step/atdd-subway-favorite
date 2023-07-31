@@ -36,11 +36,14 @@ class MemberTest {
     void removeFavorite() {
 
         // given
-        Favorite favorite = new Favorite(station1, station2, member);
+        long favoriteId = 1L;
+        Favorite favorite = spy(Favorite.class);
+
+        when(favorite.getId()).thenReturn(favoriteId);
         member.addFavorite(favorite);
 
         // when
-        member.removeFavorite(favorite);
+        member.removeFavorite(favoriteId);
 
         // then
         assertThat(member.getFavorites()).hasSize(0);

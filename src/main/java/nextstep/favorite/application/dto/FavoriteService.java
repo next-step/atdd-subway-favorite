@@ -63,8 +63,6 @@ public class FavoriteService {
 
         Member member = memberService.findByEmail(email);
 
-        Favorite favorite = member.getFavorite(favoriteId);
-
-        member.removeFavorite(favorite);
+        member.removeFavorite(favoriteId);
     }
 }
