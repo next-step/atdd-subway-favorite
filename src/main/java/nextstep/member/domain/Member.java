@@ -1,6 +1,12 @@
 package nextstep.member.domain;
 
+import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.exception.FavoriteNotFoundException;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,6 +19,9 @@ public class Member {
     private String password;
     private Integer age;
     private String role;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -59,5 +68,26 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+        favorite.setUpMember(this);
+    }
+
+    public List<Favorite> getFavorites() {
+        return Collections.unmodifiableList(favorites);
+    }
+
+    public void removeFavorite(Long id) {
+        Favorite findedFavorite = findFavorite(id);
+        favorites.remove(findedFavorite);
+    }
+
+    private Favorite findFavorite(Long id) {
+        return favorites.stream()
+                .filter(favorite -> favorite.hasEqualId(id))
+                .findAny()
+                .orElseThrow(FavoriteNotFoundException::new);
     }
 }

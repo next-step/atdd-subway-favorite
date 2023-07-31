@@ -30,6 +30,12 @@ public class Favorite {
         this.member = member;
         this.source = source;
         this.target = target;
+
+        member.addFavorite(this);
+    }
+
+    public void setUpMember(Member member) {
+        this.member = member;
     }
 
     public Long getId() {
@@ -46,5 +52,9 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public boolean hasEqualId(Long id) {
+        return this.id.equals(id);
     }
 }

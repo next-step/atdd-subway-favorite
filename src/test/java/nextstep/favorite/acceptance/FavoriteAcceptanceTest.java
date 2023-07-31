@@ -304,6 +304,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When : 즐겨찾기 삭제를 요청하면
      * Then : 즐겨찾기가 삭제된다.
      */
+    @DisplayName("즐겨찾기 삭제")
     @Test
     void delete() {
         // given
