@@ -15,7 +15,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
+        Member member = memberRepository.save(request.toEntity());
         return MemberResponse.of(member);
     }
 
@@ -26,7 +26,7 @@ public class MemberService {
 
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.toMember());
+        member.update(param.toEntity());
     }
 
     public void deleteMember(Long id) {

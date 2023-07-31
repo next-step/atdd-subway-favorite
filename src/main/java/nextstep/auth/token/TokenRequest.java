@@ -1,22 +1,18 @@
 package nextstep.auth.token;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenRequest {
+
     private String email;
+
     private String password;
 
-    public TokenRequest() {
-    }
-
-    public TokenRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }

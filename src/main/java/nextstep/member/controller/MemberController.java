@@ -1,4 +1,4 @@
-package nextstep.member.ui;
+package nextstep.member.controller;
 
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;

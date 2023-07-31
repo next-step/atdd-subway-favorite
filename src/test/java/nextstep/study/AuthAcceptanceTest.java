@@ -1,26 +1,21 @@
 package nextstep.study;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.domain.Member;
+import nextstep.auth.token.TokenRequest;
+import nextstep.auth.token.oauth2.github.GithubTokenRequest;
 import nextstep.member.domain.MemberRepository;
-import nextstep.utils.AcceptanceTest;
+import nextstep.support.AcceptanceTest;
+import nextstep.support.RestAssuredClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.member.fixture.MemberFixture.회원_정보_엔티티;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "admin@email.com";
-    public static final String PASSWORD = "password";
-    public static final Integer AGE = 20;
+@AcceptanceTest
+class AuthAcceptanceTest {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -28,35 +23,25 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(회원_정보_엔티티);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
+        TokenRequest 토큰_요청 = TokenRequest.builder()
+                .email(회원_정보_엔티티.getEmail())
+                .password(회원_정보_엔티티.getPassword())
+                .build();
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> 토큰_응답 = RestAssuredClient.post("/login/token", 토큰_요청);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(토큰_응답.jsonPath().getString("accessToken")).isNotBlank();
     }
 
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        GithubTokenRequest 깃허브_토큰_요청 = new GithubTokenRequest("code");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> 깃허브_토큰_응답 = RestAssuredClient.post("/login/github", 깃허브_토큰_요청);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(깃허브_토큰_응답.jsonPath().getString("accessToken")).isNotBlank();
     }
 }
