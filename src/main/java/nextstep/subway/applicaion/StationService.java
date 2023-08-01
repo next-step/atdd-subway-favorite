@@ -1,11 +1,11 @@
 package nextstep.subway.applicaion;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.applicaion.dto.StationRequest;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import nextstep.subway.domain.StationResponseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class StationService {
 
     private final StationRepository stationRepository;
+    private final StationResponseRepository stationResponseRepository;
 
-    public StationService(StationRepository stationRepository) {
+    public StationService(StationRepository stationRepository, StationResponseRepository stationResponseRepository) {
         this.stationRepository = stationRepository;
+        this.stationResponseRepository = stationResponseRepository;
     }
 
     @Transactional
@@ -25,25 +27,13 @@ public class StationService {
         return StationResponse.of(station);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
-        return stationRepository.findAll().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return stationResponseRepository.findAll();
     }
 
     @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    public StationResponse createStationResponse(Station station) {
-        return new StationResponse(
-                station.getId(),
-                station.getName()
-        );
-    }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }

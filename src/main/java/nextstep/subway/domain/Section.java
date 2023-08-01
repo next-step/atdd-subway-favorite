@@ -7,9 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 @Entity
+@Table(name = "section")
 public class Section extends DefaultWeightedEdge {
 
     @Id

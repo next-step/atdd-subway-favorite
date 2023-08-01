@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Table;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,9 @@ public class DatabaseCleanup implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
-                .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
-                .map(entity -> entity.getName())
+                .filter(entity1 -> entity1.getJavaType().getAnnotation(Entity.class) != null)
+                .map(entity -> entity.getJavaType().getAnnotation(Table.class).name())
+                .distinct()
                 .collect(Collectors.toList());
     }
 

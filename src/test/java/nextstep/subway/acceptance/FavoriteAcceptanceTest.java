@@ -30,7 +30,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     String 사용자1_ACCESS_TOKEN;
 
 
-    @Override
     @BeforeEach
     public void setUp() {
         super.setUp();

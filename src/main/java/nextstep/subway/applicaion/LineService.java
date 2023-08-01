@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 import nextstep.subway.applicaion.dto.LineRequest;
 import nextstep.subway.applicaion.dto.LineResponse;
 import nextstep.subway.applicaion.dto.SectionRequest;
-import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
+import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,19 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class LineService {
 
     private final LineRepository lineRepository;
-    private final StationService stationService;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
-        this.stationService = stationService;
+        this.stationRepository = stationRepository;
     }
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line line = lineRepository.save(new Line(request.getName(), request.getColor()));
         if (request.getUpStationId() != null && request.getDownStationId() != null && request.getDistance() != 0) {
-            Station upStation = stationService.findById(request.getUpStationId());
-            Station downStation = stationService.findById(request.getDownStationId());
+            Station upStation = stationRepository.findById(request.getUpStationId()).orElseThrow();
+            Station downStation = stationRepository.findById(request.getDownStationId()).orElseThrow();
             line.addSection(upStation, downStation, request.getDistance());
         }
         return LineResponse.of(line);
@@ -66,23 +66,17 @@ public class LineService {
 
     @Transactional
     public void addSection(Long lineId, SectionRequest sectionRequest) {
-        Station upStation = stationService.findById(sectionRequest.getUpStationId());
-        Station downStation = stationService.findById(sectionRequest.getDownStationId());
+        Station upStation = stationRepository.findById(sectionRequest.getUpStationId()).orElseThrow();
+        Station downStation = stationRepository.findById(sectionRequest.getDownStationId()).orElseThrow();
         Line line = findById(lineId);
 
         line.addSection(upStation, downStation, sectionRequest.getDistance());
     }
 
-    private List<StationResponse> createStationResponses(Line line) {
-        return line.getStations().stream()
-                .map(stationService::createStationResponse)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         Line line = findById(lineId);
-        Station station = stationService.findById(stationId);
+        Station station = stationRepository.findById(stationId).orElseThrow();
 
         line.deleteSection(station);
     }

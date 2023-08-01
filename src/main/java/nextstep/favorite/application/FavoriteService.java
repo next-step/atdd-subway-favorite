@@ -1,7 +1,5 @@
 package nextstep.favorite.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.BadRequestException;
 import nextstep.favorite.domain.Favorite;
@@ -29,14 +27,6 @@ public class FavoriteService {
         Favorite favorite = new Favorite(email, sourceStation, tartgetStation);
         Favorite savedFavorite = favoriteRepository.save(favorite);
         return savedFavorite.getId();
-    }
-
-    @Transactional(readOnly = true)
-    public List<FavoriteResponse> getAll(String email) {
-        List<Favorite> favorites = favoriteRepository.findAllByEmail(email);
-        return favorites.stream()
-                .map(FavoriteResponse::from)
-                .collect(Collectors.toList());
     }
 
     @Transactional

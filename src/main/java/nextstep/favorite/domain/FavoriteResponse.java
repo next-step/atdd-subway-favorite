@@ -1,12 +1,28 @@
-package nextstep.favorite.application;
+package nextstep.favorite.domain;
 
-import nextstep.favorite.domain.Favorite;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import nextstep.subway.applicaion.dto.StationResponse;
 
+@Table(name = "favorite")
+@Entity
 public class FavoriteResponse {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @JsonIgnore
+    private String email;
+    @ManyToOne
+    @JoinColumn(name = "source_id")
     private StationResponse source;
+    @ManyToOne
+    @JoinColumn(name = "target_id")
     private StationResponse target;
 
     public FavoriteResponse() {

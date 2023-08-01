@@ -4,8 +4,9 @@ import java.util.List;
 import nextstep.auth.principal.AuthenticationPrincipal;
 import nextstep.auth.principal.UserPrincipal;
 import nextstep.favorite.application.FavoriteCreateRequest;
-import nextstep.favorite.application.FavoriteResponse;
+import nextstep.favorite.application.FavoriteDao;
 import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.domain.FavoriteResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
+    private final FavoriteDao favoriteDao;
 
-    public FavoriteController(FavoriteService favoriteService) {
+    public FavoriteController(FavoriteService favoriteService, FavoriteDao favoriteDao) {
         this.favoriteService = favoriteService;
+        this.favoriteDao = favoriteDao;
     }
 
     @PostMapping("/favorites")
@@ -40,7 +43,7 @@ public class FavoriteController {
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getAll(@AuthenticationPrincipal UserPrincipal user) {
         String email = user.getUsername();
-        List<FavoriteResponse> favoriteResponses = favoriteService.getAll(email);
+        List<FavoriteResponse> favoriteResponses = favoriteDao.getAll(email);
         return ResponseEntity.ok().body(favoriteResponses);
     }
 
