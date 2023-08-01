@@ -31,13 +31,19 @@ git rebase upstream/songteaheon
 - [X] 생성 인수 코드 작성
 - [X] 조회 인수 코드 작성
 - [X] 삭제 인수 코드 작성
-- [X] 리뷰 반영
+- [X] 1차 리뷰 반영
   - [X] Favorite Service 테스트 
   - [X] Member에 favorite 개념 종속 시키기
   - [X] Favorite Eager 삭제 -> 질문
   - [X] Favorite 불필요 팩토리 메서드 제거
   - [X] save 후 location 내려주기
   - [X] 불필요한 개행 삭제
+- [X] 2차 리뷰 반영
+  - [ ] 즐겨찾기의 지하철역 정보는 1:1이 아니라 N:1 관계로 수정
+  - [ ] CQRS패턴 적용
+  - [ ] favorites 일급 컬렉션 적용
+  - [ ] getFavorites() 불변성 적용
+  - [ ] 즐겨찾기에 대한 핸들링을 member가 아닌 일급컬렉션에서 하도록 수정
 
 
 ## 패키지 의존성
