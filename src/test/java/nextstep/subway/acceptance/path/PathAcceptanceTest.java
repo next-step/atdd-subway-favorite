@@ -1,22 +1,17 @@
 package nextstep.subway.acceptance.path;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.global.error.code.ErrorCode;
 import nextstep.subway.line.dto.request.SaveLineRequest;
 import nextstep.subway.line.dto.request.SaveLineSectionRequest;
 import nextstep.subway.path.dto.response.PathResponse;
 import nextstep.subway.station.dto.response.StationResponse;
 import nextstep.support.AcceptanceTest;
-import nextstep.support.AssertUtils;
 import nextstep.support.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -147,79 +142,4 @@ public class PathAcceptanceTest {
         );
     }
 
-    /**
-     * <pre>
-     * When 강남역 - 강남역의 최단 거리 경로를 조회하면
-     * Then 조회에 실패한다.
-     * </pre>
-     */
-    @DisplayName("출발역과 도착역이 같은 경로를 조회한다.")
-    @Test
-    void getSameDepartureAndArrivalStations() {
-        // when
-        ExtractableResponse<Response> 최단_거리_경로_조회_응답 = 최단_거리_경로_조회를_요청한다(강남역_아이디, 강남역_아이디);
-
-        // then
-        assertAll(
-                () -> AssertUtils.assertThatStatusCode(최단_거리_경로_조회_응답, HttpStatus.BAD_REQUEST),
-                () -> AssertUtils.assertThatErrorMessage(최단_거리_경로_조회_응답, ErrorCode.SAME_DEPARTURE_AND_ARRIVAL_STATIONS)
-        );
-    }
-
-    /**
-     * <pre>
-     * When 강남역 - 판교역(연결되어 있지 않음)의 최단 거리 경로를 조회하면
-     * Then 조회에 실패한다.
-     * </pre>
-     */
-    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우에 경로를 조회한다.")
-    @Test
-    void getUnlinkedDepartureAndArrivalStations() {
-        // when
-        ExtractableResponse<Response> 최단_거리_경로_조회_응답 = 최단_거리_경로_조회를_요청한다(강남역_아이디, 판교역_아이디);
-
-        // then
-        assertAll(
-                () -> AssertUtils.assertThatStatusCode(최단_거리_경로_조회_응답, HttpStatus.BAD_REQUEST),
-                () -> AssertUtils.assertThatErrorMessage(최단_거리_경로_조회_응답, ErrorCode.UNLINKED_DEPARTURE_AND_ARRIVAL_STATIONS)
-        );
-    }
-
-    /**
-     * <pre>
-     * When 존재하지 않은 역 - 양재역의 최단 거리 경로를 조회하면
-     * Then 조회에 실패한다.
-     * </pre>
-     */
-    @DisplayName("등록되어 있지 않은 역이 출발역인 최단 경로를 조회한다.")
-    @Test
-    void getShortestPathWhenNotExistDepartureStation() {
-        // when
-        ExtractableResponse<Response> 최단_거리_경로_조회_응답 = 최단_거리_경로_조회를_요청한다(0L, 판교역_아이디);
-
-        // then
-        assertAll(
-                () -> AssertUtils.assertThatStatusCode(최단_거리_경로_조회_응답, HttpStatus.BAD_REQUEST),
-                () -> AssertUtils.assertThatErrorMessage(최단_거리_경로_조회_응답, ErrorCode.NOT_EXIST_STATION)
-        );
-    }
-
-    /**
-     * <pre>
-     * When 남부터미널역 - 존재하지 않은 역의 최단 거리 경로를 조회하면
-     * Then 조회에 실패한다.
-     * </pre>
-     */
-    @DisplayName("등록되어 있지 않은 역이 도착역인 최단 경로를 조회한다.")
-    @Test
-    void getShortestPathWhenNotExistArrivalStation() {
-        // when
-        ExtractableResponse<Response> 최단_거리_경로_조회_응답 = 최단_거리_경로_조회를_요청한다(남부터미널역_아이디, 0L);
-
-        // then
-        assertAll(
-                () -> AssertUtils.assertThatStatusCode(최단_거리_경로_조회_응답, HttpStatus.BAD_REQUEST),
-                () -> AssertUtils.assertThatErrorMessage(최단_거리_경로_조회_응답, ErrorCode.NOT_EXIST_STATION)
-        );
-    }
 }

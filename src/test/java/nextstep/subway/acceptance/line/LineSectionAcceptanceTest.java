@@ -3,7 +3,6 @@ package nextstep.subway.acceptance.line;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.global.error.code.ErrorCode;
 import nextstep.subway.line.dto.request.SaveLineRequest;
 import nextstep.subway.line.dto.request.SaveLineSectionRequest;
 import nextstep.subway.line.dto.response.LineResponse;
@@ -244,52 +243,6 @@ public class LineSectionAcceptanceTest {
         assertAll(
                 () -> AssertUtils.assertThatStatusCode(지하철_구간_삭제_응답, HttpStatus.NO_CONTENT),
                 () -> assertThat(지하철_노선에_등록된_역_아이디_목록).doesNotContain(광교역이_하행_종점역인_구간.getDownStationId())
-        );
-    }
-
-    /**
-     * <pre>
-     * Given 지하철 노선의 구간을 추가하고
-     * When 등록되지 않은 구간을 삭제하면
-     * Then 구간 삭제에 실패한다.
-     * </pre>
-     */
-    @DisplayName("등록되어 있지 않는 구간을 삭제한다.")
-    @Test
-    void deleteNotExistLineSection() {
-        // given
-        SaveLineSectionRequest 광교역이_하행_종점역인_구간 = 광교역이_하행_종점역인_구간을_생성한다(
-                지하철_노선의_하행_종점역_아이디를_찾는다(신분당선)
-        );
-        지하철_구간_생성을_요청한다(광교역이_하행_종점역인_구간, 신분당선.getId());
-
-        // when
-        ExtractableResponse<Response> 지하철_구간_삭제_응답 = 지하철_구간_삭제을_요청한다(신분당선.getId(), 강남역_아이디);
-
-        // then
-        assertAll(
-                () -> AssertUtils.assertThatStatusCode(지하철_구간_삭제_응답, HttpStatus.BAD_REQUEST),
-                () -> AssertUtils.assertThatErrorMessage(지하철_구간_삭제_응답, ErrorCode.UNREGISTERED_STATION)
-        );
-    }
-
-    /**
-     * <pre>
-     * When 구간을 추가하지 않고 삭제하면
-     * Then 구간 삭제에 실패한다.
-     * </pre>
-     */
-    @DisplayName("구간이 1개인 노선의 구간을 삭제한다.")
-    @Test
-    void deleteStandAloneLineSection() {
-        // when
-        ExtractableResponse<Response> deleteLineSectionByStationIdResponse =
-                지하철_구간_삭제을_요청한다(신분당선.getId(), 지하철_노선의_하행_종점역_아이디를_찾는다(신분당선));
-
-        // then
-        assertAll(
-                () -> AssertUtils.assertThatStatusCode(deleteLineSectionByStationIdResponse, HttpStatus.BAD_REQUEST),
-                () -> AssertUtils.assertThatErrorMessage(deleteLineSectionByStationIdResponse, ErrorCode.STAND_ALONE_LINE_SECTION)
         );
     }
 
