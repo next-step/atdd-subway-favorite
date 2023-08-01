@@ -39,7 +39,7 @@ git rebase upstream/songteaheon
   - [X] save 후 location 내려주기
   - [X] 불필요한 개행 삭제
 - [X] 2차 리뷰 반영
-  - [ ] 즐겨찾기의 지하철역 정보는 1:1이 아니라 N:1 관계로 수정
+  - [X] 즐겨찾기의 지하철역 정보는 1:1이 아니라 N:1 관계로 수정
   - [ ] CQRS패턴 적용
   - [ ] favorites 일급 컬렉션 적용
   - [ ] getFavorites() 불변성 적용
