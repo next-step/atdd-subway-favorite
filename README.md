@@ -41,9 +41,9 @@ git rebase upstream/songteaheon
 - [X] 2차 리뷰 반영
   - [X] 즐겨찾기의 지하철역 정보는 1:1이 아니라 N:1 관계로 수정
   - [X] CQRS패턴 적용
-  - [ ] favorites 일급 컬렉션 적용
-  - [ ] getFavorites() 불변성 적용
-  - [ ] 즐겨찾기에 대한 핸들링을 member가 아닌 일급컬렉션에서 하도록 수정
+  - [X] favorites 일급 컬렉션 적용
+  - [X] getFavorites() 불변성 적용
+  - [X] 즐겨찾기에 대한 핸들링을 member가 아닌 일급컬렉션에서 하도록 수정
 
 
 ## 패키지 의존성
