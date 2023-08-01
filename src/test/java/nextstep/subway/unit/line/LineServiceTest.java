@@ -125,7 +125,7 @@ public class LineServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 역이 하행 종점역인 구간을 추가한다.")
+    @DisplayName("존재하지 않는 역이 하행 종점역인 구간을 등록하려할 때 등록에 실패한다.")
     void addNotExistDownStation() {
         // given
         SaveLineSectionRequest 존재하지_않는_역이_하행_종점역인_구간_생성_요청 = SaveLineSectionRequest.builder()
@@ -141,7 +141,7 @@ public class LineServiceTest {
     }
 
     @Test
-    @DisplayName("역 사이에 기존 역 사이 길이보다 크거나 같은 노선을 등록한다.")
+    @DisplayName("역 사이에 기존 역 사이 길이와 같은 노선을 등록하려할 때 등록에 실패한다.")
     void addInvalidDistanceLineSection() {
         // given
         SaveLineSectionRequest 신사역_강남역_노선_생성_요청 = SaveLineSectionRequest.builder()
@@ -157,7 +157,7 @@ public class LineServiceTest {
     }
 
     @Test
-    @DisplayName("이미 등록되어 있는 노선을 등록한다.")
+    @DisplayName("이미 등록되어 있는 노선을 등록하려할 때 등록에 실패한다.")
     void addAlreadyRegisteredLineSection() {
         // given
         SaveLineSectionRequest 신사역_판교역_노선_생성_요청 = SaveLineSectionRequest.builder()
@@ -173,7 +173,7 @@ public class LineServiceTest {
     }
 
     @Test
-    @DisplayName("상행역과 하행역 둘 중 하나도 포함되어있지 않은 노선을 등록한다.")
+    @DisplayName("상행역과 하행역 둘 중 하나도 포함되어있지 않은 노선을 등록하려할 때 등록에 실패한다.")
     void addLineSectionWithUnregisteredStation() {
         // given
         SaveLineSectionRequest 강남역_광교역_노선_생성_요청 = SaveLineSectionRequest.builder()
@@ -256,7 +256,7 @@ public class LineServiceTest {
     }
 
     @Test
-    @DisplayName("등록되어 있지 않은 구간을 삭제한다.")
+    @DisplayName("등록되어 있지 않은 구간을 삭제하려할 때 삭제에 실패한다.")
     void deleteNotExistSection() {
         // when & then
         assertThatThrownBy(() -> lineService.deleteLineSectionByStationId(신분당선.getId(), 강남역_아이디))
@@ -265,7 +265,7 @@ public class LineServiceTest {
     }
 
     @Test
-    @DisplayName("구간이 1개일 때 삭제한다.")
+    @DisplayName("구간이 1개일 때 삭제하려할 때 삭제에 실패한다.")
     void deleteStandaloneSection() {
         // when & then
         assertThatThrownBy(() -> lineService.deleteLineSectionByStationId(신분당선.getId(), 판교역_아이디))

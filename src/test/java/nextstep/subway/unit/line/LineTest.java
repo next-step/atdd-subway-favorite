@@ -81,7 +81,7 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("역 사이에 기존 역 사이 길이보다 크거나 같은 노선을 등록한다.")
+    @DisplayName("역 사이에 기존 역 사이 길이와 같은 노선을 등록하려할 때 등록에 실패한다.")
     void addInvalidDistanceLineSection() {
         // when: 까치산역 - 신촌역 노선(23m)에 까치산역 - 신도림역 노선(23m)을 추가한다.
         Section 까치산역_신도림역_노선 = new Section(까치산역, 신도림역, 23);
@@ -93,7 +93,7 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("이미 등록되어 있는 노선을 등록한다.")
+    @DisplayName("이미 등록되어 있는 노선을 등록하려할 때 등록에 실패한다.")
     void addAlreadyRegisteredLineSection() {
         // when: 까치산역 - 신촌역 노선에 동일한 노선인 까치산역 - 신촌역 노선을 추가한다.
         Section 까치산역_신촌역_노선 = new Section(까치산역, 신촌역, 23);
@@ -105,7 +105,7 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("상행역과 하행역 둘 중 하나도 포함되어있지 않은 노선을 등록한다.")
+    @DisplayName("상행역과 하행역 둘 중 하나도 포함되어있지 않은 노선을 등록하려할 때 등록에 실패한다.")
     void addLineSectionWithUnregisteredStation() {
         // when: 까치산역 - 신촌역 노선에 신도림역 - 잠실역 노선을 추가한다.
         Section 신도림역_잠실역_노선 = new Section(신도림역, 잠실역, 13);
@@ -184,7 +184,7 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("등록되어 있지 않은 구간을 삭제한다.")
+    @DisplayName("등록되어 있지 않은 구간을 삭제하려할 때 삭제에 실패한다.")
     void removeNotExistSection() {
         // when & then
         assertThatThrownBy(() -> sections.deleteSectionByStationId(신도림역.getId()))
@@ -193,7 +193,7 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("구간이 1개일 때 삭제한다.")
+    @DisplayName("구간이 1개일 때 삭제하려할 때 삭제에 실패한다.")
     void removeStandaloneSection() {
         // when & then
         assertThatThrownBy((() -> sections.deleteSectionByStationId(신촌역.getId())))

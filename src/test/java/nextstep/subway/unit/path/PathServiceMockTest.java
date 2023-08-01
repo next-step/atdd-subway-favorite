@@ -124,7 +124,7 @@ public class PathServiceMockTest {
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 같은 경로를 조회한다.")
+    @DisplayName("출발역과 도착역이 같은 경로를 조회할 때 실패한다.")
     void getSameDepartureAndArrivalStations() {
         // given
         PathRequest 출발역_신촌역_도착역_신촌역_요청 = PathRequest.builder()
@@ -139,7 +139,7 @@ public class PathServiceMockTest {
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우에 경로를 조회한다.")
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우에 최단 거리 경로 조회는 실패한다.")
     void getUnlinkedDepartureAndArrivalStations() {
         // given
         given(stationRepository.findById(신촌역_아이디)).willReturn(Optional.of(StationFixture.신촌역));
@@ -161,7 +161,7 @@ public class PathServiceMockTest {
     }
 
     @Test
-    @DisplayName("등록되어 있지 않은 역이 출발역인 최단 경로를 조회한다.")
+    @DisplayName("등록되어 있지 않은 역이 출발역인 최단 경로를 조회하려할 때 실패한다.")
     void getShortestPathWhenNotExistDepartureStation() {
         // given
         given(stationRepository.findById(신도림역_아이디)).willReturn(Optional.empty());
@@ -178,7 +178,7 @@ public class PathServiceMockTest {
     }
 
     @Test
-    @DisplayName("등록되어 있지 않은 역이 도착역인 최단 경로를 조회한다.")
+    @DisplayName("등록되어 있지 않은 역이 도착역인 최단 경로를 조회하려할 때 실패한다.")
     void getShortestPathWhenNotExistArrivalStation() {
         // given
         given(stationRepository.findById(신촌역_아이디)).willReturn(Optional.of(StationFixture.신촌역));
