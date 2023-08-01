@@ -73,7 +73,7 @@ public class MemberSteps {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .auth().oauth2(token)
-            .when().post("/members/me")
+            .when().get("/members/me")
             .then().log().all()
             .statusCode(HttpStatus.OK.value()).extract()
             .as(MemberResponse.class);
@@ -85,7 +85,7 @@ public class MemberSteps {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .auth().oauth2(token)
-            .when().post("/members/me")
+            .when().get("/members/me")
             .then().log().all()
             .extract().statusCode();
     }
