@@ -62,11 +62,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return response.jsonPath().getLong("id");
     }
 
-    /*
-     * 공통
-     * - 권한 없음 -> 401 Unauthorized
-     */
-
     /**
      * ## 시나리오
      * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
@@ -88,7 +83,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        //TODO: 즐겨찾기 조회 요청 구현후 작성
+        ExtractableResponse<Response> responseOfShowFavorites = 즐겨찾기_조회_요청(TokenType.BEARER, accessToken);
+        assertThat(즐겨찾기_Id_목록_추출(responseOfShowFavorites)).hasSize(1);
+        assertThat(즐겨찾기_시작역_목록_추출(responseOfShowFavorites)).containsExactly(교대역);
+        assertThat(즐겨찾기_도착역_목록_추출(responseOfShowFavorites)).containsExactly(양재역);
     }
 
     /**
@@ -288,14 +286,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * # 삭제 API
-     * ## 요청
-     * - DELETE /favorites/{id}
-     * - authorization: Bearer
-     * ---
-     * ## 응답
-     * - 204 No Content
-     * ---
      * ## 시나리오
      * Given : 지하철역과 노선을 생성하고 (@BeforeEach)
      * And : 회원을 생성하고
