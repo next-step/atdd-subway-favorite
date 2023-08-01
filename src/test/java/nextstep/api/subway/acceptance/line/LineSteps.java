@@ -1,6 +1,6 @@
 package nextstep.api.subway.acceptance.line;
 
-import static nextstep.api.subway.acceptance.AcceptanceHelper.statusCodeShouldBe;
+import static nextstep.utils.AcceptanceHelper.statusCodeShouldBe;
 
 import java.util.List;
 

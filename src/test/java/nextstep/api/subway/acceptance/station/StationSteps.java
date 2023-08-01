@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
-import nextstep.api.subway.acceptance.AcceptanceHelper;
 import nextstep.api.subway.applicaion.station.dto.StationRequest;
 import nextstep.api.subway.applicaion.station.dto.StationResponse;
+import nextstep.utils.AcceptanceHelper;
 
 public class StationSteps {
     public static final String BASE_URL = "/stations";

@@ -1,4 +1,4 @@
-package nextstep.api.subway.acceptance;
+package nextstep.utils;
 
 import org.springframework.http.HttpStatus;
 

@@ -13,9 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import nextstep.api.subway.acceptance.AcceptanceTest;
 import nextstep.api.subway.acceptance.line.LineSteps;
 import nextstep.api.subway.applicaion.station.dto.StationResponse;
+import nextstep.utils.AcceptanceTest;
 
 @DisplayName("지하철 경로 관리 기능")
 class PathAcceptanceTest extends AcceptanceTest {
@@ -30,8 +30,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     // 남부터미널역  --- 5 --- 양재역
     //
 
+    @Override
     @BeforeEach
     public void setUp() {
+        super.setUp();
         교대역 = 지하철역을_생성한다("교대역").getId();
         강남역 = 지하철역을_생성한다("강남역").getId();
         양재역 = 지하철역을_생성한다("양재역").getId();

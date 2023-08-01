@@ -8,7 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.api.subway.acceptance.AcceptanceTest;
+import nextstep.utils.AcceptanceTest;
 
 @DisplayName("지하철역 관련 기능")
 class StationAcceptanceTest extends AcceptanceTest {
