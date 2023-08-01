@@ -1,13 +1,16 @@
 package nextstep.member.acceptance;
 
+import nextstep.member.application.dto.MemberResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.member.acceptance.MemberSteps.*;
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("회원 정보")
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -69,9 +72,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
      * When 토큰을 통해 내 정보를 조회하면
      * Then 내 정보를 조회할 수 있다
      */
-    @DisplayName("내 정보를 조회한다.")
+    @DisplayName("로그인 후 내 정보를 조회한다.")
     @Test
     void getMyInfo() {
 
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        var loginResponse = 회원_로그인_요청(EMAIL,PASSWORD);
+        var accessToken = loginResponse.jsonPath().getString("accessToken");
+
+        var response = 내_정보_조회_요청(accessToken);
+
+        MemberResponse member = response.jsonPath().getObject("", MemberResponse.class);
+
+        assertThat(member.getEmail()).isEqualTo(EMAIL);
+        assertThat(member.getAge()).isEqualTo(AGE);
     }
+
 }
