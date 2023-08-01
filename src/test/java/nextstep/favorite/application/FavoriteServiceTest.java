@@ -2,6 +2,7 @@ package nextstep.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import javax.persistence.EntityManager;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.BadRequestException;
 import nextstep.favorite.domain.FavoriteRepository;
@@ -23,8 +24,6 @@ class FavoriteServiceTest {
     public static final String TEST_EMAIL = "email@email.com";
     public static final long NOT_EXISTS_FAVORITE_ID = 1000000;
     public static final String OTHER_EMAIL = "other@email.com";
-    public static final int GYODAE_STATION_ID = 1;
-    public static final int YANGJAE_STATION_ID = 3;
     public static final long TEST_FAVORITE_ID = 1L;
     public static final long NOT_EXISTS_STATION_ID = 100000L;
 
@@ -37,11 +36,23 @@ class FavoriteServiceTest {
     @Autowired
     FavoriteRepository favoriteRepository;
 
+    @Autowired
+    EntityManager entityManager;
+    Station gyodaeStation;
+    Station gangnamStation;
+    Station yangjaeStation;
+    Long gyodaeStationId;
+    Long gangnamStationId;
+    Long yangjaeStationId;
+
     @BeforeEach
     void setUp() {
-        stationRepository.save(new Station("교대역"));
-        stationRepository.save(new Station("강남역"));
-        stationRepository.save(new Station("양재역"));
+        gyodaeStation = stationRepository.save(new Station("교대역"));
+        gangnamStation = stationRepository.save(new Station("강남역"));
+        yangjaeStation = stationRepository.save(new Station("양재역"));
+        gyodaeStationId = gyodaeStation.getId();
+        gangnamStationId = gangnamStation.getId();
+        yangjaeStationId = yangjaeStation.getId();
     }
 
     @AfterEach
@@ -61,7 +72,7 @@ class FavoriteServiceTest {
     @Test
     void deleteOthersFavorite() {
         // given
-        favoriteService.create(OTHER_EMAIL, GYODAE_STATION_ID, YANGJAE_STATION_ID);
+        favoriteService.create(OTHER_EMAIL, gyodaeStationId, yangjaeStationId);
 
         // when,then
         assertThatThrownBy(() -> favoriteService.delete(TEST_EMAIL, TEST_FAVORITE_ID))
@@ -73,10 +84,10 @@ class FavoriteServiceTest {
     void createFavoriteThatContainsNotExistsStationId() {
         Assertions.assertAll(
                 () -> assertThatThrownBy(
-                        () -> favoriteService.create(OTHER_EMAIL, NOT_EXISTS_STATION_ID, YANGJAE_STATION_ID))
+                        () -> favoriteService.create(OTHER_EMAIL, NOT_EXISTS_STATION_ID, gyodaeStationId))
                         .isInstanceOf(BadRequestException.class),
                 () -> assertThatThrownBy(
-                        () -> favoriteService.create(OTHER_EMAIL, YANGJAE_STATION_ID, NOT_EXISTS_STATION_ID))
+                        () -> favoriteService.create(OTHER_EMAIL, yangjaeStationId, NOT_EXISTS_STATION_ID))
                         .isInstanceOf(BadRequestException.class)
         );
     }
