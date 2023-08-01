@@ -3,8 +3,8 @@ package nextstep.subway.section.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.global.error.code.ErrorCode;
-import nextstep.subway.global.error.exception.InvalidLineSectionException;
+import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.InvalidLineSectionException;
 import nextstep.subway.station.entity.Station;
 
 import javax.persistence.CollectionTable;

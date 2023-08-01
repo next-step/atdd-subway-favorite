@@ -1,7 +1,7 @@
 package nextstep.member.fixture;
 
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.domain.Member;
+import nextstep.member.dto.MemberRequest;
+import nextstep.member.entity.Member;
 
 public class MemberFixture {
 

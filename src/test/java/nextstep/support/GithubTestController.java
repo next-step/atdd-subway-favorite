@@ -1,7 +1,7 @@
 package nextstep.support;
 
-import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
-import nextstep.auth.token.oauth2.github.GithubProfileResponse;
+import nextstep.auth.oauth2.github.dto.GithubAccessTokenResponse;
+import nextstep.auth.oauth2.github.dto.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

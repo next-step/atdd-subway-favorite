@@ -1,8 +1,8 @@
 package nextstep.subway.unit.line;
 
-import nextstep.subway.global.error.code.ErrorCode;
-import nextstep.subway.global.error.exception.InvalidLineSectionException;
-import nextstep.subway.global.error.exception.NotEntityFoundException;
+import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.InvalidLineSectionException;
+import nextstep.global.error.exception.NotEntityFoundException;
 import nextstep.subway.line.adapters.persistence.LineJpaAdapter;
 import nextstep.subway.line.dto.request.SaveLineSectionRequest;
 import nextstep.subway.line.dto.response.LineResponse;

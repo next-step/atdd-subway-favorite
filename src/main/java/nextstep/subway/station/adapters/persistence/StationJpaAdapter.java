@@ -1,8 +1,8 @@
 package nextstep.subway.station.adapters.persistence;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.global.error.code.ErrorCode;
-import nextstep.subway.global.error.exception.NotEntityFoundException;
+import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.NotEntityFoundException;
 import nextstep.subway.station.entity.Station;
 import nextstep.subway.station.repository.StationRepository;
 import org.springframework.stereotype.Service;

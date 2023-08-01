@@ -3,8 +3,8 @@ package nextstep.member.acceptance.step;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.constants.Endpoint;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.dto.MemberRequest;
+import nextstep.member.dto.MemberResponse;
 import nextstep.support.RestAssuredClient;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -3,7 +3,7 @@ package nextstep.subway.acceptance.path;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.global.error.code.ErrorCode;
+import nextstep.global.error.code.ErrorCode;
 import nextstep.subway.line.dto.request.SaveLineRequest;
 import nextstep.subway.line.dto.request.SaveLineSectionRequest;
 import nextstep.subway.path.dto.response.PathResponse;

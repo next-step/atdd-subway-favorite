@@ -2,7 +2,7 @@ package nextstep.support;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.global.error.code.ErrorCode;
+import nextstep.global.error.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;

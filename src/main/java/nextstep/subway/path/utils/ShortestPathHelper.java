@@ -1,8 +1,8 @@
 package nextstep.subway.path.utils;
 
 import lombok.Builder;
-import nextstep.subway.global.error.code.ErrorCode;
-import nextstep.subway.global.error.exception.InvalidPathException;
+import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.InvalidPathException;
 import nextstep.subway.section.entity.Section;
 import nextstep.subway.station.entity.Station;
 import org.jgrapht.GraphPath;

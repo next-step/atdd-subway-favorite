@@ -1,8 +1,7 @@
 package nextstep.subway.unit.line;
 
-import nextstep.subway.fixture.StationFixture;
-import nextstep.subway.global.error.code.ErrorCode;
-import nextstep.subway.global.error.exception.InvalidLineSectionException;
+import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.InvalidLineSectionException;
 import nextstep.subway.section.entity.Section;
 import nextstep.subway.section.entity.Sections;
 import nextstep.subway.station.entity.Station;

@@ -1,7 +1,7 @@
 package nextstep.member.acceptance;
 
 import io.restassured.RestAssured;
-import nextstep.member.application.dto.MemberRequest;
+import nextstep.member.dto.MemberRequest;
 import nextstep.support.AcceptanceTest;
 import nextstep.support.AssertUtils;
 import nextstep.support.DatabaseCleanup;

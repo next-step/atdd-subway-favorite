@@ -1,8 +1,8 @@
 package nextstep.subway.path.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.global.error.code.ErrorCode;
-import nextstep.subway.global.error.exception.InvalidPathException;
+import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.InvalidPathException;
 import nextstep.subway.line.adapters.persistence.LineJpaAdapter;
 import nextstep.subway.line.entity.Line;
 import nextstep.subway.path.dto.request.PathRequest;

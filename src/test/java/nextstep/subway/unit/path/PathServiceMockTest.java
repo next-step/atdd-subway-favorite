@@ -1,9 +1,9 @@
 package nextstep.subway.unit.path;
 
 import nextstep.subway.fixture.StationFixture;
-import nextstep.subway.global.error.code.ErrorCode;
-import nextstep.subway.global.error.exception.InvalidPathException;
-import nextstep.subway.global.error.exception.NotEntityFoundException;
+import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.InvalidPathException;
+import nextstep.global.error.exception.NotEntityFoundException;
 import nextstep.subway.line.adapters.persistence.LineJpaAdapter;
 import nextstep.subway.line.entity.Line;
 import nextstep.subway.line.repository.LineRepository;

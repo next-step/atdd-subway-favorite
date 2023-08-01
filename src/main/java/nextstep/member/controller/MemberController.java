@@ -1,20 +1,19 @@
 package nextstep.member.controller;
 
-import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
+import lombok.RequiredArgsConstructor;
+import nextstep.member.service.MemberService;
+import nextstep.member.dto.MemberRequest;
+import nextstep.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@RequiredArgsConstructor
 @RestController
 public class MemberController {
-    private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
