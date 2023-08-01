@@ -38,7 +38,7 @@ public class FavoriteService {
 
         Long source = favoriteCreateRequest.getSource();
         Long target = favoriteCreateRequest.getTarget();
-        pathService.validatePath(source, target);  // TODO source와 target에 대한 validation을 pathService로 위임했는데, 옳은 선택일지? 이에 대해 어떻게 생각하시는지 알고싶습니다.
+        pathService.validatePathConnection(source, target);
 
         Favorite favorite = saveFavorite(source, target, member);
         return favorite.getId();
