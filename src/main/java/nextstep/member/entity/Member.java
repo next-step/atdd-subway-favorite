@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.auth.oauth2.OAuth2UserRequest;
+import nextstep.auth.oauth2.dto.OAuth2UserRequest;
 import nextstep.member.constants.RoleType;
 
 import javax.persistence.*;
@@ -14,13 +14,18 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String email;
+
     private String password;
+
     private Integer age;
+
     private String role;
 
     @Builder

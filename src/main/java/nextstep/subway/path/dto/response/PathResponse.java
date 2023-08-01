@@ -2,10 +2,8 @@ package nextstep.subway.path.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import nextstep.subway.path.vo.Path;
 import nextstep.subway.station.dto.response.StationResponse;
-import nextstep.subway.station.entity.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,15 +16,15 @@ public class PathResponse {
 
     Integer distance;
 
-    public static PathResponse of(GraphPath<Station, DefaultWeightedEdge> path) {
-        List<StationResponse> stations = path.getVertexList()
+    public static PathResponse of(Path path) {
+        List<StationResponse> stations = path.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         return PathResponse.builder()
                 .stations(stations)
-                .distance((int) path.getWeight())
+                .distance(path.getDistance())
                 .build();
     }
 

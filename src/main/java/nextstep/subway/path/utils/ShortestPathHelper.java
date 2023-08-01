@@ -3,6 +3,7 @@ package nextstep.subway.path.utils;
 import lombok.Builder;
 import nextstep.global.error.code.ErrorCode;
 import nextstep.global.error.exception.InvalidPathException;
+import nextstep.subway.path.vo.Path;
 import nextstep.subway.section.entity.Section;
 import nextstep.subway.station.entity.Station;
 import org.jgrapht.GraphPath;
@@ -34,9 +35,10 @@ public class ShortestPathHelper {
         this.target = target;
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> getPath() {
+    public Path getPath() {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+                .map(Path::new)
                 .orElseThrow(() -> new InvalidPathException(ErrorCode.UNLINKED_DEPARTURE_AND_ARRIVAL_STATIONS));
     }
 
