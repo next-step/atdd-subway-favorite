@@ -1,5 +1,7 @@
 package nextstep.contoller;
 
+import nextstep.auth.principal.AuthenticationPrincipal;
+import nextstep.auth.principal.UserPrincipal;
 import nextstep.service.MemberService;
 import nextstep.dto.MemberRequest;
 import nextstep.dto.MemberResponse;
@@ -41,8 +43,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        MemberResponse member = memberService.findMemberByEmail(userPrincipal.getUsername());
+        return ResponseEntity.ok().body(member);
     }
 }
 
