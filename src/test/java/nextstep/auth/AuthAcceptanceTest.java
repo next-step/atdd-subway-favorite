@@ -5,8 +5,10 @@ import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
+import nextstep.auth.github.VirtualUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import static nextstep.auth.AuthSteps.*;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private final String EMAIL = "admin@email.com";
-    private final String PASSWORD = "password";
-    private final Integer AGE = 20;
+    private final VirtualUser properUser = VirtualUser.사용자1;
     private final String LOCAL_ADDRESS = "http://localhost:8080";
 
 
@@ -41,58 +41,46 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void bearerAuth() {
         // given
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(new Member(properUser.getEmail(), properUser.getPassword(), properUser.getAge()));
 
         // when
-        ExtractableResponse<Response> response = 토큰_로그인_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response = 토큰_로그인_요청(properUser.getEmail(), properUser.getPassword());
 
         // then
         access_token_응답을_받음(response);
     }
 
-    @DisplayName("Github Auth")
-    @Test
-    void githubAuth() {
-        // when
-        ExtractableResponse<Response> response = 깃허브_로그인_요청();
+    @Nested
+    @DisplayName("깃허브 Oauth2 로그인 성공하는 시나리오엔")
+    class GithubAuthSuccess {
+        @DisplayName("서버로 리다이렉트 되면 클라이언트는 엑세스 토큰을 받는 시나리오")
+        @Test
+        void githubAuth() {
+            // when
+            ExtractableResponse<Response> response = 깃허브_로그인_요청(properUser.getCode());
 
-        // then
-        access_token_응답을_받음(response);
-    }
+            // then
+            access_token_응답을_받음(response);
+        }
 
-    /**
-     * Given {code, cliend_id, client_secret} json body 값과 함께
-     * When Accept: application/json 형식으로
-     * And POST 요청을 https://github.com/login/oauth/access_token에 보내면
-     * Then access_token, scope, token_type이 json으로 body에 담겨 응답이 온다.
-     * Ref. https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#2-users-are-redirected-back-to-your-site-by-github
-     */
-    @DisplayName("Github Auth, post for access_token")
-    @Test
-    void githubAuthPostForAccessToken() {
-        // when
-        ExtractableResponse<Response> response = oauth2_깃허브에_토큰_요청(tokenUrl);
+        @DisplayName("인증 서버에 토큰 요청(with code)하면 토큰을 응답 받는 시나리오")
+        @Test
+        void githubAuthPostForAccessToken() {
+            // when
+            ExtractableResponse<Response> response = oauth2_깃허브에_토큰_요청(tokenUrl, properUser.getCode());
 
-        // then
-        oauth2_깃허브_토큰_응답_받음(response);
-    }
+            // then
+            oauth2_깃허브_토큰_응답_받음(response);
+        }
 
-    /**
-     * Given POST 요청 https://github.com/login/oauth/access_token으로 깃허브로 부터 받은 accessToken이 있을 때
-     * When GET 요청을 https://api.github.com/user에 아래 헤더와 함께 보내면,
-     *   -H "Accept: application/vnd.github+json" \
-     *   -H "Authorization: Bearer <YOUR-TOKEN>" \
-     *   -H "X-GitHub-Api-Version: 2022-11-28"
-     * Then email 값이 json으로 body에 담겨 응답이 온다.
-     * Ref. https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
-     * */
-    @DisplayName("Github Auth, get user info")
-    @Test
-    void githubAuthGetUserInfo() {
-        // when
-        ExtractableResponse<Response> response = oauth2_깃허브_리소스_조회_요청(profileUrl);
+        @DisplayName("리소스 서버에 리소스 조회 요(with token)하면 리소스를 정상 응답 받는 시나리오")
+        @Test
+        void githubAuthGetUserInfo() {
+            // when
+            ExtractableResponse<Response> response = oauth2_깃허브_리소스_조회_요청(profileUrl, properUser.getToken());
 
-        // then
-        이메일_응답_받음(response, "email");
+            // then
+            이메일_응답_받음(response, "email");
+        }
     }
 }

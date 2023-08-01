@@ -34,9 +34,9 @@ public class AuthSteps {
         return response;
     }
 
-    public static ExtractableResponse<Response> 깃허브_로그인_요청() {
+    public static ExtractableResponse<Response> 깃허브_로그인_요청(String code) {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", code);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -53,9 +53,10 @@ public class AuthSteps {
         assertThat(response.jsonPath().getString("token_type")).isNotBlank();
     }
 
-    public static ExtractableResponse<Response> oauth2_깃허브에_토큰_요청(String tokenUrl) {
+    // Ref. https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#2-users-are-redirected-back-to-your-site-by-github
+    public static ExtractableResponse<Response> oauth2_깃허브에_토큰_요청(String tokenUrl, String code) {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", code);
         params.put("client_id", "test_id");
         params.put("client_secret", "test_secret");
 
@@ -75,8 +76,9 @@ public class AuthSteps {
         assertThat(response.jsonPath().getString(email)).isNotBlank();
     }
 
-    public static ExtractableResponse<Response> oauth2_깃허브_리소스_조회_요청(String profileUrl) {
-        String accessToken = "access_token";
+
+    // Ref. https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
+    public static ExtractableResponse<Response> oauth2_깃허브_리소스_조회_요청(String profileUrl, String accessToken) {
         Map<String, String> headers = Map.of(
                 "Accept", "application/vnd.github+json",
                 "Authorization", "Bearer " + accessToken,
