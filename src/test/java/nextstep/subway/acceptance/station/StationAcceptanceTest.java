@@ -1,8 +1,6 @@
 package nextstep.subway.acceptance.station;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.acceptance.step.StationAcceptanceStep;
 import nextstep.support.AcceptanceTest;
 import nextstep.support.AssertUtils;

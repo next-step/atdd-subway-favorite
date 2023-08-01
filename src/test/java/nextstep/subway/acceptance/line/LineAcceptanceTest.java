@@ -1,8 +1,6 @@
 package nextstep.subway.acceptance.line;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.acceptance.step.LineAcceptanceStep;
 import nextstep.subway.line.dto.request.SaveLineRequest;
 import nextstep.subway.line.dto.request.UpdateLineRequest;
