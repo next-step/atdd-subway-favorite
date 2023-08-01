@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.token.TokenRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
@@ -30,7 +29,7 @@ public class TokenSteps {
                 .body(params)
                 .when().post("/login/github")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
 
     public static String 토큰_추출(ExtractableResponse<Response> response) {

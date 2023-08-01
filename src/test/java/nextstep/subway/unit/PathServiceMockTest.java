@@ -72,6 +72,9 @@ public class PathServiceMockTest {
     @Test
     void searchPath() {
         // given: 역 정보와 노선 정보가 주어진다.
+        when(stationRepository.existsById(anyLong()))
+                .thenReturn(true);
+
         when(stationRepository.findById(anyLong()))
                 .thenReturn(Optional.of(교대역))   // 출발역
                 .thenReturn(Optional.of(양재역));  // 도착역
@@ -117,6 +120,9 @@ public class PathServiceMockTest {
 
         Line 구호선 = new Line("9호선", "brown", new Section(증미역, 여의도역, 2));
 
+        when(stationRepository.existsById(anyLong()))
+                .thenReturn(true);
+
         when(stationRepository.findById(anyLong()))
                 .thenReturn(Optional.of(교대역))   // 출발역
                 .thenReturn(Optional.of(여의도역));  // 도착역
@@ -133,8 +139,8 @@ public class PathServiceMockTest {
     @Test
     void searchPathFailByNotFoundStation() {
         // given
-        when(stationRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+        when(stationRepository.existsById(anyLong()))
+                .thenReturn(false);
 
         // when, then
         assertThatThrownBy(() -> pathService.searchPath(1L, 2L))
