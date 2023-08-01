@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.Favorites;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class Member {
     private Integer age;
     private String role;
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+    @Embedded
+    private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -59,7 +60,7 @@ public class Member {
     }
 
     public List<Favorite> getFavorites() {
-        return favorites;
+        return this.favorites.getFavorites();
     }
 
     public void update(Member member) {
@@ -73,18 +74,14 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
+        this.favorites.addFavorite(favorite);
     }
 
     public void removeFavorite(Long favoriteId) {
-        Favorite favorite = getFavorite(favoriteId);
-        this.favorites.remove(favorite);
+        this.favorites.removeFavorite(favoriteId);
     }
 
     public Favorite getFavorite(Long favoriteId) {
-        return getFavorites().stream()
-                .filter(it -> Objects.equals(it.getId(), favoriteId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 즐겨찾기가 해당 사용자에 존재하지 않습니다."));
+        return this.favorites.getFavorite(favoriteId);
     }
 }
