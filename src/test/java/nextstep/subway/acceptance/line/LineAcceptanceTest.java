@@ -153,7 +153,7 @@ public class LineAcceptanceTest {
                 .getLong(LINE_ID_KEY);
 
         // when
-        ExtractableResponse<Response> 지하철_노선_수정_응답 = 지하철_노선_수정을_요청한다(수정한_신분당선, 저장된_노선의_아이디);
+        var 지하철_노선_수정_응답 = 지하철_노선_수정을_요청한다(수정한_신분당선, 저장된_노선의_아이디);
 
         // then
         String 수정된_노선의_이름 = 지하철_노선_상세_조회를_요청한다(저장된_노선의_아이디)
@@ -183,7 +183,7 @@ public class LineAcceptanceTest {
                 .getLong(LINE_ID_KEY);
 
         // when
-        ExtractableResponse<Response> 지하철_노선_삭제_응답 = 지하철_노선_삭제를_요청한다(저장된_노선의_아이디);
+        var 지하철_노선_삭제_응답 = 지하철_노선_삭제를_요청한다(저장된_노선의_아이디);
 
         // then
         List<String> 지하철_노선_이름_목록 = 지하철_노선_목록_조회를_요청한다()

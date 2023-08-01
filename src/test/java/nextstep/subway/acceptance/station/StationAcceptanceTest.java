@@ -102,7 +102,7 @@ public class StationAcceptanceTest {
                 .getLong(STATION_ID_KEY);
 
         // when
-        ExtractableResponse<Response> 지하철역_삭제_응답 = StationAcceptanceStep
+        var 지하철역_삭제_응답 = StationAcceptanceStep
                 .지하철역_삭제을_요청한다(저장된_지하철역_아이디);
 
         // then

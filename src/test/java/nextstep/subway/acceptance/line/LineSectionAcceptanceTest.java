@@ -90,7 +90,7 @@ public class LineSectionAcceptanceTest {
                 .downStationId(신사역_아이디)
                 .distance(3)
                 .build();
-        ExtractableResponse<Response> 지하쳘_구간_생성_응답 = 지하철_구간_생성을_요청한다(강남역_신사역_구간, 신분당선.getId());
+        var 지하쳘_구간_생성_응답 = 지하철_구간_생성을_요청한다(강남역_신사역_구간, 신분당선.getId());
 
         // then
         LineResponse 지하철_노선 = 지하쳘_구간_생성_응답.as(LineResponse.class);
@@ -118,7 +118,7 @@ public class LineSectionAcceptanceTest {
                 .downStationId(강남역_아이디)
                 .distance(3)
                 .build();
-        ExtractableResponse<Response> 지하쳘_노선_생성_응답 = 지하철_구간_생성을_요청한다(신사역_강남역_구간, 신분당선.getId());
+        var 지하쳘_노선_생성_응답 = 지하철_구간_생성을_요청한다(신사역_강남역_구간, 신분당선.getId());
 
         // then
         LineResponse 지하철_노선 = 지하쳘_노선_생성_응답.as(LineResponse.class);
@@ -146,7 +146,7 @@ public class LineSectionAcceptanceTest {
                 .downStationId(광교역_아이디)
                 .distance(8)
                 .build();
-        ExtractableResponse<Response> 지하쳘_노선_생성_응답 = 지하철_구간_생성을_요청한다(판교역_광교역_구간, 신분당선.getId());
+        var 지하쳘_노선_생성_응답 = 지하철_구간_생성을_요청한다(판교역_광교역_구간, 신분당선.getId());
 
         // then
         LineResponse 지하철_노선 = 지하쳘_노선_생성_응답.as(LineResponse.class);
@@ -177,10 +177,10 @@ public class LineSectionAcceptanceTest {
 
         // when
         Long 신분당선의_상행_종점역_아이디 = 지하철_노선의_상행_종점역_아이디를_찾는다(광교역이_하행_종점역으로_추가된_신분당선);
-        ExtractableResponse<Response> 지하철_구간_삭제_응답 = 지하철_구간_삭제을_요청한다(신분당선.getId(), 신분당선의_상행_종점역_아이디);
+        var 지하철_구간_삭제_응답 = 지하철_구간_삭제을_요청한다(신분당선.getId(), 신분당선의_상행_종점역_아이디);
 
         // then
-        ExtractableResponse<Response> 삭제_후_신분당선 = 지하철_노선_상세_조회를_요청한다(신분당선.getId());
+        var 삭제_후_신분당선 = 지하철_노선_상세_조회를_요청한다(신분당선.getId());
         List<Long> 지하철_노선에_등록된_역_아이디_목록 = 지하철노선에_등록된_지하철역_아이디_목록을_가져온다(삭제_후_신분당선);
 
         assertAll(
@@ -204,11 +204,11 @@ public class LineSectionAcceptanceTest {
         지하철_구간_생성을_요청한다(광교역이_하행_종점역인_구간, 신분당선.getId());
 
         // when
-        ExtractableResponse<Response> 지하철_구간_삭제_응답 =
+        var 지하철_구간_삭제_응답 =
                 지하철_구간_삭제을_요청한다(신분당선.getId(), 판교역_아이디);
 
         // then
-        ExtractableResponse<Response> 삭제_후_신분당선 = 지하철_노선_상세_조회를_요청한다(신분당선.getId());
+        var 삭제_후_신분당선 = 지하철_노선_상세_조회를_요청한다(신분당선.getId());
         List<Long> 지하철_노선에_등록된_역_아이디_목록 = 지하철노선에_등록된_지하철역_아이디_목록을_가져온다(삭제_후_신분당선);
 
         assertAll(
@@ -234,10 +234,10 @@ public class LineSectionAcceptanceTest {
         지하철_구간_생성을_요청한다(광교역이_하행_종점역인_구간, 신분당선.getId());
 
         // when
-        ExtractableResponse<Response> 지하철_구간_삭제_응답 = 지하철_구간_삭제을_요청한다(신분당선.getId(), 광교역이_하행_종점역인_구간.getDownStationId());
+        var 지하철_구간_삭제_응답 = 지하철_구간_삭제을_요청한다(신분당선.getId(), 광교역이_하행_종점역인_구간.getDownStationId());
 
         // then
-        ExtractableResponse<Response> 삭제_후_신분당선 = 지하철_노선_상세_조회를_요청한다(신분당선.getId());
+        var 삭제_후_신분당선 = 지하철_노선_상세_조회를_요청한다(신분당선.getId());
         List<Long> 지하철_노선에_등록된_역_아이디_목록 = 지하철노선에_등록된_지하철역_아이디_목록을_가져온다(삭제_후_신분당선);
 
         assertAll(
