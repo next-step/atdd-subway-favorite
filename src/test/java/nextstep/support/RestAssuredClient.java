@@ -64,6 +64,30 @@ public class RestAssuredClient {
 
     /**
      * <pre>
+     * path에 GET 방식으로
+     * RestAssured를 통해
+     * access token 정보를 담아
+     * HTTP 요청을 보낼 때 사용합니다.
+     * </pre>
+     *
+     * @param path
+     * @param accessToken
+     * @return ExtractableResponse
+     */
+    public static ExtractableResponse<Response> get(String path, String accessToken) {
+        return RestAssured
+                .given()
+                    .log().all()
+                    .auth().oauth2(accessToken)
+                .when()
+                    .get(path)
+                .then()
+                    .log().all()
+                    .extract();
+    }
+
+    /**
+     * <pre>
      * path에
      * GET 방식으로
      * RestAssured를 통해

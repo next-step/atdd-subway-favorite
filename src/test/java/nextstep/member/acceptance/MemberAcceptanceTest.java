@@ -2,6 +2,7 @@ package nextstep.member.acceptance;
 
 import io.restassured.RestAssured;
 import nextstep.member.dto.MemberRequest;
+import nextstep.member.dto.MemberResponse;
 import nextstep.support.AcceptanceTest;
 import nextstep.support.AssertUtils;
 import nextstep.support.DatabaseCleanup;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.UNDEFINED_PORT;
+import static nextstep.member.acceptance.step.AuthStep.일반_로그인_요청;
 import static nextstep.member.acceptance.step.MemberStep.*;
 import static nextstep.member.fixture.MemberFixture.회원_정보_DTO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,13 +95,24 @@ class MemberAcceptanceTest {
 
     /**
      * Given 회원 가입을 생성하고
-     * And 로그인을 하고
+     * Given 로그인을 하고
      * When 토큰을 통해 내 정보를 조회하면
      * Then 내 정보를 조회할 수 있다
      */
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(회원_정보_DTO);
 
+        var 로그인_응답 = 일반_로그인_요청(회원_정보_DTO.getEmail(), 회원_정보_DTO.getPassword());
+
+        // when
+        var 내_정보_조회_응답 = 내_정보_조회_요청(로그인_응답);
+
+        // then
+        String 이메일 = 회원_정보_DTO.getEmail();
+        Integer 나이 = 회원_정보_DTO.getAge();
+        회원_정보_조회됨(내_정보_조회_응답, 이메일, 나이);
     }
 }
