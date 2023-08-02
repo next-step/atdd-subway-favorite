@@ -24,9 +24,9 @@ public class AuthSteps {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 깃허브_로그인요청() {
+    public static ExtractableResponse<Response> 깃허브_로그인요청(String code) {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", code);
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
