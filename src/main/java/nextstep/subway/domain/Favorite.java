@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 
 @Entity
@@ -60,7 +59,7 @@ public class Favorite {
 
     public void validDelete(Member member) {
         if(!isEqualsMember(member)){
-            throw new AuthenticationException();
+            throw new IllegalArgumentException();
         }
     }
 

@@ -3,7 +3,6 @@ package nextstep.subway.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.mock;
 
-import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,6 @@ class FavoriteTest {
         //then
         assertThatThrownBy(
             () -> favorite.validDelete(new Member())
-        ).isInstanceOf(AuthenticationException.class);
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 }
