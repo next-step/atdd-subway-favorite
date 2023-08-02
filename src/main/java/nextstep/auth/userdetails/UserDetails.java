@@ -6,4 +6,7 @@ public interface UserDetails {
     String getPassword();
 
     String getRole();
+
+    boolean checkPassword(String password);
+
 }

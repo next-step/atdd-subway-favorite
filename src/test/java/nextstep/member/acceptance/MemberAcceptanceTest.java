@@ -1,23 +1,44 @@
 package nextstep.member.acceptance;
 
-import nextstep.utils.AcceptanceTest;
+import io.restassured.RestAssured;
+import nextstep.member.dto.MemberRequest;
+import nextstep.support.AcceptanceTest;
+import nextstep.support.AssertUtils;
+import nextstep.support.DatabaseCleanup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.MemberSteps.*;
+import static io.restassured.RestAssured.UNDEFINED_PORT;
+import static nextstep.member.acceptance.step.MemberStep.*;
+import static nextstep.member.fixture.MemberFixture.회원_정보_DTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+@AcceptanceTest
+class MemberAcceptanceTest {
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private DatabaseCleanup databaseCleanUp;
+
+    @BeforeEach
+    void setUp() {
+        if (RestAssured.port == UNDEFINED_PORT) {
+            RestAssured.port = port;
+        }
+        databaseCleanUp.execute();
+    }
 
     @DisplayName("회원가입을 한다.")
     @Test
     void createMember() {
         // when
-        var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var response = 회원_생성_요청(회원_정보_DTO);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -27,13 +48,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void getMember() {
         // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 회원_생성_응답 = 회원_생성_요청(회원_정보_DTO);
 
         // when
-        var response = 회원_정보_조회_요청(createResponse);
+        var 회원_조회_응답 = 회원_정보_조회_요청(회원_생성_응답);
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        String 이메일 = 회원_정보_DTO.getEmail();
+        Integer 나이 = 회원_정보_DTO.getAge();
+        회원_정보_조회됨(회원_조회_응답, 이메일, 나이);
 
     }
 
@@ -41,26 +64,31 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMember() {
         // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 회원_생성_응답 = 회원_생성_요청(회원_정보_DTO);
 
         // when
-        var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        MemberRequest 수정할_회원_정보 = MemberRequest.builder()
+                .email("updatedTest@gmail.com")
+                .password("updatedtestpassword123")
+                .age(27)
+                .build();
+        var 회원_수정_응답 = 회원_정보_수정_요청(회원_생성_응답, 수정할_회원_정보);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        AssertUtils.assertThatStatusCode(회원_수정_응답, HttpStatus.OK);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
         // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 회원_생성_응답 = 회원_생성_요청(회원_정보_DTO);
 
         // when
-        var response = 회원_삭제_요청(createResponse);
+        var 회원_삭제_응답 = 회원_삭제_요청(회원_생성_응답);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        AssertUtils.assertThatStatusCode(회원_삭제_응답, HttpStatus.NO_CONTENT);
     }
 
     /**
