@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static nextstep.member.fixture.MemberFixture.회원_정보;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(classes = {JwtTokenProvider.class})
 public class JwtTokenProviderTest {
 
     @Autowired
@@ -41,5 +41,23 @@ public class JwtTokenProviderTest {
         // then
         assertThat(isValid).isFalse();
     }
+
+    @Test
+    @DisplayName("기간이 만료된 토큰을 전달 받았을 때 검증에 실패한다.")
+    void failValidateExpiredToken() {
+        // given
+        String secretKey = "atdd-secret-key";
+        long validityInMilliseconds = 1L;
+        tokenProvider = new JwtTokenProvider(secretKey, validityInMilliseconds);
+
+        String token = tokenProvider.createToken(회원_정보.getEmail(), RoleType.ROLE_MEMBER.name());
+
+        // when
+        boolean isValid = tokenProvider.validateToken(token);
+
+        // then
+        assertThat(isValid).isFalse();
+    }
+
 
 }
