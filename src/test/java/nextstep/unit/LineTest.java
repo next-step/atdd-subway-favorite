@@ -231,7 +231,7 @@ class LineTest {
         //then
         assertThatThrownBy(() ->  이호선.removeSection(선릉역))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("구간이 하나인 노선에서 구간을 삭제할 수 없습니다.");
+                .hasMessage("구간이 하나인 노선에서 마지막 구간을 삭제할 수 없습니다.");
     }
 
 }
