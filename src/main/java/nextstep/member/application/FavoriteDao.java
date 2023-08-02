@@ -2,8 +2,8 @@ package nextstep.member.application;
 
 import java.util.List;
 import nextstep.auth.BadRequestException;
-import nextstep.member.domain.FavoriteResponse;
-import nextstep.member.domain.FavoriteResponseRepository;
+import nextstep.member.domain.FavoriteData;
+import nextstep.member.domain.FavoriteDataRepository;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Component;
@@ -12,17 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class FavoriteDao {
 
-    private final FavoriteResponseRepository favoriteResponseRepository;
+    private final FavoriteDataRepository favoriteDataRepository;
     private final MemberRepository memberRepository;
 
-    public FavoriteDao(FavoriteResponseRepository favoriteResponseRepository, MemberRepository memberRepository) {
-        this.favoriteResponseRepository = favoriteResponseRepository;
+    public FavoriteDao(FavoriteDataRepository favoriteDataRepository, MemberRepository memberRepository) {
+        this.favoriteDataRepository = favoriteDataRepository;
         this.memberRepository = memberRepository;
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> getAll(String email) {
+    public List<FavoriteData> getAll(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(BadRequestException::new);
-        return favoriteResponseRepository.findAllByMember(member);
+        return favoriteDataRepository.findAllByMember(member);
     }
 }

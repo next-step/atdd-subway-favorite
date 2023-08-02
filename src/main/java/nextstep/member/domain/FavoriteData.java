@@ -9,11 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.applicaion.dto.StationData;
 
 @Table(name = "favorite")
 @Entity
-public class FavoriteResponse {
+public class FavoriteData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,20 +24,20 @@ public class FavoriteResponse {
     private Member member;
     @ManyToOne
     @JoinColumn(name = "source_id")
-    private StationResponse source;
+    private StationData source;
     @ManyToOne
     @JoinColumn(name = "target_id")
-    private StationResponse target;
+    private StationData target;
 
     public long getId() {
         return id;
     }
 
-    public StationResponse getSource() {
+    public StationData getSource() {
         return source;
     }
 
-    public StationResponse getTarget() {
+    public StationData getTarget() {
         return target;
     }
 }

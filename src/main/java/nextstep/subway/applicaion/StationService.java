@@ -2,7 +2,7 @@ package nextstep.subway.applicaion;
 
 import java.util.List;
 import nextstep.subway.applicaion.dto.StationRequest;
-import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.applicaion.dto.StationData;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import nextstep.subway.domain.StationResponseRepository;
@@ -22,13 +22,13 @@ public class StationService {
     }
 
     @Transactional
-    public StationResponse saveStation(StationRequest stationRequest) {
+    public StationData saveStation(StationRequest stationRequest) {
         Station station = stationRepository.save(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        return StationData.of(station);
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations() {
+    public List<StationData> findAllStations() {
         return stationResponseRepository.findAll();
     }
 

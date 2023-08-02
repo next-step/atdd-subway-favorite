@@ -9,23 +9,23 @@ import nextstep.subway.domain.Station;
 
 @Entity
 @Table(name = "station")
-public class StationResponse {
+public class StationData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    public StationResponse() {
+    public StationData() {
     }
 
-    public StationResponse(Long id, String name) {
+    public StationData(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+    public static StationData of(Station station) {
+        return new StationData(station.getId(), station.getName());
     }
 
     public Long getId() {

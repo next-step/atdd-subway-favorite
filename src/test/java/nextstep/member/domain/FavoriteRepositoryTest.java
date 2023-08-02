@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.applicaion.dto.StationData;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +27,7 @@ class FavoriteRepositoryTest {
     @Autowired
     StationRepository stationRepository;
     @Autowired
-    FavoriteResponseRepository favoriteResponseRepository;
+    FavoriteDataRepository favoriteDataRepository;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -77,22 +77,25 @@ class FavoriteRepositoryTest {
         entityManager.persist(member);
 
         // when
-        List<FavoriteResponse> favorites = favoriteResponseRepository.findAllByMember(member);
+        System.out.println("------------ 즐겨 찾기 전체 조회 요청 ------------");
+        List<FavoriteData> favorites = favoriteDataRepository.findAllByMember(member);
+        System.out.println("------------ 즐겨 찾기 전체 조회 요청 ------------");
 
         // then
-        FavoriteResponse favoriteResponse1 = favorites.get(0);
-        FavoriteResponse favoriteResponse2 = favorites.get(1);
+        FavoriteData favoriteData1 = favorites.get(0);
+        FavoriteData favoriteData2 = favorites.get(1);
+
         Assertions.assertAll(
-                () -> assertThat(favoriteResponse1.getId()).isEqualTo(favorite1.getId()),
-                () -> assertThat(favoriteResponse1.getSource()).usingRecursiveComparison()
-                        .isEqualTo(StationResponse.of(favorite1.getSource())),
-                () -> assertThat(favoriteResponse1.getTarget()).usingRecursiveComparison()
-                        .isEqualTo(StationResponse.of(favorite1.getTarget())),
-                () -> assertThat(favoriteResponse2.getId()).isEqualTo(favorite2.getId()),
-                () -> assertThat(favoriteResponse2.getSource()).usingRecursiveComparison()
-                        .isEqualTo(StationResponse.of(favorite2.getSource())),
-                () -> assertThat(favoriteResponse2.getTarget()).usingRecursiveComparison()
-                        .isEqualTo(StationResponse.of(favorite2.getTarget()))
+                () -> assertThat(favoriteData1.getId()).isEqualTo(favorite1.getId()),
+                () -> assertThat(favoriteData1.getSource()).usingRecursiveComparison()
+                        .isEqualTo(StationData.of(favorite1.getSource())),
+                () -> assertThat(favoriteData1.getTarget()).usingRecursiveComparison()
+                        .isEqualTo(StationData.of(favorite1.getTarget())),
+                () -> assertThat(favoriteData2.getId()).isEqualTo(favorite2.getId()),
+                () -> assertThat(favoriteData2.getSource()).usingRecursiveComparison()
+                        .isEqualTo(StationData.of(favorite2.getSource())),
+                () -> assertThat(favoriteData2.getTarget()).usingRecursiveComparison()
+                        .isEqualTo(StationData.of(favorite2.getTarget()))
         );
     }
 }
