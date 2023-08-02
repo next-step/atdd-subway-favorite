@@ -109,7 +109,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessToken)
-                .when().post("/members/me")
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
