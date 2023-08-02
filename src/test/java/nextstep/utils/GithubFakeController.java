@@ -1,12 +1,9 @@
 package nextstep.utils;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.principal.AuthenticationPrincipal;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenRequest;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
-import nextstep.auth.token.oauth2.github.GithubClient;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Headers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
