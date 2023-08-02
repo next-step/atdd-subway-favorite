@@ -1,8 +1,10 @@
-package nextstep.favorite.domain;
+package nextstep.member.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import javax.persistence.EntityManager;
+import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -19,12 +21,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DataJpaTest
 class FavoriteRepositoryTest {
 
-    public static final String TEST_EMAIL = "email@email.com";
     public static final int SOURCE = 1;
     @Autowired
     FavoriteRepository favoriteRepository;
     @Autowired
     StationRepository stationRepository;
+    @Autowired
+    FavoriteResponseRepository favoriteResponseRepository;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    EntityManager entityManager;
     Station gyoDaeStation;
     Station gangnamStation;
     Station yangjaeStation;
@@ -36,8 +43,8 @@ class FavoriteRepositoryTest {
         gyoDaeStation = stationRepository.save(new Station("교대역"));
         gangnamStation = stationRepository.save(new Station("강남역"));
         yangjaeStation = stationRepository.save(new Station("양재역"));
-        favorite1 = favoriteRepository.save(new Favorite(TEST_EMAIL, gyoDaeStation, yangjaeStation));
-        favorite2 = favoriteRepository.save(new Favorite(TEST_EMAIL, yangjaeStation, gangnamStation));
+        favorite1 = favoriteRepository.save(new Favorite(gyoDaeStation, yangjaeStation));
+        favorite2 = favoriteRepository.save(new Favorite(yangjaeStation, gangnamStation));
     }
 
     @AfterEach
@@ -55,19 +62,37 @@ class FavoriteRepositoryTest {
         // then
         Assertions.assertAll(
                 () -> assertThat(save.getId()).isEqualTo(SOURCE),
-                () -> assertThat(save.getEmail()).isEqualTo(TEST_EMAIL),
                 () -> assertThat(save.getSource()).usingRecursiveComparison().isEqualTo(gyoDaeStation),
                 () -> assertThat(save.getTarget()).usingRecursiveComparison().isEqualTo(yangjaeStation)
         );
     }
 
-    @DisplayName("유저 이메일로 모든 즐겨 찾기를 가져온다")
+    @DisplayName("유저의 모든 즐겨 찾기를 가져온다")
     @Test
     void findAllByEmail() {
+        // given
+        Member member = memberRepository.save(new Member("email@email.com", "password", 20));
+        member.addFavorite(favorite1);
+        member.addFavorite(favorite2);
+        entityManager.persist(member);
+
         // when
-        List<Favorite> favorites = favoriteRepository.findAllByEmail(TEST_EMAIL);
+        List<FavoriteResponse> favorites = favoriteResponseRepository.findAllByMember(member);
 
         // then
-        assertThat(favorites).usingRecursiveComparison().isEqualTo(List.of(favorite1, favorite2));
+        FavoriteResponse favoriteResponse1 = favorites.get(0);
+        FavoriteResponse favoriteResponse2 = favorites.get(1);
+        Assertions.assertAll(
+                () -> assertThat(favoriteResponse1.getId()).isEqualTo(favorite1.getId()),
+                () -> assertThat(favoriteResponse1.getSource()).usingRecursiveComparison()
+                        .isEqualTo(StationResponse.of(favorite1.getSource())),
+                () -> assertThat(favoriteResponse1.getTarget()).usingRecursiveComparison()
+                        .isEqualTo(StationResponse.of(favorite1.getTarget())),
+                () -> assertThat(favoriteResponse2.getId()).isEqualTo(favorite2.getId()),
+                () -> assertThat(favoriteResponse2.getSource()).usingRecursiveComparison()
+                        .isEqualTo(StationResponse.of(favorite2.getSource())),
+                () -> assertThat(favoriteResponse2.getTarget()).usingRecursiveComparison()
+                        .isEqualTo(StationResponse.of(favorite2.getTarget()))
+        );
     }
 }

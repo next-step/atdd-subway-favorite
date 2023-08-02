@@ -1,4 +1,4 @@
-package nextstep.favorite.application;
+package nextstep.member.application.dto;
 
 public class FavoriteCreateRequest {
 

@@ -1,5 +1,6 @@
-package nextstep.favorite.domain;
+package nextstep.member.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,7 +17,11 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @ManyToOne
     @JoinColumn(name = "source_id")
     private Station source;
@@ -27,18 +32,13 @@ public class Favorite {
     public Favorite() {
     }
 
-    public Favorite(String email, Station source, Station target) {
-        this.email = email;
+    public Favorite(Station source, Station target) {
         this.source = source;
         this.target = target;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public Station getSource() {
@@ -49,7 +49,7 @@ public class Favorite {
         return target;
     }
 
-    public boolean isSameOf(String email) {
-        return this.email.equals(email);
+    public void updateMember(Member member) {
+        this.member = member;
     }
 }

@@ -1,11 +1,13 @@
-package nextstep.favorite.application;
+package nextstep.member.application;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import javax.persistence.EntityManager;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.BadRequestException;
-import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.FavoriteRepository;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -26,15 +28,17 @@ class FavoriteServiceTest {
     public static final String OTHER_EMAIL = "other@email.com";
     public static final long TEST_FAVORITE_ID = 1L;
     public static final long NOT_EXISTS_STATION_ID = 100000L;
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
 
     @Autowired
     FavoriteService favoriteService;
-
     @Autowired
     StationRepository stationRepository;
-
     @Autowired
     FavoriteRepository favoriteRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
     @Autowired
     EntityManager entityManager;
@@ -53,11 +57,14 @@ class FavoriteServiceTest {
         gyodaeStationId = gyodaeStation.getId();
         gangnamStationId = gangnamStation.getId();
         yangjaeStationId = yangjaeStation.getId();
+        memberRepository.save(new Member(OTHER_EMAIL, PASSWORD, AGE));
+        memberRepository.save(new Member(TEST_EMAIL, PASSWORD, AGE));
     }
 
     @AfterEach
     void clear() {
         stationRepository.deleteAll();
+        memberRepository.deleteAll();
         favoriteRepository.deleteAll();
     }
 

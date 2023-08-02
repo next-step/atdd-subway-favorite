@@ -1,12 +1,12 @@
-package nextstep.favorite.ui;
+package nextstep.member.ui;
 
 import java.util.List;
 import nextstep.auth.principal.AuthenticationPrincipal;
 import nextstep.auth.principal.UserPrincipal;
-import nextstep.favorite.application.FavoriteCreateRequest;
-import nextstep.favorite.application.FavoriteDao;
-import nextstep.favorite.application.FavoriteService;
-import nextstep.favorite.domain.FavoriteResponse;
+import nextstep.member.application.dto.FavoriteCreateRequest;
+import nextstep.member.application.FavoriteDao;
+import nextstep.member.application.FavoriteService;
+import nextstep.member.domain.FavoriteResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
