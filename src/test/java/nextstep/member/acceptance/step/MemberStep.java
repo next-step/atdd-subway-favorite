@@ -81,7 +81,7 @@ public class MemberStep {
     public static ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         String accessToken = tokenResponse.getAccessToken();
-        String uri = String.format("/%s/me", MEMBER_BASE_URL);
+        String uri = String.format("%s/me", MEMBER_BASE_URL);
 
         return RestAssuredClient.get(uri, accessToken);
     }

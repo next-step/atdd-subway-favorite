@@ -24,7 +24,7 @@ public class AuthStep {
                 .email(email)
                 .password(password)
                 .build();
-        String uri = String.format("/%s/token", LOGIN_BASE_URL);
+        String uri = String.format("%s/token", LOGIN_BASE_URL);
 
         return RestAssuredClient.post(uri, 일반_로그인_요청_DTO);
     }

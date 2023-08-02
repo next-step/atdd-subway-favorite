@@ -1,6 +1,8 @@
 package nextstep.member.controller;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.principal.AuthenticationPrincipal;
+import nextstep.auth.principal.UserPrincipal;
 import nextstep.member.service.MemberService;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
@@ -18,30 +20,41 @@ public class MemberController {
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+        URI uri = URI.create(String.format("/members/%d", member.getId()));
+
+        return ResponseEntity
+                .created(uri)
+                .build();
     }
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
+
+        return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok()
+                .build();
     }
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.noContent()
+                .build();
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        MemberResponse member = memberService.findMemberByEmail(userPrincipal.getEmail());
+
+        return ResponseEntity.ok(member);
     }
 }
 
