@@ -28,18 +28,25 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
+        // given : 선행조건 기술
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
+        // when : 기능 수행
         ExtractableResponse<Response> response = AuthSteps.로그인요청(EMAIL, PASSWORD);
 
+        // then : 결과 확인
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
+        // given : 선행조건 기술
+
+        // when : 기능 수행
         ExtractableResponse<Response> response = AuthSteps.깃허브_로그인요청();
 
+        // then : 결과 확인
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }
