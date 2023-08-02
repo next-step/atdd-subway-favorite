@@ -5,7 +5,7 @@ import java.util.Optional;
 import nextstep.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FavoritesRepository extends JpaRepository<Favorites, Long> {
+public interface FavoritesRepository extends JpaRepository<Favorite, Long> {
 
-    Optional<List<Favorites>> findAllByMember(Member member);
+    Optional<List<Favorite>> findAllByMember(Member member);
 }

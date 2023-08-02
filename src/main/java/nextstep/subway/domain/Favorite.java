@@ -11,7 +11,7 @@ import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 
 @Entity
-public class Favorites {
+public class Favorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +29,17 @@ public class Favorites {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    public Favorites() {
+    public Favorite() {
     }
 
-    public Favorites(Station source, Station target, Member member) {
+    public Favorite(Station source, Station target, Member member) {
         this.source = source;
         this.target = target;
         this.member = member;
     }
 
-    public static Favorites of(Station source, Station target, Member member) {
-        return new Favorites(source, target, member);
+    public static Favorite of(Station source, Station target, Member member) {
+        return new Favorite(source, target, member);
     }
 
     public Long getId() {

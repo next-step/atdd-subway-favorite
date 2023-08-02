@@ -7,7 +7,7 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoritesResponse;
-import nextstep.subway.domain.Favorites;
+import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoritesRepository;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class FavoritesService {
 
         pathService.findPath(source.getId(), target.getId());
 
-        return favoritesRepository.save(Favorites.of(source, target, member)).getId();
+        return favoritesRepository.save(Favorite.of(source, target, member)).getId();
     }
 
     public Member getMember(String username) {
@@ -65,11 +65,11 @@ public class FavoritesService {
     public void delete(long favoritesId, String username) {
 
         Member member = getMember(username);
-        Favorites favorites = favoritesRepository.findById(favoritesId)
+        Favorite favorite = favoritesRepository.findById(favoritesId)
             .orElseThrow(IllegalArgumentException::new);
 
-        favorites.validDelete(member);
+        favorite.validDelete(member);
 
-        favoritesRepository.delete(favorites);
+        favoritesRepository.delete(favorite);
     }
 }
