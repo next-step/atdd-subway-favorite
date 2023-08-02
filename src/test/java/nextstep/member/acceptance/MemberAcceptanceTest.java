@@ -1,11 +1,20 @@
 package nextstep.member.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static nextstep.member.acceptance.MemberSteps.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -72,6 +81,37 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        //given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 회원_로그인_요청(EMAIL, PASSWORD);
+        String accessToken = response.jsonPath().getString("accessToken");
 
+        //when
+        ExtractableResponse<Response> 정보_조회_결과 = 내_정보를_조회한다(accessToken);
+
+        //then
+        내정보_조회_결과_검증(정보_조회_결과);
     }
+
+    void 내정보_조회_결과_검증(ExtractableResponse<Response> response) {
+        //응답 검증
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        //데이터 검증
+        String email = response.jsonPath().getString("email");
+        int age = response.jsonPath().getInt("age");
+        assertThat(email).isEqualTo(EMAIL);
+        assertThat(age).isEqualTo(AGE);
+    }
+
+    ExtractableResponse<Response> 내_정보를_조회한다(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when().post("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
 }
