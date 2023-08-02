@@ -1,7 +1,9 @@
 package nextstep.auth.token.oauth2.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
+@Builder
 public class GithubAccessTokenResponse {
 
     @JsonProperty("access_token")

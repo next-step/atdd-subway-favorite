@@ -1,6 +1,6 @@
 package nextstep.auth.token;
 
-import nextstep.auth.AuthenticationException;
+import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.token.oauth2.OAuth2User;
 import nextstep.auth.token.oauth2.OAuth2UserService;
 import nextstep.auth.token.oauth2.github.GithubClient;
