@@ -31,9 +31,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long 신분당선;
     private Long 구호선;
 
-
-
-
     @BeforeEach
     public void setGivenData() {
 

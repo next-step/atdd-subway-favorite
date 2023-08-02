@@ -87,4 +87,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE);
     }
+
+    /**
+     * Given 회원 가입을 생성하고
+     * And 로그인을 하고
+     * When 올바르지 않은 토큰으로 내 정보를 조회하면
+     * Then Bad Request 400 error가 발생한다
+     */
+    @DisplayName("내 정보를 조회한다.")
+    @Test
+    void getMyInfoWithInvalidToken() {
+        //given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String invalidAccessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken")+"Invalid Text";
+
+        //when
+        ExtractableResponse<Response> response = 회원_정보_조회_요청_엑세스토큰(invalidAccessToken);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }
