@@ -22,6 +22,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class FavoriteRepositoryTest {
 
     public static final int SOURCE = 1;
+    public static final int First_INDEX = 0;
+    public static final int SECOND_INDEX = 1;
     @Autowired
     FavoriteRepository favoriteRepository;
     @Autowired
@@ -77,13 +79,11 @@ class FavoriteRepositoryTest {
         entityManager.persist(member);
 
         // when
-        System.out.println("------------ 즐겨 찾기 전체 조회 요청 ------------");
         List<FavoriteData> favorites = favoriteDataRepository.findAllByMember(member);
-        System.out.println("------------ 즐겨 찾기 전체 조회 요청 ------------");
 
         // then
-        FavoriteData favoriteData1 = favorites.get(0);
-        FavoriteData favoriteData2 = favorites.get(1);
+        FavoriteData favoriteData1 = favorites.get(First_INDEX);
+        FavoriteData favoriteData2 = favorites.get(SECOND_INDEX);
 
         Assertions.assertAll(
                 () -> assertThat(favoriteData1.getId()).isEqualTo(favorite1.getId()),

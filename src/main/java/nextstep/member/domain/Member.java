@@ -1,9 +1,11 @@
 package nextstep.member.domain;
 
 import java.util.Objects;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +20,7 @@ public class Member {
     private Long id;
     @Column(unique = true)
     private String email;
+    @Basic(fetch = FetchType.LAZY)
     @Embedded
     private Favorites favorites;
     private String password;
