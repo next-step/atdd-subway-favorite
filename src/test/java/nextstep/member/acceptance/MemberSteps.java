@@ -3,6 +3,8 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.MemberResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -63,5 +65,28 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static MemberResponse 내정보_조회_요청(String token) {
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(token)
+            .when().get("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract()
+            .as(MemberResponse.class);
+    }
+
+    public static int 내정보_조회_요청_상태코드_반환(String token) {
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(token)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract().statusCode();
     }
 }

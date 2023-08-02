@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.auth.token.acceptance.TokenSteps.로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,6 +73,30 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
 
+        var 내정보 = 내정보_조회_요청(토큰);
+
+        assertThat(내정보.getEmail()).isEqualTo(EMAIL);
+        assertThat(내정보.getAge()).isEqualTo(AGE);
+    }
+
+    /**
+     * Given 회원 가입을 생성하고
+     * And 토큰이 만료된 상태에서
+     * When 토큰을 통해 내 정보를 조회하면
+     * Then 401 에러를 반환한다
+     */
+    @DisplayName("토큰 만료시 401 에러를 반환한다")
+    @Test
+    void getMyInfo_fail_tokenOver() throws InterruptedException {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
+        Thread.sleep(1000);
+
+        var 상태코드 = 내정보_조회_요청_상태코드_반환(토큰);
+
+        assertThat(상태코드).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
