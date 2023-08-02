@@ -2,7 +2,6 @@ package nextstep.utils;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum GithubFakeResponse {
@@ -23,17 +22,23 @@ public enum GithubFakeResponse {
         this.email = email;
     }
 
-    private static final Map<String, GithubFakeResponse> responseMap;
+    private static final Map<String, String> accessTokenMap;
+    private static final Map<String, String> emailMap;
     static  {
-        responseMap = Arrays.stream(GithubFakeResponse.values())
-            .collect(Collectors.toMap(GithubFakeResponse::getCode, Function.identity()));
+        accessTokenMap = Arrays.stream(GithubFakeResponse.values())
+            .collect(Collectors.toMap(response -> response.code, response -> response.accessToken));
+
+        emailMap = Arrays.stream(GithubFakeResponse.values())
+            .collect(Collectors.toMap(response -> response.accessToken, response -> response.email));
     }
+
 
     public static String getAccessToken(String code) {
-        return responseMap.get(code).accessToken;
+        return accessTokenMap.get(code);
     }
 
-    public String getCode() {
-        return code;
+    public static String getEmail(String accessToken) {
+        return emailMap.get(accessToken);
     }
+
 }
