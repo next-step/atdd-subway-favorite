@@ -1,10 +1,14 @@
-package nextstep.favorite.ui;
+package nextstep.member.ui;
 
+import nextstep.auth.principal.AuthenticationPrincipal;
+import nextstep.auth.principal.UserPrincipal;
 import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.dto.CreateFavoriteRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +25,10 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createFavorite() {
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                               @RequestBody CreateFavoriteRequest createFavoriteRequest
+    ) {
+        favoriteService.createFavorite(userPrincipal, createFavoriteRequest);
         return ResponseEntity.created(URI.create("/favorites")).build();
     }
 
