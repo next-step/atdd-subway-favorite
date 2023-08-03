@@ -3,7 +3,6 @@ package nextstep.favorite.ui;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.CreateFavoriteRequest;
-import nextstep.member.acceptance.MemberSteps;
 import nextstep.study.AuthSteps;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,12 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.favorite.ui.FavoriteSteps.requestDto;
-import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.favorite.ui.FavoriteSteps.즐겨찾기_조회_요청;
+import static nextstep.member.acceptance.MemberSteps.getAccessToken;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";
@@ -51,6 +52,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     Then : 즐겨찾기가 추가된다.
      * </pre>
      */
+    @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void createFavorite() {
         // given : 선행조건 기술
@@ -77,13 +79,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     Then : 즐겨찾기가 조회된다.
      * </pre>
      */
+    @DisplayName("즐겨찾기를 조회한다.")
     @Test
     void findFavorite() {
         // given : 선행조건 기술
+        즐겨찾기_추가();
 
         // when : 기능 수행
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(accessToken);
 
         // then : 결과 확인
+        즐겨찾기_조회_응답_강남역과_양재역이_응답된다(즐겨찾기_조회_응답);
     }
 
     /**
@@ -167,5 +173,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         lineCreateParams.put("downStationId", downStationId + "");
         lineCreateParams.put("distance", 10 + "");
         return lineCreateParams;
+    }
+
+    private void 즐겨찾기_추가() {
+        CreateFavoriteRequest createFavoriteRequest = requestDto(강남역, 양재역);
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(accessToken, createFavoriteRequest);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_조회_응답_강남역과_양재역이_응답된다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("id")).hasSize(1)
+                .containsExactly(1);
+        assertThat(response.jsonPath().getList("source")).hasSize(1)
+                .extracting("name")
+                .containsExactly("강남역");
+        assertThat(response.jsonPath().getList("target")).hasSize(1)
+                .extracting("name")
+                .containsExactly("양재역");
     }
 }
