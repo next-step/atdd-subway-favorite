@@ -11,8 +11,13 @@ import nextstep.subway.applicaion.PathService;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
@@ -26,6 +31,7 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(UserPrincipal userPrincipal, CreateFavoriteRequest createFavoriteRequest) {
         // 멤버 조회
         Member member = memberRepository.findByEmail(userPrincipal.getUsername())
@@ -42,5 +48,11 @@ public class FavoriteService {
 
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
         return FavoriteResponse.from(favorite);
+    }
+
+    public List<FavoriteResponse> findFavorites() {
+        return favoriteRepository.findAll().stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 }
