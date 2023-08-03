@@ -1,4 +1,4 @@
-package nextstep.auth.github;
+package nextstep.auth.util;
 
 import nextstep.auth.token.oauth2.github.GithubAccessTokenRequest;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
