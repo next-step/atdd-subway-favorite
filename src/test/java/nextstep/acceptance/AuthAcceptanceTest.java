@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.domain.member.Member;
 import nextstep.domain.member.MemberRepository;
+import nextstep.dto.TokenResponse;
 import nextstep.utils.AcceptanceTest;
 import nextstep.utils.mock.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
@@ -35,9 +36,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> response = 자체_서비스_로그인_요청(EMAIL, PASSWORD);
+        var tokenResponse = response.as(TokenResponse.class);
 
         //then
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
     /**
@@ -53,7 +55,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> response = 깃허브_로그인_요청(사용자1.getCode());
+        var tokenResponse = response.as(TokenResponse.class);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        //then
+        assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 }

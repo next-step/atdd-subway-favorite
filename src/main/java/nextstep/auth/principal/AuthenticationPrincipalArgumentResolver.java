@@ -28,9 +28,13 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         }
         String token = authorization.split(" ")[1];
 
-        String username = jwtTokenProvider.getPrincipal(token);
-        String role = jwtTokenProvider.getRoles(token);
-
-        return new UserPrincipal(username, role);
+        try {
+            String username = jwtTokenProvider.getPrincipal(token);
+            String role = jwtTokenProvider.getRoles(token);
+            return new UserPrincipal(username, role);
+        }
+        catch (Exception e) {
+            throw new AuthenticationException();
+        }
     }
 }
