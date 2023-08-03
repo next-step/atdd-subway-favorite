@@ -1,10 +1,43 @@
-package nextstep.subway.acceptance;
+package nextstep.favorite.ui;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.favorite.application.dto.CreateFavoriteRequest;
+import nextstep.member.acceptance.MemberSteps;
+import nextstep.study.AuthSteps;
 import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static nextstep.favorite.ui.FavoriteSteps.requestDto;
+import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
+    public String accessToken;
+
+    private Long 강남역;
+    private Long 양재역;
+
+    @BeforeEach
+    void before() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var 로그인_응답 = AuthSteps.로그인요청(EMAIL, PASSWORD);
+        accessToken = getAccessToken(로그인_응답);
+        역_노선_구간_생성();
+    }
 
     /**
      * <pre>
@@ -21,10 +54,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         // given : 선행조건 기술
+        CreateFavoriteRequest createFavoriteRequest = requestDto(강남역, 양재역);
 
         // when : 기능 수행
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(accessToken, createFavoriteRequest);
 
         // then : 결과 확인
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
 
@@ -112,5 +148,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when : 기능 수행
 
         // then : 결과 확인
+    }
+
+    private void 역_노선_구간_생성() {
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+
+        Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
+        지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+    }
+
+    private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
+        Map<String, String> lineCreateParams;
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", "신분당선");
+        lineCreateParams.put("color", "bg-red-600");
+        lineCreateParams.put("upStationId", upStationId + "");
+        lineCreateParams.put("downStationId", downStationId + "");
+        lineCreateParams.put("distance", 10 + "");
+        return lineCreateParams;
     }
 }
