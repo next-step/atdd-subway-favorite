@@ -3,7 +3,6 @@ package nextstep.subway.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.mock;
 
-import nextstep.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,13 +15,13 @@ class FavoriteTest {
         //given
         Station source = mock(Station.class);
         Station target = mock(Station.class);
-        Member member = mock(Member.class);
+        Long memberId = 1L;
 
-        Favorite favorite = Favorite.of(source, target, member);
+        Favorite favorite = Favorite.of(source, target, memberId);
 
         //then
         assertThatThrownBy(
-            () -> favorite.validDelete(new Member())
+            () -> favorite.validDelete(2L)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -1,13 +1,12 @@
 package nextstep.subway.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import nextstep.member.domain.Member;
 
 @Entity
 public class Favorite {
@@ -24,21 +23,20 @@ public class Favorite {
     @ManyToOne
     private Station target;
 
-    @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    @Column(name = "member_id")
+    private Long memberId;
 
     public Favorite() {
     }
 
-    public Favorite(Station source, Station target, Member member) {
+    public Favorite(Station source, Station target, Long memberId) {
         this.source = source;
         this.target = target;
-        this.member = member;
+        this.memberId = memberId;
     }
 
-    public static Favorite of(Station source, Station target, Member member) {
-        return new Favorite(source, target, member);
+    public static Favorite of(Station source, Station target, Long memberId) {
+        return new Favorite(source, target, memberId);
     }
 
     public Long getId() {
@@ -53,17 +51,15 @@ public class Favorite {
         return target;
     }
 
-    public Member getMember() {
-        return member;
-    }
 
-    public void validDelete(Member member) {
-        if(!isEqualsMember(member)){
+    public void validDelete(Long memberId) {
+        if(!isEqualsMember(memberId)){
             throw new IllegalArgumentException();
         }
     }
 
-    private boolean isEqualsMember(Member member) {
-        return this.member.equals(member);
+    private boolean isEqualsMember(Long memberId) {
+        return this.memberId.equals(memberId);
     }
+
 }
