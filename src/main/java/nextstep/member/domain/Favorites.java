@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import nextstep.auth.AuthenticationException;
 
 @Embeddable
 public class Favorites {
@@ -23,7 +22,7 @@ public class Favorites {
 
     public void delete(Favorite favorite) {
         if (!favoriteCollection.contains(favorite)) {
-            throw new AuthenticationException();
+            throw new DeletePermissionException();
         }
         favoriteCollection.remove(favorite);
     }
