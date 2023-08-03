@@ -8,6 +8,7 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
+import nextstep.subway.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
 @DisplayName("즐겨찾기 서비스 테스트")
@@ -29,6 +31,8 @@ class FavoriteServiceTest {
     private FavoriteService favoriteService;
     @Autowired
     private LineRepository lineRepository;
+    @Autowired
+    private StationRepository stationRepository;
 
     private Member member;
     private Station source, target;
@@ -47,7 +51,7 @@ class FavoriteServiceTest {
     void create() {
         // given : 선행조건 기술
         UserPrincipal userPrincipal = createUserPrincipal();
-        CreateFavoriteRequest request = createFavoriteRequest();
+        CreateFavoriteRequest request = createFavoriteRequest(source.getId(), target.getId());
 
         // when : 기능 수행
         FavoriteResponse response = favoriteService.createFavorite(userPrincipal, request);
@@ -65,7 +69,7 @@ class FavoriteServiceTest {
     void findFavorites() {
         // given : 선행조건 기술
         UserPrincipal userPrincipal = createUserPrincipal();
-        CreateFavoriteRequest request = createFavoriteRequest();
+        CreateFavoriteRequest request = createFavoriteRequest(source.getId(), target.getId());
         favoriteService.createFavorite(userPrincipal, request);
 
         // when : 기능 수행
@@ -85,7 +89,7 @@ class FavoriteServiceTest {
     void deleteFavorite() {
         // given : 선행조건 기술
         UserPrincipal userPrincipal = createUserPrincipal();
-        CreateFavoriteRequest request = createFavoriteRequest();
+        CreateFavoriteRequest request = createFavoriteRequest(source.getId(), target.getId());
         FavoriteResponse response = favoriteService.createFavorite(userPrincipal, request);
 
         // when : 기능 수행
@@ -96,6 +100,39 @@ class FavoriteServiceTest {
         assertThat(favorites).isEmpty();
     }
 
+    @DisplayName("비 정상적인 즐겨찾기 추가시(출발역과 도착역이 같다) 예외를 던진다.")
+    @Test
+    void createFavoriteReturnException() {
+        // given : 선행조건 기술
+        UserPrincipal userPrincipal = createUserPrincipal();
+        CreateFavoriteRequest request = createFavoriteRequest(source.getId(), source.getId());
+
+        // when : 기능 수행 then : 결과 확인
+        assertThatThrownBy(() -> favoriteService.createFavorite(userPrincipal, request))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("비 정상적인 즐겨찾기 추가시(경로가 없는 경우) 예외를 던진다.")
+    @Test
+    void createFavoriteReturnException2() {
+        // given : 선행조건 기술
+        Long 교대역 = 기존_구간과_다른_구간생성();
+        UserPrincipal userPrincipal = createUserPrincipal();
+        CreateFavoriteRequest request = createFavoriteRequest(교대역, source.getId());
+
+        // when : 기능 수행 then : 결과 확인
+        assertThatThrownBy(() -> favoriteService.createFavorite(userPrincipal, request))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private Long 기존_구간과_다른_구간생성() {
+        Station 교대역 = createStation("교대역");
+        Station 이수역 = createStation("이수역");
+        Line line = createLine();
+        line.addSection(교대역, 이수역, 10);
+        lineRepository.save(line);
+        return 교대역.getId();
+    }
     private Member createMember() {
         return new Member(
                 "email@email.com",
@@ -117,7 +154,7 @@ class FavoriteServiceTest {
         return new UserPrincipal(member.getEmail(), member.getPassword());
     }
 
-    private CreateFavoriteRequest createFavoriteRequest() {
-        return new CreateFavoriteRequest(source.getId(), target.getId());
+    private CreateFavoriteRequest createFavoriteRequest(Long sourceId, Long targetId) {
+        return new CreateFavoriteRequest(sourceId, targetId);
     }
 }
