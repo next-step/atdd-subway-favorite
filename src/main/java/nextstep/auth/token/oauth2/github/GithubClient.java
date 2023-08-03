@@ -2,6 +2,7 @@ package nextstep.auth.token.oauth2.github;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthenticationException;
+import nextstep.auth.ForbiddenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.*;
@@ -40,6 +41,7 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
             githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new GetAccessTokenErrorHandler());
 
         System.out.println(tokenUrl);
         try {
@@ -62,14 +64,14 @@ public class GithubClient {
 
         HttpEntity httpEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new RestTemplateErrorHandler());
+        restTemplate.setErrorHandler(new GetGithubProfileErrorHandler());
 
         try {
             return restTemplate
                 .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException();
+            throw new ForbiddenException(messageSource.getMessage("auth.0002", null, Locale.KOREA));
         }
     }
 }

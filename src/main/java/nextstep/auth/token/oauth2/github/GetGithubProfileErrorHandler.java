@@ -11,7 +11,7 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-public class RestTemplateErrorHandler extends DefaultResponseErrorHandler {
+public class GetGithubProfileErrorHandler extends DefaultResponseErrorHandler {
 
     @Override
     protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {

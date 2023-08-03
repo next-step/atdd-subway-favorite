@@ -22,6 +22,7 @@ public class GithubClientTest {
     GithubClient githubClient;
 
     VirtualUser validUser = VirtualUser.사용자1;
+    VirtualUser expiredUser = VirtualUser.만료된사용자;
 
     /**
      * Given 깃허브로 부터 코드를 받음.
@@ -92,7 +93,7 @@ public class GithubClientTest {
     @DisplayName("리소스 조회 API 호출 실패, 만료기한 지난 토큰 전송")
     @Test
     void getGithubProfileFromGithubFailedByExpiredToken() {
-        assertThatThrownBy(() -> githubClient.getGithubProfileFromGithub("expired_token"))
+        assertThatThrownBy(() -> githubClient.getGithubProfileFromGithub(expiredUser.getToken()))
                 .isInstanceOf(ForbiddenException.class);
     }
 }

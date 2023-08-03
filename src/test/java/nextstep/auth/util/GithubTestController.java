@@ -29,6 +29,9 @@ public class GithubTestController {
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        if (!user.get().isValid()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         GithubProfileResponse response = new GithubProfileResponse(user.get().getEmail(), user.get().getAge());
         return ResponseEntity.ok().body(response);
