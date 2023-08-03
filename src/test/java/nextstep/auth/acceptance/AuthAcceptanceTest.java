@@ -9,10 +9,9 @@ import nextstep.auth.util.VirtualUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
 import static nextstep.auth.acceptance.AuthSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.common.CommonSteps.*;
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private final VirtualUser properUser = VirtualUser.사용자1;
@@ -24,13 +23,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void bearerAuth() {
         // given
-        memberRepository.save(new Member(properUser.getEmail(), properUser.getPassword(), properUser.getAge()));
+        유저를_가입시킨다(properUser);
 
         // when
         ExtractableResponse<Response> response = 토큰_로그인_요청(properUser.getEmail(), properUser.getPassword());
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        정상_응답을_수신받는다(response);
         access_token_응답을_받음(response);
     }
 
@@ -41,7 +40,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 깃허브_로그인_요청(properUser.getCode());
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        정상_응답을_수신받는다(response);
         access_token_응답을_받음(response);
     }
 
@@ -52,6 +51,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 깃허브_로그인_요청("wrong_code");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        인증_실패_응답을_받는다(response);
+    }
+
+    private void 유저를_가입시킨다(VirtualUser properUser) {
+        memberRepository.save(new Member(properUser.getEmail(), properUser.getPassword(), properUser.getAge()));
     }
 }
