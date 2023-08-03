@@ -60,4 +60,23 @@ public class Member {
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member member = (Member) o;
+        return Objects.equals(id, member.id) && Objects.equals(email, member.email)
+            && Objects.equals(password, member.password) && Objects.equals(age,
+            member.age) && Objects.equals(role, member.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, age, role);
+    }
 }
