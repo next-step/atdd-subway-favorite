@@ -1,16 +1,19 @@
 package nextstep.auth.token.oauth2.github;
 
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Locale;
+
 @Component
+@RequiredArgsConstructor
 public class GithubClient {
 
     @Value("${github.client.id}")
@@ -21,6 +24,8 @@ public class GithubClient {
     private String tokenUrl;
     @Value("${github.url.profile}")
     private String profileUrl;
+
+    private final MessageSource messageSource;
 
     public String getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
@@ -36,14 +41,19 @@ public class GithubClient {
             githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        String accessToken = restTemplate
-            .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-            .getBody()
-            .getAccessToken();
-        if (accessToken == null) {
-            throw new RuntimeException();
+        System.out.println(tokenUrl);
+        try {
+            String accessToken = restTemplate
+                    .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                    .getBody()
+                    .getAccessToken();
+            if (accessToken == null) {
+                throw new RuntimeException();
+            }
+            return accessToken;
+        } catch (HttpClientErrorException e) {
+            throw new AuthenticationException(messageSource.getMessage("auth.0001", null, Locale.KOREA));
         }
-        return accessToken;
     }
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {
@@ -52,6 +62,7 @@ public class GithubClient {
 
         HttpEntity httpEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new RestTemplateErrorHandler());
 
         try {
             return restTemplate

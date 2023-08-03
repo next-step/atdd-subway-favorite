@@ -30,6 +30,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰_로그인_요청(properUser.getEmail(), properUser.getPassword());
 
         // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         access_token_응답을_받음(response);
     }
 
@@ -40,6 +41,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 깃허브_로그인_요청(properUser.getCode());
 
         // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         access_token_응답을_받음(response);
     }
 
