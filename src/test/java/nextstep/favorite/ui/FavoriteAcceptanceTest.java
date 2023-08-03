@@ -13,12 +13,14 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.favorite.ui.FavoriteSteps.*;
 import static nextstep.favorite.ui.FavoriteSteps.requestDto;
 import static nextstep.favorite.ui.FavoriteSteps.즐겨찾기_조회_요청;
 import static nextstep.member.acceptance.MemberSteps.getAccessToken;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -59,7 +61,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         CreateFavoriteRequest createFavoriteRequest = requestDto(강남역, 양재역);
 
         // when : 기능 수행
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(accessToken, createFavoriteRequest);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, createFavoriteRequest);
 
         // then : 결과 확인
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -108,10 +110,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         // given : 선행조건 기술
+        즐겨찾기_추가();
 
         // when : 기능 수행
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(accessToken, 1L);
 
         // then : 결과 확인
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     /**
@@ -177,7 +182,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_추가() {
         CreateFavoriteRequest createFavoriteRequest = requestDto(강남역, 양재역);
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(accessToken, createFavoriteRequest);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, createFavoriteRequest);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
