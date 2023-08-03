@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.oauth2.dto.OAuth2User;
 import nextstep.auth.oauth2.dto.OAuth2UserRequest;
 import nextstep.auth.oauth2.service.OAuth2UserService;
-import nextstep.member.entity.CustomOAuth2User;
+import nextstep.auth.oauth2.vo.CustomOAuth2User;
 import nextstep.member.entity.Member;
 import nextstep.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;

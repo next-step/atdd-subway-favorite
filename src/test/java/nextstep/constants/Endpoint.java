@@ -5,7 +5,8 @@ public enum Endpoint {
     STATION_BASE_URL("/stations"),
     LINE_BASE_URL("/lines"),
     PATH_BASE_URL("/paths"),
-    MEMBER_BASE_URL("/members");
+    MEMBER_BASE_URL("/members"),
+    LOGIN_BASE_URL("/login");
 
     private final String url;
 

@@ -16,7 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 import static io.restassured.RestAssured.UNDEFINED_PORT;
-import static nextstep.member.fixture.MemberFixture.회원_정보_엔티티;
+import static nextstep.member.acceptance.step.MemberStep.회원_생성_요청;
+import static nextstep.member.fixture.MemberFixture.회원_정보_DTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AcceptanceTest
@@ -38,15 +39,15 @@ class AuthAcceptanceTest {
         }
         databaseCleanUp.execute();
 
-        memberRepository.save(회원_정보_엔티티);
+        회원_생성_요청(회원_정보_DTO);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
         TokenRequest 토큰_요청 = TokenRequest.builder()
-                .email(회원_정보_엔티티.getEmail())
-                .password(회원_정보_엔티티.getPassword())
+                .email(회원_정보_DTO.getEmail())
+                .password(회원_정보_DTO.getPassword())
                 .build();
 
         ExtractableResponse<Response> 토큰_응답 = RestAssuredClient.post("/login/token", 토큰_요청);

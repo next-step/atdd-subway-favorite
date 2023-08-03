@@ -4,11 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Builder
-@Getter
 public class UserPrincipal {
 
     private String username;
 
+    @Getter
     private String role;
+
+    public String getEmail() {
+        return username;
+    }
 
 }
