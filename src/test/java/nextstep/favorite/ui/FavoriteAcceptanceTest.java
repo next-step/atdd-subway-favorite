@@ -20,7 +20,6 @@ import static nextstep.member.acceptance.MemberSteps.getAccessToken;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -125,17 +124,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     Given : 지하철역이 여러개 추가되어있다.
      *      And : 지하철역에 대한 노선이 추가되어있다.
      *      And : 지하철역에 대한 노선에 대한 구간이 추가되어있다.
-     *     When : 즐겨찾기를 추가를 요청한다.
+     *     When : 비 정상적인 액세스토큰으로 즐겨찾기를 추가를 요청한다.
      *     Then : 401 Unauthorized 에러가 발생한다.
      * </pre>
      */
     @Test
     void unauthorized() {
         // given : 선행조건 기술
+        CreateFavoriteRequest createFavoriteRequest = requestDto(강남역, 양재역);
 
         // when : 기능 수행
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청("", createFavoriteRequest);
 
         // then : 결과 확인
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -147,7 +149,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *      And : 지하철역에 대한 노선에 대한 구간에 대한 거리가 추가되어있다.
      *      And : 회원을 생성한다.
      *      And : 로그인을 한다.
-     *     When : 토큰과 함께 구간에 없는 역을 즐겨찾기를 추가를 요청한다.
+     *     When : 토큰과 함께 경로를 찾을 수 없는 즐겨찾기를 추가를 요청한다.
      *     Then : 예외를 응답한다.
      * </pre>
      */
@@ -155,10 +157,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavoriteReturnException() {
         // given : 선행조건 기술
+        Long 교대역 = 기존과_다른_역_노선_구간_생성();
+        CreateFavoriteRequest createFavoriteRequest = requestDto(교대역, 양재역);
 
         // when : 기능 수행
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, createFavoriteRequest);
 
         // then : 결과 확인
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 역_노선_구간_생성() {
@@ -167,6 +173,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
         지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+    }
+
+    private Long 기존과_다른_역_노선_구간_생성() {
+        Long 교대역 = 지하철역_생성_요청("교대역").jsonPath().getLong("id");
+        Long 이수역 = 지하철역_생성_요청("이수역").jsonPath().getLong("id");
+
+        Map<String, String> lineCreateParams = createLineCreateParams(교대역, 이수역);
+        지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
+        return 교대역;
     }
 
     private Map<String, String> createLineCreateParams(Long upStationId, Long downStationId) {
