@@ -25,6 +25,10 @@ public class GithubAccessTokenResponse {
         this.bearer = bearer;
     }
 
+    public GithubAccessTokenResponse(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
     public String getAccessToken() {
         return accessToken;
     }
