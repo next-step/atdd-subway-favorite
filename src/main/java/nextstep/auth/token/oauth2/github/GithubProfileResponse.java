@@ -1,7 +1,9 @@
 package nextstep.auth.token.oauth2.github;
 
+import lombok.Builder;
 import nextstep.auth.token.oauth2.OAuth2UserRequest;
 
+@Builder
 public class GithubProfileResponse implements OAuth2UserRequest {
 
     private String email;

@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.config;
 
 import nextstep.auth.principal.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.token.JwtTokenProvider;
