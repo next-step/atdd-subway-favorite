@@ -12,7 +12,9 @@ public enum ErrorCode {
     NOT_EXIST_LINE("지하철 노선이 존재하지 않습니다."),
 
     LOGIN_ERROR("아이디 또는 비밀번호를 확인해주세요."),
-    NOT_VALID_BEARER_GRANT_TYPE("인증 타입이 Bearer 타입이 아닙니다."),
+    INVALID_GITHUB_CODE("유효하지 않은 깃허브 코드입니다."),
+    INVALID_ACCESS_TOKEN("유효하지 않은 엑세스 토큰입니다."),
+    INVALID_BEARER_GRANT_TYPE("인증 타입이 Bearer 타입이 아닙니다."),
 
     INVALID_DISTANCE("기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없다."),
     ALREADY_REGISTERED_SECTION("이미 등록되어있는 노선입니다."),

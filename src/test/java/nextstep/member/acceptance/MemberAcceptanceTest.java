@@ -13,7 +13,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.UNDEFINED_PORT;
-import static nextstep.member.acceptance.step.AuthStep.일반_로그인_요청;
+import static nextstep.auth.acceptance.step.AuthStep.일반_로그인_요청;
 import static nextstep.member.acceptance.step.MemberStep.*;
 import static nextstep.member.fixture.MemberFixture.회원_정보_DTO;
 import static org.assertj.core.api.Assertions.assertThat;

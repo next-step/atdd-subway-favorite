@@ -1,4 +1,4 @@
-package nextstep.global.config;
+package nextstep.global.config.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
