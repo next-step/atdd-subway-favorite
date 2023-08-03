@@ -80,6 +80,22 @@ class FavoriteServiceTest {
                 .containsExactly(tuple("강남역", "역삼역"));
     }
 
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        // given : 선행조건 기술
+        UserPrincipal userPrincipal = createUserPrincipal();
+        CreateFavoriteRequest request = createFavoriteRequest();
+        FavoriteResponse response = favoriteService.createFavorite(userPrincipal, request);
+
+        // when : 기능 수행
+        favoriteService.deleteFavorite(userPrincipal, response.getId());
+
+        // then : 결과 확인
+        List<FavoriteResponse> favorites = favoriteService.findFavorites();
+        assertThat(favorites).isEmpty();
+    }
+
     private Member createMember() {
         return new Member(
                 "email@email.com",

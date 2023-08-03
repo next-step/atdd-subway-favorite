@@ -55,4 +55,12 @@ public class FavoriteService {
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void deleteFavorite(UserPrincipal userPrincipal, Long id) {
+        Favorite favorite = favoriteRepository.findByIdAndMember_Email(id, userPrincipal.getUsername())
+                .orElseThrow(IllegalArgumentException::new);
+
+        favoriteRepository.deleteById(favorite.getId());
+    }
 }
