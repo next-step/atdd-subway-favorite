@@ -13,18 +13,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoginSteps {
 
-    public static ExtractableResponse<Response> code로_깃허브_로그인(Map<String, String> params) {
+    public static ExtractableResponse<Response> code로_깃허브_로그인(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .then().log().all().extract();
     }
 
 
 
-    public static ExtractableResponse<Response> 비밀번호로_로그인(Map<String, String> params) {
+    public static ExtractableResponse<Response> 비밀번호로_로그인(String email, String password) {
+
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
