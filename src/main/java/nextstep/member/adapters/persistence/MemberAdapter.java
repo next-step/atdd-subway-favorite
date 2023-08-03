@@ -2,6 +2,7 @@ package nextstep.member.adapters.persistence;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.AuthenticationException;
 import nextstep.global.error.exception.NotEntityFoundException;
 import nextstep.member.entity.Member;
 import nextstep.member.repository.MemberRepository;
@@ -28,6 +29,15 @@ public class MemberAdapter {
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotEntityFoundException(ErrorCode.NOT_EXIST_MEMBER));
+    }
+
+    public Member loginByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthenticationException(ErrorCode.LOGIN_ERROR));
+    }
+
+    public boolean existsByEmail(String email) {
+        return memberRepository.existsByEmail(email);
     }
 
     @Transactional
