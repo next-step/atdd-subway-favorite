@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import nextstep.auth.principal.AuthenticationPrincipal;
 import nextstep.auth.principal.UserPrincipal;
+import nextstep.member.application.MemberService;
 import nextstep.subway.applicaion.FavoritesService;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoritesResponse;
@@ -19,10 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FavoriteController {
 
-    private final FavoritesService service;
+    private final FavoritesService favoritesService;
+    private final MemberService memberService;
 
-    public FavoriteController(FavoritesService service) {
-        this.service = service;
+    public FavoriteController(FavoritesService favoritesService, MemberService memberService) {
+        this.favoritesService = favoritesService;
+        this.memberService = memberService;
     }
 
     @PostMapping("/favorites")
@@ -31,9 +34,15 @@ public class FavoriteController {
         @RequestBody FavoriteRequest request) {
 
         return ResponseEntity
-            .created(
-                URI.create("/favorites/" + service.create(request, userPrincipal.getUsername())))
+            .created(URI.create(
+                "/favorites/" + favoritesService.create(request, getMemberId(userPrincipal))))
             .build();
+    }
+
+    private Long getMemberId(UserPrincipal userPrincipal) {
+        return memberService
+            .findMemberByEmail(userPrincipal.getUsername())
+            .getId();
     }
 
     @GetMapping("/favorites")
@@ -41,7 +50,7 @@ public class FavoriteController {
         @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         return ResponseEntity.ok(
-            service.findAllByUser(userPrincipal.getUsername())
+            favoritesService.findAllByUser(getMemberId(userPrincipal))
         );
     }
 
@@ -50,7 +59,7 @@ public class FavoriteController {
         @PathVariable(value = "id") long favoritesId,
         @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        service.delete(favoritesId, userPrincipal.getUsername());
+        favoritesService.delete(favoritesId, getMemberId(userPrincipal));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
