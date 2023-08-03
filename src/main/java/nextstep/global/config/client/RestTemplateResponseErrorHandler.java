@@ -2,7 +2,6 @@ package nextstep.global.config.client;
 
 import nextstep.global.error.exception.BusinessException;
 import org.springframework.core.log.LogFormatUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
