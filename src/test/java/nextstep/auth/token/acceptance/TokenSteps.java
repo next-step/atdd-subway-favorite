@@ -3,6 +3,7 @@ package nextstep.auth.token.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.token.JwtTokenProvider;
 import nextstep.auth.token.TokenRequest;
 import nextstep.auth.token.TokenResponse;
 import org.assertj.core.api.Assertions;
@@ -23,5 +24,9 @@ public class TokenSteps {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         return response.as(TokenResponse.class).getAccessToken();
+    }
+
+    public static void 토큰_검증_통과(JwtTokenProvider jwtTokenProvider, String token) {
+        Assertions.assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
 }
