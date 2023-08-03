@@ -8,12 +8,13 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
-import nextstep.subway.domain.StationRepository;
+import nextstep.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
+@ActiveProfiles("test")
 @DisplayName("즐겨찾기 서비스 테스트")
 @SpringBootTest
 class FavoriteServiceTest {
@@ -32,12 +34,13 @@ class FavoriteServiceTest {
     @Autowired
     private LineRepository lineRepository;
     @Autowired
-    private StationRepository stationRepository;
+    private DatabaseCleanup databaseCleanup;
 
     private Member member;
     private Station source, target;
     @BeforeEach
     void setUp() {
+        databaseCleanup.execute();
         member = memberRepository.save(createMember());
         source = createStation("강남역");
         target = createStation("역삼역");
@@ -73,7 +76,7 @@ class FavoriteServiceTest {
         favoriteService.createFavorite(userPrincipal, request);
 
         // when : 기능 수행
-        List<FavoriteResponse> favorites = favoriteService.findFavorites();
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(userPrincipal);
 
         // then : 결과 확인
         assertThat(favorites).hasSize(1)
@@ -96,7 +99,7 @@ class FavoriteServiceTest {
         favoriteService.deleteFavorite(userPrincipal, response.getId());
 
         // then : 결과 확인
-        List<FavoriteResponse> favorites = favoriteService.findFavorites();
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(userPrincipal);
         assertThat(favorites).isEmpty();
     }
 
