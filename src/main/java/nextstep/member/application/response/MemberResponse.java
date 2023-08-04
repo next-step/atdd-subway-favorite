@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.member.application.response;
 
 import nextstep.member.domain.Member;
 

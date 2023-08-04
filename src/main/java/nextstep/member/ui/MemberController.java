@@ -1,8 +1,8 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.request.MemberRequest;
+import nextstep.member.application.response.MemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
