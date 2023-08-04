@@ -14,7 +14,6 @@ import static nextstep.auth.acceptance.AuthSteps.*;
 import static nextstep.common.CommonSteps.*;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private final VirtualUser properUser = VirtualUser.사용자1;
 
     @Autowired
     private MemberRepository memberRepository;

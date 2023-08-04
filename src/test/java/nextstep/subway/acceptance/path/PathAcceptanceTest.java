@@ -1,6 +1,6 @@
 package nextstep.subway.acceptance.path;
 
-import nextstep.subway.acceptance.AcceptanceTest;
+import nextstep.utils.AcceptanceTest;
 import nextstep.subway.dto.ShortestPathResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
