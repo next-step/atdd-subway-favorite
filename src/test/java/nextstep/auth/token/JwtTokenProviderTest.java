@@ -8,7 +8,7 @@ class JwtTokenProviderTest {
 
     @Test
     void createAndValidateToken() throws InterruptedException {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("secret", 1000);
 
         String token = jwtTokenProvider.createToken("principal", "member");
 

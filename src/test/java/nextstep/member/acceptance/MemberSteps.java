@@ -89,4 +89,13 @@ public class MemberSteps {
             .then().log().all()
             .extract().statusCode();
     }
+
+    public static void 회원_정보_일치_확인(MemberResponse memberResponse, String email, int age) {
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+        assertThat(memberResponse.getAge()).isEqualTo(age);
+    }
+
+    public static void 상태코드_권한_없음(int statusCode) {
+        assertThat(statusCode).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

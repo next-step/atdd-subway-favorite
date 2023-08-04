@@ -1,21 +1,26 @@
 package nextstep.auth.token.acceptance;
 
 
+import static nextstep.auth.token.acceptance.TokenSteps.가짜_깃헙_토큰_검증;
+import static nextstep.auth.token.acceptance.TokenSteps.가짜_깃헙_토큰_요청;
+import static nextstep.auth.token.acceptance.TokenSteps.가짜_깃헙_프로필_검증;
+import static nextstep.auth.token.acceptance.TokenSteps.가짜_깃헙_프로필_요청;
 import static nextstep.auth.token.acceptance.TokenSteps.로그인_요청;
+import static nextstep.auth.token.acceptance.TokenSteps.토큰_검증_통과;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.utils.AcceptanceTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class TokenAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMAIL = "email@gmail.com";
+    private static final String EMAIL = "kskyung0624@gmail.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 20;
+    private static final String ACCESS_TOKEN = "accessToken";
 
     @Autowired
     private final JwtTokenProvider jwtTokenProvider;
@@ -32,15 +37,37 @@ class TokenAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("로그인을 요청하면 토큰을 반환한다")
     @Test
-    void token() {
-        /* TODO: 만약 패키지가 분리되어 있다면 테스트 작성할 때도 패키지를 분리해야 할까요?
-        회원_생성_요청(MemberSteps)이 다른 패키지에 존재하고 있는데,
-        이렇게 되면 패키지 별로 분리했을 때 테스트가 실패하게 됩니다. 그렇다면 코드 중복을 감수하더라도 이 패키지에 테스트를 작성해야 할까요?
-         */
+    void tokenTest() {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         var 토큰 = 로그인_요청(EMAIL, PASSWORD);
 
-        Assertions.assertThat(jwtTokenProvider.validateToken(토큰)).isTrue();
+        토큰_검증_통과(jwtTokenProvider, 토큰);
     }
+
+    /*
+    Given, When fake github으로 access token 요청하면
+    Then fake access token을 반환한다
+     */
+    @Test
+    void fakeGithubTest() {
+        var 가짜_토큰 = 가짜_깃헙_토큰_요청();
+
+        가짜_깃헙_토큰_검증(ACCESS_TOKEN, 가짜_토큰);
+    }
+
+    /*
+    Given When fake github profile을 요청하면
+    Then fake github profile을 반환한다
+     */
+//    @Test
+//    void fakeGithubProfile() {
+//        /*TODO: GithubProfile에 getUserName이 있어서 Jackson이 deserialize할 때 userName을 담아 준다.
+//            이걸 수정하면 테스트에 의존한 프로덕션 코드가 되는데 이 부분은 어떻게 해결할 수 있을까요?
+//            */
+//
+//        var 가짜_프로필 = 가짜_깃헙_프로필_요청(ACCESS_TOKEN);
+//
+//        가짜_깃헙_프로필_검증(EMAIL, AGE, 가짜_프로필);
+//    }
 }

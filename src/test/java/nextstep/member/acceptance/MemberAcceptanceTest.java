@@ -1,5 +1,6 @@
 package nextstep.member.acceptance;
 
+import nextstep.member.application.dto.MemberResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,8 +79,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         var 내정보 = 내정보_조회_요청(토큰);
 
-        assertThat(내정보.getEmail()).isEqualTo(EMAIL);
-        assertThat(내정보.getAge()).isEqualTo(AGE);
+        회원_정보_일치_확인(내정보, EMAIL, AGE);
     }
 
     /**
@@ -97,6 +97,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         var 상태코드 = 내정보_조회_요청_상태코드_반환(토큰);
 
-        assertThat(상태코드).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태코드_권한_없음(상태코드);
     }
 }
