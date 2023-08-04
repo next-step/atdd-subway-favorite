@@ -1,18 +1,11 @@
 package nextstep.member.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-
+import static nextstep.common.CommonSteps.*;
 import static nextstep.member.acceptance.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -26,7 +19,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        생성_요청이_성공한다(response);
     }
 
     @DisplayName("회원 정보를 조회한다.")
@@ -39,8 +32,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_정보_조회_요청(createResponse);
 
         // then
+        정상_응답을_수신받는다(response);
         회원_정보_조회됨(response, EMAIL, AGE);
-
     }
 
     @DisplayName("회원 정보를 수정한다.")
@@ -53,7 +46,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        정상_응답을_수신받는다(response);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
@@ -66,7 +59,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_삭제_요청(createResponse);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        삭제_요청이_성공한다(response);
     }
 
     /**
@@ -87,6 +80,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var getMyInfoResponse = 내_정보_조회_요청(accessToken);
 
         // then
+        정상_응답을_수신받는다(getMyInfoResponse);
         회원_정보_조회됨(getMyInfoResponse, EMAIL, AGE);
     }
 }
