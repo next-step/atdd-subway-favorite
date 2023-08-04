@@ -53,15 +53,19 @@ public class TokenSteps {
 
     public static GithubProfileResponse 가짜_깃헙_프로필_요청(String token) {
 
-        return RestAssured
+        ExtractableResponse<Response> response = RestAssured
             .given().log().all()
             .auth().oauth2(token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/github/user")
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(GithubProfileResponse.class);
+            .extract();
+
+        return new GithubProfileResponse(
+            response.jsonPath().getString("email"),
+            response.jsonPath().getInt("age")
+        );
     }
 
     public static void 토큰_검증_통과(JwtTokenProvider jwtTokenProvider, String token) {
