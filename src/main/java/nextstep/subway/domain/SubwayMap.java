@@ -46,11 +46,18 @@ public class SubwayMap {
         // 다익스트라 최단 경로 찾기
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
-
+        validationPath(result);
         List<Section> sections = result.getEdgeList().stream()
                 .map(it -> it.getSection())
                 .collect(Collectors.toList());
 
         return new Path(new Sections(sections));
     }
+
+    private void validationPath(GraphPath<Station, SectionEdge> path) {
+        if (path == null) {
+            throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
+        }
+    }
+
 }

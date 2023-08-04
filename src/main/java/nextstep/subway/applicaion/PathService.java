@@ -6,6 +6,7 @@ import nextstep.subway.domain.Path;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.SubwayMap;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,6 +18,14 @@ public class PathService {
     public PathService(LineService lineService, StationService stationService) {
         this.lineService = lineService;
         this.stationService = stationService;
+    }
+
+    @Transactional(readOnly = true)
+    public void validationPath(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
+        findPath(source, target);
     }
 
     public PathResponse findPath(Long source, Long target) {

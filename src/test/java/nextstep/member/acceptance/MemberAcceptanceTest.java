@@ -92,10 +92,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         액세스_토큰으로_회원_정보_조회됨(회원_정보_조회_응답);
     }
 
-    private String getAccessToken(ExtractableResponse<Response> 로그인응답) {
-        return 로그인응답.body().jsonPath().getString("accessToken");
-    }
-
     private void 액세스_토큰으로_회원_정보_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("id")).isNotNull();
