@@ -1,17 +1,24 @@
 package nextstep.auth.token;
 
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Locale;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
+
+    private final MessageSource messageSource;
 
     public String createToken(String principal, String role) {
         Claims claims = Jwts.claims().setSubject(principal);
@@ -28,6 +35,9 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
+        if (!validateToken(token)) {
+            throw new AuthenticationException(messageSource.getMessage("auth.0001", null, Locale.KOREA));
+        }
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 

@@ -1,10 +1,12 @@
 package nextstep.subway.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.domain.entity.Favorite;
-import nextstep.subway.domain.entity.FavoriteRepository;
-import nextstep.subway.domain.entity.Station;
-import nextstep.subway.domain.entity.StationRepository;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.member.exception.MemberNotFountException;
+import nextstep.subway.domain.PathFinder;
+import nextstep.subway.domain.ShortestPathFinder;
+import nextstep.subway.domain.entity.*;
 import nextstep.subway.dto.FavoriteRequest;
 import nextstep.subway.dto.FavoriteResponse;
 import nextstep.subway.exception.StationNotFoundException;
@@ -21,35 +23,50 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FavoriteService {
 
+    private final LineRepository lineRepository;
+    private final MemberRepository memberRepository;
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
     private final MessageSource messageSource;
 
     @Transactional
-    public Long createFavorite(FavoriteRequest request) {
+    public Long createFavorite(FavoriteRequest request, String username) {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
 
-        Favorite favorite = new Favorite(sourceStation, targetStation);
+        Member member = getMember(username);
+
+        List<Line> lineList = lineRepository.findAll();
+        PathFinder pathFinder = new ShortestPathFinder(lineList, sourceStation, targetStation);
+
+        Favorite favorite = new Favorite(member, sourceStation, targetStation);
         favoriteRepository.save(favorite);
 
         return favorite.getId();
     }
 
-    private Station getStation(Long stationId) {
-        return stationRepository.findById(stationId)
-                .orElseThrow(() -> new StationNotFoundException(messageSource.getMessage("section.not.found", null, Locale.KOREA)));
-    }
+    public List<FavoriteResponse> getFavorites(String username) {
+        Member member = getMember(username);
 
-    public List<FavoriteResponse> getFavorites() {
-        List<Favorite> favoriteList = favoriteRepository.findAll();
+        List<Favorite> favoriteList = favoriteRepository.findAllByMember(member);
         return favoriteList.stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteFavorite(long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(long id, String username) {
+        Member member = getMember(username);
+        favoriteRepository.deleteFavoriteByIdAndMember(id, member);
+    }
+
+    private Member getMember(String username) {
+        return memberRepository.findByEmail(username)
+                .orElseThrow(() -> new MemberNotFountException(messageSource.getMessage("member.0001", null, Locale.KOREA)));
+    }
+
+    private Station getStation(Long stationId) {
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new StationNotFoundException(messageSource.getMessage("section.not.found", null, Locale.KOREA)));
     }
 }

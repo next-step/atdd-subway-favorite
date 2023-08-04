@@ -30,6 +30,6 @@ public class CommonSteps {
     }
 
     public static void 논리적_오류로_요청이_실패한다(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
