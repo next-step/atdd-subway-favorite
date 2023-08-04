@@ -1,4 +1,4 @@
-package nextstep.global.config;
+package nextstep.global.config.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,10 @@ public class RestTemplateConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate client = new RestTemplate();
+        client.setErrorHandler(new RestTemplateResponseErrorHandler());
+
+        return client;
     }
 
 }

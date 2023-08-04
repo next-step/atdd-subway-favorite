@@ -1,0 +1,4 @@
+github:
+  url:
+    access-token: http://localhost:8080/github/login/oauth/access_token
+    profile: http://localhost:8080/github/user

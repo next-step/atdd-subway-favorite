@@ -32,6 +32,7 @@ public class MemberService {
         member.update(param.toEntity());
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberAdapter.deleteById(id);
     }
