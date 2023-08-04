@@ -1,8 +1,8 @@
 package nextstep.contoller;
 
 import nextstep.auth.principal.AuthenticationPrincipal;
-import nextstep.auth.principal.UserPrincipal;
 import nextstep.domain.FavoritePath;
+import nextstep.domain.member.Member;
 import nextstep.dto.FavoritePathRequest;
 import nextstep.dto.FavoritePathResponse;
 import nextstep.service.FavoritePathService;
@@ -23,27 +23,24 @@ public class FavoritePathController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoritePathResponse> createFavorite(@RequestBody FavoritePathRequest favoritePathRequest, @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        FavoritePath favoritePath = favoritePathService.createFavoritePath(favoritePathRequest, userPrincipal.getUsername());
+    public ResponseEntity<FavoritePathResponse> createFavorite(@RequestBody FavoritePathRequest favoritePathRequest, @AuthenticationPrincipal Member member) {
+        FavoritePath favoritePath = favoritePathService.createFavoritePath(favoritePathRequest, member);
         return ResponseEntity
                 .created(URI.create("/favorites/" + favoritePath.getId()))
                 .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoritePathResponse>> getFavoritePaths(@AuthenticationPrincipal UserPrincipal userPrincipal){
-        List<FavoritePathResponse> responseList = favoritePathService.findAllFavoritePaths(userPrincipal.getUsername());
-
-        if (responseList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseList);
-        }
+    public ResponseEntity<List<FavoritePathResponse>> getFavoritePaths(@AuthenticationPrincipal Member member){
+        List<FavoritePathResponse> responseList = favoritePathService.findAllFavoritePaths(member);
 
         return ResponseEntity.ok(responseList);
     }
 
     @DeleteMapping("/{favoritePathId}")
-    public ResponseEntity<?> deleteFavoritePath(@PathVariable Long favoritePathId,@AuthenticationPrincipal UserPrincipal userPrincipal){
-        favoritePathService.deleteFavoritePath(favoritePathId,userPrincipal.getUsername());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> deleteFavoritePath(@PathVariable Long favoritePathId,@AuthenticationPrincipal Member member){
+        favoritePathService.deleteFavoritePath(favoritePathId,member);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -70,7 +70,7 @@ class FavoritePathServiceTest {
         when(favoritePathRepository.save(any())).thenReturn(favoritePath);
 
         //when
-        favoritePathService.createFavoritePath(new FavoritePathRequest(sourceStationId, targetStationId), email);
+        favoritePathService.createFavoritePath(new FavoritePathRequest(sourceStationId, targetStationId), member);
 
         //then
         assertThat(favoritePath.getSource()).isEqualTo(sourceStation);

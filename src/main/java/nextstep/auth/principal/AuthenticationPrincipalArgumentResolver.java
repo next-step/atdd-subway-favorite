@@ -2,6 +2,8 @@ package nextstep.auth.principal;
 
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.domain.member.Member;
+import nextstep.domain.member.MemberRepository;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -10,9 +12,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private JwtTokenProvider jwtTokenProvider;
+    private MemberRepository memberRepository;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -30,8 +34,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         try {
             String username = jwtTokenProvider.getPrincipal(token);
-            String role = jwtTokenProvider.getRoles(token);
-            return new UserPrincipal(username, role);
+
+            Member member = memberRepository.findByEmail(username)
+                    .orElseThrow(RuntimeException::new);
+
+            return member;
         }
         catch (Exception e) {
             throw new AuthenticationException();

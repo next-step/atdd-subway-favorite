@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,24 +32,19 @@ public class FavoritePathService {
     }
 
     @Transactional
-    public FavoritePath createFavoritePath(FavoritePathRequest favoritePathRequest, String email){
+    public FavoritePath createFavoritePath(FavoritePathRequest favoritePathRequest,Member member){
 
         Station sourceStation = stationService.findStation(favoritePathRequest.getSource());
         Station targetStation = stationService.findStation(favoritePathRequest.getTarget());
 
         pathService.validatePath(sourceStation.getId(), targetStation.getId());
 
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
-
         FavoritePath favoritePath = favoritePathRepository.save(new FavoritePath(sourceStation, targetStation, member));
 
         return favoritePath;
     }
 
-    public List<FavoritePathResponse> findAllFavoritePaths(String email){
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
+    public List<FavoritePathResponse> findAllFavoritePaths(Member member){
 
         List<FavoritePathResponse> favoritePathResponseList = favoritePathRepository.findByMember(member).stream()
                 .map(FavoritePathResponse::createFavoritePathResponse)
@@ -58,13 +54,12 @@ public class FavoritePathService {
     }
 
     @Transactional
-    public void deleteFavoritePath(Long favoritePathId,String email){
+    public void deleteFavoritePath(Long favoritePathId,Member member){
         FavoritePath favoritePath = favoritePathRepository.findById(favoritePathId)
                 .orElseThrow(() -> new EntityNotFoundException("favoritePath not found"));
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
 
-        if(favoritePath.getMember().getId()!=member.getId()){
+
+        if(!Objects.equals(favoritePath.getMember().getId(), member.getId())){
             throw new AuthenticationException();
         }
 

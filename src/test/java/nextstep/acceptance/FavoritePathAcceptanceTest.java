@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.acceptance.commonStep.MemberSteps.회원_생성_요청;
-import static nextstep.acceptance.commonStep.TokenStep.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 즐겨찾기 관련 기능")
@@ -65,8 +63,7 @@ public class FavoritePathAcceptanceTest extends AcceptanceTest {
     void createFavoritePath() {
 
         //given
-        회원_생성_요청(EMAIL1, PASSWORD1, AGE1);
-        String accessToken = 로그인_요청(EMAIL1, PASSWORD1).jsonPath().getString("accessToken");
+        String accessToken = FavoritePathStep.회원가입_및_토큰_받기(EMAIL1, PASSWORD1, AGE1);
 
         //when
         ExtractableResponse<Response> response = FavoritePathStep.즐겨찾기_생성(accessToken, 교대역, 강남역);
@@ -86,8 +83,7 @@ public class FavoritePathAcceptanceTest extends AcceptanceTest {
     void createInvalidFavoritePath() {
 
         //given
-        회원_생성_요청(EMAIL1, PASSWORD1, AGE1);
-        String accessToken = 로그인_요청(EMAIL1, PASSWORD1).jsonPath().getString("accessToken");
+        String accessToken = FavoritePathStep.회원가입_및_토큰_받기(EMAIL1, PASSWORD1, AGE1);
 
         //when
         ExtractableResponse<Response> response = FavoritePathStep.즐겨찾기_생성(accessToken, 교대역, 흑석역);
@@ -106,8 +102,7 @@ public class FavoritePathAcceptanceTest extends AcceptanceTest {
     @Test
     void getFavoritePathList() {
         //given
-        회원_생성_요청(EMAIL1, PASSWORD1, AGE1);
-        String accessToken = 로그인_요청(EMAIL1, PASSWORD1).jsonPath().getString("accessToken");
+        String accessToken = FavoritePathStep.회원가입_및_토큰_받기(EMAIL1, PASSWORD1, AGE1);
 
         FavoritePathStep.즐겨찾기_생성(accessToken, 교대역, 강남역);
         FavoritePathStep.즐겨찾기_생성(accessToken, 강남역, 양재역);
@@ -135,17 +130,14 @@ public class FavoritePathAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoritePath() {
         //given
-        회원_생성_요청(EMAIL1, PASSWORD1, AGE1);
-        String accessToken = 로그인_요청(EMAIL1, PASSWORD1).jsonPath().getString("accessToken");
+        String accessToken = FavoritePathStep.회원가입_및_토큰_받기(EMAIL1, PASSWORD1, AGE1);
         String favoritePathId = FavoritePathStep.즐겨찾기_생성(accessToken, 교대역, 강남역).header("Location");
 
         //when
-        ExtractableResponse<Response> deleteResponse = FavoritePathStep.즐겨찾기_삭제(accessToken, favoritePathId);
-        ExtractableResponse<Response> findResponse = FavoritePathStep.즐겨찾기_목록_조회(accessToken);
+        ExtractableResponse<Response> response = FavoritePathStep.즐겨찾기_삭제(accessToken, favoritePathId);
 
         //then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
     }
 
@@ -158,12 +150,11 @@ public class FavoritePathAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoritePathUnauthorized() {
         //given
-        회원_생성_요청(EMAIL1, PASSWORD1, AGE1);
-        String accessTokenOfCreater = 로그인_요청(EMAIL1, PASSWORD1).jsonPath().getString("accessToken");
+
+        String accessTokenOfCreater = FavoritePathStep.회원가입_및_토큰_받기(EMAIL1, PASSWORD1, AGE1);
         String favoritePathId = FavoritePathStep.즐겨찾기_생성(accessTokenOfCreater, 교대역, 강남역).header("Location");
 
-        회원_생성_요청(EMAIL2, PASSWORD2, AGE2);
-        String accessTokenOfNonCreater = 로그인_요청(EMAIL2, PASSWORD2).jsonPath().getString("accessToken");
+        String accessTokenOfNonCreater = FavoritePathStep.회원가입_및_토큰_받기(EMAIL2, PASSWORD2, AGE2);
 
         //when
         ExtractableResponse<Response> deleteResponse = FavoritePathStep.즐겨찾기_삭제(accessTokenOfNonCreater, favoritePathId);

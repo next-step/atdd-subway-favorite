@@ -6,8 +6,17 @@ import io.restassured.response.Response;
 import nextstep.dto.FavoritePathRequest;
 import org.springframework.http.MediaType;
 
+import static nextstep.acceptance.commonStep.MemberSteps.회원_생성_요청;
+import static nextstep.acceptance.commonStep.TokenStep.로그인_요청;
+
 
 public class FavoritePathStep {
+
+    public static String 회원가입_및_토큰_받기(String email,String password,int age){
+        회원_생성_요청(email, password, age);
+
+        return 로그인_요청(email, password).jsonPath().getString("accessToken");
+    }
     public static ExtractableResponse<Response> 즐겨찾기_생성(String accessToken,Long source,Long target){
 
         ExtractableResponse<Response> response =
