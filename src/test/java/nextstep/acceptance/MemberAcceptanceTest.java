@@ -2,6 +2,7 @@ package nextstep.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.dto.MemberResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,20 +82,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> response = 회원_정보_조회_요청_엑세스토큰(accessToken);
+        var memberResponse = response.as(MemberResponse.class);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
-        assertThat(response.jsonPath().getInt("age")).isEqualTo(AGE);
+        assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(AGE);
     }
 
     /**
      * Given 회원 가입을 생성하고
      * And 로그인을 하고
      * When 올바르지 않은 토큰으로 내 정보를 조회하면
-     * Then Bad Request 400 error가 발생한다
+     * Then UNAUTHORIZED 401 error가 발생한다
      */
-    @DisplayName("내 정보를 조회한다.")
+    @DisplayName("올바르지 않은 토큰으로 내 정보를 조회한다.")
     @Test
     void getMyInfoWithInvalidToken() {
         //given
@@ -105,6 +107,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원_정보_조회_요청_엑세스토큰(invalidAccessToken);
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

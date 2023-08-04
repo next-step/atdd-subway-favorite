@@ -39,4 +39,12 @@ public class PathService {
         return PathResponse.createPathResponse(path, distance);
 
     }
+
+    public void validatePath(Long sourceId,Long targetId){
+        try {
+            getPath(sourceId,targetId);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("존재하지 않는 경로입니다.");
+        }
+    }
 }
