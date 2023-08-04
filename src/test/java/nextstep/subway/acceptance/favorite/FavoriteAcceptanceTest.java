@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance.favorite;
 
+import com.jayway.jsonpath.JsonPath;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -147,15 +148,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         }
 
         private void 즐겨찾기_리스트_응답_개수를_확인한다(ExtractableResponse<Response> getResponse, int count) {
-            List<FavoriteResponse> list = getResponse.jsonPath().getList("$[*]", FavoriteResponse.class);
+            List<FavoriteResponse> list = getResponse.jsonPath().getList("$", FavoriteResponse.class);
             assertThat(list).hasSize(count);
         }
 
         private void 즐겨찾기_등록한_정보를_응답받는다(ExtractableResponse<Response> getResponse) {
-            assertThat(getResponse.jsonPath().getString("$[0]['id']")).isEqualTo('1');
-            assertThat(getResponse.jsonPath().getString("$[0].source.id")).isEqualTo(sourceStationId);
-            assertThat(getResponse.jsonPath().getString("$[0].target.id")).isEqualTo(targetStationId);
-            assertThat(getResponse.jsonPath().getList("$[0]..name")).containsExactly(교대역_정보.get("name"), 강남역_정보.get("name"));
+            assertThat(getResponse.jsonPath().getList("id", String.class)).containsExactly("1");
+            assertThat(getResponse.jsonPath().getString("[0].source.id")).isEqualTo(sourceStationId);
+            assertThat(getResponse.jsonPath().getString("[0].target.id")).isEqualTo(targetStationId);
+            assertThat(getResponse.jsonPath().getString("[0].source.name")).isEqualTo(교대역_정보.get("name"));
+            assertThat(getResponse.jsonPath().getString("[0].target.name")).isEqualTo(강남역_정보.get("name"));
         }
     }
 
