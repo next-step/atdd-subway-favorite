@@ -94,7 +94,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      * Given 회원 가입을 생성하고
      * And 로그인을 하고
      * When 올바르지 않은 토큰으로 내 정보를 조회하면
-     * Then Bad Request 400 error가 발생한다
+     * Then UNAUTHORIZED 401 error가 발생한다
      */
     @DisplayName("올바르지 않은 토큰으로 내 정보를 조회한다.")
     @Test
