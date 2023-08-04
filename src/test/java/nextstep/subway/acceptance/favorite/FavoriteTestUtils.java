@@ -38,4 +38,14 @@ public class FavoriteTestUtils {
                 .extract();
         return postResponse;
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String favoriteLocationUrl) {
+        ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all()
+                .auth().preemptive().oauth2(accessToken)
+                .when()
+                .delete(favoriteLocationUrl)
+                .then()
+                .extract();
+        return deleteResponse;
+    }
 }
