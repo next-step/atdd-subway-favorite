@@ -85,7 +85,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 var response = 깃헙_로그인(유효하지_않는_코드);
 
                 // given
-                상태코드_확인(response, 500);
+                상태코드_확인(response, HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         }
     }

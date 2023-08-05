@@ -1,11 +1,11 @@
 package nextstep.subway.applicaion;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.applicaion.dto.StationRequest;
-import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.applicaion.dto.StationData;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import nextstep.subway.domain.StationResponseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,36 +14,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class StationService {
 
     private final StationRepository stationRepository;
+    private final StationResponseRepository stationResponseRepository;
 
-    public StationService(StationRepository stationRepository) {
+    public StationService(StationRepository stationRepository, StationResponseRepository stationResponseRepository) {
         this.stationRepository = stationRepository;
+        this.stationResponseRepository = stationResponseRepository;
     }
 
     @Transactional
-    public StationResponse saveStation(StationRequest stationRequest) {
+    public StationData saveStation(StationRequest stationRequest) {
         Station station = stationRepository.save(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        return StationData.of(station);
     }
 
-    public List<StationResponse> findAllStations() {
-        return stationRepository.findAll().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<StationData> findAllStations() {
+        return stationResponseRepository.findAll();
     }
 
     @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    public StationResponse createStationResponse(Station station) {
-        return new StationResponse(
-                station.getId(),
-                station.getName()
-        );
-    }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }

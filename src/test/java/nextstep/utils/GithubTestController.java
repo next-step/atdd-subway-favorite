@@ -1,6 +1,5 @@
 package nextstep.utils;
 
-import java.util.Arrays;
 import java.util.Optional;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenRequest;
@@ -17,35 +16,42 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GithubTestController {
 
+    private static final String TOKEN_TYPE = "access_token";
+    private static final String SCOPE = "profile";
+    private static final String BEARER = "bearer";
+    private static final int TOKEN_INDEX = 1;
+    private static final String DELIMITER = " ";
+    private static final int TOKEN_KEY_INDEX = 0;
+    private static final String TOKEN_KEY = "token";
+
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(
             @RequestBody GithubAccessTokenRequest githubAccessTokenRequest) {
-        Optional<String> accessToken = Arrays.stream(GithubResponses.values())
-                .filter(githubResponse -> githubResponse.getCode().equals(githubAccessTokenRequest.getCode()))
-                .map(GithubResponses::getAccessToken)
-                .findFirst();
+        String code = githubAccessTokenRequest.getCode();
+        Optional<String> accessToken = GithubResponses.getAccessToken(code);
         if (accessToken.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        GithubAccessTokenResponse githubAccessTokenResponse =
-                new GithubAccessTokenResponse(accessToken.get(), "access_token", "profile", "bearer");
+        GithubAccessTokenResponse githubAccessTokenResponse = GithubAccessTokenResponse.builder()
+                .accessToken(accessToken.get())
+                .tokenType(TOKEN_TYPE)
+                .scope(SCOPE)
+                .bearer(BEARER)
+                .build();
         return ResponseEntity.ok().body(githubAccessTokenResponse);
     }
 
     @GetMapping("/github/user")
     public ResponseEntity<GithubProfileResponse> user(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        if (!"token".equalsIgnoreCase(authorization.split(" ")[0])) {
+        if (!TOKEN_KEY.equalsIgnoreCase(authorization.split(DELIMITER)[TOKEN_KEY_INDEX])) {
             throw new AuthenticationException();
         }
-        String token = authorization.split(" ")[1];
-        Optional<GithubResponses> githubResponses = Arrays.stream(GithubResponses.values())
-                .filter(githubResponse -> githubResponse.getAccessToken().equals(token))
-                .findFirst();
+        String token = authorization.split(DELIMITER)[TOKEN_INDEX];
+        Optional<GithubResponses> githubResponses = GithubResponses.getGithubResponses(token);
         if (githubResponses.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        GithubProfileResponse githubProfileResponse = new GithubProfileResponse(githubResponses.get().getEmail(),
-                githubResponses.get().getAge());
+        GithubProfileResponse githubProfileResponse = githubResponses.get().toGithubProfileResponse();
         return ResponseEntity.ok().body(githubProfileResponse);
     }
 }
