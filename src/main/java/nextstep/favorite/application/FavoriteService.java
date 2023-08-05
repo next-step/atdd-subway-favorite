@@ -1,13 +1,18 @@
 package nextstep.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.StationService;
+import nextstep.subway.applicaion.dto.StationResponse;
 
 @Service
 public class FavoriteService {
@@ -32,5 +37,17 @@ public class FavoriteService {
 		MemberResponse member = memberService.findMemberByEmail(memberEmail);
 		return favoriteRepository.save(favoriteRequest.toFavorite(member.getId()))
 			.getId();
+	}
+
+	public List<FavoriteResponse> findAllByMemberEmail(String memberEmail) {
+		MemberResponse member = memberService.findMemberByEmail(memberEmail);
+		return favoriteRepository.findAllByMemberId(member.getId())
+			.stream()
+			.map(f -> new FavoriteResponse(
+					f.getId(),
+					StationResponse.from(stationService.findById(f.getSourceStationId())),
+					StationResponse.from(stationService.findById(f.getTargetStationId()))
+				))
+			.collect(Collectors.toUnmodifiableList());
 	}
 }

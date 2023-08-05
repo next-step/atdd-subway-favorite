@@ -2,6 +2,8 @@ package nextstep.favorite.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
@@ -44,6 +48,7 @@ public class FavoriteServiceTest {
 	private Station nonhyeonStation;
 	private Station newNonhyeonStation;
 	private Member member;
+	private Line line;
 
 	@BeforeEach
 	void setUp() {
@@ -52,7 +57,7 @@ public class FavoriteServiceTest {
 		nonhyeonStation = stationRepository.save(new Station("논현역"));
 		newNonhyeonStation = stationRepository.save(new Station("신논현역"));
 		member = memberRepository.save(new Member("mandu@next.com", "test", 20));
-		Line line = lineRepository.save(new Line("신분당선", "Red"));
+		line = lineRepository.save(new Line("신분당선", "Red"));
 		line.addSection(sinsaStation, nonhyeonStation, 10);
 	}
 
@@ -62,10 +67,10 @@ public class FavoriteServiceTest {
 		FavoriteRequest favoriteRequest = new FavoriteRequest(sinsaStation.getId(), nonhyeonStation.getId());
 
 		// when
-		Long savedId = favoriteService.create(favoriteRequest, member.getEmail());
+		Long actual = favoriteService.create(favoriteRequest, member.getEmail());
 
 		// then
-		assertThat(savedId).isEqualTo(1L);
+		assertThat(actual).isEqualTo(1L);
 	}
 
 	@Test
@@ -98,5 +103,31 @@ public class FavoriteServiceTest {
 		// then
 		Assertions.assertThrows(IllegalArgumentException.class,
 			() -> favoriteService.create(favoriteRequest,notRegisterMemberEmail));
+	}
+
+	@Test
+	void 즐겨찾기_목록을_조회한다() {
+		// given
+		line.addSection(nonhyeonStation, newNonhyeonStation, 10);
+		FavoriteRequest favoriteRequest1 = new FavoriteRequest(sinsaStation.getId(), nonhyeonStation.getId());
+		FavoriteRequest favoriteRequest2 = new FavoriteRequest(nonhyeonStation.getId(), newNonhyeonStation.getId());
+		favoriteService.create(favoriteRequest1, member.getEmail());
+		favoriteService.create(favoriteRequest2, member.getEmail());
+
+		// when
+		List<FavoriteResponse> actual = favoriteService.findAllByMemberEmail(member.getEmail());
+
+		// then
+		assertThat(actual).usingRecursiveComparison()
+			.isEqualTo(List.of(
+				new FavoriteResponse(1L,
+					new StationResponse(sinsaStation.getId(), sinsaStation.getName()),
+					new StationResponse(nonhyeonStation.getId(), nonhyeonStation.getName())
+				),
+				new FavoriteResponse(2L,
+					new StationResponse(nonhyeonStation.getId(), nonhyeonStation.getName()),
+					new StationResponse(newNonhyeonStation.getId(), newNonhyeonStation.getName())
+				)
+			));
 	}
 }
