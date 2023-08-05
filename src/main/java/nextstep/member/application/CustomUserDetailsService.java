@@ -1,8 +1,8 @@
 package nextstep.member.application;
 
-import nextstep.auth.AuthenticationException;
 import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
+import nextstep.exception.AuthenticationException;
 import nextstep.member.domain.CustomUserDetails;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;

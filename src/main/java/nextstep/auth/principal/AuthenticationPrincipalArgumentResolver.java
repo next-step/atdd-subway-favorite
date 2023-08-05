@@ -1,7 +1,7 @@
 package nextstep.auth.principal;
 
-import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
