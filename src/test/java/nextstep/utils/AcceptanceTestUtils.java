@@ -20,6 +20,17 @@ public class AcceptanceTestUtils {
                 .extract();
     }
 
+    public static <T> ExtractableResponse<Response> post(String path, T request, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(path)
+                .then().log().all()
+                .extract();
+    }
+
     public static <T> ExtractableResponse<Response> post(String path, Long id, T request) {
         return RestAssured
                 .given().log().all()
@@ -81,6 +92,15 @@ public class AcceptanceTestUtils {
         return RestAssured
                 .given().log().all()
                 .pathParam("id", id)
+                .when().delete(path)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> delete(String path, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(path)
                 .then().log().all()
                 .extract();
