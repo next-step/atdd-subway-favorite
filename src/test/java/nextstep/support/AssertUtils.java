@@ -6,6 +6,7 @@ import nextstep.global.error.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AssertUtils {
 
@@ -34,6 +35,20 @@ public class AssertUtils {
     public static void assertThatErrorMessage(ExtractableResponse<Response> response, ErrorCode errorCode) {
         assertThat(response.jsonPath().getList(ERROR_MESSAGES_KEY, String.class))
                 .containsAnyOf(errorCode.getMessage());
+    }
+
+    /**
+     * <pre>
+     * 비로그인 시 발생하는 예외 사항에 대한 검증
+     * </pre>
+     *
+     * @param response
+     */
+    public static void assertThatNonLoggedIn(ExtractableResponse<Response> response) {
+        assertAll(
+                () -> AssertUtils.assertThatStatusCode(response, HttpStatus.UNAUTHORIZED),
+                () -> AssertUtils.assertThatErrorMessage(response, ErrorCode.AUTHORIZATION_HEADER_IS_BLANK)
+        );
     }
 
 }
