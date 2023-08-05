@@ -5,7 +5,7 @@ import nextstep.auth.oauth2.dto.OAuth2User;
 import nextstep.auth.oauth2.dto.OAuth2UserRequest;
 import nextstep.auth.oauth2.service.OAuth2UserService;
 import nextstep.auth.oauth2.vo.CustomOAuth2User;
-import nextstep.member.adapters.persistence.MemberAdapter;
+import nextstep.member.adapters.persistence.MemberJpaAdapter;
 import nextstep.member.entity.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,15 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService {
 
-    private final MemberAdapter memberAdapter;
+    private final MemberJpaAdapter memberJpaAdapter;
 
     @Transactional
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
         String email = oAuth2UserRequest.getUsername();
-        boolean exists = memberAdapter.existsByEmail(email);
+        boolean exists = memberJpaAdapter.existsByEmail(email);
 
-        Member member = exists ? memberAdapter.findByEmail(email) :  memberAdapter.save(Member.of(oAuth2UserRequest));
+        Member member = exists ? memberJpaAdapter.findByEmail(email) :  memberJpaAdapter.save(Member.of(oAuth2UserRequest));
 
         return CustomOAuth2User.of(member);
     }

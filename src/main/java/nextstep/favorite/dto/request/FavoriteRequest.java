@@ -16,4 +16,8 @@ public class FavoriteRequest {
     @NotNull(message = "도착역은 반드시 입력해야 합니다.")
     private Long target;
 
+    public boolean isSameSourceAndTarget() {
+        return source.equals(target);
+    }
+
 }

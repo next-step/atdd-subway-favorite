@@ -8,6 +8,7 @@ import nextstep.subway.line.entity.Line;
 import nextstep.subway.path.dto.request.PathRequest;
 import nextstep.subway.path.dto.response.PathResponse;
 import nextstep.subway.path.utils.ShortestPathHelper;
+import nextstep.subway.path.vo.Path;
 import nextstep.subway.section.entity.Section;
 import nextstep.subway.station.adapters.persistence.StationJpaAdapter;
 import nextstep.subway.station.entity.Station;
@@ -34,6 +35,12 @@ public class PathService {
         Station source = stationJpaAdapter.findById(pathRequest.getSource());
         Station target = stationJpaAdapter.findById(pathRequest.getTarget());
 
+        Path path = getPathWithDijkstra(source, target);
+
+        return PathResponse.of(path);
+    }
+
+    public Path getPathWithDijkstra(Station source, Station target) {
         List<Station> stations = stationJpaAdapter.findAll();
         List<Section> sections = lineJpaAdapter.findAll()
                 .stream()
@@ -48,7 +55,7 @@ public class PathService {
                 .target(target)
                 .build();
 
-        return PathResponse.of(shortestPathHelper.getPath());
+        return shortestPathHelper.getPath();
     }
 
 }

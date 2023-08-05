@@ -29,6 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+
         if (!StringUtils.hasText(authorization)) {
             throw new AuthenticationException(ErrorCode.AUTHORIZATION_HEADER_IS_BLANK);
         }
@@ -36,6 +37,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!BEARER_TOKEN_KEY.equalsIgnoreCase(authorization.split(DELIMITER)[0])) {
             throw new AuthenticationException(ErrorCode.INVALID_BEARER_GRANT_TYPE);
         }
+
+
         String token = authorization.split(DELIMITER)[1];
 
         String username = jwtTokenProvider.getPrincipal(token);

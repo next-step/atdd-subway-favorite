@@ -1,7 +1,7 @@
 package nextstep.member.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.adapters.persistence.MemberAdapter;
+import nextstep.member.adapters.persistence.MemberJpaAdapter;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
 import nextstep.member.entity.Member;
@@ -13,32 +13,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberService {
 
-    private final MemberAdapter memberAdapter;
+    private final MemberJpaAdapter memberJpaAdapter;
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberAdapter.save(request.toEntity());
+        Member member = memberJpaAdapter.save(request.toEntity());
         return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberAdapter.findById(id);
+        Member member = memberJpaAdapter.findById(id);
         return MemberResponse.of(member);
     }
 
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberAdapter.findById(id);
+        Member member = memberJpaAdapter.findById(id);
         member.update(param.toEntity());
     }
 
     @Transactional
     public void deleteMember(Long id) {
-        memberAdapter.deleteById(id);
+        memberJpaAdapter.deleteById(id);
     }
 
     public MemberResponse findMemberByEmail(String email) {
-        Member member =  memberAdapter.findByEmail(email);
+        Member member =  memberJpaAdapter.findByEmail(email);
         return MemberResponse.of(member);
     }
 }

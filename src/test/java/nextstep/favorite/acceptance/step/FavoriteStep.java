@@ -27,11 +27,10 @@ public class FavoriteStep {
     public static ExtractableResponse<Response> 즐겨찾기_추가_요청(FavoriteRequest favoriteRequest,
                                                            @Nullable ExtractableResponse<Response> response
     ) {
-        String accessToken = Optional.ofNullable(response)
-                .map(r -> r.jsonPath().getString(accessTokenKey))
-                .orElse(null);
-
-        return RestAssuredClient.post(FAVORITE_BASE_URL, favoriteRequest, accessToken);
+        return Optional.ofNullable(response)
+                .map(extractableResponse -> extractableResponse.jsonPath().getString(accessTokenKey))
+                .map(accessToken -> RestAssuredClient.post(FAVORITE_BASE_URL, favoriteRequest, accessToken))
+                .orElseGet(() -> RestAssuredClient.post(FAVORITE_BASE_URL, favoriteRequest));
     }
 
     /**
@@ -43,11 +42,10 @@ public class FavoriteStep {
      * @return ExtractableResponse
      */
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(@Nullable ExtractableResponse<Response> response) {
-        String accessToken = Optional.ofNullable(response)
-                .map(r -> r.jsonPath().getString(accessTokenKey))
-                .orElse(null);
-
-        return RestAssuredClient.get(FAVORITE_BASE_URL, accessToken);
+        return Optional.ofNullable(response)
+                .map(extractableResponse -> extractableResponse.jsonPath().getString(accessTokenKey))
+                .map(accessToken -> RestAssuredClient.get(FAVORITE_BASE_URL, accessToken))
+                .orElseGet(() -> RestAssuredClient.get(FAVORITE_BASE_URL));
     }
 
     /**
@@ -62,11 +60,11 @@ public class FavoriteStep {
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long favoriteId,
                                                            @Nullable ExtractableResponse<Response> response
     ) {
-        String accessToken = Optional.ofNullable(response)
-                .map(r -> r.jsonPath().getString(accessTokenKey))
-                .orElse(null);
         String uri = String.format("%s/%d", FAVORITE_BASE_URL, favoriteId);
 
-        return RestAssuredClient.post(uri, accessToken);
+        return Optional.ofNullable(response)
+                .map(extractableResponse -> extractableResponse.jsonPath().getString(accessTokenKey))
+                .map(accessToken -> RestAssuredClient.delete(uri, accessToken))
+                .orElseGet(() -> RestAssuredClient.delete(uri));
     }
 }

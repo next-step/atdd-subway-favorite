@@ -138,14 +138,14 @@ public class FavoriteAcceptanceTest {
         var 즐겨찾기_추가_응답 = 즐겨찾기_추가_요청(즐겨찾기_추가_요청_DTO, 로그인_응답);
 
         // then
-        FavoriteResponse 즐겨찾기_목록_응답_DTO = 즐겨찾기_목록_조회_요청(로그인_응답).as(FavoriteResponse.class);
-        Long 출발역_아이디 = 즐겨찾기_목록_응답_DTO.getSource().getId();
-        Long 도착역_아이디 = 즐겨찾기_목록_응답_DTO.getTarget().getId();
+        var 즐겨찾기_목록_응답_DTO = 즐겨찾기_목록_조회_요청(로그인_응답);
+        List<Long> 출발역_아이디_목록 = 출발역_아이디_목록을_가져온다(즐겨찾기_목록_응답_DTO);
+        List<Long> 도착역_아이디_목록 = 도착역_아이디_목록을_가져온다(즐겨찾기_목록_응답_DTO);
 
         assertAll(
                 () -> AssertUtils.assertThatStatusCode(즐겨찾기_추가_응답, HttpStatus.CREATED),
-                () -> assertThat(출발역_아이디).isEqualTo(강남역_아이디),
-                () -> assertThat(도착역_아이디).isEqualTo(남부터미널역_아이디)
+                () -> assertThat(출발역_아이디_목록).contains(강남역_아이디),
+                () -> assertThat(도착역_아이디_목록).contains(남부터미널역_아이디)
         );
     }
 
@@ -232,8 +232,8 @@ public class FavoriteAcceptanceTest {
         Stream.of(강남역_남부터미널역_추가_요청_DTO, 교대역_양재역_추가_요청_DTO)
                 .forEach(dto -> 즐겨찾기_추가_요청(dto, 로그인_응답));
 
-        // when
-        var 즐겨찾기_목록_응답_DTO = 즐겨찾기_목록_조회_요청(로그인_응답);
+        // when즐겨찾기_목록_조회_요청
+        var 즐겨찾기_목록_응답_DTO = 즐겨찾기_목록_조회_요청(null);
 
         // then
         AssertUtils.assertThatNonLoggedIn(즐겨찾기_목록_응답_DTO);
@@ -300,7 +300,7 @@ public class FavoriteAcceptanceTest {
                 .getId();
 
         // when
-        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(추가된_즐겨찾기_아이디, 로그인_응답);
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(추가된_즐겨찾기_아이디, null);
 
         // then
         AssertUtils.assertThatNonLoggedIn(즐겨찾기_삭제_응답);
