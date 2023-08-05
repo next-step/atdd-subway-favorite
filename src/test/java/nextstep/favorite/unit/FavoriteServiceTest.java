@@ -115,7 +115,7 @@ public class FavoriteServiceTest {
 		favoriteService.create(favoriteRequest2, member.getEmail());
 
 		// when
-		List<FavoriteResponse> actual = favoriteService.findAllByMemberEmail(member.getEmail());
+		List<FavoriteResponse> actual = favoriteService.findAll(member.getEmail());
 
 		// then
 		assertThat(actual).usingRecursiveComparison()
@@ -129,5 +129,31 @@ public class FavoriteServiceTest {
 					new StationResponse(newNonhyeonStation.getId(), newNonhyeonStation.getName())
 				)
 			));
+	}
+
+	@Test
+	void 즐겨찾기를_삭제한다() {
+		// given
+		FavoriteRequest favoriteRequest = new FavoriteRequest(sinsaStation.getId(), nonhyeonStation.getId());
+		Long savedId = favoriteService.create(favoriteRequest, member.getEmail());
+
+		// when
+		favoriteService.delete(savedId, member.getEmail());
+
+		// then
+		List<FavoriteResponse> favoriteResponses = favoriteService.findAll(member.getEmail());
+		assertThat(favoriteResponses).isEmpty();
+	}
+
+	@Test
+	void 즐겨찾기_삭제_시_등록자가_아닌_경우_에러를_반환한다() {
+		// given
+		Member nonCreator = memberRepository.save(new Member("non@next.com", "test", 22));
+		FavoriteRequest favoriteRequest = new FavoriteRequest(sinsaStation.getId(), nonhyeonStation.getId());
+		Long savedId = favoriteService.create(favoriteRequest, member.getEmail());
+
+		// then
+		Assertions.assertThrows(IllegalArgumentException.class,
+			() -> favoriteService.delete(savedId, nonCreator.getEmail()));
 	}
 }

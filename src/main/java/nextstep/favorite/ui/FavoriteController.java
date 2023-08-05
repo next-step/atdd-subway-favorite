@@ -4,7 +4,9 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +26,11 @@ public class FavoriteController {
 		this.favoriteService = favoriteService;
 	}
 
+	@GetMapping("/favorites")
+	public ResponseEntity<List<FavoriteResponse>> showFavorites(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+		return ResponseEntity.ok().body(favoriteService.findAll(userPrincipal.getUsername()));
+	}
+
 	@PostMapping("/favorites")
 	public ResponseEntity<Void> create(@RequestBody FavoriteRequest favoriteRequest,
 		@AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -31,8 +38,9 @@ public class FavoriteController {
 		return ResponseEntity.created(URI.create("/favorites/" + savedId)).build();
 	}
 
-	@GetMapping("/favorites")
-	public ResponseEntity<List<FavoriteResponse>> showFavorites(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-		return ResponseEntity.ok().body(favoriteService.findAllByMemberEmail(userPrincipal.getUsername()));
+	@DeleteMapping("/favorites/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+		favoriteService.delete(id, userPrincipal.getUsername());
+		return ResponseEntity.noContent().build();
 	}
 }

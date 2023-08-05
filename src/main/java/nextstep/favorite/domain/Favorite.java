@@ -41,4 +41,9 @@ public class Favorite {
 	public Long getTargetStationId() {
 		return targetStationId;
 	}
+
+	public boolean isNotCreator(Long id) {
+		return !memberId.equals(id);
+	}
+
 }
