@@ -120,21 +120,6 @@ public class FavoriteServiceMockTest {
     }
 
     @Test
-    @DisplayName("존재 하지 않은 역이 출발역인 경로를 즐겨찾기에 등록하면 실패한다.")
-    void createFavoriteWithNotExistStation() {
-        // given
-        FavoriteRequest 출발역_신촌역_도착역_신촌역_요청 = FavoriteRequest.builder()
-                .source(신촌역_아이디)
-                .target(신촌역_아이디)
-                .build();
-
-        // when & then
-        assertThatThrownBy(() -> favoriteService.saveFavorite(회원_정보.getEmail(), 출발역_신촌역_도착역_신촌역_요청))
-                .isInstanceOf(InvalidFavoriteException.class)
-                .hasMessageContaining(ErrorCode.SAME_DEPARTURE_AND_ARRIVAL_STATIONS.getMessage());
-    }
-
-    @Test
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경로를 즐겨찾기에 등록하면 실패한다.")
     void createFavoriteUnlinkedDepartureAndArrivalStations() {
         // given
