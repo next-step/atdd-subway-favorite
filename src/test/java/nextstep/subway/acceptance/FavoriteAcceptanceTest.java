@@ -12,11 +12,12 @@ import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요�
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_실패;
 
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("즐겨찾기 기능 인수테스트")
-public class FavoriteAcceptanceTest {
+public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /*
     Given 즐겨찾기를 추가하면
