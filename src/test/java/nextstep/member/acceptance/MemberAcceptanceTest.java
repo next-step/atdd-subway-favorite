@@ -7,11 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static nextstep.member.acceptance.MemberSteps.*;
-import static nextstep.member.acceptance.TokenSteps.로그인_요청_토큰_반환;
+import static nextstep.member.steps.MemberSteps.*;
+import static nextstep.member.steps.TokenSteps.로그인_요청_토큰_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
