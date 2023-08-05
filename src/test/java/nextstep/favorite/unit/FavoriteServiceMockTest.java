@@ -1,17 +1,21 @@
-package nextstep.subway.unit.path;
+package nextstep.favorite.unit;
 
+import nextstep.favorite.adapters.persistence.FavoriteJpaAdapter;
+import nextstep.favorite.dto.request.FavoriteRequest;
+import nextstep.favorite.repository.FavoriteRepository;
+import nextstep.favorite.service.FavoriteService;
 import nextstep.global.error.code.ErrorCode;
+import nextstep.global.error.exception.InvalidFavoriteException;
 import nextstep.global.error.exception.InvalidPathException;
 import nextstep.global.error.exception.NotEntityFoundException;
+import nextstep.member.adapters.persistence.MemberJpaAdapter;
+import nextstep.member.repository.MemberRepository;
 import nextstep.subway.line.adapters.persistence.LineJpaAdapter;
 import nextstep.subway.line.entity.Line;
 import nextstep.subway.line.repository.LineRepository;
-import nextstep.subway.path.dto.request.PathRequest;
-import nextstep.subway.path.dto.response.PathResponse;
 import nextstep.subway.path.service.PathService;
 import nextstep.subway.section.entity.Section;
 import nextstep.subway.station.adapters.persistence.StationJpaAdapter;
-import nextstep.subway.station.dto.response.StationResponse;
 import nextstep.subway.station.repository.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,17 +26,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static nextstep.member.fixture.MemberFixture.회원_정보;
 import static nextstep.subway.fixture.StationFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class PathServiceMockTest {
+public class FavoriteServiceMockTest {
+
+    @Mock
+    MemberRepository memberRepository;
 
     @Mock
     LineRepository lineRepository;
@@ -40,7 +45,10 @@ public class PathServiceMockTest {
     @Mock
     StationRepository stationRepository;
 
-    private PathService pathService;
+    @Mock
+    FavoriteRepository favoriteRepository;
+
+    private FavoriteService favoriteService;
 
     private static final Long 까치산역_아이디 = 까치산역.getId();
 
@@ -63,9 +71,15 @@ public class PathServiceMockTest {
      */
     @BeforeEach
     void setUp() {
+        MemberJpaAdapter memberJpaAdapter = new MemberJpaAdapter(memberRepository);
         LineJpaAdapter lineJpaAdapter = new LineJpaAdapter(lineRepository);
         StationJpaAdapter stationJpaAdapter = new StationJpaAdapter(stationRepository);
-        pathService = new PathService(stationJpaAdapter, lineJpaAdapter);
+        FavoriteJpaAdapter favoriteJpaAdapter = new FavoriteJpaAdapter(favoriteRepository);
+        favoriteService = new FavoriteService(
+                memberJpaAdapter,
+                stationJpaAdapter,
+                favoriteJpaAdapter,
+                new PathService(stationJpaAdapter, lineJpaAdapter));
 
         // given
         이호선 = Line.builder()
@@ -91,56 +105,38 @@ public class PathServiceMockTest {
     }
 
     @Test
-    @DisplayName("최단 거리 경로를 조회한다.")
-    void getShortestPath() {
+    @DisplayName("출발역과 도착역이 같은 경로를 즐겨찾기에 등록하려할 때 실패한다.")
+    void createFavoriteSameDepartureAndArrivalStations() {
         // given
-        given(stationRepository.findById(신도림역_아이디)).willReturn(Optional.of(신도림역));
-        given(stationRepository.findById(잠실역_아이디)).willReturn(Optional.of(잠실역));
-        given(stationRepository.findAll()).willReturn(
-                List.of(까치산역, 신도림역, 신촌역, 잠실역)
-        );
-        given(lineRepository.findAll()).willReturn(List.of(이호선));
-
-        PathRequest 출발역_신도림역_도착역_잠실역_요청 = PathRequest.builder()
-                .source(신도림역_아이디)
-                .target(잠실역_아이디)
-                .build();
-
-        // when
-        PathResponse 최단_거리_경로_조회_응답 = pathService.getShortestPath(출발역_신도림역_도착역_잠실역_요청);
-
-        // then
-        List<Long> 최단_거리_경로에_존재하는_역_아이디_목록 = 최단_거리_경로_조회_응답.getStations()
-                .stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        Integer 최단_거리 = 최단_거리_경로_조회_응답.getDistance();
-
-        assertAll(
-                () -> assertThat(최단_거리_경로에_존재하는_역_아이디_목록).containsExactly(신도림역_아이디, 잠실역_아이디),
-                () -> assertThat(최단_거리).isEqualTo(18)
-        );
-    }
-
-    @Test
-    @DisplayName("출발역과 도착역이 같은 경로를 조회할 때 실패한다.")
-    void getSameDepartureAndArrivalStations() {
-        // given
-        PathRequest 출발역_신촌역_도착역_신촌역_요청 = PathRequest.builder()
+        FavoriteRequest 출발역_신촌역_도착역_신촌역_요청 = FavoriteRequest.builder()
                 .source(신촌역_아이디)
                 .target(신촌역_아이디)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> pathService.getShortestPath(출발역_신촌역_도착역_신촌역_요청))
-                .isInstanceOf(InvalidPathException.class)
+        assertThatThrownBy(() -> favoriteService.saveFavorite(회원_정보.getEmail(), 출발역_신촌역_도착역_신촌역_요청))
+                .isInstanceOf(InvalidFavoriteException.class)
                 .hasMessageContaining(ErrorCode.SAME_DEPARTURE_AND_ARRIVAL_STATIONS.getMessage());
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우에 최단 거리 경로 조회는 실패한다.")
-    void getUnlinkedDepartureAndArrivalStations() {
+    @DisplayName("존재 하지 않은 역이 출발역인 경로를 즐겨찾기에 등록하면 실패한다.")
+    void createFavoriteWithNotExistStation() {
+        // given
+        FavoriteRequest 출발역_신촌역_도착역_신촌역_요청 = FavoriteRequest.builder()
+                .source(신촌역_아이디)
+                .target(신촌역_아이디)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.saveFavorite(회원_정보.getEmail(), 출발역_신촌역_도착역_신촌역_요청))
+                .isInstanceOf(InvalidFavoriteException.class)
+                .hasMessageContaining(ErrorCode.SAME_DEPARTURE_AND_ARRIVAL_STATIONS.getMessage());
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경로를 즐겨찾기에 등록하면 실패한다.")
+    void createFavoriteUnlinkedDepartureAndArrivalStations() {
         // given
         given(stationRepository.findById(신촌역_아이디)).willReturn(Optional.of(신촌역));
         given(stationRepository.findById(까치산역_아이디)).willReturn(Optional.of(까치산역));
@@ -149,49 +145,73 @@ public class PathServiceMockTest {
         );
         given(lineRepository.findAll()).willReturn(List.of(이호선));
 
-        PathRequest 출발역_신촌역_도착역_까치산역_요청 = PathRequest.builder()
+        FavoriteRequest 출발역_신촌역_도착역_까치산역_요청 = FavoriteRequest.builder()
                 .source(신촌역_아이디)
                 .target(까치산역_아이디)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> pathService.getShortestPath(출발역_신촌역_도착역_까치산역_요청))
+        assertThatThrownBy(() -> favoriteService.saveFavorite(회원_정보.getEmail(), 출발역_신촌역_도착역_까치산역_요청))
                 .isInstanceOf(InvalidPathException.class)
                 .hasMessageContaining(ErrorCode.UNLINKED_DEPARTURE_AND_ARRIVAL_STATIONS.getMessage());
     }
 
     @Test
-    @DisplayName("등록되어 있지 않은 역이 출발역인 최단 경로를 조회하려할 때 실패한다.")
-    void getShortestPathWhenNotExistDepartureStation() {
+    @DisplayName("존재하지 않은 회원이 즐겨찾기 등록을 하려하면 실패한다.")
+    void createFavoriteWithNotExistMember() {
         // given
-        given(stationRepository.findById(신도림역_아이디)).willReturn(Optional.empty());
+        given(stationRepository.findById(신도림역_아이디)).willReturn(Optional.of(신도림역));
+        given(stationRepository.findById(잠실역_아이디)).willReturn(Optional.of(잠실역));
+        given(stationRepository.findAll()).willReturn(
+                List.of(까치산역, 신도림역, 신촌역, 잠실역)
+        );
+        given(lineRepository.findAll()).willReturn(List.of(이호선));
+        given(memberRepository.findByEmail(회원_정보.getEmail())).willReturn(Optional.empty());
 
-        PathRequest 출발역_신도림역_도착역_잠실역_요청 = PathRequest.builder()
+        FavoriteRequest 출발역_신도림역_도착역_잠실역_요청 = FavoriteRequest.builder()
                 .source(신도림역_아이디)
                 .target(잠실역_아이디)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> pathService.getShortestPath(출발역_신도림역_도착역_잠실역_요청))
+        assertThatThrownBy(() -> favoriteService.saveFavorite(회원_정보.getEmail(), 출발역_신도림역_도착역_잠실역_요청))
+                .isInstanceOf(NotEntityFoundException.class)
+                .hasMessageContaining(ErrorCode.NOT_EXIST_MEMBER.getMessage());
+    }
+
+    @Test
+    @DisplayName("등록되어 있지 않은 역이 출발역인 경로를 즐겨찾기 등록을 하려하면 실패한다.")
+    void createFavoriteWithNotExistSourceStation() {
+        // given
+        given(stationRepository.findById(신도림역_아이디)).willReturn(Optional.empty());
+
+        FavoriteRequest 출발역_신도림역_도착역_잠실역_요청 = FavoriteRequest.builder()
+                .source(신도림역_아이디)
+                .target(잠실역_아이디)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.saveFavorite(회원_정보.getEmail(), 출발역_신도림역_도착역_잠실역_요청))
                 .isInstanceOf(NotEntityFoundException.class)
                 .hasMessageContaining(ErrorCode.NOT_EXIST_STATION.getMessage());
     }
 
     @Test
-    @DisplayName("등록되어 있지 않은 역이 도착역인 최단 경로를 조회하려할 때 실패한다.")
-    void getShortestPathWhenNotExistArrivalStation() {
+    @DisplayName("등록되어 있지 않은 역이 도착역인 경로를 즐겨찾기 등록을 하려하면 실패한다.")
+    void createFavoriteWithNotExistTargetStation() {
         // given
         given(stationRepository.findById(신촌역_아이디)).willReturn(Optional.of(신촌역));
         given(stationRepository.findById(신도림역_아이디)).willReturn(Optional.empty());
 
-        PathRequest 출발역_신촌역_도착역_신도림역_요청 = PathRequest.builder()
+        FavoriteRequest 출발역_신도림역_도착역_잠실역_요청 = FavoriteRequest.builder()
                 .source(신촌역_아이디)
                 .target(신도림역_아이디)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> pathService.getShortestPath(출발역_신촌역_도착역_신도림역_요청))
+        assertThatThrownBy(() -> favoriteService.saveFavorite(회원_정보.getEmail(), 출발역_신도림역_도착역_잠실역_요청))
                 .isInstanceOf(NotEntityFoundException.class)
                 .hasMessageContaining(ErrorCode.NOT_EXIST_STATION.getMessage());
     }
+    
 }

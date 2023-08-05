@@ -125,7 +125,7 @@ public class FavoriteAcceptanceTest {
      */
     @DisplayName("경로를 즐겨찾기에 등록한다.")
     @Test
-    void createFavoritePath() {
+    void createFavorite() {
         // given
         회원_생성_요청(회원_정보_DTO);
         var 로그인_응답 = 일반_로그인_요청(회원_정보_DTO.getEmail(), 회원_정보_DTO.getPassword());
@@ -157,7 +157,7 @@ public class FavoriteAcceptanceTest {
      */
     @DisplayName("비로그인 상태로 경로를 즐겨찾기에 등록하면 실패한다.")
     @Test
-    void createFavoritePathWhenNonLoggedIn() {
+    void createFavoriteWhenNonLoggedIn() {
         // when
         FavoriteRequest 즐겨찾기_추가_요청_DTO = FavoriteRequest.builder()
                 .source(교대역_아이디)
