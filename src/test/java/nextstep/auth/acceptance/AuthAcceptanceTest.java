@@ -21,22 +21,53 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @DisplayName("Bearer Auth")
-    @Test
-    void bearerAuth() {
-        // given
-        유저를_가입시킨다(properUser);
+    @DisplayName("이메일과 비밀번호로 로그인 요청")
+    @Nested
+    class BearerAuthLogin {
+        @DisplayName("로그인에 성공한다.")
+        @Test
+        void success() {
+            // given
+            유저를_가입시킨다(properUser);
 
-        // when
-        String accessToken = 토큰_로그인_요청_성공(properUser.getEmail(), properUser.getPassword());
+            // when
+            String accessToken = 토큰_로그인_요청_성공(properUser.getEmail(), properUser.getPassword());
 
-        // then
-        assertThat(accessToken).isNotBlank();
+            // then
+            assertThat(accessToken).isNotBlank();
+        }
+
+        @DisplayName("로그인에 실패한다.")
+        @Nested
+        class Fail {
+            @DisplayName("아이디가 존재하지 않는다")
+            @Test
+            void invalidUsername() {
+                // when
+                ExtractableResponse<Response> response = 토큰_로그인_요청("invalid_email@gmail.com", "not_used_password");
+
+                // then
+                checkHttpResponseCode(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            @DisplayName("틀린 비밀번호입니다.")
+            @Test
+            void passwordMismatch() {
+                // when
+                ExtractableResponse<Response> response = 토큰_로그인_요청(properUser.getEmail(), "wrong_password");
+
+                // then
+                checkHttpResponseCode(response, HttpStatus.UNAUTHORIZED);
+            }
+
+        }
     }
 
-    @DisplayName("깃허브 로그인 요청")
+
+    @DisplayName("깃허브 연동하여 로그인 요청")
     @Nested
-    class GithubLogin {
+    class GithubAuthLogin {
+        @DisplayName("로그인에 성공한다.")
         @Test
         void success() {
             // when
@@ -46,6 +77,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
             assertThat(accessToken).isNotBlank();
         }
 
+        @DisplayName("로그인에 실패한다.")
         @Test
         void fail() {
             // when

@@ -10,8 +10,6 @@ import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
-
 @Service
 @RequiredArgsConstructor
 public class TokenService {

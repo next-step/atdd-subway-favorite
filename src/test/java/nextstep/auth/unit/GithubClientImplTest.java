@@ -16,10 +16,10 @@ import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class GithubClientTest {
+public class GithubClientImplTest {
 
     @Autowired
-    GithubClient githubClient;
+    GithubClient githubClientImpl;
 
     VirtualUser validUser = VirtualUser.사용자1;
     VirtualUser expiredUser = VirtualUser.만료된사용자;
@@ -29,7 +29,7 @@ public class GithubClientTest {
     @Test
     void getAccessTokenFromGithubSuccess() {
         // when
-        String token = githubClient.getAccessTokenFromGithub(validUser.getCode());
+        String token = githubClientImpl.getAccessTokenFromGithub(validUser.getCode());
 
         // then
         assertThat(token).isNotBlank();
@@ -40,7 +40,7 @@ public class GithubClientTest {
     @Test
     void getAccessTokenFromGithubFailedByInvalidToken() {
         // when
-        assertThatThrownBy(() -> githubClient.getAccessTokenFromGithub("wrong_token"))
+        assertThatThrownBy(() -> githubClientImpl.getAccessTokenFromGithub("wrong_token"))
                 .isInstanceOf(AuthenticationException.class);
     }
 
@@ -49,7 +49,7 @@ public class GithubClientTest {
     @Test
     void getGithubProfileFromGithubSuccess() {
         // when
-        GithubProfileResponse profileResponse = githubClient.getGithubProfileFromGithub(validUser.getToken());
+        GithubProfileResponse profileResponse = githubClientImpl.getGithubProfileFromGithub(validUser.getToken());
 
         // then
         assertThat(profileResponse).isNotNull();
@@ -60,7 +60,7 @@ public class GithubClientTest {
     @DisplayName("리소스 조회 API 호출 실패, 깃허브가 인식할 수 없는 토큰 전송")
     @Test
     void getGithubProfileFromGithubFailedByInvalidToken() {
-        assertThatThrownBy(() -> githubClient.getGithubProfileFromGithub("wrong_token"))
+        assertThatThrownBy(() -> githubClientImpl.getGithubProfileFromGithub("wrong_token"))
                 .isInstanceOf(AuthenticationException.class);
     }
 
@@ -68,7 +68,7 @@ public class GithubClientTest {
     @DisplayName("리소스 조회 API 호출 실패, 만료기한 지난 토큰 전송")
     @Test
     void getGithubProfileFromGithubFailedByExpiredToken() {
-        assertThatThrownBy(() -> githubClient.getGithubProfileFromGithub(expiredUser.getToken()))
+        assertThatThrownBy(() -> githubClientImpl.getGithubProfileFromGithub(expiredUser.getToken()))
                 .isInstanceOf(ForbiddenException.class);
     }
 }
