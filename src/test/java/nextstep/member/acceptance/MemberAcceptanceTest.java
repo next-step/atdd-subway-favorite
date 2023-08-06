@@ -5,8 +5,8 @@ import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.common.CommonSteps.*;
 import static nextstep.member.acceptance.MemberSteps.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -38,7 +38,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void updateMember() {
         // given
         String 회원_URL = 회원_생성_요청_성공(EMAIL, PASSWORD, AGE);
-
 
         // when, then
         회원_정보_수정_요청_성공(회원_URL, "new" + EMAIL, "new" + PASSWORD, AGE);
