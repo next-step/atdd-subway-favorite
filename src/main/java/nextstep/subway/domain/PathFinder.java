@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 public interface PathFinder {
+
     List<Station> getPath();
 
     BigInteger getWeight();

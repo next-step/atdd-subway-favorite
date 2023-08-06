@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.MemberNotFountException;
-import nextstep.subway.domain.PathFinder;
 import nextstep.subway.domain.ShortestPathFinder;
 import nextstep.subway.domain.entity.*;
 import nextstep.subway.dto.FavoriteRequest;
@@ -33,8 +32,7 @@ public class FavoriteService {
 
         Member member = getMember(username);
 
-        List<Line> lineList = lineRepository.findAll();
-        PathFinder pathFinder = new ShortestPathFinder(lineList, sourceStation, targetStation);
+        ShortestPathFinder.checkReachable(lineRepository.findAll(), sourceStation, targetStation);
 
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
         favoriteRepository.save(favorite);

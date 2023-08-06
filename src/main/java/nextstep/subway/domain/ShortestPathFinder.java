@@ -18,7 +18,15 @@ public class ShortestPathFinder implements PathFinder{
     private final DijkstraShortestPath dijkstraShortestPath;
     private final GraphPath path;
 
-    public ShortestPathFinder(List<Line> lineList, Station sourceStation, Station targetStation) {
+    public static PathFinder of(List<Line> lineList, Station sourceStation, Station targetStation) {
+        return new ShortestPathFinder(lineList, sourceStation, targetStation);
+    }
+
+    public static void checkReachable(List<Line> lineList, Station sourceStation, Station targetStation) {
+        ShortestPathFinder.of(lineList, sourceStation, targetStation);
+    }
+
+    private ShortestPathFinder(List<Line> lineList, Station sourceStation, Station targetStation) {
 
         if (sourceStation.equals(targetStation)) {
             throw new ValidationException("station.0002");

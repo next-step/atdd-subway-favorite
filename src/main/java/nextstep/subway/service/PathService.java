@@ -30,7 +30,7 @@ public class PathService {
 
         List<Line> lineList = lineRepository.findAll();
 
-        PathFinder pathFinder = new ShortestPathFinder(lineList, sourceStation, targetStation);
+        PathFinder pathFinder = ShortestPathFinder.of(lineList, sourceStation, targetStation);
         List<Station> searchedPath = pathFinder.getPath();
         BigInteger weight = pathFinder.getWeight();
         return new ShortestPathResponse(searchedPath.stream().map(StationResponse::from).collect(Collectors.toList()), weight);
