@@ -10,12 +10,10 @@ import nextstep.subway.domain.entity.*;
 import nextstep.subway.dto.FavoriteRequest;
 import nextstep.subway.dto.FavoriteResponse;
 import nextstep.subway.exception.StationNotFoundException;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +25,6 @@ public class FavoriteService {
     private final MemberRepository memberRepository;
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
-    private final MessageSource messageSource;
 
     @Transactional
     public Long createFavorite(FavoriteRequest request, String username) {
@@ -62,11 +59,11 @@ public class FavoriteService {
 
     private Member getMember(String username) {
         return memberRepository.findByEmail(username)
-                .orElseThrow(() -> new MemberNotFountException(messageSource.getMessage("member.0001", null, Locale.KOREA)));
+                .orElseThrow(() -> new MemberNotFountException("member.0001"));
     }
 
     private Station getStation(Long stationId) {
         return stationRepository.findById(stationId)
-                .orElseThrow(() -> new StationNotFoundException(messageSource.getMessage("section.not.found", null, Locale.KOREA)));
+                .orElseThrow(() -> new StationNotFoundException("section.not.found"));
     }
 }

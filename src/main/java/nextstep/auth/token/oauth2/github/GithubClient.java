@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.ForbiddenException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -25,8 +24,6 @@ public class GithubClient {
     private String tokenUrl;
     @Value("${github.url.profile}")
     private String profileUrl;
-
-    private final MessageSource messageSource;
 
     public String getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
@@ -54,7 +51,7 @@ public class GithubClient {
             }
             return accessToken;
         } catch (HttpClientErrorException e) {
-            throw new AuthenticationException(messageSource.getMessage("auth.0001", null, Locale.KOREA));
+            throw new AuthenticationException("auth.0001");
         }
     }
 
@@ -71,7 +68,7 @@ public class GithubClient {
                 .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();
         } catch (HttpClientErrorException e) {
-            throw new ForbiddenException(messageSource.getMessage("auth.0002", null, Locale.KOREA));
+            throw new ForbiddenException("auth.0002");
         }
     }
 }
