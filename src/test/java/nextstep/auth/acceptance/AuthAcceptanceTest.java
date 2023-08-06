@@ -7,11 +7,14 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
 import nextstep.auth.util.VirtualUser;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.auth.acceptance.AuthSteps.*;
 import static nextstep.common.CommonSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -25,32 +28,32 @@ class AuthAcceptanceTest extends AcceptanceTest {
         유저를_가입시킨다(properUser);
 
         // when
-        ExtractableResponse<Response> response = 토큰_로그인_요청(properUser.getEmail(), properUser.getPassword());
+        String accessToken = 토큰_로그인_요청_성공(properUser.getEmail(), properUser.getPassword());
 
         // then
-        정상_응답을_수신받는다(response);
-        access_token_응답을_받음(response);
+        assertThat(accessToken).isNotBlank();
     }
 
-    @DisplayName("서버로 리다이렉트 되면 클라이언트는 엑세스 토큰을 받는 시나리오")
-    @Test
-    void githubAuth() {
-        // when
-        ExtractableResponse<Response> response = 깃허브_로그인_요청(properUser.getCode());
+    @DisplayName("깃허브 로그인 요청")
+    @Nested
+    class GithubLogin {
+        @Test
+        void success() {
+            // when
+            String accessToken = 깃허브_로그인_요청_성공(properUser.getCode());
 
-        // then
-        정상_응답을_수신받는다(response);
-        access_token_응답을_받음(response);
-    }
+            // then
+            assertThat(accessToken).isNotBlank();
+        }
 
-    @DisplayName("서버로 리다이렉트 되면 클라이언트는 엑세스 토큰을 받는 시나리오")
-    @Test
-    void githubAuthFailed() {
-        // when
-        ExtractableResponse<Response> response = 깃허브_로그인_요청("wrong_code");
+        @Test
+        void fail() {
+            // when
+            ExtractableResponse<Response> response = 깃허브_로그인_요청("wrong_code");
 
-        // then
-        인증_실패_응답을_받는다(response);
+            // then
+            checkHttpResponseCode(response, HttpStatus.UNAUTHORIZED);
+        }
     }
 
     private void 유저를_가입시킨다(VirtualUser properUser) {
