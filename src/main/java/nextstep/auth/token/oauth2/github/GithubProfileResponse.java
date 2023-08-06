@@ -28,4 +28,12 @@ public class GithubProfileResponse implements OAuth2UserRequest {
     public Integer getAge() {
         return age;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 }
