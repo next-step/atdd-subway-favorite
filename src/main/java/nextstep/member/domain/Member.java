@@ -20,8 +20,8 @@ public class Member {
     private String password;
     private Integer age;
     private String role;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+    @Embedded
+    private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -44,8 +44,7 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.favorites = new ArrayList<>();
-        this.favorites.add(favorite);
+        this.favorites = new Favorites(favorite);
     }
 
     public Long getId() {
@@ -79,7 +78,7 @@ public class Member {
     }
 
     public List<Favorite> getFavorites() {
-        return favorites;
+        return favorites.getFavorites();
     }
 
     public void addFavorite(Favorite favorite) {
@@ -87,10 +86,6 @@ public class Member {
     }
 
     public void deleteFavorite(Long id) {
-        Favorite first = this.favorites.stream()
-                .filter(favorite -> Objects.equals(favorite.id, id))
-                .findFirst()
-                .orElseThrow(() -> new FavoriteException(ErrorCode.CANNOT_DELETE_NOT_EXIST_FAVORITE));
-        this.favorites.remove(first);
+        this.favorites.remove(id);
     }
 }
