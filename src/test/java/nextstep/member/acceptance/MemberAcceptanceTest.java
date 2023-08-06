@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
 
     @DisplayName("회원가입을 한다.")
     @Test

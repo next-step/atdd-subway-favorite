@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 import static nextstep.member.acceptance.FavoriteSteps.*;
+import static nextstep.member.steps.MemberSteps.회원_생성_요청;
 import static nextstep.member.steps.TokenSteps.로그인_요청_토큰_반환;
 import static nextstep.subway.steps.LineSteps.지하철_노선_생성_요청;
 import static nextstep.subway.steps.LineSteps.지하철_노선에_지하철_구간_생성_요청;
@@ -19,6 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 인수 테스트")
 class FavoriteAcceptanceTest extends AcceptanceTest {
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
+
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;
@@ -62,7 +67,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_지하철_구간_생성_요청(삼호선, 남부터미널역, 양재역, 3);
 
-        accessToken = 로그인_요청_토큰_반환("email@email.com", "password");
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        accessToken = 로그인_요청_토큰_반환(EMAIL, PASSWORD);
     }
 
     /**
@@ -105,10 +111,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기 삭제")
     void deleteFavorite() {
-        Long favoriteId = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역)
-                .jsonPath().getList("id", Long.class).get(0);
-
-        즐겨찾기_삭제_요청(accessToken, favoriteId);
+        String location = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역).header("Location");
+        즐겨찾기_삭제_요청(accessToken, location);
 
         List<Long> favoriteIds = 즐겨찾기_조회_요청(accessToken)
                 .jsonPath().getList("id", Long.class);
@@ -124,6 +128,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void findFavoriteFailAuth() {
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청("wrong_acccess_token");
 
-        assertThat(response).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

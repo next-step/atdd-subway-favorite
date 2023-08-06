@@ -2,6 +2,7 @@ package nextstep.auth.principal;
 
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.member.application.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -9,7 +10,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -28,9 +29,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         }
         String token = authorization.split(" ")[1];
 
-        String username = jwtTokenProvider.getPrincipal(token);
-        String role = jwtTokenProvider.getRoles(token);
-
-        return new UserPrincipal(username, role);
+        try {
+            String username = jwtTokenProvider.getPrincipal(token);
+            String role = jwtTokenProvider.getRoles(token);
+            return new UserPrincipal(username, role);
+        } catch (Exception e) {
+            throw new AuthenticationException();
+        }
     }
 }

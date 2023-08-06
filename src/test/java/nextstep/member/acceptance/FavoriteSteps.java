@@ -24,7 +24,7 @@ public class FavoriteSteps {
         return AuthApiRequest.get(accessToken, "/favorites");
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long id) {
-        return AuthApiRequest.delete(accessToken, "/favorites/" + id);
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String path) {
+        return AuthApiRequest.delete(accessToken, path);
     }
 }
