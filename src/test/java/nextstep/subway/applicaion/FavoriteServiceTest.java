@@ -1,6 +1,7 @@
 package nextstep.subway.applicaion;
 
 import static nextstep.auth.token.acceptance.GithubResponses.사용자1;
+import static nextstep.auth.token.acceptance.GithubResponses.사용자2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -14,11 +15,12 @@ import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 @DisplayName("즐겨찾기 서비스 테스트")
 @SpringBootTest
@@ -35,6 +37,7 @@ public class FavoriteServiceTest {
 
     @DisplayName("즐겨찾기 생성")
     @Test
+    @Transactional
     void createFavorite() {
         Long sourceId = stationRepository.save(new Station("강남역")).getId();
         Long targetId = stationRepository.save(new Station("신논현역")).getId();
@@ -47,6 +50,7 @@ public class FavoriteServiceTest {
 
     @DisplayName("즐겨찾기 조회")
     @Test
+    @Transactional
     void findAll() {
         Station source1 = stationRepository.save(new Station("강남역"));
         Station target1 = stationRepository.save(new Station("신논현역"));
@@ -77,25 +81,43 @@ public class FavoriteServiceTest {
 
     @DisplayName("즐겨찾기 삭제")
     @Test
+    @Transactional
     void delete() {
         Station source = stationRepository.save(new Station("강남역"));
         Station target = stationRepository.save(new Station("신논현역"));
         Member member = memberRepository.save(new Member(사용자1.getEmail(), "password", 20));
-        favoriteRepository.save(new Favorite(member.getId(), source, target));
+        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
 
-        favoriteService.delete(사용자1.getEmail(), source, target);
+        favoriteService.delete(사용자1.getEmail(), favorite.getId());
 
-        assertThat(favoriteRepository.findAll()).isEmpty();
+        assertThat(favoriteRepository.findAll()).hasSize(0);
     }
 
     @DisplayName("즐겨찾기 삭제 실패 - 즐겨찾기가 없는 경우")
     @Test
+    @Transactional
     void delete_fail_nonExistFavoriteId() {
+        stationRepository.save(new Station("강남역"));
+        stationRepository.save(new Station("신논현역"));
+        memberRepository.save(new Member(사용자1.getEmail(), "password", 20));
+
+        assertThatThrownBy(() -> favoriteService.delete(사용자1.getEmail(), Long.MAX_VALUE))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("즐겨찾기 삭제 실패 - 즐겨찾기를 등록한 사용자가 아닌 경우")
+    @Test
+    @Transactional
+    void delete_fail_notMyFavoriteId() {
         Station source = stationRepository.save(new Station("강남역"));
         Station target = stationRepository.save(new Station("신논현역"));
         Member member = memberRepository.save(new Member(사용자1.getEmail(), "password", 20));
+        Member targetMember = memberRepository.save(new Member(사용자2.getEmail(), "password2", 25));
+        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
 
-        assertThatThrownBy(() -> favoriteService.delete(사용자1.getEmail(), source, target))
-            .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> favoriteService.delete(targetMember.getEmail(), favorite.getId()))
+            .isInstanceOf(IllegalArgumentException.class);
+
     }
+
 }
