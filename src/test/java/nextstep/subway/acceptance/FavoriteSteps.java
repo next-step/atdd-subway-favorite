@@ -11,6 +11,7 @@ import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class FavoriteSteps {
 
@@ -19,7 +20,7 @@ public class FavoriteSteps {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        return response.jsonPath().get("id");
+        return Long.valueOf(response.header("Location").split("/")[2]);
     }
 
     public static int 즐겨찾기_추가_실패(String accessToken, String source, String target) {
@@ -38,6 +39,7 @@ public class FavoriteSteps {
         return RestAssured
             .given().log().all()
             .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(favoriteRequest)
             .when().post("/favorites")
             .then().log().all()
@@ -57,6 +59,7 @@ public class FavoriteSteps {
         return RestAssured
             .given().log().all()
             .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/favorites")
             .then().log().all()
             .extract();
@@ -67,7 +70,8 @@ public class FavoriteSteps {
         return RestAssured
             .given().log().all()
             .auth().oauth2(accessToken)
-            .when().delete("/favorites{id}", favoriteId)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete("/favorites/{id}", favoriteId)
             .then().log().all()
             .extract();
     }

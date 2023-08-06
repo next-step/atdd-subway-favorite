@@ -1,6 +1,7 @@
 package nextstep.subway.acceptance;
 
 import static nextstep.auth.token.acceptance.GithubResponses.사용자1;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.상태코드_400_응답;
 import static nextstep.subway.acceptance.FavoriteSteps.상태코드_401_응답;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_목록에_즐겨찾기가_존재하지_않는다;
@@ -12,12 +13,23 @@ import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요�
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_실패;
 
+import nextstep.auth.token.JwtTokenProvider;
+import nextstep.member.domain.RoleType;
 import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @DisplayName("즐겨찾기 기능 인수테스트")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+
+    @BeforeEach
+    void init() {
+        회원_생성_요청(사용자1.getEmail(), "password", 20);
+    }
 
     /*
     Given 즐겨찾기를 추가하면
@@ -39,7 +51,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     When 즐겨찾기를 추가하면
     Then 401 Unauthorized를 응답받는다
      */
-    @DisplayName("권한이 없는 유저가 즐겨찾기를 추가한다")
+    @DisplayName("권한이 없는 유저가 즐겨찾기를 추가에 실패한다")
     @Test
     void favoriteAddWithoutAuth() {
         int 즐겨찾기_추가_상태코드 = 즐겨찾기_추가_실패("unknownToken", "강남역", "신논현역");
@@ -52,7 +64,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     When 즐겨찾기를 조회하면
     Then 401 Unauthorized를 응답받는다
     * */
-    @DisplayName("권한이 없는 유저가 즐겨찾기를 조회한다")
+    @DisplayName("권한이 없는 유저가 즐겨찾기 조회에 실패한다")
     @Test
     void favoriteFindWithoutAuth() {
         int 즐겨찾기_조회_상태코드 = 즐겨찾기_조회_요청("unknownToken").statusCode();
@@ -103,5 +115,41 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         int 즐겨찾기_삭제_상태코드 = 즐겨찾기_삭제_요청(사용자1.getAccessToken(), 999L).statusCode();
 
         상태코드_400_응답(즐겨찾기_삭제_상태코드);
+    }
+}
+
+@Configuration
+class TestConfig {
+    @Primary
+    @Bean
+    public MockJwtTokenProvider mockJwtTokenProvider () {
+        return new MockJwtTokenProvider("testSecretKey", 1000L);
+    }
+
+    class MockJwtTokenProvider extends JwtTokenProvider {
+
+        public MockJwtTokenProvider(String secretKey, long validityInMilliseconds) {
+            super(secretKey, validityInMilliseconds);
+        }
+
+        @Override
+        public String createToken(String subject, String role) {
+            return "accessToken1";
+        }
+
+        @Override
+        public String getPrincipal(String token) {
+            return 사용자1.getEmail();
+        }
+
+        @Override
+        public String getRoles(String token) {
+            return RoleType.ROLE_MEMBER.name();
+        }
+
+        @Override
+        public boolean validateToken(String token) {
+            return token.equals("accessToken1") ? true : false;
+        }
     }
 }
