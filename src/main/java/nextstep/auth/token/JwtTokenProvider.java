@@ -8,11 +8,10 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    // TODO: 테스트하기 위해 초깃값을 넣어주고 나중에 @Value로 초기화 -> 프로덕션에선 어떻게 Spring과 분리한 POJO 테스트로 만들 수 있을까?
     private String secretKey;
     private long validityInMilliseconds;
 
-    JwtTokenProvider(
+    public JwtTokenProvider(
         @Value("${security.jwt.token.secret-key}") String secretKey,
         @Value("${security.jwt.token.expire-length}") long validityInMilliseconds
     ) {

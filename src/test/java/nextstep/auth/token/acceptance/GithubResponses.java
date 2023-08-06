@@ -1,10 +1,8 @@
 package nextstep.auth.token.acceptance;
 
 import java.util.Arrays;
-import nextstep.auth.token.oauth2.github.GithubAccessTokenRequest;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties.Git;
 
 public enum GithubResponses {
     사용자1("code1", "accessToken1", "email1@email.com", 20),

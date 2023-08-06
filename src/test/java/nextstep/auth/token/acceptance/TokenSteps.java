@@ -11,7 +11,6 @@ import nextstep.auth.token.TokenResponse;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenRequest;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
-import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
