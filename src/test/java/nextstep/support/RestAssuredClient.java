@@ -42,6 +42,36 @@ public class RestAssuredClient {
 
     /**
      * <pre>
+     * path에 POST 방식으로
+     * RestAssured를 통해
+     * requestBody 정보와
+     * access token 정보를 담아
+     * HTTP 요청을 보낼 때 사용합니다.
+     * </pre>
+     *
+     * @param path
+     * @param accessToken
+     * @return ExtractableResponse
+     */
+    public static <T> ExtractableResponse<Response> post(String path,
+                                                         T requestBody,
+                                                         String accessToken
+    ) {
+        return RestAssured
+                .given()
+                    .log().all()
+                    .body(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().oauth2(accessToken)
+                .when()
+                    .post(path)
+                .then()
+                    .log().all()
+                    .extract();
+    }
+
+    /**
+     * <pre>
      * path에
      * GET 방식으로
      * RestAssured를 통해
@@ -159,4 +189,27 @@ public class RestAssuredClient {
                     .extract();
     }
 
+    /**
+     * <pre>
+     * path에 DELETE 방식으로
+     * RestAssured를 통해
+     * access token 정보를 담아
+     * HTTP 요청을 보낼 때 사용합니다.
+     * </pre>
+     *
+     * @param path
+     * @param accessToken
+     * @return ExtractableResponse
+     */
+    public static ExtractableResponse<Response> delete(String path, String accessToken) {
+        return RestAssured
+                .given()
+                    .log().all()
+                    .auth().oauth2(accessToken)
+                .when()
+                    .delete(path)
+                .then()
+                    .log().all()
+                    .extract();
+    }
 }

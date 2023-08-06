@@ -36,25 +36,16 @@ public class PathAcceptanceTest {
 
     private static final String LINE_ID_KEY = "id";
 
-    private Long 교대역_아이디;
-
-    private Long 강남역_아이디;
-
-    private Long 양재역_아이디;
-
-    private Long 남부터미널역_아이디;
-
-    private Long 판교역_아이디;
-
-    private Long 삼호선;
+    private Long 교대역_아이디,
+                 강남역_아이디,
+                 양재역_아이디,
+                 남부터미널역_아이디;
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
 
     /**
      * <pre>
-     * 청량리역
-     *
      * 교대역    --- *2호선(10)* ---   강남역
      * |                              |
      * *3호선(2)*                      *신분당선(10)*
@@ -73,7 +64,6 @@ public class PathAcceptanceTest {
         this.강남역_아이디 = 지하철역_생성을_요청한다(강남역).jsonPath().getLong(STATION_ID_KEY);
         this.양재역_아이디 = 지하철역_생성을_요청한다(양재역).jsonPath().getLong(STATION_ID_KEY);
         this.남부터미널역_아이디 = 지하철역_생성을_요청한다(남부터미널역).jsonPath().getLong(STATION_ID_KEY);
-        this.판교역_아이디 = 지하철역_생성을_요청한다(판교역).jsonPath().getLong(STATION_ID_KEY);
 
         SaveLineRequest 생성할_이호선 = SaveLineRequest.builder()
                 .name("2호선")
@@ -102,7 +92,7 @@ public class PathAcceptanceTest {
         지하철_노선_생성을_요청한다(생성할_신분당선)
                 .jsonPath()
                 .getLong(LINE_ID_KEY);
-        this.삼호선 = 지하철_노선_생성을_요청한다(생성할_삼호선)
+        Long 삼호선_아이디 = 지하철_노선_생성을_요청한다(생성할_삼호선)
                 .jsonPath()
                 .getLong(LINE_ID_KEY);
 
@@ -111,7 +101,7 @@ public class PathAcceptanceTest {
                 .downStationId(양재역_아이디)
                 .distance(3)
                 .build();
-        지하철_구간_생성을_요청한다(삼호선에_생성할_구간, 삼호선);
+        지하철_구간_생성을_요청한다(삼호선에_생성할_구간, 삼호선_아이디);
     }
 
     /**
