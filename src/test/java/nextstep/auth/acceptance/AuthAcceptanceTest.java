@@ -18,6 +18,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
+
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final Integer AGE = 20;
@@ -29,7 +30,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인요청() {
         // given
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        회원저장();
 
         // when
         ExtractableResponse<Response> response = AuthSteps.로그인요청(EMAIL, PASSWORD);
@@ -38,11 +39,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
         로그인요청_응답값_검증(response);
     }
 
+
+
     @DisplayName("로그인 요청 시 패스워드 검증에 실패하면 실패응답한다.")
     @Test
     void 로그인요청_패스워드검증실패() {
         // given
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        회원저장();
 
         // when
         ExtractableResponse<Response> response = AuthSteps.로그인요청(EMAIL, "");
@@ -55,7 +58,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인요청_사용자미존재() {
         // given
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        회원저장();
 
         // when
         ExtractableResponse<Response> response = AuthSteps.로그인요청("", "");
@@ -78,6 +81,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    private void 회원저장() {
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
     }
 
     private void 로그인요청_응답값_검증(ExtractableResponse<Response> response) {
