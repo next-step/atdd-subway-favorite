@@ -1,6 +1,7 @@
 package nextstep.subway.applicaion;
 
 import java.util.List;
+import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -53,7 +54,7 @@ public class FavoriteService {
         Favorite favorite = findFavoriteById(id);
 
         if (!favorite.isSameMember(member)) {
-            throw new IllegalArgumentException();
+            throw new AuthenticationException("다른 사용자의 즐겨찾기는 삭제할 수 없습니다.");
         }
 
         favoriteRepository.deleteById(id);
