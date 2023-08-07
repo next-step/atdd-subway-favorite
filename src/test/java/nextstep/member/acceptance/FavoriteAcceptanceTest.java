@@ -130,4 +130,27 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    /**
+     * When 출발역과 도착역으로 즐겨찾기 생성 요청을 하고
+     * And 즐겨찾기 조회로 조회하고
+     * And 조회된 즐겨찾기를 삭제하고
+     * Then 삭제된 즐겨찾기를 다시 삭제하면 에러가 발생한다.
+     * */
+    @Test
+    @DisplayName("즐겨찾기 기능 통합 테스트")
+    void integrateFavorite() {
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        List<Long> favoriteIds = 즐겨찾기_조회_요청(accessToken)
+                .jsonPath().getList("id", Long.class);
+        assertThat(favoriteIds.size()).isEqualTo(1);
+
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, "/favorites/" + favoriteIds.get(0));
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        ExtractableResponse<Response> deleteNotExistResponse = 즐겨찾기_삭제_요청(accessToken, "/favorites/" + favoriteIds.get(0));
+        assertThat(deleteNotExistResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
