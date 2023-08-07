@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Favorites {
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Favorite> favorites;
 
     public Favorites() {
