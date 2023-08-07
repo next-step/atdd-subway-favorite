@@ -39,7 +39,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         String 회원_URL = 회원_생성_요청_성공(EMAIL, PASSWORD, AGE);
 
-
         // when, then
         회원_정보_수정_요청_성공(회원_URL, "new" + EMAIL, "new" + PASSWORD, AGE);
     }
