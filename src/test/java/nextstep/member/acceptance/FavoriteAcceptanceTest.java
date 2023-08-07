@@ -130,4 +130,20 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    /**
+     * When 출발역과 도착역으로 즐겨찾기 생성 요청을 하면
+     * Then 즐겨찾기 조회 시 생성된 즐겨찾기를 확인할 수 있다
+     * */
+    @Test
+    @DisplayName("즐겨찾기 기능 통합 테스트")
+    void integrateFavorite() {
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        List<Long> favoriteIds = 즐겨찾기_조회_요청(accessToken)
+                .jsonPath().getList("id", Long.class);
+        assertThat(favoriteIds.size()).isEqualTo(1);
+    }
 }
