@@ -1,6 +1,6 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.auth.token.acceptance.GithubResponses.사용자1;
+import static nextstep.auth.token.acceptance.TokenSteps.로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.상태코드_400_응답;
 import static nextstep.subway.acceptance.FavoriteSteps.상태코드_401_응답;
@@ -11,24 +11,35 @@ import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_삭제_요�
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
 import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가;
-import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_실패;
+import static nextstep.subway.acceptance.FavoriteSteps.즐겨찾기_추가_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.SectionAcceptanceTest.createLineCreateParams;
+import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
+import static nextstep.subway.utils.Constants.EMAIL;
+import static nextstep.subway.utils.Constants.PASSWORD;
+import static nextstep.subway.utils.Constants.UNKNOWN_TOKEN;
 
-import nextstep.auth.token.JwtTokenProvider;
-import nextstep.member.domain.RoleType;
+import java.util.Map;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 @DisplayName("즐겨찾기 기능 인수테스트")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private Long 강남역;
+    private Long 양재역;
 
     @BeforeEach
     void init() {
-        회원_생성_요청(사용자1.getEmail(), "password", 20);
+        super.setUp();
+        회원_생성_요청(EMAIL, PASSWORD, 20);
+
+        강남역 = 지하철역_생성_요청("강남역").jsonPath().getLong("id");
+        양재역 = 지하철역_생성_요청("양재역").jsonPath().getLong("id");
+
+        Map<String, String> lineCreateParams = createLineCreateParams(강남역, 양재역);
+        지하철_노선_생성_요청(lineCreateParams).jsonPath().getLong("id");
     }
 
     /*
@@ -39,11 +50,40 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 추가하고 조회한다")
     @Test
     void favoriteAddAndFind() {
-        즐겨찾기_추가(사용자1.getAccessToken(), "강남역", "신논현역");
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
+        즐겨찾기_추가(토큰, 강남역, 양재역);
 
-        var 즐겨찾기 = 즐겨찾기_조회(사용자1.getAccessToken());
+        var 즐겨찾기 = 즐겨찾기_조회(토큰);
 
-        즐겨찾기_목록에_즐겨찾기가_존재한다(즐겨찾기, "강남역", "신논현역");
+        즐겨찾기_목록에_즐겨찾기가_존재한다(즐겨찾기, 강남역, 양재역);
+    }
+
+    /*
+    Given and When 연결되지 않은 역을 즐겨찾기에 추가하면
+    Then           400 Bad Request를 응답받는다
+     */
+    @DisplayName("연결되지 않은 경로를 즐겨찾기에 추가해 실패한다")
+    @Test
+    void favoriteAdd_fail_unconnectedRoute() {
+        var 판교역 = 지하철역_생성_요청("판교역").jsonPath().getLong("id");
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
+        var 상태코드 = 즐겨찾기_추가_요청(토큰, 강남역, 판교역).statusCode();
+
+        상태코드_400_응답(상태코드);
+    }
+
+    /*
+    Given and When 존재하지 않는 역을 즐겨찾기에 추가하면
+    Then           400 Bad Request를 응답받는다
+     */
+    @DisplayName("존재하지 않는 역을 즐겨찾기에 추가해 실패한다")
+    @Test
+    void favoriteAdd_fail_notExistStation() {
+        var 포틀랜드역 = Long.MAX_VALUE;
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
+        var 상태코드 = 즐겨찾기_추가_요청(토큰, 강남역, 포틀랜드역).statusCode();
+
+        상태코드_400_응답(상태코드);
     }
 
     /*
@@ -53,8 +93,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("권한이 없는 유저가 즐겨찾기를 추가에 실패한다")
     @Test
-    void favoriteAddWithoutAuth() {
-        int 즐겨찾기_추가_상태코드 = 즐겨찾기_추가_실패("unknownToken", "강남역", "신논현역");
+    void favoriteAdd_fail_withoutAuth() {
+        int 즐겨찾기_추가_상태코드 = 즐겨찾기_추가_요청(UNKNOWN_TOKEN, 강남역, 양재역).statusCode();
 
         상태코드_401_응답(즐겨찾기_추가_상태코드);
     }
@@ -67,7 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("권한이 없는 유저가 즐겨찾기 조회에 실패한다")
     @Test
     void favoriteFindWithoutAuth() {
-        int 즐겨찾기_조회_상태코드 = 즐겨찾기_조회_요청("unknownToken").statusCode();
+        int 즐겨찾기_조회_상태코드 = 즐겨찾기_조회_요청(UNKNOWN_TOKEN).statusCode();
 
         상태코드_401_응답(즐겨찾기_조회_상태코드);
     }
@@ -80,13 +120,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 삭제한다")
     @Test
     void favoriteDelete() {
-        var 즐겨찾기_id = 즐겨찾기_추가(사용자1.getAccessToken(), "강남역", "신논현역");
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
+        var 강남역_양재역_즐겨찾기 = 즐겨찾기_추가(토큰, 강남역, 양재역);
 
-        즐겨찾기_삭제(사용자1.getAccessToken(), 즐겨찾기_id);
+        즐겨찾기_삭제(토큰, 강남역_양재역_즐겨찾기);
 
-        var 즐겨찾기 = 즐겨찾기_조회(사용자1.getAccessToken());
-
-        즐겨찾기_목록에_즐겨찾기가_존재하지_않는다(즐겨찾기, 즐겨찾기_id);
+        var 즐겨찾기 = 즐겨찾기_조회(토큰);
+        즐겨찾기_목록에_즐겨찾기가_존재하지_않는다(즐겨찾기, 강남역_양재역_즐겨찾기);
     }
 
     /*
@@ -98,9 +138,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("권한이 없는 유저가 즐겨찾기를 삭제한다")
     @Test
     void favoriteDeleteWithoutAuth() {
-        var 즐겨찾기_id = 즐겨찾기_추가(사용자1.getAccessToken(), "강남역", "신논현역");
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
+        회원_생성_요청("email2@email.com", "password2", 25);
+        var 토큰2 = 로그인_요청("email2@email.com", "password2");
+        var 강남역_신논현역_즐겨찾기 = 즐겨찾기_추가(토큰, 강남역, 양재역);
 
-        int 즐겨찾기_삭제_상태코드 = 즐겨찾기_삭제_요청("unknownToken", 즐겨찾기_id).statusCode();
+        int 즐겨찾기_삭제_상태코드 = 즐겨찾기_삭제_요청(토큰2, 강남역_신논현역_즐겨찾기).statusCode();
 
         상태코드_401_응답(즐겨찾기_삭제_상태코드);
     }
@@ -112,44 +155,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("없는 즐겨찾기 id에 대해 즐겨찾기를 삭제한다")
     @Test
     void favoriteDeleteWithInvalidId() {
-        int 즐겨찾기_삭제_상태코드 = 즐겨찾기_삭제_요청(사용자1.getAccessToken(), 999L).statusCode();
+        var 토큰 = 로그인_요청(EMAIL, PASSWORD);
+        int 즐겨찾기_삭제_상태코드 = 즐겨찾기_삭제_요청(토큰, Long.MAX_VALUE).statusCode();
 
         상태코드_400_응답(즐겨찾기_삭제_상태코드);
-    }
-}
-
-@Configuration
-class TestConfig {
-    @Primary
-    @Bean
-    public MockJwtTokenProvider mockJwtTokenProvider () {
-        return new MockJwtTokenProvider("testSecretKey", 1000L);
-    }
-
-    class MockJwtTokenProvider extends JwtTokenProvider {
-
-        public MockJwtTokenProvider(String secretKey, long validityInMilliseconds) {
-            super(secretKey, validityInMilliseconds);
-        }
-
-        @Override
-        public String createToken(String subject, String role) {
-            return "accessToken1";
-        }
-
-        @Override
-        public String getPrincipal(String token) {
-            return 사용자1.getEmail();
-        }
-
-        @Override
-        public String getRoles(String token) {
-            return RoleType.ROLE_MEMBER.name();
-        }
-
-        @Override
-        public boolean validateToken(String token) {
-            return token.equals("accessToken1") ? true : false;
-        }
     }
 }

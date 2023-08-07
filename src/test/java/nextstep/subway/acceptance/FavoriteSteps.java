@@ -1,6 +1,5 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -9,31 +8,24 @@ import io.restassured.response.Response;
 import java.util.List;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
-import nextstep.subway.applicaion.dto.StationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class FavoriteSteps {
 
-    public static Long 즐겨찾기_추가(String accessToken, String source, String target) {
-        ExtractableResponse<Response> response = 즐겨찾기_추가_요청(accessToken, source, target);
+    public static Long 즐겨찾기_추가(String accessToken, Long sourceId, Long targetId) {
+        ExtractableResponse<Response> response = 즐겨찾기_추가_요청(accessToken, sourceId, targetId);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         return Long.valueOf(response.header("Location").split("/")[2]);
     }
 
-    public static int 즐겨찾기_추가_실패(String accessToken, String source, String target) {
-        ExtractableResponse<Response> response = 즐겨찾기_추가_요청(accessToken, source, target);
-
-        return response.statusCode();
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, String source,
-        String target) {
-        Long sourceId = 지하철역_생성_요청(source).as(StationResponse.class).getId();
-        Long targetId = 지하철역_생성_요청(target).as(StationResponse.class).getId();
-
+    public static ExtractableResponse<Response> 즐겨찾기_추가_요청(
+        String accessToken,
+        Long sourceId,
+        Long targetId
+    ) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId, targetId);
 
         return RestAssured
@@ -84,13 +76,13 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_목록에_즐겨찾기가_존재한다(
         List<FavoriteResponse> favoriteResponses,
-        String source,
-        String target
+        Long sourceId,
+        Long targetId
     ) {
         FavoriteResponse favoriteResponse = favoriteResponses.get(0);
 
-        assertThat(favoriteResponse.getSource().getName()).isEqualTo(source);
-        assertThat(favoriteResponse.getTarget().getName()).isEqualTo(target);
+        assertThat(favoriteResponse.getSource().getId()).isEqualTo(sourceId);
+        assertThat(favoriteResponse.getTarget().getId()).isEqualTo(targetId);
     }
 
     public static void 즐겨찾기_목록에_즐겨찾기가_존재하지_않는다(
