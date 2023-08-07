@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.GithubTestUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -85,4 +86,42 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
     }
+
+    @DisplayName("내 정보를 조회시 유효하지 않은 토큰을 요청하면 실패를 응답한다.")
+    @Test
+    void getMyInfo_not_available_accessToken() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        ExtractableResponse<Response> response = 회원_정보_조회_요청("notAvailableAccessToken");
+
+        // then
+        회원_정보_조회실패됨(response);
+    }
+
+    @DisplayName("깃허브 로그인 후 내 정보를 조회한다.")
+    @Test
+    void getMyInfoGithub() {
+        // given
+        String accessToken = 깃허브_로그인_요청(GithubTestUser.USER1.getCode());
+
+        // when
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(response, GithubTestUser.USER1.getEmail(), GithubTestUser.USER1.getAge());
+    }
+
+    private void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.jsonPath().getString("id")).isNotNull();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(email);
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    private void 회원_정보_조회실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.asString()).isEqualTo("인증에 실패했습니다.");
+    }
+
 }

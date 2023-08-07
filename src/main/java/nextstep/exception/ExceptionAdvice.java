@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ControllerAdvice
 public class ExceptionAdvice {
@@ -16,6 +17,11 @@ public class ExceptionAdvice {
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity subwayExceptionHandler(final SubwayException exception) {
         return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity httpClientErrorExceptionHandler(final HttpClientErrorException exception) {
+        return ResponseEntity.status(exception.getStatusCode()).body(exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
