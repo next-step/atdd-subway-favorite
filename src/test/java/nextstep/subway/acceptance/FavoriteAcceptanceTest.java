@@ -94,7 +94,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("권한이 없는 유저가 즐겨찾기를 추가에 실패한다")
     @Test
     void favoriteAdd_fail_withoutAuth() {
-        int 즐겨찾기_추가_상태코드 = 즐겨찾기_추가_요청(UNKNOWN_TOKEN, 강남역, 양재역).statusCode();
+        var 즐겨찾기_추가_상태코드 = 즐겨찾기_추가_요청(UNKNOWN_TOKEN, 강남역, 양재역).statusCode();
 
         상태코드_401_응답(즐겨찾기_추가_상태코드);
     }
@@ -107,7 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("권한이 없는 유저가 즐겨찾기 조회에 실패한다")
     @Test
     void favoriteFindWithoutAuth() {
-        int 즐겨찾기_조회_상태코드 = 즐겨찾기_조회_요청(UNKNOWN_TOKEN).statusCode();
+        var 즐겨찾기_조회_상태코드 = 즐겨찾기_조회_요청(UNKNOWN_TOKEN).statusCode();
 
         상태코드_401_응답(즐겨찾기_조회_상태코드);
     }
@@ -156,7 +156,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void favoriteDeleteWithInvalidId() {
         var 토큰 = 로그인_요청(EMAIL, PASSWORD);
-        int 즐겨찾기_삭제_상태코드 = 즐겨찾기_삭제_요청(토큰, Long.MAX_VALUE).statusCode();
+        var 즐겨찾기_삭제_상태코드 = 즐겨찾기_삭제_요청(토큰, Long.MAX_VALUE).statusCode();
 
         상태코드_400_응답(즐겨찾기_삭제_상태코드);
     }
