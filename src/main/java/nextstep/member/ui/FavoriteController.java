@@ -3,6 +3,7 @@ package nextstep.member.ui;
 import nextstep.auth.principal.AuthenticationPrincipal;
 import nextstep.auth.principal.UserPrincipal;
 import nextstep.member.application.FavoriteService;
+import nextstep.member.application.FavoriteQueryService;
 import nextstep.member.application.dto.FavoriteRequest;
 import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.application.dto.MemberResponse;
@@ -13,15 +14,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/favorites")
 public class FavoriteController {
     private final FavoriteService favoriteService;
+    private final FavoriteQueryService favoriteQueryService;
 
-    public FavoriteController(FavoriteService favoriteService) {
+    public FavoriteController(FavoriteService favoriteService, FavoriteQueryService favoriteQueryService) {
         this.favoriteService = favoriteService;
+        this.favoriteQueryService = favoriteQueryService;
     }
 
     @PostMapping
@@ -32,7 +34,7 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findAllFavorite(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        List<FavoriteResponse> favorites = ResponseMapper.from(favoriteService.find(userPrincipal));
+        List<FavoriteResponse> favorites = ResponseMapper.from(favoriteQueryService.find(userPrincipal));
         return ResponseEntity.ok().body(favorites);
     }
 

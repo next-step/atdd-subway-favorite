@@ -11,11 +11,10 @@ import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
@@ -32,7 +31,6 @@ public class FavoriteService {
         this.pathService = pathService;
     }
 
-    @Transactional
     public Favorite create(UserPrincipal userPrincipal, FavoriteRequest favoriteRequest) {
         if (!pathService.hasPath(favoriteRequest.getSource(), favoriteRequest.getTarget())) {
             throw new FavoriteException(ErrorCode.CANNOT_ADD_NOT_EXIST_PATH);
@@ -46,12 +44,6 @@ public class FavoriteService {
         return favorite;
     }
 
-    public List<Favorite> find(UserPrincipal userPrincipal) {
-        Member member = memberService.findMemberByEmail(userPrincipal.getUsername());
-        return member.getFavorites();
-    }
-
-    @Transactional
     public void delete(UserPrincipal userPrincipal, Long id) {
         Member member = memberService.findMemberByEmail(userPrincipal.getUsername());
         member.deleteFavorite(id);
