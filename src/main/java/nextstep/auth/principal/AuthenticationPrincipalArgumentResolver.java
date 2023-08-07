@@ -1,5 +1,8 @@
 package nextstep.auth.principal;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.member.application.MemberService;
@@ -33,7 +36,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             String username = jwtTokenProvider.getPrincipal(token);
             String role = jwtTokenProvider.getRoles(token);
             return new UserPrincipal(username, role);
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException e) {
             throw new AuthenticationException();
         }
     }
