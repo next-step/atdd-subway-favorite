@@ -3,12 +3,13 @@ package nextstep.auth.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.common.CommonSteps.*;
 
 public class AuthSteps {
 
@@ -28,6 +29,12 @@ public class AuthSteps {
         return response;
     }
 
+    public static String 토큰_로그인_요청_성공(String email, String password) {
+        ExtractableResponse<Response> response = 토큰_로그인_요청(email, password);
+        checkHttpResponseCode(response, HttpStatus.OK);
+        return response.jsonPath().getString("accessToken");
+    }
+
     public static ExtractableResponse<Response> 깃허브_로그인_요청(String code) {
         Map<String, String> params = new HashMap<>();
         params.put("code", code);
@@ -41,7 +48,9 @@ public class AuthSteps {
         return response;
     }
 
-    public static void access_token_응답을_받음(ExtractableResponse<Response> response) {
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    public static String 깃허브_로그인_요청_성공(String code) {
+        ExtractableResponse<Response> response = 깃허브_로그인_요청(code);
+        checkHttpResponseCode(response, HttpStatus.OK);
+        return response.jsonPath().getString("accessToken");
     }
 }

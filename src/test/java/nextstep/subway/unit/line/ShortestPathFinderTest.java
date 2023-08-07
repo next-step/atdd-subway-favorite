@@ -1,5 +1,6 @@
 package nextstep.subway.unit.line;
 
+import nextstep.subway.domain.PathFinder;
 import nextstep.subway.domain.ShortestPathFinder;
 import nextstep.subway.domain.entity.Line;
 import nextstep.subway.domain.entity.Section;
@@ -50,7 +51,7 @@ public class ShortestPathFinderTest {
         List<Line> lineList = List.of(이호선, 삼호선, 신분당선);
 
         // when
-        ShortestPathFinder pathFinder = new ShortestPathFinder(lineList, 교대역, 강남역);
+        PathFinder pathFinder = ShortestPathFinder.of(lineList, 교대역, 강남역);
         List<Station> searchedPath = pathFinder.getPath();
         BigInteger weight = pathFinder.getWeight();
 
@@ -69,7 +70,7 @@ public class ShortestPathFinderTest {
         List<Line> lineList = List.of(이호선, 삼호선, 신분당선);
 
         // when
-        ShortestPathFinder pathFinder = new ShortestPathFinder(lineList, 강남역, 교대역);
+        PathFinder pathFinder = ShortestPathFinder.of(lineList, 강남역, 교대역);
         List<Station> searchedPath = pathFinder.getPath();
         BigInteger weight = pathFinder.getWeight();
 

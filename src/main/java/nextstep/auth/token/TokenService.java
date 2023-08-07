@@ -8,10 +8,7 @@ import nextstep.auth.token.oauth2.github.GithubClient;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 import nextstep.auth.userdetails.UserDetails;
 import nextstep.auth.userdetails.UserDetailsService;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-
-import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -21,13 +18,10 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
 
-    private final MessageSource messageSource;
-
-
     public TokenResponse createToken(String email, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         if (!userDetails.getPassword().equals(password)) {
-            throw new AuthenticationException(messageSource.getMessage("auth.0001", null, Locale.KOREA));
+            throw new AuthenticationException("auth.0001");
         }
 
         String token = jwtTokenProvider.createToken(userDetails.getUsername(), userDetails.getRole());

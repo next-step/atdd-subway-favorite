@@ -26,7 +26,6 @@ public class LineServiceMockTest {
     private LineRepository lineRepository;
     @Mock
     private StationRepository stationRepository;
-
     @Mock
     private SectionAdditionHandlerMapping sectionAdditionHandlerMapping;
 

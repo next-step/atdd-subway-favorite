@@ -7,51 +7,85 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
 import nextstep.auth.util.VirtualUser;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.auth.acceptance.AuthSteps.*;
 import static nextstep.common.CommonSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    private final VirtualUser properUser = VirtualUser.사용자1;
 
     @Autowired
     private MemberRepository memberRepository;
 
-    @DisplayName("Bearer Auth")
-    @Test
-    void bearerAuth() {
-        // given
-        유저를_가입시킨다(properUser);
+    @DisplayName("이메일과 비밀번호로 로그인 요청")
+    @Nested
+    class BearerAuthLogin {
+        @DisplayName("로그인에 성공한다.")
+        @Test
+        void success() {
+            // given
+            유저를_가입시킨다(properUser);
 
-        // when
-        ExtractableResponse<Response> response = 토큰_로그인_요청(properUser.getEmail(), properUser.getPassword());
+            // when
+            String accessToken = 토큰_로그인_요청_성공(properUser.getEmail(), properUser.getPassword());
 
-        // then
-        정상_응답을_수신받는다(response);
-        access_token_응답을_받음(response);
+            // then
+            assertThat(accessToken).isNotBlank();
+        }
+
+        @DisplayName("로그인에 실패한다.")
+        @Nested
+        class Fail {
+            @DisplayName("아이디가 존재하지 않는다")
+            @Test
+            void invalidUsername() {
+                // when
+                ExtractableResponse<Response> response = 토큰_로그인_요청("invalid_email@gmail.com", "not_used_password");
+
+                // then
+                checkHttpResponseCode(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            @DisplayName("틀린 비밀번호입니다.")
+            @Test
+            void passwordMismatch() {
+                // when
+                ExtractableResponse<Response> response = 토큰_로그인_요청(properUser.getEmail(), "wrong_password");
+
+                // then
+                checkHttpResponseCode(response, HttpStatus.UNAUTHORIZED);
+            }
+
+        }
     }
 
-    @DisplayName("서버로 리다이렉트 되면 클라이언트는 엑세스 토큰을 받는 시나리오")
-    @Test
-    void githubAuth() {
-        // when
-        ExtractableResponse<Response> response = 깃허브_로그인_요청(properUser.getCode());
 
-        // then
-        정상_응답을_수신받는다(response);
-        access_token_응답을_받음(response);
-    }
+    @DisplayName("깃허브 연동하여 로그인 요청")
+    @Nested
+    class GithubAuthLogin {
+        @DisplayName("로그인에 성공한다.")
+        @Test
+        void success() {
+            // when
+            String accessToken = 깃허브_로그인_요청_성공(properUser.getCode());
 
-    @DisplayName("서버로 리다이렉트 되면 클라이언트는 엑세스 토큰을 받는 시나리오")
-    @Test
-    void githubAuthFailed() {
-        // when
-        ExtractableResponse<Response> response = 깃허브_로그인_요청("wrong_code");
+            // then
+            assertThat(accessToken).isNotBlank();
+        }
 
-        // then
-        인증_실패_응답을_받는다(response);
+        @DisplayName("로그인에 실패한다.")
+        @Test
+        void fail() {
+            // when
+            ExtractableResponse<Response> response = 깃허브_로그인_요청("wrong_code");
+
+            // then
+            checkHttpResponseCode(response, HttpStatus.UNAUTHORIZED);
+        }
     }
 
     private void 유저를_가입시킨다(VirtualUser properUser) {

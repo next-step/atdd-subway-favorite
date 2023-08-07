@@ -1,12 +1,15 @@
 package nextstep.auth.token;
 
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
@@ -28,6 +31,9 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
+        if (!validateToken(token)) {
+            throw new AuthenticationException("auth.0001");
+        }
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
