@@ -8,8 +8,10 @@ import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
+import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import nextstep.subway.domain.SubwayMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +22,18 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
     private final MemberRepository memberRepository;
+    private final LineRepository lineRepository;
 
     public FavoriteService(
         FavoriteRepository favoriteRepository,
         StationRepository stationRepository,
-        MemberRepository memberRepository
+        MemberRepository memberRepository,
+        LineRepository lineRepository
     ) {
         this.favoriteRepository = favoriteRepository;
         this.stationRepository = stationRepository;
         this.memberRepository = memberRepository;
+        this.lineRepository = lineRepository;
     }
 
     @Transactional
@@ -36,6 +41,16 @@ public class FavoriteService {
         Member member = findMemberByEmail(email);
         Station source = findStationById(favoriteRequest.getSource());
         Station target = findStationById(favoriteRequest.getTarget());
+        SubwayMap subwayMap = new SubwayMap(lineRepository.findAll());
+
+        if (subwayMap.isSeparated(source, target)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "즐겨찾기에 등록하기 위해선 연결된 역이어야 합니다. 입력된 출발역:%s, 도착역:%s",
+                    source.getName(),
+                    target.getName()
+                ));
+        }
 
         Favorite favorite = new Favorite(member.getId(), source, target);
         return favoriteRepository.save(favorite).getId();
