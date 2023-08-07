@@ -58,7 +58,7 @@ public class FavoriteServiceTest {
         when(stationService.findById(1L)).thenReturn(교대역);
         when(stationService.findById(3L)).thenReturn(양재역);
         when(favoriteRepository.save(expect)).thenReturn(expect);
-        when(pathService.findPath(1L, 3L)).thenReturn(new PathResponse(new ArrayList<>(), 0));
+        when(pathService.hasPath(1L, 3L)).thenReturn(true);
 
         UserPrincipal userPrincipal = new UserPrincipal(EMAIL, "ROLE_MEMBER");
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 3L);
@@ -70,7 +70,7 @@ public class FavoriteServiceTest {
     @Test
     @DisplayName("즐겨찾기 생성 실패")
     void createFavoriteFail() {
-        when(pathService.findPath(1L, 3L)).thenThrow(new IllegalArgumentException());
+        when(pathService.hasPath(1L, 3L)).thenReturn(false);
 
         UserPrincipal userPrincipal = new UserPrincipal(EMAIL, "ROLE_MEMBER");
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 3L);

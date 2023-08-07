@@ -34,9 +34,7 @@ public class FavoriteService {
 
     @Transactional
     public Favorite create(UserPrincipal userPrincipal, FavoriteRequest favoriteRequest) {
-        try {
-            pathService.findPath(favoriteRequest.getSource(), favoriteRequest.getTarget());
-        } catch (Exception e) {
+        if (!pathService.hasPath(favoriteRequest.getSource(), favoriteRequest.getTarget())) {
             throw new FavoriteException(ErrorCode.CANNOT_ADD_NOT_EXIST_PATH);
         }
 

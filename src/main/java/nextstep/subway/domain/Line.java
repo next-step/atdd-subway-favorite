@@ -14,7 +14,11 @@ public class Line {
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
+    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        this.sections = new Sections();
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color) {
