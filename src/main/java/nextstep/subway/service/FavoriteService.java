@@ -1,9 +1,6 @@
 package nextstep.subway.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
-import nextstep.member.exception.MemberNotFountException;
 import nextstep.subway.domain.ShortestPathFinder;
 import nextstep.subway.domain.entity.*;
 import nextstep.subway.dto.FavoriteRequest;
@@ -21,43 +18,33 @@ import java.util.stream.Collectors;
 public class FavoriteService {
 
     private final LineRepository lineRepository;
-    private final MemberRepository memberRepository;
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
 
     @Transactional
-    public Long createFavorite(FavoriteRequest request, String username) {
+    public Long createFavorite(FavoriteRequest request, Long memberId) {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
 
-        Member member = getMember(username);
-
         ShortestPathFinder.checkReachable(lineRepository.findAll(), sourceStation, targetStation);
 
-        Favorite favorite = new Favorite(member, sourceStation, targetStation);
+        Favorite favorite = new Favorite(memberId, sourceStation, targetStation);
         favoriteRepository.save(favorite);
 
         return favorite.getId();
     }
 
-    public List<FavoriteResponse> getFavorites(String username) {
-        Member member = getMember(username);
+    public List<FavoriteResponse> getFavorites(Long memberId) {
 
-        List<Favorite> favoriteList = favoriteRepository.findAllByMember(member);
+        List<Favorite> favoriteList = favoriteRepository.findAllByMemberId(memberId);
         return favoriteList.stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteFavorite(long id, String username) {
-        Member member = getMember(username);
-        favoriteRepository.deleteFavoriteByIdAndMember(id, member);
-    }
-
-    private Member getMember(String username) {
-        return memberRepository.findByEmail(username)
-                .orElseThrow(() -> new MemberNotFountException("member.0001"));
+    public void deleteFavorite(long id, Long memberId) {
+        favoriteRepository.deleteFavoriteByIdAndMemberId(id, memberId);
     }
 
     private Station getStation(Long stationId) {

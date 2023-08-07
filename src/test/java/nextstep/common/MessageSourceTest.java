@@ -45,9 +45,9 @@ public class MessageSourceTest {
     @Test
     void getMessageWithData() {
         // when
-        String message = messageSource.getMessage("test.data", new Object[]{"데이터"}, Locale.KOREA);
+        String message = messageSource.getMessage("test.data", new Object[]{"1"}, Locale.KOREA);
 
         // then
-        assertThat(message).isEqualTo("테스트 데이터");
+        assertThat(message).isEqualTo("테스트 데이터 1");
     }
 }

@@ -3,17 +3,18 @@ package nextstep.auth.principal;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.Locale;
-
 @RequiredArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -31,6 +32,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String username = jwtTokenProvider.getPrincipal(token);
         String role = jwtTokenProvider.getRoles(token);
 
-        return new UserPrincipal(username, role);
+        Member member = memberRepository.findByEmail(username)
+                .orElseThrow(() -> new IllegalArgumentException("member.0001"));
+
+        return member.getId();
     }
 }
