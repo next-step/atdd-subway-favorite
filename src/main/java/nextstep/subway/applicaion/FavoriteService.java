@@ -68,11 +68,20 @@ public class FavoriteService {
         Member member = findMemberByEmail(email);
         Favorite favorite = findFavoriteById(id);
 
-        if (!favorite.isSameMember(member)) {
-            throw new AuthenticationException("다른 사용자의 즐겨찾기는 삭제할 수 없습니다.");
+        if (isDifferentMember(member, favorite)) {
+            throw new AuthenticationException(
+                String.format(
+                    "다른 사용자의 즐겨찾기는 삭제할 수 없습니다. 즐겨찾기 주인 Id:%s, 요청자Id:%s",
+                    member.getId(),
+                    favorite.getMemberId()
+                ));
         }
 
         favoriteRepository.deleteById(id);
+    }
+
+    private boolean isDifferentMember(Member member, Favorite favorite) {
+        return favorite.getId().equals(member.getId());
     }
 
     private Station findStationById(Long id) {

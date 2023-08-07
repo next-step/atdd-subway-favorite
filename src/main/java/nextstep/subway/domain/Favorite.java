@@ -34,14 +34,6 @@ public class Favorite {
         this.target = target;
     }
 
-    public boolean isSameMember(Member member) {
-        return this.isSameMember(member.getId());
-    }
-
-    public boolean isSameMember(Long memberId) {
-        return this.memberId.equals(memberId);
-    }
-
     public Long getId() {
         return id;
     }
