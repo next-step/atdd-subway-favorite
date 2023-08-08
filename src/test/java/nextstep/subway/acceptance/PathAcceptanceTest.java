@@ -71,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 최단_경로_조회(source, target);
 
-        PathResponse path = response.jsonPath().getObject("", PathResponse.class);
+        PathResponse path = response.as(PathResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
