@@ -13,3 +13,9 @@
  - AuthAcceptanceTest의 githubAuth 테스트를 성공시키기
    - GithubClient의 요청이 Github이 아닌 GithubTestController에서 처리하게 하기
    - code에 해당하는 사용자 정보를 이용하여 AccessToken을 응답받기
+
+#### step2
+ - 즐겨찾기 기능 구현
+   - 즐겨찾기 생성
+   - 즐겨찾기 조회
+   - 즐겨찾기 삭제
