@@ -39,4 +39,8 @@ public enum GithubResponses {
         }
         return new GithubProfileResponse();
     }
+
+    public String getCode() {
+        return code;
+    }
 }
