@@ -20,23 +20,7 @@ public class GithubTestController {
         String code = githubAccessTokenRequest.getCode();
         GithubResponses githubResponse = getGithubResponseWithCode(code);
         GithubAccessTokenResponse result = new GithubAccessTokenResponse();
-
-        switch (githubResponse) {
-            case 사용자1:
-                result.setAccessToken(사용자1.getAccessToken());
-                break;
-            case 사용자2:
-                result.setAccessToken(사용자2.getAccessToken());
-                break;
-            case 사용자3:
-                result.setAccessToken(사용자3.getAccessToken());
-                break;
-            case 사용자4:
-                result.setAccessToken(사용자4.getAccessToken());
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + githubResponse);
-        }
+        result.setAccessToken(githubResponse.getAccessToken());
 
         return ResponseEntity.ok().body(result);
     }
@@ -45,26 +29,8 @@ public class GithubTestController {
     public ResponseEntity<GithubProfileResponse> user(@RequestHeader("Authorization") String token) {
         String tokenValue = token.split(" ")[1];
         GithubResponses githubResponse = getGithubResponseWithToken(tokenValue);
-        GithubProfileResponse result = new GithubProfileResponse();
-        final int testAge = 10;
+        GithubProfileResponse result = new GithubProfileResponse(githubResponse.getEmail(), 10);
 
-        switch (githubResponse) {
-            case 사용자1:
-                result.setEmail(사용자1.getEmail());
-                break;
-            case 사용자2:
-                result.setEmail(사용자2.getEmail());
-                break;
-            case 사용자3:
-                result.setEmail(사용자3.getEmail());
-                break;
-            case 사용자4:
-                result.setEmail(사용자4.getEmail());
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + githubResponse);
-        }
-        result.setAge(testAge);
         return ResponseEntity.ok().body(result);
     }
 
