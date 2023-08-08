@@ -1,5 +1,6 @@
 package nextstep.auth.token.acceptance;
 
+import static nextstep.auth.token.acceptance.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -33,7 +34,7 @@ public class TokenSteps {
 
     public static String 가짜_깃헙_토큰_요청() {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
-            "code",
+            사용자1.getCode(),
             "test_id",
             "test_secret"
         );

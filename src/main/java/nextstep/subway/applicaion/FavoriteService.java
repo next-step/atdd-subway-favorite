@@ -81,7 +81,7 @@ public class FavoriteService {
     }
 
     private boolean isDifferentMember(Member member, Favorite favorite) {
-        return favorite.getId().equals(member.getId());
+        return !favorite.getId().equals(member.getId());
     }
 
     private Station findStationById(Long id) {

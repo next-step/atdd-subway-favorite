@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
@@ -13,6 +14,8 @@ import nextstep.subway.applicaion.dto.FavoriteResponse;
 import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Favorite;
 import nextstep.subway.domain.FavoriteRepository;
+import nextstep.subway.domain.Line;
+import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @DisplayName("즐겨찾기 서비스 테스트")
 @SpringBootTest
 public class FavoriteServiceTest {
+
     @Autowired
     private FavoriteRepository favoriteRepository;
     @Autowired
@@ -32,18 +36,25 @@ public class FavoriteServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private LineRepository lineRepository;
+    @Autowired
     private FavoriteService favoriteService;
-
 
     @DisplayName("즐겨찾기 생성")
     @Test
     @Transactional
     void createFavorite() {
-        Long sourceId = stationRepository.save(new Station("강남역")).getId();
-        Long targetId = stationRepository.save(new Station("신논현역")).getId();
+        Station source = stationRepository.save(new Station("강남역"));
+        Station target = stationRepository.save(new Station("신논현역"));
+        Line line = new Line("1호선", "bg-red-600");
+        line.addSection(source, target, 10);
+        lineRepository.saveAndFlush(line);
         memberRepository.save(new Member(사용자1.getEmail(), "password", 20));
 
-        Long favoriteId = favoriteService.createFavorite(사용자1.getEmail(), new FavoriteRequest(sourceId, targetId));
+        Long favoriteId = favoriteService.createFavorite(
+            사용자1.getEmail(),
+            new FavoriteRequest(source.getId(), target.getId())
+        );
 
         assertThat(favoriteRepository.findById(favoriteId)).isNotNull();
     }
@@ -116,7 +127,7 @@ public class FavoriteServiceTest {
         Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
 
         assertThatThrownBy(() -> favoriteService.delete(targetMember.getEmail(), favorite.getId()))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(AuthenticationException.class);
 
     }
 

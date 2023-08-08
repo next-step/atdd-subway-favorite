@@ -8,6 +8,10 @@ import static nextstep.auth.token.acceptance.TokenSteps.가짜_깃헙_프로필_
 import static nextstep.auth.token.acceptance.TokenSteps.로그인_요청;
 import static nextstep.auth.token.acceptance.TokenSteps.토큰_검증_통과;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.utils.Constants.ACCESS_TOKEN;
+import static nextstep.subway.utils.Constants.AGE;
+import static nextstep.subway.utils.Constants.EMAIL;
+import static nextstep.subway.utils.Constants.PASSWORD;
 
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.utils.AcceptanceTest;
@@ -16,11 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class TokenAcceptanceTest extends AcceptanceTest {
-
-    private static final String EMAIL = "kskyung0624@gmail.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
-    private static final String ACCESS_TOKEN = "accessToken";
 
     @Autowired
     private final JwtTokenProvider jwtTokenProvider;
