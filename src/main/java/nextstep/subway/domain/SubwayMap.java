@@ -32,7 +32,7 @@ public class SubwayMap {
             .flatMap(it -> it.getStations().stream())
             .distinct()
             .collect(Collectors.toList())
-            .forEach(it -> graph.addVertex(it));
+            .forEach(graph::addVertex);
 
         // 지하철 역의 연결 정보(간선)을 등록
         lines.stream()
@@ -58,7 +58,7 @@ public class SubwayMap {
         GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
 
         return result.getEdgeList().stream()
-            .map(it -> it.getSection())
+            .map(SectionEdge::getSection)
             .collect(Collectors.toList());
     }
 }
