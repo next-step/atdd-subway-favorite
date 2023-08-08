@@ -8,6 +8,10 @@ import static nextstep.auth.token.acceptance.TokenSteps.가짜_깃헙_프로필_
 import static nextstep.auth.token.acceptance.TokenSteps.로그인_요청;
 import static nextstep.auth.token.acceptance.TokenSteps.토큰_검증_통과;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.utils.Constants.ACCESS_TOKEN;
+import static nextstep.subway.utils.Constants.AGE;
+import static nextstep.subway.utils.Constants.EMAIL;
+import static nextstep.subway.utils.Constants.PASSWORD;
 
 import nextstep.auth.token.JwtTokenProvider;
 import nextstep.utils.AcceptanceTest;
@@ -16,11 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class TokenAcceptanceTest extends AcceptanceTest {
-
-    private static final String EMAIL = "kskyung0624@gmail.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
-    private static final String ACCESS_TOKEN = "accessToken";
 
     @Autowired
     private final JwtTokenProvider jwtTokenProvider;
@@ -60,14 +59,10 @@ class TokenAcceptanceTest extends AcceptanceTest {
     Given When fake github profile을 요청하면
     Then fake github profile을 반환한다
      */
-//    @Test
-//    void fakeGithubProfile() {
-//        /*TODO: GithubProfile에 getUserName이 있어서 Jackson이 deserialize할 때 userName을 담아 준다.
-//            이걸 수정하면 테스트에 의존한 프로덕션 코드가 되는데 이 부분은 어떻게 해결할 수 있을까요?
-//            */
-//
-//        var 가짜_프로필 = 가짜_깃헙_프로필_요청(ACCESS_TOKEN);
-//
-//        가짜_깃헙_프로필_검증(EMAIL, AGE, 가짜_프로필);
-//    }
+    @Test
+    void fakeGithubProfile() {
+        var 가짜_프로필 = 가짜_깃헙_프로필_요청(ACCESS_TOKEN);
+
+        가짜_깃헙_프로필_검증(EMAIL, AGE, 가짜_프로필);
+    }
 }
