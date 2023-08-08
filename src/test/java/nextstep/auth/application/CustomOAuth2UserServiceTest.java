@@ -1,7 +1,5 @@
 package nextstep.auth.application;
 
-import nextstep.auth.token.oauth2.OAuth2UserRequest;
-import nextstep.auth.token.oauth2.OAuth2UserService;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 import nextstep.member.application.CustomOAuth2UserService;
 import nextstep.member.domain.Member;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 
 import java.util.Optional;
 

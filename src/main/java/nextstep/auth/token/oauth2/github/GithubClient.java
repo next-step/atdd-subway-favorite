@@ -36,14 +36,10 @@ public class GithubClient {
             githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        String accessToken = restTemplate
+        return restTemplate
             .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
             .getBody()
             .getAccessToken();
-        if (accessToken == null) {
-            throw new RuntimeException();
-        }
-        return accessToken;
     }
 
     public GithubProfileResponse getGithubProfileFromGithub(String accessToken) {

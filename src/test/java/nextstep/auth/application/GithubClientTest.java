@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,7 +35,7 @@ public class GithubClientTest {
     void getAccessTokenFromGithub_not_available_code() {
         // when then
         assertThatThrownBy(() -> githubClient.getAccessTokenFromGithub("code"))
-                .isExactlyInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(HttpClientErrorException.BadRequest.class);
     }
 
     @DisplayName("엑세스 토큰으로 깃허브 프로필 요청 시 해당 회원에 프로필 정보를 리턴한다.")

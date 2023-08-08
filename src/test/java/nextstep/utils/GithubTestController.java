@@ -14,13 +14,10 @@ public class GithubTestController {
     public ResponseEntity<GithubAccessTokenResponse> accessToken(@RequestBody GithubAccessTokenRequest githubAccessTokenRequest) {
         GithubTestUser githubTestUser = GithubTestUser.findUserByCode(githubAccessTokenRequest.getCode());
         if (githubTestUser == null) {
-            return ResponseEntity.ok().body(new GithubAccessTokenResponse());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).build();
         }
 
-        GithubAccessTokenResponse githubAccessTokenResponse = new GithubAccessTokenResponse(githubTestUser.getAccessToken(),
-                "tokenType",
-                "scope",
-                "bearer");
+        GithubAccessTokenResponse githubAccessTokenResponse = new GithubAccessTokenResponse(githubTestUser.getAccessToken());
         return ResponseEntity.ok().body(githubAccessTokenResponse);
     }
 
