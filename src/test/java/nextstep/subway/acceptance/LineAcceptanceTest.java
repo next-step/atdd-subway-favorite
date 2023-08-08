@@ -131,7 +131,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         LineResponse line = response.as(LineResponse.class);
 
-
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(line.getName()).isEqualTo("1호선");
