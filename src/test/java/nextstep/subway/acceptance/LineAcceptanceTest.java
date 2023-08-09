@@ -129,8 +129,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
 
-        LineResponse line = response.jsonPath().getObject("", LineResponse.class);
-
+        LineResponse line = response.as(LineResponse.class);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

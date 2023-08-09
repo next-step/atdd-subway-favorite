@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.MemberRequest;
 import org.apache.http.Header;
 import org.springframework.http.MediaType;
 
@@ -13,28 +14,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-        params.put("age", age + "");
+        MemberRequest member = new MemberRequest(email,password,age);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(member)
                 .when().post("/members")
                 .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
+        MemberRequest member = new MemberRequest(email,password,null);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(member)
                 .when().post("/login/token")
                 .then().log().all().extract();
     }

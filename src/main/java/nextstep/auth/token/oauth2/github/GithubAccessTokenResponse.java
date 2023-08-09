@@ -12,7 +12,10 @@ public class GithubAccessTokenResponse {
     private String bearer;
 
     public GithubAccessTokenResponse() {
+    }
 
+    public GithubAccessTokenResponse(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public GithubAccessTokenResponse(String accessToken,

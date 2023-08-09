@@ -83,7 +83,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         var response = 내_정보_조회_요청(accessToken);
 
-        MemberResponse member = response.jsonPath().getObject("", MemberResponse.class);
+        MemberResponse member = response.as(MemberResponse.class);
 
         assertThat(member.getEmail()).isEqualTo(EMAIL);
         assertThat(member.getAge()).isEqualTo(AGE);

@@ -24,7 +24,6 @@ public class TokenController {
     @PostMapping("/login/github")
     public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody GithubTokenRequest request) {
         TokenResponse response = tokenService.createTokenFromGithub(request.getCode());
-
         return ResponseEntity.ok(response);
     }
 }
