@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class LineService {
 
-    private final StationService stationService;
+    private final StationRepository stationRepository;
     private final LineRepository lineRepository;
 
-    public LineService(StationService stationService, LineRepository lineRepository) {
-        this.stationService = stationService;
+    public LineService(StationRepository stationRepository, LineRepository lineRepository) {
+        this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
     }
 
@@ -37,8 +37,8 @@ public class LineService {
 
         Line line = new Line(lineCreateRequest.getName(),
                 lineCreateRequest.getColor(),
-                stationService.findStation(lineCreateRequest.getUpStationId()),
-                stationService.findStation(lineCreateRequest.getDownStationId()),
+                findStation(lineCreateRequest.getUpStationId()),
+                findStation(lineCreateRequest.getDownStationId()),
                 lineCreateRequest.getDistance()
         );
 
@@ -66,8 +66,8 @@ public class LineService {
     }
 
     public ShortPathResponse findShortPath(Long startStationId, Long endStationId) {
-        Station startStation = stationService.findStation(startStationId);
-        Station endStation = stationService.findStation(endStationId);
+        Station startStation = findStation(startStationId);
+        Station endStation = findStation(endStationId);
 
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         ShortPath shortPath = pathFinder.findShortPath(startStation, endStation);
@@ -81,8 +81,8 @@ public class LineService {
 
     @Transactional
     public void addSection(Long lineId, SectionAddRequest sectionAddRequest) {
-        Station upStation = stationService.findStation(sectionAddRequest.getUpStationId());
-        Station downStation = stationService.findStation(sectionAddRequest.getDownStationId());
+        Station upStation = findStation(sectionAddRequest.getUpStationId());
+        Station downStation = findStation(sectionAddRequest.getDownStationId());
 
         lineRepository.findById(lineId)
                 .orElseThrow(LineNotFoundException::new)
@@ -91,11 +91,15 @@ public class LineService {
 
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
-        Station station = stationService.findStation(stationId);
+        Station station = findStation(stationId);
 
         lineRepository.findById(lineId)
                 .orElseThrow(LineNotFoundException::new)
                 .removeSection(station);
+    }
+
+    private Station findStation(Long stationId) {
+        return stationRepository.findById(stationId).orElseThrow(StationNotFoundException::new);
     }
 
 }

@@ -112,7 +112,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 깃허브로그인요청_코드미존재_응답값_검증(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }

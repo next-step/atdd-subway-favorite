@@ -22,13 +22,17 @@ public class PathFinder {
     }
 
     public ShortPath findShortPath(Station startStation, Station endStation) {
+        validateStation(startStation, endStation);
+        return getShortPath(startStation, endStation);
+    }
+
+    public void validateStation(Station startStation, Station endStation) {
         if (isSameStation(startStation, endStation)) {
             throw new ShortPathSameStationException();
         }
         if (isNotExistStation(startStation, endStation)) {
             throw new StationNotExistException();
         }
-        return getShortPath(startStation, endStation);
     }
 
     private boolean isSameStation(Station startStation, Station endStation) {
@@ -36,8 +40,7 @@ public class PathFinder {
     }
 
     private boolean isNotExistStation(Station startStation, Station endStation) {
-        List<Station> stations = getStations();
-        return !stations.contains(startStation) || !stations.contains(endStation);
+        return !getStations().containsAll(List.of(startStation, endStation));
     }
 
     private ShortPath getShortPath(Station startStation, Station endStation) {

@@ -18,25 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static nextstep.line.LineTestField.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
 public class LineServiceTest {
-
-    private static final String GANGNAM_STATION_NAME = "강남역";
-    private static final String SEOLLEUNG_STATION_NAME = "선릉역";
-    private static final String SUWON_STATION_NAME = "수원역";
-    private static final String NOWON_STATION_NAME = "노원역";
-    private static final String DEARIM_STATION_NAME = "대림역";
-
-    private static final String SHINBUNDANG_LINE_NAME = "신분당선";
-    private static final String SHINBUNDANG_LINE_COLOR = "bg-red-600";
-    private static final String TWO_LINE_NAME = "2호선";
-    private static final String TWO_LINE_COLOR = "bg-green-600";
-    private static final String THREE_LINE_NAME = "3호선";
-    private static final String TRHEE_LINE_COLOR = "bg-blue-600";
 
     private Station GANGNAM_STATION;
     private Station SEOLLEUNG_STATION;
@@ -253,8 +241,6 @@ public class LineServiceTest {
         }
 
     }
-
-
 
     private Station saveStation(String stationName) {
         return stationRepository.save(new Station(stationName));

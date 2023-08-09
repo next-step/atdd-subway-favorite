@@ -5,7 +5,6 @@ import nextstep.line.application.request.SectionAddRequest;
 import nextstep.line.application.response.ShortPathResponse;
 import nextstep.line.domain.Line;
 import nextstep.line.domain.LineRepository;
-import nextstep.station.application.StationService;
 import nextstep.station.domain.Station;
 import nextstep.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static nextstep.line.LineTestField.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -31,20 +31,11 @@ public class LineServiceMockTest {
     private static final Station NOWON_STATION = new Station("노원역");
     private static final Station DEARIM_STATION = new Station("대림역");
 
-    private static final String SHINBUNDANG_LINE_NAME = "신분당선";
-    private static final String SHINBUNDANG_LINE_COLOR = "bg-red-600";
-    private static final String TWO_LINE_NAME = "2호선";
-    private static final String TWO_LINE_COLOR = "bg-green-600";
-    private static final String THREE_LINE_NAME = "3호선";
-    private static final String TRHEE_LINE_COLOR = "bg-blue-600";
-    private static final String FOUR_LINE_NAME = "4호선";
-    private static final String FOUR_LINE_COLOR = "bg-black-600";
-
     @Mock
     private LineRepository lineRepository;
 
     @Mock
-    private StationService stationService;
+    private StationRepository stationRepository;
 
     @InjectMocks
     private LineService lineService;
@@ -53,8 +44,8 @@ public class LineServiceMockTest {
     @Test
     void addSection() {
         // given
-        when(stationService.findStation(2L)).thenReturn(SEOLLEUNG_STATION);
-        when(stationService.findStation(3L)).thenReturn(SUWON_STATION);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(SUWON_STATION));
 
         when(lineRepository.findById(1L)).thenReturn(Optional.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 10)
@@ -74,8 +65,8 @@ public class LineServiceMockTest {
     @Test
     void section_station_all_exist_add_fail() {
         // given
-        when(stationService.findStation(1L)).thenReturn(GANGNAM_STATION);
-        when(stationService.findStation(2L)).thenReturn(SEOLLEUNG_STATION);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(GANGNAM_STATION));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
 
         when(lineRepository.findById(1L)).thenReturn(Optional.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 10)
@@ -91,8 +82,8 @@ public class LineServiceMockTest {
     @Test
     void section_station_all_not_exist_add_fail() {
         // given
-        when(stationService.findStation(1L)).thenReturn(SUWON_STATION);
-        when(stationService.findStation(2L)).thenReturn(NOWON_STATION);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(SUWON_STATION));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(NOWON_STATION));
 
         when(lineRepository.findById(1L)).thenReturn(Optional.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 10)
@@ -108,9 +99,9 @@ public class LineServiceMockTest {
     @Test
     void section_distance_over_add_fail() {
         // given
-        when(stationService.findStation(2L)).thenReturn(SEOLLEUNG_STATION);
-        when(stationService.findStation(3L)).thenReturn(SUWON_STATION);
-        when(stationService.findStation(4L)).thenReturn(NOWON_STATION);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(SUWON_STATION));
+        when(stationRepository.findById(4L)).thenReturn(Optional.of(NOWON_STATION));
 
         when(lineRepository.findById(1L)).thenReturn(Optional.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 10)
@@ -128,8 +119,8 @@ public class LineServiceMockTest {
     @Test
     void removeSection() {
         // given
-        when(stationService.findStation(2L)).thenReturn(SEOLLEUNG_STATION);
-        when(stationService.findStation(3L)).thenReturn(SUWON_STATION);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(SUWON_STATION));
 
         when(lineRepository.findById(1L)).thenReturn(Optional.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 10)
@@ -153,7 +144,7 @@ public class LineServiceMockTest {
     @Test
     void min_section_removeSection_fail() {
         // given
-        when(stationService.findStation(2L)).thenReturn(SEOLLEUNG_STATION);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
 
         when(lineRepository.findById(1L)).thenReturn(Optional.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 10)
@@ -169,9 +160,9 @@ public class LineServiceMockTest {
     @Test
     void not_exist_station_removeSection_fail() {
         // given
-        when(stationService.findStation(2L)).thenReturn(SEOLLEUNG_STATION);
-        when(stationService.findStation(3L)).thenReturn(SUWON_STATION);
-        when(stationService.findStation(4L)).thenReturn(NOWON_STATION);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(SUWON_STATION));
+        when(stationRepository.findById(4L)).thenReturn(Optional.of(NOWON_STATION));
 
         when(lineRepository.findById(1L)).thenReturn(Optional.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 10)
@@ -189,8 +180,8 @@ public class LineServiceMockTest {
     @Test
     void gangname_move_suwon() {
         // given
-        when(stationService.findStation(1L)).thenReturn(GANGNAM_STATION);
-        when(stationService.findStation(2L)).thenReturn(SUWON_STATION);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(GANGNAM_STATION));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SUWON_STATION));
 
         when(lineRepository.findAll()).thenReturn(List.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 2),
@@ -214,8 +205,8 @@ public class LineServiceMockTest {
     @Test
     void seolleung_move_suwon() {
         // given when
-        when(stationService.findStation(1L)).thenReturn(SEOLLEUNG_STATION);
-        when(stationService.findStation(2L)).thenReturn(SUWON_STATION);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(SUWON_STATION));
 
         when(lineRepository.findAll()).thenReturn(List.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 2),
@@ -239,8 +230,8 @@ public class LineServiceMockTest {
     @Test
     void not_exist_station_in_line() {
         // given
-        when(stationService.findStation(1L)).thenReturn(SEOLLEUNG_STATION);
-        when(stationService.findStation(2L)).thenReturn(DEARIM_STATION);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(SEOLLEUNG_STATION));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(DEARIM_STATION));
 
         when(lineRepository.findAll()).thenReturn(List.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 2),
@@ -259,7 +250,7 @@ public class LineServiceMockTest {
     @Test
     void shortpath_station_same() {
         // given
-        when(stationService.findStation(1L)).thenReturn(DEARIM_STATION);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(DEARIM_STATION));
 
         when(lineRepository.findAll()).thenReturn(List.of(
                 new Line(SHINBUNDANG_LINE_NAME, SHINBUNDANG_LINE_COLOR, GANGNAM_STATION, SEOLLEUNG_STATION, 2),
