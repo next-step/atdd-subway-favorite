@@ -38,4 +38,5 @@ public class MemberService {
                 .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
     }
+
 }

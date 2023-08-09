@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static nextstep.line.LineTestField.SHINBUNDANG_LINE_COLOR;
+import static nextstep.line.LineTestField.SHINBUNDANG_LINE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -18,9 +20,6 @@ class LineTest {
     private static final Station SUWON_STATION = new Station("수원역");
     private static final Station NOWON_STATION = new Station("노원역");
     private static final Station DEARIM_STATION = new Station("대림역");
-
-    private static final String SHINBUNDANG_LINE_NAME = "신분당선";
-    private static final String SHINBUNDANG_LINE_COLOR = "bg-red-600";
 
     @DisplayName("지하철 노선에 구간을 추가하면 노선 역이름 조회시 추가되있어야 한다.")
     @Test

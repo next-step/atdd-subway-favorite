@@ -26,10 +26,6 @@ public class StationService {
         return StationResponse.of(station);
     }
 
-    public Station findStation(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(StationNotFoundException::new);
-    }
-
     public List<StationResponse> findAllStations() {
         return stationRepository.findAll().stream()
                 .map(StationResponse::of)

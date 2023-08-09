@@ -8,14 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.member.MemberTestField.*;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
-
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final int AGE = 20;
 
     @DisplayName("회원가입을 한다.")
     @Test

@@ -1,7 +1,9 @@
-package nextstep.line.domain;
+package nextstep.favorite.domain;
 
 import nextstep.exception.ShortPathSameStationException;
 import nextstep.exception.StationNotExistException;
+import nextstep.line.domain.Line;
+import nextstep.line.domain.PathFinder;
 import nextstep.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +15,7 @@ import static nextstep.line.LineTestField.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PathFinderTest {
+public class FavoriteTest {
 
     private static final Station GANGNAM_STATION = new Station("강남역");
     private static final Station SEOLLEUNG_STATION = new Station("선릉역");
@@ -35,42 +37,31 @@ class PathFinderTest {
         pathFinder = new PathFinder(List.of(shinbundangLine, twoLine, threeLine));
     }
 
-    @DisplayName("강남역에서 수원역으로 가는 경로 2가지중 선릉역을 경유한 최단거리 경로를 리턴해야한다.")
+    @DisplayName("경로가 정상일경우 즐겨찾기가 생성된다.")
     @Test
-    void gangname_move_suwon() {
-        // given when
-        ShortPath shortPath = pathFinder.findShortPath(GANGNAM_STATION, SUWON_STATION);
+    void createFavorite() {
+        // when
+        Favorite favorite = new Favorite(1L, GANGNAM_STATION, NOWON_STATION, pathFinder);
 
         // then
-        assertThat(shortPath.getStations()).hasSize(3).containsExactly(GANGNAM_STATION, SEOLLEUNG_STATION, SUWON_STATION);
-        assertThat(shortPath.getDistance()).isEqualTo(5);
+        assertThat(favorite.getSource()).isEqualTo(GANGNAM_STATION);
+        assertThat(favorite.getTarget()).isEqualTo(NOWON_STATION);
     }
 
-    @DisplayName("선릉역에서 수원역으로 가는 경로 1가지를 리턴해야한다.")
+    @DisplayName("경로에 포함되지 않은 역을 즐겨찾기로 등록할 경우 에러를 던진다")
     @Test
-    void seolleung_move_suwon() {
-        // given when
-        ShortPath shortPath = pathFinder.findShortPath(SEOLLEUNG_STATION, SUWON_STATION);
-
-        // then
-        assertThat(shortPath.getStations()).hasSize(2).containsExactly(SEOLLEUNG_STATION, SUWON_STATION);
-        assertThat(shortPath.getDistance()).isEqualTo(3);
-    }
-
-    @DisplayName("최단경로 조회 역중 노선에 포함되지 않은 역이 존재할 경우 에러를 던진다.")
-    @Test
-    void not_exist_station_in_line() {
-        // given when then
-        assertThatThrownBy(() -> pathFinder.findShortPath(SEOLLEUNG_STATION, DEARIM_STATION))
+    void createFavorite_fail_not_exist_station_in_line() {
+        // when then
+        assertThatThrownBy(() -> new Favorite(1L, GANGNAM_STATION, DEARIM_STATION, pathFinder))
                 .isExactlyInstanceOf(StationNotExistException.class)
                 .hasMessage("노선에 역이 존재하지 않습니다.");
     }
 
-    @DisplayName("최단경로 조회 시작역, 종착역이 동일할 경우 에러를 던진다.")
+    @DisplayName("동일한 역을 즐겨찾기로 등록할 경우 에러를 던진다")
     @Test
-    void shortpath_station_same() {
-        // given when then
-        assertThatThrownBy(() -> pathFinder.findShortPath(DEARIM_STATION, DEARIM_STATION))
+    void createFavorite_fail_source_target_same() {
+        // when then
+        assertThatThrownBy(() -> new Favorite(1L, GANGNAM_STATION, GANGNAM_STATION, pathFinder))
                 .isExactlyInstanceOf(ShortPathSameStationException.class)
                 .hasMessage("최단경로 시작역, 종착역이 동일할 수 없습니다.");
     }
