@@ -37,7 +37,7 @@ public class PathService {
         Station endStation = stationService.getStations(target);
         Path shortPaths = getShortPaths(startStation, endStation);
 
-        List<StationResponse> stationResponses = shortPaths.getStations().stream().map(StationResponse::new).toList();
+        List<StationResponse> stationResponses = shortPaths.getStations().stream().map(StationResponse::of).toList();
         return new PathResponse(stationResponses, shortPaths.getDistance());
     }
 
