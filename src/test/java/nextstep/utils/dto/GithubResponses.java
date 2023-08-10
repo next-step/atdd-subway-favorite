@@ -25,7 +25,8 @@ public enum GithubResponses {
                 .findFirst().orElseThrow();
     }
 
-    public static String findEmailByAccessToken(String token) {
+    public static String findEmailByAccessToken(String accesstoken) {
+        String token = accesstoken.split(" ")[1];
         return Arrays.stream(GithubResponses.values())
                 .filter(githubResponses -> githubResponses.accessToken.equals(token))
                 .map(githubResponses -> githubResponses.email)
