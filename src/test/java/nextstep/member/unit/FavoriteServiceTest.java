@@ -1,6 +1,5 @@
 package nextstep.member.unit;
 
-import nextstep.auth.AuthenticationException;
 import nextstep.auth.principal.UserPrincipal;
 import nextstep.member.application.FavoriteService;
 import nextstep.member.application.MemberService;
@@ -12,7 +11,6 @@ import nextstep.member.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
 import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.StationService;
-import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,10 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,10 +44,12 @@ public class FavoriteServiceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
+    public static final Member member = new Member(EMAIL, PASSWORD, AGE);
+
     @Test
     @DisplayName("즐겨찾기 생성")
     void createFavorite() {
-        Favorite expect = new Favorite(교대역, 양재역);
+        Favorite expect = new Favorite(member, 교대역, 양재역);
 
         when(memberService.findMemberByEmail(EMAIL)).thenReturn(new Member(EMAIL, PASSWORD, AGE));
         when(stationService.findById(1L)).thenReturn(교대역);

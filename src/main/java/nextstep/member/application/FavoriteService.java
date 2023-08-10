@@ -39,7 +39,7 @@ public class FavoriteService {
         Member member = memberService.findMemberByEmail(userPrincipal.getUsername());
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Favorite favorite = favoriteRepository.save(new Favorite(source, target));
+        Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
         member.addFavorite(favorite);
         return favorite;
     }

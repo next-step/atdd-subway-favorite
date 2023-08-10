@@ -88,4 +88,21 @@ public class Member {
     public void deleteFavorite(Long id) {
         this.favorites.remove(id);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member member = (Member) o;
+        return Objects.equals(email, member.email) && Objects.equals(password, member.password) && Objects.equals(age, member.age) && Objects.equals(role, member.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password, age, role);
+    }
 }

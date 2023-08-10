@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Favorites {
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Favorite> favorites;
 
     public Favorites() {
@@ -30,7 +30,7 @@ public class Favorites {
 
     public void remove(Long id) {
         Favorite target = this.favorites.stream()
-                .filter(favorite -> Objects.equals(favorite.id, id))
+                .filter(favorite -> Objects.equals(favorite.getId(), id))
                 .findFirst()
                 .orElseThrow(() -> new FavoriteException(ErrorCode.CANNOT_DELETE_NOT_EXIST_FAVORITE));
         favorites.remove(target);

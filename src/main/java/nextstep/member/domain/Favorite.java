@@ -9,15 +9,20 @@ import java.util.Objects;
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "source_id")
-    Station source;
+    private Station source;
 
     @ManyToOne
     @JoinColumn(name = "target_id")
-    Station target;
+    private Station target;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
 
     protected Favorite() {
     }
@@ -28,7 +33,8 @@ public class Favorite {
         this.target = target;
     }
 
-    public Favorite(Station source, Station target) {
+    public Favorite(Member member, Station source, Station target) {
+        this.member = member;
         this.source = source;
         this.target = target;
     }
@@ -43,6 +49,10 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     @Override
