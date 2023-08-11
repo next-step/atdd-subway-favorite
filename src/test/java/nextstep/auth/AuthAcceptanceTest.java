@@ -1,4 +1,4 @@
-package nextstep.study;
+package nextstep.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
