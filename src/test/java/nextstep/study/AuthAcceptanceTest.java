@@ -6,10 +6,11 @@ import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.GithubTestResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -50,11 +50,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("Github Auth")
-    @ParameterizedTest
-    @ValueSource(strings = {"aofijeowifjaoief", "fau3nfin93dmn", "afnm93fmdodf", "fm04fndkaladmd"})
-    void githubAuth(String code) {
+    @ParameterizedTest(name = "{0} 깃헙 로그인 테스트")
+    @EnumSource(GithubTestResponses.class)
+    void githubAuth(GithubTestResponses githubUsers) {
         Map<String, String> params = new HashMap<>();
-        params.put("code", code);
+        params.put("code", githubUsers.getCode());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

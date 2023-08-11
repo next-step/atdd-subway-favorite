@@ -3,21 +3,24 @@ package nextstep.member.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static nextstep.member.acceptance.MemberSteps.*;
-import static nextstep.member.acceptance.TokenSteps.로그인_요청_토큰_반환;
+import static nextstep.member.steps.MemberSteps.*;
+import static nextstep.member.steps.TokenSteps.로그인_요청_토큰_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
 
     @DisplayName("회원가입을 한다.")
     @Test

@@ -1,5 +1,6 @@
 package nextstep.subway.domain;
 
+import nextstep.subway.applicaion.exception.PathException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
@@ -47,10 +48,23 @@ public class SubwayMap {
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
 
+        if (result == null) {
+            throw new PathException();
+        }
+
         List<Section> sections = result.getEdgeList().stream()
                 .map(it -> it.getSection())
                 .collect(Collectors.toList());
 
         return new Path(new Sections(sections));
+    }
+
+    public boolean hasPath(Station upStation, Station downStation) {
+        try {
+            findPath(upStation, downStation);
+            return true;
+        } catch (PathException e) {
+            return false;
+        }
     }
 }

@@ -38,4 +38,8 @@ public enum GithubTestResponses {
                 .orElseThrow();
         return new GithubProfileResponse(test.email, test.age);
     }
+
+    public String getCode() {
+        return code;
+    }
 }
