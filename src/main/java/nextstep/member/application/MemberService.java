@@ -33,6 +33,10 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
     public MemberResponse findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .map(MemberResponse::of)

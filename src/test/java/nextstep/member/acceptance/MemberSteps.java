@@ -91,7 +91,7 @@ public class MemberSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessToken)
                 .body(params)
-                .when().put("/favorites")
+                .when().post("/favorites")
                 .then().log().all().extract();
     }
 
