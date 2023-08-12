@@ -35,8 +35,22 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
-
     }
+
+    /**
+     * When 없는 회원의 정보를 조회하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("없는 회원 정보를 조회한다.")
+    @Test
+    void getMemberThrowException() {
+        // when
+        var response = 회원_정보_조회_요청(1L);
+
+        // then
+        에러코드_검증(response);
+    }
+
 
     @DisplayName("회원 정보를 수정한다.")
     @Test
@@ -50,6 +64,21 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
+    /**
+     * When 없는 회원의 정보를 조회하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("없는 회원 정보를 수정한다.")
+    @Test
+    void updateMemberThrowException() {
+        // when
+        var response = 회원_정보_수정_요청(1L, " test", "test", 1);
+
+        // then
+        에러코드_검증(response);
+    }
+
 
     @DisplayName("회원 정보를 삭제한다.")
     @Test
@@ -83,5 +112,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(myInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         회원_정보_조회됨(myInfoResponse, EMAIL, AGE);
+    }
+
+    /**
+     * When 잘못된 토큰을 전달하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("회원 정보 요청에 잘못된 토큰을 전달하면 에러를 리턴한다.")
+    @Test
+    void getMyInfoThrowException() {
+        // when
+        var response = 내_정보_조회("");
+
+        // then
+        에러코드_검증(response);
     }
 }
