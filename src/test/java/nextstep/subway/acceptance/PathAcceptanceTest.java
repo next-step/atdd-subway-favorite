@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import nextstep.subway.applicaion.dto.response.LineResponse;
 import nextstep.subway.applicaion.dto.response.PathResponse;
 import nextstep.subway.applicaion.dto.response.StationResponse;
+import nextstep.subway.exception.NullPointerSectionsException;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

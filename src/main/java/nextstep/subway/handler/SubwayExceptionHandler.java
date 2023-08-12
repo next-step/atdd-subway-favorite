@@ -3,6 +3,7 @@ package nextstep.subway.handler;
 import nextstep.subway.applicaion.dto.ErrorResponse;
 import nextstep.subway.exception.BadRequestPathException;
 import nextstep.subway.exception.BadRequestSectionsException;
+import nextstep.subway.exception.NullPointerSectionsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,13 @@ public class SubwayExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public @ResponseBody ErrorResponse badRequestPathHandler(IllegalArgumentException ex) {
+        log.warn("error " + ex.getMessage() + "[BAD_REQUEST]");
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NullPointerSectionsException.class)
+    public @ResponseBody ErrorResponse badRequestStationHandler(NullPointerSectionsException ex) {
         log.warn("error " + ex.getMessage() + "[BAD_REQUEST]");
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
