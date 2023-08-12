@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.applicaion.dto.LineResponse;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -51,7 +52,39 @@ public class LineSteps {
                 .then().log().all().extract();
     }
 
+    public static LineResponse 지하철_노선_생성_요청(String name, Long upStation, Long downStation ) {
+        Map<String, String> lineCreateParams;
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", name);
+        lineCreateParams.put("color", "bg-10");
+        lineCreateParams.put("upStationId", upStation + "");
+        lineCreateParams.put("downStationId", downStation + "");
+        lineCreateParams.put("distance", 10 + "");
+
+        return RestAssured
+                .given().log().all()
+                .body(lineCreateParams)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines")
+                .then().log().all().extract()
+                .jsonPath().getObject("", LineResponse.class);
+    }
+
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Map<String, String> params) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines/{lineId}/sections", lineId)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_생성_요청(Long lineId, Long upStationId, Long downStationId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("upStationId", upStationId + "");
+        params.put("downStationId", downStationId + "");
+        params.put("distance", 1 + "");
+
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
