@@ -78,6 +78,38 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 회원_경로_즐겨찾기_등록_요청(Long sourceId, Long targetId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", sourceId.toString());
+        params.put("target", targetId.toString());
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put("/members")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_경로_즐겨찾기_조회_요청(ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_경로_즐겨찾기_삭제_요청(ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
