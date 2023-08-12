@@ -2,6 +2,9 @@ package nextstep.member.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MemberSteps {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -105,18 +109,19 @@ public class MemberSteps {
     }
 
     public static List<FavoriteResponse> 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(ExtractableResponse<Response> response) {
-        TypeRef<List<FavoriteResponse>> typeReference = new TypeRef<>(){};
-        return response.jsonPath().getObject("", typeReference);
+        TypeReference<List<FavoriteResponse>> typeReference = new TypeReference<>() {};
+        return MAPPER.convertValue(response.as(JsonNode.class), typeReference);
     }
 
     public static List<FavoriteResponse> 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(String accessToken) {
-        TypeRef<List<FavoriteResponse>> typeReference = new TypeRef<>(){};
-        return RestAssured.given().log().all()
+        TypeReference<List<FavoriteResponse>> typeReference = new TypeReference<>() {};
+        JsonNode favorites = RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessToken)
                 .when().get("/favorites")
                 .then().log().all()
-                .extract().jsonPath().getObject("", typeReference);
+                .extract().as(JsonNode.class);
+        return MAPPER.convertValue(favorites, typeReference);
     }
 
 

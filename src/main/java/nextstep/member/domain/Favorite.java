@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import nextstep.subway.domain.Station;
 
 @Entity
 public class Favorite {
@@ -31,5 +32,13 @@ public class Favorite {
 
     public Long getId() {
         return id;
+    }
+
+    public Station getSourceStation() {
+        return favoriteStations.getSource();
+    }
+
+    public Station getTargetStation() {
+        return favoriteStations.getTarget();
     }
 }

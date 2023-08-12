@@ -179,7 +179,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_응답값_검증(List<FavoriteResponse> responses, int size, Long sourceId, Long targetId) {
         assertAll(
-                () -> assertThat(responses.size()).isEqualTo(size),
+                () -> assertThat(responses).hasSize(size),
                 () -> assertThat(responses.get(0).getSource().getId()).isEqualTo(sourceId),
                 () -> assertThat(responses.get(0).getTarget().getId()).isEqualTo(targetId)
         );
