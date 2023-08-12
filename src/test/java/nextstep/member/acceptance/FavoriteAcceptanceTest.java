@@ -2,6 +2,7 @@ package nextstep.member.acceptance;
 
 import static nextstep.member.acceptance.MemberSteps.에러코드_검증;
 import static nextstep.member.acceptance.MemberSteps.회원_경로_즐겨찾기_등록_요청;
+import static nextstep.member.acceptance.MemberSteps.회원_경로_즐겨찾기_삭제_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_경로_즐겨찾기_조회_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_경로_즐겨찾기_조회_요청_응답_리스트_반환;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
@@ -150,18 +151,37 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨 찾기 삭제")
     @Test
     void deleteFavorite() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_후_엑세스토큰_획득(EMAIL, PASSWORD);
+        var createResponse = 회원_경로_즐겨찾기_등록_요청(노원역, 논현역, accessToken);
 
+        //when
+        var response = 회원_경로_즐겨찾기_삭제_요청(createResponse, accessToken);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        List<FavoriteResponse> favoriteResponse = 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(accessToken);
+        assertThat(favoriteResponse).isEmpty();
     }
 
 
     /**
+     * Given 즐겨 찾기를 생성하고
      * When 로그인 없이 즐겨찾기를 삭제하면
      * Then 401 에러를 반환한다.
      */
     @DisplayName("즐겨 찾기 삭제 - 권한 없음")
     @Test
     void deleteFavoriteThrowUnAuthorizeException() {
+        //given
+        var createResponse = 회원_경로_즐겨찾기_등록_요청(노원역, 논현역, "");
 
+        //when
+        var response = 회원_경로_즐겨찾기_삭제_요청(createResponse, "");
+
+        //then
+        에러코드_검증(response, HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -174,7 +194,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨 찾기 삭제 - 잘못된 요청")
     @Test
     void deleteFavoriteThrowInvalidParameterException() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_후_엑세스토큰_획득(EMAIL, PASSWORD);
+        회원_경로_즐겨찾기_등록_요청(노원역, 논현역, "");
 
+        //when
+        var response = 회원_경로_즐겨찾기_삭제_요청(-1L, accessToken);
+
+        //then
+        에러코드_검증(response, HttpStatus.BAD_REQUEST);
     }
 
     private void 즐겨찾기_응답값_검증(List<FavoriteResponse> responses, int size, Long sourceId, Long targetId) {

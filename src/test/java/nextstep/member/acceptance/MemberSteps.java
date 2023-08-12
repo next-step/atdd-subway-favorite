@@ -124,6 +124,16 @@ public class MemberSteps {
         return MAPPER.convertValue(favorites, typeReference);
     }
 
+    public static ExtractableResponse<Response> 회원_경로_즐겨찾기_삭제_요청(Long favoriteNo, String accessToken) {
+        String uri = "/favorites/" + favoriteNo;
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
 
     public static ExtractableResponse<Response> 회원_경로_즐겨찾기_삭제_요청(ExtractableResponse<Response> response, String accessToken) {
         String uri = response.header("Location");
