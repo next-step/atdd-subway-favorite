@@ -2,6 +2,7 @@ package nextstep.member.acceptance;
 
 import static nextstep.member.acceptance.MemberSteps.에러코드_검증;
 import static nextstep.member.acceptance.MemberSteps.회원_경로_즐겨찾기_등록_요청;
+import static nextstep.member.acceptance.MemberSteps.회원_경로_즐겨찾기_조회_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_경로_즐겨찾기_조회_요청_응답_리스트_반환;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.study.AuthSteps.로그인_후_엑세스토큰_획득;
@@ -62,8 +63,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-//        List<FavoriteResponse> favoriteResponse = 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(accessToken);
-//        즐겨찾기_응답값_검증(favoriteResponse, 1, 노원역, 논현역);
+        List<FavoriteResponse> favoriteResponse = 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(accessToken);
+        즐겨찾기_응답값_검증(favoriteResponse, 1, 노원역, 논현역);
     }
 
     /**
@@ -110,7 +111,18 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨 찾기 조회")
     @Test
     void getFavorites() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_후_엑세스토큰_획득(EMAIL, PASSWORD);
+        회원_경로_즐겨찾기_등록_요청(노원역, 논현역, accessToken);
 
+        // when
+        var responses = 회원_경로_즐겨찾기_조회_요청(accessToken);
+
+        // then
+        assertThat(responses.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<FavoriteResponse> favoriteResponse = 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(responses);
+        즐겨찾기_응답값_검증(favoriteResponse, 1, 노원역, 논현역);
     }
 
     /**
@@ -120,7 +132,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨 찾기 조회 - 권한 없음")
     @Test
     void getFavoritesThrowUnAuthorizeException() {
+        // when
+        var response = 회원_경로_즐겨찾기_조회_요청("");
 
+        //then
+        에러코드_검증(response, HttpStatus.UNAUTHORIZED);
     }
 
 

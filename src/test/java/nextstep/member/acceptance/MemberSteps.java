@@ -104,6 +104,11 @@ public class MemberSteps {
                 .extract();
     }
 
+    public static List<FavoriteResponse> 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(ExtractableResponse<Response> response) {
+        TypeRef<List<FavoriteResponse>> typeReference = new TypeRef<>(){};
+        return response.jsonPath().getObject("", typeReference);
+    }
+
     public static List<FavoriteResponse> 회원_경로_즐겨찾기_조회_요청_응답_리스트_반환(String accessToken) {
         TypeRef<List<FavoriteResponse>> typeReference = new TypeRef<>(){};
         return RestAssured.given().log().all()
