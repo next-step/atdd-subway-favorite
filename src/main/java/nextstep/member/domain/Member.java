@@ -17,6 +17,15 @@ public class Member {
     public Member() {
     }
 
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.role = RoleType.ROLE_MEMBER.name();
+    }
+
+
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;

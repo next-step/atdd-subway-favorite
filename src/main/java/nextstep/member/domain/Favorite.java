@@ -41,4 +41,8 @@ public class Favorite {
     public Station getTargetStation() {
         return favoriteStations.getTarget();
     }
+
+    public boolean isCreatedMember(Member memberB) {
+        return this.member.equals(memberB);
+    }
 }

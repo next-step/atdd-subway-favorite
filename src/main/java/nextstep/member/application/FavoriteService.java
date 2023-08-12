@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import nextstep.member.application.dto.FavoriteRequest;
@@ -39,6 +40,15 @@ public class FavoriteService {
     public List<FavoriteResponse> getFavorites(String email) {
         List<Favorite> favoriteList = favoriteRepository.findAllByMemberEmail(email);
         return getFavoriteResponse(favoriteList);
+    }
+
+    public void deleteFavorite(String email, Long id) {
+        Member member = memberService.getMemberByEmail(email);
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (!favorite.isCreatedMember(member)) {
+            throw new IllegalArgumentException();
+        }
+        favoriteRepository.delete(favorite);
     }
 
     private List<FavoriteResponse> getFavoriteResponse(List<Favorite> favoriteList) {

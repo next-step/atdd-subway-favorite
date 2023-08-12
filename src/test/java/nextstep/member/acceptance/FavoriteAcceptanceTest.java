@@ -174,8 +174,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨 찾기 삭제 - 권한 없음")
     @Test
     void deleteFavoriteThrowUnAuthorizeException() {
-        //given
-        var createResponse = 회원_경로_즐겨찾기_등록_요청(노원역, 논현역, "");
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String accessToken = 로그인_후_엑세스토큰_획득(EMAIL, PASSWORD);
+        var createResponse = 회원_경로_즐겨찾기_등록_요청(노원역, 논현역, accessToken);
 
         //when
         var response = 회원_경로_즐겨찾기_삭제_요청(createResponse, "");
