@@ -1,5 +1,6 @@
 package nextstep.utils;
 
+import java.util.Arrays;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 
@@ -22,24 +23,27 @@ public enum GithubResponses {
     }
 
     public static GithubAccessTokenResponse getAccessToken(String code) {
-        for (GithubResponses response : values()) {
-            if (response.code.equals(code)) {
-                return new GithubAccessTokenResponse(response.accessToken, null, null, null);
-            }
-        }
-        return new GithubAccessTokenResponse();
+        return Arrays.stream(values())
+                .filter(response -> response.code.equals(code))
+                .findAny()
+                .map(response -> new GithubAccessTokenResponse(response.accessToken, null, null, null))
+                .orElseThrow();
     }
 
     public static GithubProfileResponse getProfileFromAccessToken(String accessToken) {
-        for (GithubResponses response : values()) {
-            if (response.accessToken.equals(accessToken)) {
-                return new GithubProfileResponse(response.email, response.age);
-            }
-        }
-        return new GithubProfileResponse();
+        return Arrays.stream(values())
+                .filter(response -> response.equalAccessToken(accessToken))
+                .findAny()
+                .map(response -> new GithubProfileResponse(response.email, response.age))
+                .orElseThrow();
     }
 
     public String getCode() {
         return code;
+    }
+
+    private boolean equalAccessToken(String accessToken) {
+        String parsedToken = accessToken.split(" ")[1];
+        return this.accessToken.equals(parsedToken);
     }
 }
