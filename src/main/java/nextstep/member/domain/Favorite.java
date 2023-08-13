@@ -1,11 +1,9 @@
 package nextstep.member.domain;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import nextstep.subway.domain.Station;
 
 @Entity
@@ -14,16 +12,14 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long memberId;
+    private Long sourceId;
+    private Long targetId;
 
-    @ManyToOne
-    private Member member;
-
-    @Embedded
-    private FavoriteStations favoriteStations;
-
-    public Favorite(Member member, FavoriteStations favoriteStations) {
-        this.member = member;
-        this.favoriteStations = favoriteStations;
+    public Favorite(Long memberId, Long sourceId, Long targetId) {
+        this.memberId = memberId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
     }
 
     public Favorite() {
@@ -34,15 +30,15 @@ public class Favorite {
         return id;
     }
 
-    public Station getSourceStation() {
-        return favoriteStations.getSource();
+    public Long getSourceId() {
+        return sourceId;
     }
 
-    public Station getTargetStation() {
-        return favoriteStations.getTarget();
+    public Long getTargetId() {
+        return targetId;
     }
 
     public boolean isCreatedMember(Member memberB) {
-        return this.member.equals(memberB);
+        return this.memberId.equals(memberB.getId());
     }
 }

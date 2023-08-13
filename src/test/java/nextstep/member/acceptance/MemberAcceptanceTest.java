@@ -125,6 +125,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 내_정보_조회("");
 
         // then
-        에러코드_검증(response);
+        에러코드_검증(response, HttpStatus.UNAUTHORIZED);
     }
 }
