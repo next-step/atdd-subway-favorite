@@ -1,6 +1,5 @@
 package nextstep.utils;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenResponse;
 import nextstep.auth.token.oauth2.github.GithubProfileResponse;
 
