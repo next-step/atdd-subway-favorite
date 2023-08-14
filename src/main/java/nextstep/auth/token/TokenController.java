@@ -17,14 +17,12 @@ public class TokenController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
-
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login/github")
     public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody GithubTokenRequest request) {
         TokenResponse response = tokenService.createTokenFromGithub(request.getCode());
-
         return ResponseEntity.ok(response);
     }
 }
