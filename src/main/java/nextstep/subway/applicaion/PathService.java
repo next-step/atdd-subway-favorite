@@ -1,5 +1,6 @@
 package nextstep.subway.applicaion;
 
+import nextstep.member.domain.FavoriteStations;
 import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Path;
