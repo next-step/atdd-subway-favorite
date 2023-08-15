@@ -39,12 +39,10 @@ public enum FakeGithubResponse {
     }
 
     private boolean equalsByCode(String code) {
-        if (this.code.equals(code)) { return true; }
-        return false;
+        return this.code.equals(code);
     }
 
     private boolean equalsByAccessToken(String accessToken) {
-        if (this.accessToken.equals(accessToken)) { return true; }
-        return false;
+        return this.accessToken.equals(accessToken);
     }
 }
