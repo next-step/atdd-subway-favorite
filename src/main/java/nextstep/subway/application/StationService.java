@@ -25,4 +25,9 @@ public class StationService {
     private StationResponse createStationResponse(Station station) {
         return new StationResponse(station.getId(), station.getName());
     }
+
+    public Station findStationEntityById(Long id) {
+        return stationRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }

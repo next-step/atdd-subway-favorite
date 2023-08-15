@@ -1,5 +1,8 @@
 package nextstep.subway.ui;
 
+import nextstep.auth.principal.AuthenticationPrincipal;
+import nextstep.auth.principal.UserPrincipal;
+import nextstep.subway.application.FavoriteService;
 import nextstep.subway.application.dto.favorite.FavoriteRequest;
 import nextstep.subway.application.dto.favorite.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +13,15 @@ import java.net.URI;
 @RestController
 public class FavoriteController {
 
+    private FavoriteService favoriteService;
+
+    public FavoriteController(FavoriteService favoriteService) { this.favoriteService = favoriteService; }
+
     @PostMapping("/favorites")
-    public ResponseEntity<Void> createFavorite(@RequestBody FavoriteRequest request) {
-        return ResponseEntity.created(URI.create("/favorites/1")).build();
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                               @RequestBody FavoriteRequest request) {
+        FavoriteResponse response = favoriteService.createFavorite(userPrincipal.getUsername(), request);
+        return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
     }
 
     @GetMapping("/favorites/{id}")
