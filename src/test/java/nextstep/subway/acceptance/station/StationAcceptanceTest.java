@@ -1,8 +1,8 @@
-package nextstep.subway.acceptance;
+package nextstep.subway.acceptance.station;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.application.dto.StationRequest;
+import nextstep.subway.application.dto.station.StationRequest;
 import nextstep.utils.AcceptanceTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

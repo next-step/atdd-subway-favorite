@@ -3,7 +3,7 @@ package nextstep.handler.subway;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.application.dto.StationRequest;
+import nextstep.subway.application.dto.station.StationRequest;
 import org.springframework.http.MediaType;
 
 public class StationHandler {

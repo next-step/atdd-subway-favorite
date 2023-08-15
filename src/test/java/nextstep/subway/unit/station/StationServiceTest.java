@@ -1,8 +1,8 @@
-package nextstep.subway.unit;
+package nextstep.subway.unit.station;
 
 import nextstep.subway.application.StationService;
-import nextstep.subway.application.dto.StationRequest;
-import nextstep.subway.application.dto.StationResponse;
+import nextstep.subway.application.dto.station.StationRequest;
+import nextstep.subway.application.dto.station.StationResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
