@@ -87,4 +87,13 @@ public class FavoriteServiceTest {
         // then
         Assertions.assertThat(favoriteService.findFavorite(EMAIL)).isEmpty();
     }
+
+    @DisplayName("조회되지 않는 역에 대해서 즐겨찾기를 등록할 경우 예외가 발생한다.")
+    @Test
+    void notSavedStationException() {
+        FavoriteRequest request = new FavoriteRequest(교대역, 10L);
+        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(EMAIL, request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Check station id");
+    }
 }

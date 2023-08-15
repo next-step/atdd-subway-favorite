@@ -28,6 +28,6 @@ public class StationService {
 
     public Station findStationEntityById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("Check station id"));
     }
 }
