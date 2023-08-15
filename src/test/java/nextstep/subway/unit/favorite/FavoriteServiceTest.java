@@ -5,6 +5,7 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.subway.application.FavoriteService;
 import nextstep.subway.application.dto.favorite.FavoriteRequest;
 import nextstep.subway.application.dto.favorite.FavoriteResponse;
+import nextstep.subway.domain.FavoriteRepository;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.assertj.core.api.Assertions;
@@ -23,10 +24,10 @@ public class FavoriteServiceTest {
 
     @Autowired
     private StationRepository stationRepository;
-
+    @Autowired
+    private FavoriteRepository favoriteRepository;
     @Autowired
     private FavoriteService favoriteService;
-
     @Autowired
     private MemberService memberService;
 
@@ -53,7 +54,8 @@ public class FavoriteServiceTest {
         FavoriteResponse response = favoriteService.createFavorite(EMAIL, request);
 
         // then
-        Assertions.assertThat(response.getId()).isEqualTo(1L);
+        Assertions.assertThat(response.getSource().getId()).isEqualTo(교대역);
+        Assertions.assertThat(response.getTarget().getId()).isEqualTo(양재역);
     }
 
     @DisplayName("즐겨찾기를 조회한다.")
@@ -70,5 +72,19 @@ public class FavoriteServiceTest {
         FavoriteResponse response = responseList.get(0);
         Assertions.assertThat(response.getSource().getId()).isEqualTo(교대역);
         Assertions.assertThat(response.getTarget().getId()).isEqualTo(양재역);
+    }
+
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(교대역, 양재역);
+        FavoriteResponse response = favoriteService.createFavorite(EMAIL, request);
+
+        // when
+        favoriteService.deleteFavorite(response.getId());
+
+        // then
+        Assertions.assertThat(favoriteService.findFavorite(EMAIL)).isEmpty();
     }
 }

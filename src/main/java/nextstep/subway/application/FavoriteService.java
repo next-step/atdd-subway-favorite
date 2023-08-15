@@ -45,6 +45,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteFavorite(Long id) {
+        favoriteRepository.deleteById(id);
+    }
+
     private FavoriteResponse createFavoriteResponse(Favorite favorite) {
         StationResponse sourceResponse = createStationResponse(favorite.getSource());
         StationResponse targetResponse = createStationResponse(favorite.getTarget());
