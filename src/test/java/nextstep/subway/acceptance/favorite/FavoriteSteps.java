@@ -8,10 +8,11 @@ import org.springframework.http.MediaType;
 
 public class FavoriteSteps {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest request) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest request) {
         return RestAssured
                 .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().preemptive().oauth2(accessToken)
                     .body(request)
                 .when().log().all()
                     .post("/favorites")
@@ -19,11 +20,12 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String url) {
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
+                    .auth().preemptive().oauth2(accessToken)
                 .when().log().all()
-                    .get(url)
+                    .get("favorites")
                 .then().log().all()
                 .extract();
     }

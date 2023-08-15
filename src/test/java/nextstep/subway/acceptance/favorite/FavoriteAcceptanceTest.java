@@ -11,19 +11,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.auth.AuthSteps.로그인_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.favorite.FavoriteSteps.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-
-    @LocalServerPort
-    private int port;
 
     private Long 교대역;
     private Long 강남역;
@@ -40,7 +34,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @BeforeEach
     void setUpFavoriteAcceptanceTest() {
-        RestAssured.port = port;
         교대역 = 지하철_역_요청(new StationRequest("교대역"));
         강남역 = 지하철_역_요청(new StationRequest("강남역"));
         양재역 = 지하철_역_요청(new StationRequest("양재역"));
@@ -57,7 +50,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void createFavorite() {
         // when
         FavoriteRequest 즐겨찾기_요청 = new FavoriteRequest(교대역, 강남역);
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(즐겨찾기_요청);
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 즐겨찾기_요청);
 
         // then
         Assertions.assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -73,10 +66,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void findFavorite() {
         // given
         FavoriteRequest 즐겨찾기_요청 = new FavoriteRequest(교대역, 강남역);
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(즐겨찾기_요청);
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 즐겨찾기_요청);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(즐겨찾기_생성_응답.header("location"));
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회_요청(accessToken);
 
         // then
         Assertions.assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -92,7 +85,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void deleteFavorite() {
         // given
         FavoriteRequest 즐겨찾기_요청 = new FavoriteRequest(교대역, 강남역);
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(즐겨찾기_요청);
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 즐겨찾기_요청);
 
         // when
         ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_삭제_요청(즐겨찾기_생성_응답.header("location"));
