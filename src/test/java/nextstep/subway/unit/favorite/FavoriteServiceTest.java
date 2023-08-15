@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 public class FavoriteServiceTest {
@@ -28,9 +30,9 @@ public class FavoriteServiceTest {
     @Autowired
     private MemberService memberService;
 
-    private Station 교대역;
-    private Station 강남역;
-    private Station 양재역;
+    private Long 교대역;
+    private Long 강남역;
+    private Long 양재역;
     private final String EMAIL = "email@email.com";
     private final String PASSWORD = "password";
     private final int AGE = 20;
@@ -38,16 +40,16 @@ public class FavoriteServiceTest {
     @BeforeEach
     void setUpFavoriteServiceTest() {
         memberService.createMember(new MemberRequest(EMAIL, PASSWORD, AGE));
-        교대역 = stationRepository.save(new Station("교대역"));
-        강남역 = stationRepository.save(new Station("강남역"));
-        양재역 = stationRepository.save(new Station("양재역"));
+        교대역 = stationRepository.save(new Station("교대역")).getId();
+        강남역 = stationRepository.save(new Station("강남역")).getId();
+        양재역 = stationRepository.save(new Station("양재역")).getId();
     }
 
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void createFavorite() {
         // when
-        FavoriteRequest request = new FavoriteRequest(교대역.getId(), 양재역.getId());
+        FavoriteRequest request = new FavoriteRequest(교대역, 양재역);
         FavoriteResponse response = favoriteService.createFavorite(EMAIL, request);
 
         // then
@@ -58,12 +60,15 @@ public class FavoriteServiceTest {
     @Test
     void findFavorite() {
         // given
-        FavoriteRequest request = new FavoriteRequest(교대역.getId(), 양재역.getId());
-        FavoriteResponse response = favoriteService.createFavorite(EMAIL, request);
+        FavoriteRequest request = new FavoriteRequest(교대역, 양재역);
+        favoriteService.createFavorite(EMAIL, request);
 
         // when
-
+        List<FavoriteResponse> responseList = favoriteService.findFavorite(EMAIL);
 
         // then
+        FavoriteResponse response = responseList.get(0);
+        Assertions.assertThat(response.getSource().getId()).isEqualTo(교대역);
+        Assertions.assertThat(response.getTarget().getId()).isEqualTo(양재역);
     }
 }
