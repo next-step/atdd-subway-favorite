@@ -1,9 +1,6 @@
 package nextstep.favorite.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.subway.applicaion.dto.response.LineResponse;
 import nextstep.subway.applicaion.dto.response.StationResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +46,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         var accessToken = 회원_로그인_토큰_요청(EMAIL, PASSWORD);
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 교대역.getId(), 양재역.getId());
+        var response = 즐겨찾기_생성_요청(accessToken, 교대역.getId(), 양재역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -57,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 생성에 실패한다 - 로그인되지 않은 경우 에러를 던진다.")
     @Test
     void createFavoriteExceptionWhenWithoutPermission() {
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(NO_PERMISSION, 교대역.getId(), 양재역.getId());
+        var response = 즐겨찾기_생성_요청(NO_PERMISSION, 교대역.getId(), 양재역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -66,13 +63,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void findFavorite() {
         var accessToken = 회원_로그인_토큰_요청(EMAIL, PASSWORD);
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 교대역.getId(), 양재역.getId());
-        FavoriteResponse favorite = createResponse.as(FavoriteResponse.class);
+        var createResponse = 즐겨찾기_생성_요청(accessToken, 교대역.getId(), 양재역.getId());
+        var favorite = createResponse.as(FavoriteResponse.class);
 
-        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(accessToken);
-        List<FavoriteResponse> findFavorites = response.jsonPath().getList("", FavoriteResponse.class);
+        var response = 즐겨찾기_조회_요청(accessToken);
+        var findFavorites = response.jsonPath().getList("", FavoriteResponse.class);
 
-        List<FavoriteResponse> expected = List.of(favorite);
+        var expected = List.of(favorite);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(findFavorites).usingRecursiveComparison()
                 .isEqualTo(expected);
@@ -82,10 +79,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void findFavoriteExceptionWhenWithoutPermission() {
         var accessToken = 회원_로그인_토큰_요청(EMAIL, PASSWORD);
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 교대역.getId(), 양재역.getId());
+        var createResponse = 즐겨찾기_생성_요청(accessToken, 교대역.getId(), 양재역.getId());
         createResponse.as(FavoriteResponse.class);
 
-        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(NO_PERMISSION);
+        var response = 즐겨찾기_조회_요청(NO_PERMISSION);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -94,9 +91,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorites() {
         var accessToken = 회원_로그인_토큰_요청(EMAIL, PASSWORD);
-        FavoriteResponse favorite = 즐겨찾기_생성_응답(accessToken, 교대역.getId(), 양재역.getId());
+        var favorite = 즐겨찾기_생성_응답(accessToken, 교대역.getId(), 양재역.getId());
 
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(accessToken, favorite.getId());
+        var response = 즐겨찾기_삭제_요청(accessToken, favorite.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
@@ -106,9 +103,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoriteExceptionWhenWithoutPermission() {
         var accessToken = 회원_로그인_토큰_요청(EMAIL, PASSWORD);
-        FavoriteResponse favorite = 즐겨찾기_생성_응답(accessToken, 교대역.getId(), 양재역.getId());
+        var favorite = 즐겨찾기_생성_응답(accessToken, 교대역.getId(), 양재역.getId());
 
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(NO_PERMISSION, favorite.getId());
+        var response = 즐겨찾기_삭제_요청(NO_PERMISSION, favorite.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
