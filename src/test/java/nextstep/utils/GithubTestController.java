@@ -22,7 +22,7 @@ public class GithubTestController {
 
     @GetMapping("/github/user")
     public ResponseEntity<GithubProfileResponse> user(@RequestHeader("Authorization") String token) {
-        String email = GithubResponses.findEmailByAccessToken(token.split(" ")[1]);
+        String email = GithubResponses.findEmailByAccessToken(token);
         return ResponseEntity.ok().body(new GithubProfileResponse(email));
     }
 }

@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.dto.MemberRequest;
-import org.apache.http.Header;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -33,6 +32,18 @@ public class MemberSteps {
                 .body(member)
                 .when().post("/login/token")
                 .then().log().all().extract();
+    }
+
+    public static String 회원_로그인_토큰_요청(String email, String password) {
+        MemberRequest member = new MemberRequest(email,password,null);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(member)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract().jsonPath().getString("accessToken");
     }
 
     public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {

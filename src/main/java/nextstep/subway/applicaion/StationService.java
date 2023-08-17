@@ -3,6 +3,7 @@ package nextstep.subway.applicaion;
 import nextstep.subway.applicaion.dto.request.StationRequest;
 import nextstep.subway.applicaion.dto.response.StationResponse;
 import nextstep.subway.domain.Station;
+import nextstep.subway.exception.NullPointerSectionsException;
 import nextstep.subway.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,7 @@ public class StationService {
 
 
     public Station getStations(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(IllegalArgumentException::new);
+        return stationRepository.findById(stationId).orElseThrow(() -> new NullPointerSectionsException("역을 찾을 수 없습니다.  id : "+stationId));
     }
 
     private StationResponse createStationResponse(Station station) {

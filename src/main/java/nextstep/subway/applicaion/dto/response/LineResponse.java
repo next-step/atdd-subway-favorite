@@ -47,7 +47,7 @@ public class LineResponse {
         if (stations.isEmpty()) {
             return Collections.emptyList();
         }
-        return stations.stream().map(StationResponse::new).toList();
+        return stations.stream().map(StationResponse::of).toList();
     }
 
 }

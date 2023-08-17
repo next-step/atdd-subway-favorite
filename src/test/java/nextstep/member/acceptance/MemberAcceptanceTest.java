@@ -78,12 +78,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
-        var loginResponse = 회원_로그인_요청(EMAIL,PASSWORD);
-        var accessToken = loginResponse.jsonPath().getString("accessToken");
+        var accessToken = 회원_로그인_토큰_요청(EMAIL,PASSWORD);
 
         var response = 내_정보_조회_요청(accessToken);
 
-        MemberResponse member = response.as(MemberResponse.class);
+        var member = response.as(MemberResponse.class);
 
         assertThat(member.getEmail()).isEqualTo(EMAIL);
         assertThat(member.getAge()).isEqualTo(AGE);

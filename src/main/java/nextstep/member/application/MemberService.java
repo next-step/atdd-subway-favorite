@@ -4,6 +4,7 @@ import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.exception.NoExistedMemberException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,9 +34,13 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public MemberResponse findMemberByEmail(String email) {
+    public MemberResponse findMemberResponseByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> new NoExistedMemberException(email));
     }
 }
