@@ -6,7 +6,23 @@ import io.restassured.response.Response;
 import nextstep.subway.application.dto.favorite.FavoriteRequest;
 import org.springframework.http.MediaType;
 
+import java.util.Map;
+
 public class FavoriteSteps {
+
+    private FavoriteSteps() {}
+
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Map<String, Long> request) {
+        return RestAssured
+                .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .auth().preemptive().oauth2(accessToken)
+                .body(request)
+                    .when().log().all()
+                    .post("/favorites")
+                .then().log().all()
+                .extract();
+    }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest request) {
         return RestAssured
