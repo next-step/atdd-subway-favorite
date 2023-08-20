@@ -38,4 +38,9 @@ public class MemberService {
                 .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
     }
+
+    public Member findMemberEntityById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }

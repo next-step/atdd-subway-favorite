@@ -1,5 +1,6 @@
 package nextstep.auth.principal;
 
+import io.jsonwebtoken.MalformedJwtException;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.token.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
@@ -27,10 +28,18 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new AuthenticationException();
         }
         String token = authorization.split(" ")[1];
-
-        String username = jwtTokenProvider.getPrincipal(token);
+        String username = getUsernameByValidToken(token);
         String role = jwtTokenProvider.getRoles(token);
-
         return new UserPrincipal(username, role);
+    }
+
+    private String getUsernameByValidToken(String token){
+        String username;
+        try {
+            username = jwtTokenProvider.getPrincipal(token);
+        } catch (MalformedJwtException e) {
+            throw new AuthenticationException();
+        }
+        return username;
     }
 }

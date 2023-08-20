@@ -5,9 +5,9 @@ import java.util.Arrays;
 public enum FakeGithubProfileResponse {
 
     사용자1("email1@email.com", 20),
-    사용자2(  "email2@email.com", 21),
-    사용자3(  "email3@email.com", 22),
-    사용자4(  "email4@email.com", 23),
+    사용자2("email2@email.com", 21),
+    사용자3("email3@email.com", 22),
+    사용자4("email4@email.com", 23),
     EMPTY("EMPTY", 19);
 
     private String email;
@@ -29,7 +29,6 @@ public enum FakeGithubProfileResponse {
     }
 
     private boolean equalsByEmail(String email) {
-        if (this.email.equals(email)) { return true; }
-        return false;
+        return this.email.equals(email);
     }
 }
