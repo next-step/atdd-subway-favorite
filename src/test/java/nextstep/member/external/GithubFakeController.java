@@ -1,4 +1,4 @@
-package nextstep.utils;
+package nextstep.member.external;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.token.oauth2.github.GithubAccessTokenRequest;
