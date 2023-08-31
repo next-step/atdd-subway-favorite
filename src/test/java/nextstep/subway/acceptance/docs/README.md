@@ -13,7 +13,7 @@ Feature: 즐겨찾기 생성 기능
         
     Senario: 비회원이 즐겨찾기를 생성한다.
         When: 즐겨찾기를 생성한다.
-        Then: 실패(401 Unathorized) 응답을 받는다.
+        Then: 실패(401 Unauthorized) 응답을 받는다.
     
     
     Senario: 회원이 즐겨찾기를 조회한다.
@@ -26,7 +26,7 @@ Feature: 즐겨찾기 생성 기능
         
     Senario: 비회원이 즐겨찾기를 조회한다.
         When: 즐겨찾기를 조회한다.
-        Then: 실패(401 Unathorized) 응답을 받는다.
+        Then: 실패(401 Unauthorized) 응답을 받는다.
 
         
     Senario: 회원이 즐겨찾기를 삭제한다.
@@ -36,7 +36,7 @@ Feature: 즐겨찾기 생성 기능
         Then: 성공(204 No Content) 응답을 받는다.
         
         
-    Senario: 비회원이 즐겨찾기를 조회한다.
+    Senario: 비회원이 즐겨찾기를 삭제한다.
         When: 즐겨찾기를 삭제한다.
-        Then: 실패(401 Unathorized) 응답을 받는다.
+        Then: 실패(401 Unauthorized) 응답을 받는다.
 ```
