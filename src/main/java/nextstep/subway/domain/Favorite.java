@@ -1,16 +1,16 @@
 package nextstep.subway.domain;
 
-import java.lang.reflect.Member;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Favorite {
 
     @Id
@@ -25,8 +25,16 @@ public class Favorite {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
+    public Favorite() {
+
+    }
+
+    public Favorite(Station source, Station target, Long memberId) {
+        this.source = source;
+        this.target = target;
+        this.memberId = memberId;
+    }
 }

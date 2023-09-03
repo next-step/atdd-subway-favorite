@@ -31,6 +31,8 @@ public class Member {
         this.role = role;
     }
 
+
+
     public Long getId() {
         return id;
     }
