@@ -1,5 +1,6 @@
 package nextstep.subway.domain;
 
+import java.util.Optional;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
@@ -45,7 +46,8 @@ public class SubwayMap {
 
         // 다익스트라 최단 경로 찾기
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionEdge> result = Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+            .orElseThrow(IllegalArgumentException::new);
 
         List<Section> sections = result.getEdgeList().stream()
                 .map(it -> it.getSection())
