@@ -94,7 +94,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * And: 즐겨찾기 목록을 검증한다.
      */
     @Test
-    @DisplayName("[성공] 회원이 즐겨찾기를 조회한다.")
+    @DisplayName("[성공] 회원이 즐겨찾기 목록을 조회한다.")
     void 회원이_즐겨찾기를_조회한다() {
         // Given
         String 로그인_토큰 = 로그인_요청(회원_이메일, 회원_패스워드).as(TokenResponse.class).getAccessToken();
@@ -113,7 +113,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then: 실패(401 Unauthorized) 응답을 받는다.
      */
     @Test
-    @DisplayName("[실패] 비회원이 즐겨찾기를 조회한다.")
+    @DisplayName("[실패] 비회원이 즐겨찾기 목록을 조회한다.")
     void 비회원이_즐겨찾기를_조회한다() {
         // Given
         // When

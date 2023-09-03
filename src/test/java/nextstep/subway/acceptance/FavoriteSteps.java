@@ -35,14 +35,6 @@ public class FavoriteSteps {
             .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 비회원_즐겨찾기_조회_요청(String Location) {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(Location)
-            .then().log().all().extract();
-    }
-
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
         return RestAssured
             .given().log().all()

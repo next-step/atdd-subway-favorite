@@ -16,7 +16,7 @@ Feature: 즐겨찾기 생성 기능
         Then: 실패(401 Unauthorized) 응답을 받는다.
     
     
-    Senario: 회원이 즐겨찾기를 조회한다.
+    Senario: 회원이 즐겨찾기 목록을 조회한다.
         Given: 로그인 토큰을 발급받는다.
         And: 즐겨찾기를 생성한다.
         When: 즐겨찾기를 조회한다.
@@ -24,7 +24,7 @@ Feature: 즐겨찾기 생성 기능
         And: 즐겨찾기 목록을 검증한다.
     
         
-    Senario: 비회원이 즐겨찾기를 조회한다.
+    Senario: 비회원이 즐겨찾기 목록을 조회한다.
         When: 즐겨찾기를 조회한다.
         Then: 실패(401 Unauthorized) 응답을 받는다.
 
