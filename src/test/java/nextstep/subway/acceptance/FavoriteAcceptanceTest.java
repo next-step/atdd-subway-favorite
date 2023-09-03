@@ -55,7 +55,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * And: 즐겨찾기 목록을 검증한다.
      */
     @Test
-    @DisplayName("회원이 즐겨찾기를 생성한다.")
+    @DisplayName("[성공] 회원이 즐겨찾기를 생성한다.")
     void 회원이_즐겨찾기를_생성한다() {
         // Given
         String 로그인_토큰 = 로그인_요청(회원_이메일, 회원_패스워드).as(TokenResponse.class).getAccessToken();
@@ -75,7 +75,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then: 실패(401 Unathorized) 응답을 받는다.
      */
     @Test
-    @DisplayName("비회원이 즐겨찾기를 생성한다.")
+    @DisplayName("[실패] 비회원이 즐겨찾기를 생성한다.")
     void 비회원이_즐겨찾기를_생성한다() {
         // Given
         // When
@@ -94,7 +94,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * And: 즐겨찾기 목록을 검증한다.
      */
     @Test
-    @DisplayName("회원이 즐겨찾기를 조회한다.")
+    @DisplayName("[성공] 회원이 즐겨찾기를 조회한다.")
     void 회원이_즐겨찾기를_조회한다() {
         // Given
         String 로그인_토큰 = 로그인_요청(회원_이메일, 회원_패스워드).as(TokenResponse.class).getAccessToken();
@@ -113,7 +113,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then: 실패(401 Unauthorized) 응답을 받는다.
      */
     @Test
-    @DisplayName("비회원이 즐겨찾기를 조회한다.")
+    @DisplayName("[실패] 비회원이 즐겨찾기를 조회한다.")
     void 비회원이_즐겨찾기를_조회한다() {
         // Given
         // When
@@ -131,7 +131,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then: 성공(204 No Content) 응답을 받는다.
      */
     @Test
-    @DisplayName("회원이 즐겨찾기를 삭제한다.")
+    @DisplayName("[성공] 회원이 즐겨찾기를 삭제한다.")
     void 회원이_즐겨찾기를_삭제한다() {
         // Given
         String 로그인_토큰 = 로그인_요청(회원_이메일, 회원_패스워드).as(TokenResponse.class).getAccessToken();
@@ -150,7 +150,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then: 실패(401 Unauthorized) 응답을 받는다.
      */
     @Test
-    @DisplayName("비회원이 즐겨찾기를 삭제한다.")
+    @DisplayName("[실패] 비회원이 즐겨찾기를 삭제한다.")
     void 비회원이_즐겨찾기를_삭제한다() {
         // Given
         // When
@@ -158,6 +158,46 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // Then
         HTTP_응답_상태코드_검증(즐겨찾기_삭제_응답.statusCode(), HttpStatus.UNAUTHORIZED);
+    }
+
+
+    /**
+     * Given: 로그인 토큰을 발급받는다.
+     * When: 즐겨찾기를 등록한다.
+     * Then: 실패(500 InternalServerError) 응답을 받는다.
+     */
+    @Test
+    @DisplayName("[실패] 없는 지하철역을 즐겨찾기로 등록한다.")
+    void 없는_지하철역을_즐겨찾기로_등록한다() {
+        // Given
+        String 로그인_토큰 = 로그인_요청(회원_이메일, 회원_패스워드).as(TokenResponse.class).getAccessToken();
+
+        // When
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, new FavoriteRequest(교대역, 9999L));
+
+        // Then
+        HTTP_응답_상태코드_검증(즐겨찾기_생성_응답.statusCode(), HttpStatus.BAD_REQUEST);
+    }
+
+
+    /**
+     * Given: 지하철역을 등록한다.
+     * And: 로그인 토큰을 발급받는다.
+     * When: 즐겨찾기를 등록한다.
+     * Then: 실패(400 Bad Request) 응답을 받는다.
+     */
+    @Test
+    @DisplayName("[실패] 조회가 불가능한 경로를 즐겨찾기로 등록한다.")
+    void 조회가_불가능한_경로를_즐겨찾기로_등록한다() {
+        // Given
+        Long 강남역 = 지하철역_생성_요청("강남역").as(StationResponse.class).getId();
+        String 로그인_토큰 = 로그인_요청(회원_이메일, 회원_패스워드).as(TokenResponse.class).getAccessToken();
+
+        // When
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, new FavoriteRequest(교대역, 강남역));
+
+        // Then
+        HTTP_응답_상태코드_검증(즐겨찾기_생성_응답.statusCode(), HttpStatus.BAD_REQUEST);
     }
 
 
