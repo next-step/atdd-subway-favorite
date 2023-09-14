@@ -164,7 +164,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given: 로그인 토큰을 발급받는다.
      * When: 즐겨찾기를 등록한다.
-     * Then: 실패(500 InternalServerError) 응답을 받는다.
+     * Then: 실패(400 Bad Request) 응답을 받는다.
      */
     @Test
     @DisplayName("[실패] 없는 지하철역을 즐겨찾기로 등록한다.")
