@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,6 +45,7 @@ public class StationService {
     }
 
     public Station findById(Long id) {
+        System.out.println("[StationService findById] " + TransactionSynchronizationManager.getCurrentTransactionName());
         return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }
