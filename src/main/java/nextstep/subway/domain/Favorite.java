@@ -28,7 +28,7 @@ public class Favorite {
     @JoinColumn(name = "member_id")
     private Long memberId;
 
-    public Favorite() {
+    protected Favorite() {
 
     }
 
