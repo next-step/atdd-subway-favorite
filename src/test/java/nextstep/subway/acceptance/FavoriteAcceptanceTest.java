@@ -18,6 +18,8 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import nextstep.auth.token.TokenResponse;
 import nextstep.subway.applicaion.dto.FavoriteRequest;
 import nextstep.subway.applicaion.dto.FavoriteResponse;
@@ -224,20 +226,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_목록_조회_검증(ExtractableResponse<Response> response, List<SourceTarget> sourceTargets) {
         HTTP_응답_상태코드_검증(response.statusCode(), HttpStatus.OK);
 
-        List<FavoriteResponse> favoriteResponseList = response.jsonPath()
-            .getList("", FavoriteResponse.class);
+        List<SourceTarget> respSourceTargets = response.jsonPath()
+            .getList("", FavoriteResponse.class).stream()
+            .map(favorite -> new SourceTarget(favorite.getSource().getId(), favorite.getTarget().getId()))
+            .collect(Collectors.toList());
 
-        int totalAssertionSourceTarget = sourceTargets.size();
-        int matchSourceTarget = 0;
-        for (FavoriteResponse favoriteResponse : favoriteResponseList) {
-            for (SourceTarget sourceTarget : sourceTargets) {
-                if (sourceTarget.source.equals(favoriteResponse.getSource().getId())
-                && sourceTarget.target.equals(favoriteResponse.getTarget().getId())) {
-                    matchSourceTarget++;
-                }
-            }
-        }
-        assertThat(matchSourceTarget).isEqualTo(totalAssertionSourceTarget);
+        assertThat(respSourceTargets).containsAll(sourceTargets);
     }
 
     void HTTP_응답_상태코드_검증(int actualStatus, HttpStatus expectedStatus) {
@@ -251,6 +245,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         public SourceTarget(Long source, Long target) {
             this.source = source;
             this.target = target;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            SourceTarget that = (SourceTarget) o;
+            return Objects.equals(source, that.source) && Objects.equals(target,
+                that.target);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(source, target);
         }
     }
 
