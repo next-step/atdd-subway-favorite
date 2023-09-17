@@ -33,7 +33,6 @@ public class FavoriteService {
     public Favorite createFavorite(Long memberId, FavoriteRequest request) {
         pathService.findPath(request.getSource(), request.getTarget());
 
-        System.out.println("[FavoriteService createFavorite] " + TransactionSynchronizationManager.getCurrentTransactionName());
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
         return favoriteRepository.save(new Favorite(source, target, memberId));

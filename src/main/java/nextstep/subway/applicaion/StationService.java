@@ -45,7 +45,6 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        System.out.println("[StationService findById] " + TransactionSynchronizationManager.getCurrentTransactionName());
         return stationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }
