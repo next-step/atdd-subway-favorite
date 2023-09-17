@@ -1,4 +1,4 @@
-package nextstep.utils;
+package nextstep.member.external;
 
 import java.util.Arrays;
 import java.util.Map;
