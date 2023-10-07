@@ -34,4 +34,8 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         return FavoriteResponse.of(favorite);
     }
+
+    public void deleteFavorite(Long id) {
+        favoriteRepository.deleteById(id);
+    }
 }
