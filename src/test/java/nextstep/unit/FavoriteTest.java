@@ -3,6 +3,7 @@ package nextstep.unit;
 import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Favorite;
 import nextstep.member.domain.Member;
+import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 public class FavoriteTest {
     Station 역삼역;
     Station 선릉역;
+    Line 이호선;
     Member 유저_1번;
     Member 유저_2번;
     Favorite 유저_1번의_즐겨찾기;
@@ -20,6 +22,9 @@ public class FavoriteTest {
     public void setup() {
         역삼역 = new Station("역삼역");
         선릉역 = new Station("선릉역");
+        이호선 = new Line("이호선", "녹색");
+        이호선.addSection(역삼역, 선릉역, 10);
+
         유저_1번 = new Member("email@email.com", "asdfasdf", 12);
         유저_2번 = new Member("email2@email.com", "asdfasdf", 12);
         유저_1번의_즐겨찾기 = new Favorite(유저_1번, 역삼역, 선릉역);
@@ -37,6 +42,26 @@ public class FavoriteTest {
     void checkOwnerFailure() {
         // when, then
         Assertions.assertThatThrownBy(() -> 유저_1번의_즐겨찾기.checkOwner(유저_2번)).isInstanceOf(AuthenticationException.class);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 생성시 구간이 유효하면 성공한다.")
+    void createFavoriteValidSections() {
+        // when, then
+        Favorite.create(역삼역, 선릉역, 유저_1번);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 생성시 구간이 유효하지않으면 실패한다.")
+    void createFavoriteInvalidSections() {
+        // given
+        Station 천호역 = new Station("천호역");
+        Station 잠실역 = new Station("잠실역");
+        Line 팔호선 = new Line("팔호선", "다홍색");
+        팔호선.addSection(천호역, 잠실역, 10);
+
+        // when, then
+        Assertions.assertThatThrownBy(() -> Favorite.create(역삼역, 선릉역, 유저_1번)).isInstanceOf(IllegalArgumentException.class);
     }
 
 }
