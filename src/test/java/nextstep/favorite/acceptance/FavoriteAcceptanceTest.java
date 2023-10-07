@@ -99,6 +99,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given 유저1가 즐겨찾기1를 생성한다.
+     * Given 유저2가 즐겨찾기2를 생성한다.
+     * When 유저1이 즐겨찾기2를 조회한다.
+     * Then 권한이 없으므로 실패한다.
+     */
+    @DisplayName("다른 유저의 즐겨찾기 조회시 실패한다.")
+    @Test
+    void searchFavoriteAnotherMember() {
+        // given
+        String EMAIL2 = "email2@email.com";
+        String PASSWORD2 = "password2";
+        회원_생성_요청(EMAIL2, PASSWORD2, 14);
+        String accessToken2 = AuthSteps.bearer_로그인_AccessToken_추출(EMAIL2, PASSWORD2);
+        // given
+        역삼역_ID = 역_생성_ID_추출(지하철역_생성_요청("역삼역"));
+        선릉역_ID = 역_생성_ID_추출(지하철역_생성_요청("선릉역"));
+
+        // given
+        ExtractableResponse<Response> 유저1의_즐겨찾기_생성요청 = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
+        ExtractableResponse<Response> 유저2의_즐겨찾기_생성요청 = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken2);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(유저2의_즐겨찾기_생성요청, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
      * Given 즐겨찾기가 생성된다.
      * When 즐겨찾기를 삭제한다.
      * Then 즐겨찾기가 삭제된다.
@@ -137,5 +166,34 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(비로그인으로_즐겨찾기_삭제_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 유저1가 즐겨찾기1를 생성한다.
+     * Given 유저2가 즐겨찾기2를 생성한다.
+     * When 유저1이 즐겨찾기2를 삭제한다.
+     * Then 권한이 없으므로 실패한다.
+     */
+    @DisplayName("다른 유저의 즐겨찾기 삭제시 실패한다.")
+    @Test
+    void deleteFavoriteAnotherMember() {
+        // given
+        String EMAIL2 = "email2@email.com";
+        String PASSWORD2 = "password2";
+        회원_생성_요청(EMAIL2, PASSWORD2, 14);
+        String accessToken2 = AuthSteps.bearer_로그인_AccessToken_추출(EMAIL2, PASSWORD2);
+        // given
+        역삼역_ID = 역_생성_ID_추출(지하철역_생성_요청("역삼역"));
+        선릉역_ID = 역_생성_ID_추출(지하철역_생성_요청("선릉역"));
+
+        // given
+        ExtractableResponse<Response> 유저1의_즐겨찾기_생성요청 = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
+        ExtractableResponse<Response> 유저2의_즐겨찾기_생성요청 = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken2);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(유저2의_즐겨찾기_생성요청, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
