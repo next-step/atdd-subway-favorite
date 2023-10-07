@@ -30,12 +30,17 @@ public class FavoriteService {
         return favoriteRepository.save(new Favorite(member, source, target));
     }
 
-    public FavoriteResponse findFavorite(Long id) {
+    public FavoriteResponse findFavorite(Long id, String email) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        favorite.checkOwner(member);
         return FavoriteResponse.of(favorite);
     }
 
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long id, String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        favorite.checkOwner(member);
+        favoriteRepository.delete(favorite);
     }
 }
