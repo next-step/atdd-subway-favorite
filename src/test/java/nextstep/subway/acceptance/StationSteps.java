@@ -20,4 +20,10 @@ public class StationSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static Long 역_생성_ID_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getLong("id");
+    }
+
+
 }
