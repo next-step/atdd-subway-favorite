@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.member.application.dto.CreateFavoriteRequest;
+import nextstep.member.application.dto.FavoriteResponse;
 import nextstep.member.domain.Favorite;
 import nextstep.member.domain.FavoriteRepository;
 import nextstep.member.domain.Member;
@@ -27,5 +28,10 @@ public class FavoriteService {
         Station target = stationService.findById(request.getTarget());
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return favoriteRepository.save(new Favorite(member, source, target));
+    }
+
+    public FavoriteResponse findFavorite(Long id) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        return FavoriteResponse.of(favorite);
     }
 }

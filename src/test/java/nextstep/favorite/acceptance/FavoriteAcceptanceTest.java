@@ -63,10 +63,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void searchFavorite() {
         // given
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
 
         // when
-        즐겨찾기_조회_요청(response, accessToken);
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(createResponse, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
