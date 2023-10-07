@@ -141,9 +141,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String PASSWORD2 = "password2";
         회원_생성_요청(EMAIL2, PASSWORD2, 14);
         String accessToken2 = AuthSteps.bearer_로그인_AccessToken_추출(EMAIL2, PASSWORD2);
-        // given
-        역삼역_ID = 역_생성_ID_추출(지하철역_생성_요청("역삼역"));
-        선릉역_ID = 역_생성_ID_추출(지하철역_생성_요청("선릉역"));
 
         // given
         ExtractableResponse<Response> 유저1의_즐겨찾기_생성요청 = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
@@ -211,9 +208,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String PASSWORD2 = "password2";
         회원_생성_요청(EMAIL2, PASSWORD2, 14);
         String accessToken2 = AuthSteps.bearer_로그인_AccessToken_추출(EMAIL2, PASSWORD2);
-        // given
-        역삼역_ID = 역_생성_ID_추출(지하철역_생성_요청("역삼역"));
-        선릉역_ID = 역_생성_ID_추출(지하철역_생성_요청("선릉역"));
 
         // given
         ExtractableResponse<Response> 유저1의_즐겨찾기_생성요청 = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
