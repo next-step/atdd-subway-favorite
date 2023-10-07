@@ -1,5 +1,6 @@
 package nextstep.favorite.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.study.AuthSteps;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
@@ -76,6 +78,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 즐겨찾기가 생성된다.
+     * When 로그인 없이 즐겨찾기를 조회한다.
+     * Then 권한이 없으므로 실패한다.
+     */
+    @DisplayName("비로그인으로 즐겨찾기 조회")
+    @Test
+    void searchFavoriteNoLogin() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
+
+        // when
+        String uri = createResponse.header("Location");
+        ExtractableResponse<Response> 비로그인으로_즐겨찾기_조회_요청 = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all().extract();
+
+        // then
+        assertThat(비로그인으로_즐겨찾기_조회_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 즐겨찾기가 생성된다.
      * When 즐겨찾기를 삭제한다.
      * Then 즐겨찾기가 삭제된다.
      */
@@ -90,5 +115,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Given 즐겨찾기가 생성된다.
+     * When 로그인 없이 즐겨찾기를 삭제한다.
+     * Then 권한이 없으므로 실패한다.
+     */
+    @DisplayName("비로그인으로 즐겨찾기 삭제시 실패한다.")
+    @Test
+    void deleteFavoriteNoLogin() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
+
+        // when
+        String uri = createResponse.header("Location");
+        ExtractableResponse<Response> 비로그인으로_즐겨찾기_삭제_요청 = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
+                .then().log().all().extract();
+
+        // then
+        assertThat(비로그인으로_즐겨찾기_삭제_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
