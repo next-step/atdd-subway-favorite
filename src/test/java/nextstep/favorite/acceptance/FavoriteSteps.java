@@ -22,4 +22,19 @@ public class FavoriteSteps {
                 .when().post("/favorites")
                 .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(ExtractableResponse<Response> response, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get(response.header("Location"))
+                .then().log().all().extract();
+    }
+
+    public static Long 즐겨찾기_조회_출발역ID_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getLong("source.id");
+    }
+    public static Long 즐겨찾기_조회_도착역ID_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getLong("target.id");
+    }
 }

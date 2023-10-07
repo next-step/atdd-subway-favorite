@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
+import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.StationSteps.역_생성_ID_추출;
 import static nextstep.subway.acceptance.StationSteps.지하철역_생성_요청;
@@ -45,12 +45,32 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
-    void createFavorites() {
+    void createFavorite() {
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isEqualTo("/favorites/1");
+    }
+
+    /**
+     * Given 즐겨찾기가 생성된다.
+     * When 즐겨찾기를 조회한다.
+     * Then 시작역과 도착역이 조회된다.
+     */
+    @DisplayName("즐겨찾기를 조회한다.")
+    @Test
+    void searchFavorite() {
+        // given
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
+
+        // when
+        즐겨찾기_조회_요청(response, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(즐겨찾기_조회_출발역ID_추출(response)).isEqualTo(역삼역_ID);
+        assertThat(즐겨찾기_조회_도착역ID_추출(response)).isEqualTo(선릉역_ID);
     }
 }
