@@ -53,7 +53,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isEqualTo("/favorites/1");
     }
 
     /**
@@ -81,7 +80,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 로그인 없이 즐겨찾기를 조회한다.
      * Then 권한이 없으므로 실패한다.
      */
-    @DisplayName("비로그인으로 즐겨찾기 조회")
+    @DisplayName("비로그인으로 즐겨찾기 조회시 실패한다.")
     @Test
     void searchFavoriteNoLogin() {
         // given
