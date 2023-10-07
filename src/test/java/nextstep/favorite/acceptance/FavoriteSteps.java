@@ -33,6 +33,16 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response, String accessToken) {
+        String uri = response.header("Location");
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
+                .then().log().all().extract();
+    }
+
     public static Long 즐겨찾기_조회_출발역ID_추출(ExtractableResponse<Response> response) {
         return response.jsonPath().getLong("source.id");
     }

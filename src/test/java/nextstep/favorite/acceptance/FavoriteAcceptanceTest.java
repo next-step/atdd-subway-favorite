@@ -73,4 +73,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(즐겨찾기_조회_출발역ID_추출(response)).isEqualTo(역삼역_ID);
         assertThat(즐겨찾기_조회_도착역ID_추출(response)).isEqualTo(선릉역_ID);
     }
+
+    /**
+     * Given 즐겨찾기가 생성된다.
+     * When 즐겨찾기를 삭제한다.
+     * Then 즐겨찾기가 삭제된다.
+     */
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(역삼역_ID, 선릉역_ID, accessToken);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createResponse, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
