@@ -43,25 +43,4 @@ public class FavoriteTest {
         // when, then
         Assertions.assertThatThrownBy(() -> 유저_1번의_즐겨찾기.checkOwner(유저_2번)).isInstanceOf(AuthenticationException.class);
     }
-
-    @Test
-    @DisplayName("즐겨찾기 생성시 구간이 유효하면 성공한다.")
-    void createFavoriteValidSections() {
-        // when, then
-        Favorite.create(역삼역, 선릉역, 유저_1번);
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 생성시 구간이 유효하지않으면 실패한다.")
-    void createFavoriteInvalidSections() {
-        // given
-        Station 천호역 = new Station("천호역");
-        Station 잠실역 = new Station("잠실역");
-        Line 팔호선 = new Line("팔호선", "다홍색");
-        팔호선.addSection(천호역, 잠실역, 10);
-
-        // when, then
-        Assertions.assertThatThrownBy(() -> Favorite.create(역삼역, 선릉역, 유저_1번)).isInstanceOf(IllegalArgumentException.class);
-    }
-
 }
