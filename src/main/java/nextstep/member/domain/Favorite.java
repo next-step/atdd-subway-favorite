@@ -1,5 +1,6 @@
 package nextstep.member.domain;
 
+import nextstep.auth.AuthenticationException;
 import nextstep.subway.domain.Station;
 
 import javax.persistence.*;
@@ -43,5 +44,11 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public void checkOwner(Member member) {
+        if (this.member != member) {
+            throw new AuthenticationException();
+        }
     }
 }
