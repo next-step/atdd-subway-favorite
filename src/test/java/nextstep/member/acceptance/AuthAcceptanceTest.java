@@ -1,4 +1,4 @@
-package nextstep.study;
+package nextstep.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -41,22 +41,15 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
-    }
+        String accessToken = response.jsonPath().getString("accessToken");
+        assertThat(accessToken).isNotBlank();
 
-    @DisplayName("Github Auth")
-    @Test
-    void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 }

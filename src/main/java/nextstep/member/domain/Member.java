@@ -12,7 +12,6 @@ public class Member {
     private String email;
     private String password;
     private Integer age;
-    private String role;
 
     public Member() {
     }
@@ -21,14 +20,6 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.role = RoleType.ROLE_MEMBER.name();
-    }
-
-    public Member(String email, String password, Integer age, String role) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.role = role;
     }
 
     public Long getId() {
@@ -45,10 +36,6 @@ public class Member {
 
     public Integer getAge() {
         return age;
-    }
-
-    public String getRole() {
-        return role;
     }
 
     public void update(Member member) {

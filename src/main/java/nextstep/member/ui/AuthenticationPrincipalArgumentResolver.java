@@ -1,7 +1,8 @@
-package nextstep.auth.principal;
+package nextstep.member.ui;
 
-import nextstep.auth.AuthenticationException;
-import nextstep.auth.token.JwtTokenProvider;
+import nextstep.member.AuthenticationException;
+import nextstep.member.application.JwtTokenProvider;
+import nextstep.member.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -28,9 +29,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         }
         String token = authorization.split(" ")[1];
 
-        String username = jwtTokenProvider.getPrincipal(token);
-        String role = jwtTokenProvider.getRoles(token);
+        String email = jwtTokenProvider.getPrincipal(token);
 
-        return new UserPrincipal(username, role);
+        return new LoginMember(email);
     }
 }
