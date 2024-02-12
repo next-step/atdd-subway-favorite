@@ -26,7 +26,7 @@ public abstract class AcceptanceTestAuthBase {
 
 
     @BeforeEach
-    void setUp() {
+    void acceptanceTestAuthBaseSetUp() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
