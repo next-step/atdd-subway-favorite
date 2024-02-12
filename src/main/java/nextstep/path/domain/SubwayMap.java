@@ -4,7 +4,6 @@ import nextstep.line.domain.Line;
 import nextstep.line.domain.Section;
 import nextstep.path.exception.PathNotFoundException;
 import nextstep.station.domain.Station;
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -19,20 +18,21 @@ public class SubwayMap {
         this.lines = lines;
     }
 
-    public Path findShortestPath(final Station sourceStation, final Station targetStation) {
+    public Optional<Path> findShortestPath(final Station sourceStation, final Station targetStation) {
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> path = getShortestPath(sourceStation, targetStation);
+
+        return Optional.ofNullable(path.getPath(sourceStation, targetStation))
+                .map(shortestPath -> new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight()));
+    }
+
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> getShortestPath(final Station sourceStation, final Station targetStation) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = buildGraph();
 
         if (!(graph.containsVertex(sourceStation) && graph.containsVertex(targetStation))) {
             throw new PathNotFoundException();
         }
 
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
-
-        final GraphPath<Station, DefaultWeightedEdge> shortestPath =
-                Optional.ofNullable(path.getPath(sourceStation, targetStation))
-                        .orElseThrow(PathNotFoundException::new);
-
-        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        return new DijkstraShortestPath<>(graph);
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> buildGraph() {

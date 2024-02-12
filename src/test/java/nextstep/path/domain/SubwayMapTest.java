@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -55,9 +56,11 @@ class SubwayMapTest {
     @Test
     @DisplayName("findShortestPath 를 통해 최단거리 경로를 반환 받을 수 있다.")
     void findShortestPathTest() {
-        final Path shortestPath = subwayMap.findShortestPath(강남역, 남부터미널역);
+        final Optional<Path> shortestPathOptional = subwayMap.findShortestPath(강남역, 남부터미널역);
 
         assertSoftly(softly -> {
+            softly.assertThat(shortestPathOptional).isNotEmpty();
+            final Path shortestPath = shortestPathOptional.get();
             softly.assertThat(shortestPath.getDistance()).isEqualTo(교대역_강남역_distance + 교대역_남부터미널_distance);
             softly.assertThat(shortestPath.getStations()).extracting("id")
                     .containsExactly(강남역_Id, 교대역_Id, 남부터미널역_Id);
