@@ -8,10 +8,12 @@ import nextstep.member.domain.LoginMember;
 import nextstep.station.application.StationProvider;
 import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationProvider stationProvider;
@@ -21,6 +23,7 @@ public class FavoriteService {
         this.stationProvider = stationProvider;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
         final Station sourceStation = stationProvider.findById(request.getSource());
         final Station targetStation = stationProvider.findById(request.getTarget());
