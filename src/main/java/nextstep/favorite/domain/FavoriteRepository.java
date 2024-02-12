@@ -17,4 +17,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     @Query("select f from Favorite f where f.memberId = :memberId and f.sourceStation.id = :sourceId and f.targetStation.id = :targetId")
     Optional<Favorite> findByStations(@Param("memberId") Long memberId, @Param("sourceId") Long sourceId, @Param("targetId") Long targetId);
+
+    @Query("select f from Favorite f where f.id = :id and f.memberId = :memberId")
+    Optional<Favorite> findByIdAndMember(@Param("id") Long id, @Param("memberId") Long memberId);
 }

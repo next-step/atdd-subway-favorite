@@ -5,6 +5,7 @@ import nextstep.common.fixture.StationFactory;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteNotExistException;
 import nextstep.favorite.exception.FavoriteSaveException;
 import nextstep.member.domain.LoginMember;
 import nextstep.path.application.PathService;
@@ -18,8 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -86,5 +89,26 @@ class FavoriteServiceMockTest {
         assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, request))
                 .isInstanceOf(FavoriteSaveException.class)
                 .hasMessageContaining("이미 등록된 즐겨찾기 경로입니다.");
+    }
+
+    @Test
+    @DisplayName("즐겨찾기를 삭제할 수 있다")
+    void deleteFavoriteTest() {
+        final Long favoriteId = 1L;
+
+        given(favoriteRepository.findByIdAndMember(favoriteId, memberId)).willReturn(Optional.of(FavoriteFactory.createFavorite(favoriteId, memberId, 강남역, 선릉역)));
+
+        assertDoesNotThrow(() -> favoriteService.deleteFavorite(loginMember, favoriteId));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 즐겨찾기는 삭제할 수 없다")
+    void deleteFavoriteNotExistTest() {
+        final Long favoriteId = 1L;
+
+        given(favoriteRepository.findByIdAndMember(favoriteId, memberId)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember, favoriteId))
+                .isInstanceOf(FavoriteNotExistException.class);
     }
 }

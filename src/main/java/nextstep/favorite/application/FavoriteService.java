@@ -4,6 +4,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteNotExistException;
 import nextstep.favorite.exception.FavoriteSaveException;
 import nextstep.member.domain.LoginMember;
 import nextstep.path.application.PathService;
@@ -44,11 +45,11 @@ public class FavoriteService {
 
     private void validateFavoriteCreation(final LoginMember loginMember, final FavoriteRequest request) {
         request.validate();
-        if(pathService.isInvalidPath(new PathSearchRequest(request.getSource(), request.getTarget()))) {
+        if (pathService.isInvalidPath(new PathSearchRequest(request.getSource(), request.getTarget()))) {
             throw new FavoriteSaveException("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
         }
 
-        if(favoriteRepository.existsByStations(loginMember.getId(), request.getSource(), request.getTarget())) {
+        if (favoriteRepository.existsByStations(loginMember.getId(), request.getSource(), request.getTarget())) {
             throw new FavoriteSaveException("이미 등록된 즐겨찾기 경로입니다.");
         }
     }
@@ -60,12 +61,11 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
-    public void deleteFavorite(final Long id) {
-        favoriteRepository.deleteById(id);
+    @Transactional
+    public void deleteFavorite(final LoginMember loginMember, final Long id) {
+        final Favorite favorite = favoriteRepository.findByIdAndMember(id, loginMember.getId())
+                .orElseThrow(() -> new FavoriteNotExistException(id));
+
+        favoriteRepository.delete(favorite);
     }
 }
