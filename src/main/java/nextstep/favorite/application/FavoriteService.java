@@ -31,6 +31,18 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
+        validateFavoriteCreation(loginMember, request);
+
+        final Station sourceStation = stationProvider.findById(request.getSource());
+        final Station targetStation = stationProvider.findById(request.getTarget());
+
+        final Favorite favorite = new Favorite(loginMember.getId(), sourceStation, targetStation);
+        final Favorite saved = favoriteRepository.save(favorite);
+
+        return FavoriteResponse.from(saved);
+    }
+
+    private void validateFavoriteCreation(final LoginMember loginMember, final FavoriteRequest request) {
         request.validate();
         if(pathService.isInvalidPath(new PathSearchRequest(request.getSource(), request.getTarget()))) {
             throw new FavoriteSaveException("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
@@ -39,15 +51,6 @@ public class FavoriteService {
         if(favoriteRepository.existsByStations(loginMember.getId(), request.getSource(), request.getTarget())) {
             throw new FavoriteSaveException("이미 등록된 즐겨찾기 경로입니다.");
         }
-
-        final Station sourceStation = stationProvider.findById(request.getSource());
-        final Station targetStation = stationProvider.findById(request.getTarget());
-
-
-        final Favorite favorite = new Favorite(loginMember.getId(), sourceStation, targetStation);
-        final Favorite saved = favoriteRepository.save(favorite);
-
-        return FavoriteResponse.from(saved);
     }
 
     public List<FavoriteResponse> findFavorites(final LoginMember loginMember) {

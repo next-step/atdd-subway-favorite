@@ -31,5 +31,8 @@ public class FavoriteRequest {
         if (Objects.isNull(target)) {
             throw new CreateRequestNotValidException("target can not be null");
         }
+        if (Objects.equals(target, source)) {
+            throw new CreateRequestNotValidException("target and source can not be the same");
+        }
     }
 }
