@@ -37,12 +37,7 @@ public class PathService {
         List<Station> stations = path.findShortestPath(source, target);
         int distance = path.findShortestDistance(source, target);
 
-        return new PathResponse(convertToStationResponse(stations), distance);
+        return new PathResponse(StationResponse.listOf(stations), distance);
     }
 
-    private List<StationResponse> convertToStationResponse(List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
 }

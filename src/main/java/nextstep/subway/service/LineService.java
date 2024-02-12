@@ -51,21 +51,12 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> lines = lineRepository.findAll();
         Map<Line, List<Section>> sections = groupSectionsByLine(lines);
-        return convertToLineResponses(sections);
+        return LineResponse.listOf(sections);
     }
 
     private Map<Line, List<Section>> groupSectionsByLine(List<Line> lines) {
         return sectionRepository.findAllByLineIn(lines).stream()
                 .collect(Collectors.groupingBy(Section::line));
-    }
-
-    private List<LineResponse> convertToLineResponses(Map<Line, List<Section>> sections) {
-        return sections.entrySet().stream()
-                .map(entry -> {
-                    List<Station> stations = new Sections(entry.getValue()).sortedStations();
-                    return LineResponse.ofWithSections(entry.getKey(), StationResponse.listOf(stations));
-                })
-                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
