@@ -22,8 +22,8 @@ public class FavoriteService {
      * @param request
      */
     public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+        // Favorite favorite = new Favorite();
+        // favoriteRepository.save(favorite);
     }
 
     /**
