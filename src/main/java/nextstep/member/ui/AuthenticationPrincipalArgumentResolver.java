@@ -12,6 +12,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    public static final String AUTH_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(final JwtTokenProvider jwtTokenProvider) {
@@ -32,23 +33,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     private String extractTokenFrom(final NativeWebRequest webRequest) {
         final String authorization = webRequest.getHeader("Authorization");
-        if (!StringUtils.hasLength(authorization)) {
+        if (!StringUtils.hasLength(authorization) || !authorization.startsWith(AUTH_PREFIX)) {
             throw new AuthenticationException();
         }
 
-        final String[] splitAuth = authorization.split(" ");
-        if (splitAuth.length != 2) {
-            throw new AuthenticationException();
-        }
-
-        if (!"bearer".equalsIgnoreCase(splitAuth[0])) {
-            throw new AuthenticationException();
-        }
-        final String token = splitAuth[1];
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthenticationException();
-        }
-        return token;
+        return authorization.substring(AUTH_PREFIX.length());
     }
 }
