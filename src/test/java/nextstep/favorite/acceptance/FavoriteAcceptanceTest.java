@@ -14,7 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,7 +80,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
         final ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청_Without_로그인(강남역_Id, 남부터미널역_Id);
 
         // then
-        즐겨찾기_추가_요청이_거부된다(response);
+        즐겨찾기_요청이_거부된다(response);
     }
 
     /**
@@ -117,15 +119,51 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
         즐겨찾기_추가_요청이_실패한다(secondResponse);
     }
 
-    private void 즐겨찾기_목록_조회_시_생성한_즐겨찾기를_찾을_수_있다(final ExtractableResponse<Response> response) {
-        final Long createdId = RestAssuredHelper.getIdFromHeader(response);
+    /**
+     * Given 로그인 정보와 함께
+     * Given 즐겨찾기를 2개 추가 하고
+     * When 즐겨찾기 목록을 조회 하면
+     * Then 등록된 즐겨찾기 목록을 조회할 수 있다.
+     */
+    @DisplayName("즐겨찾기 목록을 조회할 수 있다.")
+    @Test
+    void 즐겨찾기_목록_조회_성공_테스트() {
+        // given
+        final ExtractableResponse<Response> 첫번째_즐겨찾기_Response = 즐겨찾기_추가_요청_With_로그인(강남역_Id, 남부터미널역_Id);
+        final ExtractableResponse<Response> 두번째_즐겨찾기_Response = 즐겨찾기_추가_요청_With_로그인(강남역_Id, 교대역_Id);
+
+        // when then
+        즐겨찾기_목록_조회_시_생성한_즐겨찾기를_찾을_수_있다(첫번째_즐겨찾기_Response, 두번째_즐겨찾기_Response);
+    }
+
+    /**
+     * Given 로그인 정보 없이
+     * When 즐겨찾기 목록을 조회 하면
+     * Then 에러가 난다
+     */
+    @DisplayName("로그인이 되어있지 않으면 즐겨찾기 목록을 조회할 수 없다.")
+    @Test
+    void 로그인_안된_상태는_즐겨찾기_목록_조회에_실패한다() {
+        // when
+        final ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청_Without_로그인();
+
+        // then
+        즐겨찾기_요청이_거부된다(response);
+    }
+
+    private void 즐겨찾기_목록_조회_시_생성한_즐겨찾기를_찾을_수_있다(final ExtractableResponse<Response>... response) {
+        final List<Long> createdIds = Arrays.stream(response).map(RestAssuredHelper::getIdFromHeader).collect(Collectors.toList());
         final ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청_With_로그인();
         final List<Long> ids = listResponse.jsonPath().getList("id", Long.class);
-        assertThat(ids).containsAnyOf(createdId);
+        assertThat(ids).containsExactlyElementsOf(createdIds);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_With_로그인() {
         return FavoriteApiHelper.fetchFavorites(accessToken);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_Without_로그인() {
+        return FavoriteApiHelper.fetchFavorites("");
     }
 
     private ExtractableResponse<Response> 즐겨찾기_추가_요청_With_로그인(final Long sourceId, final Long targetId) {
@@ -140,7 +178,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 즐겨찾기_추가_요청이_거부된다(final ExtractableResponse<Response> response) {
+    private void 즐겨찾기_요청이_거부된다(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
