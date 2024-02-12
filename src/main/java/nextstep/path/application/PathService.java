@@ -50,4 +50,8 @@ public class PathService {
             throw new StationNotExistException(id);
         };
     }
+
+    public boolean isInvalidPath(final PathSearchRequest pathSearchRequest) {
+        return false;
+    }
 }

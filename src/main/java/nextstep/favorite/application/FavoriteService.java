@@ -4,7 +4,10 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteSaveException;
 import nextstep.member.domain.LoginMember;
+import nextstep.path.application.PathService;
+import nextstep.path.application.dto.PathSearchRequest;
 import nextstep.station.application.StationProvider;
 import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -18,18 +21,24 @@ import java.util.stream.Collectors;
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationProvider stationProvider;
+    private final PathService pathService;
 
-    public FavoriteService(final FavoriteRepository favoriteRepository, final StationProvider stationProvider) {
+    public FavoriteService(final FavoriteRepository favoriteRepository, final StationProvider stationProvider, final PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.stationProvider = stationProvider;
+        this.pathService = pathService;
     }
 
     @Transactional
     public FavoriteResponse createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
         request.validate();
+        if(pathService.isInvalidPath(new PathSearchRequest(request.getSource(), request.getTarget()))) {
+            throw new FavoriteSaveException("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
+        }
 
         final Station sourceStation = stationProvider.findById(request.getSource());
         final Station targetStation = stationProvider.findById(request.getTarget());
+
 
         final Favorite favorite = new Favorite(loginMember.getId(), sourceStation, targetStation);
         final Favorite saved = favoriteRepository.save(favorite);
