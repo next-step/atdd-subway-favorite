@@ -77,7 +77,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
     @Test
     void 로그인_안된_상태는_즐겨찾기_추가에_실패한다() {
         // when
-        final ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청_Without_로그인(강남역_Id, 남부터미널역_Id);
+        final ExtractableResponse<Response> response = 즐겨찾기_추가_요청_Without_로그인(강남역_Id, 남부터미널역_Id);
 
         // then
         즐겨찾기_요청이_거부된다(response);
@@ -170,7 +170,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
         return FavoriteApiHelper.addFavorite(accessToken, sourceId, targetId);
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_Without_로그인(final Long sourceId, final Long targetId) {
+    private ExtractableResponse<Response> 즐겨찾기_추가_요청_Without_로그인(final Long sourceId, final Long targetId) {
         return FavoriteApiHelper.addFavorite("", sourceId, targetId);
     }
 
