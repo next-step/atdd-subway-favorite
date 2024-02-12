@@ -35,28 +35,25 @@ class FavoriteServiceMockTest {
 
     private FavoriteService favoriteService;
     private LoginMember loginMember;
-    private Long 강남역_Id;
-    private Long 선릉역_Id;
-    private Long memberId;
-    private Long favoriteId;
+    private final Long 강남역_Id = 1L;
+    private final Long 선릉역_Id = 2L;
+    private final Long memberId = 1L;
     private Station 강남역;
     private Station 선릉역;
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(favoriteRepository, stationProvider, pathService);
         loginMember = new LoginMember(memberId, "test@test.com");
-        강남역_Id = 1L;
-        선릉역_Id = 2L;
-        memberId = 1L;
-        favoriteId = 1L;
         강남역 = StationFactory.createStation(강남역_Id, "강남역");
         선릉역 = StationFactory.createStation(선릉역_Id, "선릉역");
+        favoriteService = new FavoriteService(favoriteRepository, stationProvider, pathService);
     }
 
     @Test
     @DisplayName("즐겨찾기를 생성할 수 있다")
     void createFavoriteTest() {
+        final Long favoriteId = 1L;
+
         given(stationProvider.findById(강남역_Id)).willReturn(강남역);
         given(stationProvider.findById(선릉역_Id)).willReturn(선릉역);
         given(favoriteRepository.save(any())).willReturn(FavoriteFactory.createFavorite(favoriteId, memberId, 강남역, 선릉역));
@@ -77,5 +74,17 @@ class FavoriteServiceMockTest {
         assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, request))
                 .isInstanceOf(FavoriteSaveException.class)
                 .hasMessageContaining("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("이미 등록한 즐겨찾기 경로는 다시 등록할 수 없다")
+    void favoritePathDuplicateTest() {
+        given(favoriteRepository.existsByStations(memberId, 강남역_Id, 선릉역_Id)).willReturn(true);
+
+        final FavoriteRequest request = new FavoriteRequest(강남역_Id, 선릉역_Id);
+
+        assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, request))
+                .isInstanceOf(FavoriteSaveException.class)
+                .hasMessageContaining("이미 등록된 즐겨찾기 경로입니다.");
     }
 }

@@ -36,6 +36,10 @@ public class FavoriteService {
             throw new FavoriteSaveException("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
         }
 
+        if(favoriteRepository.existsByStations(loginMember.getId(), request.getSource(), request.getTarget())) {
+            throw new FavoriteSaveException("이미 등록된 즐겨찾기 경로입니다.");
+        }
+
         final Station sourceStation = stationProvider.findById(request.getSource());
         final Station targetStation = stationProvider.findById(request.getTarget());
 
