@@ -45,11 +45,13 @@ public class FavoriteService {
 
     private void validateFavoriteCreation(final LoginMember loginMember, final FavoriteRequest request) {
         request.validate();
-        if (pathService.isInvalidPath(new PathSearchRequest(request.getSource(), request.getTarget()))) {
+        final Long source = request.getSource();
+        final Long target = request.getTarget();
+        if (pathService.isInvalidPath(new PathSearchRequest(source, target))) {
             throw new FavoriteSaveException("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
         }
 
-        if (favoriteRepository.existsByStations(loginMember.getId(), request.getSource(), request.getTarget())) {
+        if (favoriteRepository.existsByStations(loginMember.getId(), source, target)) {
             throw new FavoriteSaveException("이미 등록된 즐겨찾기 경로입니다.");
         }
     }
