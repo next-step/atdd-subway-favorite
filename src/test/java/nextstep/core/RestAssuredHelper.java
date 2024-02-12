@@ -75,7 +75,7 @@ public class RestAssuredHelper {
                 .then().extract();
     }
 
-    public static Long getIdFrom(final ExtractableResponse<Response> response) {
+    public static Long getIdFromBody(final ExtractableResponse<Response> response) {
         return response.jsonPath().getLong("id");
     }
 

@@ -33,9 +33,9 @@ public class LineAcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("지하철역"));
-        새로운지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("새로운지하철역"));
-        또다른지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("또다른지하철역"));
+        지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("지하철역"));
+        새로운지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("새로운지하철역"));
+        또다른지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("또다른지하철역"));
     }
 
     /**
@@ -85,7 +85,7 @@ public class LineAcceptanceTest {
     void 노선_조회_테스트() {
         // given
         final ExtractableResponse<Response> 신분당선_response = 노선_생성_요청(신분당선, 신분당선_color, 지하철역_Id, 새로운지하철역_Id, 신분당선_distance);
-        final Long 신분당선_id = RestAssuredHelper.getIdFrom(신분당선_response);
+        final Long 신분당선_id = RestAssuredHelper.getIdFromBody(신분당선_response);
 
         // when
         final ExtractableResponse<Response> response = 노선_조회_요청(신분당선_id);
@@ -104,7 +104,7 @@ public class LineAcceptanceTest {
     void 노선_수정_테스트() {
         // given
         final ExtractableResponse<Response> 신분당선_response = 노선_생성_요청(신분당선, 신분당선_color, 지하철역_Id, 새로운지하철역_Id, 신분당선_distance);
-        final Long 신분당선_id = RestAssuredHelper.getIdFrom(신분당선_response);
+        final Long 신분당선_id = RestAssuredHelper.getIdFromBody(신분당선_response);
 
         // when
         final String 다른분당선 = "다른분당선";
@@ -125,7 +125,7 @@ public class LineAcceptanceTest {
         // given
         final ExtractableResponse<Response> 신분당선_response = 노선_생성_요청(신분당선, 신분당선_color, 지하철역_Id, 새로운지하철역_Id, 신분당선_distance);
         final ExtractableResponse<Response> 분당선_response = 노선_생성_요청(분당선, 분당선_color, 지하철역_Id, 또다른지하철역_Id, 분당선_distance);
-        final Long 신분당선_id = RestAssuredHelper.getIdFrom(신분당선_response);
+        final Long 신분당선_id = RestAssuredHelper.getIdFromBody(신분당선_response);
 
         // when
         final ExtractableResponse<Response> response = 노선_삭제_요청(신분당선_id);
@@ -138,7 +138,7 @@ public class LineAcceptanceTest {
         assertSoftly(softly -> {
             softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
             final List<Long> lineIds = getIds(노선_목록_조회_요청());
-            softly.assertThat(lineIds).containsExactly(RestAssuredHelper.getIdFrom(분당선_response));
+            softly.assertThat(lineIds).containsExactly(RestAssuredHelper.getIdFromBody(분당선_response));
         });
     }
 
@@ -172,8 +172,8 @@ public class LineAcceptanceTest {
     private void 조회된_목록에_생성한_노선_정보가_있다(final ExtractableResponse<Response> response, final ExtractableResponse<Response> 신분당선_response, final ExtractableResponse<Response> 분당선_response) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-                , () -> assertResponseData(response, RestAssuredHelper.getIdFrom(신분당선_response), 신분당선, 신분당선_color, 지하철역_Id, 새로운지하철역_Id)
-                , () -> assertResponseData(response, RestAssuredHelper.getIdFrom(분당선_response), 분당선, 분당선_color, 지하철역_Id, 또다른지하철역_Id)
+                , () -> assertResponseData(response, RestAssuredHelper.getIdFromBody(신분당선_response), 신분당선, 신분당선_color, 지하철역_Id, 새로운지하철역_Id)
+                , () -> assertResponseData(response, RestAssuredHelper.getIdFromBody(분당선_response), 분당선, 분당선_color, 지하철역_Id, 또다른지하철역_Id)
         );
     }
 

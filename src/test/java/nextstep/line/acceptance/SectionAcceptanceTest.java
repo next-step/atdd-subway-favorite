@@ -38,12 +38,12 @@ public class SectionAcceptanceTest {
     @BeforeEach
     void setUp() {
         // given
-        지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("지하철역"));
-        새로운지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("새로운지하철역"));
-        또다른지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("또다른지하철역"));
-        없는지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("없는지하철역"));
-        존재하지않는지하철역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("존재하지않는지하철역"));
-        신분당선_Id = RestAssuredHelper.getIdFrom((LineApiHelper.createLine(신분당선, 신분당선_color, 지하철역_Id, 새로운지하철역_Id, 신분당선_distance)));
+        지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("지하철역"));
+        새로운지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("새로운지하철역"));
+        또다른지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("또다른지하철역"));
+        없는지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("없는지하철역"));
+        존재하지않는지하철역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("존재하지않는지하철역"));
+        신분당선_Id = RestAssuredHelper.getIdFromBody((LineApiHelper.createLine(신분당선, 신분당선_color, 지하철역_Id, 새로운지하철역_Id, 신분당선_distance)));
     }
 
     @Nested
