@@ -43,6 +43,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
         RestAssuredHelper.getIdFromBody((LineApiHelper.createLine("2호선", "green", 교대역_Id, 강남역_Id, 5)));
         RestAssuredHelper.getIdFromBody((LineApiHelper.createLine("신분당선", "red", 강남역_Id, 양재역_Id, 10)));
         final Long 삼호선_Id = RestAssuredHelper.getIdFromBody((LineApiHelper.createLine("3호선", "orange", 교대역_Id, 남부터미널역_Id, 2)));
+        RestAssuredHelper.getIdFromBody((LineApiHelper.createLine("4호선", "red", 서울역_Id, 사당역_Id, 10)));
         SectionApiHelper.createSection(삼호선_Id, 남부터미널역_Id, 양재역_Id, 3);
     }
 
@@ -90,7 +91,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
     @Test
     void 존재하지_않는_경로는_즐겨찾기_추가에_실패한다() {
         // when
-        final ExtractableResponse<Response> response = 즐겨찾기_추가_요청_With_로그인(사당역_Id, 서울역_Id);
+        final ExtractableResponse<Response> response = 즐겨찾기_추가_요청_With_로그인(강남역_Id, 서울역_Id);
 
         // then
         즐겨찾기_추가_요청이_실패한다(response);
