@@ -1,4 +1,4 @@
-package nextstep.utils;
+package nextstep;
 
 import org.springframework.stereotype.Component;
 

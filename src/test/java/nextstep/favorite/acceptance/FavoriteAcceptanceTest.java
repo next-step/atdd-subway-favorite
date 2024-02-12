@@ -1,6 +1,6 @@
 package nextstep.favorite.acceptance;
 
-import nextstep.utils.AcceptanceTest;
+import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("즐겨찾기 관련 기능")
