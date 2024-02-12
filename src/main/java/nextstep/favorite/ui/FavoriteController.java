@@ -27,8 +27,8 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites() {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites();
-        return ResponseEntity.ok().body(favorites);
+        // final List<FavoriteResponse> favorites = favoriteService.findFavorites();
+        return ResponseEntity.ok().body(null);
     }
 
     @DeleteMapping("/favorites/{id}")

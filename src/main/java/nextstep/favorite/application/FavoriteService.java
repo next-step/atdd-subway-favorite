@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,14 +37,11 @@ public class FavoriteService {
         return FavoriteResponse.from(saved);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        final List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(final LoginMember loginMember) {
+        return favoriteRepository.findAllWithStationsByMember(loginMember.getId())
+                .stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 
     /**
