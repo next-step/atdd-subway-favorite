@@ -119,6 +119,22 @@
   Connection: keep-alive
   Date: Mon, 22 Mar 2021 14:27:37 GMT
   ```
+    - 성공 시나리오
+      > Given 로그인을 한 뒤<br>
+      Given 지하철 노선을 생성하고<br>
+      Given 경로들을 즐겨찾기에 추가 한 뒤<br>
+      When 즐겨찾기를 삭제하면<br>
+      Then 즐겨찾기 목록조회시 제외되어있다.
+    - 실패 시나리오
+      > Given 지하철 노선을 생성하고<br>
+      When 즐겨찾기를 삭제하는데<br>
+      When 로그인이 되어 있지 않다면
+      Then 에러가 난다.
+
+      > Given 로그인을 한 뒤<br>
+      Given 지하철 노선을 생성하고<br>
+      When 없는 즐겨찾기를 삭제하면<br>
+      Then 에러가 난다.
 
 #### 2. 즐겨찾기 기능 개선하기
 #### 3. 예외 처리
