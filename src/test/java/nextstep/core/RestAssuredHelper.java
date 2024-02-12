@@ -93,6 +93,14 @@ public class RestAssuredHelper {
                 .then().extract();
     }
 
+    public static ExtractableResponse<Response> deleteByIdWithAuth(final String path, final String accessToken, final Long id) {
+        return RestAssured
+                .given().pathParam("id", id)
+                .auth().oauth2(accessToken)
+                .when().delete(path + "/{id}")
+                .then().extract();
+    }
+
     public static Long getIdFromBody(final ExtractableResponse<Response> response) {
         return response.jsonPath().getLong("id");
     }
@@ -106,4 +114,5 @@ public class RestAssuredHelper {
     public static <T> T findObjectFrom(final ExtractableResponse<Response> response, final Long id, final Class<T> type) {
         return response.jsonPath().getObject(String.format("find {it.id==%d}", id), type);
     }
+
 }

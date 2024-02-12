@@ -151,6 +151,58 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
         즐겨찾기_요청이_거부된다(response);
     }
 
+    /**
+     * Given 로그인 정보와 함께
+     * Given 즐겨찾기를 추가 한 뒤
+     * When 즐겨찾기를 삭제하면
+     * Then 즐겨찾기 목록 조회 시 생성한 즐겨찾기가 제외되어 있다
+     */
+    @DisplayName("즐겨찾기를 삭제할 수 있다.")
+    @Test
+    void 즐겨찾기_삭제_성공_테스트() {
+        // given
+        final ExtractableResponse<Response> 첫번째_즐겨찾기_Response = 즐겨찾기_추가_요청_With_로그인(강남역_Id, 남부터미널역_Id);
+        final ExtractableResponse<Response> 두번째_즐겨찾기_Response = 즐겨찾기_추가_요청_With_로그인(강남역_Id, 교대역_Id);
+
+        // when
+        final ExtractableResponse<Response> response = 즐겨찾기_삭제_요청_With_로그인(RestAssuredHelper.getIdFromHeader(첫번째_즐겨찾기_Response));
+
+        // then
+        즐겨찾기_삭제_요청이_성공한다(response);
+        즐겨찾기_목록_조회_시_생성한_즐겨찾기를_찾을_수_있다(두번째_즐겨찾기_Response);
+    }
+
+    /**
+     * Given 로그인 정보 없이
+     * When 즐겨찾기를 삭제 하면
+     * Then 에러가 난다
+     */
+    @DisplayName("로그인이 되어있지 않으면 즐겨찾기를 삭제할 수 없다.")
+    @Test
+    void 로그인_안된_상태는_즐겨찾기_삭제에_실패한다() {
+        // when
+        final ExtractableResponse<Response> response = 즐겨찾기_삭제_요청_Without_로그인();
+
+        // then
+        즐겨찾기_요청이_거부된다(response);
+    }
+
+    /**
+     * Given 로그인 정보와 함께
+     * When 존재하지 않는 즐겨찾기를 삭제하면
+     * Then 에러가 난다
+     */
+    @DisplayName("존재하지 않는 즐겨찾기는 삭제할 수 없다.")
+    @Test
+    void 존재하지_않는_즐겨찾기_삭제는_실패한다() {
+        // when
+        final ExtractableResponse<Response> response = 즐겨찾기_삭제_요청_With_로그인(1L);
+
+        // then
+        즐겨찾기_삭제_요청이_실패한다(response);
+    }
+
+
     private void 즐겨찾기_목록_조회_시_생성한_즐겨찾기를_찾을_수_있다(final ExtractableResponse<Response>... response) {
         final List<Long> createdIds = Arrays.stream(response).map(RestAssuredHelper::getIdFromHeader).collect(Collectors.toList());
         final ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청_With_로그인();
@@ -174,6 +226,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
         return FavoriteApiHelper.addFavorite("", sourceId, targetId);
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청_With_로그인(final Long favoriteId) {
+        return FavoriteApiHelper.removeFavorite(accessToken, favoriteId);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청_Without_로그인() {
+        return FavoriteApiHelper.removeFavorite("", 1L);
+    }
+
+
     private void 즐겨찾기_추가_요청이_성공한다(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -184,6 +245,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
 
     private void 즐겨찾기_추가_요청이_실패한다(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 즐겨찾기_삭제_요청이_실패한다(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    private void 즐겨찾기_삭제_요청이_성공한다(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }

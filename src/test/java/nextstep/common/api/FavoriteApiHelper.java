@@ -20,4 +20,8 @@ public class FavoriteApiHelper {
     public static ExtractableResponse<Response> fetchFavorites(final String accessToken) {
         return RestAssuredHelper.getWithAuth(FAVORITE_API_PATH, accessToken);
     }
+
+    public static ExtractableResponse<Response> removeFavorite(final String accessToken, final Long favoriteId) {
+        return RestAssuredHelper.deleteByIdWithAuth(FAVORITE_API_PATH, accessToken, favoriteId);
+    }
 }
