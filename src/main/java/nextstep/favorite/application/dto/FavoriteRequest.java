@@ -1,5 +1,9 @@
 package nextstep.favorite.application.dto;
 
+import nextstep.line.exception.CreateRequestNotValidException;
+
+import java.util.Objects;
+
 public class FavoriteRequest {
     private Long source;
     private Long target;
@@ -7,7 +11,7 @@ public class FavoriteRequest {
     public FavoriteRequest() {
     }
 
-    public FavoriteRequest(Long source, Long target) {
+    public FavoriteRequest(final Long source, final Long target) {
         this.source = source;
         this.target = target;
     }
@@ -18,5 +22,14 @@ public class FavoriteRequest {
 
     public Long getTarget() {
         return target;
+    }
+
+    public void validate() {
+        if (Objects.isNull(source)) {
+            throw new CreateRequestNotValidException("source can not be null");
+        }
+        if (Objects.isNull(target)) {
+            throw new CreateRequestNotValidException("target can not be null");
+        }
     }
 }

@@ -25,10 +25,14 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
+        request.validate();
+
         final Station sourceStation = stationProvider.findById(request.getSource());
         final Station targetStation = stationProvider.findById(request.getTarget());
+
         final Favorite favorite = new Favorite(loginMember.getId(), sourceStation, targetStation);
         final Favorite saved = favoriteRepository.save(favorite);
+
         return FavoriteResponse.from(saved);
     }
 
