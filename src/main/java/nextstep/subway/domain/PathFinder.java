@@ -16,14 +16,14 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class PathFinder {
 
-    public PathResponse findPath(final List<Line> lines, final Station sourceStation, final Station targetStation) {
+    public PathResponse findPath(final List<Section> sections, final Station sourceStation, final Station targetStation) {
         if (sourceStation.isSame(targetStation)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "출발역과 도착역이 같습니다.");
         }
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph(lines);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph(sections);
 
-        if (!graph.containsVertex(sourceStation) || !graph.containsVertex(targetStation)) {
+        if (isNotContiansGraph(sourceStation, graph) || isNotContiansGraph(targetStation, graph)) {
             throw new IllegalArgumentException("그래프에 존재하지 않는 정점입니다.");
         }
 
@@ -33,13 +33,14 @@ public class PathFinder {
         return new PathResponse(path.getVertexList(), path.getWeight());
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(final List<Line> lines) {
+    private static boolean isNotContiansGraph(final Station sourceStation, final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        return !graph.containsVertex(sourceStation);
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(final List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        lines.stream()
-                .flatMap(l -> l.getSections().stream())
-                .distinct()
-                .forEach(section -> {
+        sections.forEach(section -> {
                     Station upStation = section.getUpStation();
                     Station downStation = section.getDownStation();
                     graph.addVertex(downStation);

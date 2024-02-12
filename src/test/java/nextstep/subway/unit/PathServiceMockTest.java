@@ -8,6 +8,7 @@ import nextstep.subway.application.dto.PathResponse;
 import nextstep.subway.application.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.PathFinder;
+import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -57,8 +59,9 @@ public class PathServiceMockTest {
         final Long source = 교대역.getId();
         final Long target = 양재역.getId();
         final List<Line> lines = Arrays.asList(이호선, 신분당선, 삼호선);
+        final List<Section> sections = getSections(lines);
         when(lineService.findAllLine()).thenReturn(lines);
-        when(pathFinder.findPath(lines, 교대역, 양재역))
+        when(pathFinder.findPath(sections, 교대역, 양재역))
                 .thenReturn(new PathResponse(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
         when(stationService.findStationById(source)).thenReturn(교대역);
         when(stationService.findStationById(target)).thenReturn(양재역);
@@ -74,5 +77,12 @@ public class PathServiceMockTest {
         assertThat(stations.get(1).getName()).isEqualTo("남부터미널역");
         assertThat(stations.get(2).getName()).isEqualTo("양재역");
         assertThat(pathResponse.getDistance()).isEqualTo(5);
+    }
+
+    private List<Section> getSections(final List<Line> lines) {
+        return lines.stream()
+                .flatMap(l -> l.getSections().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,7 @@ import nextstep.subway.application.dto.PathResponse;
 import nextstep.subway.application.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.PathFinder;
+import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,7 +46,8 @@ class PathFinderTest {
     @Test
     void pathFinder() {
         final PathFinder pathFinder = new PathFinder();
-        final PathResponse pathResponse = pathFinder.findPath(Arrays.asList(이호선, 신분당선, 삼호선), 교대역, 양재역);
+        final List<Section> sections = getSections(Arrays.asList(이호선, 신분당선, 삼호선));
+        final PathResponse pathResponse = pathFinder.findPath(sections, 교대역, 양재역);
 
         final List<StationResponse> stations = pathResponse.getStations();
 
@@ -58,7 +61,8 @@ class PathFinderTest {
     @Test
     void pathFinder_invalid_source_target_same() {
         final PathFinder pathFinder = new PathFinder();
-        assertThatThrownBy(() -> { pathFinder.findPath(Arrays.asList(이호선, 신분당선, 삼호선), 교대역, 교대역); })
+        final List<Section> sections = getSections(Arrays.asList(이호선, 신분당선, 삼호선));
+        assertThatThrownBy(() -> { pathFinder.findPath(sections, 교대역, 교대역); })
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("출발역과 도착역이 같습니다.");
     }
@@ -67,8 +71,16 @@ class PathFinderTest {
     @Test
     void pathFinder_invalid_source_target_disconnect() {
         final PathFinder pathFinder = new PathFinder();
-        assertThatThrownBy(() -> { pathFinder.findPath(Arrays.asList(이호선, 신분당선, 삼호선), 교대역, 부천역); })
+        final List<Section> sections = getSections(Arrays.asList(이호선, 신분당선, 삼호선));
+        assertThatThrownBy(() -> { pathFinder.findPath(sections, 교대역, 부천역); })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("그래프에 존재하지 않는 정점입니다.");
+    }
+
+    private List<Section> getSections(final List<Line> lines) {
+        return lines.stream()
+                .flatMap(l -> l.getSections().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
