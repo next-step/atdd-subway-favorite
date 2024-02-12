@@ -1,8 +1,9 @@
 package nextstep.member.ui;
 
-import nextstep.member.exception.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
+import nextstep.member.application.dto.TokenInfo;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -12,25 +13,32 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+    public AuthenticationPrincipalArgumentResolver(final JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
+    public boolean supportsParameter(final MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String authorization = webRequest.getHeader("Authorization");
+    public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+        final String token = extractTokenFrom(webRequest);
+        final TokenInfo tokenInfo = jwtTokenProvider.getPrincipal(token);
+        return new LoginMember(tokenInfo.getId(), tokenInfo.getEmail());
+    }
+
+    private String extractTokenFrom(final NativeWebRequest webRequest) {
+        final String authorization = webRequest.getHeader("Authorization");
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new AuthenticationException();
         }
-        String token = authorization.split(" ")[1];
+        final String token = authorization.split(" ")[1];
 
-        String email = jwtTokenProvider.getPrincipal(token);
-
-        return new LoginMember(email);
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException();
+        }
+        return token;
     }
 }
