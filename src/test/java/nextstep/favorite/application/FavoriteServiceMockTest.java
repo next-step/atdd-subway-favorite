@@ -7,6 +7,7 @@ import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
 import nextstep.station.application.StationProvider;
+import nextstep.station.application.dto.StationResponse;
 import nextstep.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -43,12 +44,9 @@ class FavoriteServiceMockTest {
         final LoginMember loginMember = new LoginMember(memberId, "test@test.com");
         final FavoriteRequest request = new FavoriteRequest(강남역_Id, 선릉역_Id);
 
-        final FavoriteResponse response = favoriteService.createFavorite(loginMember, request);
+        final FavoriteResponse actual = favoriteService.createFavorite(loginMember, request);
+        final FavoriteResponse expected = new FavoriteResponse(favoriteId, StationResponse.from(강남역), StationResponse.from(선릉역));
 
-        assertSoftly(softly->{
-            softly.assertThat(response.getId()).isEqualTo(favoriteId);
-            softly.assertThat(response.getSource().getId()).isEqualTo(강남역_Id);
-            softly.assertThat(response.getTarget().getId()).isEqualTo(선릉역_Id);
-        });
+        assertThat(actual).isEqualTo(expected);
     }
 }
