@@ -5,6 +5,7 @@ import nextstep.member.application.dto.TokenInfo;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -31,10 +32,19 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     private String extractTokenFrom(final NativeWebRequest webRequest) {
         final String authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+        if (!StringUtils.hasLength(authorization)) {
             throw new AuthenticationException();
         }
-        final String token = authorization.split(" ")[1];
+
+        final String[] splitAuth = authorization.split(" ");
+        if (splitAuth.length != 2) {
+            throw new AuthenticationException();
+        }
+
+        if (!"bearer".equalsIgnoreCase(splitAuth[0])) {
+            throw new AuthenticationException();
+        }
+        final String token = splitAuth[1];
 
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthenticationException();

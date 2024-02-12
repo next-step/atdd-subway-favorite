@@ -132,7 +132,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTestAuthBase {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_Without_로그인(final Long sourceId, final Long targetId) {
-        return FavoriteApiHelper.addFavorite(accessToken, sourceId, targetId);
+        return FavoriteApiHelper.addFavorite("", sourceId, targetId);
     }
 
     private void 즐겨찾기_추가_요청이_성공한다(final ExtractableResponse<Response> response) {
