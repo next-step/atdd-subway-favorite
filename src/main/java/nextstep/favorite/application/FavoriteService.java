@@ -4,26 +4,29 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.LoginMember;
+import nextstep.station.application.StationProvider;
+import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final StationProvider stationProvider;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteService(final FavoriteRepository favoriteRepository, final StationProvider stationProvider) {
         this.favoriteRepository = favoriteRepository;
+        this.stationProvider = stationProvider;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        // Favorite favorite = new Favorite();
-        // favoriteRepository.save(favorite);
+    public FavoriteResponse createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
+        final Station sourceStation = stationProvider.findById(request.getSource());
+        final Station targetStation = stationProvider.findById(request.getTarget());
+        final Favorite favorite = new Favorite(loginMember.getId(), sourceStation, targetStation);
+        final Favorite saved = favoriteRepository.save(favorite);
+        return FavoriteResponse.from(saved);
     }
 
     /**
@@ -32,15 +35,16 @@ public class FavoriteService {
      * @return
      */
     public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+        final List<Favorite> favorites = favoriteRepository.findAll();
         return null;
     }
 
     /**
      * TODO: 요구사항 설명에 맞게 수정합니다.
+     *
      * @param id
      */
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(final Long id) {
         favoriteRepository.deleteById(id);
     }
 }

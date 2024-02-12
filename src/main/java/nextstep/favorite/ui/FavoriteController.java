@@ -19,7 +19,7 @@ public class FavoriteController {
 
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(@RequestBody FavoriteRequest request) {
-        favoriteService.createFavorite(request);
+//        favoriteService.createFavorite(request);
         return ResponseEntity
                 .created(URI.create("/favorites/" + 1L))
                 .build();
