@@ -2,7 +2,7 @@ package nextstep.subway.strategy;
 
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;

@@ -1,7 +1,7 @@
 package nextstep.subway;
 
 import nextstep.subway.controller.dto.*;
-import nextstep.subway.exception.ExceptionResponse;
+import nextstep.exception.ExceptionResponse;
 import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

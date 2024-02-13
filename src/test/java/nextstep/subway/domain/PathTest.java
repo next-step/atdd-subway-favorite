@@ -1,6 +1,6 @@
 package nextstep.subway.domain;
 
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import nextstep.subway.strategy.Dijkstra;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
