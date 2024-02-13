@@ -21,9 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
     @Override
     @BeforeEach
     public void setUp() {
