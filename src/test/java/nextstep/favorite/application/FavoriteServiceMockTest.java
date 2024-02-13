@@ -69,6 +69,16 @@ class FavoriteServiceMockTest {
     }
 
     @Test
+    @DisplayName("출발역과 도착역이 같은 경로는 즐겨찾기를 생성할 수 없다")
+    void favoriteTargetSourceSameTest() {
+        final FavoriteRequest request = new FavoriteRequest(강남역_Id, 강남역_Id);
+
+        assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, request))
+                .isInstanceOf(FavoriteSaveException.class)
+                .hasMessageContaining("출발역과 도착역이 같은 경로는 즐겨찾기에 추가할 수 없습니다.");
+    }
+
+    @Test
     @DisplayName("존재하지 않는 경로는 즐겨찾기를 생성할 수 없다")
     void favoritePathNotValidTest() {
         given(pathService.isInvalidPath(any())).willReturn(true);
