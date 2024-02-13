@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.common.exception.SectionInsertionNotValidException;
+import nextstep.common.exception.subway.SectionInsertionNotValidException;
 
 /**
  * @author : Rene Choi
