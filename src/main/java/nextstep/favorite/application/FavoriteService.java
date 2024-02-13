@@ -44,7 +44,6 @@ public class FavoriteService {
     }
 
     private void validateFavoriteCreation(final LoginMember loginMember, final FavoriteRequest request) {
-        request.validate();
         final Long source = request.getSource();
         final Long target = request.getTarget();
         if (pathService.isInvalidPath(new PathSearchRequest(source, target))) {
