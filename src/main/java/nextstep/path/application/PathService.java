@@ -4,7 +4,9 @@ import nextstep.line.application.LineProvider;
 import nextstep.line.domain.Line;
 import nextstep.path.application.dto.PathResponse;
 import nextstep.path.application.dto.PathSearchRequest;
+import nextstep.path.domain.Path;
 import nextstep.path.domain.SubwayMap;
+import nextstep.path.exception.PathNotFoundException;
 import nextstep.station.domain.Station;
 import nextstep.station.exception.StationNotExistException;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,15 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(final PathSearchRequest searchRequest) {
+        final Path shortestPath = getPath(searchRequest).orElseThrow(PathNotFoundException::new);
+        return PathResponse.from(shortestPath);
+    }
+
+    public boolean isInvalidPath(final PathSearchRequest searchRequest) {
+        return getPath(searchRequest).isEmpty();
+    }
+
+    private Optional<Path> getPath(final PathSearchRequest searchRequest) {
         searchRequest.validate();
 
         final List<Line> allLines = lineProvider.getAllLines();
@@ -34,8 +46,7 @@ public class PathService {
         final Station targetStation = stationMap.computeIfAbsent(searchRequest.getTarget(), throwStationNotFoundException());
 
         final SubwayMap subwayMap = new SubwayMap(allLines);
-
-        return PathResponse.from(subwayMap.findShortestPath(sourceStation, targetStation));
+        return subwayMap.findShortestPath(sourceStation, targetStation);
     }
 
     private Map<Long, Station> createStationMapFrom(final List<Line> allLines) {

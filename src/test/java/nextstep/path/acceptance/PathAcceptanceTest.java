@@ -46,15 +46,15 @@ public class PathAcceptanceTest {
     @BeforeEach
     void setUp() {
         // given
-        교대역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("교대역"));
-        강남역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("강남역"));
-        양재역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("양재역"));
-        남부터미널역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("남부터미널역_Id"));
-        서울역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("서울역"));
-        사당역_Id = RestAssuredHelper.getIdFrom(StationApiHelper.createStation("사당역"));
-        이호선_Id = RestAssuredHelper.getIdFrom((LineApiHelper.createLine("2호선", "green", 교대역_Id, 강남역_Id, 교대역_강남역_distance)));
-        신분당선_Id = RestAssuredHelper.getIdFrom((LineApiHelper.createLine("신분당선", "red", 강남역_Id, 양재역_Id, 강남역_양재역_distance)));
-        삼호선_Id = RestAssuredHelper.getIdFrom((LineApiHelper.createLine("3호선", "orange", 교대역_Id, 남부터미널역_Id, 교대역_남부터미널_distance)));
+        교대역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("교대역"));
+        강남역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("강남역"));
+        양재역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("양재역"));
+        남부터미널역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("남부터미널역_Id"));
+        서울역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("서울역"));
+        사당역_Id = RestAssuredHelper.getIdFromBody(StationApiHelper.createStation("사당역"));
+        이호선_Id = RestAssuredHelper.getIdFromBody((LineApiHelper.createLine("2호선", "green", 교대역_Id, 강남역_Id, 교대역_강남역_distance)));
+        신분당선_Id = RestAssuredHelper.getIdFromBody((LineApiHelper.createLine("신분당선", "red", 강남역_Id, 양재역_Id, 강남역_양재역_distance)));
+        삼호선_Id = RestAssuredHelper.getIdFromBody((LineApiHelper.createLine("3호선", "orange", 교대역_Id, 남부터미널역_Id, 교대역_남부터미널_distance)));
         SectionApiHelper.createSection(삼호선_Id, 남부터미널역_Id, 양재역_Id, 남부터미널_양재역_distance);
     }
 

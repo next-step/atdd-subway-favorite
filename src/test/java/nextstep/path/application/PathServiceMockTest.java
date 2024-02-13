@@ -105,6 +105,20 @@ class PathServiceMockTest {
                 .isInstanceOf(PathNotFoundException.class);
     }
 
+    @Test
+    @DisplayName("isInvalidPath 를 통해 유효한 path 인지 여부를 반환받을 수 있다.")
+    void isInvalidPathTest() {
+        given(lineProvider.getAllLines()).willReturn(createLinesWithExtra());
+
+        final PathSearchRequest validSearchRequest = new PathSearchRequest(강남역_Id, 남부터미널역_Id);
+        final PathSearchRequest invalidSearchRequest = new PathSearchRequest(강남역_Id, 서울역_Id);
+
+        assertSoftly(softly->{
+            softly.assertThat(pathService.isInvalidPath(validSearchRequest)).isFalse();
+            softly.assertThat(pathService.isInvalidPath(invalidSearchRequest)).isTrue();
+        });
+    }
+
     private List<Line> createLines() {
         final Station 교대역 = StationFactory.createStation(교대역_Id, "교대역");
         final Station 강남역 = StationFactory.createStation(강남역_Id, "강남역");
