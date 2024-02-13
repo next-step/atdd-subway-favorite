@@ -1,42 +1,33 @@
 package nextstep.api.favorite.acceptance;
 
 import static nextstep.fixture.FavoriteFixtureCreator.*;
-import static nextstep.fixture.MemberFixtureCreator.*;
 import static nextstep.fixture.SubwayScenarioFixtureCreator.*;
-import static nextstep.fixture.TokenFixtureCreator.*;
-import static nextstep.utils.resthelper.ExtractableResponseParser.*;
 import static nextstep.utils.resthelper.FavoriteRequestExecutor.*;
-import static nextstep.utils.resthelper.MemberRequestExecutor.*;
-import static nextstep.utils.resthelper.TokenRequestExecutor.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestExecutionListeners;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.api.CommonAcceptanceTest;
 import nextstep.api.favorite.application.model.dto.FavoriteResponse;
+import nextstep.utils.securityutils.WithMockCustomUser;
+import nextstep.utils.securityutils.WithMockCustomUserTestExecutionListener;
 
 @DisplayName("즐겨찾기 관련 기능")
+@TestExecutionListeners(listeners = {WithMockCustomUserTestExecutionListener.class})
 public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 
 	private String authorizationToken;
 
-	@BeforeEach
-	void setUp() {
-		String email = "user@example.com";
-		String password = "password";
-		createMember(createMemberRequest(email, password, 20));
-		authorizationToken = parseAsAccessToken(loginAndCreateAuthorizationToken(createTokenRequest(email, password)));
-	}
-
 	@Test
 	@DisplayName("즐겨찾기 생성")
+	@WithMockCustomUser(email = "user@example.com", password = "password")
 	void createFavorite() {
 		// given
 		createStation("교대역");
@@ -57,6 +48,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 
 	@Test
 	@DisplayName("즐겨찾기 조회")
+	@WithMockCustomUser(email = "user@example.com", password = "password")
 	void getFavorites() {
 		// given
 		createStation("교대역");
@@ -83,6 +75,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 
 	@Test
 	@DisplayName("즐겨찾기 삭제")
+	@WithMockCustomUser(email = "user@example.com", password = "password")
 	void deleteFavorite() {
 		// given
 		createStation("교대역");
@@ -103,4 +96,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 		assertThat(deleteResponse.statusCode()).isEqualTo(NO_CONTENT.value());
 	}
 
+	public void setAuthorizationToken(String authorizationToken) {
+		this.authorizationToken = authorizationToken;
+	}
 }
