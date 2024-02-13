@@ -42,4 +42,8 @@ public class ExtractableResponseParser {
 		return findPathResponse.as(PathResponse.class).getDistance();
 	}
 
+	public static String parseAsAccessToken(ExtractableResponse<Response> response) {
+		return "Bearer " + response.jsonPath().getString("accessToken");
+	}
+
 }
