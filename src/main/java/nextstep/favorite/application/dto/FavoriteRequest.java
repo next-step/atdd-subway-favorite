@@ -1,5 +1,6 @@
 package nextstep.favorite.application.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

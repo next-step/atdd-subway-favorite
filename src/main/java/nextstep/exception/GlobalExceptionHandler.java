@@ -3,7 +3,6 @@ package nextstep.exception;
 import nextstep.FailResponse;
 import nextstep.favorite.CannotFavoriteNonexistentPathException;
 import nextstep.member.AuthenticationException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,5 +43,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<FailResponse> handleCannotFavoriteNonexistentPathException(CannotFavoriteNonexistentPathException ex) {
         return ResponseEntity.badRequest().body(new FailResponse(ex.getMessage()));
     }
-
 }
