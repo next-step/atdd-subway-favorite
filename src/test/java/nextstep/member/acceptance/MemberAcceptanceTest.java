@@ -1,6 +1,6 @@
 package nextstep.member.acceptance;
 
-import nextstep.utils.AcceptanceTest;
+import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
