@@ -21,9 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
     @Override
     @BeforeEach
     public void setUp() {
@@ -87,5 +84,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("비로그인 시 즐겨찾기 생성 실패")
+    @Test
+    void favoriteCreationFail() {
+        // given
+        Long 교대역Id = 1L;
+        Long 양재역Id = 3L;
+
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(교대역Id, 양재역Id, "");
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

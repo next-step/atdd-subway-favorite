@@ -61,4 +61,11 @@ public class PathFinder {
 
         return Pair.of(shortestPath, totalDistance);
     }
+
+    public boolean pathExists(String sourceId, String targetId) {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = init();
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceId, targetId);
+        return path != null;
+    }
 }

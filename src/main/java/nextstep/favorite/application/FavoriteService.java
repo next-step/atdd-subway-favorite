@@ -1,46 +1,55 @@
 package nextstep.favorite.application;
 
+import lombok.RequiredArgsConstructor;
+import nextstep.exception.UnauthorizedDeletionException;
+import nextstep.favorite.CannotFavoriteNonexistentPathException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.path.PathFinder;
+import nextstep.station.Station;
+import nextstep.station.StationRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
-        this.favoriteRepository = favoriteRepository;
+    private final StationRepository stationRepository;
+
+    private final PathFinder pathFinder;
+
+    public Long createFavorite(FavoriteRequest request, Member member) {
+        if (!pathFinder.pathExists(request.getSource() + "", request.getTarget() + "")) {
+            throw new CannotFavoriteNonexistentPathException();
+        }
+
+        Station sourceStation = stationRepository.findById(request.getSource()).orElseThrow(EntityNotFoundException::new);
+        Station targetStation = stationRepository.findById(request.getTarget()).orElseThrow(EntityNotFoundException::new);
+
+        Favorite favorite = Favorite.of(sourceStation, targetStation, member);
+        return favoriteRepository.save(favorite).getId();
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    public List<FavoriteResponse> findFavorites(Member member) {
+        return favoriteRepository.findAllByMember(member).stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
-    }
-
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(Long id, Member member) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        if (!favorite.getMember().equals(member)) {
+            throw new UnauthorizedDeletionException();
+        }
         favoriteRepository.deleteById(id);
     }
 }

@@ -1,22 +1,14 @@
 package nextstep.favorite.application.dto;
 
+import lombok.Getter;
+import nextstep.favorite.domain.Favorite;
+import nextstep.member.domain.Member;
+import nextstep.station.Station;
+
+@Getter
 public class FavoriteRequest {
     private Long source;
     private Long target;
 
-    public FavoriteRequest() {
-    }
 
-    public FavoriteRequest(Long source, Long target) {
-        this.source = source;
-        this.target = target;
-    }
-
-    public Long getSource() {
-        return source;
-    }
-
-    public Long getTarget() {
-        return target;
-    }
 }
