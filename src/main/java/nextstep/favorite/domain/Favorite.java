@@ -1,8 +1,10 @@
 package nextstep.favorite.domain;
 
+import nextstep.favorite.exception.FavoriteCreationException;
 import nextstep.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Favorite {
@@ -25,9 +27,22 @@ public class Favorite {
     }
 
     public Favorite(final Long memberId, final Station sourceStation, final Station targetStation) {
+        validate(memberId, sourceStation, targetStation);
         this.memberId = memberId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+    }
+
+    private void validate(final Long memberId, final Station sourceStation, final Station targetStation) {
+        if (Objects.isNull(memberId)) {
+            throw new FavoriteCreationException("memberId can not be null");
+        }
+        if (Objects.isNull(sourceStation)) {
+            throw new FavoriteCreationException("sourceStation can not be null");
+        }
+        if (Objects.isNull(targetStation)) {
+            throw new FavoriteCreationException("targetStation can not be null");
+        }
     }
 
     public Long getId() {
