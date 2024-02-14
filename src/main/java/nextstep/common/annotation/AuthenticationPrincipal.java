@@ -1,4 +1,4 @@
-package nextstep.api.member.ui;
+package nextstep.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
