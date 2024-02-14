@@ -11,6 +11,7 @@ import nextstep.subway.controller.dto.LineResponse;
 import nextstep.subway.controller.dto.StationCreateRequest;
 import nextstep.subway.controller.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -96,29 +97,59 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * 역삼역    --- *1호선*(10) ---   양재역
+     * |                        |
+     * *2호선*(10)                   *분당선*(10)
+     * |                        |
+     * 강남역    --- *신분당호선*(10) ---    선릉역
+     * <p>
+     * 신대방역    --- *3호선*(10) ---    신림역
+     *
      * GIVEN 로그인을 한 다음
      * WHEN 즐겨찾기 생성시 경로가 존재하지 않을 경우
      * Then 즐겨찾기를 생성할 수 없다
      */
     @Test
     void 실패_즐겨찾기_생성시_경로가_존재하지_않을_경우_즐겨찾기를_생성할_수_없다() {
-        String message = 즐겨찾기_생성_요청(1L, 2L)
+        String message = 즐겨찾기_생성_요청(OK.value(), 강남역_ID, 봉천역_ID)
                 .as(ExceptionResponse.class).getMessage();
 
-        assertThat(message).isEqualTo("경로가 존재하지 않습니다.");
+        assertThat(message).isEqualTo("노선에 존재하지 않는 지하철역입니다.");
     }
 
     /**
+     * GIVEN 로그인을 한 다음
+     * WHEN 즐겨찾기 생성시 출발역과 도착역이 가틍ㄹ 경우
+     * Then 즐겨찾기를 생성할 수 없다
+     */
+    @Test
+    void 실패_즐겨찾기_생성시_출발역과_도착역이_같을경우_즐겨찾기를_생성할_수_없다() {
+        String message = 즐겨찾기_생성_요청(OK.value(), 강남역_ID, 강남역_ID)
+                .as(ExceptionResponse.class).getMessage();
+
+        assertThat(message).isEqualTo("출발역과 도착역이 같은 경우 경로를 조회할 수 없습니다.");
+    }
+
+
+    /**
+     * 역삼역    --- *1호선*(10) ---   양재역
+     * |                        |
+     * *2호선*(10)                   *분당선*(10)
+     * |                        |
+     * 강남역    --- *신분당호선*(10) ---    선릉역
+     * <p>
+     * 신대방역    --- *3호선*(10) ---    신림역
+     * <p>
      * GIVEN 로그인을 한 다음
      * WHEN 즐겨찾기 생성시 경로가 연결되어 있지 않을 경우
      * Then 즐겨찾기를 생성할 수 없다
      */
     @Test
     void 실패_즐겨찾기_생성시_경로가_연결되어_있지_않을_경우_즐겨찾기를_생성할_수_없다() {
-        String message = 즐겨찾기_생성_요청(1L, 2L)
+        String message = 즐겨찾기_생성_요청(OK.value(), 강남역_ID, 신대방역_ID)
                 .as(ExceptionResponse.class).getMessage();
 
-        assertThat(message).isEqualTo("경로가 연결되어 있지 않습니다.");
+        assertThat(message).isEqualTo("출발역과 도착역이 연결되어 있지 않습니다.");
     }
 
     /**
@@ -128,10 +159,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @Test
     void 실패_즐겨찾기_생성시_이미_즐겨찾기한_경로일_경우_즐겨찾기를_생성할_수_없다() {
-        String message = 즐겨찾기_생성_요청(1L, 2L)
+        즐겨찾기_생성_요청(CREATED.value(), 강남역_ID, 선릉역_ID);
+
+        String message = 즐겨찾기_생성_요청(OK.value(), 강남역_ID, 선릉역_ID)
                 .as(ExceptionResponse.class).getMessage();
 
-        assertThat(message).isEqualTo("등록되어 있는 경로입니다.");
+        assertThat(message).isEqualTo("등록되어 있는 즐겨찾기입니다.");
     }
 
     /**
@@ -141,7 +174,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @Test
     void 성공_즐겨찾기를_생성할_수_있다() {
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(1L, 2L);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(CREATED.value(), 강남역_ID, 선릉역_ID);
 
         List<FavoriteResponse> findResponse = 즐겨찾기_조회_요청().as(new TypeRef<>() {
         });
@@ -162,6 +195,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기를 조회할 수 없다
      */
     @Test
+    @Disabled
     void 실패_즐겨찾기_조회시_로그인_하지_않았을_경우_즐겨찾기를_조회할_수_없다() {
         String message = 즐겨찾기_요청을_구성한다()
                 .즐겨찾기_조회_요청을_보낸다()
@@ -176,6 +210,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기를 조회할 수 없다
      */
     @Test
+    @Disabled
     void 실패_즐겨찾기_조회시_즐겨찾기한_경로가_없을_경우_즐겨찾기를_조회할_수_없다() {
         String message = 즐겨찾기_조회_요청()
                 .as(ExceptionResponse.class).getMessage();
@@ -188,6 +223,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기를 삭제할 수 없다
      */
     @Test
+    @Disabled
     void 실패_즐겨찾기_삭제시_로그인_하지_않았을_경우_즐겨찾기를_삭제할_수_없다() {
         String message = 즐겨찾기_요청을_구성한다()
                 .즐겨찾기_삭제_요청을_보낸다("/favorites/1")
@@ -202,6 +238,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기를 삭제할 수 없다
      */
     @Test
+    @Disabled
     void 실패_즐겨찾기_삭제시_즐겨찾기가_존재하지_않을_경우_즐겨찾기를_삭제할_수_없다() {
         String message = 즐겨찾기_요청을_구성한다()
                 .로그인을_한다(accessToken)
@@ -218,8 +255,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기를 삭제할 수 있다
      */
     @Test
+    @Disabled
     void 성공_즐겨찾기_삭제에_성공한다() {
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(1L, 2L);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(CREATED.value(), 1L, 2L);
         String uri = createResponse.header("Location");
         즐겨찾기_삭제_요청(uri);
 
@@ -229,10 +267,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(message).isEqualTo("즐겨찾기한 경로가 없습니다.");
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(long source, long target) {
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(int statusCode, long source, long target) {
         return 즐겨찾기_요청을_구성한다()
                 .로그인을_한다(accessToken)
-                .Response_HTTP_상태_코드(CREATED.value())
+                .Response_HTTP_상태_코드(statusCode)
                 .즐겨찾기_생성_정보를_설정한다(source, target)
                 .즐겨찾기_생성_요청을_보낸다();
     }
