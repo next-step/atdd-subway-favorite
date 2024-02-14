@@ -1,4 +1,4 @@
-package nextstep.common.exception;
+package nextstep.common.exception.member;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since : 2024/01/31
  */
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class SectionInsertionNotValidException extends RuntimeException {
+public class MemberNotFoundException extends RuntimeException {
 	private HttpStatus status = HttpStatus.BAD_REQUEST;
 
-	public SectionInsertionNotValidException() {
+	public MemberNotFoundException() {
 		super();
 	}
 
-	public SectionInsertionNotValidException(String message) {
+	public MemberNotFoundException(String message) {
 		super(message);
 	}
 
-	public SectionInsertionNotValidException(HttpStatus status) {
+	public MemberNotFoundException(HttpStatus status) {
 		super(status.getReasonPhrase());
 	}
 
-	public SectionInsertionNotValidException(String message, HttpStatus status) {
+	public MemberNotFoundException(String message, HttpStatus status) {
 		super(message);
 		this.status = status;
 	}

@@ -1,4 +1,4 @@
-package nextstep.common.exception;
+package nextstep.common.exception.subway;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since : 2024/01/31
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class StationNotFoundException extends RuntimeException {
+public class LineNotFoundException extends RuntimeException {
 	private HttpStatus status = HttpStatus.NOT_FOUND;
 
-	public StationNotFoundException() {
+	public LineNotFoundException() {
 		super();
 	}
 
-	public StationNotFoundException(String message) {
+	public LineNotFoundException(String message) {
 		super(message);
 	}
 
-	public StationNotFoundException(HttpStatus status) {
+	public LineNotFoundException(HttpStatus status) {
 		super(status.getReasonPhrase());
 	}
 
-	public StationNotFoundException(String message, HttpStatus status) {
+	public LineNotFoundException(String message, HttpStatus status) {
 		super(message);
 		this.status = status;
 	}

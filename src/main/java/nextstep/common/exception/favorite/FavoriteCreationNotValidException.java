@@ -1,4 +1,4 @@
-package nextstep.common.exception;
+package nextstep.common.exception.favorite;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since : 2024/01/31
  */
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class SectionDeletionNotValidException extends RuntimeException {
+public class FavoriteCreationNotValidException extends RuntimeException {
 	private HttpStatus status = HttpStatus.BAD_REQUEST;
 
-	public SectionDeletionNotValidException() {
+	public FavoriteCreationNotValidException() {
 		super();
 	}
 
-	public SectionDeletionNotValidException(String message) {
+	public FavoriteCreationNotValidException(String message) {
 		super(message);
 	}
 
-	public SectionDeletionNotValidException(HttpStatus status) {
+	public FavoriteCreationNotValidException(HttpStatus status) {
 		super(status.getReasonPhrase());
 	}
 
-	public SectionDeletionNotValidException(String message, HttpStatus status) {
+	public FavoriteCreationNotValidException(String message, HttpStatus status) {
 		super(message);
 		this.status = status;
 	}

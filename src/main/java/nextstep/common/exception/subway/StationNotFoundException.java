@@ -1,4 +1,4 @@
-package nextstep.common.exception;
+package nextstep.common.exception.subway;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since : 2024/01/31
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class SectionNotFoundException extends RuntimeException {
+public class StationNotFoundException extends RuntimeException {
 	private HttpStatus status = HttpStatus.NOT_FOUND;
 
-	public SectionNotFoundException() {
+	public StationNotFoundException() {
 		super();
 	}
 
-	public SectionNotFoundException(String message) {
+	public StationNotFoundException(String message) {
 		super(message);
 	}
 
-	public SectionNotFoundException(HttpStatus status) {
+	public StationNotFoundException(HttpStatus status) {
 		super(status.getReasonPhrase());
 	}
 
-	public SectionNotFoundException(String message, HttpStatus status) {
+	public StationNotFoundException(String message, HttpStatus status) {
 		super(message);
 		this.status = status;
 	}

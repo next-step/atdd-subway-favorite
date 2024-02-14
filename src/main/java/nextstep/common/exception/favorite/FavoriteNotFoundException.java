@@ -1,4 +1,4 @@
-package nextstep.common.exception;
+package nextstep.common.exception.favorite;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since : 2024/01/31
  */
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class PathNotValidException extends RuntimeException {
+public class FavoriteNotFoundException extends RuntimeException {
 	private HttpStatus status = HttpStatus.BAD_REQUEST;
 
-	public PathNotValidException() {
+	public FavoriteNotFoundException() {
 		super();
 	}
 
-	public PathNotValidException(String message) {
+	public FavoriteNotFoundException(String message) {
 		super(message);
 	}
 
-	public PathNotValidException(HttpStatus status) {
+	public FavoriteNotFoundException(HttpStatus status) {
 		super(status.getReasonPhrase());
 	}
 
-	public PathNotValidException(String message, HttpStatus status) {
+	public FavoriteNotFoundException(String message, HttpStatus status) {
 		super(message);
 		this.status = status;
 	}
