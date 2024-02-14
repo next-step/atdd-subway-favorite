@@ -306,4 +306,122 @@ class SectionsTest {
 		assertTrue(sections.isDownEndStation(4L));
 	}
 
+	@Test
+	@DisplayName("주어지는 두 역이 유효한 구간 내에 동시에 존재하는지 검증한다 1")
+	void isContainsBothAsValidTest_1() {
+		// given
+		Station upStation = new Station(1L, "1");
+		Station middleStation = new Station(2L, "2");
+		Station downStation = new Station(3L, "3");
+		Section section1 = new Section(1L, upStation, middleStation, 10L);
+		Section section2 = new Section(2L, middleStation, downStation, 15L);
+		Sections sections = new Sections(new TreeSet<>(Set.of(section1, section2)));
+
+		// when
+		boolean result = sections.isContainsBothAsValid(upStation.getId(), downStation.getId());
+
+		// then
+		assertTrue(result);
+	}
+
+	@Test
+	@DisplayName("주어지는 두 역이 유효한 구간 내에 동시에 존재하는지 검증한다 2")
+	void isContainsBothAsValidTest_2() {
+		// given
+		Station upStation = new Station(1L, "1");
+		Station secondStation = new Station(2L, "2");
+		Station thirdStation = new Station(3L, "3");
+		Station fourthStation = new Station(4L, "4");
+		Station downStation = new Station(5L, "5");
+		Section section1 = new Section(1L, upStation, secondStation, 10L);
+		Section section2 = new Section(2L, secondStation, thirdStation, 15L);
+		Section section3 = new Section(3L, thirdStation, fourthStation, 20L);
+		Section section4 = new Section(4L, fourthStation, downStation, 25L);
+		Sections sections = new Sections(new TreeSet<>(Set.of(section1, section2, section3, section4)));
+
+		// when
+		boolean result = sections.isContainsBothAsValid(upStation.getId(), downStation.getId());
+
+		// then
+		assertTrue(result);
+	}
+
+	@Test
+	@DisplayName("두 역이 유효한 구간 내에 동시에 존재하지 않는 경우를 검증")
+	void isNotContainsBothAsValidTest() {
+		// given
+		Station upStation = new Station(1L, "1");
+		Station middleStation = new Station(2L, "2");
+		Station downStation = new Station(3L, "3");
+		Station anotherStation = new Station(4L, "4");
+		Section section1 = new Section(1L, upStation, middleStation, 10L);
+		Section section2 = new Section(2L, middleStation, downStation, 15L);
+		Sections sections = new Sections(new TreeSet<>(Set.of(section1, section2)));
+
+		// when
+		boolean result = sections.isContainsBothAsValid(upStation.getId(), anotherStation.getId());
+
+		// then
+		assertFalse(result);
+	}
+
+	@Test
+	@DisplayName("주어진 두 역이 동일한 경우 유효한 구간 내에 존재하지 않은 것으로 판단해야 한다")
+	void isContainsBothAsValid_SameStationTest() {
+		// given
+		Station station1 = new Station(1L, "1");
+		Station station2 = new Station(2L, "2");
+		Section section1 = new Section(1L, station1, station2, 10L);
+		Sections sections = new Sections(new TreeSet<>(Set.of(section1)));
+
+		// when
+		boolean result = sections.isContainsBothAsValid(station1.getId(), station1.getId());
+
+		// then
+		assertFalse(result);
+	}
+
+	@Test
+	@DisplayName("중간 역이 제거된 후 두 역이 유효한 구간 내에 동시에 존재하는지 검증")
+	void isContainsBothAsValid_AfterRemovingMiddleStationTest() {
+		// given
+		Station station1 = new Station(1L, "1");
+		Station station2 = new Station(2L, "2");
+		Station station3 = new Station(3L, "3");
+		Station station4 = new Station(4L, "4");
+		Section section1 = new Section(1L, station1, station2, 10L);
+		Section section2 = new Section(2L, station2, station3, 15L);
+		Section section3 = new Section(3L, station3, station4, 20L);
+		Sections sections = new Sections(new TreeSet<>(Set.of(section1, section2, section3)));
+		sections.removeStation(station2.getId());
+
+		// when
+		boolean result = sections.isContainsBothAsValid(station1.getId(), station4.getId());
+
+		// then
+		assertTrue(result);
+	}
+
+	@Test
+	@DisplayName("복잡한 구조에서 두 역이 유효한 구간 내에 동시에 존재하는지 검증 - 순서 뒤바뀐 케이스")
+	void isContainsBothAsValid_ComplexCase() {
+		// given
+		Station stationA = new Station(1L, "A");
+		Station stationB = new Station(2L, "B");
+		Station stationC = new Station(3L, "C");
+		Station stationD = new Station(4L, "D");
+		Station stationE = new Station(5L, "E");
+		Section section1 = new Section(1L, stationA, stationB, 10L);
+		Section section2 = new Section(2L, stationB, stationC, 15L);
+		Section section3 = new Section(3L, stationD, stationE, 20L);
+		Section section4 = new Section(4L, stationC, stationD, 25L);
+		Sections sections = new Sections(new TreeSet<>(Set.of(section2, section1, section4, section3)));
+
+		// when
+		boolean result = sections.isContainsBothAsValid(stationA.getId(), stationE.getId());
+
+		// then
+		assertTrue(result);
+	}
+
 }
