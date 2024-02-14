@@ -1,6 +1,6 @@
 package nextstep.favorite.application;
 
-import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
@@ -21,7 +21,7 @@ public class FavoriteService {
      *
      * @param request
      */
-    public void createFavorite(FavoriteRequest request) {
+    public void createFavorite(FavoriteCreateRequest request) {
         Favorite favorite = new Favorite();
         favoriteRepository.save(favorite);
     }

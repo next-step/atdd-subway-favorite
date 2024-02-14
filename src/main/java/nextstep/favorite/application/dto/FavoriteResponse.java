@@ -1,7 +1,13 @@
 package nextstep.favorite.application.dto;
 
-/**
- * TODO: StationResponse를 포함하는 클래스로 만듭니다.
- */
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nextstep.subway.controller.dto.StationResponse;
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class FavoriteResponse {
+    private Long id;
+    private StationResponse source;
+    private StationResponse target;
 }

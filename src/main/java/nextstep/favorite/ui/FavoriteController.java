@@ -1,7 +1,7 @@
 package nextstep.favorite.ui;
 
 import nextstep.favorite.application.FavoriteService;
-import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity createFavorite(@RequestBody FavoriteRequest request) {
+    public ResponseEntity createFavorite(@RequestBody FavoriteCreateRequest request) {
         favoriteService.createFavorite(request);
         return ResponseEntity
                 .created(URI.create("/favorites/" + 1L))
