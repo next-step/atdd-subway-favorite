@@ -1,5 +1,6 @@
-package nextstep.api.member.ui;
+package nextstep.api.member.interfaces.controller;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.api.member.application.TokenService;
 import nextstep.api.member.application.dto.TokenRequest;
 import nextstep.api.member.application.dto.TokenResponse;
@@ -10,12 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class TokenController {
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
-    public TokenController(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {

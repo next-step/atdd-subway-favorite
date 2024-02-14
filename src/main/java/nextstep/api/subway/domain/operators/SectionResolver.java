@@ -1,15 +1,14 @@
-package nextstep.api.subway.infrastructure.persistence;
+package nextstep.api.subway.domain.operators;
 
 import java.util.Optional;
-
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import nextstep.api.subway.domain.model.entity.Section;
 
 /**
  * @author : Rene Choi
- * @since : 2024/01/27
+ * @since : 2024/02/13
  */
-public interface SectionRepository extends JpaRepository<Section, Long> {
+public interface SectionResolver {
 	Optional<Section> findByUpStationIdAndDownStationId(Long sourceStationId, Long targetStationId);
+
 }

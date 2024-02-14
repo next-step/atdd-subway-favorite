@@ -15,7 +15,7 @@ import nextstep.api.subway.domain.operators.PathFinder;
 import nextstep.api.subway.domain.operators.StationResolver;
 import nextstep.api.subway.domain.service.PathService;
 import nextstep.api.subway.interfaces.dto.response.PathResponse;
-import nextstep.common.exception.PathNotValidException;
+import nextstep.common.exception.subway.PathNotValidException;
 
 /**
  * @author : Rene Choi

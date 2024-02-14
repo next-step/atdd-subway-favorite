@@ -47,4 +47,13 @@ public class Member {
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }
+
+
+    public boolean isNot(Long id){
+        return !is(id);
+    }
+
+    public boolean is(Long id) {
+        return this.id !=null && this.id.equals(id) ;
+    }
 }

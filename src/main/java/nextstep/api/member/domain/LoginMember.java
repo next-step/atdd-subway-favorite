@@ -1,13 +1,11 @@
 package nextstep.api.member.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Value;
+
+@Value
+@AllArgsConstructor
 public class LoginMember {
-    private String email;
+	String email;
 
-    public LoginMember(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }

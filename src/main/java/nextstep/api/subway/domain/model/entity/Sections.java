@@ -1,9 +1,13 @@
 package nextstep.api.subway.domain.model.entity;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -21,9 +25,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nextstep.common.exception.SectionDeletionNotValidException;
-import nextstep.common.exception.SectionInsertionNotValidException;
-import nextstep.common.exception.SectionNotFoundException;
+import nextstep.common.exception.subway.SectionDeletionNotValidException;
+import nextstep.common.exception.subway.SectionInsertionNotValidException;
+import nextstep.common.exception.subway.SectionNotFoundException;
 
 /**
  * Sections 일급 컬렉션으로 리팩토링하여 Line 엔티티와의 관계를 관리합니다.
@@ -72,7 +76,6 @@ public class Sections implements Iterable<Section> {
 		return new ArrayList<>(this.sections);
 	}
 
-
 	public void addSection(Section section) {
 		this.sections.add(section);
 	}
@@ -107,6 +110,43 @@ public class Sections implements Iterable<Section> {
 
 	public boolean isContainsAnyStation(Long stationId) {
 		return this.sections.stream().anyMatch(section -> section.isAnyStation(stationId));
+	}
+
+	/**
+	 * 주어진 sourceStation과 targetStation을 기반으로 유효한 Section이 있는지 여부를 탐색합니다.
+	 * 만약 두 스테이션이 동시에 존재하고 각각이 다르다면 섹션이 존재하는 것으로 간주할 수 있습니다.
+	 * 따라서 동시에 존재하는 로직을 판별하는 로직을 구현하거나 전체 경우의 수를 순회하여 탐색하는 로직 둘 중에 하나가 필요하였습니다.
+	 *
+	 * @param sourceStationId
+	 * @param targetStationId
+	 * @return
+	 */
+	public boolean isContainsBothAsValid(Long sourceStationId, Long targetStationId) {
+		if (sourceStationId.equals(targetStationId) || !isContainsAnyStation(sourceStationId) || !isContainsAnyStation(targetStationId)) {
+			return false;
+		}
+
+		Set<Long> visited = new HashSet<>();
+		Deque<Long> stack = new ArrayDeque<>();
+		stack.push(sourceStationId);
+		visited.add(sourceStationId);
+
+		while (!stack.isEmpty()) {
+			Long currentStationId = stack.pop();
+			if (currentStationId.equals(targetStationId)) {
+				return true;
+			}
+
+			for (Section section : sections) {
+				if (section.fetchUpStationId().equals(currentStationId) && visited.add(section.fetchDownStationId())) {
+					stack.push(section.fetchDownStationId());
+				} else if (section.fetchDownStationId().equals(currentStationId) && visited.add(section.fetchUpStationId())) {
+					stack.push(section.fetchUpStationId());
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public boolean isUpEndStation(Long stationId) {

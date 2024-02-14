@@ -15,7 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nextstep.common.exception.SectionInsertionNotValidException;
+import nextstep.common.exception.subway.SectionInsertionNotValidException;
 
 /**
  * @author : Rene Choi
@@ -160,4 +160,7 @@ public class Section implements Comparable<Section> {
 		return this.getDistance() - newSection.getDistance();
 	}
 
+	public boolean isDistanceNotExist() {
+		return this.distance == null || this.distance <= 0;
+	}
 }

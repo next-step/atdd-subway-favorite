@@ -93,6 +93,13 @@ public class SimpleLineService implements LineService {
 		lineFactory.deleteLine(line);
 	}
 
+	@Override
+	public boolean isProperSectionExist(Long sourceStationId, Long targetStationId) {
+		return lineResolver.fetchAll()
+			.stream()
+			.anyMatch(line -> line.isProperSectionExist(sourceStationId, targetStationId));
+	}
+
 	private Line fetchLineOrThrow(Long id) {
 		return lineResolver.fetchOptional(id).orElseThrow(EntityNotFoundException::new);
 	}

@@ -1,0 +1,62 @@
+package nextstep.api.favorite.application.facade;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
+import nextstep.api.favorite.application.model.dto.FavoriteCreateResponse;
+import nextstep.api.favorite.application.model.dto.FavoriteResponse;
+import nextstep.api.favorite.domain.model.dto.FavoriteInfo;
+import nextstep.api.favorite.domain.service.FavoriteService;
+import nextstep.api.member.application.MemberService;
+import nextstep.api.member.domain.LoginMember;
+import nextstep.api.subway.domain.service.LineService;
+import nextstep.api.subway.domain.service.impl.StationService;
+import nextstep.api.subway.interfaces.dto.response.StationResponse;
+import nextstep.common.exception.favorite.FavoriteCreationNotValidException;
+
+/**
+ * @author : Rene Choi
+ * @since : 2024/02/12
+ */
+@Component
+@RequiredArgsConstructor
+public class FavoriteFacade {
+
+	private final FavoriteService favoriteService;
+	private final MemberService memberService;
+	private final StationService stationService;
+	private final LineService lineService;
+
+	public FavoriteCreateResponse create(LoginMember loginMember, FavoriteCreateRequest request) {
+		if (!lineService.isProperSectionExist(request.getSourceStationId(), request.getTargetStationId())) {
+			throw new FavoriteCreationNotValidException();
+		}
+
+		return FavoriteCreateResponse.from(favoriteService.create(request.withMemberId(fetchMemberId(loginMember))));
+	}
+
+	public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+		return favoriteService.findFavorites(fetchMemberId(loginMember))
+			.stream()
+			.map(this::buildFavoriteResponse)
+			.collect(Collectors.toList());
+	}
+
+	private FavoriteResponse buildFavoriteResponse(FavoriteInfo favoriteInfo) {
+		StationResponse source = stationService.findStation(favoriteInfo.getSourceStationId());
+		StationResponse target = stationService.findStation(favoriteInfo.getTargetStationId());
+		return FavoriteResponse.of(favoriteInfo.getId(), source, target);
+	}
+
+	public void deleteFavorite(LoginMember loginMember, Long id) {
+		favoriteService.deleteFavorite(fetchMemberId(loginMember), id);
+	}
+
+	private Long fetchMemberId(LoginMember loginMember) {
+		return memberService.findMe(loginMember).getId();
+	}
+}

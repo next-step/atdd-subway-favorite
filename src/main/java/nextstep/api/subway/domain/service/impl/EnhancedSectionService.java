@@ -2,6 +2,8 @@ package nextstep.api.subway.domain.service.impl;
 
 import static org.springframework.http.HttpStatus.*;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +15,12 @@ import nextstep.api.subway.domain.model.entity.Section;
 import nextstep.api.subway.domain.model.entity.Station;
 import nextstep.api.subway.domain.operators.LineResolver;
 import nextstep.api.subway.domain.operators.SectionFactory;
+import nextstep.api.subway.domain.operators.SectionResolver;
 import nextstep.api.subway.domain.operators.StationResolver;
 import nextstep.api.subway.domain.service.SectionService;
-import nextstep.common.exception.LineNotFoundException;
-import nextstep.common.exception.StationNotFoundException;
+import nextstep.common.exception.subway.LineNotFoundException;
+import nextstep.common.exception.subway.SectionNotFoundException;
+import nextstep.common.exception.subway.StationNotFoundException;
 
 /**
  * @author : Rene Choi
@@ -29,6 +33,7 @@ public class EnhancedSectionService implements SectionService {
 	private final LineResolver lineResolver;
 	private final SectionFactory sectionFactory;
 	private final StationResolver stationResolver;
+	private final SectionResolver sectionResolver;
 
 
 
@@ -71,5 +76,22 @@ public class EnhancedSectionService implements SectionService {
 		Line line = lineResolver.fetchOptional(lineId).orElseThrow(() -> new LineNotFoundException(BAD_REQUEST));
 
 		line.removeStation(stationId);
+	}
+
+
+
+	@Override
+	@Transactional(readOnly = true)
+	public Section fetchSection(Long sourceStationId, Long targetStationId) {
+		return sectionResolver
+			.findByUpStationIdAndDownStationId(sourceStationId, targetStationId)
+			.orElseThrow(SectionNotFoundException::new);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Section> fetchSectionOptional(Long sourceStationId, Long targetStationId) {
+		return sectionResolver
+			.findByUpStationIdAndDownStationId(sourceStationId, targetStationId);
 	}
 }

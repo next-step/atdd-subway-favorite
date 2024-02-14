@@ -17,8 +17,9 @@ public interface LineService {
 
 	LineResponse findLineById(Long id);
 
-
 	LineResponse updateLineById(Long id, LineUpdateCommand updateRequest);
 
 	void deleteLineById(Long id);
+
+	boolean isProperSectionExist(Long source, Long target);
 }

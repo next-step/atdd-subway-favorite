@@ -100,4 +100,8 @@ public class Line {
 	public void removeStation(Long stationId) {
 		sectionCollection.removeStation(stationId);
 	}
+
+	public boolean isProperSectionExist(Long sourceStationId, Long targetStationId) {
+		return sectionCollection.isContainsBothAsValid(sourceStationId, targetStationId);
+	}
 }

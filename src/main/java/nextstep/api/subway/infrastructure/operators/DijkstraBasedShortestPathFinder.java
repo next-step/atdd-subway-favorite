@@ -15,7 +15,7 @@ import nextstep.api.subway.domain.model.entity.Section;
 import nextstep.api.subway.domain.model.entity.Station;
 import nextstep.api.subway.domain.model.vo.Path;
 import nextstep.api.subway.domain.operators.PathFinder;
-import nextstep.common.exception.PathNotValidException;
+import nextstep.common.exception.subway.PathNotValidException;
 
 /**
  * @author : Rene Choi
