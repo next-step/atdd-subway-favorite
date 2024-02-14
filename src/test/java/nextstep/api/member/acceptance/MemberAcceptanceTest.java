@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import nextstep.api.CommonAcceptanceTest;
+import nextstep.utils.securityutils.WithMockCustomUser;
 
 class MemberAcceptanceTest extends CommonAcceptanceTest {
 	public static final String EMAIL = "email@email.com";
@@ -29,9 +30,10 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
 	void getMember() {
 		// given
 		var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+		String accessToken = 로그인_하고_토큰_받기(EMAIL, PASSWORD);
 
 		// when
-		var response = 회원_정보_조회_요청(createResponse);
+		var response = 회원_정보_조회_요청(createResponse, accessToken);
 
 		// then
 		회원_정보_조회됨(response, EMAIL, AGE);
@@ -39,26 +41,30 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
 	}
 
 	@DisplayName("회원 정보를 수정한다.")
+	@WithMockCustomUser(email = "user@example.com", password = "password")
 	@Test
 	void updateMember() {
 		// given
 		var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+		String accessToken = 로그인_하고_토큰_받기(EMAIL, PASSWORD);
 
 		// when
-		var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+		var response = 회원_정보_수정_요청(createResponse, accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
 	@DisplayName("회원 정보를 삭제한다.")
+	@WithMockCustomUser(email = "user@example.com", password = "password")
 	@Test
 	void deleteMember() {
 		// given
 		var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+		String accessToken = 로그인_하고_토큰_받기(EMAIL, PASSWORD);
 
 		// when
-		var response = 회원_삭제_요청(createResponse);
+		var response = 회원_삭제_요청(createResponse, accessToken);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -73,6 +79,15 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
 	@DisplayName("내 정보를 조회한다.")
 	@Test
 	void getMyInfo() {
+		// given
+		var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+		String accessToken = 로그인_하고_토큰_받기(EMAIL, PASSWORD);
 
+		// when
+		var response = 내_정보_조회_요청(accessToken);
+
+		// then
+		회원_정보_조회됨(response, EMAIL, AGE);
 	}
+
 }
