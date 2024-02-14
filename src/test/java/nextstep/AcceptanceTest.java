@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import nextstep.member.acceptance.AuthSteps;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.subway.controller.dto.LineCreateRequest;
 import nextstep.subway.controller.dto.StationCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.UNDEFINED_PORT;
+import static nextstep.DataSaver.MEMBER_EMAIL;
+import static nextstep.DataSaver.MEMBER_PASSWORD;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -29,7 +33,9 @@ public class AcceptanceTest {
     private DatabaseCleaner databaseCleaner;
 
     @Autowired
-    private DataLoader dataLoader;
+    private DataSaver dataSaver;
+
+    protected String accessToken;
 
     @BeforeEach
     protected void setUp() {
@@ -37,7 +43,15 @@ public class AcceptanceTest {
             RestAssured.port = port;
         }
         databaseCleaner.clear();
-        dataLoader.loadData();
+        dataSaver.saveData();
+    }
+
+    @BeforeEach
+    void setup() {
+        if(accessToken == null || accessToken.isEmpty()) {
+            accessToken = AuthSteps.로그인_요청(MEMBER_EMAIL, MEMBER_PASSWORD)
+                    .as(TokenResponse.class).getAccessToken();
+        }
     }
 
     protected ExtractableResponse<Response> 지하철역_생성_요청(StationCreateRequest request, int statusCode) {
