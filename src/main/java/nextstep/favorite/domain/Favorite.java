@@ -13,4 +13,13 @@ public class Favorite {
     private Long memberId;
     private Long sourceStationId;
     private Long targetStationId;
+
+    protected Favorite() {
+    }
+
+    public Favorite(final Long memberId, final Long sourceId, final Long targetId) {
+        this.memberId = memberId;
+        this.sourceStationId = sourceId;
+        this.targetStationId = targetId;
+    }
 }

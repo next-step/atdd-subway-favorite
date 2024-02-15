@@ -87,4 +87,20 @@ public class FavoriteServiceTest {
                 .hasMessageContaining("그래프에 존재하지 않는 정점입니다.");
     }
 
+    @DisplayName("즐겨찾기를 등록한다.")
+    @Test
+    void createFavorite() {
+        // given
+        lineRepository.save(강남_선릉_노선);
+        memberRepository.save(사용자);
+        final FavoriteRequest favoriteRequest = new FavoriteRequest(강남역Id, 선릉역Id);
+        final LoginMember loginMember = new LoginMember(사용자.getEmail());
+
+        // when
+        favoriteService.createFavorite(loginMember, favoriteRequest);
+
+        // then
+        //todo 조회서비스 개발 후 then 구현
+    }
+
 }

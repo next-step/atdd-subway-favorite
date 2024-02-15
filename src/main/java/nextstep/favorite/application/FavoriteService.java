@@ -40,8 +40,11 @@ public class FavoriteService {
      */
     public void createFavorite(final LoginMember loginMember, FavoriteRequest request) {
         final Member member = memberService.findMemberByEmail(loginMember.getEmail());
-        pathService.findPath(request.getSource(), request.getTarget());
-        Favorite favorite = new Favorite();
+        final Long sourceId = request.getSource();
+        final Long targetId = request.getTarget();
+        pathService.findPath(sourceId, targetId);
+
+        Favorite favorite = new Favorite(member.getId(), sourceId, targetId);
         favoriteRepository.save(favorite);
     }
 
