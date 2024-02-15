@@ -35,7 +35,8 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 아닙니다."));
     }
 
     public MemberResponse findMe(LoginMember loginMember) {

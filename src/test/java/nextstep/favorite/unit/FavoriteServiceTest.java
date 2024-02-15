@@ -65,6 +65,7 @@ public class FavoriteServiceTest {
         // when
         // then
         assertThatThrownBy(() -> { favoriteService.createFavorite(loginMember, favoriteRequest); })
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록된 회원이 아닙니다.");
     }
 }
