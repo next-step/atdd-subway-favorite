@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import nextstep.exception.ApplicationException;
 import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
@@ -12,11 +13,14 @@ import nextstep.subway.domain.PathFinder;
 import nextstep.subway.domain.Station;
 import nextstep.subway.repository.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static nextstep.favorite.application.dto.FavoriteResponse.listOf;
+
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
@@ -30,9 +34,7 @@ public class FavoriteService {
         this.pathFinder = pathFinder;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     */
+    @Transactional
     public long createFavorite(LoginMember loginMember, FavoriteCreateRequest request) {
         Member member = memberRepository.getBy(loginMember.getEmail());
 
@@ -48,21 +50,24 @@ public class FavoriteService {
         return savedFavorite.id();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return new ArrayList<>();
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberRepository.getBy(loginMember.getEmail());
+
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
+        validateSize(favorites);
+
+        return listOf(favorites);
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
+    private void validateSize(List<Favorite> favorites) {
+        if(favorites.isEmpty()) {
+            throw new ApplicationException("즐겨찾기가 없습니다.");
+        }
+    }
+
+    @Transactional
     public void deleteFavorite(Long id) {
+        favoriteRepository.getBy(id);
         favoriteRepository.deleteById(id);
     }
 }

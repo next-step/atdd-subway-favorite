@@ -37,4 +37,12 @@ public class Favorite {
     public Long id() {
         return id;
     }
+
+    public Station sourceStation() {
+        return sourceStation;
+    }
+
+    public Station targetStation() {
+        return targetStation;
+    }
 }

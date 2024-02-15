@@ -5,19 +5,16 @@ import nextstep.member.domain.Member;
 import nextstep.subway.domain.Station;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-
-    Optional<Favorite> findBySourceStationAndTargetStationAndMember(
-            Station sourceStation, Station targetStation, Member member);
+    List<Favorite> findByMember(Member member);
 
     boolean existsBySourceStationAndTargetStationAndMember(
             Station sourceStation, Station targetStation, Member member);
 
-    default Favorite getBy(Station sourceStation, Station targetStation, Member member) {
-        return findBySourceStationAndTargetStationAndMember(sourceStation, targetStation, member)
-                .orElseThrow(() -> new ApplicationException(
+    default Favorite getBy(Long id) {
+        return findById(id).orElseThrow(() -> new ApplicationException(
                         "즐겨찾기가 존재하지 않습니다."));
     }
 

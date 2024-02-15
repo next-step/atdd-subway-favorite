@@ -185,7 +185,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(findResponse).hasSize(1)
                         .extracting("id", "source.id", "source.name", "target.id", "target.name")
                         .containsExactly(
-                                tuple(1L, 1L, "교대역", 3L, "양재역")
+                                tuple(1L, 강남역_ID, "강남역", 선릉역_ID, "선릉역")
                         )
         );
     }
@@ -195,9 +195,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기를 조회할 수 없다
      */
     @Test
-    @Disabled
     void 실패_즐겨찾기_조회시_로그인_하지_않았을_경우_즐겨찾기를_조회할_수_없다() {
         String message = 즐겨찾기_요청을_구성한다()
+                .Response_HTTP_상태_코드(UNAUTHORIZED.value())
                 .즐겨찾기_조회_요청을_보낸다()
                 .as(ExceptionResponse.class).getMessage();
 
@@ -210,12 +210,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기를 조회할 수 없다
      */
     @Test
-    @Disabled
     void 실패_즐겨찾기_조회시_즐겨찾기한_경로가_없을_경우_즐겨찾기를_조회할_수_없다() {
         String message = 즐겨찾기_조회_요청()
                 .as(ExceptionResponse.class).getMessage();
 
-        assertThat(message).isEqualTo("즐겨찾기한 경로가 없습니다.");
+        assertThat(message).isEqualTo("즐겨찾기가 없습니다.");
     }
 
     /**
@@ -226,6 +225,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Disabled
     void 실패_즐겨찾기_삭제시_로그인_하지_않았을_경우_즐겨찾기를_삭제할_수_없다() {
         String message = 즐겨찾기_요청을_구성한다()
+                .Response_HTTP_상태_코드(UNAUTHORIZED.value())
                 .즐겨찾기_삭제_요청을_보낸다("/favorites/1")
                 .as(ExceptionResponse.class).getMessage();
 
@@ -278,13 +278,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
         return 즐겨찾기_요청을_구성한다()
                 .로그인을_한다(accessToken)
+                .Response_HTTP_상태_코드(OK.value())
                 .즐겨찾기_조회_요청을_보낸다();
     }
 
     private void 즐겨찾기_삭제_요청(String uri) {
         즐겨찾기_요청을_구성한다()
-                .Response_HTTP_상태_코드(NO_CONTENT.value())
                 .로그인을_한다(accessToken)
+                .Response_HTTP_상태_코드(NO_CONTENT.value())
                 .즐겨찾기_삭제_요청을_보낸다(uri);
     }
 
