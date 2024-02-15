@@ -103,4 +103,17 @@ public class FavoriteServiceTest {
         //todo 조회서비스 개발 후 then 구현
     }
 
+    @DisplayName("즐겨찾기 조회시, 등록된 회원이 아니면 예외가 발생한다.")
+    @Test
+    void findFavorites_invalid_notFound_member() {
+        // given
+        final LoginMember loginMember = new LoginMember("존재하지않는사용자이메일.com");
+
+        // when
+        // then
+        assertThatThrownBy(() -> { favoriteService.findFavorites(loginMember); })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록된 회원이 아닙니다.");
+    }
+
 }

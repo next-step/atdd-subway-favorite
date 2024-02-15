@@ -53,8 +53,10 @@ public class FavoriteService {
      *
      * @return
      */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        final Member member = memberService.findMemberByEmail(loginMember.getEmail());
+
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return null;
     }
 
