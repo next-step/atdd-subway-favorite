@@ -46,8 +46,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         노선이_생성되어_있다("이호선", "red", 강남역Id, 역삼역Id, 10);
+        회원_생성_요청(EMAIL, "1234", 30);
 
-        final ExtractableResponse<Response> response = 즐겨찾기를_등록한다(강남역Id, 역삼역Id);
+        final ExtractableResponse<Response> response = 토큰을_포함하여_즐겨찾기를_등록한다(EMAIL, 강남역Id, 역삼역Id);
 
         HTTP코드를_검증한다(response, HttpStatus.CREATED);
     }
