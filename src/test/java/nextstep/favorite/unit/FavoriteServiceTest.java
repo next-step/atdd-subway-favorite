@@ -2,6 +2,7 @@ package nextstep.favorite.unit;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -114,6 +117,23 @@ public class FavoriteServiceTest {
         assertThatThrownBy(() -> { favoriteService.findFavorites(loginMember); })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록된 회원이 아닙니다.");
+    }
+
+    @DisplayName("즐겨찾기를 조회한다.")
+    @Test
+    void findFavorites() {
+        // given
+        lineRepository.save(강남_선릉_노선);
+        memberRepository.save(사용자);
+        final LoginMember loginMember = new LoginMember(사용자.getEmail());
+
+        // when
+        final List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+
+        // then
+        assertThat(favorites.size()).isEqualTo(2);
+        assertThat(favorites.get(0).getStations().get(0)).isEqualTo(강남역);
+        assertThat(favorites.get(0).getStations().get(1)).isEqualTo(선릉역);
     }
 
 }

@@ -15,4 +15,12 @@ public class FavoriteResponse {
     private StationResponse createStationResponse(Station station) {
         return new StationResponse(station.getId(), station.getName());
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<StationResponse> getStations() {
+        return stations;
+    }
 }
