@@ -4,6 +4,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.LoginMember;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +20,10 @@ public class FavoriteService {
     /**
      * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
      *
+     * @param loginMember
      * @param request
      */
-    public void createFavorite(FavoriteRequest request) {
+    public void createFavorite(final LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite();
         favoriteRepository.save(favorite);
     }

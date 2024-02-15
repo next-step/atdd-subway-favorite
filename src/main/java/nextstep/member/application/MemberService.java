@@ -21,7 +21,7 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         return MemberResponse.of(member);
     }
 

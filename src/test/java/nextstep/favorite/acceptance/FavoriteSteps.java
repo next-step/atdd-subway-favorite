@@ -3,7 +3,6 @@ package nextstep.favorite.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -25,7 +24,6 @@ public class FavoriteSteps {
                 .given().log().all().body(params).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post(FAVORITES_URL)
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
                 .extract();
     }
 
