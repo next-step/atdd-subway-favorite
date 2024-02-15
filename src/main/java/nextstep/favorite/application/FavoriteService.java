@@ -7,18 +7,29 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
+import nextstep.subway.application.LineService;
+import nextstep.subway.application.PathService;
+import nextstep.subway.application.StationService;
+import nextstep.subway.application.dto.PathResponse;
+import nextstep.subway.domain.PathFinder;
+import nextstep.subway.domain.Section;
+import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberService memberService;
+    private PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, final MemberService memberService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, final MemberService memberService,
+                           final PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.memberService = memberService;
+        this.pathService = pathService;
     }
 
     /**
@@ -29,7 +40,7 @@ public class FavoriteService {
      */
     public void createFavorite(final LoginMember loginMember, FavoriteRequest request) {
         final Member member = memberService.findMemberByEmail(loginMember.getEmail());
-
+        pathService.findPath(request.getSource(), request.getTarget());
         Favorite favorite = new Favorite();
         favoriteRepository.save(favorite);
     }
