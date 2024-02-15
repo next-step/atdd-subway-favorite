@@ -10,5 +10,7 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long memberId;
+    private Long sourceStationId;
+    private Long targetStationId;
 }

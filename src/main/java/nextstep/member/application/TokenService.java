@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.member.AuthenticationException;
+import nextstep.global.AuthenticationException;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class TokenService {
     public TokenResponse createToken(String email, String password) {
         Member member = memberService.findMemberByEmail(email);
         if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
+            throw new AuthenticationException("비밀번호가 일치하지 않습니다.");
         }
 
         String token = jwtTokenProvider.createToken(member.getEmail());
