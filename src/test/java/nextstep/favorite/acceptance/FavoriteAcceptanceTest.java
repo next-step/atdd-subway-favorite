@@ -2,14 +2,20 @@ package nextstep.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.acceptance.MemberSteps;
+import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
+import nextstep.subway.application.dto.LineResponse;
 import nextstep.subway.application.dto.StationResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
@@ -84,6 +90,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 토큰을_포함하여_즐겨찾기를_등록한다(EMAIL, 강남역Id, 역삼역Id);
 
         HTTP코드를_검증한다(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있다.
+     * And 노선이 등록되어 있다.
+     * And 사용자가 등록되어 있다.
+     * And 즐겨찾기가 등록되어 있다.
+     * When 즐겨찾기로 조회한다.
+     * Then 강남역-역삼역의 즐겨찾기가 조회된다.
+     */
+    @DisplayName("즐겨찾기를 조회한다.")
+    @Test
+    void getFavorites() {
+        노선이_생성되어_있다("이호선", "red", 강남역Id, 역삼역Id, 10);
+        회원_생성_요청(EMAIL, "1234", 30);
+        즐겨찾기가_등록되어_있다(EMAIL, 강남역Id, 역삼역Id);
+
+        final ExtractableResponse<Response> response = 즐겨찾기를_조회한다(EMAIL);
+
+        즐겨찾기한_지하철역을_비교한다(response, Arrays.asList(강남역, 역삼역));
+    }
+
+    private void 즐겨찾기한_지하철역을_비교한다(ExtractableResponse<Response> response, List<String> stations) {
+        final List<String> stationNames = response.jsonPath().getList("*.name");
+
+        assertThat(stationNames).containsExactlyElementsOf(stations);
+    }
+
+    public static Long 즐겨찾기가_등록되어_있다(final String email,final Long source, final Long target) {
+        return FavoriteSteps.토큰을_포함하여_즐겨찾기를_등록한다(email, source, target)
+                .as(LineResponse.class).getId();
     }
 
     private static Long 지하철역_생성_요청(final String name) {

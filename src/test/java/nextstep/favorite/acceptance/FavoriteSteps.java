@@ -23,6 +23,16 @@ public class FavoriteSteps {
 
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기를_조회한다(final String email) {
+        final String token = createToken(email);
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(FAVORITES_URL)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기를_등록한다(final Long source, final Long target) {
         Map<String, String> params = createParams(source, target);
         return RestAssured
