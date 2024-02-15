@@ -68,4 +68,19 @@ public class FavoriteServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록된 회원이 아닙니다.");
     }
+
+    @DisplayName("즐겨찾기 등록 시, 비정상적인 경로 입니다.")
+    @Test
+    void createFavorite_invalid_path() {
+        // given
+        memberRepository.save(사용자);
+        final FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 선릉역.getId());
+        final LoginMember loginMember = new LoginMember(사용자.getEmail());
+
+        // when
+        // then
+        assertThatThrownBy(() -> { favoriteService.createFavorite(loginMember, favoriteRequest); })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("그래프에 존재하지 않는 정점입니다.");
+    }
 }
