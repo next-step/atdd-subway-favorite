@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.member.acceptance.AuthSteps.로그인을_요청한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -30,26 +31,46 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void bearerAuth() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> response = 로그인을_요청한다(EMAIL, PASSWORD);
 
         String accessToken = response.jsonPath().getString("accessToken");
         assertThat(accessToken).isNotBlank();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+        ExtractableResponse<Response> response2 = 개인정보_요청(accessToken);
+
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    /**
+     * When JWT 토큰 없이 인증이 필요한 API를 요청한다.
+     * Then 401 코드를 리턴한다.
+     */
+    @DisplayName("Jwt토큰이 없으면 401코드를 리턴한다.")
+    @Test
+    void bearerAuth_empty_jwt() {
+        final ExtractableResponse<Response> response = JWT없이_개인정보_요청();
+
+        HTTP코드를_검증한다(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
+    }
+
+    private static ExtractableResponse<Response> 개인정보_요청(final String accessToken) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
+        return response;
+    }
 
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    private static ExtractableResponse<Response> JWT없이_개인정보_요청() {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        return response;
     }
 }
