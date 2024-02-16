@@ -1,11 +1,12 @@
-package nextstep.auth;
+package nextstep.member.acceptance;
 
-import lombok.extern.slf4j.Slf4j;
+import nextstep.auth.GithubAccessTokenRequest;
+import nextstep.auth.GithubAccessTokenResponse;
+import nextstep.auth.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
 public class GithubTestController {
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(

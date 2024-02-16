@@ -57,7 +57,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void githubAuth() {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", GithubMockResponses.사용자1.getCode());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
