@@ -1,4 +1,4 @@
-package nextstep.api.favorite.domain.model.dto;
+package nextstep.api.favorite.domain.model.dto.outport;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,13 +15,13 @@ import nextstep.common.mapper.ModelMapperBasedObjectMapper;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FavoriteInfo {
+public class FavoriteCreateInfo {
 	private Long id;
 	private Long memberId;
 	private Long sourceStationId;
 	private Long targetStationId;
 
-	public static FavoriteInfo from(Favorite favorite) {
-		return ModelMapperBasedObjectMapper.convert(favorite, FavoriteInfo.class);
+	public static FavoriteCreateInfo from(Favorite favorite) {
+		return ModelMapperBasedObjectMapper.convert(favorite, FavoriteCreateInfo.class);
 	}
 }

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
+import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
 import nextstep.common.mapper.ModelMapperBasedObjectMapper;
 
 @Entity
@@ -26,7 +27,7 @@ public class Favorite {
     private Long sourceStationId;
     private Long targetStationId;
 
-    public static Favorite from(FavoriteCreateRequest request) {
+    public static Favorite from(FavoriteCreateCommand request) {
         return ModelMapperBasedObjectMapper.convert(request, Favorite.class);
     }
 

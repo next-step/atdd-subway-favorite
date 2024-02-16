@@ -8,8 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
-import nextstep.api.favorite.domain.model.dto.FavoriteCreateInfo;
-import nextstep.api.favorite.domain.model.dto.FavoriteInfo;
+import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
+import nextstep.api.favorite.domain.model.dto.outport.FavoriteCreateInfo;
+import nextstep.api.favorite.domain.model.dto.outport.FavoriteInfo;
 import nextstep.api.favorite.domain.model.entity.Favorite;
 import nextstep.api.favorite.infrastructure.FavoriteRepository;
 import nextstep.common.exception.favorite.FavoriteNotFoundException;
@@ -23,7 +24,7 @@ public class SimpleFavoriteService implements FavoriteService {
 
 	@Override
 	@Transactional
-	public FavoriteCreateInfo create(FavoriteCreateRequest request) {
+	public FavoriteCreateInfo create(FavoriteCreateCommand request) {
 		return FavoriteCreateInfo.from(favoriteRepository.save(Favorite.from(request)));
 	}
 

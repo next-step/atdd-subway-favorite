@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nextstep.api.favorite.domain.model.dto.FavoriteCreateInfo;
+import nextstep.api.favorite.domain.model.dto.outport.FavoriteCreateInfo;
 
 /**
  * @author : Rene Choi

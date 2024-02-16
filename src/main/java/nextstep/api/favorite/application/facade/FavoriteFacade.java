@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateResponse;
 import nextstep.api.favorite.application.model.dto.FavoriteResponse;
-import nextstep.api.favorite.domain.model.dto.FavoriteInfo;
+import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
+import nextstep.api.favorite.domain.model.dto.outport.FavoriteInfo;
 import nextstep.api.favorite.domain.service.FavoriteService;
 import nextstep.api.member.application.MemberService;
 import nextstep.api.member.domain.LoginMember;
@@ -36,7 +37,7 @@ public class FavoriteFacade {
 			throw new FavoriteCreationNotValidException();
 		}
 
-		return FavoriteCreateResponse.from(favoriteService.create(request.withMemberId(fetchMemberId(loginMember))));
+		return FavoriteCreateResponse.from(favoriteService.create(FavoriteCreateCommand.of(request, fetchMemberId(loginMember))));
 	}
 
 	public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
