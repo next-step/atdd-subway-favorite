@@ -1,8 +1,13 @@
 package nextstep.api.favorite.acceptance;
 
 import static nextstep.fixture.FavoriteFixtureCreator.*;
+import static nextstep.fixture.MemberFixtureCreator.*;
 import static nextstep.fixture.SubwayScenarioFixtureCreator.*;
+import static nextstep.fixture.TokenFixtureCreator.*;
+import static nextstep.utils.resthelper.ExtractableResponseParser.*;
 import static nextstep.utils.resthelper.FavoriteRequestExecutor.*;
+import static nextstep.utils.resthelper.MemberRequestExecutor.*;
+import static nextstep.utils.resthelper.TokenRequestExecutor.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -95,6 +100,35 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 		// then
 		assertThat(deleteResponse.statusCode()).isEqualTo(NO_CONTENT.value());
 	}
+
+	/**
+	 * given - 1번 유저와 2번 유저가 각각 즐겨찾기를 등록하고
+	 * when - 2번 유저가 1번 유저가 저장한 즐겨찾기를 삭제하려고 할때
+	 * then - 403 에러 발생
+	 */
+	@Test
+	@DisplayName("내가 등록하지 않은 즐겨찾기 삭제 시도")
+	@WithMockCustomUser(email = "user@example.com", password = "password")
+	void deleteUnownedFavorite() {
+		// given
+		createStation("Station A");
+		createStation("Station B");
+		createLine("테스트 노선", 1L, 2L, 10L);
+		ExtractableResponse<Response> createResponse = executeCreateFavoriteRequest(authorizationToken, createFavoriteCreateRequest(1L, 2L));
+		Long favoriteId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+		// when
+		createMember(createMemberRequest("user2@example.com", "password2", 20));
+		String anotherUserToken = parseAsAccessToken(loginAndCreateAuthorizationToken(createTokenRequest("user2@example.com", "password2")));
+		ExtractableResponse<Response> deleteResponse = executeDeleteFavoriteRequest(anotherUserToken, favoriteId);
+
+		// then
+		assertThat(deleteResponse.statusCode()).isEqualTo(UNAUTHORIZED.value());
+	}
+
+
+
+
 
 	public void setAuthorizationToken(String authorizationToken) {
 		this.authorizationToken = authorizationToken;
