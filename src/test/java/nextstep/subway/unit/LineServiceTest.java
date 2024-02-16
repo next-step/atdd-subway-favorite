@@ -32,11 +32,12 @@ public class LineServiceTest {
 
     @BeforeEach
     void init() {
-        강남역 = new Station(1L, "강남역");
-        선릉역 = new Station(2L, "선릉역");
-        삼성역 = new Station(3L, "삼성역");
-        강남_선릉_노선 = new Line(1L, "노선", "red", 강남역, 선릉역, 10);
+        강남역 = new Station( "강남역");
+        선릉역 = new Station("선릉역");
+        삼성역 = new Station("삼성역");
+        강남_선릉_노선 = new Line("노선", "red", 강남역, 선릉역, 10);
     }
+
     @Test
     void addSection() {
         // given
