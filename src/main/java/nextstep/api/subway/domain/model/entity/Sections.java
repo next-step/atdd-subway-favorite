@@ -1,13 +1,11 @@
 package nextstep.api.subway.domain.model.entity;
 
-import java.util.ArrayDeque;
+import static nextstep.api.subway.util.DfsBasedStationPathExistenceValidator.*;
+
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -126,27 +124,7 @@ public class Sections implements Iterable<Section> {
 			return false;
 		}
 
-		Set<Long> visited = new HashSet<>();
-		Deque<Long> stack = new ArrayDeque<>();
-		stack.push(sourceStationId);
-		visited.add(sourceStationId);
-
-		while (!stack.isEmpty()) {
-			Long currentStationId = stack.pop();
-			if (currentStationId.equals(targetStationId)) {
-				return true;
-			}
-
-			for (Section section : sections) {
-				if (section.fetchUpStationId().equals(currentStationId) && visited.add(section.fetchDownStationId())) {
-					stack.push(section.fetchDownStationId());
-				} else if (section.fetchDownStationId().equals(currentStationId) && visited.add(section.fetchUpStationId())) {
-					stack.push(section.fetchUpStationId());
-				}
-			}
-		}
-
-		return false;
+		return isValidPathBetweenStations(this.sections, sourceStationId, targetStationId);
 	}
 
 	public boolean isUpEndStation(Long stationId) {
