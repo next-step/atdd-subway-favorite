@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.exception.UnauthorizedDeletionException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.member.domain.Member;
 import nextstep.station.Station;
@@ -26,14 +27,19 @@ public class Favorite {
     @ManyToOne
     private Station targetStation;
 
-    @ManyToOne
-    private Member member;
+    private Long memberId;
 
-    public static Favorite of(Station sourceStation, Station targetStation, Member member) {
+    public static Favorite of(Station sourceStation, Station targetStation, Long memberId) {
         return Favorite.builder()
                 .sourceStation(sourceStation)
                 .targetStation(targetStation)
-                .member(member)
+                .memberId(memberId)
                 .build();
+    }
+
+    public void checkOwnershipBeforeDeletion(Long requester) {
+        if (!this.memberId.equals(requester)) {
+            throw new UnauthorizedDeletionException();
+        }
     }
 }

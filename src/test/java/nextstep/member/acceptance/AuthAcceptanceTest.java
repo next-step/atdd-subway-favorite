@@ -52,4 +52,21 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubMockResponses.사용자1.getCode());
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        String accessToken = response.jsonPath().getString("accessToken");
+        assertThat(accessToken).isNotBlank();
+    }
 }
