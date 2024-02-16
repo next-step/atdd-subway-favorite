@@ -22,4 +22,8 @@ public class Favorite {
         this.sourceStationId = sourceId;
         this.targetStationId = targetId;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

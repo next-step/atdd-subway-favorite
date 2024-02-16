@@ -47,4 +47,14 @@ public class Member {
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                '}';
+    }
 }

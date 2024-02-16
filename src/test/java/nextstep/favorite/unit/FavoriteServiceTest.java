@@ -126,14 +126,15 @@ public class FavoriteServiceTest {
         lineRepository.save(강남_선릉_노선);
         memberRepository.save(사용자);
         final LoginMember loginMember = new LoginMember(사용자.getEmail());
+        favoriteService.createFavorite(loginMember, new FavoriteRequest(강남역Id, 선릉역Id));
 
         // when
         final List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
 
         // then
-        assertThat(favorites.size()).isEqualTo(2);
-        assertThat(favorites.get(0).getStations().get(0)).isEqualTo(강남역);
-        assertThat(favorites.get(0).getStations().get(1)).isEqualTo(선릉역);
+        assertThat(favorites.size()).isEqualTo(1);
+        assertThat(favorites.get(0).getStations().get(0).getId()).isEqualTo(강남역Id);
+        assertThat(favorites.get(0).getStations().get(1).getId()).isEqualTo(선릉역Id);
     }
 
 }

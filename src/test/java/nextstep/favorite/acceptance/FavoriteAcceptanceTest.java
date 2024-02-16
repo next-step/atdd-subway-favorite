@@ -113,14 +113,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기한_지하철역을_비교한다(ExtractableResponse<Response> response, List<String> stations) {
-        final List<String> stationNames = response.jsonPath().getList("*.name");
-
+        final List<String> stationNames = response.jsonPath().getList("[0].stations.name");
         assertThat(stationNames).containsExactlyElementsOf(stations);
     }
 
     public static Long 즐겨찾기가_등록되어_있다(final String email,final Long source, final Long target) {
         return FavoriteSteps.토큰을_포함하여_즐겨찾기를_등록한다(email, source, target)
-                .as(LineResponse.class).getId();
+                .as(FavoriteResponse.class).getId();
     }
 
     private static Long 지하철역_생성_요청(final String name) {

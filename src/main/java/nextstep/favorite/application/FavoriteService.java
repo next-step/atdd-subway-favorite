@@ -38,14 +38,15 @@ public class FavoriteService {
      * @param loginMember
      * @param request
      */
-    public void createFavorite(final LoginMember loginMember, FavoriteRequest request) {
+    public FavoriteResponse createFavorite(final LoginMember loginMember, FavoriteRequest request) {
         final Member member = memberService.findMemberByEmail(loginMember.getEmail());
         final Long sourceId = request.getSource();
         final Long targetId = request.getTarget();
         pathService.findPath(sourceId, targetId);
 
         Favorite favorite = new Favorite(member.getId(), sourceId, targetId);
-        favoriteRepository.save(favorite);
+        final Favorite savedFavorite = favoriteRepository.save(favorite);
+        return favoriteRepository.findFetchById(savedFavorite.getId());
     }
 
     /**
@@ -55,9 +56,7 @@ public class FavoriteService {
      */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         final Member member = memberService.findMemberByEmail(loginMember.getEmail());
-
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
-        return null;
+        return favoriteRepository.findAllByMemberId(member.getId());
     }
 
     /**
