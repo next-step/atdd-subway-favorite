@@ -16,6 +16,7 @@ import jdk.jfr.Description;
 import nextstep.api.subway.domain.model.entity.Section;
 import nextstep.api.subway.domain.model.entity.Station;
 import nextstep.api.subway.domain.model.vo.Path;
+import nextstep.common.exception.subway.PathNotValidException;
 
 /**
  * @author : Rene Choi
@@ -125,5 +126,45 @@ class DijkstraBasedShortestPathFinderTest {
 		assertEquals(Arrays.asList(station1, station2, station6, station4, station5), result.getStations());
 		assertEquals(19, result.getDistance());
 	}
+
+	@Test
+	@DisplayName("단순 경로 존재 여부 확인: 주어진 구간에 대해 두 역 사이에 경로가 존재하는지 확인한다")
+	void testPathExistence_1() {
+		// Given
+		Station station1 = new Station(1L, "Station1");
+		Station station2 = new Station(2L, "Station2");
+		Section section = createSectionWithIdRandom(station1, station2, 10L);
+
+		List<Section> sections = Arrays.asList(section);
+
+		// When & Then
+		assertDoesNotThrow(() -> {
+			Path result = dijkstraBasedShortestPathFinder.findShortestPath(station1, station2, sections);
+			assertNotNull(result);
+			assertTrue(result.getStations().containsAll(Arrays.asList(station1, station2)));
+		}, "두 역 사이에 경로가 존재해야 한다.");
+	}
+
+	@Test
+	@DisplayName("단순 경로 존재 여부 확인: 주어진 구간에 대해 두 역 사이에 경로가 존재하지 않는 경우를 확인한다")
+	void testPathExistence_2() {
+		// Given
+		Station station1 = new Station(1L, "Station1");
+		Station station2 = new Station(2L, "Station2");
+		Station station3 = new Station(3L, "Station3"); // 이 역은 다른 역들과 연결되지 않음
+		Section section = createSectionWithIdRandom(station1, station2, 10L);
+
+		List<Section> sections = Arrays.asList(section);
+
+		// When & Then
+		assertThrows(PathNotValidException.class, () -> {
+			dijkstraBasedShortestPathFinder.findShortestPath(station1, station3, sections);
+		}, "두 역 사이에 경로가 존재하지 않으면 PathNotValidException 예외가 발생해야 한다.");
+	}
+
+
+
+
+
 
 }
