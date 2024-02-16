@@ -137,4 +137,19 @@ public class FavoriteServiceTest {
         assertThat(favorites.get(0).getStations().get(1).getId()).isEqualTo(선릉역Id);
     }
 
+    @DisplayName("즐겨찾기를 삭제할 때, 등록되지않은 회원은 오류가 발생한다.")
+    @Test
+    void removeFavorites_invalid_notFound_member() {
+        // given
+        lineRepository.save(강남_선릉_노선);
+        memberRepository.save(사용자);
+        final LoginMember loginMember = new LoginMember("등록되지않은이메일.com");
+        final FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, new FavoriteRequest(강남역Id, 선릉역Id));
+
+        // when
+        // then
+        assertThatThrownBy(() -> { favoriteService.deleteFavorite(loginMember, favoriteResponse.getId()); })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록된 회원이 아닙니다.");
+    }
 }
