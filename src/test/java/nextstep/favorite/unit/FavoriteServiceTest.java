@@ -143,12 +143,13 @@ public class FavoriteServiceTest {
         // given
         lineRepository.save(강남_선릉_노선);
         memberRepository.save(사용자);
-        final LoginMember loginMember = new LoginMember("등록되지않은이메일.com");
+        final LoginMember loginMember = new LoginMember(사용자.getEmail());
         final FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, new FavoriteRequest(강남역Id, 선릉역Id));
+        final LoginMember invalidLoginMember = new LoginMember("잘못된이메일.com");
 
         // when
         // then
-        assertThatThrownBy(() -> { favoriteService.deleteFavorite(loginMember, favoriteResponse.getId()); })
+        assertThatThrownBy(() -> { favoriteService.deleteFavorite(invalidLoginMember, favoriteResponse.getId()); })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록된 회원이 아닙니다.");
     }
