@@ -1,6 +1,6 @@
 package nextstep.subway.domain;
 
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import nextstep.subway.strategy.ShortestPathStrategy;
 
 import java.util.List;

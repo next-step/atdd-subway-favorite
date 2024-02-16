@@ -1,7 +1,7 @@
 package nextstep.subway.repository;
 
 import nextstep.subway.domain.Station;
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

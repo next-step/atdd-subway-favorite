@@ -2,7 +2,7 @@ package nextstep.subway.factory;
 
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.ShortestPathType;
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import nextstep.subway.strategy.Dijkstra;
 import nextstep.subway.strategy.ShortestPathStrategy;
 

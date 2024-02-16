@@ -6,7 +6,7 @@ import nextstep.subway.controller.dto.LineCreateRequest;
 import nextstep.subway.controller.dto.LineResponse;
 import nextstep.subway.controller.dto.SectionCreateRequest;
 import nextstep.subway.controller.dto.StationResponse;
-import nextstep.subway.exception.ExceptionResponse;
+import nextstep.exception.ExceptionResponse;
 import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

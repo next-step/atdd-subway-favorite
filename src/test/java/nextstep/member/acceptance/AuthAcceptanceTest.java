@@ -29,17 +29,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void bearerAuth() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> response = AuthSteps.로그인_요청(EMAIL, PASSWORD);
 
         String accessToken = response.jsonPath().getString("accessToken");
         assertThat(accessToken).isNotBlank();
