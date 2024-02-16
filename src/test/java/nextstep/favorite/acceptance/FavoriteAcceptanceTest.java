@@ -3,10 +3,7 @@ package nextstep.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.member.acceptance.MemberSteps;
-import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
-import nextstep.subway.application.dto.LineResponse;
 import nextstep.subway.application.dto.StationResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +16,7 @@ import java.util.List;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
-import static nextstep.subway.acceptance.LineSteps.*;
+import static nextstep.subway.acceptance.LineSteps.노선이_생성되어_있다;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -34,6 +31,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 선릉역Id;
     private Long 삼성역Id;
 
+    public static Long 즐겨찾기가_등록되어_있다(final String email, final Long source, final Long target) {
+        return FavoriteSteps.토큰을_포함하여_즐겨찾기를_등록한다(email, source, target)
+                .as(FavoriteResponse.class).getId();
+    }
+
+    private static Long 지하철역_생성_요청(final String name) {
+        return StationSteps.지하철역_생성_요청(name).as(StationResponse.class).getId();
+    }
+
+    private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
+    }
+
     @BeforeEach
     void init() {
         강남역Id = 지하철역_생성_요청(강남역);
@@ -41,6 +51,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         선릉역Id = 지하철역_생성_요청(선릉역);
         삼성역Id = 지하철역_생성_요청(삼성역);
     }
+
     /**
      * Given 지하철역이 등록되어 있다.
      * And 노선이 등록되어 있다.
@@ -74,7 +85,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         HTTP코드를_검증한다(response, HttpStatus.UNAUTHORIZED);
     }
-
 
     /**
      * Given 지하철역이 등록되어 있다.
@@ -135,18 +145,5 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기한_지하철역을_비교한다(ExtractableResponse<Response> response, List<String> stations) {
         final List<String> stationNames = response.jsonPath().getList("[0].stations.name");
         assertThat(stationNames).containsExactlyElementsOf(stations);
-    }
-
-    public static Long 즐겨찾기가_등록되어_있다(final String email,final Long source, final Long target) {
-        return FavoriteSteps.토큰을_포함하여_즐겨찾기를_등록한다(email, source, target)
-                .as(FavoriteResponse.class).getId();
-    }
-
-    private static Long 지하철역_생성_요청(final String name) {
-        return StationSteps.지하철역_생성_요청(name).as(StationResponse.class).getId();
-    }
-
-    private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
-        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 }

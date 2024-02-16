@@ -100,10 +100,12 @@ public class FavoriteServiceTest {
         final LoginMember loginMember = new LoginMember(사용자.getEmail());
 
         // when
-        favoriteService.createFavorite(loginMember, favoriteRequest);
+        final FavoriteResponse response = favoriteService.createFavorite(loginMember, favoriteRequest);
 
         // then
-        //todo 조회서비스 개발 후 then 구현
+        assertThat(response.getStations().size()).isEqualTo(2);
+        assertThat(response.getStations().get(0).getName()).isEqualTo(강남역.getName());
+        assertThat(response.getStations().get(1).getName()).isEqualTo(선릉역.getName());
     }
 
     @DisplayName("즐겨찾기 조회시, 등록된 회원이 아니면 예외가 발생한다.")
