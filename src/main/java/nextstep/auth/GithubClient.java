@@ -1,6 +1,9 @@
 package nextstep.auth;
 
+<<<<<<< HEAD
 import lombok.extern.slf4j.Slf4j;
+=======
+>>>>>>> 6d60211d ([test] 깃허브 로그인 인수테스트 작성)
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +14,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+<<<<<<< HEAD
 @Slf4j
+=======
+>>>>>>> 6d60211d ([test] 깃허브 로그인 인수테스트 작성)
 public class GithubClient {
     @Value("${github.client.id}")
     private String clientId;
@@ -36,7 +42,10 @@ public class GithubClient {
                 request, headers);
         RestTemplate restTemplate = new RestTemplate();
 
+<<<<<<< HEAD
         log.info("tokenurl" + tokenUrl);
+=======
+>>>>>>> 6d60211d ([test] 깃허브 로그인 인수테스트 작성)
         String accessToken = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                 .getBody()
