@@ -112,6 +112,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기한_지하철역을_비교한다(response, Arrays.asList(강남역, 역삼역));
     }
 
+    /**
+     * Given 지하철역이 등록되어 있다.
+     * And 노선이 등록되어 있다.
+     * And 사용자가 등록되어 있다.
+     * And 즐겨찾기가 등록되어 있다.
+     * When 즐겨찾기로 삭제한다.
+     * Then HTTP 코드 401을 리턴한다.
+     */
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void removeFavorites() {
+        노선이_생성되어_있다("이호선", "red", 강남역Id, 역삼역Id, 10);
+        회원_생성_요청(EMAIL, "1234", 30);
+        final Long 즐겨찾기Id = 즐겨찾기가_등록되어_있다(EMAIL, 강남역Id, 역삼역Id);
+
+        final ExtractableResponse<Response> response = 즐겨찾기를_삭제한다(EMAIL, 즐겨찾기Id);
+
+        HTTP코드를_검증한다(response, HttpStatus.NO_CONTENT);
+    }
+
     private void 즐겨찾기한_지하철역을_비교한다(ExtractableResponse<Response> response, List<String> stations) {
         final List<String> stationNames = response.jsonPath().getList("[0].stations.name");
         assertThat(stationNames).containsExactlyElementsOf(stations);
