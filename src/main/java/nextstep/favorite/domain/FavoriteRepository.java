@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    List<Favorite> findAllByMember(Member member);
+    List<Favorite> findAllByMemberId(Long memberId);
 }

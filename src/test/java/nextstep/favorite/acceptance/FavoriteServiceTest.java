@@ -79,7 +79,7 @@ public class FavoriteServiceTest {
 
         // when & then
         assertThrows(CannotFavoriteNonexistentPathException.class, () -> {
-            favoriteService.createFavorite(new FavoriteRequest(banghwaId, gangnamId), member1);
+            favoriteService.createFavorite(new FavoriteRequest(banghwaId, gangnamId), member1.getId());
         });
     }
 }

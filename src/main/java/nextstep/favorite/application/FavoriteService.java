@@ -27,7 +27,7 @@ public class FavoriteService {
 
     private final PathFinder pathFinder;
 
-    public Long createFavorite(FavoriteRequest request, Member member) {
+    public Long createFavorite(FavoriteRequest request, Long memberId) {
         if (!pathFinder.pathExists(request.getSource() + "", request.getTarget() + "")) {
             throw new CannotFavoriteNonexistentPathException();
         }
@@ -35,21 +35,19 @@ public class FavoriteService {
         Station sourceStation = stationRepository.findById(request.getSource()).orElseThrow(EntityNotFoundException::new);
         Station targetStation = stationRepository.findById(request.getTarget()).orElseThrow(EntityNotFoundException::new);
 
-        Favorite favorite = Favorite.of(sourceStation, targetStation, member);
+        Favorite favorite = Favorite.of(sourceStation, targetStation, memberId);
         return favoriteRepository.save(favorite).getId();
     }
 
-    public List<FavoriteResponse> findFavorites(Member member) {
-        return favoriteRepository.findAllByMember(member).stream()
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        return favoriteRepository.findAllByMemberId(memberId).stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id, Member member) {
+    public void deleteFavorite(Long id, Long memberId) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        if (!favorite.getMember().equals(member)) {
-            throw new UnauthorizedDeletionException();
-        }
+        favorite.checkOwnershipBeforeDeletion(memberId);
         favoriteRepository.deleteById(id);
     }
 }

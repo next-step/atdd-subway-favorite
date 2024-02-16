@@ -20,14 +20,10 @@ import java.util.List;
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
-    private final MemberRepository memberRepository;
-
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                          @RequestBody FavoriteRequest request) {
-        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(MemberNotFoundException::new);
-
-        Long favoriteId = favoriteService.createFavorite(request, member);
+        Long favoriteId = favoriteService.createFavorite(request, loginMember.getId());
 
         return ResponseEntity
                 .created(URI.create("/favorites/" + favoriteId))
@@ -36,18 +32,16 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(MemberNotFoundException::new);
 
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(member);
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember.getId());
         return ResponseEntity.ok().body(favorites);
     }
 
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                          @PathVariable Long id) {
-        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(MemberNotFoundException::new);
 
-        favoriteService.deleteFavorite(id, member);
+        favoriteService.deleteFavorite(id, loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }
