@@ -1,8 +1,8 @@
 package nextstep.member.acceptance;
 
-import nextstep.auth.GithubAccessTokenRequest;
-import nextstep.auth.GithubAccessTokenResponse;
-import nextstep.auth.GithubProfileResponse;
+import auth.GithubAccessTokenRequest;
+import auth.GithubAccessTokenResponse;
+import auth.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

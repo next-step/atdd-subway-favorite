@@ -1,8 +1,8 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.GithubClient;
-import nextstep.auth.GithubProfileResponse;
+import auth.GithubClient;
+import auth.GithubProfileResponse;
 import nextstep.member.AuthenticationException;
 import nextstep.member.OAuth2User;
 import nextstep.member.OAuth2UserService;
