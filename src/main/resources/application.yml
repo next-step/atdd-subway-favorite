@@ -18,4 +18,4 @@ github:
     secret: client_secret
   url:
     access-token: https://github.com/login/oauth/access_token
-    profile: https://api.github.com/user
+    email: https://api.github.com/email
