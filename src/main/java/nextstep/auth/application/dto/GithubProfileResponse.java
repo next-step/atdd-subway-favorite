@@ -1,9 +1,9 @@
-package auth;
+package nextstep.auth.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.member.OAuth2UserRequest;
+import nextstep.auth.domain.OAuth2UserRequest;
 
 @AllArgsConstructor
 @NoArgsConstructor

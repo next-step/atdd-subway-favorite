@@ -1,10 +1,10 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nextstep.member.application.TokenService;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.TokenService;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +26,7 @@ public class TokenController {
 
     @GetMapping("/login/github")
     public ResponseEntity<TokenResponse> createTokenFromGithub(@RequestParam("code") String code) {
-        TokenResponse accessToken = tokenService.createTokenFromGithub(code);
+        TokenResponse accessToken = tokenService.createTokenFromOAuth2User(code, "github");
         return ResponseEntity.ok(accessToken);
     }
 }

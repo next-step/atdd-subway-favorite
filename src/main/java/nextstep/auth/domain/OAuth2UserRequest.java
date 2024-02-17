@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.auth.domain;
 
 import lombok.Getter;
 

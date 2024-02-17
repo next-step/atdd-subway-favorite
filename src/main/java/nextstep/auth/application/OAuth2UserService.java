@@ -1,5 +1,7 @@
-package nextstep.member;
+package nextstep.auth.application;
 
+import nextstep.auth.domain.OAuth2User;
+import nextstep.auth.domain.OAuth2UserRequest;
 import org.springframework.stereotype.Component;
 
 @Component

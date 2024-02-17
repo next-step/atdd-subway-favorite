@@ -1,4 +1,4 @@
-package nextstep.member.domain;
+package nextstep.auth.domain;
 
 public class LoginMember {
     private Long id;

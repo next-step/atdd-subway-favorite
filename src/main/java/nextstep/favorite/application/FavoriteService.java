@@ -1,14 +1,11 @@
 package nextstep.favorite.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.exception.UnauthorizedDeletionException;
 import nextstep.favorite.CannotFavoriteNonexistentPathException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
-import nextstep.member.domain.Member;
 import nextstep.path.PathFinder;
 import nextstep.station.Station;
 import nextstep.station.StationRepository;
