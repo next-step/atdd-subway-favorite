@@ -19,7 +19,9 @@ public class GithubClient {
 
     public GithubClient(final GithubClientProperties githubClientProperties, final RestTemplateBuilder restTemplateBuilder) {
         this.githubClientProperties = githubClientProperties;
-        this.restTemplate = restTemplateBuilder.build();
+        this.restTemplate = restTemplateBuilder
+                .errorHandler(new GithubClientErrorHandler())
+                .build();
     }
 
     public String requestGithubToken(final String code) {
