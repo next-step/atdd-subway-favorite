@@ -1,0 +1,19 @@
+package nextstep.member.application.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
+
+@Getter
+@Builder
+@AllArgsConstructor
+@ConfigurationProperties("github.url")
+@RequiredArgsConstructor
+@ConstructorBinding
+public class GithubUrlProperties {
+    private final String accessToken;
+    private final String profile;
+}
