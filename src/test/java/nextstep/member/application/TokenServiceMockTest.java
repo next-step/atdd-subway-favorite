@@ -26,20 +26,21 @@ class TokenServiceMockTest {
     @Test
     @DisplayName("createTokenForGithub 를 통해 token 을 반환 받을 수 있다.")
     void createTokenForGithubTest() {
+        final String code = "code";
         final String githubAccessToken = "github_access_token";
         final GithubProfileResponse githubProfileResponse = new GithubProfileResponse("test@test.com", 20);
         final Member member = createMemberFrom(githubProfileResponse);
         final String accessToken = "access_token";
 
-        given(githubClient.requestGithubToken("code")).willReturn(githubAccessToken);
+        given(githubClient.requestGithubToken(code)).willReturn(githubAccessToken);
         given(githubClient.requestGithubProfile(githubAccessToken)).willReturn(githubProfileResponse);
         given(memberService.findOrCreateMember(githubProfileResponse)).willReturn(member);
         given(jwtTokenProvider.createToken(member.getId(), member.getEmail())).willReturn(accessToken);
 
-        final TokenService tokenService = new TokenService(memberService, jwtTokenProvider);
-        final TokenResponse code = tokenService.createTokenForGithub("code");
+        final TokenService tokenService = new TokenService(memberService, jwtTokenProvider, githubClient);
+        final TokenResponse tokenResponse = tokenService.createTokenForGithub(code);
 
-        assertThat(code.getAccessToken()).isEqualTo(accessToken);
+        assertThat(tokenResponse.getAccessToken()).isEqualTo(accessToken);
     }
 
     private Member createMemberFrom(final GithubProfileResponse githubProfileResponse) {
