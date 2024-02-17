@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.core.AcceptanceTest;
 import nextstep.core.AcceptanceTestAuthBase;
+import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +43,7 @@ class AuthAcceptanceTest extends AcceptanceTestAuthBase {
     @DisplayName("Github 로그인 요청시 토큰을 발급 받을 수 있다.")
     @Test
     void githubAuthSuccess() {
-        final ExtractableResponse<Response> response = 깃허브_로그인_요청("code");
+        final ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.사용자1.getCode());
 
         토큰_발급_성공(response);
     }
@@ -55,7 +56,7 @@ class AuthAcceptanceTest extends AcceptanceTestAuthBase {
     @DisplayName("Github 로그인 요청 실패시 에러가 난다.")
     @Test
     void githubAuthFail() {
-        final ExtractableResponse<Response> response = 깃허브_로그인_요청("wrong_code");
+        final ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.잘못된_사용자.getCode());
 
         토큰_발급_실패(response);
     }
@@ -75,6 +76,6 @@ class AuthAcceptanceTest extends AcceptanceTestAuthBase {
     }
 
     private void 토큰_발급_실패(final ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

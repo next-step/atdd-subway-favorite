@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ class TokenServiceTest {
     @Test
     @DisplayName("createTokenForGithub 를 통해 accessToken 을 발급 받을 수 있다.")
     void createTokenForGithubTest() {
-        final TokenResponse code = tokenService.createTokenForGithub("code");
+        final TokenResponse code = tokenService.createTokenForGithub(GithubResponses.사용자1.getCode());
 
         assertThat(code.getAccessToken()).isNotBlank();
     }

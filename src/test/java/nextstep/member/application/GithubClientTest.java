@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,23 +23,19 @@ public class GithubClientTest {
     @Test
     @DisplayName("requestGithubToken 를 통해 access_token 을 발급 받을 수 있다.")
     void requestGithubToken() {
-        final String code = "code";
+        final String githubToken = githubClient.requestGithubToken(GithubResponses.사용자1.getCode());
 
-        final String githubToken = githubClient.requestGithubToken(code);
-
-        assertThat(githubToken).isNotBlank();
+        assertThat(githubToken).isEqualTo(GithubResponses.사용자1.getAccessToken());
     }
 
     @Test
     @DisplayName("requestGithubProfile 를 통해 user github profile 정보를 반환받을 수 있다.")
     void requestGithubProfile() {
-        final String code = "code";
-
-        final GithubProfileResponse profileResponse = githubClient.requestGithubProfile(code);
+        final GithubProfileResponse profileResponse = githubClient.requestGithubProfile(GithubResponses.사용자1.getAccessToken());
 
         assertSoftly(softly -> {
-            softly.assertThat(profileResponse.getEmail()).isNotBlank();
-            softly.assertThat(profileResponse.getAge()).isNotNull();
+            softly.assertThat(profileResponse.getEmail()).isEqualTo(GithubResponses.사용자1.getEmail());
+            softly.assertThat(profileResponse.getAge()).isEqualTo(GithubResponses.사용자1.getAge());
         });
     }
 
