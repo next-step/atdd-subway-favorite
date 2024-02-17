@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.member.application.dto;
 
 public class GithubProfileResponse {
 
