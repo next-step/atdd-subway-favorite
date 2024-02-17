@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.member.utils;
 
 public enum GithubMockResponses {
     사용자1("aofijeowifjaoief", "access_token_1", "email1@email.com"),

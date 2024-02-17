@@ -1,4 +1,4 @@
-package nextstep.favorite.acceptance;
+package nextstep.favorite.unit;
 
 import nextstep.favorite.CannotFavoriteNonexistentPathException;
 import nextstep.favorite.application.FavoriteService;
