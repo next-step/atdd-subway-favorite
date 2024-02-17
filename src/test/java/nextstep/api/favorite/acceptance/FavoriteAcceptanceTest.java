@@ -123,7 +123,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 		ExtractableResponse<Response> deleteResponse = executeDeleteFavoriteRequest(anotherUserToken, favoriteId);
 
 		// then
-		assertThat(deleteResponse.statusCode()).isEqualTo(UNAUTHORIZED.value());
+		assertThat(deleteResponse.statusCode()).isEqualTo(FORBIDDEN.value());
 	}
 
 
