@@ -12,6 +12,8 @@ import static org.springframework.http.HttpStatus.OK;
 
 public class FavoriteSteps {
 
+    private static final String PREFIX_PATH = "/favorites";
+    
     public static FavoriteRequestBuilder 즐겨찾기_요청을_구성한다() {
         return new FavoriteSteps().new FavoriteRequestBuilder();
     }
@@ -45,7 +47,7 @@ public class FavoriteSteps {
             setAuthorization();
             return this.spec.contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(this.body)
-                    .when().post("/favorites")
+                    .when().post(PREFIX_PATH)
                     .then().log().all()
                     .statusCode(statusCode)
                     .extract();
@@ -54,7 +56,7 @@ public class FavoriteSteps {
         public ExtractableResponse<Response> 즐겨찾기_조회_요청을_보낸다() {
             setAuthorization();
             return this.spec.contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().get("/favorites")
+                    .when().get(PREFIX_PATH)
                     .then().log().all()
                     .statusCode(statusCode)
                     .extract();

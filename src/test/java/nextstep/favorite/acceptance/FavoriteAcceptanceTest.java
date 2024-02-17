@@ -30,44 +30,32 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 강남역_ID;
     private Long 선릉역_ID;
-    private Long 양재역_ID;
-    private Long 역삼역_ID;
     private Long 신대방역_ID;
     private Long 신림역_ID;
     private Long 봉천역_ID;
 
     private Long 신분당선_ID;
-    private Long 분당선_ID;
-    private Long 일호선_ID;
-    private Long 이호선_ID;
     private Long 삼호선_ID;
 
     /**
      * GIVEN 지하철 역을 생성하고
      * GIVEN 노선을 생성한다
      *
-     * 역삼역    --- *1호선*(10) ---   양재역
-     * |                        |
-     * *2호선*(10)                   *분당선*(10)
-     * |                        |
      * 강남역    --- *신분당호선*(10) ---    선릉역
      * <p>
-     * 강남역    --- *3호선*(10) ---    선릉역
+     * 신대방역    --- *3호선*(10) ---    신림역
+     *
+     * 봉천역
      */
     @BeforeEach
     void setFixture() {
         강남역_ID = 지하철역_생성_요청(GANGNAM_STATION.toCreateRequest());
         선릉역_ID = 지하철역_생성_요청(SEOLLEUNG_STATION.toCreateRequest());
-        양재역_ID = 지하철역_생성_요청(YANGJAE_STATION.toCreateRequest());
-        역삼역_ID = 지하철역_생성_요청(YEOKSAM_STATION.toCreateRequest());
         신대방역_ID = 지하철역_생성_요청(YEOKSAM_STATION.toCreateRequest());
         신림역_ID = 지하철역_생성_요청(YEOKSAM_STATION.toCreateRequest());
         봉천역_ID = 지하철역_생성_요청(YEOKSAM_STATION.toCreateRequest());
 
         신분당선_ID = 노선_생성_요청(SHINBUNDANG_LINE.toCreateRequest(강남역_ID, 선릉역_ID));
-        분당선_ID = 노선_생성_요청(SHINBUNDANG_LINE.toCreateRequest(선릉역_ID, 양재역_ID));
-        일호선_ID = 노선_생성_요청(SHINBUNDANG_LINE.toCreateRequest(양재역_ID, 역삼역_ID));
-        이호선_ID = 노선_생성_요청(SHINBUNDANG_LINE.toCreateRequest(역삼역_ID, 강남역_ID));
         삼호선_ID = 노선_생성_요청(SHINBUNDANG_LINE.toCreateRequest(신대방역_ID, 신림역_ID));
     }
 
@@ -93,17 +81,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .즐겨찾기_생성_요청을_보낸다()
                 .as(ExceptionResponse.class).getMessage();
 
-        assertThat(message).isEqualTo("인증에 실패했습니다.");
+        인증_실패_검증(message);
     }
 
+
     /**
-     * 역삼역    --- *1호선*(10) ---   양재역
-     * |                        |
-     * *2호선*(10)                   *분당선*(10)
-     * |                        |
      * 강남역    --- *신분당호선*(10) ---    선릉역
      * <p>
      * 신대방역    --- *3호선*(10) ---    신림역
+     * <p>
+     * 봉천역
      *
      * GIVEN 로그인을 한 다음
      * WHEN 즐겨찾기 생성시 경로가 존재하지 않을 경우
@@ -132,14 +119,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 
     /**
-     * 역삼역    --- *1호선*(10) ---   양재역
-     * |                        |
-     * *2호선*(10)                   *분당선*(10)
-     * |                        |
      * 강남역    --- *신분당호선*(10) ---    선릉역
      * <p>
      * 신대방역    --- *3호선*(10) ---    신림역
      * <p>
+     * 봉천역
+     *
      * GIVEN 로그인을 한 다음
      * WHEN 즐겨찾기 생성시 경로가 연결되어 있지 않을 경우
      * Then 즐겨찾기를 생성할 수 없다
@@ -153,6 +138,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * 강남역    --- *신분당호선*(10) ---  선릉역
+     * <p>
+     * 신대방역    --- *3호선*(10) ---    신림역
+     * <p>
+     * 봉천역
      * GIVEN 로그인을 한 다음
      * WHEN 즐겨찾기 생성시 이미 즐겨찾기한 경로일 경우
      * Then 즐겨찾기를 생성할 수 없다
@@ -201,7 +191,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .즐겨찾기_조회_요청을_보낸다()
                 .as(ExceptionResponse.class).getMessage();
 
-        assertThat(message).isEqualTo("인증에 실패했습니다.");
+        인증_실패_검증(message);
     }
 
     /**
@@ -229,7 +219,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .즐겨찾기_삭제_요청을_보낸다("/favorites/1")
                 .as(ExceptionResponse.class).getMessage();
 
-        assertThat(message).isEqualTo("인증에 실패했습니다.");
+        인증_실패_검증(message);
     }
 
     /**
@@ -287,6 +277,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .로그인을_한다(accessToken)
                 .Response_HTTP_상태_코드(NO_CONTENT.value())
                 .즐겨찾기_삭제_요청을_보낸다(uri);
+    }
+
+    private static void 인증_실패_검증(String message) {
+        assertThat(message).isEqualTo("인증에 실패했습니다.");
     }
 
 }
