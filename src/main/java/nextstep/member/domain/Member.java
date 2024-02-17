@@ -44,8 +44,21 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
+    public boolean isSamePassword(final String password) {
+        return this.password.equals(password);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Member member = (Member) o;
+        return Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(password, member.password) && Objects.equals(age, member.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, age);
     }
 
     @Override

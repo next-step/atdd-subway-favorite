@@ -29,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @Transactional
 public class FavoriteServiceTest {
+    public static final String STR_강남역 = "강남역";
+    public static final String STR_선릉역 = "선릉역";
     @Autowired
     private StationRepository stationRepository;
     @Autowired
@@ -103,9 +105,8 @@ public class FavoriteServiceTest {
         final FavoriteResponse response = favoriteService.createFavorite(loginMember, favoriteRequest);
 
         // then
-        assertThat(response.getStations().size()).isEqualTo(2);
-        assertThat(response.getStations().get(0).getName()).isEqualTo(강남역.getName());
-        assertThat(response.getStations().get(1).getName()).isEqualTo(선릉역.getName());
+        assertThat(response.getSource().getName()).isEqualTo(STR_강남역);
+        assertThat(response.getTarget().getName()).isEqualTo(STR_선릉역);
     }
 
     @DisplayName("즐겨찾기 조회시, 등록된 회원이 아니면 예외가 발생한다.")
@@ -135,8 +136,8 @@ public class FavoriteServiceTest {
 
         // then
         assertThat(favorites.size()).isEqualTo(1);
-        assertThat(favorites.get(0).getStations().get(0).getId()).isEqualTo(강남역Id);
-        assertThat(favorites.get(0).getStations().get(1).getId()).isEqualTo(선릉역Id);
+        assertThat(favorites.get(0).getSource().getName()).isEqualTo(STR_강남역);
+        assertThat(favorites.get(0).getTarget().getName()).isEqualTo(STR_선릉역);
     }
 
     @DisplayName("즐겨찾기를 삭제할 때, 등록되지않은 회원은 오류가 발생한다.")

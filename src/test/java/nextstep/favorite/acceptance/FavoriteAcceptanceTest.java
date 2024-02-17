@@ -2,7 +2,6 @@ package nextstep.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.subway.acceptance.StationSteps;
 import nextstep.subway.application.dto.StationResponse;
 import nextstep.utils.AcceptanceTest;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
@@ -30,20 +28,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 역삼역Id;
     private Long 선릉역Id;
     private Long 삼성역Id;
-
-    public static Long 즐겨찾기가_등록되어_있다(final String email, final Long source, final Long target) {
-        return FavoriteSteps.토큰을_포함하여_즐겨찾기를_등록한다(email, source, target)
-                .as(FavoriteResponse.class).getId();
-    }
-
-    private static Long 지하철역_생성_요청(final String name) {
-        return StationSteps.지하철역_생성_요청(name).as(StationResponse.class).getId();
-    }
-
-    private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
-        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
-    }
-
     @BeforeEach
     void init() {
         강남역Id = 지하철역_생성_요청(강남역);
@@ -65,7 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         노선이_생성되어_있다("이호선", "red", 강남역Id, 역삼역Id, 10);
         회원_생성_요청(EMAIL, "1234", 30);
 
-        final ExtractableResponse<Response> response = 토큰을_포함하여_즐겨찾기를_등록한다(EMAIL, 강남역Id, 역삼역Id);
+        final ExtractableResponse<Response> response = 즐겨찾기를_등록한다(EMAIL, 강남역Id, 역삼역Id);
 
         HTTP코드를_검증한다(response, HttpStatus.CREATED);
     }
@@ -81,7 +65,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void createFavorite_invalid_jwt() {
         노선이_생성되어_있다("이호선", "red", 강남역Id, 역삼역Id, 10);
 
-        final ExtractableResponse<Response> response = 즐겨찾기를_등록한다(강남역Id, 역삼역Id);
+        final ExtractableResponse<Response> response = 토근_없이_즐겨찾기를_등록한다(강남역Id, 역삼역Id);
 
         HTTP코드를_검증한다(response, HttpStatus.UNAUTHORIZED);
     }
@@ -97,7 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void createFavorite_invalid_path() {
         회원_생성_요청(EMAIL, "1234", 30);
 
-        final ExtractableResponse<Response> response = 토큰을_포함하여_즐겨찾기를_등록한다(EMAIL, 강남역Id, 역삼역Id);
+        final ExtractableResponse<Response> response = 즐겨찾기를_등록한다(EMAIL, 강남역Id, 역삼역Id);
 
         HTTP코드를_검증한다(response, HttpStatus.BAD_REQUEST);
     }
@@ -119,7 +103,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         final ExtractableResponse<Response> response = 즐겨찾기를_조회한다(EMAIL);
 
-        즐겨찾기한_지하철역을_비교한다(response, Arrays.asList(강남역, 역삼역));
+        즐겨찾기한_지하철역을_비교한다(response, List.of(강남역Id), List.of(역삼역Id));
     }
 
     /**
@@ -135,15 +119,32 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void removeFavorites() {
         노선이_생성되어_있다("이호선", "red", 강남역Id, 역삼역Id, 10);
         회원_생성_요청(EMAIL, "1234", 30);
-        final Long 즐겨찾기Id = 즐겨찾기가_등록되어_있다(EMAIL, 강남역Id, 역삼역Id);
+        final String locationUrl = 즐겨찾기가_등록되어_있다(EMAIL, 강남역Id, 역삼역Id);
 
-        final ExtractableResponse<Response> response = 즐겨찾기를_삭제한다(EMAIL, 즐겨찾기Id);
+        final ExtractableResponse<Response> response = 즐겨찾기를_삭제한다(EMAIL, locationUrl);
 
         HTTP코드를_검증한다(response, HttpStatus.NO_CONTENT);
     }
 
-    private void 즐겨찾기한_지하철역을_비교한다(ExtractableResponse<Response> response, List<String> stations) {
-        final List<String> stationNames = response.jsonPath().getList("[0].stations.name");
-        assertThat(stationNames).containsExactlyElementsOf(stations);
+    private void 즐겨찾기한_지하철역을_비교한다(ExtractableResponse<Response> response, List<Long> sourceIdList,
+                                  List<Long> targetIdList) {
+        final List<Long> actualSourceIdList = response.body().jsonPath().getList("source.id", Long.class);
+        final List<Long> actualTargetIdList = response.body().jsonPath().getList("target.id", Long.class);
+        assertThat(actualSourceIdList).containsExactlyElementsOf(sourceIdList);
+        assertThat(actualTargetIdList).containsExactlyElementsOf(targetIdList);
     }
+
+    public static String 즐겨찾기가_등록되어_있다(final String email, final Long source, final Long target) {
+        return FavoriteSteps.즐겨찾기를_등록한다(email, source, target).header("location");
+    }
+
+    private static Long 지하철역_생성_요청(final String name) {
+        return StationSteps.지하철역_생성_요청(name).as(StationResponse.class).getId();
+    }
+
+    private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
+    }
+
+
 }
