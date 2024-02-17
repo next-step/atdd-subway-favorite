@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.exception.ApplicationException;
+import nextstep.exception.AuthenticationException;
 import nextstep.member.application.dto.*;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -30,6 +30,8 @@ public class GithubClient {
     }
 
     public GithubAccessTokenResponse requestAccessToken(String code) {
+        validateCodeIsBlank(code);
+
         GithubAccessTokenRequest request = GithubAccessTokenRequest.of(code, githubClientProperties.getId(), githubClientProperties.getSecret());
 
         HttpHeaders headers = new HttpHeaders();
@@ -42,10 +44,18 @@ public class GithubClient {
         return Optional.ofNullable(restTemplate
                         .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                         .getBody())
-                .orElseThrow(() -> new ApplicationException("토큰을 가져오는데 실패했습니다."));
+                .orElseThrow(() -> new AuthenticationException("토큰 정보를 가져오는데 실패했습니다."));
+    }
+
+    private void validateCodeIsBlank(String code) {
+        if(code == null || code.isEmpty()) {
+            throw new AuthenticationException("토큰 정보를 가져오는데 실패했습니다.");
+        }
     }
 
     public GithubEmailResponse requestGithubEmail(String accessToken) {
+        validateAccessTokenIsBlank(accessToken);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.add(AUTHORIZATION, "token " + accessToken);
@@ -61,7 +71,13 @@ public class GithubClient {
         return responses.stream()
                 .filter(GithubEmailResponse::isVerifiedPrimaryEmail)
                 .findFirst()
-                .orElseThrow(() -> new ApplicationException("이메일을 가져오는데 실패했습니다."));
+                .orElseThrow(() -> new AuthenticationException("이메일 정보를 가져오는데 실패했습니다."));
+    }
+
+    private void validateAccessTokenIsBlank(String accessToken) {
+        if(accessToken == null || accessToken.isEmpty()) {
+            throw new AuthenticationException("이메일 정보를 가져오는데 실패했습니다.");
+        }
     }
 
 }
