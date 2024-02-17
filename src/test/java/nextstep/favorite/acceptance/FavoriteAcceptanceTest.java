@@ -18,23 +18,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given: 존재하지 않는 역 id에 대해서
+     * given: 경로가 존재하지 않는 두 역이 주어 졌을 때
      * when: 즐겨 찾기를 생성하면
      * then: 즐겨 찾기 생성에 실패한다.
      */
     @Test
-    void  즐겨_찾기_요청_시_source와_target역_모두_존재해야_한다() {
+    void 즐겨_찾기_생성_시_비_정상_경로이면_등록이_불가하다() {
         // when
         // then
-    }
-
-    /**
-     * given: source와 target이 같은 역 id에 대해서
-     * when: 즐겨 찾기를 생성하면
-     * then: 즐겨 찾기 생성에 실패한다.
-     */
-    @Test
-    void 즐겨_찾기_요청_시_source와_target역이_같으면_안된다() {
     }
 
     /**
