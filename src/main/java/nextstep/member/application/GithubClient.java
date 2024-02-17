@@ -12,23 +12,29 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class GithubClient {
+
+    private final GithubClientProperties githubClientProperties;
+    private final RestTemplate restTemplate;
+
+    public GithubClient(final GithubClientProperties githubClientProperties, final RestTemplateBuilder restTemplateBuilder) {
+        this.githubClientProperties = githubClientProperties;
+        this.restTemplate = restTemplateBuilder.build();
+    }
+
     public String requestGithubToken(final String code) {
         final GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
-                "clientId", // client id
-                "clientSecret" // client secret
+                githubClientProperties.getClientId(), // client id
+                githubClientProperties.getClientSecret() // client secret
         );
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
         final HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity<>(githubAccessTokenRequest, headers);
-        final RestTemplate restTemplate = new RestTemplate();
-
-        final String url = "http://localhost:8080/github/login/oauth/access_token";
 
         return restTemplate
-                .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                .exchange(githubClientProperties.getTokenUrl(), HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                 .getBody()
                 .getAccessToken();
     }
