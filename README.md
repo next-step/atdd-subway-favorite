@@ -140,3 +140,35 @@
 - [x] 개인별로 즐겨찾기 기능으로 개선
 #### 3. 예외 처리
 - [x] 예외처리
+
+## 2단계 - 깃헙 로그인 구현
+### 요구사항
+#### 깃허브를 이용한 로그인 구현(토큰 발행) - 실제 GitHub 에 요청 X
+- 깃헙 로그인 API
+    ```shell
+    # Request
+    POST /login/github HTTP/1.1
+    content-type: application/json
+    host: localhost:8080
+    
+    {
+      "code": "qwerasdfzxvcqwerasdfzxcv"
+    }
+    
+    # Response
+    {
+      "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
+    }
+    ```
+    - [ ] 구현한 server 로 요청을 보낸 뒤 server 에서 github 으로 요청을 보내는 방식으로 구현
+    - [ ] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
+    - [ ] accessToken 는 깃헙으로부터 받아온게 아니라 subway 애플리케이션에서 아이디/패스워드를 이용한 로그인 시 응답받는 토큰과 동일한 토큰
+    - [ ] 어떤 코드로 요청이 오면 정해진 response 를 응답하는 구조 구성
+    - 성공 시나리오
+      > When Github 로그인 요청시<br>
+        Then 토큰을 발급받을 수 있다.
+    
+    - 실패 시나리오
+      > When Github 로그인 요청시<br>
+        When Github 로그인 요청에 실패하면<br>
+        Then 에러가 난다.
