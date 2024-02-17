@@ -40,12 +40,12 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Station station = (Station) o;
-        return this.id.equals(station.id);
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(id, name);
     }
 
     @Override
