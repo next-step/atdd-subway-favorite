@@ -8,6 +8,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -46,6 +48,7 @@ public class MemberService {
     }
 
     public Member findOrCreateMember(final GithubProfileResponse githubProfileResponse) {
-        return null;
+        return memberRepository.findByEmail(githubProfileResponse.getEmail())
+                .orElseGet(() -> memberRepository.save(new Member(githubProfileResponse.getEmail(), UUID.randomUUID().toString(), githubProfileResponse.getAge())));
     }
 }
