@@ -24,4 +24,15 @@ public class AuthSteps {
 
         return response.jsonPath().getString("accessToken");
     }
+
+    public static String OAuth2_로그인_요청(String url, String code) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("code", code)
+                .when().get(url)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        return response.jsonPath().getString("accessToken");
+    }
 }

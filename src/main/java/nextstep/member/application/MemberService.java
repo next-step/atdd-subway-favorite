@@ -18,11 +18,8 @@ public class MemberService {
     }
 
     public Member findOrCreateMember(Member member) {
-        Optional<Member> memberOptional = memberRepository.findByEmail(member.getEmail());
-        if (memberOptional.isEmpty()) {
-            return memberRepository.save(member);
-        }
-        return memberOptional.get();
+        return memberRepository.findByEmail(member.getEmail())
+                .orElseGet(() -> memberRepository.save(member));
     }
 
     public MemberResponse createMember(MemberRequest request) {
