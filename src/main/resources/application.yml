@@ -6,6 +6,9 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
+server:
+  port: 8080
+
 security:
   jwt:
     token:

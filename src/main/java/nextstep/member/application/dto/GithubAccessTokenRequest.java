@@ -1,12 +1,10 @@
 package nextstep.member.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +14,7 @@ public class GithubAccessTokenRequest {
     @JsonProperty("client_id")
     private String clientId;
 
-    @JsonProperty("client_id")
+    @JsonProperty("client_secret")
     private String clientSecret;
 
     public static GithubAccessTokenRequest of(String code, String clientId, String clientSecret) {

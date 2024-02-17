@@ -1,5 +1,7 @@
 package nextstep.member.application;
 
+import java.util.Arrays;
+
 public enum GithubResponses {
     사용자1("aofijeowifjaoief", "access_token_1", "email1@email.com"),
     사용자2("fau3nfin93dmn", "access_token_2", "email2@email.com"),
@@ -9,6 +11,20 @@ public enum GithubResponses {
     private String code;
     private String accessToken;
     private String email;
+
+    public static GithubResponses findByCode(String code) {
+        return Arrays.stream(values())
+                .filter(githubResponses -> githubResponses.code.equals(code))
+                .findFirst()
+                .orElse(사용자1);
+    }
+
+    public static GithubResponses findByAccessToken(String accesstoken) {
+        return Arrays.stream(values())
+                .filter(githubResponses -> githubResponses.accessToken.equals(accesstoken))
+                .findFirst()
+                .orElse(사용자1);
+    }
 
     GithubResponses(String code, String accessToken, String email) {
         this.code = code;

@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @Builder
 @AllArgsConstructor
 @ConfigurationProperties("github.client")
-@RequiredArgsConstructor
 @ConstructorBinding
 public class GithubClientProperties {
     private final String id;

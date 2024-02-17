@@ -11,7 +11,6 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @Builder
 @AllArgsConstructor
 @ConfigurationProperties("github.url")
-@RequiredArgsConstructor
 @ConstructorBinding
 public class GithubUrlProperties {
     private final String accessToken;

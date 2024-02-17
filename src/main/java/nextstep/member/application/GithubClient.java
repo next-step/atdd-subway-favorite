@@ -21,10 +21,12 @@ public class GithubClient {
 
     private final GithubClientProperties githubClientProperties;
     private final GithubUrlProperties githubUrlProperties;
+    private final RestTemplate restTemplate;
 
-    public GithubClient(GithubClientProperties githubClientProperties, GithubUrlProperties githubUrlProperties) {
+    public GithubClient(GithubClientProperties githubClientProperties, GithubUrlProperties githubUrlProperties, RestTemplate restTemplate) {
         this.githubClientProperties = githubClientProperties;
         this.githubUrlProperties = githubUrlProperties;
+        this.restTemplate = restTemplate;
     }
 
     public GithubAccessTokenResponse requestAccessToken(String code) {
@@ -34,7 +36,6 @@ public class GithubClient {
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(request, headers);
-        RestTemplate restTemplate = new RestTemplate();
 
         String url = githubUrlProperties.getAccessToken();
 
@@ -50,9 +51,8 @@ public class GithubClient {
         headers.add(AUTHORIZATION, "token " + accessToken);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
-        RestTemplate restTemplate = new RestTemplate();
 
-        String url = githubUrlProperties.getAccessToken();
+        String url = githubUrlProperties.getEmail();
 
         List<GithubEmailResponse> responses = restTemplate
                 .exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<GithubEmailResponse>>() {})
