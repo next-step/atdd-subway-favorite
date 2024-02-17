@@ -29,7 +29,7 @@ public class AuthSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 소셜_로그인_요청(String socialType, String code) {
+    public static ExtractableResponse<Response> 소셜_로그인_요청(int statusCode, String socialType, String code) {
         Map<String, String> params = new HashMap<>();
         params.put("code", code);
 
@@ -38,7 +38,7 @@ public class AuthSteps {
                 .body(params)
                 .when().post("/login/" + socialType)
                 .then().log().all()
-                .statusCode(OK.value())
+                .statusCode(statusCode)
                 .extract();
     }
 
