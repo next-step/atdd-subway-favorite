@@ -13,3 +13,11 @@ security:
     token:
       secret-key: atdd-secret-key
       expire-length: 3600000
+
+github:
+  client:
+    id: test_id
+    secret: test_secret
+  url:
+    access-token: http://localhost:8080/github/login/oauth/access_token
+    profile: http://localhost:8080/github/user
