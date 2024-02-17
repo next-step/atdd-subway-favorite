@@ -3,18 +3,15 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.AcceptanceTest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.member.acceptance.AuthSteps.소셜_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -42,4 +39,16 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    @Test
+    void 깃허브_계정으로_로그인을_한다() {
+        ExtractableResponse<Response> response = 소셜_로그인_요청("github", "code");
+
+        액세스_토큰_검증(response);
+    }
+
+    private void 액세스_토큰_검증(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
 }
