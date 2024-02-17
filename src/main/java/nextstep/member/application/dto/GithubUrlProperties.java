@@ -15,5 +15,5 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @ConstructorBinding
 public class GithubUrlProperties {
     private final String accessToken;
-    private final String profile;
+    private final String email;
 }
