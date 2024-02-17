@@ -126,10 +126,6 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 		assertThat(deleteResponse.statusCode()).isEqualTo(FORBIDDEN.value());
 	}
 
-
-
-
-
 	public void setAuthorizationToken(String authorizationToken) {
 		this.authorizationToken = authorizationToken;
 	}
