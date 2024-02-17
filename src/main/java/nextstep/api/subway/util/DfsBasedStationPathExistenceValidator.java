@@ -17,6 +17,17 @@ import nextstep.api.subway.domain.model.entity.Section;
  */
 public class DfsBasedStationPathExistenceValidator {
 
+	/**
+	 * 이펙티브 자바에 따르면 상태를 갖지 않는 클래에 대해 private 생성자를 적용하는 것이 유익하다.
+	 * 1. 인스턴스 생성 방지
+	 * 2. 의도 명확화
+	 * 3. 디자인 개선
+	 * 4. 상속 제어
+	 */
+	private DfsBasedStationPathExistenceValidator() {
+		throw new AssertionError("유틸리티 클래스는 인스턴스화되어서는 안 됩니다.");
+	}
+
 	public static boolean isValidPathBetweenStations(SortedSet<Section> sections, Long sourceStationId, Long targetStationId) {
 		Set<Long> visited = new HashSet<>();
 		Deque<Long> stack = new ArrayDeque<>();
