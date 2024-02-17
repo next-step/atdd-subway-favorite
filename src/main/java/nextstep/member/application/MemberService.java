@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -42,5 +43,9 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Member findOrCreateMember(final GithubProfileResponse githubProfileResponse) {
+        return null;
     }
 }
