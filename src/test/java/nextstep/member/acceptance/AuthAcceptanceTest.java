@@ -7,14 +7,18 @@ import nextstep.core.AcceptanceTest;
 import nextstep.core.AcceptanceTestAuthBase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AcceptanceTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@DirtiesContext
 class AuthAcceptanceTest extends AcceptanceTestAuthBase {
 
     @DisplayName("Bearer Auth")
