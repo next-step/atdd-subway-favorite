@@ -1,11 +1,16 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubAccessTokenRequest;
+import nextstep.member.application.dto.GithubAccessTokenResponse;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class GithubClient {
     public String requestGithubToken(final String code) {
         final GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
