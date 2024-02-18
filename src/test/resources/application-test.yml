@@ -8,8 +8,19 @@ spring:
         format_sql: true
         show_sql: true
 
+server:
+  port: 8081
+
 security:
   jwt:
     token:
       secret-key: atdd-secret-key
       expire-length: 3600000
+
+github:
+  client:
+    id: test_id
+    secret: test_secret
+  url:
+    access-token: http://localhost:8081/github/login/oauth/access_token
+    email: http://localhost:8081/github/email

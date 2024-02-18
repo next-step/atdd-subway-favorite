@@ -6,8 +6,19 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
+server:
+  port: 8080
+
 security:
   jwt:
     token:
       secret-key: atdd-secret-key
       expire-length: 3600000
+
+github:
+  client:
+    id: client_id
+    secret: client_secret
+  url:
+    access-token: https://github.com/login/oauth/access_token
+    email: https://api.github.com/email
