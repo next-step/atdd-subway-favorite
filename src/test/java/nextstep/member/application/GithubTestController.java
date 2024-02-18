@@ -13,10 +13,10 @@ public class GithubTestController {
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(
             @RequestBody final GithubAccessTokenRequest tokenRequest) {
-        if (tokenRequest.getCode().equals(GithubResponses.잘못된_사용자.getCode())) {
+        final GithubResponses githubResponse = GithubResponses.findByCode(tokenRequest.getCode());
+        if (githubResponse == GithubResponses.잘못된_사용자) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        final GithubResponses githubResponse = GithubResponses.findByCode(tokenRequest.getCode());
         final GithubAccessTokenResponse response = new GithubAccessTokenResponse(githubResponse.getAccessToken(), "", "", "");
         return ResponseEntity.ok(response);
     }
