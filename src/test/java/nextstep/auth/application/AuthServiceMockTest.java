@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -45,7 +43,7 @@ public class AuthServiceMockTest {
     void loginTest() {
         final String accessToken = "access_token";
 
-        given(userDetailsService.loadUserByEmail(EMAIL)).willReturn(Optional.of(userDetail));
+        given(userDetailsService.loadUserByEmail(EMAIL)).willReturn(userDetail);
         given(jwtTokenProvider.createToken(userDetail.getId(), userDetail.getEmail())).willReturn(accessToken);
 
         final AuthResponse authResponse = authService.login(EMAIL, PASSWORD);
@@ -57,7 +55,7 @@ public class AuthServiceMockTest {
     @DisplayName("login 시 해당 email 의 user 가 존재하지 않는다면 UnauthorizedException 이 던져진다.")
     void loadEmptyTest() {
         final String wrongEmail = "wrong@wrong.com";
-        given(userDetailsService.loadUserByEmail(wrongEmail)).willReturn(Optional.empty());
+        given(userDetailsService.loadUserByEmail(wrongEmail)).willReturn(null);
 
         assertThatThrownBy(() -> authService.login(wrongEmail, PASSWORD))
                 .isInstanceOf(UnauthorizedException.class);
@@ -67,7 +65,7 @@ public class AuthServiceMockTest {
     @DisplayName("login 시 비밀번호가 틀리다면 UnauthorizedException 이 던져진다.")
     void wrongPasswordTest() {
         final String wrongPassword = "wrongPassword";
-        given(userDetailsService.loadUserByEmail(EMAIL)).willReturn(Optional.of(userDetail));
+        given(userDetailsService.loadUserByEmail(EMAIL)).willReturn(userDetail);
 
         assertThatThrownBy(() -> authService.login(EMAIL, wrongPassword))
                 .isInstanceOf(UnauthorizedException.class);

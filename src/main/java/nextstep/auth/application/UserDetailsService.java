@@ -2,14 +2,8 @@ package nextstep.auth.application;
 
 import nextstep.auth.application.dto.OAuth2Response;
 
-import java.util.Optional;
+public interface UserDetailsService {
+    UserDetail loadUserByEmail(final String email);
 
-public class UserDetailsService {
-    public Optional<UserDetail> loadUserByEmail(final String email) {
-        return Optional.of(new UserDetail());
-    }
-
-    public UserDetail loadOrCreateUser(final OAuth2Response oAuth2Response) {
-        return new UserDetail();
-    }
+    UserDetail loadOrCreateUser(final OAuth2Response oAuth2Response);
 }

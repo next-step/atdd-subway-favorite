@@ -5,6 +5,8 @@ import nextstep.auth.application.dto.OAuth2Response;
 import nextstep.common.exception.UnauthorizedException;
 import nextstep.member.application.JwtTokenProvider;
 
+import java.util.Objects;
+
 public class AuthService {
 
     private final UserDetailsService userDetailsService;
@@ -18,10 +20,9 @@ public class AuthService {
     }
 
     public AuthResponse login(final String email, final String password) {
-        final UserDetail userDetail = userDetailsService.loadUserByEmail(email)
-                .orElseThrow(() -> new UnauthorizedException("아이디와 비밀번호를 확인해주세요."));
+        final UserDetail userDetail = userDetailsService.loadUserByEmail(email);
 
-        if (userDetail.isPasswordMismatch(password)) {
+        if (Objects.isNull(userDetail) || userDetail.isPasswordMismatch(password)) {
             throw new UnauthorizedException("아이디와 비밀번호를 확인해주세요.");
         }
 
