@@ -5,9 +5,12 @@ import nextstep.subway.favorite.application.dto.FavoriteRequest;
 import nextstep.subway.favorite.application.dto.FavoriteResponse;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.line.LineRepository;
+import nextstep.subway.line.Lines;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.path.PathFinder;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
 import org.springframework.stereotype.Service;
@@ -16,13 +19,19 @@ import java.util.List;
 
 @Service
 public class FavoriteService {
+    private final PathFinder pathFinder;
+    private final LineRepository lineRepository;
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
     private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(MemberRepository memberRepository,
+    public FavoriteService(PathFinder pathFinder,
+                           LineRepository lineRepository,
+                           MemberRepository memberRepository,
                            StationRepository stationRepository,
                            FavoriteRepository favoriteRepository) {
+        this.pathFinder = pathFinder;
+        this.lineRepository = lineRepository;
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
         this.favoriteRepository = favoriteRepository;
@@ -36,9 +45,11 @@ public class FavoriteService {
      */
     public void createFavorite(LoginMember loginMember,
                                FavoriteRequest request) {
-        Favorite favorite = new Favorite(getStation(request.getSource()),
-                        getStation(request.getTarget()),
-                        getMember(loginMember));
+        Favorite favorite = new Favorite(pathFinder,
+                Lines.from(lineRepository.findAllFetchJoin()),
+                getStation(request.getSource()),
+                getStation(request.getTarget()),
+                getMember(loginMember));
         favoriteRepository.save(favorite);
     }
 

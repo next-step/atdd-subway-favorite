@@ -21,6 +21,16 @@ public class JGraphPathFinder implements PathFinder {
     public Path shortcut(Lines lines,
                          Station source,
                          Station target) {
+        GraphPath path = validCorrect(lines, source, target);
+        List<Station> shortestPath = path.getVertexList();
+        Double shorestDistance = path.getWeight();
+        return new Path(shortestPath, shorestDistance);
+    }
+
+    @Override
+    public GraphPath validCorrect(Lines lines,
+                             Station source,
+                             Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
         }
@@ -30,10 +40,7 @@ public class JGraphPathFinder implements PathFinder {
         }
 
         DijkstraShortestPath dijkstraShortestPath = createShortestPath(lines);
-        GraphPath path = Optional.ofNullable(dijkstraShortestPath.getPath(source, target)).orElseThrow(() -> new IllegalArgumentException("출발역과 도착역은 연결되어 있어야 합니다."));
-        List<Station> shortestPath = path.getVertexList();
-        Double shorestDistance = path.getWeight();
-        return new Path(shortestPath, shorestDistance);
+        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target)).orElseThrow(() -> new IllegalArgumentException("출발역과 도착역은 연결되어 있어야 합니다."));
     }
 
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createShortestPath(Lines lines) {

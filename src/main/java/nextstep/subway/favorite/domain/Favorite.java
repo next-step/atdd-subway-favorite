@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.line.Lines;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.PathFinder;
 import nextstep.subway.station.Station;
 
 import javax.persistence.*;
@@ -26,9 +28,12 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Station sourceStation,
+    public Favorite(PathFinder pathFinder,
+                    Lines lines,
+                    Station sourceStation,
                     Station targetStation,
                     Member member) {
+        pathFinder.validCorrect(lines, sourceStation, targetStation);
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.member = member;
