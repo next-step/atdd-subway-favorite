@@ -56,4 +56,11 @@ class FavoriteTest {
                 StationFixture.서초역, new Member()));
     }
 
+    @Test
+    @DisplayName("즐겨찾기를 등록 시 시작역과 도착역을 찾을 수 없는 경우 에러 발생")
+    void createFavorite4() {
+        assertThrows(IllegalArgumentException.class, () -> new Favorite(pathFinder, lines, StationFixture.강남역,
+                StationFixture.오이도역, new Member()));
+    }
+
 }
