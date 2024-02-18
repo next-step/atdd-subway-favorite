@@ -226,4 +226,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(actualBody).isEqualTo(expectedBody);
     }
 
+    /**
+     * GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후
+     * WHEN 즐겨 찾기 조회를 하면
+     * THEN 등록한 즐겨찾기 목록을 찾을 수 있다
+     */
+    @DisplayName("즐겨찾기를 등록 후 즐겨 찾기 조회를 하면 등록한 즐겨찾기 목록을 찾을 수 있다")
+    @Test
+    void getFavorites2() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(잠실역_ID, 강남역_ID);
+        FavoriteApiCaller.즐겨찾기_생성(request, accessToken);
+
+        // when
+        List<FavoriteResponse> responses = JsonPathHelper.getAll(FavoriteApiCaller.즐겨찾기_조회(accessToken), "", FavoriteResponse.class);
+
+        // then
+        StationResponse actualSource = responses.get(0).getSource();
+        StationResponse expectedSource = new StationResponse(잠실역_ID, StationFixture.잠실역.getName());
+        assertThat(actualSource).isEqualTo(expectedSource);
+
+        StationResponse actualTarget = responses.get(0).getTarget();
+        StationResponse expectedTarget = new StationResponse(강남역_ID, StationFixture.강남역.getName());
+        assertThat(actualTarget).isEqualTo(expectedTarget);
+    }
+
 }
