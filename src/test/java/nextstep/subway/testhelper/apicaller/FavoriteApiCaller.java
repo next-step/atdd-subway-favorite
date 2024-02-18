@@ -14,9 +14,9 @@ import static io.restassured.RestAssured.given;
 public class FavoriteApiCaller {
 
     public static ExtractableResponse<Response> 즐겨찾기_생성(Map<String, String> params,
-                                                        String token) {
+                                                        String accessToken) {
         return given().log().all()
-                .auth().oauth2(token)
+                .auth().oauth2(accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
@@ -26,9 +26,9 @@ public class FavoriteApiCaller {
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성(FavoriteRequest request,
-                                                        String token) {
+                                                        String accessToken) {
         return given().log().all()
-                .auth().oauth2(token)
+                .auth().oauth2(accessToken)
                 .body(createParams(request))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
@@ -44,9 +44,9 @@ public class FavoriteApiCaller {
         return params;
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_조회(String token) {
+    public static ExtractableResponse<Response> 즐겨찾기_조회(String accessToken) {
         return given().log().all()
-                .auth().oauth2(token)
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all()

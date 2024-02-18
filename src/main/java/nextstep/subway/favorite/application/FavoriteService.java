@@ -53,17 +53,9 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    private Station getStation(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(() -> new IllegalArgumentException("해당 지하철역 정보를 찾지 못했습니다."));
-    }
-
-    private Member getMember(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾지 못했습니다."));
-    }
-
     /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
      *
+     * @param loginMember
      * @return
      */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
@@ -79,5 +71,13 @@ public class FavoriteService {
      */
     public void deleteFavorite(Long id) {
         favoriteRepository.deleteById(id);
+    }
+
+    private Station getStation(Long stationId) {
+        return stationRepository.findById(stationId).orElseThrow(() -> new IllegalArgumentException("해당 지하철역 정보를 찾지 못했습니다."));
+    }
+
+    private Member getMember(LoginMember loginMember) {
+        return memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾지 못했습니다."));
     }
 }

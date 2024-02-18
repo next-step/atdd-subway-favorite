@@ -197,4 +197,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(actualBody).isEqualTo(expectedBody);
     }
 
+    /**
+     * GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후
+     * WHEN 로그인을 하지 않고 즐겨 찾기 조회를 하면</br>
+     * THEN 에러 처리와 함께 '로그인이 필요합니다.' 라는 메세지가 출력된다
+     */
+    @DisplayName("로그인을 하지 않고 즐겨 찾기 조회를 하면 '로그인이 필요합니다.' 라는 메세지가 출력된다")
+    @Test
+    void getFavorites1() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(잠실역_ID, 강남역_ID);
+        FavoriteApiCaller.즐겨찾기_생성(request, accessToken);
+
+        // when
+        ExtractableResponse<Response> response = given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+
+        // then
+        int actual = response.statusCode();
+        int expected = HttpStatus.UNAUTHORIZED.value();
+        assertThat(actual).isEqualTo(expected);
+
+        String actualBody = response.asString();
+        String expectedBody = "로그인이 필요합니다.";
+        assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
 }
