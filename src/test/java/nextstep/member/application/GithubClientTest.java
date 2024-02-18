@@ -3,18 +3,22 @@ package nextstep.member.application;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class GithubClientTest {
+    @Autowired
+    private GithubClient githubClient;
 
     @DisplayName("code로 깃헙 토큰을 요청 한다.")
     @Test
     void requestGithubToken() {
         final String code = GithubResponses.사용자1.code();
-        GithubClient githubClient = new GithubClient();
 
         String githubToken = githubClient.requestGithubToken(code);
 
