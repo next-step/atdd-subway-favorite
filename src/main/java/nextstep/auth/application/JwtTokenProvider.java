@@ -1,7 +1,7 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import io.jsonwebtoken.*;
-import nextstep.member.application.dto.TokenInfo;
+import nextstep.auth.application.dto.TokenInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

@@ -6,7 +6,7 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.FavoriteNotExistException;
 import nextstep.favorite.exception.FavoriteSaveException;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.ui.UserPrincipal;
 import nextstep.path.application.PathService;
 import nextstep.path.application.dto.PathSearchRequest;
 import nextstep.station.application.StationProvider;
@@ -32,19 +32,19 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
-        validateFavoriteCreation(loginMember, request);
+    public FavoriteResponse createFavorite(final UserPrincipal userPrincipal, final FavoriteRequest request) {
+        validateFavoriteCreation(userPrincipal, request);
 
         final Station sourceStation = stationProvider.findById(request.getSource());
         final Station targetStation = stationProvider.findById(request.getTarget());
 
-        final Favorite favorite = new Favorite(loginMember.getId(), sourceStation, targetStation);
+        final Favorite favorite = new Favorite(userPrincipal.getId(), sourceStation, targetStation);
         final Favorite saved = favoriteRepository.save(favorite);
 
         return FavoriteResponse.from(saved);
     }
 
-    private void validateFavoriteCreation(final LoginMember loginMember, final FavoriteRequest request) {
+    private void validateFavoriteCreation(final UserPrincipal userPrincipal, final FavoriteRequest request) {
         final Long source = request.getSource();
         final Long target = request.getTarget();
         if (Objects.equals(target, source)) {
@@ -55,21 +55,21 @@ public class FavoriteService {
             throw new FavoriteSaveException("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
         }
 
-        if (favoriteRepository.existsByStations(loginMember.getId(), source, target)) {
+        if (favoriteRepository.existsByStations(userPrincipal.getId(), source, target)) {
             throw new FavoriteSaveException("이미 등록된 즐겨찾기 경로입니다.");
         }
     }
 
-    public List<FavoriteResponse> findFavorites(final LoginMember loginMember) {
-        return favoriteRepository.findAllWithStationsByMember(loginMember.getId())
+    public List<FavoriteResponse> findFavorites(final UserPrincipal userPrincipal) {
+        return favoriteRepository.findAllWithStationsByMember(userPrincipal.getId())
                 .stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteFavorite(final LoginMember loginMember, final Long id) {
-        final Favorite favorite = favoriteRepository.findByIdAndMember(id, loginMember.getId())
+    public void deleteFavorite(final UserPrincipal userPrincipal, final Long id) {
+        final Favorite favorite = favoriteRepository.findByIdAndMember(id, userPrincipal.getId())
                 .orElseThrow(() -> new FavoriteNotExistException(id));
 
         favoriteRepository.delete(favorite);

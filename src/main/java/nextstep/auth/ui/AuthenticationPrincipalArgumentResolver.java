@@ -1,9 +1,8 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.dto.TokenInfo;
-import nextstep.member.domain.LoginMember;
-import nextstep.member.exception.AuthenticationException;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.application.dto.TokenInfo;
+import nextstep.auth.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -28,7 +27,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
         final String token = extractTokenFrom(webRequest);
         final TokenInfo tokenInfo = jwtTokenProvider.getPrincipal(token);
-        return new LoginMember(tokenInfo.getId(), tokenInfo.getEmail());
+        return new UserPrincipal(tokenInfo.getId(), tokenInfo.getEmail());
     }
 
     private String extractTokenFrom(final NativeWebRequest webRequest) {

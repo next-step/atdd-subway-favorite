@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.OAuth2Response;
 import nextstep.utils.GithubResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +22,11 @@ public class GithubTestController {
     }
 
     @GetMapping("/github/user")
-    public ResponseEntity<GithubProfileResponse> user(
+    public ResponseEntity<OAuth2Response> user(
             @RequestHeader("Authorization") final String authorization) {
         final String accessToken = authorization.split(" ")[1];
         final GithubResponses githubResponse = GithubResponses.findByAccessToken(accessToken);
-        final GithubProfileResponse response = new GithubProfileResponse(githubResponse.getEmail(), githubResponse.getAge());
+        final OAuth2Response response = new OAuth2Response(githubResponse.getEmail(), githubResponse.getAge());
         return ResponseEntity.ok(response);
     }
 
