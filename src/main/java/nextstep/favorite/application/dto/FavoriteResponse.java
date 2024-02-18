@@ -1,11 +1,15 @@
 package nextstep.favorite.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import nextstep.favorite.domain.Favorite;
 import nextstep.subway.applicaion.dto.StationResponse;
 
 public class FavoriteResponse {
+    @JsonProperty
     private Long id;
+    @JsonProperty
     private StationResponse source;
+    @JsonProperty
     private StationResponse target;
 
     public FavoriteResponse() {
@@ -17,15 +21,4 @@ public class FavoriteResponse {
         target = new StationResponse(favorite.getTargetStation());
     }
 
-    public void setSource(StationResponse source) {
-        this.source = source;
-    }
-
-    public StationResponse getTarget() {
-        return target;
-    }
-
-    public void setTarget(StationResponse target) {
-        this.target = target;
-    }
 }
