@@ -19,11 +19,11 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
     @Column(name = "distance")
@@ -57,11 +57,9 @@ public class Section {
         return upStation;
     }
 
-
     public Station getDownStation() {
         return downStation;
     }
-
 
     public int getDistance() {
         return distance;
