@@ -25,4 +25,8 @@ public class UserDetail {
     public String getPassword() {
         return password;
     }
+
+    public boolean isPasswordMismatch(final String password) {
+        return !this.password.equals(password);
+    }
 }
