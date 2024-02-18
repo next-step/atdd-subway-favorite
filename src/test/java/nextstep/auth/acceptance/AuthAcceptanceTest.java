@@ -1,6 +1,5 @@
 package nextstep.auth.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.core.AcceptanceTest;
@@ -10,11 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Map;
-
+import static nextstep.auth.acceptance.AuthSteps.깃허브_로그인_요청;
+import static nextstep.auth.acceptance.AuthSteps.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AcceptanceTest
@@ -56,25 +54,6 @@ public class AuthAcceptanceTest extends AcceptanceTestAuthBase {
         final ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.잘못된_사용자.getCode());
 
         토큰_발급_실패(response);
-    }
-
-    private static ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(Map.of("email", email, "password", password))
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-    }
-
-    private static ExtractableResponse<Response> 깃허브_로그인_요청(final String code) {
-        final Map<String, String> githubAuthRequest = Map.of("code", code);
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(githubAuthRequest)
-                .when().post("/login/github")
-                .then().log().all()
-                .extract();
     }
 
     private static void 토큰_발급_성공(final ExtractableResponse<Response> response) {
