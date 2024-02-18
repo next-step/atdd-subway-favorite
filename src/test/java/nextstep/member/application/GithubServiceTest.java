@@ -1,6 +1,5 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +17,7 @@ public class GithubServiceTest {
     @Autowired
     private GithubService githubService;
 
-    @DisplayName("code를 통한 Github Login")
+    @DisplayName("code를 통한 Github Login, 이미 등록된 회원일 경우")
     @Test
     void createTokenByGithub() {
         String code = GithubResponses.사용자1.code();
