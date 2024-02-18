@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Collections;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -278,6 +279,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String actualBody = response.asString();
         String expectedBody = "로그인이 필요합니다.";
         assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
+    /**
+     * GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후
+     * WHEN 즐겨 찾기 삭제를 하면
+     * THEN 삭제된 즐겨찾기 목록이 조회된다
+     */
+    @DisplayName("즐겨 찾기 삭제를 하면 삭제된 즐겨찾기 목록이 조회된다")
+    @Test
+    void deleteFavorite2() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(잠실역_ID, 강남역_ID);
+        String location = FavoriteApiCaller.즐겨찾기_생성(request, accessToken).header("location");
+
+        // when
+        FavoriteApiCaller.즐겨찾기_삭제(location, accessToken);
+
+
+        // then
+        List<FavoriteResponse> actual = JsonPathHelper.getAll(FavoriteApiCaller.즐겨찾기_조회(accessToken), "",
+                FavoriteResponse.class);
+        List<FavoriteResponse> expected = Collections.emptyList();
+        assertThat(actual).isEqualTo(expected);
     }
 
 }
