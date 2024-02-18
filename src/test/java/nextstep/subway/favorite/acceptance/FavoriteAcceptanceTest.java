@@ -105,7 +105,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         StationResponse expectedSource = new StationResponse(잠실역_ID, StationFixture.잠실역.getName());
         assertThat(actualSource).isEqualTo(expectedSource);
 
-        StationResponse actualTarget = responses.get(0).getSource();
+        StationResponse actualTarget = responses.get(0).getTarget();
         StationResponse expectedTarget = new StationResponse(강남역_ID, StationFixture.강남역.getName());
         assertThat(actualTarget).isEqualTo(expectedTarget);
     }

@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.favorite.application.dto.FavoriteRequest;
 import nextstep.subway.favorite.application.dto.FavoriteResponse;
+import nextstep.subway.favorite.application.dto.FavoriteResponseFactory;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.line.LineRepository;
@@ -65,9 +66,10 @@ public class FavoriteService {
      *
      * @return
      */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = getMember(loginMember);
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
+        return FavoriteResponseFactory.createFavoriteResponse(favorites);
     }
 
     /**
