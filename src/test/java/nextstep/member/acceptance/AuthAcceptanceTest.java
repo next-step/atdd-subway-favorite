@@ -2,6 +2,7 @@ package nextstep.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -12,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.member.acceptance.AuthSteps.*;
-import static nextstep.member.acceptance.MemberSteps.JWT없이_개인정보_요청;
-import static nextstep.member.acceptance.MemberSteps.개인정보_요청;
+import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.utils.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,13 +55,29 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
 
     /**
+     * When 회원이 등록되어 있다.
+     * And code로 깃헙을 통한 로그인 API를 요청한다.
+     * Then 200 코드를 리턴한다.
+     * And accessToken을 리턴한다.
+     */
+    @DisplayName("회원가입을 한 사용자가 code를 통한 Github Login")
+    @Test
+    void githubLogin_registerMember() {
+        회원_생성_요청(사용자1.email(), PASSWORD, AGE);
+        final ExtractableResponse<Response> response = 코드로_깃허브를_통한_로그인을_요청한다(사용자1.code());
+
+        HTTP코드를_검증한다(response, HttpStatus.OK);
+        토큰을_응답한다(response, createToken(사용자1.email()));
+    }
+
+    /**
      * When code로 깃헙을 통한 로그인 API를 요청한다.
      * Then 200 코드를 리턴한다.
      * And accessToken을 리턴한다.
      */
-    @DisplayName("code를 통한 Github Login")
+    @DisplayName("회원가입하지 않은 사용자가 code를 통한 Github Login 요청")
     @Test
-    void githubLogin() {
+    void githubLogin_unRegisterMember() {
         final ExtractableResponse<Response> response = 코드로_깃허브를_통한_로그인을_요청한다(사용자1.code());
 
         HTTP코드를_검증한다(response, HttpStatus.OK);
@@ -73,5 +90,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private static void 토큰을_응답한다(ExtractableResponse<Response> response, String accessToken) {
         assertThat(response.as(TokenResponse.class).getAccessToken()).isEqualTo(accessToken);
     }
-
 }
