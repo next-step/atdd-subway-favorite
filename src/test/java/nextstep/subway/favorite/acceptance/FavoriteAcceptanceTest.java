@@ -1,17 +1,20 @@
 package nextstep.subway.favorite.acceptance;
 
-import nextstep.subway.testhelper.*;
-import nextstep.subway.testhelper.apicaller.MemberApiCaller;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.favorite.application.dto.FavoriteRequest;
+import nextstep.subway.testhelper.AcceptanceTest;
+import nextstep.subway.testhelper.apicaller.FavoriteApiCaller;
 import nextstep.subway.testhelper.fixture.LineFixture;
 import nextstep.subway.testhelper.fixture.MemberFixture;
 import nextstep.subway.testhelper.fixture.StationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -48,11 +51,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     *
+     * GIVEN 지하철 노선들을 생성하고 구간을 추가 후
+     * WHEN 로그인을 하지 않고 출발역과 도착역을 입력하면
+     * THEN 에러 처리와 함께 '즐겨찾기 등록을 위해서 로그인이 필요합니다.' 라는 메세지가 출력된다
      */
-    @DisplayName("즐겨찾기 생성")
+    @DisplayName("로그인을 하지 않고 즐겨찾기 생성하면 즐겨찾기 등록을 위해서 로그인이 필요합니다.' 라는 메세지가 출력된다")
     @Test
-    void createFavorite() {
+    void createFavorite1() {
+        // given
+        // when
+        FavoriteRequest request = new FavoriteRequest(잠실역_ID, 강남역_ID);
+        ExtractableResponse<Response> response = given().log().all()
+                .body(FavoriteApiCaller.createParams(request))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
 
+        // then
+        int actual = response.statusCode();
+        int expected = HttpStatus.UNAUTHORIZED.value();
+        assertThat(actual).isEqualTo(expected);
+
+        String actualBody = response.asString();
+        String expectedBody = "즐겨찾기 등록을 위해서 로그인이 필요합니다.";
+        assertThat(actualBody).isEqualTo(expectedBody);
     }
+
 }

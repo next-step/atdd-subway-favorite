@@ -1,9 +1,10 @@
-package nextstep.favorite.application;
+package nextstep.subway.favorite.application;
 
-import nextstep.favorite.application.dto.FavoriteRequest;
-import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.FavoriteRepository;
+
+import nextstep.subway.favorite.application.dto.FavoriteRequest;
+import nextstep.subway.favorite.application.dto.FavoriteResponse;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.FavoriteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
