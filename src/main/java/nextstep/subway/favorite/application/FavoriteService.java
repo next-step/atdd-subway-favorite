@@ -38,7 +38,6 @@ public class FavoriteService {
     }
 
     /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
      *
      * @param loginMember
      * @param request
