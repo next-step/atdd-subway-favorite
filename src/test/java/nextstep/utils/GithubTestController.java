@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.*;
 public class GithubTestController {
     @PostMapping("/github/login/oauth/access-token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(@RequestBody GithubAccessTokenRequest request) {
-        System.out.println("request");
-        System.out.println(request);
-
         GithubResponses githubResponses = GithubResponses.ofCode(request.getCode());
 
         return ResponseEntity.ok(new GithubAccessTokenResponse(githubResponses.accessToken()));
