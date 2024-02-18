@@ -60,9 +60,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * GIVEN 지하철 노선들을 생성하고 구간을 추가 후
      * WHEN 로그인을 하지 않고 출발역과 도착역을 입력하면
-     * THEN 에러 처리와 함께 '즐겨찾기 등록을 위해서 로그인이 필요합니다.' 라는 메세지가 출력된다
+     * THEN 에러 처리와 함께 '로그인이 필요합니다.' 라는 메세지가 출력된다
      */
-    @DisplayName("로그인을 하지 않고 즐겨찾기 생성하면 즐겨찾기 등록을 위해서 로그인이 필요합니다.' 라는 메세지가 출력된다")
+    @DisplayName("로그인을 하지 않고 즐겨찾기 생성하면 '로그인이 필요합니다.' 라는 메세지가 출력된다")
     @Test
     void createFavorite1() {
         // given
@@ -81,7 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(actual).isEqualTo(expected);
 
         String actualBody = response.asString();
-        String expectedBody = "즐겨찾기 등록을 위해서 로그인이 필요합니다.";
+        String expectedBody = "로그인이 필요합니다.";
         assertThat(actualBody).isEqualTo(expectedBody);
     }
 
