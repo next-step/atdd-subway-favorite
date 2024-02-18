@@ -22,6 +22,13 @@ public enum GithubResponses {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
+    public static GithubResponses ofToken(final String accessToken) {
+        return Arrays.stream(values())
+                .filter(u -> u.accessToken.equals(accessToken))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     public String code() {
         return code;
     }

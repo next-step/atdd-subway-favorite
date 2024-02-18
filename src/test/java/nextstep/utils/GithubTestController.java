@@ -2,10 +2,9 @@ package nextstep.utils;
 
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class GithubTestController {
@@ -19,11 +18,11 @@ public class GithubTestController {
         return ResponseEntity.ok(new GithubAccessTokenResponse(githubResponses.accessToken()));
     }
 
-//    @PostMapping("/github/user")
-//    public ResponseEntity<GithubAccessTokenResponse> profile(@RequestBody GithubAccessTokenRequest tokenRequest) {
-//
-//        GithubResponses githubResponses = GithubResponses.ofCode(tokenRequest.getClientId());
-//
-//        return ResponseEntity.ok(new GithubAccessTokenResponse());
-//    }
+    @GetMapping("/github/user")
+    public ResponseEntity<GithubProfileResponse> profile(@RequestHeader("Authorization") String authorization) {
+        String accessToken = authorization.split(" ")[1];
+        GithubResponses githubResponses = GithubResponses.ofToken(accessToken);
+
+        return ResponseEntity.ok(new GithubProfileResponse(githubResponses.email(), 31));
+    }
 }

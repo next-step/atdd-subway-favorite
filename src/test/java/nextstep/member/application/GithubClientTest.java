@@ -36,6 +36,5 @@ public class GithubClientTest {
 
         assertThat(response.getEmail()).isEqualTo(GithubResponses.사용자1.email());
     }
-
 }
 

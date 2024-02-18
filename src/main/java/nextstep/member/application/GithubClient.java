@@ -47,6 +47,19 @@ public class GithubClient {
     }
 
     public GithubProfileResponse requestGithubProfile(final String accessToken) {
-        return new GithubProfileResponse();
+        String oauthAccessToken = "bearer " + accessToken;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", oauthAccessToken);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        GithubProfileResponse response = restTemplate
+                .exchange(profileId, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .getBody();
+
+        return response;
     }
 }
