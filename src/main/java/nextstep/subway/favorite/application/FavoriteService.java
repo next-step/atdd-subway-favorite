@@ -38,10 +38,6 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    /**
-     * @param loginMember
-     * @param request
-     */
     public void createFavorite(LoginMember loginMember,
                                FavoriteRequest request) {
         Favorite favorite = new Favorite(pathFinder,
@@ -52,26 +48,16 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    /**
-     * @param loginMember
-     * @return
-     */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = getMember(loginMember);
         List<Favorite> favorites = favoriteRepository.findByMember(member);
         return FavoriteResponseFactory.createFavoriteResponse(favorites);
     }
 
-    /**
-     *
-     * @param loginMember
-     * @param id
-     */
     public void deleteFavorite(LoginMember loginMember,
                                Long id) {
         Member member = getMember(loginMember);
-        Favorite favorite = favoriteRepository.findByIdAndMember(id, member)
-                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 찾을 수 없습니다."));
+        Favorite favorite = favoriteRepository.findByIdAndMember(id, member).orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 찾을 수 없습니다."));
         favoriteRepository.delete(favorite);
     }
 
