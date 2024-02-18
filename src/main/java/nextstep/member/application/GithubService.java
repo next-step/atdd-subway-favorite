@@ -3,12 +3,10 @@ package nextstep.member.application;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GithubService {
-
     private final GithubClient githubClient;
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;

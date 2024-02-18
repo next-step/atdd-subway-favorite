@@ -2,6 +2,7 @@ package nextstep.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -10,8 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.AuthSteps.이메일_패스워드로_로그인을_요청한다;
-import static nextstep.member.acceptance.AuthSteps.코드로_깃허브를_통한_로그인을_요청한다;
+import static nextstep.member.acceptance.AuthSteps.*;
 import static nextstep.member.acceptance.MemberSteps.JWT없이_개인정보_요청;
 import static nextstep.member.acceptance.MemberSteps.개인정보_요청;
 import static nextstep.utils.GithubResponses.사용자1;
@@ -64,14 +64,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 코드로_깃허브를_통한_로그인을_요청한다(사용자1.code());
 
         HTTP코드를_검증한다(response, HttpStatus.OK);
-        토큰을_응답한다(response, 사용자1.accessToken());
+        토큰을_응답한다(response, createToken(사용자1.email()));
     }
 
     private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
     private static void 토큰을_응답한다(ExtractableResponse<Response> response, String accessToken) {
-        assertThat(response.jsonPath().getString(".")).isEqualTo(accessToken);
+        assertThat(response.as(TokenResponse.class).getAccessToken()).isEqualTo(accessToken);
     }
 
 }
