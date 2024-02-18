@@ -4,9 +4,11 @@ import nextstep.auth.application.dto.AuthResponse;
 import nextstep.auth.application.dto.OAuth2Response;
 import nextstep.common.exception.UnauthorizedException;
 import nextstep.member.application.JwtTokenProvider;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+@Service
 public class AuthService {
 
     private final UserDetailsService userDetailsService;
