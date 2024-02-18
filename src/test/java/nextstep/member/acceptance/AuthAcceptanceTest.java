@@ -53,7 +53,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         HTTP코드를_검증한다(response, HttpStatus.UNAUTHORIZED);
     }
 
-
     /**
      * When 회원이 등록되어 있다.
      * And code로 깃헙을 통한 로그인 API를 요청한다.
@@ -74,14 +73,17 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * When code로 깃헙을 통한 로그인 API를 요청한다.
      * Then 200 코드를 리턴한다.
      * And accessToken을 리턴한다.
+     * And 회원가입이 완료된다
      */
     @DisplayName("회원가입하지 않은 사용자가 code를 통한 Github Login 요청")
     @Test
     void githubLogin_unRegisterMember() {
+        final String accessToken = createToken(사용자1.email());
         final ExtractableResponse<Response> response = 코드로_깃허브를_통한_로그인을_요청한다(사용자1.code());
 
         HTTP코드를_검증한다(response, HttpStatus.OK);
-        토큰을_응답한다(response, createToken(사용자1.email()));
+        토큰을_응답한다(response, accessToken);
+        토큰으로_회원_정보_조회_요청(accessToken);
     }
 
     private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
