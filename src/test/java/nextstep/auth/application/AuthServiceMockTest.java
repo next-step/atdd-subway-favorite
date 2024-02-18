@@ -2,6 +2,7 @@ package nextstep.auth.application;
 
 import nextstep.auth.application.dto.AuthResponse;
 import nextstep.auth.application.dto.OAuth2Response;
+import nextstep.auth.application.github.GithubOAuth2Client;
 import nextstep.common.exception.UnauthorizedException;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;

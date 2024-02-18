@@ -1,4 +1,4 @@
-package nextstep.auth.application;
+package nextstep.auth.application.github;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

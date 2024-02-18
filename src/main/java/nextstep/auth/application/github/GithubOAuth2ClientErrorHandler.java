@@ -1,4 +1,4 @@
-package nextstep.auth.application;
+package nextstep.auth.application.github;
 
 import nextstep.common.exception.BadRequestException;
 import nextstep.common.exception.UnauthorizedException;

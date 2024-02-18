@@ -1,4 +1,4 @@
-package nextstep.auth.application;
+package nextstep.auth.application.github;
 
 import nextstep.auth.application.dto.OAuth2Response;
 import nextstep.common.exception.UnauthorizedException;

@@ -1,7 +1,5 @@
-package nextstep.auth.application;
+package nextstep.auth.application.github;
 
-import nextstep.auth.application.dto.GithubAccessTokenRequest;
-import nextstep.auth.application.dto.GithubAccessTokenResponse;
 import nextstep.auth.application.dto.OAuth2Response;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
