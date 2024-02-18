@@ -2,7 +2,7 @@ package nextstep.subway.testhelper.apicaller;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.line.LineUpdateRequest;
+import nextstep.subway.line.application.dto.LineUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

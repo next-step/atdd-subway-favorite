@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.application.dto;
 
-import nextstep.subway.station.StationResponse;
+import nextstep.subway.station.application.dto.StationResponse;
 
 /**
  * TODO: StationResponse를 포함하는 클래스로 만듭니다.

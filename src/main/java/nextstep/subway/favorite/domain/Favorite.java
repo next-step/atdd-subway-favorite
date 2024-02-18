@@ -1,9 +1,9 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.line.Lines;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.PathFinder;
-import nextstep.subway.station.Station;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 

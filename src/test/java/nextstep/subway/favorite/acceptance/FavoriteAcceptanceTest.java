@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.favorite.application.dto.FavoriteRequest;
 import nextstep.subway.favorite.application.dto.FavoriteResponse;
-import nextstep.subway.station.StationResponse;
+import nextstep.subway.station.application.dto.StationResponse;
 import nextstep.subway.testhelper.AcceptanceTest;
 import nextstep.subway.testhelper.JsonPathHelper;
 import nextstep.subway.testhelper.apicaller.FavoriteApiCaller;

@@ -1,11 +1,11 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.line.Line;
-import nextstep.subway.line.Lines;
-import nextstep.subway.line.section.Section;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.section.domain.Section;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.JGraphPathFinder;
-import nextstep.subway.path.PathFinder;
+import nextstep.subway.path.domain.JGraphPathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.testhelper.fixture.StationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

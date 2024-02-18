@@ -2,9 +2,9 @@ package nextstep.subway.path.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.path.PathRequest;
-import nextstep.subway.path.PathResponse;
-import nextstep.subway.station.StationResponse;
+import nextstep.subway.path.application.dto.PathRequest;
+import nextstep.subway.path.application.dto.PathResponse;
+import nextstep.subway.station.application.dto.StationResponse;
 import nextstep.subway.testhelper.*;
 import nextstep.subway.testhelper.apicaller.PathApiCaller;
 import nextstep.subway.testhelper.fixture.LineFixture;

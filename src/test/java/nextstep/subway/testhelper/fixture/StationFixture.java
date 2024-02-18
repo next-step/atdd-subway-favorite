@@ -1,6 +1,6 @@
 package nextstep.subway.testhelper.fixture;
 
-import nextstep.subway.station.Station;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.testhelper.JsonPathHelper;
 import nextstep.subway.testhelper.apicaller.StationApiCaller;
 

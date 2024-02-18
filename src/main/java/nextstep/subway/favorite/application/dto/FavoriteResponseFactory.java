@@ -1,7 +1,7 @@
 package nextstep.subway.favorite.application.dto;
 
 import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.station.StationResponseFactory;
+import nextstep.subway.station.application.dto.StationResponseFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;

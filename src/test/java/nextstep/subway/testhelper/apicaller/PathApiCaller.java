@@ -2,7 +2,7 @@ package nextstep.subway.testhelper.apicaller;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.path.PathRequest;
+import nextstep.subway.path.application.dto.PathRequest;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;

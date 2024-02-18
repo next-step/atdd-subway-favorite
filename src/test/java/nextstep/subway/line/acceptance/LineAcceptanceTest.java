@@ -2,8 +2,8 @@ package nextstep.subway.line.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.line.LineResponse;
-import nextstep.subway.line.LineUpdateRequest;
+import nextstep.subway.line.application.dto.LineResponse;
+import nextstep.subway.line.application.dto.LineUpdateRequest;
 import nextstep.subway.testhelper.*;
 import nextstep.subway.testhelper.apicaller.LineApiCaller;
 import nextstep.subway.testhelper.fixture.LineFixture;
