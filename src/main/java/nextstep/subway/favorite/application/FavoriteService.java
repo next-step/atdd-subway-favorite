@@ -63,12 +63,16 @@ public class FavoriteService {
     }
 
     /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
      *
+     * @param loginMember
      * @param id
      */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(LoginMember loginMember,
+                               Long id) {
+        Member member = getMember(loginMember);
+        Favorite favorite = favoriteRepository.findByIdAndMember(id, member)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 찾을 수 없습니다."));
+        favoriteRepository.delete(favorite);
     }
 
     private Station getStation(Long stationId) {
