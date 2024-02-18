@@ -21,5 +21,10 @@ public class ControllerExceptionHandler {
     public ResponseEntity<UnauthorizedException> handleUnauthorizedException(UnauthorizedException e) {
         return ResponseEntity.status(401).body(e);
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<NotFoundException> handleNotFoundException(NotFoundException e) {
+        return ResponseEntity.status(404).body(e);
+    }
 }
 

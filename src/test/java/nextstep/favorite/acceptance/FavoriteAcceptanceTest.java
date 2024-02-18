@@ -148,5 +148,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ResponseUtils.응답의_STATUS_검증(response, HttpStatus.UNAUTHORIZED);
     }
 
+    /**
+     * given: 존재하지 않는 즐겨 찾기에 대해서
+     * when: 즐겨 찾기를 삭제하면
+     * then: 즐겨 찾기 삭제에 실패한다.
+     */
+    @Test
+    void 즐겨_찾기_삭제__존재하지_않는_즐겨_찾기를_삭제하면_안된다() {
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.지하철_좋아요_삭제(100L, accessToken);
 
+        // then
+        ResponseUtils.응답의_STATUS_검증(response, HttpStatus.NOT_FOUND);
+    }
 }
