@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,12 @@ public class GithubClientTest {
     @DisplayName("깃헙토큰으로 Profile을 요청 한다.")
     @Test
     void requestGithubProfile() {
+        final String accessToken = GithubResponses.사용자1.accessToken();
 
+        GithubProfileResponse response = githubClient.requestGithubProfile(accessToken);
+
+        assertThat(response.getEmail()).isEqualTo(GithubResponses.사용자1.email());
     }
+
 }
 

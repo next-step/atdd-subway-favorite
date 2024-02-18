@@ -29,4 +29,8 @@ public enum GithubResponses {
     public String accessToken() {
         return accessToken;
     }
+
+    public String email() {
+        return email;
+    }
 }

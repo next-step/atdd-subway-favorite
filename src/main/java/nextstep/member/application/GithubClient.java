@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,5 +44,9 @@ public class GithubClient {
                 .getAccessToken();
 
         return accessToken;
+    }
+
+    public GithubProfileResponse requestGithubProfile(final String accessToken) {
+        return new GithubProfileResponse();
     }
 }
