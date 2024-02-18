@@ -64,4 +64,21 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
+
+    public static ExtractableResponse<Response> 개인정보_요청(final String accessToken) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        return response;
+    }
+
+    public static ExtractableResponse<Response> JWT없이_개인정보_요청() {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        return response;
+    }
 }
