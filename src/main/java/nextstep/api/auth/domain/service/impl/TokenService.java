@@ -11,23 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
     public TokenResponse createToken(String email) {
         return new TokenResponse(jwtTokenProvider.createToken(email));
     }
-
-    @Deprecated
-    public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
-        }
-
-        String token = jwtTokenProvider.createToken(member.getEmail());
-
-        return new TokenResponse(token);
-    }
-
 }
