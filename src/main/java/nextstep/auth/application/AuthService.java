@@ -1,6 +1,7 @@
 package nextstep.auth.application;
 
 import nextstep.auth.application.dto.AuthResponse;
+import nextstep.auth.application.dto.OAuth2Response;
 import nextstep.common.exception.UnauthorizedException;
 import nextstep.member.application.JwtTokenProvider;
 
@@ -30,6 +31,12 @@ public class AuthService {
     }
 
     public AuthResponse loginGithub(final String code) {
-        return new AuthResponse("access_token");
+        final String githubToken = githubOAuth2Client.requestGithubToken(code);
+        final OAuth2Response oAuth2Response = githubOAuth2Client.requestGithubProfile(githubToken);
+        final UserDetail userDetail = userDetailsService.loadOrCreateUser(oAuth2Response);
+
+        final String token = jwtTokenProvider.createToken(userDetail.getId(), userDetail.getEmail());
+
+        return new AuthResponse(token);
     }
 }
