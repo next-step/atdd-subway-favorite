@@ -57,8 +57,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteSteps.지하철_좋아요_생성(강남역, 역삼역, accessToken);
 
         // then
-        final List<FavoriteResponse> favoriteResponse = FavoriteSteps.지하철_좋아요_조회("code").jsonPath().getList(".", FavoriteResponse.class);
+        final ExtractableResponse<Response> favoriteResponse = FavoriteSteps.지하철_좋아요_조회(accessToken);
         assertThat(favoriteResponse).isNotNull();
+        ResponseUtils.응답의_STATUS_검증(favoriteResponse, HttpStatus.OK);
     }
 
     /**

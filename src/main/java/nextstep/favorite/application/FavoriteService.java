@@ -9,7 +9,6 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.dto.PathRequest;
-import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -52,8 +51,11 @@ public class FavoriteService {
      *
      * @return
      */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        final MemberResponse member = memberService.findMe(loginMember);
+
+        final List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+
         return favorites.stream().map(FavoriteResponse::new).toList();
     }
 
