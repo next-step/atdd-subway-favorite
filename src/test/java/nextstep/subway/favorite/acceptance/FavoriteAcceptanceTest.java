@@ -304,4 +304,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    /**
+     * GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후
+     * WHEN 즐겨 찾기 삭제를 하면
+     * THEN 삭제된 즐겨찾기 목록이 조회된다
+     */
+    @DisplayName("등록 되지 않은 즐겨 찾기 삭제를 하면 '즐겨찾기를 찾을 수 없습니다. 라는 메세지가 출력된다")
+    @Test
+    void deleteFavorite3() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(잠실역_ID, 강남역_ID);
+        FavoriteApiCaller.즐겨찾기_생성(request, accessToken).header("location");
+
+        // when
+        ExtractableResponse<Response> response = given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/2")
+                .then().log().all()
+                .extract();
+
+
+        // then
+        int actual = response.statusCode();
+        int expected = HttpStatus.BAD_REQUEST.value();
+        assertThat(actual).isEqualTo(expected);
+
+        String actualBody = response.asString();
+        String expectedBody = "즐겨찾기를 찾을 수 없습니다.";
+        assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
 }
