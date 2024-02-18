@@ -112,4 +112,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ResponseUtils.응답의_STATUS_검증(favoriteResponse, HttpStatus.OK);
         assertThat(favoriteResponse.jsonPath().getList(".", FavoriteResponse.class)).isEmpty();
     }
+
+    /**
+     * when: 즐겨 찾기를 삭제하면
+     * then: 즐겨 찾기가 삭제된다.
+     */
+    @Test
+    void 즐겨_찾기_삭제() {
+        // given
+        FavoriteSteps.지하철_좋아요_생성(강남역, 역삼역, accessToken);
+        final List<FavoriteResponse> beforeOperation = FavoriteSteps.지하철_좋아요_조회(accessToken).jsonPath().getList(".", FavoriteResponse.class);
+
+        // when
+        FavoriteSteps.지하철_좋아요_삭제(beforeOperation.get(0).getId(), accessToken);
+
+        // then
+        final List<FavoriteResponse> afterOperation = FavoriteSteps.지하철_좋아요_조회(accessToken).jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(afterOperation).isEmpty();
+    }
 }

@@ -30,4 +30,12 @@ public class FavoriteSteps {
             .when().get("/favorites")
             .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 지하철_좋아요_삭제(Long favoriteId, String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/favorites/{id}", favoriteId)
+            .then().log().all().extract();
+    }
 }

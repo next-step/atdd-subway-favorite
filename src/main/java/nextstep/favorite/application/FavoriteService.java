@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import javax.persistence.EntityNotFoundException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
@@ -61,9 +62,15 @@ public class FavoriteService {
 
     /**
      * TODO: 요구사항 설명에 맞게 수정합니다.
+     *
      * @param id
+     * @param loginMember
      */
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(Long id, LoginMember loginMember) {
+        final Favorite favorite = favoriteRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+        favorite.validateToDelete(memberService.findMe(loginMember).getId());
+
         favoriteRepository.deleteById(id);
     }
 

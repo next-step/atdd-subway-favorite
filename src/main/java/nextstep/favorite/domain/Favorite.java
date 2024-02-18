@@ -1,15 +1,19 @@
 package nextstep.favorite.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.exception.UnauthorizedException;
 import nextstep.member.domain.Member;
 import nextstep.subway.domain.JGraphTPathFinderImpl;
 import nextstep.subway.domain.PathFinder;
 import nextstep.subway.domain.Station;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.MethodNotAllowedException;
 
 @Entity
 public class Favorite {
@@ -77,5 +81,11 @@ public class Favorite {
 
     public boolean isSameSourceAndTarget(Station sourceStation, Station targetStation) {
         return sourceStation == targetStation;
+    }
+
+    public void validateToDelete(Long memberId) {
+        if(!Objects.equals(this.memberId, memberId)) {
+            throw new UnauthorizedException();
+        }
     }
 }

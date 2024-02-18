@@ -21,4 +21,15 @@ public class FavoriteResponse {
         target = new StationResponse(favorite.getTargetStation());
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public StationResponse getSource() {
+        return source;
+    }
+
+    public StationResponse getTarget() {
+        return target;
+    }
 }
