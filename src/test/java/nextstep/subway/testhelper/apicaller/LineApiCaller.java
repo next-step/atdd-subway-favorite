@@ -1,4 +1,4 @@
-package nextstep.subway.testhelper;
+package nextstep.subway.testhelper.apicaller;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

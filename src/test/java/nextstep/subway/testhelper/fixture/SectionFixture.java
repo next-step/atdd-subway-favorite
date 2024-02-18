@@ -1,4 +1,4 @@
-package nextstep.subway.testhelper;
+package nextstep.subway.testhelper.fixture;
 
 import java.util.HashMap;
 import java.util.Map;

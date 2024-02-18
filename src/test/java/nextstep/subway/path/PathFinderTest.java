@@ -4,7 +4,7 @@ import nextstep.subway.line.Line;
 import nextstep.subway.line.Lines;
 import nextstep.subway.line.section.Section;
 import nextstep.subway.station.Station;
-import nextstep.subway.testhelper.StationFixture;
+import nextstep.subway.testhelper.fixture.StationFixture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

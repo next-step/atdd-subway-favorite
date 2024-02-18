@@ -1,6 +1,8 @@
-package nextstep.subway.testhelper;
+package nextstep.subway.testhelper.fixture;
 
 import nextstep.subway.station.Station;
+import nextstep.subway.testhelper.JsonPathHelper;
+import nextstep.subway.testhelper.apicaller.StationApiCaller;
 
 import java.util.HashMap;
 import java.util.Map;
