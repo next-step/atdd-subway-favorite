@@ -3,7 +3,10 @@ package nextstep.subway.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.favorite.application.dto.FavoriteRequest;
+import nextstep.subway.favorite.application.dto.FavoriteResponse;
+import nextstep.subway.station.StationResponse;
 import nextstep.subway.testhelper.AcceptanceTest;
+import nextstep.subway.testhelper.JsonPathHelper;
 import nextstep.subway.testhelper.apicaller.FavoriteApiCaller;
 import nextstep.subway.testhelper.fixture.LineFixture;
 import nextstep.subway.testhelper.fixture.MemberFixture;
@@ -13,6 +16,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,6 +81,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String actualBody = response.asString();
         String expectedBody = "즐겨찾기 등록을 위해서 로그인이 필요합니다.";
         assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
+    /**
+     * GIVEN 지하철 노선들을 생성하고 구간을 추가 후
+     * THEN 출발역과 도착역을 입력하면 즐겨찾기가 등록된다
+     * THEN 즐겨찾기 목록 조회 시 생성한 즐겨찾기를 찾을 수 있다
+     */
+    @DisplayName("지하철 노선들을 생성하고 구간을 추가 후 출발역과 도착역을 입력하면 즐겨찾기가 등록된다")
+    @Test
+    void createFavorite2() {
+        // given
+        // then
+        FavoriteRequest request = new FavoriteRequest(잠실역_ID, 강남역_ID);
+        FavoriteApiCaller.즐겨찾기_생성(request, accessToken);
+
+        // then
+        List<FavoriteResponse> responses = JsonPathHelper.getAll(FavoriteApiCaller.즐겨찾기_조회(accessToken), "", FavoriteResponse.class);
+
+        StationResponse actualSource = responses.get(0).getSource();
+        StationResponse expectedSource = new StationResponse(잠실역_ID, StationFixture.잠실역.getName());
+        assertThat(actualSource).isEqualTo(expectedSource);
+
+        StationResponse actualTarget = responses.get(0).getSource();
+        StationResponse expectedTarget = new StationResponse(강남역_ID, StationFixture.강남역.getName());
+        assertThat(actualTarget).isEqualTo(expectedTarget);
     }
 
 }
