@@ -128,12 +128,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given: 유효하지 않은 bearer token에 대해서
+     * given: 자기가 만든 즐겨 찾기가 아닌 즐겨 찾기에 대해서
      * when: 즐겨 찾기를 삭제하면
      * then: 즐겨 찾기 삭제에 실패한다.
      */
     @Test
-    void 즐겨_찾기_삭제__bearer_token이_유효하지_않으면_안된다() {
+    void 즐겨_찾기_삭제__자기가_만든_즐겨찾기만_삭제_가능() {
         // given
         FavoriteSteps.지하철_좋아요_생성(강남역, 역삼역, accessToken);
         final List<FavoriteResponse> beforeOperation = FavoriteSteps.지하철_좋아요_조회(accessToken).jsonPath().getList(".", FavoriteResponse.class);
