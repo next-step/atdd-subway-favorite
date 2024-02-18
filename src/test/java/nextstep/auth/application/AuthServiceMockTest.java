@@ -1,8 +1,10 @@
 package nextstep.auth.application;
 
 import nextstep.auth.application.dto.AuthResponse;
+import nextstep.auth.application.dto.OAuth2Response;
 import nextstep.common.exception.UnauthorizedException;
 import nextstep.member.application.JwtTokenProvider;
+import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,13 +28,15 @@ public class AuthServiceMockTest {
     private UserDetailsService userDetailsService;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private GithubOAuth2Client githubOAuth2Client;
 
     private AuthService authService;
     private UserDetail userDetail;
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(userDetailsService, jwtTokenProvider);
+        authService = new AuthService(userDetailsService, jwtTokenProvider, githubOAuth2Client);
         userDetail = new UserDetail(1L, EMAIL, PASSWORD);
     }
 
@@ -67,5 +71,22 @@ public class AuthServiceMockTest {
 
         assertThatThrownBy(() -> authService.login(EMAIL, wrongPassword))
                 .isInstanceOf(UnauthorizedException.class);
+    }
+
+    @Test
+    @DisplayName("github login 을 통해 AuthResponse 를 응답받을 수 있다")
+    void githubLoginTest() {
+        final GithubResponses githubResponses = GithubResponses.사용자1;
+        final OAuth2Response oAuth2Response = new OAuth2Response(githubResponses.getEmail(), githubResponses.getAge());
+        final String accessToken = "access_token";
+
+        given(githubOAuth2Client.requestGithubToken(githubResponses.getCode())).willReturn(githubResponses.getAccessToken());
+        given(githubOAuth2Client.requestGithubProfile(githubResponses.getAccessToken())).willReturn(oAuth2Response);
+        given(userDetailsService.loadOrCreateUser(oAuth2Response)).willReturn(userDetail);
+        given(jwtTokenProvider.createToken(userDetail.getId(), userDetail.getEmail())).willReturn(accessToken);
+
+        final AuthResponse authResponse = authService.loginGithub(githubResponses.getCode());
+
+        assertThat(authResponse.getAccessToken()).isEqualTo(accessToken);
     }
 }
