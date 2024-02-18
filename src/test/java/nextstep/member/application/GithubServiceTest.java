@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GithubServiceTest {
     @Autowired
     private GithubService githubService;
+
     @DisplayName("code를 통한 Github Login")
     @Test
     void createTokenByGithub() {
