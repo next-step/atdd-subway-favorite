@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,9 +45,12 @@ public class FavoriteService {
     }
 
     private void validateFavoriteCreation(final LoginMember loginMember, final FavoriteRequest request) {
-        request.validate();
         final Long source = request.getSource();
         final Long target = request.getTarget();
+        if (Objects.equals(target, source)) {
+            throw new FavoriteSaveException("출발역과 도착역이 같은 경로는 즐겨찾기에 추가할 수 없습니다.");
+        }
+
         if (pathService.isInvalidPath(new PathSearchRequest(source, target))) {
             throw new FavoriteSaveException("존재하지 않는 경로는 즐겨찾기에 추가할 수 없습니다.");
         }
