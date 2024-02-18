@@ -38,14 +38,14 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public void createFavorite(LoginMember loginMember,
+    public FavoriteResponse createFavorite(LoginMember loginMember,
                                FavoriteRequest request) {
         Favorite favorite = new Favorite(pathFinder,
                 Lines.from(lineRepository.findAllFetchJoin()),
                 getStation(request.getSource()),
                 getStation(request.getTarget()),
                 getMember(loginMember));
-        favoriteRepository.save(favorite);
+        return FavoriteResponseFactory.createFavoriteResponse(favoriteRepository.save(favorite));
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {

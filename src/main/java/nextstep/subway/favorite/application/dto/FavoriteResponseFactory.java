@@ -10,11 +10,11 @@ public class FavoriteResponseFactory {
 
     public static List<FavoriteResponse> createFavoriteResponse(List<Favorite> favorites) {
         return favorites.stream()
-                .map(FavoriteResponseFactory::createResponse)
+                .map(FavoriteResponseFactory::createFavoriteResponse)
                 .collect(Collectors.toList());
     }
 
-    private static FavoriteResponse createResponse(Favorite favorite) {
+    public static FavoriteResponse createFavoriteResponse(Favorite favorite) {
         return new FavoriteResponse(favorite.getId(),
                 StationResponseFactory.createStationResponse(favorite.getSourceStation()),
                 StationResponseFactory.createStationResponse(favorite.getTargetStation()));
