@@ -1,5 +1,15 @@
 package nextstep.favorite.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.domain.Favorite;
+import nextstep.subway.acceptance.LineSteps;
+import nextstep.subway.acceptance.StationSteps;
+import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.domain.Line;
+import nextstep.subway.domain.Station;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,8 +23,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @Test
     void 즐겨_찾기_생성() {
+        // given
+        final StationResponse 강남역 = StationSteps.지하철역_생성_요청("강남역").jsonPath().getObject(".", StationResponse.class);
+        final StationResponse 역삼역 = StationSteps.지하철역_생성_요청("역삼역").jsonPath().getObject(".", StationResponse.class);
+
+        LineSteps.지하철_노선_생성_요청("2호선", "green", 강남역.getId(), 역삼역.getId(), 10);
+
         // when
+        FavoriteSteps.지하철_좋아요_생성(강남역.getId(), 역삼역.getId(), "code");
+
         // then
+        final List<FavoriteResponse> favoriteResponse = FavoriteSteps.지하철_좋아요_조회("code").jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(favoriteResponse).isNotNull();
     }
 
     /**

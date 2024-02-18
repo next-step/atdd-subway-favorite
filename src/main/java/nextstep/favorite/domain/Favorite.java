@@ -25,19 +25,17 @@ public class Favorite {
     @JoinColumn(name = "targetStationId")
     private Station targetStation;
 
-    @ManyToOne
-    @JoinColumn(name = "memberId")
-    private Member member;
+    private Long memberId;
 
     public Favorite() {
     }
 
-    public Favorite(Station sourceStation, Station targetStation, Member member) {
+    public Favorite(Station sourceStation, Station targetStation, Long memberId) {
         validateFavorite(sourceStation, targetStation);
 
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
-        this.member = member;
+        this.memberId = memberId;
     }
 
     public Long getId() {
@@ -52,8 +50,8 @@ public class Favorite {
         return targetStation;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public void update(Station newStation1, Station newStation2) {
@@ -64,6 +62,14 @@ public class Favorite {
     }
 
     private void validateFavorite(Station sourceStation, Station targetStation) {
+        if (sourceStation == null) {
+            throw new IllegalArgumentException("출발역이 존재하지 않습니다.");
+        }
+
+        if (targetStation == null) {
+            throw new IllegalArgumentException("도착역이 존재하지 않습니다.");
+        }
+
         if(isSameSourceAndTarget(sourceStation, targetStation)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }

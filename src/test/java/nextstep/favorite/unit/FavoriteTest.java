@@ -15,10 +15,9 @@ public class FavoriteTest {
         // given
         final Station station1 = new Station("잠실역");
         final Station station2 = new Station("잠실역");
-        final Member member = new Member();
 
         // when
-        final Favorite favorite = new Favorite(station1, station2, member);
+        final Favorite favorite = new Favorite(station1, station2, 1L);
 
         // then
         assertThat(favorite).isNotNull();
@@ -29,10 +28,9 @@ public class FavoriteTest {
     void 즐겨_찾기_생성__같은_역은_생석이_불가하다() {
         // given
         final Station station1 = new Station("잠실역");
-        final Member member = new Member();
 
         // then
-        assertThatThrownBy(() -> new Favorite(station1, station1, member))
+        assertThatThrownBy(() -> new Favorite(station1, station1, 1L))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -42,8 +40,7 @@ public class FavoriteTest {
         // given
         final Station station1 = new Station("잠실역");
         final Station station2 = new Station("잠실역");
-        final Member member = new Member();
-        final Favorite favorite = new Favorite(station1, station2, member);
+        final Favorite favorite = new Favorite(station1, station2, 1L);
 
         // when
         final Station newStation1 = new Station("잠실새내역");
@@ -60,8 +57,7 @@ public class FavoriteTest {
         // given
         final Station station1 = new Station("잠실역");
         final Station station2 = new Station("잠실역");
-        final Member member = new Member();
-        final Favorite favorite = new Favorite(station1, station2, member);
+        final Favorite favorite = new Favorite(station1, station2, 1L);
 
         // then
         assertThatThrownBy(() -> favorite.update(station1, station1))
