@@ -29,8 +29,8 @@ public class JGraphPathFinder implements PathFinder {
 
     @Override
     public GraphPath validCorrect(Lines lines,
-                             Station source,
-                             Station target) {
+                                  Station source,
+                                  Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
         }

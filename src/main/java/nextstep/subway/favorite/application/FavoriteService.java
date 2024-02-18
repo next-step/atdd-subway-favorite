@@ -39,7 +39,6 @@ public class FavoriteService {
     }
 
     /**
-     *
      * @param loginMember
      * @param request
      */
@@ -54,7 +53,6 @@ public class FavoriteService {
     }
 
     /**
-     *
      * @param loginMember
      * @return
      */

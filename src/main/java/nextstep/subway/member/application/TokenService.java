@@ -10,12 +10,14 @@ public class TokenService {
     private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenService(MemberService memberService,
+                        JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public TokenResponse createToken(String email, String password) {
+    public TokenResponse createToken(String email,
+                                     String password) {
         Member member = memberService.findMemberByEmail(email);
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
