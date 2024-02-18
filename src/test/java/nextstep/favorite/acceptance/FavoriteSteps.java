@@ -12,11 +12,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.member.acceptance.AuthSteps.createToken;
+
 public class FavoriteSteps {
 
     public static final String FAVORITES_URL = "/favorites";
-    private static String SECRET_KEY = "atdd-secret-key";
-    private static long VALIDITYINMILLISECONDS = 3600000;
 
     private FavoriteSteps() {
 
@@ -68,20 +68,6 @@ public class FavoriteSteps {
         params.put("source", String.valueOf(source));
         params.put("target", String.valueOf(target));
         return params;
-    }
-
-    private static String createToken(final String email) {
-        Claims claims = Jwts.claims().setSubject(email);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + VALIDITYINMILLISECONDS);
-
-        final String jwtToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
-        return jwtToken;
     }
 
 }
