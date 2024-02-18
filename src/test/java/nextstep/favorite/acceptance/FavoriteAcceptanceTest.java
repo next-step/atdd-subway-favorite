@@ -1,13 +1,10 @@
 package nextstep.favorite.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.acceptance.AuthStep;
 import nextstep.member.acceptance.MemberSteps;
@@ -18,9 +15,7 @@ import nextstep.utils.ResponseUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -29,6 +24,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private String email = "a@b.com";
     private String password = "1234";
+    private String email2 = "a@b.c";
     private String accessToken;
 
 
@@ -130,4 +126,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final List<FavoriteResponse> afterOperation = FavoriteSteps.지하철_좋아요_조회(accessToken).jsonPath().getList(".", FavoriteResponse.class);
         assertThat(afterOperation).isEmpty();
     }
+
+    /**
+     * given: 유효하지 않은 bearer token에 대해서
+     * when: 즐겨 찾기를 삭제하면
+     * then: 즐겨 찾기 삭제에 실패한다.
+     */
+    @Test
+    void 즐겨_찾기_삭제__bearer_token이_유효하지_않으면_안된다() {
+        // given
+        FavoriteSteps.지하철_좋아요_생성(강남역, 역삼역, accessToken);
+        final List<FavoriteResponse> beforeOperation = FavoriteSteps.지하철_좋아요_조회(accessToken).jsonPath().getList(".", FavoriteResponse.class);
+
+        MemberSteps.회원_생성_요청(email2, password, 20);
+        final String accessToken = AuthStep.로그인(email2, password).jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.지하철_좋아요_삭제(beforeOperation.get(0).getId(), accessToken);
+
+        // then
+        ResponseUtils.응답의_STATUS_검증(response, HttpStatus.UNAUTHORIZED);
+    }
+
+
 }

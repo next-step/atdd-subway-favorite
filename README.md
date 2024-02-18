@@ -24,7 +24,7 @@
     - [x] 즐겨 찾기 삭제
         - when: 즐겨 찾기를 삭제하면
         - then: 즐겨 찾기가 삭제된다.
-    - [ ] 즐겨 찾기 삭제 시 bearer token이 유효하지 않으면 안된다.
+    - [x] 즐겨 찾기 삭제 시 bearer token이 유효하지 않으면 안된다.
         - given: 유효하지 않은 bearer token에 대해서
         - when: 즐겨 찾기를 삭제하면
         - then: 즐겨 찾기 삭제에 실패한다.
