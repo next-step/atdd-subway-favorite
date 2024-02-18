@@ -26,5 +26,4 @@ public class PathService {
 
         return pathFinder.findPath(request, lines);
     }
-
 }

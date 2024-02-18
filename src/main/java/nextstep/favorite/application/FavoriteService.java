@@ -7,6 +7,9 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
+import nextstep.subway.applicaion.PathService;
+import nextstep.subway.applicaion.dto.PathRequest;
+import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -18,11 +21,13 @@ public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationRepository stationRepository;
     private MemberService memberService;
+    private PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository, MemberService memberService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository, MemberService memberService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.stationRepository = stationRepository;
         this.memberService = memberService;
+        this.pathService = pathService;
     }
 
     /**
@@ -32,6 +37,8 @@ public class FavoriteService {
      * @param loginMember
      */
     public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        validatePathExist(request);
+
         final Station sourceStation = stationRepository.findById(request.getSource()).orElseGet(null);
         final Station targetStation = stationRepository.findById(request.getTarget()).orElseGet(null);
         final MemberResponse member = memberService.findMe(loginMember);
@@ -56,5 +63,9 @@ public class FavoriteService {
      */
     public void deleteFavorite(Long id) {
         favoriteRepository.deleteById(id);
+    }
+
+    private void validatePathExist(FavoriteRequest request) {
+        pathService.getPath(new PathRequest(request.getSource(), request.getTarget()));
     }
 }
