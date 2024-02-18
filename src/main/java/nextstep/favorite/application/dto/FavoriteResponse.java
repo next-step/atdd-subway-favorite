@@ -1,7 +1,8 @@
 package nextstep.favorite.application.dto;
 
+import nextstep.favorite.domain.Favorite;
+import nextstep.subway.application.dto.PathResponse;
 import nextstep.subway.application.dto.StationResponse;
-import nextstep.subway.domain.Station;
 
 import java.util.List;
 
@@ -10,7 +11,8 @@ import java.util.List;
  */
 public class FavoriteResponse {
     private Long id;
-    private List<StationResponse> stations;
+    private StationResponse source;
+    private StationResponse target;
 
     public FavoriteResponse() {
     }
@@ -18,23 +20,36 @@ public class FavoriteResponse {
     public FavoriteResponse(final Long id, final Long sourceId, final String sourceName,
                             final Long targetId, final String targetName) {
         this.id = id;
-        this.stations = List.of(new StationResponse(sourceId, sourceName),
-                new StationResponse(targetId, targetName));
+        this.source = new StationResponse(sourceId, sourceName);
+        this.target = new StationResponse(targetId, targetName);
+    }
+
+    public FavoriteResponse(final Favorite savedFavorite, final PathResponse pathResponse) {
+        this.id = savedFavorite.getId();
+
+        final List<StationResponse> stations = pathResponse.getStations();
+        this.source = stations.get(0);
+        this.target = stations.get(stations.size() - 1);
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<StationResponse> getStations() {
-        return stations;
+    public StationResponse getSource() {
+        return source;
+    }
+
+    public StationResponse getTarget() {
+        return target;
     }
 
     @Override
     public String toString() {
         return "FavoriteResponse{" +
                 "id=" + id +
-                ", stations=" + stations +
+                ", source=" + source +
+                ", target=" + target +
                 '}';
     }
 }

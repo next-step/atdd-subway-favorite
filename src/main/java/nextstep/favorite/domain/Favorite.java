@@ -18,6 +18,10 @@ public class Favorite {
     }
 
     public Favorite(final Long memberId, final Long sourceId, final Long targetId) {
+        if (sourceId.equals(targetId)) {
+            throw new IllegalArgumentException("source와 target은 같을 수 없습니다.");
+        }
+
         this.memberId = memberId;
         this.sourceStationId = sourceId;
         this.targetStationId = targetId;

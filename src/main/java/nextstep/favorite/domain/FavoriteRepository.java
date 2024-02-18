@@ -14,15 +14,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
         " )" +
         " FROM Favorite f JOIN Station s1 ON f.sourceStationId = s1.id " +
         " JOIN Station s2 ON f.targetStationId = s2.id " +
-        " where f.id = :id ")
-    FavoriteResponse findFetchById(Long id);
-
-    @Query(
-        " select new nextstep.favorite.application.dto.FavoriteResponse(" +
-        " f.id, s1.id, s1.name, s2.id, s2.name " +
-        " )" +
-        " FROM Favorite f JOIN Station s1 ON f.sourceStationId = s1.id " +
-        " JOIN Station s2 ON f.targetStationId = s2.id " +
         " where f.memberId = :memberId ")
     List<FavoriteResponse> findAllByMemberId(Long memberId);
 }

@@ -11,6 +11,7 @@ import nextstep.subway.application.LineService;
 import nextstep.subway.application.PathService;
 import nextstep.subway.application.StationService;
 import nextstep.subway.application.dto.PathResponse;
+import nextstep.subway.application.dto.StationResponse;
 import nextstep.subway.domain.PathFinder;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
@@ -42,11 +43,11 @@ public class FavoriteService {
         final Member member = memberService.findMemberByEmail(loginMember.getEmail());
         final Long sourceId = request.getSource();
         final Long targetId = request.getTarget();
-        pathService.findPath(sourceId, targetId);
+        final PathResponse pathResponse = pathService.findPath(sourceId, targetId);
 
         Favorite favorite = new Favorite(member.getId(), sourceId, targetId);
         final Favorite savedFavorite = favoriteRepository.save(favorite);
-        return favoriteRepository.findFetchById(savedFavorite.getId());
+        return new FavoriteResponse(savedFavorite, pathResponse);
     }
 
     /**
