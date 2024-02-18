@@ -3,6 +3,8 @@ package nextstep.api.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.utils.GithubMockResponses;
+
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -16,6 +18,20 @@ public class MemberSteps {
         params.put("email", email);
         params.put("password", password);
         params.put("age", age + "");
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/members")
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_생성_요청(GithubMockResponses githubMockResponses) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", githubMockResponses.getEmail());
+        params.put("password", "password");
+        params.put("age", 20 + "");
 
         return RestAssured
             .given().log().all()

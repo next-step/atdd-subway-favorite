@@ -1,5 +1,7 @@
 package nextstep.api.member.application;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import nextstep.api.member.application.dto.MemberRequest;
 import nextstep.api.member.application.dto.MemberResponse;
@@ -41,6 +43,10 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    }
+
+    public Optional<Member> findMemberByEmailOptional(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     public MemberResponse findMe(LoginMember loginMember) {

@@ -25,5 +25,8 @@ public class LoginRequestExecutor extends AbstractRequestExecutor{
 		return doPostWithOk(getRequestSpecification(), GITHUB_LOGIN_URL_PATH, githubCodeResponse);
 	}
 
+	public static ExtractableResponse<Response> githubLogin(GithubCodeResponse githubCodeResponse) {
+		return doPost(getRequestSpecification(), GITHUB_LOGIN_URL_PATH, githubCodeResponse);
+	}
 
 }

@@ -1,4 +1,4 @@
-package nextstep.api.member.interfaces.argumentresolver;
+package nextstep.api.auth.interfaces.argumentresolver;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -7,7 +7,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.api.member.application.JwtTokenProvider;
+import nextstep.api.auth.domain.operators.JwtTokenProvider;
 import nextstep.api.member.domain.LoginMember;
 import nextstep.common.annotation.AuthenticationPrincipal;
 import nextstep.common.exception.member.AuthenticationException;
