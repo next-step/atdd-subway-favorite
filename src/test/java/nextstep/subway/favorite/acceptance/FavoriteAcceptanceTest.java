@@ -108,4 +108,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(actualTarget).isEqualTo(expectedTarget);
     }
 
+    /**
+     * GIVEN 지하철 노선들을 생성하고 구간을 추가 후
+     * WHEN 출발역과 도착역을 같게 입력하면
+     * THEN 에러 처리와 함께 '출발역과 도착역은 같을 수 없습니다.' 라는 메세지가 출력된다
+     */
+    @DisplayName("지하철 노선들을 생성하고 구간을 추가 후 출발역과 도착역을 입력하면 즐겨찾기가 등록된다")
+    @Test
+    void createFavorite3() {
+        // given
+        // then
+        FavoriteRequest request = new FavoriteRequest(잠실역_ID, 잠실역_ID);
+        ExtractableResponse<Response> response = given().log().all()
+                .auth().oauth2(accessToken)
+                .body(FavoriteApiCaller.createParams(request))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+
+        // then
+        int actual = response.statusCode();
+        int expected = HttpStatus.BAD_REQUEST.value();
+        assertThat(actual).isEqualTo(expected);
+
+        String actualBody = response.asString();
+        String expectedBody = "출발역과 도착역은 같을 수 없습니다.";
+        assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
 }
