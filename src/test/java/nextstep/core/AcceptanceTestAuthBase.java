@@ -1,16 +1,13 @@
 package nextstep.core;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.Map;
+import static nextstep.auth.acceptance.AuthSteps.로그인_요청;
 
 @AcceptanceTest
 public abstract class AcceptanceTestAuthBase {
@@ -28,12 +25,7 @@ public abstract class AcceptanceTestAuthBase {
     @BeforeEach
     void acceptanceTestAuthBaseSetUp() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
-        final ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(Map.of("email", EMAIL, "password", PASSWORD))
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        final ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
         accessToken = response.jsonPath().getString("accessToken");
     }
 }
