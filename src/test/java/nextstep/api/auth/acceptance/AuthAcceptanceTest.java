@@ -1,7 +1,7 @@
 package nextstep.api.auth.acceptance;
 
 import static nextstep.fixture.GithubOAuthFixtureCreator.*;
-import static nextstep.utils.GithubResponses.*;
+import static nextstep.utils.GithubMockResponses.*;
 import static nextstep.utils.resthelper.ExtractableResponseParser.*;
 import static nextstep.utils.resthelper.LoginRequestExecutor.*;
 import static org.assertj.core.api.Assertions.*;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.api.CommonAcceptanceTest;
-import nextstep.client.github.dto.GithubAccessTokenResponse;
+import nextstep.api.auth.domain.dto.inport.GithubCodeResponse;
 
 /**
  * @author : Rene Choi
@@ -40,10 +40,10 @@ public class AuthAcceptanceTest extends CommonAcceptanceTest {
 	@Test
 	void generalGithubAuth_Success() {
 		//given
-		GithubAccessTokenResponse githubAccessTokenResponse = createDefaultGithubAccessTokenResponse(사용자1);
+		GithubCodeResponse githubCodeResponse = createDefaultGithubCodeResponse(사용자1);
 
 		// when
-		ExtractableResponse<Response> response = githubLoginWithOk(githubAccessTokenResponse);
+		ExtractableResponse<Response> response = githubLoginWithOk(githubCodeResponse);
 
 		// then
 		assertThat(parseSimpleAccessToken(response)).isNotBlank();

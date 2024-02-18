@@ -6,7 +6,7 @@ import static org.springframework.http.MediaType.*;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import nextstep.client.github.dto.GithubAccessTokenResponse;
+import nextstep.api.auth.domain.dto.inport.GithubCodeResponse;
 
 /**
  * @author : Rene Choi
@@ -21,8 +21,8 @@ public class LoginRequestExecutor extends AbstractRequestExecutor{
 		return given().log().all().contentType(APPLICATION_JSON_VALUE);
 	}
 
-	public static ExtractableResponse<Response> githubLoginWithOk(GithubAccessTokenResponse githubAccessTokenResponse) {
-		return doPostWithOk(getRequestSpecification(), GITHUB_LOGIN_URL_PATH, githubAccessTokenResponse);
+	public static ExtractableResponse<Response> githubLoginWithOk(GithubCodeResponse githubCodeResponse) {
+		return doPostWithOk(getRequestSpecification(), GITHUB_LOGIN_URL_PATH, githubCodeResponse);
 	}
 
 
