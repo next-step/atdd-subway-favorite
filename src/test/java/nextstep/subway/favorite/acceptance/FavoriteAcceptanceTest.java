@@ -25,16 +25,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
-    private static final int AGE = 20;
     private StationFixture stationFixture;
     private Long 잠실역_ID;
     private Long 강남역_ID;
-    private Long 삼성역_ID;
-    private Long 선릉역_ID;
-    private Long 교대역_ID;
     private Long 서초역_ID;
     private Long 오이도역_ID;
     private String accessToken;
@@ -46,9 +39,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         stationFixture = new StationFixture();
         잠실역_ID = stationFixture.get잠실역_ID();
         강남역_ID = stationFixture.get강남역_ID();
-        삼성역_ID = stationFixture.get삼성역_ID();
-        선릉역_ID = stationFixture.get선릉역_ID();
-        교대역_ID = stationFixture.get교대역_ID();
         서초역_ID = stationFixture.get서초역_ID();
         오이도역_ID = stationFixture.get오이도역_ID();
 
