@@ -38,6 +38,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 서초역_ID;
     private Long 오이도역_ID;
     private String accessToken;
+    private String anotherMemberAccessToken;
 
     @BeforeEach
     public void setUp() {
@@ -56,6 +57,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         MemberFixture memberFixture = new MemberFixture();
         accessToken = memberFixture.getAccessToken();
+        anotherMemberAccessToken = memberFixture.getAnotherMemberAccessToken();
     }
 
     /**
@@ -315,12 +317,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         FavoriteRequest request = new FavoriteRequest(잠실역_ID, 강남역_ID);
         FavoriteApiCaller.즐겨찾기_생성(request, accessToken).header("location");
+        String anotherMemberLocation = FavoriteApiCaller.즐겨찾기_생성(request, anotherMemberAccessToken).header(
+                "location");
 
         // when
         ExtractableResponse<Response> response = given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/favorites/2")
+                .when().delete(anotherMemberLocation)
                 .then().log().all()
                 .extract();
 
