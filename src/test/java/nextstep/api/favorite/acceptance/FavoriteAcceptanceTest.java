@@ -119,7 +119,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 
 		// when
 		createMember(createMemberRequest("user2@example.com", "password2", 20));
-		String anotherUserToken = parseAsAccessToken(loginAndCreateAuthorizationToken(createTokenRequest("user2@example.com", "password2")));
+		String anotherUserToken = parseAsAccessTokenWithBearer(loginAndCreateAuthorizationToken(createTokenRequest("user2@example.com", "password2")));
 		ExtractableResponse<Response> deleteResponse = executeDeleteFavoriteRequest(anotherUserToken, favoriteId);
 
 		// then

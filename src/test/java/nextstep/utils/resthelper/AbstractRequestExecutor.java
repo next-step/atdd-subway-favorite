@@ -28,6 +28,15 @@ public abstract class AbstractRequestExecutor  {
 			.extract();
 	}
 
+	protected static <T> ExtractableResponse<Response> doPostWithOk(RequestSpecification requestSpecification, String urlPath, T requestBody) {
+		return requestSpecification
+			.body(requestBody)
+			.when().post(urlPath)
+			.then().log().all()
+			.statusCode(HttpStatus.OK.value())
+			.extract();
+	}
+
 
 	protected static ExtractableResponse<Response> doGet(RequestSpecification requestSpecification, String urlPath) {
 		return requestSpecification
