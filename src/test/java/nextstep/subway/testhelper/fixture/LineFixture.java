@@ -1,17 +1,20 @@
 package nextstep.subway.testhelper.fixture;
 
+import nextstep.subway.testhelper.JsonPathHelper;
+import nextstep.subway.testhelper.apicaller.LineApiCaller;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class LineFixture {
     public static final String 신분당선 = "신분당선";
     public static final String 영호선 = "0호선";
-    private Map<String, String> 신분당선_강남역_부터_삼성역_params;
-    private Map<String, String> 영호선_강남역_부터_삼성역_params;
-    private Map<String, String> 일호선_잠실역_부터_강남역_params;
-    private Map<String, String> 이호선_강남역_부터_삼성역_params;
-    private Map<String, String> 삼호선_잠실역_부터_선릉역_params;
-    private Map<String, String> 사호선_교대역_부터_서초역_params;
+    private final Map<String, String> 신분당선_강남역_부터_삼성역_params;
+    private final Map<String, String> 영호선_강남역_부터_삼성역_params;
+    private final Map<String, String> 일호선_잠실역_부터_강남역_params;
+    private final Map<String, String> 이호선_강남역_부터_삼성역_params;
+    private final Map<String, String> 삼호선_잠실역_부터_선릉역_params;
+    private final Map<String, String> 사호선_교대역_부터_서초역_params;
 
     public LineFixture(StationFixture stationFixture) {
         신분당선_강남역_부터_삼성역_params = createParams(신분당선, "bg-red-600", stationFixture.get강남역_ID(), stationFixture.get삼성역_ID(), 10L);
@@ -59,5 +62,14 @@ public class LineFixture {
 
     public Map<String, String> get사호선_교대역_부터_서초역_params() {
         return 사호선_교대역_부터_서초역_params;
+    }
+
+    public void 라인_목록_생성(StationFixture stationFixture) {
+        LineApiCaller.지하철_노선_생성(일호선_잠실역_부터_강남역_params);
+        LineApiCaller.지하철_노선_생성(이호선_강남역_부터_삼성역_params);
+        Long 삼호선_강남역_부터_선릉역_ID = JsonPathHelper.getObject(LineApiCaller.지하철_노선_생성(삼호선_잠실역_부터_선릉역_params), "id", Long.class);
+        LineApiCaller.지하철_노선_생성(사호선_교대역_부터_서초역_params);
+        SectionFixture sectionFixture = new SectionFixture(stationFixture);
+        LineApiCaller.지하철_노선에_구간_추가(sectionFixture.get선릉역_부터_삼성역_구간_params(), "/lines/" + 삼호선_강남역_부터_선릉역_ID.toString());
     }
 }
