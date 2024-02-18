@@ -77,14 +77,4 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         ResponseUtils.응답의_STATUS_검증(response, HttpStatus.BAD_REQUEST);
     }
-
-    /**
-     * given: 유효하지 않은 bearer token에 대해서
-     * when: 즐겨 찾기를 생성하면
-     * then: 즐겨 찾기 생성에 실패한다.
-     */
-    @Test
-    void  즐겨_찾기_요청_시_bearer_token이_유효하지_않으면_안된다() {
-
-    }
 }
