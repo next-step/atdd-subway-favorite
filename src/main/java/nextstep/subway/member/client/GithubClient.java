@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class GithubClient {
 
-    public static final String ACCESS_TOKEN = "/login/oauth/access_token";
+    public static final String ACCESS_TOKEN = "/github/login/oauth/access_token";
     private final GithubClientProperties githubClientProperties;
     private final RestTemplate restTemplate;
 
