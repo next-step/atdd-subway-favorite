@@ -4,6 +4,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.AuthenticationException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -56,11 +57,12 @@ public class FavoriteService {
      * TODO: 요구사항 설명에 맞게 수정합니다.
      * @param id
      */
+
     public void deleteFavorite(Long id, LoginMember loginMember) {
         Member member = getMember(loginMember);
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기입니다."));
         if (!favorite.isOwner(member)) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+            throw new AuthenticationException();
         }
         favoriteRepository.deleteById(id);
     }

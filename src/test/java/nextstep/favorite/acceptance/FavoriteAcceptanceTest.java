@@ -73,20 +73,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("다른 사용자의 즐겨찾기를 삭제한다.")
-    @Test
-    void deleteFavoriteOfOtherUser() {
-        즐겨찾기_생성(accessToken, 강남역, 역삼역);
-        List<Long> ids = 모든_즐겨찾기_조회(accessToken).jsonPath().getList("id", Long.class);
+        @Test
+        void deleteFavoriteOfOtherUser() {
+            즐겨찾기_생성(accessToken, 강남역, 역삼역);
+            List<Long> ids = 모든_즐겨찾기_조회(accessToken).jsonPath().getList("id", Long.class);
 
 
-        회원_생성_요청(OTHER_EMAIL, OHTER_PASSWORD, OTHER_AGE);
-        String otherAccessToken = 토큰(OTHER_EMAIL, OHTER_PASSWORD);
+            회원_생성_요청(OTHER_EMAIL, OHTER_PASSWORD, OTHER_AGE);
+            String otherAccessToken = 토큰(OTHER_EMAIL, OHTER_PASSWORD);
 
-        RestAssured.given().log().all()
-                .auth().oauth2(otherAccessToken)
+            RestAssured.given().log().all()
+                    .auth().oauth2(otherAccessToken)
                 .when().delete("/favorites/{id}", ids.get(0))
                 .then().log().all()
-                .statusCode(400);
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Long source, Long target) {
