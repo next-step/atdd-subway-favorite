@@ -39,7 +39,7 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember,
-                               FavoriteRequest request) {
+                                           FavoriteRequest request) {
         Favorite favorite = new Favorite(pathFinder,
                 Lines.from(lineRepository.findAllFetchJoin()),
                 getStation(request.getSource()),

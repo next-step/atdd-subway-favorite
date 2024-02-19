@@ -45,8 +45,8 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
 
         return Optional.ofNullable(restTemplate
-                .exchange(ACCESS_TOKEN, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-                .getBody())
+                        .exchange(ACCESS_TOKEN, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                        .getBody())
                 .map(GithubAccessTokenResponse::getAccessToken)
                 .orElseThrow(() -> new IllegalArgumentException("토큰 정보를 가지고 오지 못했습니다."));
     }

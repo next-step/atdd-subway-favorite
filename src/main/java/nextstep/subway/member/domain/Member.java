@@ -55,7 +55,7 @@ public class Member {
     }
 
     public void validAccess(Member member) {
-        if(!this.equals(member)) {
+        if (!this.equals(member)) {
             throw new AuthenticationException("본인의 정보만 수정 할 수 있습니다.");
         }
     }

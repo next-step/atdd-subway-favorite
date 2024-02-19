@@ -1,9 +1,9 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.application.dto.LineUpdateRequest;
 import nextstep.subway.line.application.dto.LineRequest;
 import nextstep.subway.line.application.dto.LineResponse;
 import nextstep.subway.line.application.dto.LineResponseFactory;
+import nextstep.subway.line.application.dto.LineUpdateRequest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.section.domain.Section;

@@ -1,8 +1,8 @@
 package nextstep.subway.member.client;
 
 import nextstep.subway.member.client.github.GithubClient;
-import nextstep.subway.member.client.github.dto.GithubProfileResponse;
 import nextstep.subway.member.client.github.config.GithubClientProperties;
+import nextstep.subway.member.client.github.dto.GithubProfileResponse;
 import nextstep.subway.testhelper.fixture.GithubResponsesFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
