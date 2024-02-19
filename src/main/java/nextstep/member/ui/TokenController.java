@@ -2,6 +2,7 @@ package nextstep.member.ui;
 
 import java.awt.image.RescaleOp;
 import nextstep.member.application.TokenService;
+import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,9 @@ public class TokenController {
     }
 
     @PostMapping("/login/github")
-    public ResponseEntity<TokenResponse> githubLogin(@RequestBody TokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+    public ResponseEntity<TokenResponse> githubLogin(@RequestBody() GithubAccessTokenRequest request) {
+        TokenResponse response = tokenService.loginGithub(request.getCode());
 
         return ResponseEntity.ok(response);
-
     }
 }

@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void githubAuth() {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", GithubResponses.사용자1.getCode());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +58,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value()).extract();
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        String accessToken = response.jsonPath().getString("accessToken");
+        assertThat(accessToken).isNotBlank();
     }
 
 }
