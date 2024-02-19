@@ -36,4 +36,14 @@ class GithubClientTest {
                 () -> assertThat(accessToken).isEqualTo(GithubResponsesFixture.사용자1.getAccessToken())
         );
     }
+
+    @Test
+    @DisplayName("Github에 사용자 정보를 요청 할 수 있다.")
+    void requestGithubUserInfo() {
+        GithubProfileResponse actual = githubClient.findUser(GithubResponsesFixture.사용자1.getAccessToken());
+        GithubProfileResponse expected = new GithubProfileResponse(GithubResponsesFixture.사용자1.getEmail(),
+                GithubResponsesFixture.사용자1.getAge());
+
+        assertThat(actual).isEqualTo(expected);
+    }
 }

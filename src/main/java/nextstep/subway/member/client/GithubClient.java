@@ -46,4 +46,8 @@ public class GithubClient {
                 .map(GithubAccessTokenResponse::getAccessToken)
                 .orElseThrow(() -> new IllegalArgumentException("토큰 정보를 가지고 오지 못했습니다."));
     }
+
+    public GithubProfileResponse findUser(String accessToken) {
+        return null;
+    }
 }
