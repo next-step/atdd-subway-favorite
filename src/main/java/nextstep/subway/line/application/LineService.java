@@ -32,18 +32,18 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest lineRequest) {
         Line line = lineRepository.save(createLine(lineRequest));
-        return LineResponseFactory.createLineResponse(line);
+        return LineResponseFactory.create(line);
     }
 
     public List<LineResponse> findAllLines() {
         return lineRepository.findAll().stream()
-                .map(LineResponseFactory::createLineResponse)
+                .map(LineResponseFactory::create)
                 .collect(Collectors.toList());
     }
 
     public LineResponse findLine(Long id) {
         Line line = getLine(id);
-        return LineResponseFactory.createLineResponse(line);
+        return LineResponseFactory.create(line);
     }
 
     @Transactional
@@ -64,7 +64,7 @@ public class LineService {
         Line line = getLine(id);
         line.addSection(createSection(sectionsUpdateRequest));
         lineRepository.save(line);
-        return LineResponseFactory.createLineResponse(line);
+        return LineResponseFactory.create(line);
     }
 
     @Transactional

@@ -45,13 +45,13 @@ public class FavoriteService {
                 getStation(request.getSource()),
                 getStation(request.getTarget()),
                 getMember(loginMember));
-        return FavoriteResponseFactory.createFavoriteResponse(favoriteRepository.save(favorite));
+        return FavoriteResponseFactory.create(favoriteRepository.save(favorite));
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = getMember(loginMember);
         List<Favorite> favorites = favoriteRepository.findByMember(member);
-        return FavoriteResponseFactory.createFavoriteResponse(favorites);
+        return FavoriteResponseFactory.create(favorites);
     }
 
     public void deleteFavorite(LoginMember loginMember,

@@ -3,6 +3,7 @@ package nextstep.subway.member.application;
 import nextstep.subway.member.AuthenticationException;
 import nextstep.subway.member.application.dto.TokenResponse;
 import nextstep.subway.member.client.ExternalTokenFetcher;
+import nextstep.subway.member.client.dto.ProfileResponse;
 import nextstep.subway.member.client.github.GithubTokenFetcher;
 import nextstep.subway.member.domain.Member;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,9 @@ public class TokenService {
     }
 
     public TokenResponse createToken(String code) {
-        String token = externalTokenFetcher.requestToken(code);
-        return new TokenResponse(token);
+        String accessToken = externalTokenFetcher.requestToken(code);
+        ProfileResponse userResponse = externalTokenFetcher.findUser(accessToken);
+        memberService.findMemberByEmailNotExistSave(userResponse);
+        return new TokenResponse(accessToken);
     }
 }

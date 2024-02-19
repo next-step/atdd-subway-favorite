@@ -2,6 +2,7 @@ package nextstep.subway.member.client.github;
 
 import nextstep.subway.member.client.ExternalTokenFetcher;
 import nextstep.subway.member.client.dto.ProfileResponse;
+import nextstep.subway.member.client.dto.ProfileResponseFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,6 +21,6 @@ public class GithubTokenFetcher implements ExternalTokenFetcher {
 
     @Override
     public ProfileResponse findUser(String accessToken) {
-        return null;
+        return ProfileResponseFactory.create(githubClient.findUser(accessToken));
     }
 }
