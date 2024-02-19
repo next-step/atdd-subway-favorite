@@ -34,7 +34,7 @@ public class FavoriteController {
     public ResponseEntity<List<FavoriteResponse>> getFavorites(
             @AuthenticationPrincipal LoginMember loginMember
     ) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites();
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
         return ResponseEntity.ok().body(favorites);
     }
 
@@ -42,7 +42,7 @@ public class FavoriteController {
     public ResponseEntity deleteFavorite(
             @PathVariable Long id,
             @AuthenticationPrincipal LoginMember loginMember) {
-        favoriteService.deleteFavorite(id);
+        favoriteService.deleteFavorite(id,loginMember);
         return ResponseEntity.noContent().build();
     }
 }

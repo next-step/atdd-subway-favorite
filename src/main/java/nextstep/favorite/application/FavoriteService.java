@@ -35,7 +35,7 @@ public class FavoriteService {
      */
     @Transactional
     public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        Member member = this.memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Member member = getMember(loginMember);
         Station source = this.stationRepository.findById(request.getSource()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
         Station target = this.stationRepository.findById(request.getTarget()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
         favoriteRepository.save(new Favorite(member, source, target));
@@ -46,8 +46,9 @@ public class FavoriteService {
      *
      * @return
      */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = getMember(loginMember);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 
@@ -55,7 +56,16 @@ public class FavoriteService {
      * TODO: 요구사항 설명에 맞게 수정합니다.
      * @param id
      */
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(Long id, LoginMember loginMember) {
+        Member member = getMember(loginMember);
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기입니다."));
+        if (!favorite.isOwner(member)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
         favoriteRepository.deleteById(id);
+    }
+
+    private Member getMember(LoginMember loginMember) {
+        return this.memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 }

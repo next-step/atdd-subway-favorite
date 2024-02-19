@@ -47,4 +47,8 @@ public class Favorite {
         this.source = source;
         this.target = target;
     }
+
+    public boolean isOwner(Member member) {
+        return this.member.equals(member);
+    }
 }
