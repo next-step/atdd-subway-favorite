@@ -50,6 +50,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @DisplayName("본인이 아닌 회원 정보를 수정하면 실패한다.")
+    @Test
+    void updateNotYourself() {
+        // given
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
