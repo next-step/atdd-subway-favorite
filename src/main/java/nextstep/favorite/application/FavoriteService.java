@@ -4,26 +4,41 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.subway.domain.Station;
+import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
+    private MemberRepository memberRepository;
+    private StationRepository stationRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
         this.favoriteRepository = favoriteRepository;
+        this.memberRepository = memberRepository;
+        this.stationRepository = stationRepository;
     }
 
     /**
      * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
+     * @param request, loginMember
      */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    @Transactional
+    public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        Member member = this.memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Station source = this.stationRepository.findById(request.getSource()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
+        Station target = this.stationRepository.findById(request.getTarget()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
+        favoriteRepository.save(new Favorite(member, source, target));
     }
 
     /**
@@ -33,7 +48,7 @@ public class FavoriteService {
      */
     public List<FavoriteResponse> findFavorites() {
         List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+        return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 
     /**
