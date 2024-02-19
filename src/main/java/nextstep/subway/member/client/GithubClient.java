@@ -48,6 +48,15 @@ public class GithubClient {
     }
 
     public GithubProfileResponse findUser(String accessToken) {
-        return null;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, "bearer " + accessToken);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
+
+        return Optional.ofNullable(restTemplate
+                        .exchange(ACCESS_TOKEN, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                        .getBody())
+                .orElseThrow(() -> new IllegalArgumentException("토큰 정보를 가지고 오지 못했습니다."));
     }
 }
