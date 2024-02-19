@@ -17,6 +17,7 @@ import java.util.Optional;
 public class GithubClient {
 
     public static final String ACCESS_TOKEN = "/github/login/oauth/access_token";
+    public static final String FIND_USER = "/github/user";
     private final GithubClientProperties githubClientProperties;
     private final RestTemplate restTemplate;
 
@@ -55,7 +56,7 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
 
         return Optional.ofNullable(restTemplate
-                        .exchange(ACCESS_TOKEN, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                        .exchange(FIND_USER, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                         .getBody())
                 .orElseThrow(() -> new IllegalArgumentException("토큰 정보를 가지고 오지 못했습니다."));
     }

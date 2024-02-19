@@ -32,6 +32,13 @@ public enum GithubResponsesFixture {
                 .orElse(GithubResponsesFixture.UNKNOWN);
     }
 
+    public static GithubResponsesFixture findByToken(String accessToken) {
+        return Arrays.stream(GithubResponsesFixture.values())
+                .filter(response -> Objects.equals(response.accessToken, accessToken))
+                .findFirst()
+                .orElse(GithubResponsesFixture.UNKNOWN);
+    }
+
     public String getCode() {
         return code;
     }
