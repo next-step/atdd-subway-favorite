@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.testhelper.AcceptanceTest;
+import nextstep.subway.testhelper.apicaller.TokenApiCaller;
+import nextstep.subway.testhelper.fixture.GithubResponsesFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,19 +55,19 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 
-    @DisplayName("Github Auth")
+    /**
+     * When 로그인에 필요한 코드를 입력하면
+     * Then 로그인 토큰이 발행된다.
+     */
+    @DisplayName("로그인에 필요한 코드를 입력하면 로그인 토큰이 발행된다.")
     @Test
     void githubAuth() {
+        // given
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", GithubResponsesFixture.사용자1.getCode());
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        String actual = TokenApiCaller.깃허브_로그인(params).jsonPath().getString("accessToken");
+        String expected = GithubResponsesFixture.사용자1.getAccessToken();
+        assertThat(actual).isEqualTo(expected);
     }
 }
