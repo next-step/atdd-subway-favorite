@@ -76,13 +76,13 @@ public class BaseAcceptanceTest {
         String lineName = "신분당선";
         String lineColor = "빨간색";
 
-        return Map.of(
-            "name", lineName,
-            "color", lineColor,
-            "upStationId", Long.toString(upStationId),
-            "downStationId", Long.toString(downStationId),
-            "distance", distance.toString()
-        );
+            return Map.of(
+                "name", lineName,
+                "color", lineColor,
+                "upStationId", Long.toString(upStationId),
+                "downStationId", Long.toString(downStationId),
+                "distance", distance.toString()
+            );
     }
 
     public Map<String, String> getRequestParam_분당선(Long upStationId, Long downStationId, Integer distance) {

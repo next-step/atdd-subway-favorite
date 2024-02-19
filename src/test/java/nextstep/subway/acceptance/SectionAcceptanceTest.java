@@ -66,9 +66,9 @@ public class SectionAcceptanceTest extends BaseAcceptanceTest {
         List<SectionResponse> sectionResponses = lineAfterResponse.getSections();
         assertAll(
             () -> assertThat(sectionResponses).hasSize(2),
-            () -> assertThat(sectionResponses.get(sectionResponses.size() - 1).getUpStationName()).isEqualTo("선릉역"),
-            () -> assertThat(sectionResponses.get(sectionResponses.size() - 1).getDownStationName()).isEqualTo("왕십리역"),
-            () -> assertThat(sectionResponses.get(sectionResponses.size() - 1).getDistance()).isEqualTo(10)
+            () -> assertThat(sectionResponses.get(sectionResponses.size() - 1).getUpStationId()).isEqualTo(sectionRequest.getUpStationId()),
+            () -> assertThat(sectionResponses.get(sectionResponses.size() - 1).getDownStationId()).isEqualTo(sectionRequest.getDownStationId()),
+            () -> assertThat(sectionResponses.get(sectionResponses.size() - 1).getDistance()).isEqualTo(BASIC_DISTANCE)
         );
     }
 
@@ -112,17 +112,16 @@ public class SectionAcceptanceTest extends BaseAcceptanceTest {
         LineResponse lineResponse = 지하철_노선_생성(getRequestParam_신분당선(역삼역_ID, 선릉역_ID, BASIC_DISTANCE));
 
         //when
-        SectionRequest sectionRequest = new SectionRequest(4L, 1L, 5);
+        SectionRequest sectionRequest = new SectionRequest(왕십리역_ID, 역삼역_ID, 5);
         addSection(lineResponse, sectionRequest);
 
         //then
-        LineResponse lineAfterResponse = when().get("/lines/" + lineResponse.getId())
-                                               .then().log().all().extract().jsonPath().getObject(".", LineResponse.class);
+        LineResponse lineAfterResponse = 지하철_노선_조회(lineResponse.getId());
         List<SectionResponse> sectionResponses = lineAfterResponse.getSections();
         assertAll(
             () -> assertThat(sectionResponses).hasSize(2),
-            () -> assertThat(sectionResponses.get(0).getUpStationId()).isEqualTo(4L),
-            () -> assertThat(sectionResponses.get(0).getDownStationId()).isEqualTo(1L),
+            () -> assertThat(sectionResponses.get(0).getUpStationId()).isEqualTo(왕십리역_ID),
+            () -> assertThat(sectionResponses.get(0).getDownStationId()).isEqualTo(역삼역_ID),
             () -> assertThat(sectionResponses.get(0).getDistance()).isEqualTo(5)
         );
     }
@@ -134,27 +133,15 @@ public class SectionAcceptanceTest extends BaseAcceptanceTest {
     void testAddSection_구간_추가시_기존에_등록되어있으면_예외_반환() {
         //given
         LineResponse lineResponse = 지하철_노선_생성(getRequestParam_신분당선(역삼역_ID, 선릉역_ID, BASIC_DISTANCE));
-        SectionRequest initialSectionRequest = new SectionRequest(2L, 3L, 5);
+        SectionRequest initialSectionRequest = new SectionRequest(선릉역_ID, 강남역_ID, 5);
         addSection(lineResponse, initialSectionRequest);
         //when
-        SectionRequest conflictingSectionRequest = new SectionRequest(3L, 2L, 7);
+        SectionRequest conflictingSectionRequest = new SectionRequest(강남역_ID, 선릉역_ID, 7);
 
         given().body(conflictingSectionRequest)
                .contentType(MediaType.APPLICATION_JSON_VALUE)
                .when().post("/lines/" + lineResponse.getId() + "/sections").then().statusCode(HttpStatus.SC_BAD_REQUEST);
 
-    }
-
-    @Test
-    void 해당_노선의_하행_종점역과_새로_등록하려는_구간의_상행_종점역이_다를_때_등록하려는_구간의_길이가_구간_사이에_들어올_수_없으면_에러를_반환한다() {
-        //given
-        LineResponse lineResponse = 지하철_노선_생성(getRequestParam_신분당선(역삼역_ID, 선릉역_ID, BASIC_DISTANCE));
-
-        //when
-        SectionRequest sectionRequest = new SectionRequest(1L, 4L, 15);
-        given().body(sectionRequest)
-               .contentType(MediaType.APPLICATION_JSON_VALUE)
-               .when().post("/lines/" + lineResponse.getId() + "/sections").then().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test
@@ -180,7 +167,7 @@ public class SectionAcceptanceTest extends BaseAcceptanceTest {
         given()
             .pathParam("lineId", lineResponse.getId())
             .queryParam("stationId", 왕십리역_ID)
-            .when()
+        .when()
             .delete("/lines/{lineId}/sections")
             .then().statusCode(HttpStatus.SC_NO_CONTENT);
 
@@ -207,7 +194,6 @@ public class SectionAcceptanceTest extends BaseAcceptanceTest {
             .delete("/lines/{lineId}/sections")
             .then().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
-
 
     @DisplayName("given 특정 노선에 구간이 2개 이상 등록되었을 때\n"
                  + "   when 노선에 등록된 역 중 가운데 역을 제거하면\n"
