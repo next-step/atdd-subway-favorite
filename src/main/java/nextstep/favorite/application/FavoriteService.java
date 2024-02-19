@@ -31,12 +31,6 @@ public class FavoriteService {
         this.pathService = pathService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     * @param loginMember
-     */
     public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
         validatePathExist(request);
 
@@ -48,11 +42,6 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         final MemberResponse member = memberService.findMe(loginMember);
 
@@ -61,12 +50,6 @@ public class FavoriteService {
         return favorites.stream().map(FavoriteResponse::new).toList();
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     * @param loginMember
-     */
     public void deleteFavorite(Long id, LoginMember loginMember) {
         final Favorite favorite = favoriteRepository.findById(id).orElseThrow(NotFoundException::new);
 
