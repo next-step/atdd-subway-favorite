@@ -30,9 +30,10 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id,
+    public ResponseEntity<MemberResponse> updateMember(@AuthenticationPrincipal LoginMember loginMember,
+                                                       @PathVariable Long id,
                                                        @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
+        memberService.updateMember(loginMember, id, param);
         return ResponseEntity.ok().build();
     }
 

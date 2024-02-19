@@ -25,10 +25,12 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id,
+    public void updateMember(LoginMember loginMember,
+                             Long id,
                              MemberRequest param) {
+        Member accessMember = findMemberByEmail(loginMember.getEmail());
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.toMember());
+        member.update(accessMember, param.toMember());
     }
 
     public void deleteMember(Long id) {

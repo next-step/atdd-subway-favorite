@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
+    public static final String SECOND_EMAIL = "email2@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
@@ -42,9 +43,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void updateMember() {
         // given
         var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
-        var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        var response = 회원_정보_수정_요청(createResponse, accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -55,9 +57,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void updateNotYourself() {
         // given
         var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(SECOND_EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(SECOND_EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
-        var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        var response = 회원_정보_수정_요청(createResponse, accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());

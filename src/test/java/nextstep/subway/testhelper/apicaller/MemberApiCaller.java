@@ -39,6 +39,7 @@ public class MemberApiCaller {
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response,
+                                                            String accessToken,
                                                             String email,
                                                             String password,
                                                             Integer age) {
@@ -51,6 +52,7 @@ public class MemberApiCaller {
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
@@ -74,6 +76,19 @@ public class MemberApiCaller {
     }
 
     public static ExtractableResponse<Response> 회원_로그인_요청(Map<String, String> params) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_로그인_요청(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
