@@ -8,6 +8,8 @@ import nextstep.member.AuthenticationException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.applicaion.PathService;
+import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -22,12 +24,14 @@ public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
     private StationRepository stationRepository;
+    private PathService pathService;
 
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
+        this.pathService = pathService;
     }
 
     /**
@@ -39,6 +43,11 @@ public class FavoriteService {
         Member member = getMember(loginMember);
         Station source = this.stationRepository.findById(request.getSource()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
         Station target = this.stationRepository.findById(request.getTarget()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
+
+        PathResponse path = this.pathService.findPath(source.getId(), target.getId());
+        if(path.hasNoPath()){
+            throw new IllegalArgumentException("경로가 존재하지 않습니다.");
+        }
         favoriteRepository.save(new Favorite(member, source, target));
     }
 

@@ -49,6 +49,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(statusCode).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("비정상 즐겨찾기를 생성하는 경우")
+    @Test
+    void createFavoriteWithInvalid() {
+        long 사당역 = 지하철역_생성_요청("사당역").jsonPath().getLong("id");
+        int statusCode = 즐겨찾기_생성(accessToken, 강남역, 사당역).statusCode();
+        assertThat(statusCode).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("즐겨찾기를 조회한다.")
     @Test
     void getFavorites() {

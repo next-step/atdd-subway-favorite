@@ -30,4 +30,8 @@ public class PathResponse {
     public int getDistance() {
         return distance;
     }
+
+    public boolean hasNoPath() {
+        return stations.isEmpty();
+    }
 }
