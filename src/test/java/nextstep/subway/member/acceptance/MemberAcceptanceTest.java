@@ -80,6 +80,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("본인이 아닌 회원 정보를 삭제하면 실패한다.")
+    @Test
+    void deleteNotYourself() {
+        // given
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        var response = 회원_삭제_요청(createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     /**
      * Given 회원 가입을 생성하고
      * And 로그인을 하고
