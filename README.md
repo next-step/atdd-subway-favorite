@@ -1,263 +1,159 @@
-# 🚀 1단계 - 즐겨찾기 기능 완성
-
-# 미션 소개
-
-- 인증 기반의 인수 테스트를 연습해보는 미션입니다.
-- FavoriteAcceptanceTest 파일에 인수 테스트를 작성하고 **즐겨 찾기 기능**을 완성하세요.
-- JPA에 대한 내용은 미션을 수행하는데 필요한 만큼만 적용하세요. JPA에 대한 내용을 깊이있게 탐구하지 않으셔도 됩니다.
-    - 즐겨찾기의 관계 매핑 시 cascade나 loading 등 설정에 대해서 깊이 있게 고민하지 않고 넘어가셔도 좋습니다.
+# 🚀 2단계 - 깃헙 로그인 구현
 
 # 요구사항
 
 ## 기능 요구사항
 
-- `요구사항 설명`에서 제공되는 요구사항을 기반으로 **즐겨 찾기 기능**을 완성하세요.
-- 예외 케이스에 대한 검증도 포함하세요.
-    - 로그인이 필요한 API 요청 시 유효하지 않은 경우
-    - 존재하지 않는 경로인 경우
-    - 등등
+- [x] 깃허브를 이용한 로그인 구현(토큰 발행)
+- [x] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
 
 ## 프로그래밍 요구사항
 
-- 인수 테스트 주도 개발 프로세스
-
-  에 맞춰서 기능을 구현하세요.
-
-    - `요구사항 설명`을 참고하여 인수 조건을 정의
-    - 인수 조건을 검증하는 인수 테스트 작성
-    - 인수 테스트를 충족하는 기능 구현
-
-- 인수 조건은 인수 테스트 메서드 상단에 주석으로 작성하세요.
-
-    - 뼈대 코드의 인수 테스트를 참고
-
-- ```
-  인수 테스트 이후 기능 구현은 TDD로 진행하세요.
-  ```
-
-    - 도메인 레이어 테스트는 필수
-    - 서비스 레이어 테스트는 선택
+- [x] GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
 
 # 요구사항 설명
 
-## 1. 즐겨 찾기 기능 인수 테스트 작성
+## 깃헙 로그인 API
 
-- 아래의 스펙에 맞춰 즐겨 찾기 기능의 인수 테스트를 작성하세요.
-- 뼈대 코드로 제공되는 기능과는 다른 스펙이니 유의해주세요.
+- `AuthAcceptanceTest` 테스트 만들기
 
-### API 종류
+> `/login/github` 요청으로 `accessToken`응답을 받는 API 입니다. client에서 직접 github으로 요청을 보내는게 아니라 우리가 구현한 server로 요청을 보낸 뒤 server에서 github으로 요청을 보내는 방식으로 구현하세요.
 
-- 즐겨찾기 생성
-- 즐겨찾기 조회
-- 즐겨찾기 삭제
-
-### Request / Response
-
-#### 생성
+### Request
 
 ```http
-POST /favorites HTTP/1.1
-authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 27
-host: localhost:60443
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
-accept-encoding: gzip,deflate
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
 
 {
-    "source": "1",
-    "target": "3"
+    "code": "qwerasdfzxvcqwerasdfzxcv"
 }
-HTTP/1.1 201 Created
-Keep-Alive: timeout=60
-Connection: keep-alive
-Content-Length: 0
-Date: Mon, 22 Mar 2021 14:27:37 GMT
-Location: /favorites/1
 ```
 
-#### 조회
+### Response
 
-```http
-GET /favorites HTTP/1.1
-authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
-accept: application/json
-host: localhost:60443
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
-accept-encoding: gzip,deflate
-HTTP/1.1 200 
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Mon, 22 Mar 2021 14:27:37 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
+- accessToken는 깃헙으로부터 받아온게 아니라 subway 애플리케이션에서 생성한 토큰
+- 아이디/패스워드를 이용한 로그인 시 응답받는 토큰과 동일한 토큰
 
-[
-    {
-        "id": 1,
-        "source": {
-            "id": 1,
-            "name": "교대역"
-        },
-        "target": {
-            "id": 3,
-            "name": "양재역"
-        }
-    }
-]
+```json
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
+}
 ```
 
-#### 삭제
+## code 별 응답 response
 
-```http
-DELETE /favorites/1 HTTP/1.1
-authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOjEsXCJlbWFpbFwiOlwiZW1haWxAZW1haWwuY29tXCIsXCJwYXNzd29yZFwiOlwicGFzc3dvcmRcIixcImFnZVwiOjIwLFwicHJpbmNpcGFsXCI6XCJlbWFpbEBlbWFpbC5jb21cIixcImNyZWRlbnRpYWxzXCI6XCJwYXNzd29yZFwifSIsImlhdCI6MTYxNjQyMzI1NywiZXhwIjoxNjE2NDI2ODU3fQ.7PU1ocohHf-5ro78-zJhgjP2nCg6xnOzvArFME5vY-Y
-accept: */*
-host: localhost:60443
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/1.8.0_252)
-accept-encoding: gzip,deflate
-HTTP/1.1 204 No Content
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Mon, 22 Mar 2021 14:27:37 GMT
-```
-
-## 2. 즐겨 찾기 기능 개선하기
-
-- 현재 뼈대 코드로 제공되는 즐겨 찾기 기능은 모든 사람이 공유하는 즐겨찾기 입니다.
-- 개인별로 관리할 수 있는 즐겨 찾기 기능으로 만들어주세요.
-
-## 3. 예외 처리
-
-- 즐겨 찾기 기능이 정상적으로 동작하기 위해 필요한 예외처리를 진행해주세요.
-    - 예시) 내가 등록하지 않은 즐겨 찾기를 제거 하려고 할 경우 등
-- 예외 처리에 대한 테스트는 어느 레이어에서 진행해야 할 지 고민해보세요.
+- 매번 실제 깃헙 서비스에 요청을 보낼 수 없으니 어떤 코드로 요청이 오면 정해진 response를 응답하는 구조를 만든다.
 
 # 힌트
 
-## Favorite 클래스
+## 1단계 - 실패하는 테스트 실행하기
 
-- 필요한 경우 Favorite 클래스를 수정할 수 있습니다.
-- 간접 참조와 직접 참조에 대해서 고민하신 후 Favorite <--> Station, Favorite <--> Member의 관계를 설정해주세요.
-
-### 모두 직접 참조로 할 경우
-
-- 지연 로딩이라던지 기타 관계 매핑에 필요한 설정은 자유롭게 해주셔도 좋습니다.
+- `AuthAcceptanceTest`의 `githubAuth` 테스트를 실행하세요.
+  ![image.png](https://nextstep-storage.s3.ap-northeast-2.amazonaws.com/0e6ebb9d56f74e788c8645eda9364e42)
 
 ```java
-@Entity
-public class Favorite {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@DisplayName("Github Auth")
+@Test
+void githubAuth() {
+    Map<String, String> params = new HashMap<>();
+    params.put("code", "code");
 
-    @ManyToOne
-    @JoinColumn(name = "sourceStationId")
-    private Station sourceStation;
+    ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/login/github")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
 
-    @ManyToOne
-    @JoinColumn(name = "targetStationId")
-    private Station targetStation;
-
-    @ManyToOne
-    @JoinColumn(name = "memberId")
-    private Member member;
-    ...
+    assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+}
 ```
 
-### 모두 간접 참조로 할 경우
+- 실패하는 테스트의 에러로그를 확인합니다.
+
+```plaintext
+java.lang.NullPointerException: null
+	at nextstep.auth.token.oauth2.github.GithubClient.getAccessTokenFromGithub(GithubClient.java:42) ~[classes/:na]
+	at nextstep.auth.token.TokenService.createTokenFromGithub(TokenService.java:43) ~[classes/:na]
+```
+
+## 2단계 - 깃헙 대신 다른 곳으로 요청 보내기
+
+- 깃헙으로의 요청과 응답을 관리하는 객체(GithubClient)를 만들기 위한 TDD를 진행하세요.
 
 ```java
-@Entity
-public class Favorite {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long memberId;
-    private Long sourceStationId;
-    private Long targetStationId;
+public class GithubClientTest {
+    ...
+}
+```
 
-    public Favorite() {
+- github 토큰 조회를 위한 요청 코드 예시
+
+```java
+    public String requestGithubToken(String code) {
+        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
+                code,
+                "clientId", // client id
+                "clientSecret" // client secret
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+                githubAccessTokenRequest, headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "url"; // github token request url
+        String accessToken = restTemplate
+                .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                .getBody()
+                .getAccessToken();
+
+        return accessToken;
     }
-    ...
 ```
 
-## 인증 정보 생성 코드 재사용
+- GithubClient을 구현할 때는 깃헙이 아닌 다른 곳으로 요청을 보내어 응답할 수 있도록 설정하세요.
 
-- 인증 기반의 인수 테스트 작성 시 인증 정보는 재사용 된다.
-- 매번 새로 만들어주어도 상관 없지만 생성하는 로직을 재사용 하면 관리가 수월해진다.
-- 예를 들어, 즐겨 찾기 생성 api 호출 시 토큰을 포함해야 한다면 토큰 생성을 공통 로직에 두어 재사용 할 수 있다.
+```java
+public class TestController {
+    @PostMapping("/github/login/oauth/access_token")
+    public ResponseEntity<GithubAccessTokenResponse> accessToken(
+            @RequestBody GithubAccessTokenRequest tokenRequest) {
+        String accessToken = "access_token";
+        GithubAccessTokenResponse response = new GithubAccessTokenResponse(accessToken, "", "", "");
+        return ResponseEntity.ok(response);
+    }
 
-## 비정상 경로를 즐겨찾기로 등록하는 경우
+    @GetMapping("/github/user")
+    public ResponseEntity<GithubProfileResponse> user(
+            @RequestHeader("Authorization") String authorization) {
+        String accessToken = authorization.split(" ")[1];
+        GithubProfileResponse response = new GithubProfileResponse("email@email.com", 20);
+        return ResponseEntity.ok(response);
+    }
+}
+```
 
-- 경로 조회 시 경로를 찾을 수 없거나 연결되지 않는 등 경로 조회가 불가능한 조회의 경우 즐겨찾기로 등록할 수 없도록 구현한다.
+## 이후
 
-## 권한이 없는 경우 401 Unauthorized 응답
+- 나머지 코드를 작성하세요.
+- 실제 구현 시 인증 서버는 매번 새로운 code를 응답하고 code에 따라 사용자를 인증합니다.
+- 테스트 환경에서는 사용자별로 고정 code를 사용할 수 있도록 하세요.
 
-- 내 정보 관리 / 즐겨 찾기 기능은 로그인 된 상태에서만 가능
-- 비로그인이거나 유효하지 않을 경우 401 Unauthorized 응답
+```java
+public enum GithubResponses {
+    사용자1("aofijeowifjaoief", "access_token_1", "email1@email.com"),
+    사용자2("fau3nfin93dmn", "access_token_2", "email2@email.com"),
+    사용자3("afnm93fmdodf", "access_token_3", "email3@email.com"),
+    사용자4("fm04fndkaladmd", "access_token_4", "email4@email.com");
 
-## 테스트 레이어
+    private String code;
+    private String accessToken;
+    private String email;
 
-- 예외 처리에 대한 테스트는 어느 레이어에서 진행해야 할 지 고민해보세요.
-    - 모든 요구사항을 인수 테스트로 작성하는게 좋을지?
-    - 아니면 세부 요구사항은 모두 단위 테스트로 작성하는게 좋을지?
-
-# TODO
-
-#### 인수테스트
-##### 즐겨찾기 생성
-로그인 전
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 후</br>
-   WHEN 로그인을 하지 않고 출발역과 도착역을 입력하면</br>
-   THEN 에러 처리와 함께 '로그인이 필요합니다.' 라는 메세지가 출력된다
-
-로그인 후
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 후</br>
-   THEN 출발역과 도착역을 입력하면 즐겨찾기가 등록된다</br>
-   THEN 즐겨찾기 목록 조회 시 생성한 즐겨찾기를 찾을 수 있다
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 후</br>
-   WHEN 출발역과 도착역을 같게 입력하면</br>
-   THEN 에러 처리와 함께 '출발역과 도착역은 같을 수 없습니다.' 라는 메세지가 출력된다
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 후</br>
-   WHEN 출발역과 도착역이 연결이 되지 않게 입력하면</br>
-   THEN 에러 처리와 함께 '출발역과 도착역은 연결되어 있어야 합니다.' 라는 메세지가 출력된다
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 후</br>
-   WHEN 존재 하지 않는 역을 입력하면</br>
-   THEN 에러 처리와 함께 '입력한 역을 찾을 수 없습니다.' 라는 메세지가 출력된다
-
-##### 즐겨찾기 조회
-로그인 전
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후</br>
-   WHEN 로그인을 하지 않고 즐겨 찾기 조회를 하면</br>
-   THEN 에러 처리와 함께 '로그인이 필요합니다.' 라는 메세지가 출력된다
-
-로그인 후
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후</br>
-   WHEN 즐겨 찾기 조회를 하면</br>
-   THEN 등록한 즐겨찾기 목록을 찾을 수 있다
-
-##### 즐겨찾기 삭제
-로그인 전
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후</br>
-   WHEN 로그인을 하지 않고 즐겨 찾기 삭제를 하면</br>
-   THEN 에러 처리와 함께 '로그인이 필요합니다.' 라는 메세지가 출력된다
-
-로그인 후
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후</br>
-   WHEN 즐겨 찾기 삭제를 하면</br>
-   THEN 삭제된 즐겨찾기 목록이 조회된다
--  [x] GIVEN 지하철 노선들을 생성하고 구간을 추가 그리고 즐겨찾기를 등록 후</br>
-   WHEN 등록 되지 않은 즐겨 찾기 삭제를 하면</br>
-   THEN 에러 처리와 함께 '즐겨찾기를 찾을 수 없습니다.' 라는 메세지가 출력된다
-
-#### 단위테스트
-
--  [x] case 1: 즐겨찾기를 등록 할 수 있다
--  [x] case 2: 즐겨찾기를 등록 시 출발역과 도착역이 같을 경우 에러 발생
--  [x] case 3: 즐겨찾기를 등록 시 출발역과 도착역을 포함하는 라인을 찾지 못했을 경우 에러 발생
--  [x] case 4: 즐겨찾기를 등록 시 시작역과 도착역을 찾을 수 없는 경우 에러 발생
+    ...
+```

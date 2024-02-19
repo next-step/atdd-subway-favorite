@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 
 public class FavoriteResponseFactory {
 
-    public static List<FavoriteResponse> createFavoriteResponse(List<Favorite> favorites) {
+    public static List<FavoriteResponse> create(List<Favorite> favorites) {
         return favorites.stream()
-                .map(FavoriteResponseFactory::createResponse)
+                .map(FavoriteResponseFactory::create)
                 .collect(Collectors.toList());
     }
 
-    private static FavoriteResponse createResponse(Favorite favorite) {
+    public static FavoriteResponse create(Favorite favorite) {
         return new FavoriteResponse(favorite.getId(),
-                StationResponseFactory.createStationResponse(favorite.getSourceStation()),
-                StationResponseFactory.createStationResponse(favorite.getTargetStation()));
+                StationResponseFactory.create(favorite.getSourceStation()),
+                StationResponseFactory.create(favorite.getTargetStation()));
     }
 }

@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.application.dto.LineResponse;
 import nextstep.subway.line.application.dto.LineResponseFactory;
 import nextstep.subway.line.domain.Line;
@@ -44,7 +43,7 @@ public class LineServiceTest {
         // then
         LineResponse actual = lineService.findLine(신분당선.getId());
         Line findLine = lineRepository.findById(신분당선.getId()).orElseThrow(RuntimeException::new);
-        LineResponse expected = LineResponseFactory.createLineResponse(findLine);
+        LineResponse expected = LineResponseFactory.create(findLine);
         Assertions.assertThat(actual).isEqualTo(expected);
     }
 

@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
+    public static final String SECOND_EMAIL = "email2@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
@@ -42,12 +43,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void updateMember() {
         // given
         var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
-        var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        var response = 회원_정보_수정_요청(createResponse, accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("본인이 아닌 회원 정보를 수정하면 실패한다.")
+    @Test
+    void updateNotYourself() {
+        // given
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(SECOND_EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(SECOND_EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        var response = 회원_정보_수정_요청(createResponse, accessToken, "new" + EMAIL, "new" + PASSWORD, AGE);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("회원 정보를 삭제한다.")
@@ -55,12 +72,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void deleteMember() {
         // given
         var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
-        var response = 회원_삭제_요청(createResponse);
+        var response = 회원_삭제_요청(createResponse, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("본인이 아닌 회원 정보를 삭제하면 실패한다.")
+    @Test
+    void deleteNotYourself() {
+        // given
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(SECOND_EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(SECOND_EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        var response = 회원_삭제_요청(createResponse, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -72,6 +105,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        // and
+        var accessToken = 회원_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        var response = 내_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }

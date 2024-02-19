@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.application.dto.LineResponse;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;

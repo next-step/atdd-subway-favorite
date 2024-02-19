@@ -1,5 +1,7 @@
 package nextstep.subway.member.domain;
 
+import nextstep.subway.member.AuthenticationException;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -40,7 +42,9 @@ public class Member {
         return age;
     }
 
-    public void update(Member member) {
+    public void update(Member findMember,
+                       Member member) {
+        validAccess(findMember);
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
@@ -48,5 +52,11 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public void validAccess(Member member) {
+        if (!this.equals(member)) {
+            throw new AuthenticationException("본인의 정보만 수정 할 수 있습니다.");
+        }
     }
 }

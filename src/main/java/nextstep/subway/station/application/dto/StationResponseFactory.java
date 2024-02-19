@@ -13,20 +13,20 @@ public class StationResponseFactory {
     private StationResponseFactory() {
     }
 
-    public static List<StationResponse> createStationResponses(Line line) {
+    public static List<StationResponse> create(Line line) {
         Sections sections = line.getSections();
-        List<StationResponse> stationResponses = new ArrayList<>(createStationResponses(sections.startStations()));
-        stationResponses.add(createStationResponse(sections.lastStation()));
+        List<StationResponse> stationResponses = new ArrayList<>(create(sections.startStations()));
+        stationResponses.add(create(sections.lastStation()));
         return stationResponses;
     }
 
-    public static List<StationResponse> createStationResponses(List<Station> stations) {
+    public static List<StationResponse> create(List<Station> stations) {
         return stations.stream()
-                .map(StationResponseFactory::createStationResponse)
+                .map(StationResponseFactory::create)
                 .collect(Collectors.toList());
     }
 
-    public static StationResponse createStationResponse(Station station) {
+    public static StationResponse create(Station station) {
         return new StationResponse(station.getId(),
                 station.getName());
     }
