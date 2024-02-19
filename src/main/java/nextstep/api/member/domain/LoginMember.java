@@ -5,7 +5,6 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor
-public class LoginMember implements MemberDetails {
+public class LoginMember {
 	String email;
-
 }

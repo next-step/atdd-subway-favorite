@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 @Getter
-public class YmlConfigCollector {
+public class GithubConfigCollector {
 
 	@Value("${github.client.id}")
 	private String githubClientId;
