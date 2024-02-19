@@ -48,18 +48,30 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubResponses.사용자1.getCode());
+        MemberSteps.회원_생성_요청(GithubResponses.사용자1.getEmail(), GithubResponses.사용자1.getCode(), 10);
+        assertLogin(GithubResponses.사용자1.getCode());
+    }
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth__회원가입() {
+        assertLogin(GithubResponses.사용자1.getCode());
+
+        final ExtractableResponse<Response> login = AuthStep.로그인(GithubResponses.사용자1.getEmail(), GithubResponses.사용자1.getEmail());
+        assertThat(login.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    private static void assertLogin(String code) {
+        final Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().post("/login/github")
             .then().log().all()
             .statusCode(HttpStatus.OK.value()).extract();
 
-        String accessToken = response.jsonPath().getString("accessToken");
-        assertThat(accessToken).isNotBlank();
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
-
 }

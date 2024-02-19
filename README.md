@@ -37,6 +37,8 @@
 ### 깃헙 로그인 API
 - AuthAcceptanceTest 만들기
 - 코드별 응답 response만들기
+### 깃헙 회원가입 API
+- AuthAcceptanceTest 만들기
 
 ### 힌트
 - 실패하는 acceptance test 작성하기
