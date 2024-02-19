@@ -99,4 +99,14 @@ public class MemberApiCaller {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
 }

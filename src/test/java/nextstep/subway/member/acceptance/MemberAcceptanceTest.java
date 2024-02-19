@@ -105,6 +105,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        // and
+        var accessToken = 회원_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        var response = 내_정보_조회_요청(accessToken);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 }
