@@ -1,5 +1,6 @@
 package nextstep.subway.member.client;
 
+import nextstep.subway.member.client.config.GithubClientProperties;
 import nextstep.subway.testhelper.fixture.GithubResponsesFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,11 @@ class GithubClientTest {
 
     @BeforeEach
     void setUp() {
-        githubClient = new GithubClient();
+        GithubClientProperties githubClientProperties = new GithubClientProperties();
+        githubClientProperties.setClientId("client_id");
+        githubClientProperties.setClientSecret("client_secret");
+        githubClientProperties.setRootUrl("http://localhost:8080");
+        githubClient = new GithubClient(githubClientProperties);
     }
 
     @Test

@@ -1,37 +1,49 @@
 package nextstep.subway.member.client;
 
+import nextstep.subway.member.client.config.GithubClientProperties;
 import nextstep.subway.member.client.dto.GithubAccessTokenRequest;
 import nextstep.subway.member.client.dto.GithubAccessTokenResponse;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-
+import java.util.Optional;
 
 public class GithubClient {
+
+    public static final String ACCESS_TOKEN = "/login/oauth/access_token";
+    private final GithubClientProperties githubClientProperties;
+    private final RestTemplate restTemplate;
+
+    public GithubClient(GithubClientProperties githubClientProperties) {
+        this.githubClientProperties = githubClientProperties;
+        restTemplate = new RestTemplateBuilder()
+                .rootUri(githubClientProperties.getRootUrl())
+                .messageConverters(new MappingJackson2HttpMessageConverter())
+                .build();
+    }
+
     public String requestToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
-                "clientId", // client id
-                "clientSecret" // client secret
+                githubClientProperties.getClientId(),
+                githubClientProperties.getClientSecret()
         );
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
-                githubAccessTokenRequest, headers);
-        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
 
-        String url = "url"; // github token request url
-        String accessToken = restTemplate
-                .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-                .getBody()
-                .getAccessToken();
-
-        return accessToken;
+        return Optional.ofNullable(restTemplate
+                .exchange(ACCESS_TOKEN, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                .getBody())
+                .map(GithubAccessTokenResponse::getAccessToken)
+                .orElseThrow(() -> new IllegalArgumentException("토큰 정보를 가지고 오지 못했습니다."));
     }
 }
