@@ -3,7 +3,7 @@ package nextstep.fixture;
 import java.util.HashMap;
 import java.util.Map;
 
-import nextstep.api.member.application.dto.TokenRequest;
+import nextstep.api.auth.application.dto.TokenRequest;
 
 /**
  * @author : Rene Choi

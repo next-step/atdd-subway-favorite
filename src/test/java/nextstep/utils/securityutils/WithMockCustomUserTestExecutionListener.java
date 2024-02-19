@@ -31,7 +31,7 @@ public class WithMockCustomUserTestExecutionListener extends DependencyInjection
 		String email = withMockCustomUser.email();
 		String password = withMockCustomUser.password();
 		createMember(createMemberRequest(email, password, 20));
-		return parseAsAccessToken(loginAndCreateAuthorizationToken(createTokenRequest(email, password)));
+		return parseAsAccessTokenWithBearer(loginAndCreateAuthorizationToken(createTokenRequest(email, password)));
 	}
 
 	private static void setToken(TestContext testContext, String authorizationToken) {

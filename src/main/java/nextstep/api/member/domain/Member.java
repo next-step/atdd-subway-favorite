@@ -1,9 +1,17 @@
 package nextstep.api.member.domain;
 
-import javax.persistence.*;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import lombok.Getter;
+
 @Entity
+@Getter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,27 +24,15 @@ public class Member {
     public Member() {
     }
 
+    public Member(String email) {
+        this.email = email;
+    }
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
 
     public void update(Member member) {
         this.email = member.email;

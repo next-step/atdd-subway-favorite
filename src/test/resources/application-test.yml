@@ -37,9 +37,9 @@ security:
 
 github:
   client:
-    id: client_id
-    secret: client_secret
+    id: test_id
+    secret: test_secret
   url:
-    access-token: https://github.com/login/oauth/access-token
-    user: https://api.github.com/user
+    access-token: http://localhost:8080/github/login/oauth/access-token
+    user: http://localhost:8080/github/user
 

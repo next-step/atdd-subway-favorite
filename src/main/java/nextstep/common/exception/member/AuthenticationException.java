@@ -3,10 +3,10 @@ package nextstep.common.exception.member;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class AuthenticationException extends RuntimeException {
 
-	private HttpStatus status = HttpStatus.UNAUTHORIZED;
+	private HttpStatus status = HttpStatus.FORBIDDEN;
 
 	public AuthenticationException() {
 		super();

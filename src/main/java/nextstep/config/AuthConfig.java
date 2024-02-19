@@ -1,8 +1,8 @@
-package nextstep.api.member.config;
+package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.api.member.application.JwtTokenProvider;
-import nextstep.api.member.interfaces.argumentresolver.AuthenticationPrincipalArgumentResolver;
+import nextstep.api.auth.domain.operators.JwtTokenProvider;
+import nextstep.api.auth.interfaces.argumentresolver.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 

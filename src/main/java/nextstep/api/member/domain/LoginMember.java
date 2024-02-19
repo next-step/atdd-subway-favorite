@@ -7,5 +7,4 @@ import lombok.Value;
 @AllArgsConstructor
 public class LoginMember {
 	String email;
-
 }
