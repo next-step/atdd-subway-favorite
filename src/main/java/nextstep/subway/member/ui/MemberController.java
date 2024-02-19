@@ -38,8 +38,9 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    public ResponseEntity<MemberResponse> deleteMember(@AuthenticationPrincipal LoginMember loginMember,
+                                                       @PathVariable Long id) {
+        memberService.deleteMember(loginMember, id);
         return ResponseEntity.noContent().build();
     }
 

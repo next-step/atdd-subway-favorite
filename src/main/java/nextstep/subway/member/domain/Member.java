@@ -42,11 +42,9 @@ public class Member {
         return age;
     }
 
-    public void update(Member accessMember,
+    public void update(Member findMember,
                        Member member) {
-        if(!this.equals(accessMember)) {
-            throw new AuthenticationException("본인의 정보만 수정 할 수 있습니다.");
-        }
+        validAccess(findMember);
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
@@ -54,5 +52,11 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public void validAccess(Member member) {
+        if(!this.equals(member)) {
+            throw new AuthenticationException("본인의 정보만 수정 할 수 있습니다.");
+        }
     }
 }

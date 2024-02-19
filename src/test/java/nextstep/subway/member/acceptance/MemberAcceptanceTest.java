@@ -72,9 +72,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void deleteMember() {
         // given
         var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
-        var response = 회원_삭제_요청(createResponse);
+        var response = 회원_삭제_요청(createResponse, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -85,12 +86,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void deleteNotYourself() {
         // given
         var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        회원_생성_요청(SECOND_EMAIL, PASSWORD, AGE);
+        var accessToken = 회원_로그인_요청(SECOND_EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
-        var response = 회원_삭제_요청(createResponse);
+        var response = 회원_삭제_요청(createResponse, accessToken);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**

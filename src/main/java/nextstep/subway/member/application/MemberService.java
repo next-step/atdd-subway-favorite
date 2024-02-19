@@ -30,11 +30,15 @@ public class MemberService {
                              MemberRequest param) {
         Member accessMember = findMemberByEmail(loginMember.getEmail());
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(accessMember, param.toMember());
+        accessMember.update(member, param.toMember());
     }
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+    public void deleteMember(LoginMember loginMember,
+                             Long id) {
+        Member accessMember = findMemberByEmail(loginMember.getEmail());
+        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        accessMember.validAccess(member);
+        memberRepository.delete(accessMember);
     }
 
     public Member findMemberByEmail(String email) {
