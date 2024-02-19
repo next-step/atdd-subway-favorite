@@ -50,4 +50,8 @@ public class ExtractableResponseParser {
 		return response.jsonPath().getString("accessToken");
 	}
 
+	public static String parseEmail(ExtractableResponse<Response> response) {
+		return response.jsonPath().getString("email");
+	}
+
 }

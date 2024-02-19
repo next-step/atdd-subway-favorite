@@ -7,7 +7,6 @@ import static nextstep.utils.resthelper.ExtractableResponseParser.*;
 import static nextstep.utils.resthelper.LoginRequestExecutor.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,17 +52,18 @@ public class AuthAcceptanceTest extends CommonAcceptanceTest {
 		assertThat(parseSimpleAccessToken(response)).isNotBlank();
 	}
 
-	@DisplayName("리다이렉트 요청에 따라 깃허브 Response(Token)이 주어질 때 해당 토큰을 처리하여 본 서버의 엑세스 토큰으로 응답한다 - 유저를 찾을 수 없는 경우 400 응답")
+	@DisplayName("리다이렉트 요청에 따라 깃허브 Response(Token)이 주어질 때 해당 토큰을 처리하여 본 서버의 엑세스 토큰으로 응답한다 - 유저를 찾을 수 없는 경우 새로운 유저를 만들어서 저장함")
 	@Test
 	void generalGithubAuth_Fail() {
 		//given
 		GithubCodeResponse githubCodeResponse = createDefaultGithubCodeResponse(사용자1);
 
 		// when
-		ExtractableResponse<Response> response = githubLogin(githubCodeResponse);
+		ExtractableResponse<Response> response = githubLoginWithOk(githubCodeResponse);
 
 		// then
-		assertEquals(BAD_REQUEST.value(), response.statusCode());
+		assertThat(parseSimpleAccessToken(response)).isNotBlank();
+		assertEquals(사용자1.getEmail(), parseEmail(내_정보_조회_요청(parseSimpleAccessToken(response))));
 	}
 
 }
