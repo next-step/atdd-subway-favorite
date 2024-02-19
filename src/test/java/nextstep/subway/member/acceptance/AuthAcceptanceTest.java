@@ -56,18 +56,51 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given 이미 가입한 회원이
      * When 로그인에 필요한 코드를 입력하면
      * Then 로그인 토큰이 발행된다.
      */
     @DisplayName("로그인에 필요한 코드를 입력하면 로그인 토큰이 발행된다.")
     @Test
     void githubAuth() {
+        // Given
+        memberRepository.save(new Member(GithubResponsesFixture.사용자1.getEmail(), PASSWORD,
+                GithubResponsesFixture.사용자1.getAge()));
+
+        // When
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponsesFixture.사용자1.getCode());
+
+        // then
+        String actual = TokenApiCaller.깃허브_로그인(params).jsonPath().getString("accessToken");
+        String expected = GithubResponsesFixture.사용자1.getAccessToken();
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    /**
+     * given 로그인에 필요한 코드를 입력하면
+     * When 로그인 토큰이 발행되고 정보를 조회 시 없다면
+     * Then 회원가입이 진행 후 토큰이 발급된다.
+     */
+    @DisplayName("로그인에 필요한 코드를 입력하면 로그인 토큰이 발행된다.")
+    @Test
+    void githubAuthNotMember() {
         // given
         Map<String, String> params = new HashMap<>();
         params.put("code", GithubResponsesFixture.사용자1.getCode());
 
-        String actual = TokenApiCaller.깃허브_로그인(params).jsonPath().getString("accessToken");
-        String expected = GithubResponsesFixture.사용자1.getAccessToken();
+        // when
+        boolean actual = memberRepository.findByEmail(GithubResponsesFixture.사용자1.getEmail()).isEmpty();
+        boolean expected = true;
         assertThat(actual).isEqualTo(expected);
+
+        // then
+        String actualToken = TokenApiCaller.깃허브_로그인(params).jsonPath().getString("accessToken");
+        String expectedToken = GithubResponsesFixture.사용자1.getAccessToken();
+        assertThat(actualToken).isEqualTo(expectedToken);
+
+        boolean actualJoin = memberRepository.findByEmail(GithubResponsesFixture.사용자1.getEmail()).isEmpty();
+        boolean expectedJoin = false;
+        assertThat(actualJoin).isEqualTo(expectedJoin);
     }
 }
