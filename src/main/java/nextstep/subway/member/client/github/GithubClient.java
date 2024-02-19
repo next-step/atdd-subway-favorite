@@ -1,19 +1,22 @@
-package nextstep.subway.member.client;
+package nextstep.subway.member.client.github;
 
-import nextstep.subway.member.client.config.GithubClientProperties;
-import nextstep.subway.member.client.dto.GithubAccessTokenRequest;
-import nextstep.subway.member.client.dto.GithubAccessTokenResponse;
+import nextstep.subway.member.client.github.config.GithubClientProperties;
+import nextstep.subway.member.client.github.dto.GithubAccessTokenRequest;
+import nextstep.subway.member.client.github.dto.GithubAccessTokenResponse;
+import nextstep.subway.member.client.github.dto.GithubProfileResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
+@Component
 public class GithubClient {
 
     public static final String ACCESS_TOKEN = "/github/login/oauth/access_token";

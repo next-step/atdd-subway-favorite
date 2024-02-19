@@ -1,4 +1,4 @@
-package nextstep.subway.member.client.dto;
+package nextstep.subway.member.client.github.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

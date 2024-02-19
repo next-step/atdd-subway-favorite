@@ -1,4 +1,4 @@
-package nextstep.subway.member.client;
+package nextstep.subway.member.client.github.dto;
 
 import java.util.Objects;
 
