@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "github")
+@ConfigurationProperties(prefix = "github.client")
 public class GithubClientProperties {
     private String clientId;
     private String clientSecret;
