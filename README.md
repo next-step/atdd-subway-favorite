@@ -32,3 +32,12 @@
         - given: 존재하지 않는 즐겨 찾기에 대해서
         - when: 즐겨 찾기를 삭제하면
         - then: 즐겨 찾기 삭제에 실패한다.
+# Step 2 - 깃헙 로그인 구현
+## 기능 요구사항
+### 깃헙 로그인 API
+- AuthAcceptanceTest 만들기
+- 코드별 응답 response만들기
+
+### 힌트
+- 실패하는 acceptance test 작성하기
+- 깃헙 대신 다른 곳으로 요청 보내기
