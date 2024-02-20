@@ -29,7 +29,6 @@ public class GithubTokenProvider implements TokenProvider {
 
     @Override
     public boolean validateToken(String token) {
-        // empty
-        return false;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }
