@@ -26,6 +26,10 @@ public class Member {
         this.age = age;
     }
 
+    public Member(String email) {
+        this(email, "", 0);
+    }
+
     public Long getId() {
         return id;
     }

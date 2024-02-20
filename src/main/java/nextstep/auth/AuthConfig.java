@@ -1,6 +1,6 @@
 package nextstep.auth;
 
-import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.application.TokenManager;
 import nextstep.auth.ui.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,14 +11,14 @@ import java.util.List;
 @Configuration
 @ComponentScan(basePackages = "nextstep.auth")
 public class AuthConfig implements WebMvcConfigurer {
-    private JwtTokenProvider jwtTokenProvider;
+    private final TokenManager tokenManager;
 
-    public AuthConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthConfig(TokenManager tokenManager) {
+        this.tokenManager = tokenManager;
     }
 
     @Override
     public void addArgumentResolvers(List argumentResolvers) {
-        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver(jwtTokenProvider));
+        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver(tokenManager));
     }
 }

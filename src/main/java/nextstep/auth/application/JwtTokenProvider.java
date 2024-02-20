@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Date;
 
 @Component
@@ -16,8 +15,7 @@ public class JwtTokenProvider implements TokenProvider {
 
     @Override
     public boolean isSupport(TokenType tokenType) {
-        return Arrays.stream(TokenType.values())
-                .anyMatch(type -> type == tokenType);
+        return TokenType.JWT == tokenType;
     }
 
     @Override

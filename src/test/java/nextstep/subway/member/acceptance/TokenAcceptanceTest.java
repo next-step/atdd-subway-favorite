@@ -3,6 +3,7 @@ package nextstep.subway.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.application.TokenType;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.testhelper.AcceptanceTest;
@@ -97,9 +98,8 @@ class TokenAcceptanceTest extends AcceptanceTest {
 
         // then
         String actualToken = TokenApiCaller.깃허브_로그인(params).jsonPath().getString("accessToken");
-        String expectedToken = GithubResponsesFixture.사용자1.getAccessToken();
 
-        var response = 내_정보_조회_요청(actualToken);
-        회원_정보_조회됨(response, GithubResponsesFixture.사용자1.getEmail(), GithubResponsesFixture.사용자1.getAge());
+        var response = 내_정보_조회_요청(actualToken, TokenType.GITHUB);
+        회원_정보_조회됨(response, GithubResponsesFixture.사용자1.getEmail(), 0);
     }
 }

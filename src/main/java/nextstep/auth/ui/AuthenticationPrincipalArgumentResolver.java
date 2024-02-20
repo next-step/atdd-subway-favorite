@@ -1,7 +1,8 @@
 package nextstep.auth.ui;
 
 import nextstep.auth.AuthenticationException;
-import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.application.TokenManager;
+import nextstep.auth.application.TokenType;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -10,10 +11,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private JwtTokenProvider jwtTokenProvider;
+    private final TokenManager tokenManager;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthenticationPrincipalArgumentResolver(TokenManager tokenManager) {
+        this.tokenManager = tokenManager;
     }
 
     @Override
@@ -31,12 +32,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new AuthenticationException("로그인이 필요합니다.");
         }
 
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException();
-        }
-        String token = authorization.split(" ")[1];
+        TokenType tokenType = TokenType.findBy(authorization.split(" ")[0]);
 
-        String email = jwtTokenProvider.getPrincipal(token);
+        String token = authorization.split(" ")[1];
+        String email = tokenManager.getPrincipal(token, tokenType);
 
         return new LoginMember(email);
     }

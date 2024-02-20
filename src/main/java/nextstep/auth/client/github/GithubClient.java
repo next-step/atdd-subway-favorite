@@ -54,7 +54,7 @@ public class GithubClient {
     public GithubProfileResponse findUser(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "bearer " + accessToken);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
 

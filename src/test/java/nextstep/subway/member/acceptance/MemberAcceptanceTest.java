@@ -1,5 +1,6 @@
 package nextstep.subway.member.acceptance;
 
+import nextstep.auth.application.TokenType;
 import nextstep.subway.testhelper.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -112,7 +113,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var accessToken = 회원_로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
-        var response = 내_정보_조회_요청(accessToken);
+        var response = 내_정보_조회_요청(accessToken, TokenType.JWT);
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
