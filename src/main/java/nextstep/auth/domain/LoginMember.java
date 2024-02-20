@@ -1,4 +1,4 @@
-package nextstep.subway.member.domain;
+package nextstep.auth.domain;
 
 public class LoginMember {
     private String email;

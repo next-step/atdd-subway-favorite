@@ -8,7 +8,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.PathFinder;
