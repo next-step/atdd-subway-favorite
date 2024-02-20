@@ -18,18 +18,17 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @ConfigurationProperties
 public class GithubClient {
-
-    @Value("${github.client.url}")
-    private String githubUrl;
-
     @Value("${github.client.id}")
     private String githubClientId;
 
     @Value("${github.client.secret}")
     private String githubClientSecret;
 
+    @Value("${github.client.access-token-url}")
+    private String accessTokenUrl;
 
-
+    @Value("${github.client.profile-url}")
+    private String profileUrl;
 
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
@@ -45,9 +44,8 @@ public class GithubClient {
             githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        final String url = githubUrl + "/github/login/oauth/access_token"; // github token request url
         String accessToken = restTemplate
-            .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+            .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
             .getBody()
             .getAccessToken();
 
@@ -55,17 +53,16 @@ public class GithubClient {
     }
 
     public GithubProfileResponse requestGithubProfile(String accessToken) {
-HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "bearer " + accessToken);
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity httpEntity = new HttpEntity(headers);
+        final HttpEntity httpEntity = new HttpEntity(headers);
 
-        RestTemplate restTemplate = new RestTemplate();
-        final String url = githubUrl + "/github/user"; // github profile request url
+        final RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate
-            .exchange(url, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+            .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
             .getBody();
     }
 }
