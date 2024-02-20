@@ -19,8 +19,8 @@ import java.util.Optional;
 @Component
 public class GithubClient {
 
-    public static final String ACCESS_TOKEN = "/github/login/oauth/access_token";
-    public static final String FIND_USER = "/github/user";
+    public static final String ACCESS_TOKEN_PATH = "/github/login/oauth/access_token";
+    public static final String FIND_USER_PATH = "/github/user";
     private final GithubClientProperties githubClientProperties;
     private final RestTemplate restTemplate;
 
@@ -45,7 +45,7 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
 
         return Optional.ofNullable(restTemplate
-                        .exchange(ACCESS_TOKEN, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                        .exchange(ACCESS_TOKEN_PATH, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                         .getBody())
                 .map(GithubAccessTokenResponse::getAccessToken)
                 .orElseThrow(() -> new IllegalArgumentException("토큰 정보를 가지고 오지 못했습니다."));
@@ -59,7 +59,7 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
 
         return Optional.ofNullable(restTemplate
-                        .exchange(FIND_USER, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                        .exchange(FIND_USER_PATH, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                         .getBody())
                 .orElseThrow(() -> new IllegalArgumentException("토큰 정보를 가지고 오지 못했습니다."));
     }
