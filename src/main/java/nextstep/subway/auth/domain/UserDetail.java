@@ -16,4 +16,12 @@ public class UserDetail {
     public boolean correctPassword(String password) {
         return this.password.equals(password);
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
 }

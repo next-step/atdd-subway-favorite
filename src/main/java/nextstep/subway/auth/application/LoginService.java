@@ -1,31 +1,30 @@
 package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.AuthenticationException;
-import nextstep.subway.auth.application.provider.TokenType;
-import nextstep.subway.member.application.MemberService;
 import nextstep.subway.auth.application.dto.TokenResponse;
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.auth.application.provider.TokenType;
+import nextstep.subway.auth.domain.UserDetail;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoginService {
-    private final MemberService memberService;
+    private final UserDetailsService userDetailsService;
     private final AuthManager authManager;
 
-    public LoginService(MemberService memberService,
+    public LoginService(UserDetailsService userDetailsService,
                         AuthManager authManager) {
-        this.memberService = memberService;
+        this.userDetailsService = userDetailsService;
         this.authManager = authManager;
     }
 
     public TokenResponse createGithubToken(String email,
                                            String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
+        UserDetail userDetail = userDetailsService.findMemberByEmail(email);
+        if (!userDetail.correctPassword(password)) {
             throw new AuthenticationException();
         }
 
-        String token = authManager.createToken(member.getEmail(), TokenType.JWT);
+        String token = authManager.createToken(userDetail.getEmail(), TokenType.JWT);
 
         return new TokenResponse(token);
     }
@@ -34,7 +33,7 @@ public class LoginService {
         String accessToken = authManager.createToken(code, TokenType.GITHUB);
 
         String email = authManager.getPrincipal(accessToken, TokenType.GITHUB);
-        memberService.findMemberByEmailNotExistSave(email);
+        userDetailsService.findMemberByEmailNotExistSave(email);
 
         return new TokenResponse(accessToken);
     }
