@@ -2,8 +2,7 @@ package nextstep.subway.member.application;
 
 import nextstep.subway.member.application.dto.MemberRequest;
 import nextstep.subway.member.application.dto.MemberResponse;
-import nextstep.subway.member.client.dto.ProfileResponse;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -58,8 +57,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void findMemberByEmailNotExistSave(ProfileResponse response) {
-        Member member = memberRepository.findByEmail(response.getEmail()).orElse(new Member(response.getEmail(), "", response.getAge()));
+    public void findMemberByEmailNotExistSave(String email) {
+        Member member = memberRepository.findByEmail(email).orElse(new Member(email));
         memberRepository.save(member);
     }
 }

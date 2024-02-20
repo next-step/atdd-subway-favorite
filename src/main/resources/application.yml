@@ -4,27 +4,5 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-
-security:
-  jwt:
-    token:
-      secret-key: atdd-secret-key
-      expire-length: 3600000
-
----
-
-spring.config.activate.on-profile: local, test
-github:
-  client:
-    id: test_client_id
-    secret: test_client_secret
-    root-url: http://localhost:8080
-
----
-
-spring.config.activate.on-profile: default
-github:
-  client:
-    id: client_id
-    secret: client_secret
-    root-url: https://github.com
+  config:
+    import: "classpath:application-auth.yml"

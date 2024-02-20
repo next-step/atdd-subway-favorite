@@ -1,0 +1,20 @@
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 3600000
+
+github:
+  client:
+    id: client_id
+    secret: client_secret
+    root-url: https://github.com
+
+---
+
+spring.config.activate.on-profile: local, test
+github:
+  client:
+    id: test_client_id
+    secret: test_client_secret
+    root-url: http://localhost:8080

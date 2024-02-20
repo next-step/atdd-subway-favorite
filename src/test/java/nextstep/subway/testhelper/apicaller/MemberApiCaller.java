@@ -3,6 +3,7 @@ package nextstep.subway.testhelper.apicaller;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.application.provider.TokenType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -100,10 +101,11 @@ public class MemberApiCaller {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken,
+                                                           TokenType tokenType) {
 
         return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
+                .header("Authorization", tokenType.getPrefix() + " " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()

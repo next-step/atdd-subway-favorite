@@ -1,6 +1,6 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.member.AuthenticationException;
+import nextstep.subway.auth.AuthenticationException;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -24,6 +24,10 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public Member(String email) {
+        this(email, "", 0);
     }
 
     public Long getId() {
