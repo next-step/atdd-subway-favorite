@@ -1,25 +1,24 @@
 package nextstep.subway.member.application;
 
 import nextstep.auth.AuthenticationException;
-import nextstep.auth.application.JwtTokenProvider;
-import nextstep.subway.member.application.dto.TokenResponse;
+import nextstep.auth.application.TokenProvider;
 import nextstep.auth.client.ExternalTokenFetcher;
 import nextstep.auth.client.dto.ProfileResponse;
-import nextstep.auth.client.github.GithubTokenFetcher;
+import nextstep.subway.member.application.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final ExternalTokenFetcher externalTokenFetcher;
 
     public TokenService(MemberService memberService,
-                        JwtTokenProvider jwtTokenProvider,
-                        GithubTokenFetcher externalTokenFetcher) {
+                        TokenProvider tokenProvider,
+                        ExternalTokenFetcher externalTokenFetcher) {
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
         this.externalTokenFetcher = externalTokenFetcher;
     }
 
@@ -30,15 +29,17 @@ public class TokenService {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = tokenProvider.createToken(member.getEmail());
 
         return new TokenResponse(token);
     }
 
     public TokenResponse createToken(String code) {
         String accessToken = externalTokenFetcher.requestToken(code);
+
         ProfileResponse userResponse = externalTokenFetcher.findUser(accessToken);
         memberService.findMemberByEmailNotExistSave(userResponse);
+
         return new TokenResponse(accessToken);
     }
 }
