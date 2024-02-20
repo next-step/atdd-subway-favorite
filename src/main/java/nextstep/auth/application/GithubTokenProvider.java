@@ -1,12 +1,22 @@
 package nextstep.auth.application;
 
 import nextstep.auth.client.ExternalTokenFetcher;
+import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
+@Component
 public class GithubTokenProvider implements TokenProvider {
     private final ExternalTokenFetcher externalTokenFetcher;
 
     public GithubTokenProvider(ExternalTokenFetcher externalTokenFetcher) {
         this.externalTokenFetcher = externalTokenFetcher;
+    }
+
+    @Override
+    public boolean isSupport(TokenType tokenType) {
+        return Arrays.stream(TokenType.values())
+                .anyMatch(type -> type == tokenType);
     }
 
     @Override

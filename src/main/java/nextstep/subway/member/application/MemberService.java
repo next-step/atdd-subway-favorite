@@ -1,8 +1,8 @@
 package nextstep.subway.member.application;
 
+import nextstep.auth.client.dto.ProfileResponse;
 import nextstep.subway.member.application.dto.MemberRequest;
 import nextstep.subway.member.application.dto.MemberResponse;
-import nextstep.auth.client.dto.ProfileResponse;
 import nextstep.subway.member.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;

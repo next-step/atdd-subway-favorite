@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 
 @Component
@@ -12,6 +13,12 @@ public class JwtTokenProvider implements TokenProvider {
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
+
+    @Override
+    public boolean isSupport(TokenType tokenType) {
+        return Arrays.stream(TokenType.values())
+                .anyMatch(type -> type == tokenType);
+    }
 
     @Override
     public String createToken(String principal) {
