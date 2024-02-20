@@ -1,9 +1,9 @@
-package nextstep.subway.member.ui;
+package nextstep.subway.auth.ui;
 
-import nextstep.subway.member.application.LoginService;
-import nextstep.subway.member.application.dto.GithubTokenRequest;
-import nextstep.subway.member.application.dto.TokenRequest;
-import nextstep.subway.member.application.dto.TokenResponse;
+import nextstep.subway.auth.application.LoginService;
+import nextstep.subway.auth.application.dto.GithubTokenRequest;
+import nextstep.subway.auth.application.dto.TokenRequest;
+import nextstep.subway.auth.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

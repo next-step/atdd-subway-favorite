@@ -1,9 +1,8 @@
-package nextstep.subway.member.application;
+package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.AuthenticationException;
-import nextstep.subway.auth.application.AuthManager;
-import nextstep.subway.auth.application.TokenType;
-import nextstep.subway.member.application.dto.TokenResponse;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.auth.application.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;
 import org.springframework.stereotype.Service;
 
