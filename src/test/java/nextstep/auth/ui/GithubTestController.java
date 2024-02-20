@@ -1,9 +1,9 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
-import nextstep.member.application.GithubResponses;
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubEmailResponse;
+import nextstep.auth.application.GithubResponses;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubEmailResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static nextstep.member.application.GithubResponses.findByAccessToken;
-import static nextstep.member.application.GithubResponses.findByCode;
+import static nextstep.auth.application.GithubResponses.findByAccessToken;
+import static nextstep.auth.application.GithubResponses.findByCode;
 
 @RestController
 public class GithubTestController {

@@ -1,10 +1,12 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubEmailResponse;
+import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.jwt.JwtTokenProvider;
 import nextstep.exception.AuthenticationException;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubEmailResponse;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRegister;
 import org.springframework.stereotype.Service;

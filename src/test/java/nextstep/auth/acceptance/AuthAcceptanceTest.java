@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -15,8 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-import static nextstep.member.acceptance.AuthSteps.소셜_로그인_요청;
-import static nextstep.member.application.GithubResponses.사용자1;
+import static nextstep.auth.acceptance.AuthSteps.소셜_로그인_요청;
+import static nextstep.auth.application.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
