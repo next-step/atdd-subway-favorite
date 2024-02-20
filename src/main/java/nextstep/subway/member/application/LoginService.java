@@ -8,11 +8,11 @@ import nextstep.subway.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TokenService {
+public class LoginService {
     private final MemberService memberService;
     private final AuthManager authManager;
 
-    public TokenService(MemberService memberService,
+    public LoginService(MemberService memberService,
                         AuthManager authManager) {
         this.memberService = memberService;
         this.authManager = authManager;
