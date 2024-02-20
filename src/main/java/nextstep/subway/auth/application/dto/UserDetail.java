@@ -12,4 +12,8 @@ public class UserDetail {
         this.password = password;
         this.age = age;
     }
+
+    public boolean correctPassword(String password) {
+        return true;
+    }
 }
