@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.GithubService;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

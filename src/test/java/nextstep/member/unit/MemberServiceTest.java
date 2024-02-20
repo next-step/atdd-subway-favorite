@@ -2,7 +2,7 @@ package nextstep.member.unit;
 
 
 import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
