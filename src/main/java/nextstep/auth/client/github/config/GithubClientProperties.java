@@ -1,4 +1,4 @@
-package nextstep.subway.member.client.github.config;
+package nextstep.auth.client.github.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

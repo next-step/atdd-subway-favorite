@@ -1,13 +1,15 @@
-package nextstep.subway.member;
+package nextstep.auth;
 
-import nextstep.subway.member.application.JwtTokenProvider;
-import nextstep.subway.member.ui.AuthenticationPrincipalArgumentResolver;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.ui.AuthenticationPrincipalArgumentResolver;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @Configuration
+@ComponentScan(basePackages = "nextstep.auth")
 public class AuthConfig implements WebMvcConfigurer {
     private JwtTokenProvider jwtTokenProvider;
 

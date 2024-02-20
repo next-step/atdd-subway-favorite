@@ -1,6 +1,6 @@
-package nextstep.subway.member.client;
+package nextstep.auth.client;
 
-import nextstep.subway.member.client.dto.ProfileResponse;
+import nextstep.auth.client.dto.ProfileResponse;
 
 public interface ExternalTokenFetcher {
 

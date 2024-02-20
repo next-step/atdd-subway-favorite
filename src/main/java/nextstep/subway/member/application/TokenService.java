@@ -1,10 +1,11 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.member.AuthenticationException;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.JwtTokenProvider;
 import nextstep.subway.member.application.dto.TokenResponse;
-import nextstep.subway.member.client.ExternalTokenFetcher;
-import nextstep.subway.member.client.dto.ProfileResponse;
-import nextstep.subway.member.client.github.GithubTokenFetcher;
+import nextstep.auth.client.ExternalTokenFetcher;
+import nextstep.auth.client.dto.ProfileResponse;
+import nextstep.auth.client.github.GithubTokenFetcher;
 import nextstep.subway.member.domain.Member;
 import org.springframework.stereotype.Service;
 

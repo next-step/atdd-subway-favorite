@@ -1,4 +1,4 @@
-package nextstep.subway.member.client.dto;
+package nextstep.auth.client.dto;
 
 public class ProfileResponse {
     private String email;

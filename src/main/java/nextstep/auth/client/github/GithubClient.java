@@ -1,9 +1,9 @@
-package nextstep.subway.member.client.github;
+package nextstep.auth.client.github;
 
-import nextstep.subway.member.client.github.config.GithubClientProperties;
-import nextstep.subway.member.client.github.dto.GithubAccessTokenRequest;
-import nextstep.subway.member.client.github.dto.GithubAccessTokenResponse;
-import nextstep.subway.member.client.github.dto.GithubProfileResponse;
+import nextstep.auth.client.github.config.GithubClientProperties;
+import nextstep.auth.client.github.dto.GithubAccessTokenRequest;
+import nextstep.auth.client.github.dto.GithubAccessTokenResponse;
+import nextstep.auth.client.github.dto.GithubProfileResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

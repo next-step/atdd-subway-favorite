@@ -1,6 +1,6 @@
-package nextstep.subway.member.client.dto;
+package nextstep.auth.client.dto;
 
-import nextstep.subway.member.client.github.dto.GithubProfileResponse;
+import nextstep.auth.client.github.dto.GithubProfileResponse;
 
 public class ProfileResponseFactory {
     public static ProfileResponse create(GithubProfileResponse response) {

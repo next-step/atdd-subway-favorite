@@ -1,8 +1,8 @@
 package nextstep.subway.testhelper.ui;
 
-import nextstep.subway.member.client.github.dto.GithubAccessTokenRequest;
-import nextstep.subway.member.client.github.dto.GithubAccessTokenResponse;
-import nextstep.subway.member.client.github.dto.GithubProfileResponse;
+import nextstep.auth.client.github.dto.GithubAccessTokenRequest;
+import nextstep.auth.client.github.dto.GithubAccessTokenResponse;
+import nextstep.auth.client.github.dto.GithubProfileResponse;
 import nextstep.subway.testhelper.fixture.GithubResponsesFixture;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

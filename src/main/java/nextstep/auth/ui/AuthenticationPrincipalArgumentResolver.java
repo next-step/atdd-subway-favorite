@@ -1,7 +1,7 @@
-package nextstep.subway.member.ui;
+package nextstep.auth.ui;
 
-import nextstep.subway.member.AuthenticationException;
-import nextstep.subway.member.application.JwtTokenProvider;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.JwtTokenProvider;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

@@ -1,8 +1,8 @@
-package nextstep.subway.member.client.github;
+package nextstep.auth.client.github;
 
-import nextstep.subway.member.client.ExternalTokenFetcher;
-import nextstep.subway.member.client.dto.ProfileResponse;
-import nextstep.subway.member.client.dto.ProfileResponseFactory;
+import nextstep.auth.client.ExternalTokenFetcher;
+import nextstep.auth.client.dto.ProfileResponse;
+import nextstep.auth.client.dto.ProfileResponseFactory;
 import org.springframework.stereotype.Component;
 
 @Component

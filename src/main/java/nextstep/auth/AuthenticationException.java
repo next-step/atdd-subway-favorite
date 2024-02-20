@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.auth;
 
 public class AuthenticationException extends RuntimeException {
     public AuthenticationException() {

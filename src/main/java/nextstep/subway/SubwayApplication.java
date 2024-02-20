@@ -1,11 +1,14 @@
 package nextstep.subway;
 
-import nextstep.subway.member.client.github.config.GithubClientProperties;
+import nextstep.auth.AuthConfig;
+import nextstep.auth.client.github.config.GithubClientProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
+@Import(AuthConfig.class)
 @EnableConfigurationProperties(GithubClientProperties.class)
 public class SubwayApplication {
 
