@@ -1,7 +1,7 @@
 package nextstep.subway.member.application;
 
 import nextstep.auth.AuthenticationException;
-import nextstep.auth.application.TokenManager;
+import nextstep.auth.application.AuthManager;
 import nextstep.auth.application.TokenType;
 import nextstep.subway.member.application.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;
@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenService {
     private final MemberService memberService;
-    private final TokenManager tokenManager;
+    private final AuthManager authManager;
 
     public TokenService(MemberService memberService,
-                        TokenManager tokenManager) {
+                        AuthManager authManager) {
         this.memberService = memberService;
-        this.tokenManager = tokenManager;
-        ;
+        this.authManager = authManager;
     }
 
     public TokenResponse createGithubToken(String email,
@@ -26,15 +25,15 @@ public class TokenService {
             throw new AuthenticationException();
         }
 
-        String token = tokenManager.createToken(member.getEmail(), TokenType.JWT);
+        String token = authManager.createToken(member.getEmail(), TokenType.JWT);
 
         return new TokenResponse(token);
     }
 
     public TokenResponse createGithubToken(String code) {
-        String accessToken = tokenManager.createToken(code, TokenType.GITHUB);
+        String accessToken = authManager.createToken(code, TokenType.GITHUB);
 
-        String email = tokenManager.getPrincipal(accessToken, TokenType.GITHUB);
+        String email = authManager.getPrincipal(accessToken, TokenType.GITHUB);
         memberService.findMemberByEmailNotExistSave(email);
 
         return new TokenResponse(accessToken);

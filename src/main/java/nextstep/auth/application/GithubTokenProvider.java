@@ -1,14 +1,15 @@
 package nextstep.auth.application;
 
 import nextstep.auth.client.ExternalTokenFetcher;
+import nextstep.auth.client.github.GithubTokenFetcher;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GithubTokenProvider implements TokenProvider {
-    private final ExternalTokenFetcher externalTokenFetcher;
+    private final ExternalTokenFetcher githubTokenFetcher;
 
-    public GithubTokenProvider(ExternalTokenFetcher externalTokenFetcher) {
-        this.externalTokenFetcher = externalTokenFetcher;
+    public GithubTokenProvider(GithubTokenFetcher githubTokenFetcher) {
+        this.githubTokenFetcher = githubTokenFetcher;
     }
 
     @Override
@@ -18,12 +19,12 @@ public class GithubTokenProvider implements TokenProvider {
 
     @Override
     public String createToken(String principal) {
-        return externalTokenFetcher.requestToken(principal);
+        return githubTokenFetcher.requestToken(principal);
     }
 
     @Override
     public String getPrincipal(String token) {
-        return externalTokenFetcher.findUser(token).getEmail();
+        return githubTokenFetcher.findUser(token).getEmail();
     }
 
     @Override

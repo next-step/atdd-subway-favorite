@@ -1,6 +1,6 @@
 package nextstep.auth;
 
-import nextstep.auth.application.TokenManager;
+import nextstep.auth.application.AuthManager;
 import nextstep.auth.ui.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,14 +11,14 @@ import java.util.List;
 @Configuration
 @ComponentScan(basePackages = "nextstep.auth")
 public class AuthConfig implements WebMvcConfigurer {
-    private final TokenManager tokenManager;
+    private final AuthManager authManager;
 
-    public AuthConfig(TokenManager tokenManager) {
-        this.tokenManager = tokenManager;
+    public AuthConfig(AuthManager authManager) {
+        this.authManager = authManager;
     }
 
     @Override
     public void addArgumentResolvers(List argumentResolvers) {
-        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver(tokenManager));
+        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver(authManager));
     }
 }

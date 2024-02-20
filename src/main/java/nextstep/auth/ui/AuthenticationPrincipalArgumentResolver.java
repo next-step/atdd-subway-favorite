@@ -1,7 +1,7 @@
 package nextstep.auth.ui;
 
 import nextstep.auth.AuthenticationException;
-import nextstep.auth.application.TokenManager;
+import nextstep.auth.application.AuthManager;
 import nextstep.auth.application.TokenType;
 import nextstep.subway.member.domain.LoginMember;
 import org.springframework.core.MethodParameter;
@@ -11,10 +11,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private final TokenManager tokenManager;
+    private final AuthManager authManager;
 
-    public AuthenticationPrincipalArgumentResolver(TokenManager tokenManager) {
-        this.tokenManager = tokenManager;
+    public AuthenticationPrincipalArgumentResolver(AuthManager authManager) {
+        this.authManager = authManager;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         TokenType tokenType = TokenType.findBy(authorization.split(" ")[0]);
 
         String token = authorization.split(" ")[1];
-        String email = tokenManager.getPrincipal(token, tokenType);
+        String email = authManager.getPrincipal(token, tokenType);
 
         return new LoginMember(email);
     }
