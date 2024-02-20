@@ -4,6 +4,12 @@ security:
       secret-key: atdd-secret-key
       expire-length: 3600000
 
+github:
+  client:
+    id: client_id
+    secret: client_secret
+    root-url: https://github.com
+
 ---
 
 spring.config.activate.on-profile: local, test
@@ -12,12 +18,3 @@ github:
     id: test_client_id
     secret: test_client_secret
     root-url: http://localhost:8080
-
----
-
-spring.config.activate.on-profile: default
-github:
-  client:
-    id: client_id
-    secret: client_secret
-    root-url: https://github.com
