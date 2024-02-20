@@ -12,6 +12,7 @@ import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.dto.PathResponse;
 import nextstep.subway.domain.Station;
 import nextstep.subway.domain.StationRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,39 +35,26 @@ public class FavoriteService {
         this.pathService = pathService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     * @param request, loginMember
-     */
     @Transactional
-    public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
+    public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
         Member member = getMember(loginMember);
-        Station source = this.stationRepository.findById(request.getSource()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
-        Station target = this.stationRepository.findById(request.getTarget()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
+        Station source = this.stationRepository.findById(request.getSource()).orElseThrow(() -> new RuntimeException("존재하지 않는 출발역입니다."));
+        Station target = this.stationRepository.findById(request.getTarget()).orElseThrow(() -> new RuntimeException("존재하지 않는 도착역입니다."));
 
         PathResponse path = this.pathService.findPath(source.getId(), target.getId());
         if(path.hasNoPath()){
             throw new IllegalArgumentException("경로가 존재하지 않습니다.");
         }
-        favoriteRepository.save(new Favorite(member, source, target));
+        return favoriteRepository.save(new Favorite(member, source, target));
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = getMember(loginMember);
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-
+    @Transactional
     public void deleteFavorite(Long id, LoginMember loginMember) {
         Member member = getMember(loginMember);
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기입니다."));

@@ -3,6 +3,7 @@ package nextstep.favorite.ui;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.domain.Favorite;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,13 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity createFavorite(
+    public ResponseEntity<FavoriteResponse> createFavorite(
             @RequestBody FavoriteRequest request,
             @AuthenticationPrincipal LoginMember loginMember
     ) {
-        favoriteService.createFavorite(request, loginMember);
+        Favorite favorite = favoriteService.createFavorite(request, loginMember);
         return ResponseEntity
-                .created(URI.create("/favorites/" + 1L))
-                .build();
+                .created(URI.create("/favorites/" + favorite.getId())).body(FavoriteResponse.of(favorite));
     }
 
     @GetMapping("/favorites")
