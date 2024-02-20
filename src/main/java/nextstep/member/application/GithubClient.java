@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @ConfigurationProperties
+@ConfigurationPropertiesScan
 public class GithubClient {
     @Value("${github.client.id}")
     private String githubClientId;
@@ -25,10 +26,10 @@ public class GithubClient {
     private String githubClientSecret;
 
     @Value("${github.client.access-token-url}")
-    private String accessTokenUrl;
+    private String accessTokenUrl = "http://localhost:8080/github/login/oauth/access_token";
 
     @Value("${github.client.profile-url}")
-    private String profileUrl;
+    private String profileUrl = "http://localhost:8080/github/user";
 
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
