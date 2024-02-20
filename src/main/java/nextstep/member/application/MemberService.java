@@ -34,13 +34,9 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
-                .map(it -> MemberResponse.of(it))
+                .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
     }
 }
