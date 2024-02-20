@@ -1,7 +1,7 @@
 package nextstep.subway;
 
-import nextstep.auth.AuthConfig;
-import nextstep.auth.client.github.config.GithubClientProperties;
+import nextstep.subway.auth.AuthConfig;
+import nextstep.subway.auth.client.github.config.GithubClientProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

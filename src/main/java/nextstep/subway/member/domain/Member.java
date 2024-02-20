@@ -1,6 +1,6 @@
 package nextstep.subway.member.domain;
 
-import nextstep.auth.AuthenticationException;
+import nextstep.subway.auth.AuthenticationException;
 
 import javax.persistence.*;
 import java.util.Objects;

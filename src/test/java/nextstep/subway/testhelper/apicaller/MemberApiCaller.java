@@ -3,7 +3,7 @@ package nextstep.subway.testhelper.apicaller;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.application.TokenType;
+import nextstep.subway.auth.application.TokenType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

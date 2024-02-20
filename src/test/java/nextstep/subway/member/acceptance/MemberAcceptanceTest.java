@@ -1,6 +1,6 @@
 package nextstep.subway.member.acceptance;
 
-import nextstep.auth.application.TokenType;
+import nextstep.subway.auth.application.TokenType;
 import nextstep.subway.testhelper.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
