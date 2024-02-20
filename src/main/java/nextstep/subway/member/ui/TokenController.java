@@ -19,14 +19,14 @@ public class TokenController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+        TokenResponse response = tokenService.createGithubToken(request.getEmail(), request.getPassword());
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login/github")
     public ResponseEntity<TokenResponse> createGithubToken(@RequestBody GithubTokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getCode());
+        TokenResponse response = tokenService.createGithubToken(request.getCode());
 
         return ResponseEntity.ok(response);
     }

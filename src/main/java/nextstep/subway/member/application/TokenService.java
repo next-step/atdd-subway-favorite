@@ -19,8 +19,8 @@ public class TokenService {
         ;
     }
 
-    public TokenResponse createToken(String email,
-                                     String password) {
+    public TokenResponse createGithubToken(String email,
+                                           String password) {
         Member member = memberService.findMemberByEmail(email);
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
@@ -31,7 +31,7 @@ public class TokenService {
         return new TokenResponse(token);
     }
 
-    public TokenResponse createToken(String code) {
+    public TokenResponse createGithubToken(String code) {
         String accessToken = tokenManager.createToken(code, TokenType.GITHUB);
 
         String email = tokenManager.getPrincipal(accessToken, TokenType.GITHUB);

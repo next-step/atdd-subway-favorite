@@ -18,7 +18,8 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.testhelper.apicaller.MemberApiCaller.*;
+import static nextstep.subway.testhelper.apicaller.MemberApiCaller.내_정보_조회_요청;
+import static nextstep.subway.testhelper.apicaller.MemberApiCaller.회원_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TokenAcceptanceTest extends AcceptanceTest {
