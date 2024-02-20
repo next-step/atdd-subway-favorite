@@ -1,4 +1,4 @@
-package nextstep.subway.auth.application.dto;
+package nextstep.subway.auth.domain;
 
 public class UserDetail {
     private String email;
@@ -14,6 +14,6 @@ public class UserDetail {
     }
 
     public boolean correctPassword(String password) {
-        return true;
+        return this.password.equals(password);
     }
 }

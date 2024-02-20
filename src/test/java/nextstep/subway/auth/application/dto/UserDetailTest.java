@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application.dto;
 
+import nextstep.subway.auth.domain.UserDetail;
 import nextstep.subway.testhelper.fixture.MemberFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
