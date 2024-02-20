@@ -4,6 +4,9 @@ import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,16 +16,18 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@ConfigurationProperties
 public class GithubClient {
 
     @Value("${github.client.url}")
-    private String githubUrl = "http://localhost:8080";
+    private String githubUrl;
 
     @Value("${github.client.id}")
     private String githubClientId;
 
     @Value("${github.client.secret}")
     private String githubClientSecret;
+
 
 
 
