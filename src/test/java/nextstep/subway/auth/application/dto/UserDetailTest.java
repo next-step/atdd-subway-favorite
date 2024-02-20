@@ -27,4 +27,15 @@ class UserDetailTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("틀린 비밀번호인지 확인이 가능하다")
+    void notCorrectPassword() {
+        UserDetail userDetail = new UserDetail(MemberFixture.EMAIL, MemberFixture.PASSWORD,
+                MemberFixture.AGE);
+
+        boolean actual = userDetail.correctPassword("notCorrect");
+        boolean expected = false;
+        assertThat(actual).isEqualTo(expected);
+    }
+
 }
