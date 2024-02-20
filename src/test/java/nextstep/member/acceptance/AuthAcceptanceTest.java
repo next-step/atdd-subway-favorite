@@ -58,7 +58,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void githubAuth__회원가입() {
         assertLogin(GithubResponses.사용자1.getCode());
 
-        final ExtractableResponse<Response> login = AuthStep.로그인(GithubResponses.사용자1.getEmail(), GithubResponses.사용자1.getEmail());
+        final ExtractableResponse<Response> login = AuthStep.로그인(GithubResponses.사용자1.getEmail(), GithubResponses.사용자1.getCode());
         assertThat(login.jsonPath().getString("accessToken")).isNotBlank();
     }
 
@@ -70,5 +70,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
-
 }

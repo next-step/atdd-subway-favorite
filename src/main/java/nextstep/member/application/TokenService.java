@@ -11,12 +11,10 @@ import org.springframework.stereotype.Service;
 public class TokenService {
     private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
+    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.githubClient = githubClient;
     }
 
     public TokenResponse createToken(String email, String password) {
@@ -30,20 +28,4 @@ public class TokenService {
         return new TokenResponse(token);
     }
 
-    public TokenResponse loginGithub(String code) {
-        final String accessToken = githubClient.requestGithubToken(code);
-        final GithubProfileResponse profile = githubClient.requestGithubProfile(accessToken);
-
-        signUpIfNotExists(profile);
-
-        return new TokenResponse(jwtTokenProvider.createToken(profile.getEmail()));
-    }
-
-    private void signUpIfNotExists(GithubProfileResponse profile) {
-        try {
-            memberService.findMemberByEmail(profile.getEmail());
-        } catch(Throwable e) {
-            memberService.createMember(new MemberRequest(profile.getEmail(), profile.getEmail(), profile.getAge()));
-        }
-    }
 }
