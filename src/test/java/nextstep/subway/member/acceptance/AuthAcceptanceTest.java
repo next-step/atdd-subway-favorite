@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.testhelper.apicaller.MemberApiCaller.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -97,10 +98,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // then
         String actualToken = TokenApiCaller.깃허브_로그인(params).jsonPath().getString("accessToken");
         String expectedToken = GithubResponsesFixture.사용자1.getAccessToken();
-        assertThat(actualToken).isEqualTo(expectedToken);
 
-        boolean actualJoin = memberRepository.findByEmail(GithubResponsesFixture.사용자1.getEmail()).isEmpty();
-        boolean expectedJoin = false;
-        assertThat(actualJoin).isEqualTo(expectedJoin);
+        var response = 내_정보_조회_요청(actualToken);
+        회원_정보_조회됨(response, GithubResponsesFixture.사용자1.getEmail(), GithubResponsesFixture.사용자1.getAge());
     }
 }
