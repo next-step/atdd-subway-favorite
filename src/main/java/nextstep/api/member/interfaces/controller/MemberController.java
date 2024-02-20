@@ -1,16 +1,22 @@
 package nextstep.api.member.interfaces.controller;
 
+import java.net.URI;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import lombok.RequiredArgsConstructor;
 import nextstep.api.member.application.MemberService;
 import nextstep.api.member.application.dto.MemberRequest;
 import nextstep.api.member.application.dto.MemberResponse;
 import nextstep.api.member.domain.LoginMember;
 import nextstep.common.annotation.AuthenticationPrincipal;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor

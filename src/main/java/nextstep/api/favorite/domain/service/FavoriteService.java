@@ -2,7 +2,6 @@ package nextstep.api.favorite.domain.service;
 
 import java.util.List;
 
-import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
 import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
 import nextstep.api.favorite.domain.model.dto.outport.FavoriteCreateInfo;
 import nextstep.api.favorite.domain.model.dto.outport.FavoriteInfo;

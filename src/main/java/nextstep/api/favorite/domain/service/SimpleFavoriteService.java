@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
 import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
 import nextstep.api.favorite.domain.model.dto.outport.FavoriteCreateInfo;
 import nextstep.api.favorite.domain.model.dto.outport.FavoriteInfo;

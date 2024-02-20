@@ -6,11 +6,12 @@ import lombok.RequiredArgsConstructor;
 import nextstep.api.auth.application.dto.GithubLoginRequest;
 import nextstep.api.auth.application.dto.TokenRequest;
 import nextstep.api.auth.application.dto.TokenResponse;
-import nextstep.api.auth.domain.dto.outport.OAuthUserInfo;
+import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.auth.domain.service.AuthService;
 import nextstep.api.auth.domain.service.impl.TokenService;
-import nextstep.api.member.application.MemberService;
-import nextstep.api.member.domain.Member;
+import nextstep.api.user.OAuthUserRegistrationRequest;
+import nextstep.api.user.OAuthUserRegistrationService;
+import nextstep.api.user.UserDetailsService;
 import nextstep.common.exception.member.AuthenticationException;
 
 /**
@@ -22,20 +23,21 @@ import nextstep.common.exception.member.AuthenticationException;
 public class AuthFacade {
 
 	private final AuthService authService;
-	private final MemberService memberService;
+	private final UserDetailsService userDetailsService;
 	private final TokenService tokenService;
+	private final OAuthUserRegistrationService oAuthUserRegistrationService;
 
 	public TokenResponse githubLogin(GithubLoginRequest loginRequest) {
-		OAuthUserInfo oauthUser = authService.authenticateWithGithub(loginRequest.getCode());
+		UserPrincipal oauthUser = authService.authenticateWithGithub(loginRequest.getCode());
 
-		Member member = memberService.findMemberByEmailOptional(oauthUser.getEmail())
-			.orElseGet(() -> memberService.registerNewMember(oauthUser));
+		UserPrincipal member = userDetailsService.loadUserByEmailOptional(oauthUser.getEmail())
+			.orElseGet(() -> UserPrincipal.from(oAuthUserRegistrationService.registerOAuthUser(OAuthUserRegistrationRequest.of(oauthUser.getEmail()))));
 
 		return tokenService.createToken(member.getEmail());
 	}
 
 	public TokenResponse createToken(TokenRequest request) {
-		Member member = memberService.findMemberByEmail(request.getEmail());
+		UserPrincipal member = userDetailsService.loadUserByEmail(request.getEmail());
 		if (!member.getPassword().equals(request.getPassword())) {
 			throw new AuthenticationException();
 		}

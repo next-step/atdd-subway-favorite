@@ -3,7 +3,7 @@ package nextstep.api.auth.domain.service.impl;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.api.auth.domain.dto.outport.OAuthUserInfo;
+import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.auth.domain.service.AuthService;
 import nextstep.client.github.GithubClient;
 import nextstep.client.github.dto.GithubAccessTokenResponse;
@@ -24,11 +24,11 @@ public class SimpleAuthService implements AuthService {
 	 * -> code를 통해 token을 받아오고 유저 정보를 가져오는 것까지가 authService의 책임
 	 */
 	@Override
-	public OAuthUserInfo authenticateWithGithub(String code) {
+	public UserPrincipal authenticateWithGithub(String code) {
 		GithubAccessTokenResponse response = githubClient.requestGithubToken(code);
 		GithubUserProfileResponse profileResponse = githubClient.requestGithubUserProfile(response.getAccessToken());
 
-		return OAuthUserInfo.of(profileResponse.getEmail());
+		return UserPrincipal.of(profileResponse.getEmail());
 	}
 
 

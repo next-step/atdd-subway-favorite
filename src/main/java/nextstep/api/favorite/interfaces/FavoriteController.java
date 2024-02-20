@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.api.favorite.application.facade.FavoriteFacade;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateResponse;
 import nextstep.api.favorite.application.model.dto.FavoriteResponse;
-import nextstep.api.favorite.application.facade.FavoriteFacade;
 import nextstep.api.member.domain.LoginMember;
 import nextstep.common.annotation.AuthenticationPrincipal;
 

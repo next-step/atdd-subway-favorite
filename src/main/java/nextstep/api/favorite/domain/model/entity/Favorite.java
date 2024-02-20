@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
 import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
 import nextstep.common.mapper.ModelMapperBasedObjectMapper;
 
