@@ -1,4 +1,4 @@
-package nextstep.subway.auth.application;
+package nextstep.subway.auth.application.provider;
 
 public interface TokenProvider {
     boolean isSupport(TokenType tokenType);

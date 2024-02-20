@@ -1,4 +1,4 @@
-package nextstep.subway.auth.application;
+package nextstep.subway.auth.application.provider;
 
 import nextstep.subway.auth.client.ExternalTokenFetcher;
 import nextstep.subway.auth.client.github.GithubTokenFetcher;

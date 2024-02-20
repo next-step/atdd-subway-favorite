@@ -1,6 +1,7 @@
 package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.AuthenticationException;
+import nextstep.subway.auth.application.provider.TokenType;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.auth.application.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;

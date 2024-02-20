@@ -1,5 +1,7 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.application.provider.TokenProvider;
+import nextstep.subway.auth.application.provider.TokenType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

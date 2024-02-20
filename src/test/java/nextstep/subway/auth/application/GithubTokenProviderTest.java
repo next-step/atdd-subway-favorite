@@ -1,6 +1,6 @@
 package nextstep.subway.auth.application;
 
-import nextstep.subway.auth.application.GithubTokenProvider;
+import nextstep.subway.auth.application.provider.GithubTokenProvider;
 import nextstep.subway.auth.client.github.GithubClient;
 import nextstep.subway.auth.client.github.GithubTokenFetcher;
 import nextstep.subway.auth.client.github.config.GithubClientProperties;
