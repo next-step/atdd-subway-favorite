@@ -29,9 +29,8 @@ public class GithubTestController {
     }
 
     @GetMapping("/github/user")
-    public ResponseEntity<GithubProfileResponse> profile(@RequestHeader HttpHeaders headers) {
-        final String accessToken = Objects.requireNonNull(headers.get("Authorization"))
-            .get(0).replace("bearer ", "");
+    public ResponseEntity<GithubProfileResponse> profile(@RequestHeader("Authorization") String bearerToken) {
+        final String accessToken = Objects.requireNonNull(bearerToken).replace("bearer ", "");
 
         for(GithubResponses response : GithubResponses.values()) {
             if(response.getAccessToken().equals(accessToken)) {
