@@ -21,4 +21,15 @@ public class AuthStep {
             .then().log().all()
             .statusCode(HttpStatus.OK.value()).extract();
     }
+
+    public static ExtractableResponse<Response> 깃허브_로그인(
+        Map<String, String> params) {
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/login/github")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
+        return response;
+    }
 }
