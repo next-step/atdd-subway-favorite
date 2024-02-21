@@ -8,8 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성;
-import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회;
+import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_토큰_로그인;
 import static nextstep.subway.SubwaySteps.지하철_노선_생성;
@@ -68,5 +67,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
         assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
+    }
+
+    /**
+     * given 회원이 출발역과 도착역 정보로 즐겨찾기를 생성하고
+     * when 해당 즐겨찾기를 삭제하면
+     * then 즐겨찾기 목록 조회 시 해당 즐겨찾기가 포함되지 않는다.
+     */
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void delete_favorite() {
+        // given
+        var createResponse = 즐겨찾기_생성(회원, new FavoriteRequest(교대역, 강남역));
+        Long favoriteId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        // when
+        즐겨찾기_삭제(회원, createResponse);
+
+        // then
+        var findResponse = 즐겨찾기_조회(회원);
+
+        assertThat(findResponse.jsonPath().getList("id", Long.class)).doesNotContain(favoriteId);
     }
 }

@@ -26,4 +26,13 @@ public class FavoriteSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value()).extract();
+    }
 }
