@@ -1,9 +1,11 @@
 package subway.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.dto.member.TokenResponse;
 
+@Transactional(readOnly = true)
 @Service
 public class TokenService {
 	private final MemberService memberService;
@@ -16,7 +18,7 @@ public class TokenService {
 
 	public TokenResponse createToken(String email, String password) {
 		Member member = memberService.findMemberByEmail(email);
-		if (!member.getPassword().equals(password)) {
+		if (!member.checkPassword(password)) {
 			throw new AuthenticationException();
 		}
 

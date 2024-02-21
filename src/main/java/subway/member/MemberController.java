@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import nextstep.member.application.MemberService;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import subway.dto.member.MemberRequest;
+import subway.dto.member.MemberResponse;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;

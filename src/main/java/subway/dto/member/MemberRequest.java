@@ -1,6 +1,6 @@
 package subway.dto.member;
 
-import nextstep.member.domain.Member;
+import subway.member.Member;
 
 public class MemberRequest {
     private String email;
