@@ -24,10 +24,16 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
-        if (authorization == null || !"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+        if (authorization == null) {
             throw new AuthenticationException();
         }
-        String token = authorization.split(" ")[1];
+
+        String[] values = authorization.split(" ");
+        if (!"bearer".equalsIgnoreCase(values[0]) || values.length != 2) {
+            throw new AuthenticationException();
+        }
+
+        String token = values[1];
 
         String email = jwtTokenProvider.getPrincipal(token);
 
