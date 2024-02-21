@@ -2,7 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.ui.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -34,13 +34,9 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
-                .map(it -> MemberResponse.of(it))
+                .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
     }
 }

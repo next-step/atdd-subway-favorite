@@ -3,8 +3,8 @@ package nextstep.favorite.ui;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.member.domain.LoginMember;
-import nextstep.member.ui.AuthenticationPrincipal;
+import nextstep.auth.ui.LoginMember;
+import nextstep.auth.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

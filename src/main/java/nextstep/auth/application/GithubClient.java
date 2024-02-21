@@ -1,7 +1,7 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
+import nextstep.auth.application.dto.*;
 import nextstep.exception.AuthenticationException;
-import nextstep.member.application.dto.*;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

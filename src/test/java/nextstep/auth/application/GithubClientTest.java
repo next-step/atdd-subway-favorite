@@ -1,14 +1,14 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import nextstep.exception.AuthenticationException;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubEmailResponse;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubEmailResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static nextstep.member.application.GithubResponses.사용자1;
+import static nextstep.auth.application.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

@@ -1,6 +1,6 @@
 package nextstep.config;
 
-import nextstep.member.application.dto.GithubClientProperties;
+import nextstep.auth.application.dto.GithubClientProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
