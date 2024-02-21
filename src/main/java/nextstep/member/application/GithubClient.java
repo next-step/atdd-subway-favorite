@@ -26,10 +26,10 @@ public class GithubClient {
     private String githubClientSecret;
 
     @Value("${github.client.access-token-url}")
-    private String accessTokenUrl = "http://localhost:8080/github/login/oauth/access_token";
+    private String accessTokenUrl;
 
     @Value("${github.client.profile-url}")
-    private String profileUrl = "http://localhost:8080/github/user";
+    private String profileUrl;
 
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
