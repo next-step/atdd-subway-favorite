@@ -1,4 +1,4 @@
-package nextstep.auth.application;
+package nextstep.auth.token;
 
 import io.jsonwebtoken.*;
 import org.jgrapht.alg.util.Pair;

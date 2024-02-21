@@ -1,9 +1,8 @@
-package nextstep.member.ui;
+package nextstep.auth.principal;
 
 import lombok.extern.slf4j.Slf4j;
 import nextstep.auth.AuthenticationException;
-import nextstep.auth.application.JwtTokenProvider;
-import nextstep.auth.domain.LoginMember;
+import nextstep.auth.token.JwtTokenProvider;
 import org.jgrapht.alg.util.Pair;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

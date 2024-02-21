@@ -1,4 +1,4 @@
-package nextstep.auth.application.dto;
+package nextstep.auth.oauth2.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
