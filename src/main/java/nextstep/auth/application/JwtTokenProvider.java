@@ -14,9 +14,9 @@ public class JwtTokenProvider {
     private long validityInMilliseconds;
 
     public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        final Claims claims = Jwts.claims().setSubject(principal);
+        final Date now = new Date();
+        final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)

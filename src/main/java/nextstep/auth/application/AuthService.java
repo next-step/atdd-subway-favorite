@@ -9,14 +9,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    private final MemberService memberService;
     private final TokenService tokenService;
     private GithubClient githubClient;
 
-    public AuthService(TokenService tokenService, GithubClient githubClient, MemberService memberService){
+    private final UserDetailService userDetailService;
+
+    public AuthService(TokenService tokenService, GithubClient githubClient, UserDetailService userDetailService) {
         this.tokenService = tokenService;
         this.githubClient = githubClient;
-        this.memberService = memberService;
+        this.userDetailService = userDetailService;
     }
 
     public TokenResponse login(String email, String password) {
@@ -27,7 +28,7 @@ public class AuthService {
         final String accessToken = githubClient.requestGithubToken(code);
         final GithubProfileResponse profile = githubClient.requestGithubProfile(accessToken);
 
-        memberService.findOrCreateMember(new MemberRequest(profile.getEmail(), code, profile.getAge()));
+        userDetailService.findOrCreate(profile.getEmail());
 
         return new TokenResponse(tokenService.createToken(profile.getEmail(), code).getAccessToken());
     }

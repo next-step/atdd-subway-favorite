@@ -40,12 +40,7 @@ public class MemberService {
 
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
-                .map(it -> MemberResponse.of(it))
+                .map(MemberResponse::of)
                 .orElseThrow(RuntimeException::new);
-    }
-
-    public MemberResponse findOrCreateMember(MemberRequest request) {
-        return MemberResponse.of(memberRepository.findByEmail(request.getEmail())
-                .orElseGet(() -> memberRepository.save(request.toMember())));
     }
 }
