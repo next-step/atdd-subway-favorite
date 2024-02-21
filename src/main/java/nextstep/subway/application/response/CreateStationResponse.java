@@ -1,0 +1,33 @@
+package nextstep.subway.application.response;
+
+import nextstep.subway.domain.Station;
+
+public class CreateStationResponse {
+
+    private Long stationId;
+    private String name;
+
+    private CreateStationResponse() {
+    }
+
+    private CreateStationResponse(Long stationId, String name) {
+        this.stationId = stationId;
+        this.name = name;
+    }
+
+    public static CreateStationResponse from(Station station) {
+        return new CreateStationResponse(
+                station.getStationId(),
+                station.getName()
+        );
+    }
+
+    public Long getStationId() {
+        return stationId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+}

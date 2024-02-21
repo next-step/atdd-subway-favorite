@@ -5,12 +5,17 @@ import java.util.Objects;
 
 @Entity
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "member_id")
+    private Long memberId;
+
     @Column(unique = true)
     private String email;
+
     private String password;
+
     private Integer age;
 
     public Member() {
@@ -22,8 +27,8 @@ public class Member {
         this.age = age;
     }
 
-    public Long getId() {
-        return id;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public String getEmail() {
