@@ -8,8 +8,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import subway.member.AuthenticationException;
+
 @RestControllerAdvice
 public class ControllerAdvice {
+	@ExceptionHandler(AuthenticationException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ResponseEntity<SubwayError> unAuthenticationException(AuthenticationException ex) {
+		String errorCode = getErrorCode(ex);
+		String errorMessage = ex.getMessage();
+		return ResponseEntity.badRequest().body(new SubwayError(errorCode, errorMessage));
+	}
+
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<SubwayError> illegalArgumentException(IllegalArgumentException ex) {
