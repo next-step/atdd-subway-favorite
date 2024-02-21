@@ -1,8 +1,8 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -11,9 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.AuthSteps.*;
-import static nextstep.member.acceptance.MemberSteps.JWT없이_개인정보_요청;
-import static nextstep.member.acceptance.MemberSteps.개인정보_요청;
+import static nextstep.auth.acceptance.AuthSteps.*;
+import static nextstep.member.acceptance.MemberSteps.*;
 import static nextstep.utils.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,19 +51,37 @@ class AuthAcceptanceTest extends AcceptanceTest {
         HTTP코드를_검증한다(response, HttpStatus.UNAUTHORIZED);
     }
 
+    /**
+     * When 회원이 등록되어 있다.
+     * And code로 깃헙을 통한 로그인 API를 요청한다.
+     * Then 200 코드를 리턴한다.
+     * And accessToken을 리턴한다.
+     */
+    @DisplayName("회원가입을 한 사용자가 code를 통한 Github Login")
+    @Test
+    void githubLogin_registerMember() {
+        회원_생성_요청(사용자1.email(), PASSWORD, AGE);
+        final ExtractableResponse<Response> response = 코드로_깃허브를_통한_로그인을_요청한다(사용자1.code());
+
+        HTTP코드를_검증한다(response, HttpStatus.OK);
+        토큰을_응답한다(response, createToken(사용자1.email()));
+    }
 
     /**
      * When code로 깃헙을 통한 로그인 API를 요청한다.
      * Then 200 코드를 리턴한다.
      * And accessToken을 리턴한다.
+     * And 회원가입이 완료된다
      */
-    @DisplayName("code를 통한 Github Login")
+    @DisplayName("회원가입하지 않은 사용자가 code를 통한 Github Login 요청")
     @Test
-    void githubLogin() {
+    void githubLogin_unRegisterMember() {
+        final String accessToken = createToken(사용자1.email());
         final ExtractableResponse<Response> response = 코드로_깃허브를_통한_로그인을_요청한다(사용자1.code());
 
         HTTP코드를_검증한다(response, HttpStatus.OK);
-        토큰을_응답한다(response, createToken(사용자1.email()));
+        토큰을_응답한다(response, accessToken);
+        토큰으로_회원_정보_조회_요청(accessToken);
     }
 
     private static void HTTP코드를_검증한다(final ExtractableResponse<Response> response, final HttpStatus httpStatus) {
@@ -73,5 +90,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private static void 토큰을_응답한다(ExtractableResponse<Response> response, String accessToken) {
         assertThat(response.as(TokenResponse.class).getAccessToken()).isEqualTo(accessToken);
     }
-
 }

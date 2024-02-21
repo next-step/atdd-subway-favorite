@@ -47,5 +47,11 @@ public class MemberController {
         MemberResponse memberResponse = memberService.findMe(loginMember);
         return ResponseEntity.ok().body(memberResponse);
     }
+
+    @GetMapping("/members/token")
+    public ResponseEntity<MemberResponse> findMemberByAccessToken(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse memberResponse = memberService.findMemberByEmail(loginMember.getEmail());
+        return ResponseEntity.ok().body(memberResponse);
+    }
 }
 

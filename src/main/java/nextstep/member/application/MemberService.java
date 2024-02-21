@@ -1,6 +1,8 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.UserDetailService;
+import nextstep.auth.application.UserDetails;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -8,10 +10,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
-public class MemberService {
+public class MemberService implements UserDetailService {
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -21,6 +21,12 @@ public class MemberService {
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
+    }
+
+    @Override
+    public UserDetails findByEmail(final String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 아닙니다."));
     }
 
     public MemberResponse findMember(Long id) {
@@ -37,10 +43,17 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
+    public Member findMemberEntityByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 아닙니다."));
     }
+
+    public MemberResponse findMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 아닙니다."));
+        return MemberResponse.of(member);
+    }
+
 
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
@@ -48,13 +61,14 @@ public class MemberService {
                 .orElseThrow(RuntimeException::new);
     }
 
-    public MemberResponse findMemberOrCreate(final GithubProfileResponse githubProfileResponse) {
+    @Override
+    public Member findMemberOrCreate(final GithubProfileResponse githubProfileResponse) {
         final String email = githubProfileResponse.getEmail();
         final Integer age = githubProfileResponse.getAge();
 
         final Member member = memberRepository.findByEmail(githubProfileResponse.getEmail())
                 .orElseGet(() -> memberRepository.save(new Member(email, "", age)));
 
-        return MemberResponse.of(member);
+        return member;
     }
 }

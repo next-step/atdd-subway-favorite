@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +23,11 @@ public class GithubClient {
     private String tokenUrl;
     @Value("${github.url.profile}")
     private String profileId;
+    private RestTemplate restTemplate;
+
+    public GithubClient(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public String requestGithubToken(final String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
@@ -36,7 +41,6 @@ public class GithubClient {
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
                 githubAccessTokenRequest, headers);
-        RestTemplate restTemplate = new RestTemplate();
 
         String accessToken = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
@@ -54,8 +58,6 @@ public class GithubClient {
         headers.add("Authorization", oauthAccessToken);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
-        RestTemplate restTemplate = new RestTemplate();
-
         GithubProfileResponse response = restTemplate
                 .exchange(profileId, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();

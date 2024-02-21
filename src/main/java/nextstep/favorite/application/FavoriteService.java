@@ -7,18 +7,11 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
-import nextstep.subway.application.LineService;
 import nextstep.subway.application.PathService;
-import nextstep.subway.application.StationService;
 import nextstep.subway.application.dto.PathResponse;
-import nextstep.subway.application.dto.StationResponse;
-import nextstep.subway.domain.PathFinder;
-import nextstep.subway.domain.Section;
-import nextstep.subway.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -40,7 +33,7 @@ public class FavoriteService {
      * @param request
      */
     public FavoriteResponse createFavorite(final LoginMember loginMember, FavoriteRequest request) {
-        final Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        final Member member = memberService.findMemberEntityByEmail(loginMember.getEmail());
         final Long sourceId = request.getSource();
         final Long targetId = request.getTarget();
         final PathResponse pathResponse = pathService.findPath(sourceId, targetId);
@@ -56,7 +49,7 @@ public class FavoriteService {
      * @return
      */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        final Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        final Member member = memberService.findMemberEntityByEmail(loginMember.getEmail());
         return favoriteRepository.findAllByMemberId(member.getId());
     }
 
@@ -65,7 +58,7 @@ public class FavoriteService {
      * @param id
      */
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        final Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        final Member member = memberService.findMemberEntityByEmail(loginMember.getEmail());
         favoriteRepository.deleteById(id);
     }
 }

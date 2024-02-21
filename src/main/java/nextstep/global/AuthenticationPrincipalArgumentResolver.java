@@ -1,6 +1,6 @@
 package nextstep.global;
 
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.auth.application.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;

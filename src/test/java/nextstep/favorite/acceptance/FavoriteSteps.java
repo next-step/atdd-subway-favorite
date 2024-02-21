@@ -1,18 +1,14 @@
 package nextstep.favorite.acceptance;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.member.acceptance.AuthSteps.createToken;
+import static nextstep.auth.acceptance.AuthSteps.createToken;
 
 public class FavoriteSteps {
 
