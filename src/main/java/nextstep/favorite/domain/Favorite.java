@@ -1,8 +1,12 @@
 package nextstep.favorite.domain;
 
+import nextstep.subway.line.Line;
+import nextstep.subway.path.PathFinder;
+import nextstep.subway.path.PathResponse;
 import nextstep.subway.station.Station;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Favorite {
@@ -20,11 +24,13 @@ public class Favorite {
     public Favorite() {
     }
 
-    public Favorite(Long memberId, Station sourceStation, Station targetStation) {
-        this(null, memberId, sourceStation, targetStation);
+    public Favorite(Long memberId, Station sourceStation, Station targetStation, List<Line> lines) {
+        this(null, memberId, sourceStation, targetStation, lines);
     }
 
-    public Favorite(Long id, Long memberId, Station sourceStation, Station targetStation) {
+    public Favorite(Long id, Long memberId, Station sourceStation, Station targetStation, List<Line> lines) {
+        PathResponse pathResponse = new PathFinder(lines).shortestPath(sourceStation, targetStation);
+
         this.id = id;
         this.memberId = memberId;
         this.sourceStation = sourceStation;

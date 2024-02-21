@@ -1,5 +1,6 @@
 package nextstep.favorite.acceptance;
 
+import io.restassured.RestAssured;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.subway.line.LineRequest;
 import nextstep.utils.AcceptanceTest;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
@@ -23,7 +25,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private String 회원;
     private Long 교대역;
     private Long 강남역;
+    private Long 양재역;
+    private Long 남부터미널역;
     private Long 이호선;
+    private Long 삼호선;
+
 
     @Override
     @BeforeEach
@@ -33,7 +39,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원 = 회원_토큰_로그인(EMAIL, PASSWORD).jsonPath().getString("accessToken");
         교대역 = 지하철_역_생성("교대역").jsonPath().getLong("id");
         강남역 = 지하철_역_생성("강남역").jsonPath().getLong("id");
+        양재역 = 지하철_역_생성("양재역").jsonPath().getLong("id");
+        남부터미널역 = 지하철_역_생성("남부터미널역").jsonPath().getLong("id");
         이호선 = 지하철_노선_생성(new LineRequest("이호선", "green", 교대역, 강남역, 10L)).jsonPath().getLong("id");
+        삼호선 = 지하철_노선_생성(new LineRequest("삼호선", "orange", 양재역, 남부터미널역, 5L)).jsonPath().getLong("id");
     }
 
     /**
@@ -87,5 +96,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var findResponse = 즐겨찾기_조회(회원);
 
         assertThat(findResponse.jsonPath().getList("id", Long.class)).doesNotContain(favoriteId);
+    }
+
+    /**
+     * when 회원이 경로가 존재하지 않는 출발역, 도착역 정보로 즐겨찾기를 등록하면
+     * then 403 Bad Request 코드로 응답한다.
+     */
+    @DisplayName("존재하지 않는 경로를 즐겨찾기로 추가")
+    @Test
+    void error_존재하지_않는_경로() {
+        // when
+        // then
+        RestAssured.given().log().all()
+                .auth().oauth2(회원)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new FavoriteRequest(교대역, 양재역))
+                .when().post("/favorites")
+                .then().log().all().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }
