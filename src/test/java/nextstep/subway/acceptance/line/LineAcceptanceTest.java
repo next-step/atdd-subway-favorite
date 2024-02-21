@@ -8,7 +8,6 @@ import nextstep.subway.application.response.CreateLineResponse;
 import nextstep.subway.application.response.ShowAllLinesResponse;
 import nextstep.subway.application.response.ShowLineResponse;
 import nextstep.subway.application.response.UpdateLineResponse;
-import nextstep.subway.common.Constant;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.acceptance.line.LineAcceptanceStep.*;
 import static nextstep.subway.acceptance.station.StationAcceptanceStep.지하철_역_생성됨;
+import static nextstep.subway.common.Constant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,13 +33,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     protected void beforeEach() {
-        강남역_ID = 지하철_역_생성됨(Constant.강남역);
-        신논현역_ID = 지하철_역_생성됨(Constant.신논현역);
-        압구정로데오역_ID = 지하철_역_생성됨(Constant.압구정로데오역);
-        강남구청역_ID = 지하철_역_생성됨(Constant.강남구청역);
-        신분당선_생성_요청 = CreateLineRequest.of(Constant.신분당선, Constant.빨간색, 강남역_ID, 신논현역_ID, Constant.역_간격_10);
-        수인분당선_생성_요청 = CreateLineRequest.of(Constant.수인분당선, Constant.노란색, 압구정로데오역_ID, 강남구청역_ID, Constant.역_간격_10);
-        신분당선_수정_요청 = UpdateLineRequest.of(Constant.파란색);
+        강남역_ID = 지하철_역_생성됨(강남역);
+        신논현역_ID = 지하철_역_생성됨(신논현역);
+        압구정로데오역_ID = 지하철_역_생성됨(압구정로데오역);
+        강남구청역_ID = 지하철_역_생성됨(강남구청역);
+        신분당선_생성_요청 = CreateLineRequest.of(신분당선, 빨간색, 강남역_ID, 신논현역_ID, 역_간격_10);
+        수인분당선_생성_요청 = CreateLineRequest.of(수인분당선, 노란색, 압구정로데오역_ID, 강남구청역_ID, 역_간격_10);
+        신분당선_수정_요청 = UpdateLineRequest.of(파란색);
     }
 
     /**

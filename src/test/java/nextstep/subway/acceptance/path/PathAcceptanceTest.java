@@ -4,7 +4,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.application.dto.ShowStationDto;
 import nextstep.subway.application.response.FindPathResponse;
-import nextstep.subway.common.Constant;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +17,7 @@ import static nextstep.subway.acceptance.line.LineAcceptanceStep.지하철_노�
 import static nextstep.subway.acceptance.path.PathAcceptanceStep.지하철_최단_경로_조회;
 import static nextstep.subway.acceptance.section.SectionAcceptanceStep.지하철_구간_추가됨;
 import static nextstep.subway.acceptance.station.StationAcceptanceStep.지하철_역_생성됨;
+import static nextstep.subway.common.Constant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 검색")
@@ -39,21 +39,21 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     protected void beforeEach() {
-        교대역_ID = 지하철_역_생성됨(Constant.교대역);
-        강남역_ID = 지하철_역_생성됨(Constant.강남역);
-        양재역_ID = 지하철_역_생성됨(Constant.양재역);
-        남부터미널역_ID = 지하철_역_생성됨(Constant.남부터미널역);
-        역삼역_ID = 지하철_역_생성됨(Constant.역삼역);
-        압구정로데오역_ID = 지하철_역_생성됨(Constant.압구정로데오역);
-        강남구청역_ID = 지하철_역_생성됨(Constant.강남구청역);
-        을지로입구역_ID = 지하철_역_생성됨(Constant.을지로입구역);
+        교대역_ID = 지하철_역_생성됨(교대역);
+        강남역_ID = 지하철_역_생성됨(강남역);
+        양재역_ID = 지하철_역_생성됨(양재역);
+        남부터미널역_ID = 지하철_역_생성됨(남부터미널역);
+        역삼역_ID = 지하철_역_생성됨(역삼역);
+        압구정로데오역_ID = 지하철_역_생성됨(압구정로데오역);
+        강남구청역_ID = 지하철_역_생성됨(강남구청역);
+        을지로입구역_ID = 지하철_역_생성됨(을지로입구역);
 
-        이호선_ID = 지하철_노선_생성됨(Constant.이호선, Constant.초록색, 교대역_ID, 강남역_ID, Constant.역_간격_15);
-        지하철_구간_추가됨(강남역_ID, 역삼역_ID, Constant.역_간격_15, 이호선_ID);
-        삼호선_ID = 지하철_노선_생성됨(Constant.삼호선, Constant.주황색, 교대역_ID, 남부터미널역_ID, Constant.역_간격_10);
-        지하철_구간_추가됨(남부터미널역_ID, 양재역_ID, Constant.역_간격_10, 삼호선_ID);
-        신분당선_ID = 지하철_노선_생성됨(Constant.신분당선, Constant.빨간색, 강남역_ID, 양재역_ID, Constant.역_간격_10);
-        수인분당선_ID = 지하철_노선_생성됨(Constant.수인분당선, Constant.노란색, 압구정로데오역_ID, 강남구청역_ID, Constant.역_간격_20);
+        이호선_ID = 지하철_노선_생성됨(이호선, 초록색, 교대역_ID, 강남역_ID, 역_간격_15);
+        지하철_구간_추가됨(강남역_ID, 역삼역_ID, 역_간격_15, 이호선_ID);
+        삼호선_ID = 지하철_노선_생성됨(삼호선, 주황색, 교대역_ID, 남부터미널역_ID, 역_간격_10);
+        지하철_구간_추가됨(남부터미널역_ID, 양재역_ID, 역_간격_10, 삼호선_ID);
+        신분당선_ID = 지하철_노선_생성됨(신분당선, 빨간색, 강남역_ID, 양재역_ID, 역_간격_10);
+        수인분당선_ID = 지하철_노선_생성됨(수인분당선, 노란색, 압구정로데오역_ID, 강남구청역_ID, 역_간격_20);
     }
 
     /**
@@ -77,7 +77,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         FindPathResponse 경로_조회_응답 = 지하철_최단_경로_조회(교대역_ID, 역삼역_ID).as(FindPathResponse.class);
 
         // then
-        지하철_경로_조회_검증(경로_조회_응답, List.of(Constant.교대역, Constant.강남역, Constant.역삼역), Constant.역_간격_15 + Constant.역_간격_15);
+        지하철_경로_조회_검증(경로_조회_응답, List.of(교대역, 강남역, 역삼역), 역_간격_15 + 역_간격_15);
     }
 
     /**
@@ -91,7 +91,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         FindPathResponse 경로_조회_응답 = 지하철_최단_경로_조회(교대역_ID, 양재역_ID).as(FindPathResponse.class);
 
         // then
-        지하철_경로_조회_검증(경로_조회_응답, List.of(Constant.교대역, Constant.남부터미널역, Constant.양재역), Constant.역_간격_10 + Constant.역_간격_10);
+        지하철_경로_조회_검증(경로_조회_응답, List.of(교대역, 남부터미널역, 양재역), 역_간격_10 + 역_간격_10);
     }
 
     /**

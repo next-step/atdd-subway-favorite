@@ -3,6 +3,7 @@ package nextstep.subway.application;
 import nextstep.exception.NotFoundStationException;
 import nextstep.exception.SameFindPathStationsException;
 import nextstep.exception.UnconnectedFindPathStationsException;
+import nextstep.subway.application.response.FindPathResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Station;
 import org.jgrapht.GraphPath;
@@ -18,14 +19,21 @@ import java.util.stream.Collectors;
 @Service
 public class PathFinder {
 
-    public WeightedMultigraph makeGraph(List<Line> lines) {
+    public FindPathResponse findShortestPath(List<Line> lines, Station startStation, Station endStation) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph(lines);
+        GraphPath shortestPath = findShortestPath2(graph, lines, startStation, endStation);
+
+        return makePathToResponse(shortestPath);
+    }
+
+    private WeightedMultigraph makeGraph(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         setVertexAndEdgeWeight(graph, lines);
 
         return graph;
     }
 
-    public GraphPath findShortestPath(WeightedMultigraph graph, List<Line> lines, Station startStation, Station endStation) {
+    private GraphPath findShortestPath2(WeightedMultigraph graph, List<Line> lines, Station startStation, Station endStation) {
         validate(lines, startStation, endStation);
 
         GraphPath shortestPath = new DijkstraShortestPath(graph).getPath(startStation, endStation);
@@ -74,6 +82,12 @@ public class PathFinder {
         lines.stream()
                 .flatMap(line -> line.getSections().stream())
                 .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+    }
+
+    private FindPathResponse makePathToResponse(GraphPath shortestPath) {
+        List<Station> shortestPathStations = shortestPath.getVertexList();
+        double shortestPathWeight = shortestPath.getWeight();
+        return FindPathResponse.of(shortestPathStations, (int) shortestPathWeight);
     }
 
 }
