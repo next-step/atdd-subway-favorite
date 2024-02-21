@@ -1,40 +1,46 @@
 package nextstep.utils;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Profile("test")
-@Service
-public class DatabaseCleanup implements InitializingBean {
+@Component
+public class DatabaseCleanup {
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager em;
 
-    private List<String> tableNames;
-
-    @Override
-    public void afterPropertiesSet() {
-        tableNames = entityManager.getMetamodel().getEntities().stream()
-                .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
-                .map(entity -> entity.getName())
-                .collect(Collectors.toList());
+    public DatabaseCleanup(EntityManager em) {
+        this.em = em;
     }
 
     @Transactional
     public void execute() {
-        entityManager.flush();
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
-        for (String tableName : tableNames) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+        for (String tableName : getAllTablesFromSchema()) {
+            truncateTable(tableName);
         }
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private List<String> getAllTablesFromSchema() {
+        Query query = em.createNativeQuery(
+                "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = SCHEMA()"
+        );
+        List<String> tableNames = query.getResultList();
+        return tableNames.stream().map(String::toLowerCase).collect(Collectors.toList());
+    }
+
+    private void truncateTable(String name) {
+        em.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+
+        Query truncateQuery = em.createNativeQuery("TRUNCATE TABLE " + name + " RESTART IDENTITY");
+        truncateQuery.executeUpdate();
+
+        em.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 }
