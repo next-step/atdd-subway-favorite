@@ -1,17 +1,14 @@
 package nextstep.favorite.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.subway.line.LineRequest;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_토큰_로그인;
 import static nextstep.subway.SubwaySteps.지하철_노선_생성;
@@ -47,24 +44,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void save_favorite() {
         // when
-        RestAssured
-                .given().log().all()
-                .auth().oauth2(회원)
-                .when()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new FavoriteRequest(교대역, 강남역))
-                .post("/favorites")
-                .then()
-                .statusCode(HttpStatus.CREATED.value());
-        // then
-        ExtractableResponse<Response> favoriteResponse = RestAssured.given().log().all()
-                .auth().oauth2(회원)
-                .when().get("/favorites")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+        즐겨찾기_생성(회원, new FavoriteRequest(교대역, 강남역));
 
-        assertThat(favoriteResponse.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
-        assertThat(favoriteResponse.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
+        // then
+        var response = 즐겨찾기_조회(회원);
+
+        assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
+        assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
     }
 }
