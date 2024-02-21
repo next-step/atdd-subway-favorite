@@ -1,4 +1,4 @@
-package nextstep.favorite.acceptance;
+package nextstep.favorite.utils;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

@@ -2,7 +2,7 @@ package nextstep.exception;
 
 import nextstep.FailResponse;
 import nextstep.favorite.CannotFavoriteNonexistentPathException;
-import nextstep.member.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

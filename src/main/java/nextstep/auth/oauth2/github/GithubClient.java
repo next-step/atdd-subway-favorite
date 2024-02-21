@@ -1,6 +1,5 @@
-package nextstep.auth;
+package nextstep.auth.oauth2.github;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +10,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-@Slf4j
 public class GithubClient {
     @Value("${github.client.id}")
     private String clientId;
@@ -36,7 +34,6 @@ public class GithubClient {
                 request, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        log.info("tokenurl" + tokenUrl);
         String accessToken = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                 .getBody()

@@ -1,14 +1,11 @@
 package nextstep.member.application;
 
-import nextstep.member.OAuth2User;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.principal.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -18,13 +15,9 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public Member findOrCreateMemberFromOAuth2User(OAuth2User oAuth2User) {
-        Optional<Member> memberOptional = memberRepository.findByEmail(oAuth2User.getUsername());
-        if (memberOptional.isEmpty()) {
-            Member member = memberRepository.save(oAuth2User.toMember());
-            return member;
-        }
-        return memberOptional.get();
+    public Member findOrCreateMember(Member member) {
+        return memberRepository.findByEmail(member.getEmail())
+                .orElseGet(() -> memberRepository.save(member));
     }
 
     public MemberResponse createMember(MemberRequest request) {

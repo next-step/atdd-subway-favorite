@@ -1,9 +1,9 @@
-package nextstep.auth;
+package nextstep.auth.oauth2.github;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.member.OAuth2UserRequest;
+import nextstep.auth.oauth2.OAuth2UserRequest;
 
 @AllArgsConstructor
 @NoArgsConstructor

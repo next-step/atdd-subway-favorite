@@ -3,15 +3,14 @@ package nextstep.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.utils.FavoriteSteps;
 import nextstep.line.LineSteps;
-import nextstep.member.domain.MemberRepository;
 import nextstep.section.SectionSteps;
 import nextstep.station.StationSteps;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;

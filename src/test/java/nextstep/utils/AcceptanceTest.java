@@ -1,6 +1,6 @@
 package nextstep.utils;
 
-import nextstep.member.acceptance.AuthSteps;
+import nextstep.member.utils.AuthSteps;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
