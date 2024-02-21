@@ -1,8 +1,8 @@
-package nextstep.favorite.ui;
+package nextstep.subway.controller;
 
-import nextstep.favorite.application.FavoriteService;
-import nextstep.favorite.application.dto.FavoriteRequest;
-import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.subway.service.FavoriteService;
+import nextstep.subway.dto.FavoriteRequest;
+import nextstep.subway.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
