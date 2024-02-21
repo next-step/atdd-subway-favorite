@@ -104,14 +104,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("존재하지 않는 경로를 즐겨찾기로 추가")
     @Test
-    void error_존재하지_않는_경로() {
-        // when
-        // then
+    void error_존재하지_않는_경로_등록() {
         RestAssured.given().log().all()
                 .auth().oauth2(회원)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new FavoriteRequest(교대역, 양재역))
                 .when().post("/favorites")
                 .then().log().all().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * when 회원이 등록하지 않은 즐겨찾기 정보를 삭제하면
+     * then 403 Bad Request 코드로 응답한다.
+     */
+    @Test
+    void error_존재하지_않는_즐겨찾기_삭제() {
+        RestAssured.given().log().all()
+                .auth().oauth2(회원)
+                .when().delete("/favorites/" + 1L)
+                .then().log().all().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
