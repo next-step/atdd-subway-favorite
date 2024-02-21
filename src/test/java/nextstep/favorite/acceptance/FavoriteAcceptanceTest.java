@@ -6,6 +6,7 @@ import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회;
@@ -38,17 +39,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * when 회원이 출발역과 도착역 정보로 즐겨찾기를 생성하면
-     * then 회원의 즐겨찾기 목록에서 해당 즐겨찾기를 조회할 수 있다.
+     * then 201 Created 코드로 응답받는다.
      */
     @DisplayName("즐겨찾기 생성")
     @Test
     void save_favorite() {
         // when
-        즐겨찾기_생성(회원, new FavoriteRequest(교대역, 강남역));
+        var response = 즐겨찾기_생성(회원, new FavoriteRequest(교대역, 강남역));
 
         // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * given 회원이 출발역과 도착역 정보로 즐겨찾기를 생성하고
+     * when 회원의 즐겨찾기 목록을 조회하면
+     * then 해당 즐겨찾기가 포함되어 있다.
+     */
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void find_favorites() {
+        // given
+        즐겨찾기_생성(회원, new FavoriteRequest(교대역, 강남역));
+
+        // when
         var response = 즐겨찾기_조회(회원);
 
+        // then
         assertThat(response.jsonPath().getList("source.id", Long.class)).containsExactly(교대역);
         assertThat(response.jsonPath().getList("target.id", Long.class)).containsExactly(강남역);
     }
