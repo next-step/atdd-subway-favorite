@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.request.MemberRequest;
+import nextstep.member.application.response.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -16,7 +16,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
+        Member member = memberRepository.save(Member.of(request.getEmail(), request.getPassword(), request.getAge()));
         return MemberResponse.of(member);
     }
 

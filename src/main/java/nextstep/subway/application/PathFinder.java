@@ -21,7 +21,7 @@ public class PathFinder {
 
     public FindPathResponse findShortestPath(List<Line> lines, Station startStation, Station endStation) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph(lines);
-        GraphPath shortestPath = findShortestPath2(graph, lines, startStation, endStation);
+        GraphPath shortestPath = getShortestPath(graph, lines, startStation, endStation);
 
         return makePathToResponse(shortestPath);
     }
@@ -33,7 +33,7 @@ public class PathFinder {
         return graph;
     }
 
-    private GraphPath findShortestPath2(WeightedMultigraph graph, List<Line> lines, Station startStation, Station endStation) {
+    private GraphPath getShortestPath(WeightedMultigraph graph, List<Line> lines, Station startStation, Station endStation) {
         validate(lines, startStation, endStation);
 
         GraphPath shortestPath = new DijkstraShortestPath(graph).getPath(startStation, endStation);

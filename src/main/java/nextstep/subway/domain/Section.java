@@ -40,7 +40,6 @@ public class Section {
 
     private Section(Station upStation, Station downStation, Integer distance) {
         validate(upStation, downStation, distance);
-
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;

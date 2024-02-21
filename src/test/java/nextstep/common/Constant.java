@@ -1,4 +1,4 @@
-package nextstep.subway.common;
+package nextstep.common;
 
 public class Constant {
 
@@ -30,5 +30,15 @@ public class Constant {
     public static final int 역_간격_10 = 10;
     public static final int 역_간격_5 = 5;
     public static final int 역_간격_0 = 0;
+
+    public static final String 홍길동_이메일 = "gildong@gmail.com";
+    public static final String 홍길동_비밀번호 = "gildong1234";
+    public static final int 홍길동_나이 = 20;
+
+    public static final String 임꺽정_이메일 = "jung@gmail.com";
+    public static final String 임꺽정_비밀번호 = "jung1234";
+    public static final int 임꺽정_나이 = 45;
+
+
 
 }

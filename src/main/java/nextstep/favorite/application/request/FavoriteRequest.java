@@ -1,4 +1,4 @@
-package nextstep.favorite.application.dto;
+package nextstep.favorite.application.request;
 
 public class FavoriteRequest {
     private Long source;

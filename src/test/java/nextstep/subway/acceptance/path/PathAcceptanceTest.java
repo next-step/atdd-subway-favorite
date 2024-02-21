@@ -17,7 +17,7 @@ import static nextstep.subway.acceptance.line.LineAcceptanceStep.지하철_노�
 import static nextstep.subway.acceptance.path.PathAcceptanceStep.지하철_최단_경로_조회;
 import static nextstep.subway.acceptance.section.SectionAcceptanceStep.지하철_구간_추가됨;
 import static nextstep.subway.acceptance.station.StationAcceptanceStep.지하철_역_생성됨;
-import static nextstep.subway.common.Constant.*;
+import static nextstep.common.Constant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 검색")

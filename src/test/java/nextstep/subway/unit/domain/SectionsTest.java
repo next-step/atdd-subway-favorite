@@ -3,7 +3,7 @@ package nextstep.subway.unit.domain;
 import nextstep.exception.AlreadyExistSectionException;
 import nextstep.exception.NotFoundStationException;
 import nextstep.exception.NotFoundUpStationOrDownStation;
-import nextstep.subway.common.Constant;
+import nextstep.common.Constant;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Sections;

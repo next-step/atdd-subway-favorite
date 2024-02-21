@@ -17,7 +17,7 @@ import static nextstep.subway.acceptance.line.LineAcceptanceStep.지하철_노�
 import static nextstep.subway.acceptance.section.SectionAcceptanceStep.지하철_구간_삭제;
 import static nextstep.subway.acceptance.section.SectionAcceptanceStep.지하철_구간_추가;
 import static nextstep.subway.acceptance.station.StationAcceptanceStep.지하철_역_생성됨;
-import static nextstep.subway.common.Constant.*;
+import static nextstep.common.Constant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

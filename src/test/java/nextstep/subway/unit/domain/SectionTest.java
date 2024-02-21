@@ -2,7 +2,7 @@ package nextstep.subway.unit.domain;
 
 import nextstep.exception.NotPositiveDistanceException;
 import nextstep.exception.SameStationException;
-import nextstep.subway.common.Constant;
+import nextstep.common.Constant;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
