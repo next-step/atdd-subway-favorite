@@ -1,6 +1,8 @@
 package nextstep.member.application;
 
 import nextstep.member.AuthenticationException;
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
@@ -25,4 +27,5 @@ public class TokenService {
 
         return new TokenResponse(token);
     }
+
 }

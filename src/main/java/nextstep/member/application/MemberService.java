@@ -43,4 +43,9 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }
+
+    public MemberResponse findOrCreateMember(MemberRequest request) {
+        return MemberResponse.of(memberRepository.findByEmail(request.getEmail())
+                .orElseGet(() -> memberRepository.save(request.toMember())));
+    }
 }
