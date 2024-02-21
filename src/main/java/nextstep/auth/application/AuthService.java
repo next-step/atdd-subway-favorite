@@ -1,8 +1,9 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenResponse;
 import org.springframework.stereotype.Service;
 
 @Service

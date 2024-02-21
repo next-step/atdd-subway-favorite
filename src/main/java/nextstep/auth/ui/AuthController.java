@@ -1,21 +1,19 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
-import java.awt.image.RescaleOp;
-import nextstep.member.application.AuthService;
-import nextstep.member.application.TokenService;
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.AuthService;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class TokenController {
+public class AuthController {
     private AuthService authService;
 
-    public TokenController(AuthService authService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 

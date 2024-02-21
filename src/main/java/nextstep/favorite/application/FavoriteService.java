@@ -1,6 +1,5 @@
 package nextstep.favorite.application;
 
-import javax.persistence.EntityNotFoundException;
 import nextstep.exception.NotFoundException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -8,7 +7,7 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.subway.applicaion.PathService;
 import nextstep.subway.applicaion.dto.PathRequest;
 import nextstep.subway.domain.Station;

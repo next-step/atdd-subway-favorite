@@ -2,9 +2,8 @@ package nextstep.member.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.swing.Spring;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
