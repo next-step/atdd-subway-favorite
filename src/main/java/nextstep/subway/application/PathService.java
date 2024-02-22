@@ -15,12 +15,10 @@ public class PathService {
 
     private LineRepository lineRepository;
     private StationRepository stationRepository;
-    private PathFinder pathFinder;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository, PathFinder pathFinder) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.pathFinder = pathFinder;
     }
 
     public FindPathResponse findShortestPath(Long startStationId, Long endStationId) {
@@ -30,7 +28,7 @@ public class PathService {
         Station endStation = stationRepository.findById(endStationId)
                 .orElseThrow(NotFoundLineException::new);
 
-        return pathFinder.findShortestPath(lines, startStation, endStation);
+        return PathFinder.findShortestPath(lines, startStation, endStation);
     }
 
 }

@@ -40,5 +40,4 @@ public class Constant {
     public static final int 임꺽정_나이 = 45;
 
 
-
 }

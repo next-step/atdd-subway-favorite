@@ -2,7 +2,6 @@ package nextstep.favorite.application.response;
 
 import nextstep.favorite.application.dto.FavoriteDto;
 import nextstep.favorite.domain.Favorite;
-import nextstep.subway.application.dto.CreateLineSectionDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

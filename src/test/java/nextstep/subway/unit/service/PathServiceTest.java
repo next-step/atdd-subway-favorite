@@ -1,5 +1,6 @@
 package nextstep.subway.unit.service;
 
+import nextstep.common.Constant;
 import nextstep.exception.NotFoundStationException;
 import nextstep.exception.SameFindPathStationsException;
 import nextstep.exception.UnconnectedFindPathStationsException;
@@ -8,7 +9,6 @@ import nextstep.subway.application.PathService;
 import nextstep.subway.application.dto.ShowStationDto;
 import nextstep.subway.application.request.AddSectionRequest;
 import nextstep.subway.application.response.FindPathResponse;
-import nextstep.common.Constant;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Station;

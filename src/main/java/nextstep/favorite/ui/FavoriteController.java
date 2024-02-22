@@ -2,8 +2,6 @@ package nextstep.favorite.ui;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.request.AddFavoriteRequest;
-import nextstep.favorite.application.request.FavoriteRequest;
-import nextstep.favorite.application.response.FavoriteResponse;
 import nextstep.favorite.application.response.ShowAllFavoriteResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.ui.AuthenticationPrincipal;
@@ -11,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 public class FavoriteController {

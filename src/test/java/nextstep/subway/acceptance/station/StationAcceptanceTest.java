@@ -1,9 +1,9 @@
 package nextstep.subway.acceptance.station;
 
+import nextstep.common.Constant;
 import nextstep.subway.application.request.CreateStationRequest;
 import nextstep.subway.application.response.CreateStationResponse;
 import nextstep.subway.application.response.ShowAllStationsResponse;
-import nextstep.common.Constant;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

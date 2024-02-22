@@ -14,9 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.common.Constant.*;
 import static nextstep.subway.acceptance.line.LineAcceptanceStep.*;
 import static nextstep.subway.acceptance.station.StationAcceptanceStep.지하철_역_생성됨;
-import static nextstep.common.Constant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

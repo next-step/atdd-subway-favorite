@@ -3,11 +3,7 @@ package nextstep.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteDto;
-import nextstep.favorite.application.response.AddFavoriteResponse;
 import nextstep.favorite.application.response.ShowAllFavoriteResponse;
-import nextstep.subway.application.dto.StationDto;
-import nextstep.subway.application.response.ShowLineResponse;
-import nextstep.subway.domain.Station;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,8 +29,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 강남역_ID;
     private Long 양재역_ID;
     private Long 강남구청역_ID;
-    private Long 을지로입구역_ID;
+    private Long 압구정로데오역_ID;
     private Long 신분당선_ID;
+    private Long 수인분당선_ID;
 
     @BeforeEach
     protected void beforeEach() {
@@ -45,9 +42,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역_ID = 지하철_역_생성됨(양재역);
         신분당선_ID = 지하철_노선_생성됨(신분당선, 빨간색, 강남역_ID, 양재역_ID, 역_간격_10);
 
+        압구정로데오역_ID = 지하철_역_생성됨(압구정로데오역);
         강남구청역_ID = 지하철_역_생성됨(강남구청역);
-        을지로입구역_ID = 지하철_역_생성됨(을지로입구역);
+        수인분당선_ID = 지하철_노선_생성됨(수인분당선, 노란색, 압구정로데오역_ID, 강남구청역_ID, 역_간격_10);
     }
+
+    /**
+     * 강남역    --- *신분당선* (10) ---   양재역
+     *
+     * 압구정로데오 --- *수인분당선*(10) --- 강남구청역
+     */
 
     /**
      * Given 로그인을 하고
@@ -96,7 +100,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String 토큰 = 로그인_성공(홍길동_이메일, 홍길동_비밀번호);
 
         // when & then
-        ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_추가됨(강남구청역_ID, 을지로입구역_ID, 토큰);
+        ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_추가됨(강남구청역_ID, 양재역_ID, 토큰);
         즐겨찾기_추가_예외발생_검증(즐겨찾기_추가_응답, HttpStatus.BAD_REQUEST);
     }
 

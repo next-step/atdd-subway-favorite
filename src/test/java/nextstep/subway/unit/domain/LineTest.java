@@ -1,8 +1,8 @@
 package nextstep.subway.unit.domain;
 
+import nextstep.common.Constant;
 import nextstep.exception.DeleteSectionException;
 import nextstep.exception.NotFoundStationException;
-import nextstep.common.Constant;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Section;
 import nextstep.subway.domain.Station;

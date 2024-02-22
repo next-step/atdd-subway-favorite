@@ -1,11 +1,11 @@
 package nextstep.subway.unit.service;
 
+import nextstep.common.Constant;
 import nextstep.subway.application.LineService;
 import nextstep.subway.application.StationService;
 import nextstep.subway.application.dto.ShowLineSectionDto;
 import nextstep.subway.application.request.AddSectionRequest;
 import nextstep.subway.application.response.ShowLineResponse;
-import nextstep.common.Constant;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.Section;

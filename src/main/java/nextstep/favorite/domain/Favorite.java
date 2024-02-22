@@ -56,7 +56,7 @@ public class Favorite {
         return endStation;
     }
 
-    public void setMember(Member member){
+    public void setMember(Member member) {
         this.member = member;
     }
 

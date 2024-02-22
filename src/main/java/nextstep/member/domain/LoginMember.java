@@ -7,7 +7,7 @@ public class LoginMember {
         this.email = email;
     }
 
-    public static LoginMember from (String email) {
+    public static LoginMember from(String email) {
         return new LoginMember(email);
     }
 

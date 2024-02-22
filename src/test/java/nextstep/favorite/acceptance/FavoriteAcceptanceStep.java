@@ -4,9 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.request.AddFavoriteRequest;
-import nextstep.favorite.application.response.AddFavoriteResponse;
 import nextstep.favorite.application.response.ShowAllFavoriteResponse;
-import nextstep.subway.application.request.AddSectionRequest;
 import org.springframework.http.MediaType;
 
 public class FavoriteAcceptanceStep {
