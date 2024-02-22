@@ -1,7 +1,6 @@
-package nextstep.core.pathFinder.unit;
+package nextstep.core.pathFinder.application;
 
 import nextstep.core.line.domain.Line;
-import nextstep.core.pathFinder.application.PathFinder;
 import nextstep.core.pathFinder.domain.PathFinderResult;
 import nextstep.core.section.domain.Section;
 import nextstep.core.station.domain.Station;

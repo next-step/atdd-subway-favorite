@@ -1,4 +1,4 @@
-package nextstep.core.line.unit;
+package nextstep.core.line.application;
 
 import nextstep.common.annotation.ApplicationTest;
 import nextstep.core.line.application.LineService;

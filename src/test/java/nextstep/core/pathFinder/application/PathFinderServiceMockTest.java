@@ -1,10 +1,8 @@
-package nextstep.core.pathFinder.unit;
+package nextstep.core.pathFinder.application;
 
 import nextstep.common.annotation.ApplicationTest;
 import nextstep.core.line.application.LineService;
 import nextstep.core.line.domain.Line;
-import nextstep.core.pathFinder.application.PathFinder;
-import nextstep.core.pathFinder.application.PathFinderService;
 import nextstep.core.pathFinder.application.dto.PathFinderRequest;
 import nextstep.core.pathFinder.application.dto.PathFinderResponse;
 import nextstep.core.pathFinder.domain.PathFinderResult;
