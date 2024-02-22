@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nextstep.api.auth.domain.UserDetails;
 import nextstep.api.member.domain.Member;
-import nextstep.api.user.UserDetails;
 import nextstep.common.mapper.ModelMapperBasedObjectMapper;
 
 /**

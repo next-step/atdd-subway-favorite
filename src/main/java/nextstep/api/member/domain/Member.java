@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.Getter;
-import nextstep.api.user.UserDetails;
+import nextstep.api.auth.domain.UserDetails;
 
 @Entity
 @Getter

@@ -1,4 +1,4 @@
-package nextstep.api.user;
+package nextstep.api.member.application;
 
 import nextstep.api.member.domain.Member;
 

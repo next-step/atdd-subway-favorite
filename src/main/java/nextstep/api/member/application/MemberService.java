@@ -8,8 +8,6 @@ import nextstep.api.member.application.dto.MemberResponse;
 import nextstep.api.member.domain.LoginMember;
 import nextstep.api.member.domain.Member;
 import nextstep.api.member.domain.MemberRepository;
-import nextstep.api.user.OAuthUserRegistrationRequest;
-import nextstep.api.user.OAuthUserRegistrationService;
 import nextstep.common.annotation.PreAuthorize;
 import nextstep.common.exception.member.MemberNotFoundException;
 

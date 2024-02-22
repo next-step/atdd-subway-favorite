@@ -1,4 +1,4 @@
-package nextstep.api.user;
+package nextstep.api.member.application;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

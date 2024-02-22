@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 import nextstep.api.auth.application.dto.GithubLoginRequest;
 import nextstep.api.auth.application.dto.TokenRequest;
 import nextstep.api.auth.application.dto.TokenResponse;
+import nextstep.api.auth.domain.UserDetails;
 import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.auth.domain.service.AuthService;
+import nextstep.api.auth.domain.service.UserDetailsService;
 import nextstep.api.auth.domain.service.impl.TokenService;
-import nextstep.api.user.OAuthUserRegistrationRequest;
-import nextstep.api.user.OAuthUserRegistrationService;
-import nextstep.api.user.UserDetailsService;
+import nextstep.api.member.application.OAuthUserRegistrationRequest;
+import nextstep.api.member.application.OAuthUserRegistrationService;
 import nextstep.common.exception.member.AuthenticationException;
 
 /**
@@ -28,16 +29,16 @@ public class AuthFacade {
 	private final OAuthUserRegistrationService oAuthUserRegistrationService;
 
 	public TokenResponse githubLogin(GithubLoginRequest loginRequest) {
-		UserPrincipal oauthUser = authService.authenticateWithGithub(loginRequest.getCode());
+		UserDetails oauthUser = authService.authenticateWithGithub(loginRequest.getCode());
 
-		UserPrincipal member = userDetailsService.loadUserByEmailOptional(oauthUser.getEmail())
+		UserDetails member = userDetailsService.loadUserByEmailOptional(oauthUser.getEmail())
 			.orElseGet(() -> UserPrincipal.from(oAuthUserRegistrationService.registerOAuthUser(OAuthUserRegistrationRequest.of(oauthUser.getEmail()))));
 
 		return tokenService.createToken(member.getEmail());
 	}
 
 	public TokenResponse createToken(TokenRequest request) {
-		UserPrincipal member = userDetailsService.loadUserByEmail(request.getEmail());
+		UserDetails member = userDetailsService.loadUserByEmail(request.getEmail());
 		if (!member.getPassword().equals(request.getPassword())) {
 			throw new AuthenticationException();
 		}
