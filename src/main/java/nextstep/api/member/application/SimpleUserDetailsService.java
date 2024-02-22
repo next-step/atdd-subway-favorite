@@ -1,4 +1,4 @@
-package nextstep.api.auth.domain.service.impl;
+package nextstep.api.member.application;
 
 import java.util.Optional;
 
