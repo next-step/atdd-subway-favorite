@@ -52,4 +52,31 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    /**
+     * when 인증 정보 없이 내 정보 관리 기능을 조회하면
+     * then 401 unauthorized 코드로 응답한다.
+     */
+    @DisplayName("error_인증 정보 없이 정보 조회")
+    @Test
+    void error_unauthorized() {
+        RestAssured.given().log().all()
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * when 유효하지 않은 인증 정보로 내 정보 관리 기능을 조회하면
+     * then 401 unauthorized 코드로 응답한다.
+     */
+    @DisplayName("error_유효하지 않은 인증 정보로 조회")
+    @Test
+    void error_unauthorized_invalid() {
+        RestAssured.given().log().all()
+                .auth().oauth2("qwer")
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
 }
