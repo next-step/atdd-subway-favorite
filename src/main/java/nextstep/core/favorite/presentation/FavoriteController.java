@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteService favoriteService;
 
     public FavoriteController(FavoriteService favoriteService) {
         this.favoriteService = favoriteService;
