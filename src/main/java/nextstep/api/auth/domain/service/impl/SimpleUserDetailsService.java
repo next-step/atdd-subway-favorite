@@ -1,4 +1,4 @@
-package nextstep.api.auth.domain.service;
+package nextstep.api.auth.domain.service.impl;
 
 import java.util.Optional;
 
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.api.auth.domain.dto.UserPrincipal;
+import nextstep.api.auth.domain.service.UserDetailsService;
 import nextstep.api.member.domain.MemberRepository;
 import nextstep.common.exception.member.MemberNotFoundException;
 
