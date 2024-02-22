@@ -5,6 +5,7 @@ import nextstep.exception.UnconnectedFindPathStationsException;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteDto;
 import nextstep.favorite.application.request.AddFavoriteRequest;
+import nextstep.favorite.application.response.AddFavoriteResponse;
 import nextstep.favorite.application.response.ShowAllFavoriteResponse;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
@@ -90,7 +91,7 @@ public class FavoriteMockServiceTest {
         // then
         ShowAllFavoriteResponse 즐겨찾기_조회_응답 = favoriteService.findFavorites(LoginMember.from(홍길동_이메일));
         List<FavoriteDto> 즐겨찾기 = 즐겨찾기_조회_응답.getFavorites();
-        즐겨찾기_추가_검증(즐겨찾기, 1, 논현역, 신논현역);
+        즐겨찾기_조회됨_검증(즐겨찾기, 1, 논현역, 신논현역);
     }
 
     @DisplayName("경로가 없는 구간을 즐겨찾기로 추가하면 예외가 발생한다.")
@@ -129,11 +130,33 @@ public class FavoriteMockServiceTest {
         List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
 
         // then
-        즐겨찾기_추가_검증(홍길동_즐겨찾기, 1, 논현역, 신논현역);
-        즐겨찾기_추가_안됨_검증(홍길동_즐겨찾기, 강남구청역, 압구정로데오역);
+        즐겨찾기_조회됨_검증(홍길동_즐겨찾기, 1, 논현역, 신논현역);
+        즐겨찾기_조회안됨_검증(홍길동_즐겨찾기, 강남구청역, 압구정로데오역);
     }
 
-    void 즐겨찾기_추가_안됨_검증(List<FavoriteDto> 즐겨찾기, Station 시작역, Station 종료역) {
+    @DisplayName("즐겨찾기를 삭제하면 즐겨찾기에서 조회되지 않는다.")
+    @Test
+    void 즐겨찾기를_삭제() {
+        // given
+        when(memberRepository.findByEmail(홍길동_이메일)).thenReturn(Optional.of(홍길동));
+        when(lineRepository.findAll()).thenReturn(List.of(신분당선));
+        when(stationService.findById(논현역_ID)).thenReturn(논현역);
+        when(stationService.findById(신논현역_ID)).thenReturn(신논현역);
+        // favoriteService.createFavorite(LoginMember.from(홍길동_이메일), AddFavoriteRequest.of(논현역_ID, 신논현역_ID));
+
+        AddFavoriteResponse addFavoriteResponse = favoriteService.createFavorite(LoginMember.from(홍길동_이메일), AddFavoriteRequest.of(논현역_ID, 신논현역_ID));
+        System.out.println(addFavoriteResponse);
+
+        // when
+        favoriteService.deleteFavorite(LoginMember.from(홍길동_이메일), 1L);
+
+        // then
+        ShowAllFavoriteResponse 홍길동_즐겨찾기_조회_응답 = favoriteService.findFavorites(LoginMember.from(홍길동_이메일));
+        List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
+        즐겨찾기_조회안됨_검증(홍길동_즐겨찾기, 논현역, 신논현역);
+    }
+
+    void 즐겨찾기_조회안됨_검증(List<FavoriteDto> 즐겨찾기, Station 시작역, Station 종료역) {
         assertTrue(즐겨찾기.stream()
                 .noneMatch(favoriteDto ->
                         favoriteDto.getStartStation().equals(StationDto.from(시작역))
@@ -141,7 +164,7 @@ public class FavoriteMockServiceTest {
                 ));
     }
 
-    void 즐겨찾기_추가_검증(List<FavoriteDto> 즐겨찾기, int 즐겨찾기_수, Station 시작역, Station 종료역) {
+    void 즐겨찾기_조회됨_검증(List<FavoriteDto> 즐겨찾기, int 즐겨찾기_수, Station 시작역, Station 종료역) {
         assertThat(즐겨찾기).hasSize(즐겨찾기_수);
         assertTrue(즐겨찾기.stream()
                 .anyMatch(favoriteDto ->

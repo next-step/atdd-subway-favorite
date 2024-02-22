@@ -1,5 +1,6 @@
 package nextstep.favorite.application.response;
 
+import nextstep.favorite.domain.Favorite;
 import nextstep.subway.application.dto.ShowStationDto;
 
 public class AddFavoriteResponse {
@@ -17,8 +18,12 @@ public class AddFavoriteResponse {
         this.endStation = endStation;
     }
 
-    public static AddFavoriteResponse of(Long favoriteId, ShowStationDto startStation, ShowStationDto endStation) {
-        return new AddFavoriteResponse(favoriteId, startStation, endStation);
+    public static AddFavoriteResponse from(Favorite favorite) {
+        return new AddFavoriteResponse(
+                favorite.getFavoriteId(),
+                ShowStationDto.from(favorite.getStartStation()),
+                ShowStationDto.from(favorite.getEndStation())
+        );
     }
 
     public Long getFavoriteId() {

@@ -1,7 +1,10 @@
 package nextstep.favorite.application;
 
+import nextstep.exception.NotFoundFavoriteException;
+import nextstep.exception.NotFoundLineException;
 import nextstep.exception.NotFoundUserException;
 import nextstep.favorite.application.request.AddFavoriteRequest;
+import nextstep.favorite.application.response.AddFavoriteResponse;
 import nextstep.favorite.application.response.ShowAllFavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
@@ -34,7 +37,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void createFavorite(LoginMember loginMember, AddFavoriteRequest addFavoriteRequest) {
+    public AddFavoriteResponse createFavorite(LoginMember loginMember, AddFavoriteRequest addFavoriteRequest) {
         Member member = memberRepository.findByEmail(loginMember.getEmail())
                 .orElseThrow(NotFoundUserException::new);
         List<Line> lines = lineRepository.findAll();
@@ -45,6 +48,9 @@ public class FavoriteService {
 
         Favorite favorite = Favorite.of(startStation, endStation);
         member.addFavorite(favorite);
+        favoriteRepository.save(favorite);
+
+        return AddFavoriteResponse.from(favorite);
     }
 
     public ShowAllFavoriteResponse findFavorites(LoginMember loginMember) {
@@ -53,12 +59,14 @@ public class FavoriteService {
         return ShowAllFavoriteResponse.from(member.getFavorites());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    @Transactional
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail())
+                .orElseThrow(NotFoundUserException::new);
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(NotFoundFavoriteException::new);
+
+        favoriteRepository.deleteById(favorite.getFavoriteId());
     }
+
 }

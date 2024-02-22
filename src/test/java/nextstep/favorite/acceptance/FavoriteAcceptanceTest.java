@@ -3,9 +3,11 @@ package nextstep.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteDto;
+import nextstep.favorite.application.request.AddFavoriteRequest;
 import nextstep.favorite.application.response.ShowAllFavoriteResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -33,10 +35,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 신분당선_ID;
     private Long 수인분당선_ID;
 
+    private String 홍길동_토큰;
+    private String 임꺽정_토큰;
+
     @BeforeEach
     protected void beforeEach() {
         회원_생성_요청(홍길동_이메일, 홍길동_비밀번호, 홍길동_나이);
         회원_생성_요청(임꺽정_이메일, 임꺽정_비밀번호, 임꺽정_나이);
+        홍길동_토큰 = 로그인_성공(홍길동_이메일, 홍길동_비밀번호);
+        임꺽정_토큰 = 로그인_성공(임꺽정_이메일, 임꺽정_비밀번호);
 
         강남역_ID = 지하철_역_생성됨(강남역);
         양재역_ID = 지하철_역_생성됨(양재역);
@@ -61,16 +68,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하고 구간을 즐겨찾기에 추가한다.")
     @Test
     void 로그인하고_구간을_즐겨찾기에_추가() {
-        // given
-        String 토큰 = 로그인_성공(홍길동_이메일, 홍길동_비밀번호);
-
         // when
-        즐겨찾기_추가됨(강남역_ID, 양재역_ID, 토큰);
+        즐겨찾기_추가됨(강남역_ID, 양재역_ID, 홍길동_토큰);
 
         // then
-        ShowAllFavoriteResponse 즐겨찾기_조회_응답 = 즐겨찾기_조회됨(토큰);
+        ShowAllFavoriteResponse 즐겨찾기_조회_응답 = 즐겨찾기_조회됨(홍길동_토큰);
         List<FavoriteDto> 즐겨찾기 = 즐겨찾기_조회_응답.getFavorites();
-        즐겨찾기_추가_검증(즐겨찾기, 1, 강남역_ID, 양재역_ID);
+        즐겨찾기_조회됨_검증(즐겨찾기, 1, 강남역_ID, 양재역_ID);
     }
 
     /**
@@ -81,12 +85,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인을 하지 않고 구간을 즐겨찾기를 추가하면 추가되지 않는다.")
     @Test
     void 로그인을_하지않고_구간을_즐겨찾기에_추가() {
-        // when
-        즐겨찾기_추가됨(강남역_ID, 양재역_ID, EMPTY);
-
-        // then
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(EMPTY);
-        즐겨찾기_추가_예외발생_검증(즐겨찾기_조회_응답, HttpStatus.UNAUTHORIZED);
+        // when & then
+        즐겨찾기_추가_예외발생_검증(즐겨찾기_추가(AddFavoriteRequest.of(강남역_ID, 양재역_ID), EMPTY), HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -96,11 +96,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로가 없는 구간을 즐겨찾기로 추가하면 추가되지 않는다.")
     @Test
     void 경로가_없는_구간을_즐겨찾기에_추가() {
-        // given
-        String 토큰 = 로그인_성공(홍길동_이메일, 홍길동_비밀번호);
-
         // when & then
-        ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_추가됨(강남구청역_ID, 양재역_ID, 토큰);
+        ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_추가(AddFavoriteRequest.of(강남구청역_ID, 양재역_ID), 홍길동_토큰);
+
         즐겨찾기_추가_예외발생_검증(즐겨찾기_추가_응답, HttpStatus.BAD_REQUEST);
     }
 
@@ -113,21 +111,41 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기를_조회() {
         // given
-        String 홍길동_토큰 = 로그인_성공(홍길동_이메일, 홍길동_비밀번호);
         즐겨찾기_추가됨(강남역_ID, 양재역_ID, 홍길동_토큰);
-        String 임꺽정_토큰 = 로그인_성공(임꺽정_이메일, 임꺽정_비밀번호);
-        즐겨찾기_추가됨(강남구청역_ID, 압구정로데오역_ID, 임꺽정_토큰);
+        즐겨찾기_추가됨(압구정로데오역_ID, 강남구청역_ID, 임꺽정_토큰);
 
         // when & then
         ShowAllFavoriteResponse 홍길동_즐겨찾기_조회_응답 = 즐겨찾기_조회됨(홍길동_토큰);
         List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
 
         // then
-        즐겨찾기_추가_검증(홍길동_즐겨찾기, 1, 강남역_ID, 양재역_ID);
-        즐겨찾기_추가_안됨_검증(홍길동_즐겨찾기, 강남구청역_ID, 압구정로데오역_ID);
+        즐겨찾기_조회됨_검증(홍길동_즐겨찾기, 1, 강남역_ID, 양재역_ID);
+        즐겨찾기_조회안됨_검증(홍길동_즐겨찾기, 압구정로데오역_ID, 강남구청역_ID);
     }
 
-    void 즐겨찾기_추가_검증(List<FavoriteDto> 즐겨찾기, int 즐겨찾기_수, Long 시작역, Long 종료역) {
+    /**
+     * given 즐겨찾기를 추가하고
+     * When 즐겨찾기를 삭제하면
+     * Then 즐겨찾기에서 조회되지 않는다.
+     */
+    @DisplayName("즐겨찾기를 삭제하면 즐겨찾기에서 조회되지 않는다.")
+    @Test
+    void 즐겨찾기를_삭제() {
+        // given
+        Long 홍길동_강남역_양재역_즐겨찾기_ID = 즐겨찾기_추가됨(강남역_ID, 양재역_ID, 홍길동_토큰).getFavoriteId();
+        Long 홍길동_압구정로데오역_강남구청역_즐겨찾기_ID = 즐겨찾기_추가됨(압구정로데오역_ID, 강남구청역_ID, 홍길동_토큰).getFavoriteId();
+
+        // when & then
+        즐겨찾기_삭제(홍길동_압구정로데오역_강남구청역_즐겨찾기_ID, 홍길동_토큰);
+
+        // then
+        ShowAllFavoriteResponse 홍길동_즐겨찾기_조회_응답 = 즐겨찾기_조회됨(홍길동_토큰);
+        List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
+        즐겨찾기_조회됨_검증(홍길동_즐겨찾기, 1, 강남역_ID, 양재역_ID);
+        즐겨찾기_조회안됨_검증(홍길동_즐겨찾기, 압구정로데오역_ID, 강남구청역_ID);
+    }
+
+    void 즐겨찾기_조회됨_검증(List<FavoriteDto> 즐겨찾기, int 즐겨찾기_수, Long 시작역, Long 종료역) {
         assertThat(즐겨찾기).hasSize(즐겨찾기_수);
         assertTrue(즐겨찾기.stream()
                 .anyMatch(favoriteDto ->
@@ -136,7 +154,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 ));
     }
 
-    void 즐겨찾기_추가_안됨_검증(List<FavoriteDto> 즐겨찾기, Long 시작역, Long 종료역) {
+    void 즐겨찾기_조회안됨_검증(List<FavoriteDto> 즐겨찾기, Long 시작역, Long 종료역) {
         assertTrue(즐겨찾기.stream()
                 .noneMatch(favoriteDto ->
                         favoriteDto.getStartStation().getStationId().equals(시작역)
