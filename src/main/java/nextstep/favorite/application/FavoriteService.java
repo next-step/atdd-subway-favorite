@@ -2,28 +2,43 @@ package nextstep.favorite.application;
 
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.application.dto.FavoriteSimpleResponse;
+import nextstep.favorite.application.exception.FavoriteException.NotCreatedException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    private final FavoriteRepository favoriteRepository;
+    private final MemberRepository memberRepository;
+
+    public FavoriteService(FavoriteRepository favoriteRepository,
+        MemberRepository memberRepository) {
         this.favoriteRepository = favoriteRepository;
+        this.memberRepository = memberRepository;
     }
 
     /**
      * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
      *
      * @param request
+     * @return
      */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
+    @Transactional
+    public FavoriteSimpleResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
+            NotCreatedException::new);
+        Favorite favorite = new Favorite(member.getId(), request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
+        return new FavoriteSimpleResponse(favorite.getId());
     }
 
     /**
@@ -38,6 +53,7 @@ public class FavoriteService {
 
     /**
      * TODO: 요구사항 설명에 맞게 수정합니다.
+     *
      * @param id
      */
     public void deleteFavorite(Long id) {
