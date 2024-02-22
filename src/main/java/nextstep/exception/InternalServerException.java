@@ -1,5 +1,6 @@
-package nextstep.subway.applicaion.exception;
+package nextstep.exception;
 
+import nextstep.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
 
 public class InternalServerException extends ApplicationException {

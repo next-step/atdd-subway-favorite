@@ -1,7 +1,7 @@
 package nextstep.subway.ui;
 
-import nextstep.subway.applicaion.exception.ApplicationException;
-import nextstep.subway.domain.exception.DomainException;
+import nextstep.exception.ApplicationException;
+import nextstep.exception.DomainException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

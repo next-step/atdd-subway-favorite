@@ -1,5 +1,7 @@
 package nextstep.subway.domain.exception;
 
+import nextstep.exception.DomainException;
+
 public class LineException extends DomainException {
 
     public static final String ALREADY_REGISTERED_STATION_EXCEPTION = "이미 해당 노선에 등록되어있는 역은 새로운 구간의 하행역이 될 수 없습니다.";
