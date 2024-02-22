@@ -1,5 +1,7 @@
 package nextstep.subway.domain.exception;
 
+import nextstep.exception.DomainException;
+
 public class PathException extends DomainException {
 
     private static final String PATH_NOT_FOUND_EXCEPTION = "경로를 찾을 수 없습니다.";

@@ -1,5 +1,7 @@
 package nextstep.subway.domain.exception;
 
+import nextstep.exception.DomainException;
+
 public class SectionException extends DomainException {
 
     public static final String INVALID_DISTANCE = "구간의 거리는 0보다 커야 합니다.";
