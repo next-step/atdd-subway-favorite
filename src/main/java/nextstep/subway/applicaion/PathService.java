@@ -11,7 +11,6 @@ public class PathService {
 
   private final SectionService sectionService;
   private final StationService stationService;
-  private final PathFinder pathFinder;
 
   public FindPathResponse findPath(Long source, Long target) {
     verifySourceIsSameToTarget(source, target);
@@ -22,6 +21,8 @@ public class PathService {
         .orElseThrow(() -> new BusinessException("출발역 정보를 찾을 수 없습니다."));
 
     final var sections = sectionService.findAll();
+
+    final var pathFinder = new DijkstraPathFinder(sections);
     final var path = pathFinder.find(sections, sourceStation, targetStation)
         .orElseThrow(() -> new BusinessException("경로를 찾을 수 없습니다."));
 
