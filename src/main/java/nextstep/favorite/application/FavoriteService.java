@@ -11,6 +11,7 @@ import nextstep.subway.entity.Sections;
 import nextstep.subway.entity.Station;
 import nextstep.subway.service.LineService;
 import nextstep.subway.service.PathFinder;
+import nextstep.subway.service.PathService;
 import nextstep.subway.service.StationService;
 import org.springframework.stereotype.Service;
 
@@ -23,31 +24,30 @@ public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationService stationService;
     private MemberService memberService;
-    private LineService lineService;
+    private PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService, LineService lineService) {
+
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
         this.memberService = memberService;
-        this.lineService = lineService;
+        this.pathService = pathService;
     }
 
     /** 즐겨찾기 등록 */
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
+        verifyConnectedStation(request);
+
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
         Station sourceStation = stationService.findStation(request.getSource());
         Station targetStation = stationService.findStation(request.getTarget());
-
-        verifyConnectedStation(sourceStation, targetStation);
 
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
         favoriteRepository.save(favorite);
     }
 
-    private void verifyConnectedStation(Station sourceStation, Station targetStation) {
-        List<Sections> sectionsList = lineService.findSectionsList();
-
-        new PathFinder(sectionsList).getShortestPath(sourceStation, targetStation);
+    private void verifyConnectedStation(FavoriteRequest request) {
+        pathService.getPaths(request.getSource(), request.getTarget());
     }
 
     /** 즐겨찾기 목록 조회 */
