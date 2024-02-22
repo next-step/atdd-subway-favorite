@@ -3,6 +3,8 @@ package nextstep.favorite.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.acceptance.MemberSteps;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.subway.acceptance.fixture.LineFixture;
 import nextstep.subway.acceptance.fixture.StationFixture;
 import nextstep.subway.dto.line.LineResponse;
@@ -23,6 +25,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "user@email.com";
+    private static final String PASSWORD = "password";
+    private static final Integer AGE = 20;
     private String accessToken;
 
     private Long 교대역;
@@ -37,8 +42,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         LineFixture.노선_생성_요청("2호선", "green", 10, 교대역, 강남역).as(LineResponse.class).getId();
 
-        // TODO. 인증 구현
-//        accessToken =
+        MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
+        accessToken = MemberSteps.회원_로그인(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
     }
 
     @Nested
@@ -166,7 +171,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_등록_요청(Map<String, Long> params) {
         return RestAssured
             .given()
-            .auth().oauth(accessToken)
+            .auth().oauth2(accessToken)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when()
@@ -178,7 +183,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_조회_요청() {
         return RestAssured
             .given()
-            .auth().oauth(accessToken)
+            .auth().oauth2(accessToken)
             .when()
             .get("/favorites")
             .then()
@@ -189,7 +194,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long id) {
         return RestAssured
             .given()
-            .auth().oauth(accessToken)
+            .auth().oauth2(accessToken)
             .when()
             .delete("/favorites/{id}", id)
             .then()
