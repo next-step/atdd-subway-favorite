@@ -1,7 +1,6 @@
 package nextstep.favorite.application;
 
 import nextstep.exception.NotFoundFavoriteException;
-import nextstep.exception.NotFoundLineException;
 import nextstep.exception.NotFoundUserException;
 import nextstep.favorite.application.request.AddFavoriteRequest;
 import nextstep.favorite.application.response.AddFavoriteResponse;
@@ -43,10 +42,10 @@ public class FavoriteService {
         List<Line> lines = lineRepository.findAll();
         Station startStation = stationService.findById(addFavoriteRequest.getStartStationId());
         Station endStation = stationService.findById(addFavoriteRequest.getEndStationId());
+        Favorite favorite = Favorite.of(startStation, endStation);
 
         PathFinder.findShortestPath(lines, startStation, endStation);
 
-        Favorite favorite = Favorite.of(startStation, endStation);
         member.addFavorite(favorite);
         favoriteRepository.save(favorite);
 
@@ -66,7 +65,7 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(NotFoundFavoriteException::new);
 
-        favoriteRepository.deleteById(favorite.getFavoriteId());
+        member.deleteFavorite(favorite);
     }
 
 }

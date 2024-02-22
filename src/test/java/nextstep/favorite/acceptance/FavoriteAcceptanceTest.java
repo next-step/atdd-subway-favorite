@@ -7,7 +7,6 @@ import nextstep.favorite.application.request.AddFavoriteRequest;
 import nextstep.favorite.application.response.ShowAllFavoriteResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -143,6 +142,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
         즐겨찾기_조회됨_검증(홍길동_즐겨찾기, 1, 강남역_ID, 양재역_ID);
         즐겨찾기_조회안됨_검증(홍길동_즐겨찾기, 압구정로데오역_ID, 강남구청역_ID);
+    }
+
+    /**
+     * When 다른 사람의 즐겨찾기를 삭제하면
+     * Then 즐겨찾기에서 삭제되지 않는다.
+     */
+    @DisplayName("다른 사람의 즐겨찾기를 삭제하면 삭제되지 않는다.")
+    @Test
+    void 다른사람의_즐겨찾기를_삭제() {
+        // given
+        Long 홍길동_강남역_양재역_즐겨찾기_ID = 즐겨찾기_추가됨(강남역_ID, 양재역_ID, 홍길동_토큰).getFavoriteId();
+
+        // when & then
+        즐겨찾기_삭제(홍길동_강남역_양재역_즐겨찾기_ID, 임꺽정_토큰);
+
+        // then
+        ShowAllFavoriteResponse 홍길동_즐겨찾기_조회_응답 = 즐겨찾기_조회됨(홍길동_토큰);
+        List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
+        즐겨찾기_조회됨_검증(홍길동_즐겨찾기, 1, 강남역_ID, 양재역_ID);
     }
 
     void 즐겨찾기_조회됨_검증(List<FavoriteDto> 즐겨찾기, int 즐겨찾기_수, Long 시작역, Long 종료역) {

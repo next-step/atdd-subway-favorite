@@ -1,5 +1,7 @@
 package nextstep.favorite.domain;
 
+import nextstep.exception.NotFoundFavoriteException;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -25,6 +27,15 @@ public class Fovorites {
 
     public void add(Favorite favorite) {
         this.favorites.add(favorite);
+    }
+
+    public void deleteFavorite(Favorite favorite) {
+        if (!favorites.contains(favorite)) {
+            throw new NotFoundFavoriteException();
+        }
+
+        favorite.delete();
+        this.favorites.remove(favorite);
     }
 
     public List<Favorite> getFavorites() {

@@ -60,11 +60,11 @@ public class Line {
     }
 
     public void deleteSection(Station deletedStation) {
-        sections.deleteSection(deletedStation);
+        this.sections.deleteSection(deletedStation);
     }
 
     public boolean hasSection(Section Section) {
-        return sections.hasSection(Section);
+        return this.sections.hasSection(Section);
     }
 
     public Long getLineId() {

@@ -44,6 +44,10 @@ public class Favorite {
         return new Favorite(startStation, endStation);
     }
 
+    public void delete() {
+        deletedAt = LocalDateTime.now();
+    }
+
     public Long getFavoriteId() {
         return favoriteId;
     }

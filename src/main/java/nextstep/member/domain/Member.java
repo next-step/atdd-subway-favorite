@@ -61,6 +61,10 @@ public class Member {
         return Objects.equals(this.password, password);
     }
 
+    public void deleteFavorite(Favorite favorite) {
+        this.fovorites.deleteFavorite(favorite);
+    }
+
     public Long getMemberId() {
         return memberId;
     }
