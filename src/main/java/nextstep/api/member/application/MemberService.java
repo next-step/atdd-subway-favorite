@@ -3,6 +3,8 @@ package nextstep.api.member.application;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.api.auth.application.dto.OAuthUserRegistrationRequest;
+import nextstep.api.auth.domain.service.OAuthUserRegistrationService;
 import nextstep.api.member.application.dto.MemberRequest;
 import nextstep.api.member.application.dto.MemberResponse;
 import nextstep.api.member.domain.LoginMember;
@@ -37,7 +39,6 @@ public class MemberService implements OAuthUserRegistrationService {
 	public void deleteMember(LoginMember loginMember, Long id) {
 		memberRepository.deleteById(id);
 	}
-
 
 	public MemberResponse findMe(LoginMember loginMember) {
 		return memberRepository.findByEmail(loginMember.getEmail())

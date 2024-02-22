@@ -11,8 +11,8 @@ import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.auth.domain.service.AuthService;
 import nextstep.api.auth.domain.service.UserDetailsService;
 import nextstep.api.auth.domain.service.impl.TokenService;
-import nextstep.api.member.application.OAuthUserRegistrationRequest;
-import nextstep.api.member.application.OAuthUserRegistrationService;
+import nextstep.api.auth.application.dto.OAuthUserRegistrationRequest;
+import nextstep.api.auth.domain.service.OAuthUserRegistrationService;
 import nextstep.common.exception.member.AuthenticationException;
 
 /**

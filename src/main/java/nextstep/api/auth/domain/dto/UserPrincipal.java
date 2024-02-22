@@ -29,4 +29,8 @@ public class UserPrincipal implements UserDetails {
 	public static UserPrincipal from(Member member) {
 		return ModelMapperBasedObjectMapper.convert(member, UserPrincipal.class);
 	}
+
+	public static UserPrincipal from(UserDetails userDetails) {
+		return ModelMapperBasedObjectMapper.convert(userDetails, UserPrincipal.class);
+	}
 }
