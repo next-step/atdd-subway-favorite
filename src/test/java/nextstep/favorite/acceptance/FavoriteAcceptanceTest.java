@@ -36,7 +36,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     protected void beforeEach() {
         회원_생성_요청(홍길동_이메일, 홍길동_비밀번호, 홍길동_나이);
-        회원_생성_요청(홍길동_이메일, 홍길동_비밀번호, 홍길동_나이);
+        회원_생성_요청(임꺽정_이메일, 임꺽정_비밀번호, 임꺽정_나이);
 
         강남역_ID = 지하철_역_생성됨(강남역);
         양재역_ID = 지하철_역_생성됨(양재역);
@@ -104,10 +104,41 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_추가_예외발생_검증(즐겨찾기_추가_응답, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * given 즐겨찾기를 추가하고
+     * When 즐겨찾기를 조회하면
+     * Then 자신의 즐겨찾기만 조회된다.
+     */
+    @DisplayName("즐겨찾기를 조회하면 자신의 즐겨찾기만 조회된다.")
+    @Test
+    void 즐겨찾기를_조회() {
+        // given
+        String 홍길동_토큰 = 로그인_성공(홍길동_이메일, 홍길동_비밀번호);
+        즐겨찾기_추가됨(강남역_ID, 양재역_ID, 홍길동_토큰);
+        String 임꺽정_토큰 = 로그인_성공(임꺽정_이메일, 임꺽정_비밀번호);
+        즐겨찾기_추가됨(강남구청역_ID, 압구정로데오역_ID, 임꺽정_토큰);
+
+        // when & then
+        ShowAllFavoriteResponse 홍길동_즐겨찾기_조회_응답 = 즐겨찾기_조회됨(홍길동_토큰);
+        List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
+
+        // then
+        즐겨찾기_추가_검증(홍길동_즐겨찾기, 1, 강남역_ID, 양재역_ID);
+        즐겨찾기_추가_안됨_검증(홍길동_즐겨찾기, 강남구청역_ID, 압구정로데오역_ID);
+    }
+
     void 즐겨찾기_추가_검증(List<FavoriteDto> 즐겨찾기, int 즐겨찾기_수, Long 시작역, Long 종료역) {
         assertThat(즐겨찾기).hasSize(즐겨찾기_수);
         assertTrue(즐겨찾기.stream()
                 .anyMatch(favoriteDto ->
+                        favoriteDto.getStartStation().getStationId().equals(시작역)
+                                && favoriteDto.getEndStation().getStationId().equals(종료역)
+                ));
+    }
+
+    void 즐겨찾기_추가_안됨_검증(List<FavoriteDto> 즐겨찾기, Long 시작역, Long 종료역) {
+        assertTrue(즐겨찾기.stream()
+                .noneMatch(favoriteDto ->
                         favoriteDto.getStartStation().getStationId().equals(시작역)
                                 && favoriteDto.getEndStation().getStationId().equals(종료역)
                 ));

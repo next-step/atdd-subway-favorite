@@ -48,6 +48,7 @@ public class FavoriteMockServiceTest {
     private StationService stationService;
 
     private final Member 홍길동 = Member.of(홍길동_이메일, 홍길동_비밀번호, 홍길동_나이);
+    private final Member 임꺽정 = Member.of(임꺽정_이메일, 임꺽정_비밀번호, 임꺽정_나이);
 
     private final Station 논현역 = Station.from(Constant.논현역);
     private final Long 논현역_ID = 1L;
@@ -104,6 +105,40 @@ public class FavoriteMockServiceTest {
         // when & then
         assertThatThrownBy(() -> favoriteService.createFavorite(LoginMember.from(홍길동_이메일), AddFavoriteRequest.of(논현역_ID, 압구정로데오역_ID)))
                 .isInstanceOf(UnconnectedFindPathStationsException.class);
+    }
+
+    @DisplayName("즐겨찾기를 조회하면 자신의 즐겨찾기만 조회된다.")
+    @Test
+    void 즐겨찾기를_조회() {
+        // given
+        when(memberRepository.findByEmail(홍길동_이메일)).thenReturn(Optional.of(홍길동));
+        when(stationService.findById(논현역_ID)).thenReturn(논현역);
+        when(stationService.findById(신논현역_ID)).thenReturn(신논현역);
+
+        when(memberRepository.findByEmail(임꺽정_이메일)).thenReturn(Optional.of(임꺽정));
+        when(stationService.findById(강남구청역_ID)).thenReturn(강남구청역);
+        when(stationService.findById(압구정로데오역_ID)).thenReturn(압구정로데오역);
+
+        when(lineRepository.findAll()).thenReturn(List.of(신분당선, 수인분당선));
+
+        favoriteService.createFavorite(LoginMember.from(홍길동_이메일), AddFavoriteRequest.of(논현역_ID, 신논현역_ID));
+        favoriteService.createFavorite(LoginMember.from(임꺽정_이메일), AddFavoriteRequest.of(강남구청역_ID, 압구정로데오역_ID));
+
+        // when
+        ShowAllFavoriteResponse 홍길동_즐겨찾기_조회_응답 = favoriteService.findFavorites(LoginMember.from(홍길동_이메일));
+        List<FavoriteDto> 홍길동_즐겨찾기 = 홍길동_즐겨찾기_조회_응답.getFavorites();
+
+        // then
+        즐겨찾기_추가_검증(홍길동_즐겨찾기, 1, 논현역, 신논현역);
+        즐겨찾기_추가_안됨_검증(홍길동_즐겨찾기, 강남구청역, 압구정로데오역);
+    }
+
+    void 즐겨찾기_추가_안됨_검증(List<FavoriteDto> 즐겨찾기, Station 시작역, Station 종료역) {
+        assertTrue(즐겨찾기.stream()
+                .noneMatch(favoriteDto ->
+                        favoriteDto.getStartStation().equals(StationDto.from(시작역))
+                                && favoriteDto.getEndStation().equals(StationDto.from(종료역))
+                ));
     }
 
     void 즐겨찾기_추가_검증(List<FavoriteDto> 즐겨찾기, int 즐겨찾기_수, Station 시작역, Station 종료역) {
