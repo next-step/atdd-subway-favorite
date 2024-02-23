@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private MemberService memberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
@@ -18,7 +18,7 @@ public class TokenService {
     public TokenResponse createToken(String email, String password) {
         Member member = memberService.findMemberByEmail(email);
         if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
+            throw new IllegalArgumentException("비밀번호가 다릅니다.");
         }
 
         String token = jwtTokenProvider.createToken(member.getEmail());
