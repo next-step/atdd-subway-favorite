@@ -5,6 +5,7 @@ import nextstep.core.favorite.application.dto.FavoriteResponse;
 import nextstep.core.favorite.domain.Favorite;
 import nextstep.core.favorite.domain.FavoriteRepository;
 import nextstep.core.member.domain.Member;
+import nextstep.core.member.exception.NonMatchingMemberException;
 import nextstep.core.pathFinder.application.PathFinderService;
 import nextstep.core.pathFinder.application.dto.PathFinderRequest;
 import nextstep.core.station.application.StationService;
@@ -12,6 +13,7 @@ import nextstep.core.station.application.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,14 +33,14 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void createFavorite(FavoriteRequest request, Member member) {
+    public Favorite createFavorite(FavoriteRequest request, Member member) {
         pathFinderService.findShortestPath(new PathFinderRequest(request.getSource(), request.getTarget()));
 
         Favorite favorite = new Favorite(
                 stationService.findStation(request.getSource()),
                 stationService.findStation(request.getTarget()),
                 member);
-        favoriteRepository.save(favorite);
+        return favoriteRepository.save(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(Member member) {
@@ -55,12 +57,14 @@ public class FavoriteService {
         return favoriteResponses;
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long favoriteId, Member member) {
+        if (!member.isThisYours(findFavoriteById(favoriteId))) {
+            throw new NonMatchingMemberException("다른 회원의 즐겨찾기를 삭제할 수 없습니다.");
+        }
+        favoriteRepository.deleteById(favoriteId);
+    }
+
+    private Favorite findFavoriteById(Long id) {
+        return favoriteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("즐겨찾기 번호에 해당하는 즐겨찾기가 없습니다."));
     }
 }
