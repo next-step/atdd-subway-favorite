@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
 import nextstep.api.favorite.application.model.dto.FavoriteCreateResponse;
 import nextstep.api.favorite.application.model.dto.FavoriteResponse;
@@ -13,7 +14,6 @@ import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
 import nextstep.api.favorite.domain.model.dto.outport.FavoriteInfo;
 import nextstep.api.favorite.domain.service.FavoriteService;
 import nextstep.api.member.application.MemberService;
-import nextstep.api.member.domain.LoginMember;
 import nextstep.api.subway.domain.service.LineService;
 import nextstep.api.subway.domain.service.impl.StationService;
 import nextstep.api.subway.interfaces.dto.response.StationResponse;
@@ -32,7 +32,7 @@ public class FavoriteFacade {
 	private final StationService stationService;
 	private final LineService lineService;
 
-	public FavoriteCreateResponse create(LoginMember loginMember, FavoriteCreateRequest request) {
+	public FavoriteCreateResponse create(UserPrincipal loginMember, FavoriteCreateRequest request) {
 		if (!lineService.isProperSectionExist(request.getSourceStationId(), request.getTargetStationId())) {
 			throw new FavoriteCreationNotValidException();
 		}
@@ -40,7 +40,7 @@ public class FavoriteFacade {
 		return FavoriteCreateResponse.from(favoriteService.create(FavoriteCreateCommand.of(request, fetchMemberId(loginMember))));
 	}
 
-	public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+	public List<FavoriteResponse> findFavorites(UserPrincipal loginMember) {
 		return favoriteService.findFavorites(fetchMemberId(loginMember))
 			.stream()
 			.map(this::buildFavoriteResponse)
@@ -53,11 +53,11 @@ public class FavoriteFacade {
 		return FavoriteResponse.of(favoriteInfo.getId(), source, target);
 	}
 
-	public void deleteFavorite(LoginMember loginMember, Long id) {
+	public void deleteFavorite(UserPrincipal loginMember, Long id) {
 		favoriteService.deleteFavorite(fetchMemberId(loginMember), id);
 	}
 
-	private Long fetchMemberId(LoginMember loginMember) {
+	private Long fetchMemberId(UserPrincipal loginMember) {
 		return memberService.findMe(loginMember).getId();
 	}
 }

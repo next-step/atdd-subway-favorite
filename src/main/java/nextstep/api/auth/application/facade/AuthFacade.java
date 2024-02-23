@@ -4,14 +4,16 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.api.auth.application.dto.GithubLoginRequest;
+import nextstep.api.auth.application.dto.OAuthUserRegistrationRequest;
 import nextstep.api.auth.application.dto.TokenRequest;
 import nextstep.api.auth.application.dto.TokenResponse;
-import nextstep.api.auth.domain.dto.outport.OAuthUserInfo;
+import nextstep.api.auth.domain.UserDetails;
+import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.auth.domain.service.AuthService;
+import nextstep.api.auth.domain.service.OAuthUserRegistrationService;
+import nextstep.api.auth.domain.service.UserDetailsService;
 import nextstep.api.auth.domain.service.impl.TokenService;
-import nextstep.api.member.application.MemberService;
-import nextstep.api.member.domain.Member;
-import nextstep.common.exception.member.AuthenticationException;
+import nextstep.common.exception.auth.AuthenticationException;
 
 /**
  * @author : Rene Choi
@@ -22,21 +24,22 @@ import nextstep.common.exception.member.AuthenticationException;
 public class AuthFacade {
 
 	private final AuthService authService;
-	private final MemberService memberService;
+	private final UserDetailsService userDetailsService;
 	private final TokenService tokenService;
+	private final OAuthUserRegistrationService oAuthUserRegistrationService;
 
 	public TokenResponse githubLogin(GithubLoginRequest loginRequest) {
-		OAuthUserInfo oauthUser = authService.authenticateWithGithub(loginRequest.getCode());
+		UserDetails oauthUser = authService.authenticateWithGithub(loginRequest.getCode());
 
-		Member member = memberService.findMemberByEmailOptional(oauthUser.getEmail())
-			.orElseGet(() -> memberService.registerNewMember(oauthUser));
+		UserDetails userPrincipal = userDetailsService.loadUserByEmailOptional(oauthUser.getEmail())
+			.orElseGet(() -> UserPrincipal.from(oAuthUserRegistrationService.registerOAuthUser(OAuthUserRegistrationRequest.of(oauthUser.getEmail()))));
 
-		return tokenService.createToken(member.getEmail());
+		return tokenService.createToken(userPrincipal.getEmail());
 	}
 
 	public TokenResponse createToken(TokenRequest request) {
-		Member member = memberService.findMemberByEmail(request.getEmail());
-		if (!member.getPassword().equals(request.getPassword())) {
+		UserDetails userPrincipal = userDetailsService.loadUserByEmail(request.getEmail());
+		if (!userPrincipal.getPassword().equals(request.getPassword())) {
 			throw new AuthenticationException();
 		}
 

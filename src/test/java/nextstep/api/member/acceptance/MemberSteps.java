@@ -1,16 +1,16 @@
 package nextstep.api.member.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.utils.GithubMockResponses;
-
-import org.springframework.http.MediaType;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.utils.GithubMockResponses;
 
 public class MemberSteps {
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {

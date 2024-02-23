@@ -7,14 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.api.favorite.application.model.dto.FavoriteCreateRequest;
 import nextstep.api.favorite.domain.model.dto.inport.FavoriteCreateCommand;
 import nextstep.api.favorite.domain.model.dto.outport.FavoriteCreateInfo;
 import nextstep.api.favorite.domain.model.dto.outport.FavoriteInfo;
 import nextstep.api.favorite.domain.model.entity.Favorite;
 import nextstep.api.favorite.infrastructure.FavoriteRepository;
+import nextstep.common.exception.auth.AuthenticationException;
 import nextstep.common.exception.favorite.FavoriteNotFoundException;
-import nextstep.common.exception.member.AuthenticationException;
 
 @Service
 @RequiredArgsConstructor
