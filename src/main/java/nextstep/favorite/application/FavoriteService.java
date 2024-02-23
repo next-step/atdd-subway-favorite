@@ -42,10 +42,6 @@ public class FavoriteService {
         return listFrom(favorites);
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
     public void deleteFavorite(Long id) {
         favoriteRepository.deleteById(id);
     }

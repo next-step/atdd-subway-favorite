@@ -15,8 +15,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
-import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
+import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
 import static nextstep.subway.utils.StationTestUtil.지하철역_생성;
@@ -79,5 +78,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @Test
+    void 즐겨찾기_삭제() {
+        // give
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
+        long favoriteId = response.jsonPath().getLong("id");
 
+        // when
+        즐겨찾기_삭제_요청(accessToken, favoriteId);
+
+        // then
+        List<FavoriteResponse> favorites = 즐겨찾기_조회_요청(accessToken).as(new TypeRef<>() {});
+
+        assertAll(
+                () -> assertThat(favorites).hasSize(0),
+                () -> assertThat(favorites.stream().anyMatch(
+                        favorite -> favorite.getSource().getId().equals(강남역)
+                                && favorite.getTarget().getId().equals(선릉역))).isFalse()
+        );
+    }
 }
