@@ -73,7 +73,7 @@ public class MemberSteps {
                 .auth().oauth2(발급받은_토큰)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value()).extract();
+                .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
     }
 
     public static void 회원_정보_확인(ExtractableResponse<Response> 회원정보_요청_응답, String 예상하는_이메일) {
