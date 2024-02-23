@@ -40,4 +40,23 @@
       }
   }
   ```
-- 서비스 레이어에 대한 테스트 코드를 작성하면서, 모든 기능을 다 구현했다. 뭐지?
+  
+- 즐겨찾기 서비스 레이어에 대한 테스트 코드를 작성하면서, 대부분의 비즈니스 로직은 작성된 느낌을 받았음.
+  - 즐겨찾기 서비스 레이어에 대한 테스트 코드는 모두 Pass함. 다만, 즐겨찾기 인수 테스트는 모두 실패(토큰을 정상적으로 발급하지 않고, 문자열로 선언함.)
+    - 이렇다보니 토큰을 발급받는 로직을 추가 => `회원정보_없이_즐겨찾기_삭제` 와 같은 인수 테스트를 성공시키기 위해, `JwtTokenProvider`를 수정함.
+    ```
+    public String getPrincipal(String token) {
+      validateToken(token);
+      return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public boolean validateToken(String token) {
+      try {
+          Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+  
+          return !claims.getBody().getExpiration().before(new Date());
+          } catch (JwtException | IllegalArgumentException e) {
+              throw new AuthenticationException();
+          }
+      }
+     ```

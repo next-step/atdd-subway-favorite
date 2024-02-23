@@ -7,11 +7,14 @@ import nextstep.core.station.application.dto.StationResponse;
  */
 public class FavoriteResponse {
 
-    private final StationResponse sourceStation;
-    private final StationResponse targetStation;
+    public StationResponse source;
+    public StationResponse target;
 
-    public FavoriteResponse(StationResponse sourceStation, StationResponse targetStation) {
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
+    public FavoriteResponse() {
+    }
+
+    public FavoriteResponse(StationResponse source, StationResponse target) {
+        this.source = source;
+        this.target = target;
     }
 }

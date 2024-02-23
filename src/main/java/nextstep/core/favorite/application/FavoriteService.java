@@ -57,6 +57,7 @@ public class FavoriteService {
         return favoriteResponses;
     }
 
+    @Transactional
     public void deleteFavorite(Long favoriteId, Member member) {
         if (!member.isThisYours(findFavoriteById(favoriteId))) {
             throw new NonMatchingMemberException("다른 회원의 즐겨찾기를 삭제할 수 없습니다.");

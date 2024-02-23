@@ -1,6 +1,7 @@
 package nextstep.core.member.application;
 
 import io.jsonwebtoken.*;
+import nextstep.core.member.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
+        validateToken(token);
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -36,7 +38,7 @@ public class JwtTokenProvider {
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new AuthenticationException();
         }
     }
 }
