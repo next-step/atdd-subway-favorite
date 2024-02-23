@@ -20,14 +20,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class LineService {
     private final StationService stationService;
-    private final SectionService sectionService;
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService, SectionService sectionService, SectionRepository sectionRepository) {
+    public LineService(LineRepository lineRepository, StationService stationService, SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
-        this.sectionService = sectionService;
         this.sectionRepository = sectionRepository;
     }
 
@@ -76,7 +74,7 @@ public class LineService {
                 line.getId(),
                 line.getName(),
                 line.getColor(),
-                line.getSectionList().stream().map(sectionService::createSectionResponse).collect(Collectors.toList()),
+                line.getSectionList().stream().map(section -> new SectionResponse().createSectionResponseFromEntity(section)).collect(Collectors.toList()),
                 line.getStations().stream().map(station -> new StationResponse().createStationResponseFromEntity(station)).collect(Collectors.toList()),
                 line.getDistance()
         );
@@ -84,7 +82,7 @@ public class LineService {
 
     public SectionResponse findSection(Long id, Long sectionId) {
         Section section = sectionRepository.findByLineIdAndId(id, sectionId);
-        return sectionService.createSectionResponse(section);
+        return new SectionResponse().createSectionResponseFromEntity(section);
     }
 
     @Transactional

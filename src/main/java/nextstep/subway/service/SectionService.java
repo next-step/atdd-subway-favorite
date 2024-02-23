@@ -54,15 +54,7 @@ public class SectionService {
 
     public SectionResponse findSectionByLineIdAndId(Long lineId, Long sectionId) {
         Section section = sectionRepository.findByLineIdAndId(lineId, sectionId);
-        return createSectionResponse(section);
+        return new SectionResponse().createSectionResponseFromEntity(section);
     }
 
-    public SectionResponse createSectionResponse(Section section) {
-        return new SectionResponse(
-                section.getId(),
-                section.getUpStation(),
-                section.getDownStation(),
-                section.getDistance()
-        );
-    }
 }
