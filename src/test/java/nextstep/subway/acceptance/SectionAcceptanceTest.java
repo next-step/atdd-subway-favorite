@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.domain.request.LineRequest;
 import nextstep.subway.domain.response.LineResponse;
 import nextstep.subway.domain.response.StationResponse;
-import nextstep.subway.exception.ExceptionResponse;
+import nextstep.exception.ExceptionResponse;
 import nextstep.subway.utils.StationTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.exception.ExceptionMessage.*;
+import static nextstep.exception.ExceptionMessage.*;
 import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.LineTestUtil.getLine;
 import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;

@@ -3,7 +3,7 @@ package nextstep.subway.strategy;
 import nextstep.subway.domain.entity.Path;
 import nextstep.subway.domain.entity.Section;
 import nextstep.subway.domain.entity.Station;
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -12,7 +12,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
-import static nextstep.subway.exception.ExceptionMessage.*;
+import static nextstep.exception.ExceptionMessage.*;
 
 public class DijkstraStrategy implements PathStrategy {
 

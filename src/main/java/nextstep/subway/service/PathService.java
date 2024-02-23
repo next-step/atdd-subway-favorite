@@ -4,7 +4,7 @@ import nextstep.subway.domain.entity.Path;
 import nextstep.subway.domain.entity.Section;
 import nextstep.subway.domain.entity.Station;
 import nextstep.subway.domain.response.PathResponse;
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import nextstep.subway.repository.SectionRepository;
 import nextstep.subway.strategy.DijkstraStrategy;
 import nextstep.subway.strategy.PathStrategy;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static nextstep.subway.exception.ExceptionMessage.SAME_SOURCE_TARGET_EXCEPTION;
+import static nextstep.exception.ExceptionMessage.SAME_SOURCE_TARGET_EXCEPTION;
 
 @Service
 public class PathService {
