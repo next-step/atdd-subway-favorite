@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nextstep.api.auth.domain.UserDetails;
-import nextstep.api.member.domain.Member;
 import nextstep.common.mapper.ModelMapperBasedObjectMapper;
 
 /**
@@ -22,12 +21,8 @@ public class UserPrincipal implements UserDetails {
 
 	private Integer age;
 
-	public static UserPrincipal of(String email){
+	public static UserPrincipal of(String email) {
 		return UserPrincipal.builder().email(email).build();
-	}
-
-	public static UserPrincipal from(Member member) {
-		return ModelMapperBasedObjectMapper.convert(member, UserPrincipal.class);
 	}
 
 	public static UserPrincipal from(UserDetails userDetails) {
