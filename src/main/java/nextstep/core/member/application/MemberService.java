@@ -44,7 +44,7 @@ public class MemberService {
 
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
-                .map(it -> MemberResponse.of(it))
-                .orElseThrow(RuntimeException::new);
+                .map(MemberResponse::of)
+                .orElseThrow(() -> new NotFoundMemberException("회원 정보가 없습니다."));
     }
 }
