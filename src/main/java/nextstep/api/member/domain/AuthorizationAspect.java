@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.common.exception.member.AuthorizationException;
+import nextstep.common.exception.auth.AuthorizationException;
 
 /**
  * @author : Rene Choi

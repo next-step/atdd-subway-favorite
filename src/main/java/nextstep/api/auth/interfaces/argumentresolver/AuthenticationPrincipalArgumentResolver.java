@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.api.auth.domain.operators.JwtTokenProvider;
 import nextstep.api.member.domain.LoginMember;
 import nextstep.common.annotation.AuthenticationPrincipal;
-import nextstep.common.exception.member.AuthenticationException;
+import nextstep.common.exception.auth.AuthenticationException;
 
 @RequiredArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {

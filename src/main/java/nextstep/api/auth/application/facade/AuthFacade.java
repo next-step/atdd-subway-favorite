@@ -13,7 +13,7 @@ import nextstep.api.auth.domain.service.UserDetailsService;
 import nextstep.api.auth.domain.service.impl.TokenService;
 import nextstep.api.auth.application.dto.OAuthUserRegistrationRequest;
 import nextstep.api.auth.domain.service.OAuthUserRegistrationService;
-import nextstep.common.exception.member.AuthenticationException;
+import nextstep.common.exception.auth.AuthenticationException;
 
 /**
  * @author : Rene Choi
