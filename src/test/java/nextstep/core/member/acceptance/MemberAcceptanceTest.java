@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.core.member.acceptance.MemberSteps.*;
+import static nextstep.core.member.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AcceptanceTest
