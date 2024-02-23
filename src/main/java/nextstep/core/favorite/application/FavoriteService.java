@@ -9,9 +9,14 @@ import nextstep.core.member.domain.LoginMember;
 import nextstep.core.member.domain.Member;
 import nextstep.core.pathFinder.application.PathFinderService;
 import nextstep.core.pathFinder.application.dto.PathFinderRequest;
+import nextstep.core.station.application.StationService;
+import nextstep.core.station.application.converter.StationConverter;
+import nextstep.core.station.application.dto.StationResponse;
+import nextstep.core.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -23,10 +28,13 @@ public class FavoriteService {
 
     private final PathFinderService pathFinderService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, PathFinderService pathFinderService) {
+    private final StationService stationService;
+
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, PathFinderService pathFinderService, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
         this.memberService = memberService;
         this.pathFinderService = pathFinderService;
+        this.stationService = stationService;
     }
 
     @Transactional
@@ -35,18 +43,26 @@ public class FavoriteService {
 
         pathFinderService.findShortestPath(new PathFinderRequest(request.getSource(), request.getTarget()));
 
-        Favorite favorite = new Favorite(member);
+        Favorite favorite = new Favorite(
+                stationService.findStation(request.getSource()),
+                stationService.findStation(request.getTarget()),
+                member);
         favoriteRepository.save(favorite);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
+
+        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+
+        favorites.forEach(favorite -> {
+            favoriteResponses.add(new FavoriteResponse(
+                    new StationResponse(favorite.getSourceStation().getId(), favorite.getSourceStation().getName()),
+                    new StationResponse(favorite.getTargetStation().getId(), favorite.getTargetStation().getName())));
+        });
+
+        return favoriteResponses;
     }
 
     /**
