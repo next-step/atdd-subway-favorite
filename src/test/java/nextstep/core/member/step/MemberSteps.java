@@ -3,6 +3,8 @@ package nextstep.core.member.step;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.core.member.domain.Member;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -57,6 +59,17 @@ public class MemberSteps {
                 .given().log().all()
                 .when().delete(uri)
                 .then().log().all().extract();
+    }
+
+    public static void 토큰으로_회원정보_요청(String 발급받은_토큰, Member 예상하는_회원정보) {
+        ExtractableResponse<Response> 회원정보_요청_응답 = RestAssured.given().log().all()
+                .auth().oauth2(발급받은_토큰)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(회원정보_요청_응답.jsonPath().getString("email")).isEqualTo(예상하는_회원정보.getEmail());
+        assertThat(회원정보_요청_응답.jsonPath().getInt("age")).isEqualTo(예상하는_회원정보.getAge());
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
