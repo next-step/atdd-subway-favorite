@@ -12,11 +12,14 @@ public class SectionTestUtil {
 
     /**
      * 구간 등록
-     * @param params
-     * @param lineId
      * @return
      */
-    public static ExtractableResponse<Response> addSection(Map<String, Object> params, long lineId) {
+    public static ExtractableResponse<Response> 지하철_구간_추가(long lineId, long upStationId, long downStationId, int distance) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("upStationId", upStationId);
+        params.put("downStationId", downStationId);
+        params.put("distance", distance);
+
         return RestAssured
                 .given().log().all()
                 .body(params)
@@ -33,14 +36,5 @@ public class SectionTestUtil {
                 .param("stationId", stationId)
                 .when().delete("/lines/{id}/sections", lineId)
                 .then().log().all().extract();
-    }
-
-    public static Map<String, Object> createSectionParams(Long upStationId, Long downStationId, int distance) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", upStationId);
-        params.put("downStationId", downStationId);
-        params.put("distance", distance);
-
-        return params;
     }
 }

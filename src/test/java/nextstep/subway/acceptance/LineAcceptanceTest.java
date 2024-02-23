@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.subway.utils.LineTestUtil.createSubwayLine;
+import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.LineTestUtil.getLines;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,9 +29,9 @@ public class LineAcceptanceTest {
     long stationId1, stationId2, stationId3;
     @BeforeEach
     void setUp() {
-        stationId1 = StationTestUtil.createStation("지하철역").jsonPath().getLong("id");
-        stationId2 = StationTestUtil.createStation("새로운지하철역").jsonPath().getLong("id");
-        stationId3 = StationTestUtil.createStation("또다른지하철역").jsonPath().getLong("id");
+        stationId1 = StationTestUtil.지하철역_생성("지하철역").jsonPath().getLong("id");
+        stationId2 = StationTestUtil.지하철역_생성("새로운지하철역").jsonPath().getLong("id");
+        stationId3 = StationTestUtil.지하철역_생성("또다른지하철역").jsonPath().getLong("id");
     }
 
     /**
@@ -42,7 +42,7 @@ public class LineAcceptanceTest {
     @Test
     void createSubwayLineTest() {
         // when
-        ExtractableResponse<Response> response = createSubwayLine(new LineRequest("신분당선", "bg-red-600", stationId1, stationId2, 10));
+        ExtractableResponse<Response> response = 지하철_노선_생성(new LineRequest("신분당선", "bg-red-600", stationId1, stationId2, 10));
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -62,8 +62,8 @@ public class LineAcceptanceTest {
     @Test
     void showSubwayLines() {
         //given
-        createSubwayLine(new LineRequest("신분당선", "bg-red-600", stationId1, stationId2, 10));
-        createSubwayLine(new LineRequest("분당선", "bg-green-600", stationId1, stationId3, 10));
+        지하철_노선_생성(new LineRequest("신분당선", "bg-red-600", stationId1, stationId2, 10));
+        지하철_노선_생성(new LineRequest("분당선", "bg-green-600", stationId1, stationId3, 10));
 
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -89,7 +89,7 @@ public class LineAcceptanceTest {
     @Test
     void showSubwayLine() {
         //given
-        long id = createSubwayLine(new LineRequest("신분당선", "bg-red-600", stationId1, stationId2, 10)).jsonPath().getLong("id");
+        long id = 지하철_노선_생성(new LineRequest("신분당선", "bg-red-600", stationId1, stationId2, 10)).jsonPath().getLong("id");
 
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -113,7 +113,7 @@ public class LineAcceptanceTest {
     @Test
     void updateSubwayLine() {
         //given
-        long id = createSubwayLine(new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10)).jsonPath().getLong("id");
+        long id = 지하철_노선_생성(new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10)).jsonPath().getLong("id");
 
         //when
         Map<String, String> params = new HashMap<>();
@@ -144,7 +144,7 @@ public class LineAcceptanceTest {
     @Test
     void deleteSubwayLine() {
         //given
-        long id = createSubwayLine(new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10)).jsonPath().getLong("id");
+        long id = 지하철_노선_생성(new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10)).jsonPath().getLong("id");
 
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

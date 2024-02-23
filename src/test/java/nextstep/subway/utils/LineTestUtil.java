@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LineTestUtil {
 
-    public static ExtractableResponse<Response> createSubwayLine(LineRequest request) {
+    public static ExtractableResponse<Response> 지하철_노선_생성(LineRequest request) {
         return RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
