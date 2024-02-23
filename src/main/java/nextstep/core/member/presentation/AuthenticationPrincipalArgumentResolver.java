@@ -1,8 +1,8 @@
 package nextstep.core.member.presentation;
 
-import nextstep.core.member.AuthenticationException;
 import nextstep.core.member.application.JwtTokenProvider;
 import nextstep.core.member.domain.LoginMember;
+import nextstep.core.member.exception.InvalidTokenException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -25,15 +25,21 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
         if (authorization == null) {
-            throw new AuthenticationException();
+            throw new InvalidTokenException("토큰이 전달되지 않았습니다.");
         }
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException();
+            throw new InvalidTokenException("토큰 형식에 맞지 않습니다.");
         }
-        String token = authorization.split(" ")[1];
 
-        String email = jwtTokenProvider.getPrincipal(token);
-
+        String email = jwtTokenProvider.getPrincipal(getToken(authorization));
         return new LoginMember(email);
+    }
+
+    private String getToken(String authorization) {
+        try {
+            return authorization.split(" ")[1];
+        } catch (Exception e) {
+            throw new InvalidTokenException("토큰 형식에 맞지 않습니다");
+        }
     }
 }
