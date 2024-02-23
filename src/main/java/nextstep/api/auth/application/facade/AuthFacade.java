@@ -4,15 +4,15 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.api.auth.application.dto.GithubLoginRequest;
+import nextstep.api.auth.application.dto.OAuthUserRegistrationRequest;
 import nextstep.api.auth.application.dto.TokenRequest;
 import nextstep.api.auth.application.dto.TokenResponse;
 import nextstep.api.auth.domain.UserDetails;
 import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.auth.domain.service.AuthService;
+import nextstep.api.auth.domain.service.OAuthUserRegistrationService;
 import nextstep.api.auth.domain.service.UserDetailsService;
 import nextstep.api.auth.domain.service.impl.TokenService;
-import nextstep.api.auth.application.dto.OAuthUserRegistrationRequest;
-import nextstep.api.auth.domain.service.OAuthUserRegistrationService;
 import nextstep.common.exception.auth.AuthenticationException;
 
 /**
