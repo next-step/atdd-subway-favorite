@@ -75,7 +75,7 @@ public class LineService {
                 line.getName(),
                 line.getColor(),
                 line.getSectionList().stream().map(section -> new SectionResponse().createSectionResponseFromEntity(section)).collect(Collectors.toList()),
-                line.getStations().stream().map(station -> new StationResponse().createStationResponseFromEntity(station)).collect(Collectors.toList()),
+                line.getStations().stream().map(station -> new StationResponse().from(station)).collect(Collectors.toList()),
                 line.getDistance()
         );
     }
