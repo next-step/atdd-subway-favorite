@@ -4,25 +4,38 @@ import nextstep.core.favorite.application.dto.FavoriteRequest;
 import nextstep.core.favorite.application.dto.FavoriteResponse;
 import nextstep.core.favorite.domain.Favorite;
 import nextstep.core.favorite.domain.FavoriteRepository;
+import nextstep.core.member.application.MemberService;
+import nextstep.core.member.domain.LoginMember;
+import nextstep.core.member.domain.Member;
+import nextstep.core.pathFinder.application.PathFinderService;
+import nextstep.core.pathFinder.application.dto.PathFinderRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    private final MemberService memberService;
+
+    private final PathFinderService pathFinderService;
+
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, PathFinderService pathFinderService) {
         this.favoriteRepository = favoriteRepository;
+        this.memberService = memberService;
+        this.pathFinderService = pathFinderService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
+    @Transactional
+    public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+
+        pathFinderService.findShortestPath(new PathFinderRequest(request.getSource(), request.getTarget()));
+
+        Favorite favorite = new Favorite(member);
         favoriteRepository.save(favorite);
     }
 

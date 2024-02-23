@@ -1,9 +1,8 @@
 package nextstep.core.favorite.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import nextstep.core.member.domain.Member;
+
+import javax.persistence.*;
 
 @Entity
 public class Favorite {
@@ -11,4 +10,13 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    private Member member;
+
+    protected Favorite() {
+    }
+
+    public Favorite(Member member) {
+        this.member = member;
+    }
 }
