@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
 import static nextstep.subway.utils.StationTestUtil.지하철역_생성;
@@ -41,23 +42,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         accessToken = memberFixture.getAccessToken();
     }
 
-    @DisplayName("즐겨찾기 생성")
     @Test
     void 즐겨찾기_생성() {
         // give
 
         // when
-        Map<String, Object> request = new HashMap<>();
-        request.put("source", 강남역);
-        request.put("target", 선릉역);
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
 
         // then
         FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
@@ -68,5 +58,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(favoriteResponse.getTarget().getId()).isEqualTo(선릉역)
         );
     }
+
 
 }
