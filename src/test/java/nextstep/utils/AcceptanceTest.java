@@ -1,13 +1,16 @@
 package nextstep.utils;
 
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
-@ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
@@ -16,6 +19,7 @@ public class AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+        RestAssured.port = port;
         databaseCleanup.execute();
         dataLoader.loadData();
     }
