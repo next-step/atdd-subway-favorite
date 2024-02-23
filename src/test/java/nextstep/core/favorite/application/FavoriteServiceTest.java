@@ -11,6 +11,7 @@ import nextstep.core.member.application.MemberService;
 import nextstep.core.member.application.dto.MemberRequest;
 import nextstep.core.member.application.dto.MemberResponse;
 import nextstep.core.member.domain.Member;
+import nextstep.core.member.exception.NonMatchingMemberException;
 import nextstep.core.pathFinder.application.PathFinderService;
 import nextstep.core.section.domain.Section;
 import nextstep.core.section.domain.SectionRepository;
@@ -285,6 +286,109 @@ public class FavoriteServiceTest {
                 assertThat(favoriteService.findFavorites(member)).usingRecursiveComparison()
                         .ignoringFields("id")
                         .isEqualTo(List.of(favoriteResponse));
+            }
+        }
+    }
+
+    @Nested
+    class 즐겨찾기_삭제 {
+        @Nested
+        class 성공 {
+            /**
+             * Given 회원을 생성하고, 즐겨찾기를 추가한다.
+             * When  추가한 즐겨찾기를 삭제할 경우
+             * Then  즐겨찾기 목록에서 삭제된다.
+             */
+            @Test
+            void 즐겨찾기_추가() {
+                // given
+                Member member = new Member("test@test.com", "test001!", 30);
+                MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+
+                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
+
+                Favorite favorite = favoriteService.createFavorite(favoriteRequest, member);
+
+                assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
+                        .ignoringFields("id", "member.id")
+                        .isEqualTo(List.of(new Favorite(
+                                stationService.findStation(강남역_번호),
+                                stationService.findStation(교대역_번호),
+                                member)));
+
+                // when
+                favoriteService.deleteFavorite(favorite.getId(), member);
+
+                // then
+                assertThat(favoriteRepository.findAll()).isEmpty();
+            }
+        }
+        @Nested
+        class 실패 {
+            /**
+             * Given 회원을 생성하고, 즐겨찾기를 추가한다.
+             * When  추가한 즐겨찾기가 아닌 다른 사용자의 즐겨찾기를 삭제할 경우
+             * Then  즐겨찾기 삭제에 실패한다.
+             */
+            @Test
+            void 다른_사용자의_즐겨찾기_삭제() {
+                // given
+                Member member_A = new Member("memberA@test.com", "test001!", 30);
+                MemberResponse memberResponseA = memberService.createMember(new MemberRequest("memberA@test.com", "test001!", 30));
+                ReflectionTestUtils.setField(member_A, "id", memberResponseA.getId());
+
+                Member member_B = new Member("memberB@test.com", "test001!", 30);
+                MemberResponse memberResponseB = memberService.createMember(new MemberRequest("memberB@test.com", "test001!", 30));
+                ReflectionTestUtils.setField(member_B, "id", memberResponseB.getId());
+
+
+                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
+                Favorite favorite = favoriteService.createFavorite(favoriteRequest, member_A);
+
+                assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
+                        .ignoringFields("id", "member.id")
+                        .isEqualTo(List.of(new Favorite(
+                                stationService.findStation(강남역_번호),
+                                stationService.findStation(교대역_번호),
+                                member_A)));
+
+                // when
+                assertThatExceptionOfType(NonMatchingMemberException.class)
+                        .isThrownBy(() -> {
+                            favoriteService.deleteFavorite(favorite.getId(), member_B);
+                        })
+                        .withMessageMatching("다른 회원의 즐겨찾기를 삭제할 수 없습니다.");
+            }
+
+            /**
+             * Given 회원을 생성하고, 즐겨찾기를 추가한다.
+             * When  추가한 즐겨찾기가 아닌 존재하지 않는 즐겨찾기를 삭제할 경우
+             * Then  즐겨찾기 삭제에 실패한다.
+             */
+            @Test
+            void 존재하지_않는_즐겨찾기_삭제() {
+                // given
+                Member member = new Member("memberA@test.com", "test001!", 30);
+                MemberResponse memberResponse = memberService.createMember(new MemberRequest("memberA@test.com", "test001!", 30));
+                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+
+                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
+                Favorite favorite = favoriteService.createFavorite(favoriteRequest, member);
+
+                assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
+                        .ignoringFields("id", "member.id")
+                        .isEqualTo(List.of(new Favorite(
+                                stationService.findStation(강남역_번호),
+                                stationService.findStation(교대역_번호),
+                                member)));
+
+                // when
+                assertThatExceptionOfType(EntityNotFoundException.class)
+                        .isThrownBy(() -> {
+                            favoriteService.deleteFavorite(999L, member);
+                        })
+                        .withMessageMatching("즐겨찾기 번호에 해당하는 즐겨찾기가 없습니다.");
             }
         }
     }
