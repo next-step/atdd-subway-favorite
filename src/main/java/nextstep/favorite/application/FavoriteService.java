@@ -16,6 +16,7 @@ import java.util.List;
 
 import static nextstep.exception.ExceptionMessage.NO_EXISTS_MEMBER_EXCEPTION;
 import static nextstep.exception.ExceptionMessage.NO_EXISTS_STATION_EXCEPTION;
+import static nextstep.favorite.application.dto.FavoriteResponse.listFrom;
 
 @Service
 public class FavoriteService {
@@ -29,20 +30,16 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember member) {
-        Favorite favorite = new Favorite(getStation(request.getSource()), getStation(request.getTarget()), getMember(member));
+    public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        Favorite favorite = new Favorite(getStation(request.getSource()), getStation(request.getTarget()), getMember(loginMember));
         favoriteRepository.save(favorite);
         return FavoriteResponse.from(favorite);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = getMember(loginMember);
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
+        return listFrom(favorites);
     }
 
     /**

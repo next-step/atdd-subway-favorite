@@ -1,6 +1,7 @@
 package nextstep.favorite.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -11,10 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
@@ -59,5 +58,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @Test
+    void 즐겨찾기_조회() {
+        // give
+        즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
 
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+
+        List<FavoriteResponse> favorites = response.as(new TypeRef<>() {});
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(favorites).hasSize(1),
+                () -> assertThat(favorites.stream().anyMatch(
+                        favorite -> favorite.getSource().getId().equals(강남역)
+                        && favorite.getTarget().getId().equals(선릉역))).isTrue()
+        );
+    }
 }

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import nextstep.favorite.domain.Favorite;
 import nextstep.subway.domain.response.StationResponse;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,5 +23,11 @@ public class FavoriteResponse {
                 StationResponse.from(favorite.getSourceStation()),
                 StationResponse.from(favorite.getTargetStation())
         );
+    }
+
+    public static List<FavoriteResponse> listFrom(List<Favorite> favorites) {
+        return favorites.stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 }

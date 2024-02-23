@@ -1,6 +1,8 @@
 package nextstep.favorite.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.member.domain.Member;
 import nextstep.subway.domain.entity.Station;
 
@@ -8,6 +10,8 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
