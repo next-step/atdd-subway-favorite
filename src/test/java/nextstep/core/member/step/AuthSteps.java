@@ -13,10 +13,10 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthSteps {
-    public static String 성공하는_토큰_발급_요청(Member 회원) {
+    public static String 성공하는_토큰_발급_요청(String 이메일, String 비밀번호) {
         Map<String, String> params = new HashMap<>();
-        params.put("email", 회원.getEmail());
-        params.put("password", 회원.getPassword());
+        params.put("email", 이메일);
+        params.put("password", 비밀번호);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -30,10 +30,10 @@ public class AuthSteps {
         return accessToken;
     }
 
-    public static void 실패하는_토큰_발급_요청(Member 회원) {
+    public static void 실패하는_토큰_발급_요청(String 이메일, String 비밀번호) {
         Map<String, String> params = new HashMap<>();
-        params.put("email", 회원.getEmail());
-        params.put("password", 회원.getPassword());
+        params.put("email", 이메일);
+        params.put("password", 비밀번호);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
