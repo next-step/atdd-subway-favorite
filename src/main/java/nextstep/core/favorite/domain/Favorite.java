@@ -36,4 +36,12 @@ public class Favorite {
     public Station getTargetStation() {
         return this.targetStation;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
 }
