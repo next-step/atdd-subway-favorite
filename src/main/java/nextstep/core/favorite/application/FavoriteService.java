@@ -4,15 +4,11 @@ import nextstep.core.favorite.application.dto.FavoriteRequest;
 import nextstep.core.favorite.application.dto.FavoriteResponse;
 import nextstep.core.favorite.domain.Favorite;
 import nextstep.core.favorite.domain.FavoriteRepository;
-import nextstep.core.member.application.MemberService;
-import nextstep.core.member.domain.LoginMember;
 import nextstep.core.member.domain.Member;
 import nextstep.core.pathFinder.application.PathFinderService;
 import nextstep.core.pathFinder.application.dto.PathFinderRequest;
 import nextstep.core.station.application.StationService;
-import nextstep.core.station.application.converter.StationConverter;
 import nextstep.core.station.application.dto.StationResponse;
-import nextstep.core.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,23 +20,18 @@ import java.util.List;
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
 
-    private final MemberService memberService;
-
     private final PathFinderService pathFinderService;
 
     private final StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, PathFinderService pathFinderService, StationService stationService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, PathFinderService pathFinderService, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
-        this.memberService = memberService;
         this.pathFinderService = pathFinderService;
         this.stationService = stationService;
     }
 
     @Transactional
-    public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
-
+    public void createFavorite(FavoriteRequest request, Member member) {
         pathFinderService.findShortestPath(new PathFinderRequest(request.getSource(), request.getTarget()));
 
         Favorite favorite = new Favorite(
@@ -50,8 +41,7 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+    public List<FavoriteResponse> findFavorites(Member member) {
         List<Favorite> favorites = favoriteRepository.findByMember(member);
 
         List<FavoriteResponse> favoriteResponses = new ArrayList<>();

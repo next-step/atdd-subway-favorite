@@ -1,8 +1,5 @@
 package nextstep.core.favorite.application;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.common.annotation.ApplicationTest;
 import nextstep.core.favorite.application.dto.FavoriteRequest;
 import nextstep.core.favorite.application.dto.FavoriteResponse;
@@ -12,9 +9,8 @@ import nextstep.core.line.domain.Line;
 import nextstep.core.line.domain.LineRepository;
 import nextstep.core.member.application.MemberService;
 import nextstep.core.member.application.dto.MemberRequest;
-import nextstep.core.member.domain.LoginMember;
+import nextstep.core.member.application.dto.MemberResponse;
 import nextstep.core.member.domain.Member;
-import nextstep.core.member.exception.NotFoundMemberException;
 import nextstep.core.pathFinder.application.PathFinderService;
 import nextstep.core.section.domain.Section;
 import nextstep.core.section.domain.SectionRepository;
@@ -28,13 +24,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -46,9 +39,6 @@ public class FavoriteServiceTest {
     FavoriteService favoriteService;
 
     @Autowired
-    MemberService memberService;
-
-    @Autowired
     FavoriteRepository favoriteRepository;
 
     @Autowired
@@ -56,6 +46,10 @@ public class FavoriteServiceTest {
 
     @Autowired
     StationService stationService;
+
+
+    @Autowired
+    MemberService memberService;
 
     @Autowired
     StationRepository stationRepository;
@@ -68,7 +62,7 @@ public class FavoriteServiceTest {
 
     @BeforeEach
     void 사전_서비스_객체_생성() {
-        favoriteService = new FavoriteService(favoriteRepository, memberService, pathFinderService, stationService);
+        favoriteService = new FavoriteService(favoriteRepository, pathFinderService, stationService);
     }
 
     Station 교대;
@@ -145,14 +139,15 @@ public class FavoriteServiceTest {
             @Test
             void 즐겨찾기_추가() {
                 // given
-                LoginMember loginMember = new LoginMember("test@test.com");
                 Member member = new Member("test@test.com", "test001!", 30);
-                memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+
 
                 FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
 
                 // when
-                favoriteService.createFavorite(favoriteRequest, loginMember);
+                favoriteService.createFavorite(favoriteRequest, member);
 
                 // then
                 assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
@@ -167,30 +162,6 @@ public class FavoriteServiceTest {
         @Nested
         class 실패 {
             @Nested
-            class 회원_관련 {
-                /**
-                 * When  즐겨 찾기 정보와 회원 정보를 통해 즐겨 찾기를 생성할 때,
-                 * When    회원 정보를 찾을 수 없을 경우
-                 * Then  해당 회원의 즐겨찾기 목록에 추가될 수 없다.
-                 */
-                @Test
-                void 존재하지_않는_회원() {
-                    // given
-                    LoginMember loginMember = new LoginMember("test@test.com");
-                    Member member = new Member("test@test.com", "test001!", 30);
-
-                    FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
-
-                    // when
-                    assertThatExceptionOfType(NotFoundMemberException.class)
-                            .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, loginMember);
-                            })
-                            .withMessageMatching("회원 정보가 없습니다.");
-                }
-            }
-
-            @Nested
             class 경로_관련 {
 
                 /**
@@ -202,7 +173,6 @@ public class FavoriteServiceTest {
                 @Test
                 void 존재하지_않는_출발역으로_즐겨찾기_추가() {
                     // given
-                    LoginMember loginMember = new LoginMember("test@test.com");
                     Member member = new Member("test@test.com", "test001!", 30);
                     memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
 
@@ -212,7 +182,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(EntityNotFoundException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, loginMember);
+                                favoriteService.createFavorite(favoriteRequest, member);
                             })
                             .withMessageMatching("역 번호에 해당하는 역이 없습니다.");
                 }
@@ -226,7 +196,6 @@ public class FavoriteServiceTest {
                 @Test
                 void 존재하지_않는_도착역으로_즐겨찾기_추가() {
                     // given
-                    LoginMember loginMember = new LoginMember("test@test.com");
                     Member member = new Member("test@test.com", "test001!", 30);
                     memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
 
@@ -236,7 +205,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(EntityNotFoundException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, loginMember);
+                                favoriteService.createFavorite(favoriteRequest, member);
                             })
                             .withMessageMatching("역 번호에 해당하는 역이 없습니다.");
                 }
@@ -250,7 +219,6 @@ public class FavoriteServiceTest {
                 @Test
                 void 출발역과_도착역이_동일하게_즐겨찾기_추가() {
                     // given
-                    LoginMember loginMember = new LoginMember("test@test.com");
                     Member member = new Member("test@test.com", "test001!", 30);
                     memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
 
@@ -259,7 +227,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(IllegalArgumentException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, loginMember);
+                                favoriteService.createFavorite(favoriteRequest, member);
                             })
                             .withMessageMatching("출발역과 도착역이 동일할 수 없습니다.");
                 }
@@ -273,7 +241,6 @@ public class FavoriteServiceTest {
                 @Test
                 void 출발역과_도착역이_연결되지_않은_즐겨찾기_추가() {
                     // given
-                    LoginMember loginMember = new LoginMember("test@test.com");
                     Member member = new Member("test@test.com", "test001!", 30);
                     memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
 
@@ -282,7 +249,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(IllegalArgumentException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, loginMember);
+                                favoriteService.createFavorite(favoriteRequest, member);
                             })
                             .withMessageMatching("출발역과 도착역이 연결되어 있지 않습니다.");
                 }
@@ -302,9 +269,9 @@ public class FavoriteServiceTest {
             @Test
             void 추가한_즐겨찾기_조회() {
                 // given
-                LoginMember loginMember = new LoginMember("test@test.com");
                 Member member = new Member("test@test.com", "test001!", 30);
-                memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
 
                 FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
                 FavoriteResponse favoriteResponse = new FavoriteResponse(
@@ -312,36 +279,12 @@ public class FavoriteServiceTest {
                         new StationResponse(교대.getId(), 교대.getName()));
 
                 // when
-                favoriteService.createFavorite(favoriteRequest, loginMember);
+                favoriteService.createFavorite(favoriteRequest, member);
 
                 // then
-                assertThat(favoriteService.findFavorites(loginMember)).usingRecursiveComparison()
+                assertThat(favoriteService.findFavorites(member)).usingRecursiveComparison()
                         .ignoringFields("id")
                         .isEqualTo(List.of(favoriteResponse));
-            }
-        }
-        @Nested
-        class 실패 {
-            /**
-             * Given 회원을 생성하고, 즐겨찾기를 추가한다.
-             * When  즐겨찾기 목록을 요청할 때
-             * When     존재하지 않는 회원 정보를 전달한 경우
-             * Then  추가된 즐겨찾기를 즐겨찾기 목록에서 확인할 수 없다.
-             */
-            @Test
-            void 존재하지_않는_회원정보로_즐겨찾기_조회() {
-                LoginMember loginMember = new LoginMember("test1@test.com");
-                LoginMember nonExistentMember = new LoginMember("test2@test.com");
-                memberService.createMember(new MemberRequest("test1@test.com", "test001!", 30));
-
-                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
-
-                favoriteService.createFavorite(favoriteRequest, loginMember);
-
-                // when
-                assertThatExceptionOfType(NotFoundMemberException.class)
-                        .isThrownBy(() -> favoriteService.findFavorites(nonExistentMember))
-                        .withMessageMatching("회원 정보가 없습니다.");
             }
         }
     }
