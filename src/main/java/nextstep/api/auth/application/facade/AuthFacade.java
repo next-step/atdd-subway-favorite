@@ -31,15 +31,15 @@ public class AuthFacade {
 	public TokenResponse githubLogin(GithubLoginRequest loginRequest) {
 		UserDetails oauthUser = authService.authenticateWithGithub(loginRequest.getCode());
 
-		UserDetails member = userDetailsService.loadUserByEmailOptional(oauthUser.getEmail())
+		UserDetails userPrincipal = userDetailsService.loadUserByEmailOptional(oauthUser.getEmail())
 			.orElseGet(() -> UserPrincipal.from(oAuthUserRegistrationService.registerOAuthUser(OAuthUserRegistrationRequest.of(oauthUser.getEmail()))));
 
-		return tokenService.createToken(member.getEmail());
+		return tokenService.createToken(userPrincipal.getEmail());
 	}
 
 	public TokenResponse createToken(TokenRequest request) {
-		UserDetails member = userDetailsService.loadUserByEmail(request.getEmail());
-		if (!member.getPassword().equals(request.getPassword())) {
+		UserDetails userPrincipal = userDetailsService.loadUserByEmail(request.getEmail());
+		if (!userPrincipal.getPassword().equals(request.getPassword())) {
 			throw new AuthenticationException();
 		}
 

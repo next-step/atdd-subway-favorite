@@ -7,8 +7,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.api.auth.domain.dto.UserPrincipal;
 import nextstep.api.auth.domain.operators.JwtTokenProvider;
-import nextstep.api.member.domain.LoginMember;
 import nextstep.common.annotation.AuthenticationPrincipal;
 import nextstep.common.exception.auth.AuthenticationException;
 
@@ -29,7 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 			throw new AuthenticationException("Invalid or expired JWT token");
 		}
 
-		return new LoginMember(jwtTokenProvider.getPrincipal(token));
+		return UserPrincipal.of(jwtTokenProvider.getPrincipal(token));
 	}
 
 	private String parseToken(NativeWebRequest webRequest) {
