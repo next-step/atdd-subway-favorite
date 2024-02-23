@@ -19,4 +19,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> entityNotFoundException(EntityNotFoundException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionResponse> badRequestException(BadRequestException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+    }
 }
