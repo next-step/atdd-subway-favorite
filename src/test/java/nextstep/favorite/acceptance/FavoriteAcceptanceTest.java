@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMPTY = "";
+    private static final String 미로그인 = "";
 
     private Long 강남역_ID;
     private Long 양재역_ID;
@@ -84,8 +84,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인을 하지 않고 구간을 즐겨찾기를 추가하면 추가되지 않는다.")
     @Test
     void 로그인을_하지않고_구간을_즐겨찾기에_추가() {
-        // when & then
-        즐겨찾기_추가_예외발생_검증(즐겨찾기_추가(AddFavoriteRequest.of(강남역_ID, 양재역_ID), EMPTY), HttpStatus.UNAUTHORIZED);
+        // given
+        AddFavoriteRequest 강남역_양재역_즐겨찾기_추가_요청 = AddFavoriteRequest.of(강남역_ID, 양재역_ID);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_추가(강남역_양재역_즐겨찾기_추가_요청, 미로그인);
+
+        // then
+        즐겨찾기_추가_예외발생_검증(즐겨찾기_추가_응답, HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -95,9 +101,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("경로가 없는 구간을 즐겨찾기로 추가하면 추가되지 않는다.")
     @Test
     void 경로가_없는_구간을_즐겨찾기에_추가() {
-        // when & then
+        // given
+        AddFavoriteRequest 강남역_양재역_즐겨찾기_추가_요청 = AddFavoriteRequest.of(강남구청역_ID, 양재역_ID);
+
+        // when
         ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_추가(AddFavoriteRequest.of(강남구청역_ID, 양재역_ID), 홍길동_토큰);
 
+        // then
         즐겨찾기_추가_예외발생_검증(즐겨찾기_추가_응답, HttpStatus.BAD_REQUEST);
     }
 
