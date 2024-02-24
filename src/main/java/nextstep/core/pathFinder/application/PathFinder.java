@@ -1,7 +1,7 @@
 package nextstep.core.pathFinder.application;
 
 import nextstep.core.line.domain.Line;
-import nextstep.core.pathFinder.domain.PathFinderResult;
+import nextstep.core.pathFinder.domain.dto.PathFinderResult;
 import nextstep.core.section.domain.Section;
 import nextstep.core.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -22,10 +22,17 @@ public class PathFinder {
                 arrivalStation,
                 buildPathFromLines(lines, new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class)));
 
-        if (isPathNotFound(path)) {
+        if (!isFoundPath(path)) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
         return generatePathResult(path);
+    }
+
+    public boolean isFoundPath(List<Line> lines, Station arrivalStation, Station departureStation) {
+        validateLines(lines, departureStation, arrivalStation);
+
+        WeightedMultigraph<Station, DefaultWeightedEdge> pathGraph = buildPathFromLines(lines, new WeightedMultigraph<>(DefaultWeightedEdge.class));
+        return new DijkstraShortestPath<>(pathGraph).getPath(departureStation, arrivalStation) != null;
     }
 
     private void validateLines(List<Line> lines, Station departureStation, Station arrivalStation) {
@@ -74,8 +81,8 @@ public class PathFinder {
         });
     }
 
-    private boolean isPathNotFound(GraphPath<Station, DefaultWeightedEdge> path) {
-        return path == null;
+    private boolean isFoundPath(GraphPath<Station, DefaultWeightedEdge> path) {
+        return path != null;
     }
 
     private PathFinderResult generatePathResult(GraphPath<Station, DefaultWeightedEdge> path) {

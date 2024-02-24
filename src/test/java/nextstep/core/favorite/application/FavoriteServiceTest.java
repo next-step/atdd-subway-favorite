@@ -221,7 +221,9 @@ public class FavoriteServiceTest {
                 void 출발역과_도착역이_동일하게_즐겨찾기_추가() {
                     // given
                     Member member = new Member("test@test.com", "test001!", 30);
-                    memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                    MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                    ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+
 
                     FavoriteRequest favoriteRequest = new FavoriteRequest(교대역_번호, 교대역_번호);
 
@@ -252,7 +254,7 @@ public class FavoriteServiceTest {
                             .isThrownBy(() -> {
                                 favoriteService.createFavorite(favoriteRequest, member);
                             })
-                            .withMessageMatching("출발역과 도착역이 연결되어 있지 않습니다.");
+                            .withMessageMatching("출발역과 도착역을 잇는 경로가 없습니다.");
                 }
             }
         }
