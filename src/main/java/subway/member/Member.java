@@ -1,55 +1,80 @@
 package subway.member;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import subway.favorite.Favorite;
+import subway.favorite.Favorites;
+
 @Entity
 public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique = true)
-    private String email;
-    private String password;
-    private Integer age;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    public Member() {
-    }
+	@Column(unique = true)
+	private String email;
 
-    public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-    }
+	@Column(nullable = false)
+	private String password;
 
-    public Long getId() {
-        return id;
-    }
+	@Column(nullable = false)
+	private Integer age;
 
-    public String getEmail() {
-        return email;
-    }
+	@Embedded
+	private Favorites favorites = new Favorites();
 
-    public String getPassword() {
-        return password;
-    }
+	protected Member() {
+	}
 
-    public Integer getAge() {
-        return age;
-    }
+	public Member(String email, String password, Integer age) {
+		this.email = email;
+		this.password = password;
+		this.age = age;
+	}
 
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
-    }
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public Favorites getFavorites() {
+		return favorites;
+	}
+
+	public List<Favorite> getFavoriteList() {
+		return getFavorites().getFavoriteList();
+	}
+
+	public void update(Member member) {
+		this.email = member.email;
+		this.password = member.password;
+		this.age = member.age;
+	}
+
+	public boolean checkPassword(String password) {
+		return Objects.equals(this.password, password);
+	}
+
+	public void addFavorite(Favorite favorite) {
+		getFavorites().addFavorite(favorite);
+	}
 }
