@@ -18,7 +18,7 @@ public class PathService {
     final var sourceStation = stationService.getStation(source)
         .orElseThrow(() -> new BusinessException("출발역 정보를 찾을 수 없습니다."));
     final var targetStation = stationService.getStation(target)
-        .orElseThrow(() -> new BusinessException("출발역 정보를 찾을 수 없습니다."));
+        .orElseThrow(() -> new BusinessException("도착역 정보를 찾을 수 없습니다."));
 
     final var sections = sectionService.findAll();
 
