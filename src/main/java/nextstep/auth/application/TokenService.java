@@ -1,10 +1,9 @@
 package nextstep.auth.application;
 
+import java.util.Objects;
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.domain.UserDetail;
-import nextstep.member.application.MemberService;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,12 +17,12 @@ public class TokenService {
     }
 
     public TokenResponse createToken(String email, String password) {
-        UserDetail userDetail = userDetailService.findByEmail(email);
-        if (!userDetail.getPassword().equals(password)) {
+        final UserDetail userDetail = userDetailService.findByEmail(email);
+        if (userDetail.getPassword() != null && !userDetail.getPassword().equals(password)) {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(userDetail.getEmail());
+        final String token = jwtTokenProvider.createToken(userDetail.getEmail());
 
         return new TokenResponse(token);
     }
