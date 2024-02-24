@@ -160,14 +160,14 @@ public class PathFinderServiceMockTest {
                 when(lineService.findStation(강남역_번호)).thenReturn(강남);
                 when(lineService.findStation(남부터미널역_번호)).thenReturn(남부터미널);
                 when(lineService.findAllLines()).thenReturn(모든_노선_목록);
-                when(pathFinder.isFoundPath(모든_노선_목록, 강남, 남부터미널)).thenReturn(true);
+                when(pathFinder.existPathBetweenStations(모든_노선_목록, 강남, 남부터미널)).thenReturn(true);
 
                 // when
                 boolean actual = pathFinderService.isValidPath(new PathFinderRequest(강남역_번호, 남부터미널역_번호));
 
 
                 // then
-                verify(pathFinder, atLeast(1)).isFoundPath(모든_노선_목록, 강남, 남부터미널);
+                verify(pathFinder, atLeast(1)).existPathBetweenStations(모든_노선_목록, 강남, 남부터미널);
                 assertThat(actual).isTrue();
             }
         }
