@@ -1,4 +1,4 @@
-package nextstep.utils;
+package nextstep.member.test;
 
 import nextstep.member.application.request.github.GithubAccessTokenRequest;
 import nextstep.member.application.response.github.GithubAccessTokenResponse;

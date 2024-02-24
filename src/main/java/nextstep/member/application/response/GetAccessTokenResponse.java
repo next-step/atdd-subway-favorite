@@ -4,13 +4,14 @@ public class GetAccessTokenResponse {
 
     private String accessToken;
 
-    private GetAccessTokenResponse(){}
+    private GetAccessTokenResponse() {
+    }
 
-    private GetAccessTokenResponse(String accessToken){
+    private GetAccessTokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 
-    public static GetAccessTokenResponse from(String accessToken){
+    public static GetAccessTokenResponse from(String accessToken) {
         return new GetAccessTokenResponse(accessToken);
     }
 

@@ -1,10 +1,9 @@
 package nextstep.member.unit;
 
 import nextstep.exception.FailIssueAccessTokenException;
-import nextstep.exception.NotFoundStationException;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.response.github.GithubProfileResponse;
-import nextstep.utils.GithubResponses;
+import nextstep.member.test.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +77,6 @@ public class GithubClientTest {
         assertThatThrownBy(() -> githubClient.requestGithubResource(githubAccessToken))
                 .isInstanceOf(FailIssueAccessTokenException.class);
     }
-
-
 
 
 //    @Test

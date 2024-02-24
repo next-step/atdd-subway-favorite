@@ -1,10 +1,10 @@
-package nextstep.utils;
+package nextstep.member.test;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import static nextstep.common.Constant.*;
+import static nextstep.common.Constant.임꺽정_이메일;
+import static nextstep.common.Constant.홍길동_이메일;
 
 public enum GithubResponses {
 

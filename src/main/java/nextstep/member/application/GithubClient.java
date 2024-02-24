@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
-
 @Component
 public class GithubClient {
 
@@ -64,8 +62,8 @@ public class GithubClient {
         return githubProfileResponse;
     }
 
-    private void validateResponse(String parameter){
-        if(parameter == null || parameter.isBlank()) {
+    private void validateResponse(String parameter) {
+        if (parameter == null || parameter.isBlank()) {
             throw new FailIssueAccessTokenException();
         }
     }
