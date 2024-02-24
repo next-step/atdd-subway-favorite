@@ -1,5 +1,6 @@
 package subway.acceptance.favorite;
 
+import static subway.fixture.acceptance.LineAcceptanceSteps.*;
 import static subway.fixture.acceptance.MemberAcceptanceSteps.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -8,12 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import subway.acceptance.AcceptanceTest;
 import subway.dto.favorite.FavoriteRequest;
-import subway.dto.station.StationResponse;
-import subway.fixture.acceptance.StationAcceptanceSteps;
+import subway.dto.line.LineResponse;
+import subway.fixture.favorite.FavoriteRequestFixture;
 
 @DisplayName("즐겨찾기 인수 테스트")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -26,18 +25,21 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 	@Test
 	void saveFavorite() {
 		멤버_생성();
-		Long 불광역 = StationAcceptanceSteps.정류장_생성("불광역").as(StationResponse.class).getId();
-		Long 양재역 = StationAcceptanceSteps.정류장_생성("양재역").as(StationResponse.class).getId();
+		LineResponse 노선_생성 = 노선_생성();
+		Long 출발역 = 노선_생성.getStations().get(0).getId();
+		Long 도착역 = 노선_생성.getStations().get(1).getId();
 
-		FavoriteRequest favoriteRequest = new FavoriteRequest(불광역, 양재역);
+		FavoriteRequest favoriteRequest = FavoriteRequestFixture.builder()
+			.source(출발역)
+			.target(도착역)
+			.build();
 
-		ExtractableResponse<Response> extract = RestAssured.given().log().all()
+		RestAssured.given().log().all()
 			.auth().oauth2(로그인())
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(favoriteRequest)
 			.when().post("/favorites")
 			.then().log().all()
-			.statusCode(HttpStatus.CREATED.value())
-			.extract();
+			.statusCode(HttpStatus.CREATED.value());
 	}
 }
