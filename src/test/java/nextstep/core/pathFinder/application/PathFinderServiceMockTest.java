@@ -5,7 +5,7 @@ import nextstep.core.line.application.LineService;
 import nextstep.core.line.domain.Line;
 import nextstep.core.pathFinder.application.dto.PathFinderRequest;
 import nextstep.core.pathFinder.application.dto.PathFinderResponse;
-import nextstep.core.pathFinder.domain.PathFinderResult;
+import nextstep.core.pathFinder.domain.dto.PathFinderResult;
 import nextstep.core.section.domain.Section;
 import nextstep.core.station.domain.Station;
 import nextstep.core.station.fixture.StationFixture;
@@ -18,7 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ApplicationTest
 public class PathFinderServiceMockTest {
@@ -101,47 +101,75 @@ public class PathFinderServiceMockTest {
             사호선.addSection(new Section(정왕, 오이도, 10, 사호선));
         }
 
-        /**
-         * Given 지하철 노선을 생성하고, 구간을 추가한다.
-         * When  출발역과 도착역을 통해 경로를 조회할 경우
-         * Then  최단거리의 존재하는 역 목록과 최단 거리 값을 확인할 수 있다.
-         */
-        @Test
-        void 강남역에서_남부터미널역까지_경로_조회() {
-            // given
-            when(lineService.findStation(강남역_번호)).thenReturn(강남);
-            when(lineService.findStation(남부터미널역_번호)).thenReturn(남부터미널);
-            when(lineService.findAllLines()).thenReturn(모든_노선_목록);
-            when(pathFinder.calculateShortestPath(모든_노선_목록, 강남, 남부터미널)).thenReturn(new PathFinderResult(List.of(강남, 교대, 남부터미널), 12));
+        @Nested
+        class findShortestPath {
 
-            // when
-            PathFinderResponse 경로_조회_응답 = pathFinderService.findShortestPath(new PathFinderRequest(강남역_번호, 남부터미널역_번호));
+            /**
+             * Given 지하철 노선을 생성하고, 구간을 추가한다.
+             * When  출발역과 도착역을 통해 경로를 조회할 경우
+             * Then  최단거리의 존재하는 역 목록과 최단 거리 값을 확인할 수 있다.
+             */
+            @Test
+            void 강남역에서_남부터미널역까지_경로_조회() {
+                // given
+                when(lineService.findStation(강남역_번호)).thenReturn(강남);
+                when(lineService.findStation(남부터미널역_번호)).thenReturn(남부터미널);
+                when(lineService.findAllLines()).thenReturn(모든_노선_목록);
+                when(pathFinder.calculateShortestPath(모든_노선_목록, 강남, 남부터미널)).thenReturn(new PathFinderResult(List.of(강남, 교대, 남부터미널), 12));
 
-            // then
-            assertThat(경로_조회_응답).usingRecursiveComparison()
-                    .isEqualTo(new PathFinderResponse(List.of(강남, 교대, 남부터미널), 12));
+                // when
+                PathFinderResponse 경로_조회_응답 = pathFinderService.findShortestPath(new PathFinderRequest(강남역_번호, 남부터미널역_번호));
+
+                // then
+                assertThat(경로_조회_응답).usingRecursiveComparison()
+                        .isEqualTo(new PathFinderResponse(List.of(강남, 교대, 남부터미널), 12));
+            }
+
+            /**
+             * Given 지하철 노선을 생성하고, 구간을 추가한다.
+             * When  출발역과 도착역을 통해 경로를 조회할 경우
+             * Then  최단거리의 존재하는 역 목록과 최단 거리 값을 확인할 수 있다.
+             */
+            @Test
+            void 교대역에서_양재역까지_경로_조회() {
+                // given
+                when(lineService.findStation(교대역_번호)).thenReturn(교대);
+                when(lineService.findStation(양재역_번호)).thenReturn(양재);
+                when(lineService.findAllLines()).thenReturn(모든_노선_목록);
+                when(pathFinder.calculateShortestPath(모든_노선_목록, 교대, 양재)).thenReturn(new PathFinderResult(List.of(교대, 남부터미널, 양재), 5));
+
+                // when
+                PathFinderResponse 경로_조회_응답 = pathFinderService.findShortestPath(new PathFinderRequest(교대역_번호, 양재역_번호));
+
+                // then
+                assertThat(경로_조회_응답).usingRecursiveComparison()
+                        .isEqualTo(new PathFinderResponse(List.of(교대, 남부터미널, 양재), 5));
+            }
         }
 
-        /**
-         * Given 지하철 노선을 생성하고, 구간을 추가한다.
-         * When  출발역과 도착역을 통해 경로를 조회할 경우
-         * Then  최단거리의 존재하는 역 목록과 최단 거리 값을 확인할 수 있다.
-         */
-        @Test
-        void 교대역에서_양재역까지_경로_조회() {
-            // given
-            when(lineService.findStation(교대역_번호)).thenReturn(교대);
-            when(lineService.findStation(양재역_번호)).thenReturn(양재);
-            when(lineService.findAllLines()).thenReturn(모든_노선_목록);
-            when(pathFinder.calculateShortestPath(모든_노선_목록, 교대, 양재)).thenReturn(new PathFinderResult(List.of(교대, 남부터미널, 양재), 5));
+        @Nested
+        class isValidPath {
+            /**
+             * Given 지하철 노선을 생성하고, 구간을 추가한다.
+             * When  출발역과 도착역을 잇는 유효한 경로인지 확인할 경우
+             * Then  유효한 경로로 확인할 수 있다.
+             */
+            @Test
+            void 강남역에서_남부터미널역까지_유효한_경로_확인() {
+                // given
+                when(lineService.findStation(강남역_번호)).thenReturn(강남);
+                when(lineService.findStation(남부터미널역_번호)).thenReturn(남부터미널);
+                when(lineService.findAllLines()).thenReturn(모든_노선_목록);
+                when(pathFinder.isFoundPath(모든_노선_목록, 강남, 남부터미널)).thenReturn(true);
 
-            // when
-            PathFinderResponse 경로_조회_응답 = pathFinderService.findShortestPath(new PathFinderRequest(교대역_번호, 양재역_번호));
+                // when
+                boolean actual = pathFinderService.isValidPath(new PathFinderRequest(강남역_번호, 남부터미널역_번호));
 
-            // then
-            assertThat(경로_조회_응답).usingRecursiveComparison()
-                    .isEqualTo(new PathFinderResponse(List.of(교대, 남부터미널, 양재), 5));
+
+                // then
+                verify(pathFinder, atLeast(1)).isFoundPath(모든_노선_목록, 강남, 남부터미널);
+                assertThat(actual).isTrue();
+            }
         }
-
     }
 }

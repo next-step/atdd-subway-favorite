@@ -27,6 +27,15 @@ public class PathFinderService {
                 lineService.findStation(pathFinderRequest.getArrivalStationId())));
     }
 
+    public boolean isValidPath(PathFinderRequest pathFinderRequest) {
+        validatePathRequest(pathFinderRequest);
+
+        return pathFinder.isFoundPath(
+                lineService.findAllLines(),
+                lineService.findStation(pathFinderRequest.getDepartureStationId()),
+                lineService.findStation(pathFinderRequest.getArrivalStationId()));
+    }
+
     private void validatePathRequest(PathFinderRequest pathFinderRequest) {
         if (areStationsSame(pathFinderRequest)) {
             throw new IllegalArgumentException("출발역과 도착역이 동일할 수 없습니다.");

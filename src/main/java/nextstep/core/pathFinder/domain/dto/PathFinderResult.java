@@ -1,4 +1,4 @@
-package nextstep.core.pathFinder.domain;
+package nextstep.core.pathFinder.domain.dto;
 
 
 import nextstep.core.station.domain.Station;
