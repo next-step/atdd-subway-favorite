@@ -1,22 +1,16 @@
 package nextstep.utils;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AcceptanceTest {
-
-    @Autowired
-    private DatabaseCleanup databaseCleanup;
-    @Autowired
-    private DataLoader dataLoader;
-
-    @BeforeEach
-    public void setUp() {
-        databaseCleanup.execute();
-        dataLoader.loadData();
-    }
+@ExtendWith(DatabaseCleanerExtension.class)
+public @interface AcceptanceTest {
 }

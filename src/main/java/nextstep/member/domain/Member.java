@@ -3,6 +3,7 @@ package nextstep.member.domain;
 import javax.persistence.*;
 import java.util.Objects;
 
+@Table(name = "member")
 @Entity
 public class Member {
     @Id
