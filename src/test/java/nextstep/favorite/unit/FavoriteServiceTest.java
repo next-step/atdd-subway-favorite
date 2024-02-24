@@ -2,6 +2,7 @@ package nextstep.favorite.unit;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -103,5 +106,20 @@ public class FavoriteServiceTest {
         assertThatThrownBy(() -> favoriteService.createFavorite(request, loginMember))
                 .isExactlyInstanceOf(PathException.class)
                 .hasMessage("연결되어있지 않은 출발역과 도착역의 경로는 조회할 수 없습니다.");
+    }
+
+    @DisplayName("즐겨찾기 조회")
+    @Test
+    void showFavorites() {
+        //given
+        FavoriteRequest request = new FavoriteRequest(교대역.getId(), 양재역.getId());
+        LoginMember loginMember = new LoginMember(member.getEmail());
+        favoriteService.createFavorite(request, loginMember);
+
+        //when
+        List<FavoriteResponse> favorites = favoriteService.findFavorites();
+
+        //then
+        assertThat(favorites).hasSize(1);
     }
 }

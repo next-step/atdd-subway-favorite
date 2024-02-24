@@ -7,25 +7,32 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
+import nextstep.subway.path.PathResponse;
 import nextstep.subway.path.PathService;
+import nextstep.subway.station.Station;
+import nextstep.subway.station.service.StationDataService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberService memberService;
     private final PathService pathService;
+    private final StationDataService stationDataService;
 
     public FavoriteService(
             FavoriteRepository favoriteRepository,
             MemberService memberService,
-            PathService pathService
+            PathService pathService,
+            StationDataService stationDataService
     ) {
         this.favoriteRepository = favoriteRepository;
         this.memberService = memberService;
         this.pathService = pathService;
+        this.stationDataService = stationDataService;
     }
 
     public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
@@ -46,14 +53,20 @@ public class FavoriteService {
         pathService.getPath(request.getSource(), request.getTarget());
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
     public List<FavoriteResponse> findFavorites() {
         List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+
+        return mappingToFavoriteResponse(favorites);
+    }
+
+    private List<FavoriteResponse> mappingToFavoriteResponse(List<Favorite> favorites) {
+        return favorites.stream().map(f -> {
+                    Station source = stationDataService.findStation(f.getSourceStationId());
+                    Station target = stationDataService.findStation(f.getTargetStationId());
+
+                    return FavoriteResponse.ofEntity(f.getId(), source, target);
+                })
+                .collect(Collectors.toList());
     }
 
     /**
