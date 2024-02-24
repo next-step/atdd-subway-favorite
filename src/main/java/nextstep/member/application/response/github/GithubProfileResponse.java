@@ -3,26 +3,20 @@ package nextstep.member.application.response.github;
 public class GithubProfileResponse {
 
     private String email;
-    private Integer age;
 
     public GithubProfileResponse() {
     }
 
-    public GithubProfileResponse(String email, Integer age) {
+    public GithubProfileResponse(String email) {
         this.email = email;
-        this.age = age;
     }
 
-    public static GithubProfileResponse of(String email, Integer age) {
-        return new GithubProfileResponse(email, age);
+    public static GithubProfileResponse from(String email) {
+        return new GithubProfileResponse(email);
     }
 
     public String getEmail() {
         return email;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 
 }

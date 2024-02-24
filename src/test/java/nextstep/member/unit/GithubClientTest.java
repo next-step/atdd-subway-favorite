@@ -1,6 +1,9 @@
 package nextstep.member.unit;
 
+import nextstep.exception.FailIssueAccessTokenException;
+import nextstep.exception.NotFoundStationException;
 import nextstep.member.application.GithubClient;
+import nextstep.member.application.response.github.GithubProfileResponse;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -16,7 +20,11 @@ public class GithubClientTest {
     // 1. github token using code
     // 2. github profile using github token
 
-    private static final String TOKEN_ISSUE_FAIL_MESSAGE = "ACCESS TOKEN ISSUE FAILED";
+    private static final String FAIL_ACCESS_TOKEN = "TEST";
+
+    GithubResponses 홍길동 = GithubResponses.사용자_홍길동;
+    GithubResponses 임꺽정 = GithubResponses.사용자_임꺽정;
+
 
     @Autowired
     private GithubClient githubClient;
@@ -25,14 +33,14 @@ public class GithubClientTest {
     @Test
     void 깃허브_토큰_요청_성공() {
         // given
-        String code = GithubResponses.사용자_홍길동.getCode();
+        String code = 홍길동.getCode();
 
         // when
         String githubToken = githubClient.requestGithubToken(code);
 
         // then
         assertThat(githubToken).isNotBlank();
-        assertThat(githubToken).isEqualTo(GithubResponses.사용자_홍길동.getAccessToken());
+        assertThat(githubToken).isEqualTo(홍길동.getAccessToken());
     }
 
 
@@ -42,26 +50,34 @@ public class GithubClientTest {
         // given
         String code = "qwer1234";
 
-        // when
-        String githubToken = githubClient.requestGithubToken(code);
-
-        // then
-        assertThat(githubToken).isEqualTo(TOKEN_ISSUE_FAIL_MESSAGE);
+        // when & then
+        assertThatThrownBy(() -> githubClient.requestGithubToken(code))
+                .isInstanceOf(FailIssueAccessTokenException.class);
     }
 
-//    @DisplayName("발급받은 깃허브 토큰으로 리소스를 요청하면 이메일 정보를 응답받는다.")
-//    @Test
-//    void 깃허브_리소스_요청_성공() {
-//        // given
-//        String code = GithubResponses.사용자_홍길동.getCode();
-//
-//        // when
-//        String githubToken = githubClient.requestGithubResource(code);
-//
-//        // then
-//        assertThat(githubToken).isNotBlank();
-//        assertThat(githubToken).isEqualTo(GithubResponses.사용자_홍길동.getAccessToken());
-//    }
+    @DisplayName("발급받은 깃허브 토큰으로 리소스를 요청하면 회원 정보를 응답받는다.")
+    @Test
+    void 깃허브_리소스_요청_성공() {
+        // given
+        String githubAccessToken = 홍길동.getAccessToken();
+
+        // when
+        GithubProfileResponse githubProfileResponse = githubClient.requestGithubResource(githubAccessToken);
+
+        // then
+        assertThat(githubProfileResponse.getEmail()).isEqualTo(홍길동.getEmail());
+    }
+
+    @DisplayName("정상적이지 않은 깃허브 토큰으로 리소스를 요청하면 회원 정보를 응답받지 못한다.")
+    @Test
+    void 깃허브_리소스_요청_실패() {
+        // given
+        String githubAccessToken = FAIL_ACCESS_TOKEN;
+
+        // when & then
+        assertThatThrownBy(() -> githubClient.requestGithubResource(githubAccessToken))
+                .isInstanceOf(FailIssueAccessTokenException.class);
+    }
 
 
 
