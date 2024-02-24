@@ -20,18 +20,15 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+        return MemberResponse.of(memberRepository.save(request.toMember()));
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundMemberException("회원 정보가 없습니다."));
-        return MemberResponse.of(member);
+        return MemberResponse.of(findMemberById(id));
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundMemberException("회원 정보가 없습니다."));
-        member.update(param.toMember());
+        findMemberById(id).update(param.toMember());
     }
 
     public void deleteMember(Long id) {
@@ -46,5 +43,9 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(MemberResponse::of)
                 .orElseThrow(() -> new NotFoundMemberException("회원 정보가 없습니다."));
+    }
+
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new NotFoundMemberException("회원 정보가 없습니다."));
     }
 }
