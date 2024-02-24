@@ -9,10 +9,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
 public class SubwayExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+		return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+	}
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<ExceptionResponse> handleEntityNotFoundException(EntityNotFoundException e) {
 		return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
 	}
 

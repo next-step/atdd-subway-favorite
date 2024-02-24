@@ -107,10 +107,7 @@ public class PathAcceptanceTest {
 
 	private void 최단_경로_조회_성공(ExtractableResponse<Response> response, int distance, Long... stationIds) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.jsonPath().getList("stations.id"))
-				.isEqualTo(Arrays.stream(stationIds)
-						.map(Long::intValue)
-						.collect(Collectors.toList()));
+		assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationIds);
 		assertThat(response.jsonPath().getInt("distance")).isEqualTo(distance);
 	}
 
