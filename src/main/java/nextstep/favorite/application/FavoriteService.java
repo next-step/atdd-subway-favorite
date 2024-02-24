@@ -39,6 +39,7 @@ public class FavoriteService {
     public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
         verifyDisConnectedStations(request);
 
+        System.out.println("loginMember.getEmail() = " + loginMember.getEmail());
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
         Favorite favorite = new Favorite(

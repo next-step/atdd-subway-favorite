@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.fixture.TokenProvider;
 import nextstep.subway.acceptance.annotation.AcceptanceTest;
 import nextstep.subway.acceptance.line.LineApiRequester;
 import nextstep.subway.acceptance.section.SectionApiRequester;
@@ -35,8 +34,6 @@ public class FavoriteAcceptanceTest {
     Long 신분당선id;
     Long 삼호선id;
 
-    String accessToken;
-
     @BeforeEach
     void setUp() {
         교대역id = JsonPathUtil.getId(StationApiRequester.createStationApiCall("교대역"));
@@ -55,8 +52,6 @@ public class FavoriteAcceptanceTest {
 
         SectionCreateRequest 남부터미널양재역 = new SectionCreateRequest(남부터미널역id, 양재역id, 3);
         SectionApiRequester.generateSection(남부터미널양재역, 삼호선id);
-
-        accessToken = TokenProvider.getAccessToken();
     }
 
     /**
@@ -69,25 +64,14 @@ public class FavoriteAcceptanceTest {
         //when
         FavoriteRequest request = new FavoriteRequest(교대역id, 양재역id);
 
-        ExtractableResponse<Response> response = given().log().all()
-                .header("Authorization", accessToken)
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = FavoriteApiRequester.createFavoriteApiCall(request);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        ExtractableResponse<Response> findResponse = given().log().all()
-                .header("Authorization", accessToken)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> findResponse = FavoriteApiRequester.findFavoritesApiCall();
 
-        List<FavoriteRequest> favorites = JsonPathUtil.getList(findResponse, "favorites", FavoriteRequest.class);
-        assertThat(favorites).hasSize(1);
+        assertThat(getFavorites(findResponse)).hasSize(1);
     }
 
     /**
@@ -104,13 +88,7 @@ public class FavoriteAcceptanceTest {
         //when
         FavoriteRequest request = new FavoriteRequest(건대입구역id, 성수역id);
 
-        ExtractableResponse<Response> response = given().log().all()
-                .header("Authorization", accessToken)
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = FavoriteApiRequester.createFavoriteApiCall(request);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -124,39 +102,20 @@ public class FavoriteAcceptanceTest {
      */
     @DisplayName("즐겨찾기 경로 조회")
     @Test
-    void showFavorite() {
+    void findFavorites() {
         //given
-        FavoriteRequest request = new FavoriteRequest(교대역id, 양재역id);
+        FavoriteRequest 교대양재역 = new FavoriteRequest(교대역id, 양재역id);
+        FavoriteApiRequester.createFavoriteApiCall(교대양재역);
 
-        given().log().all()
-                .header("Authorization", accessToken)
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
-
-        FavoriteRequest request2 = new FavoriteRequest(교대역id, 강남역id);
-
-        given().log().all()
-                .header("Authorization", accessToken)
-                .contentType(ContentType.JSON)
-                .body(request2)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        FavoriteRequest 교대강남역 = new FavoriteRequest(교대역id, 강남역id);
+        FavoriteApiRequester.createFavoriteApiCall(교대강남역);
 
         //when
-        ExtractableResponse<Response> response = given().log().all()
-                .header("Authorization", accessToken)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = FavoriteApiRequester.findFavoritesApiCall();
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<FavoriteResponse> favorites = JsonPathUtil.getList(response, "favorites", FavoriteResponse.class);
-        assertThat(favorites).hasSize(2);
+        assertThat(getFavorites(response)).hasSize(2);
     }
 
     /**
@@ -170,33 +129,21 @@ public class FavoriteAcceptanceTest {
         //given
         FavoriteRequest request = new FavoriteRequest(교대역id, 양재역id);
 
-        ExtractableResponse<Response> createResponse = given().log().all()
-                .header("Authorization", accessToken)
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> createResponse = FavoriteApiRequester.createFavoriteApiCall(request);
 
         Long id = Long.valueOf(createResponse.asString());
-        System.out.println("id = " + id);
 
         //when
-        ExtractableResponse<Response> response = given().log().all()
-                .header("Authorization", accessToken)
-                .pathParam("id", id)
-                .when().delete("/favorites/{id}")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = FavoriteApiRequester.deleteFavoriteApiCall(id);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        ExtractableResponse<Response> findResponse = given().log().all()
-                .header("Authorization", accessToken)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
-        List<FavoriteRequest> favorites = JsonPathUtil.getList(findResponse, "favorites", FavoriteRequest.class);
-        assertThat(favorites).hasSize(0);
+
+        ExtractableResponse<Response> findResponse = FavoriteApiRequester.findFavoritesApiCall();
+        assertThat(getFavorites(findResponse)).hasSize(0);
+    }
+
+    private static List<FavoriteResponse> getFavorites(ExtractableResponse<Response> findResponse) {
+        return JsonPathUtil.getList(findResponse, "favorites", FavoriteResponse.class);
     }
 }
