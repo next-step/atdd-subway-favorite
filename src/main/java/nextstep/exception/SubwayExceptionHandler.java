@@ -1,4 +1,4 @@
-package nextstep.subway.exception;
+package nextstep.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,11 @@ public class SubwayExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<ExceptionResponse> handleEntityNotFoundException(EntityNotFoundException e) {
 		return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+	}
+
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<ExceptionResponse> handleAuthenticationException(AuthenticationException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(e.getMessage()));
 	}
 
 	@Override

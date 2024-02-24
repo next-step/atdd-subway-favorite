@@ -4,7 +4,7 @@ import nextstep.subway.dto.LineRequest;
 import nextstep.subway.dto.LineResponse;
 import nextstep.subway.dto.SectionRequest;
 import nextstep.subway.dto.SectionResponse;
-import nextstep.subway.exception.ExceptionResponse;
+import nextstep.exception.ExceptionResponse;
 import nextstep.subway.service.LineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
