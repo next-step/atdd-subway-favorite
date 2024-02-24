@@ -19,6 +19,15 @@ public class RestApiRequest<T> {
 				.extract();
 	}
 
+	public ExtractableResponse<Response> get(String path, String accessToken, Object... pathParams) {
+		return RestAssured.given().log().all()
+				.auth().oauth2(accessToken)
+				.when()
+				.get(path, pathParams)
+				.then().log().all()
+				.extract();
+	}
+
 	public ExtractableResponse<Response> get(String path, Map<String, Object> queryParams, Object... pathParams) {
 		return RestAssured.given().log().all()
 				.queryParams(queryParams)
@@ -30,6 +39,17 @@ public class RestApiRequest<T> {
 
 	public ExtractableResponse<Response> post(String path, T body, Object... pathParams) {
 		return RestAssured.given().log().all()
+				.body(body)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.when()
+				.post(path, pathParams)
+				.then().log().all()
+				.extract();
+	}
+
+	public ExtractableResponse<Response> post(String path, String accessToken, T body, Object... pathParams) {
+		return RestAssured.given().log().all()
+				.auth().oauth2(accessToken)
 				.body(body)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.when()
@@ -50,6 +70,15 @@ public class RestApiRequest<T> {
 
 	public ExtractableResponse<Response> delete(String path, Object... pathParams) {
 		return RestAssured.given().log().all()
+				.when()
+				.delete(path, pathParams)
+				.then().log().all()
+				.extract();
+	}
+
+	public ExtractableResponse<Response> delete(String path, String accessToken, Object... pathParams) {
+		return RestAssured.given().log().all()
+				.auth().oauth2(accessToken)
 				.when()
 				.delete(path, pathParams)
 				.then().log().all()
