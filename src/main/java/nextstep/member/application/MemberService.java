@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.exception.NotFoundUserException;
 import nextstep.member.application.request.MemberRequest;
 import nextstep.member.application.response.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -35,7 +36,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).orElseThrow(NotFoundUserException::new);
     }
 
     public MemberResponse findMe(LoginMember loginMember) {

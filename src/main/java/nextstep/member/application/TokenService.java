@@ -5,6 +5,7 @@ import nextstep.member.AuthenticationException;
 import nextstep.member.application.request.GetAccessTokenRequest;
 import nextstep.member.application.response.GetAccessTokenResponse;
 import nextstep.member.application.response.TokenResponse;
+import nextstep.member.application.response.github.GithubProfileResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +36,13 @@ public class TokenService {
     }
 
     public GetAccessTokenResponse getAccessToken(GetAccessTokenRequest getAccessTokenRequest) {
-        String accessCode = githubClient.requestGithubToken(getAccessTokenRequest.getCode());
+        String githubAccessCode = githubClient.requestGithubToken(getAccessTokenRequest.getCode());
+        GithubProfileResponse githubProfileResponse = githubClient.requestGithubResource(githubAccessCode);
 
-        if (accessCode.equals(TOKEN_ISSUE_FAIL_MESSAGE)) {
-            throw new FailIssueAccessTokenException();
-        }
+        Member member = memberService.findMemberByEmail(githubProfileResponse.getEmail());
+        String token =  jwtTokenProvider.createToken(member.getEmail());
 
-        return GetAccessTokenResponse.from(accessCode);
+        return GetAccessTokenResponse.from(token);
     }
 
 }

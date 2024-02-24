@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.request.GetAccessTokenRequest;
+import nextstep.member.application.response.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -16,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.common.Constant.*;
 import static nextstep.member.acceptance.AuthAcceptanceStep.*;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -27,25 +30,24 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @DisplayName("Bearer Auth")
+    /**
+     * Given 회원가입 후 로그인을 하여 받은 토큰으로
+     * When 사용자 정보를 조회하면
+     * Then 사용자 정보를 조회할 수 있다.
+     */
+    @DisplayName("발급된 토큰으로 사용자를 조회할 수 있다.")
     @Test
-    void bearerAuth() {
-        memberRepository.save(Member.of(EMAIL, PASSWORD, AGE));
+    void 발급된_토큰으로_조회() {
+        // given
+        회원_생성_요청(임꺽정_이메일, 임꺽정_비밀번호, 임꺽정_나이);
+        String accessToken = 로그인_성공(임꺽정_이메일, 임꺽정_비밀번호);
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
+        // thwn
+        MemberResponse 사용자_조회_응답 = 사용자_조회됨(accessToken);
+        String 사용자_이메일 = 사용자_조회_응답.getEmail();
 
-        String accessToken = 로그인_성공(EMAIL, PASSWORD);
-        assertThat(accessToken).isNotBlank();
-
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+        // then
+        assertThat(사용자_이메일).isEqualTo(임꺽정_이메일);
     }
 
     /**
@@ -88,28 +90,5 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void 깃허브_로그인_실패_검증(ExtractableResponse<Response> extractableResponse, HttpStatus status) {
         assertThat(extractableResponse.statusCode()).isEqualTo(status.value());
     }
-
-
-//    @DisplayName("Github Auth")
-//    @Test
-//    void githubAuth() {
-//        // when
-//        Map<String, String> params = new HashMap<>();
-//        params.put("code", GithubResponses.사용자1.getCode());
-//
-//        ExtractableResponse<Response> response = RestAssured.given().log().all()
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .body(params)
-//                .when().post("/login/github")
-//                .then().log().all()
-//                .extract();
-//
-//        // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-//        String token = response.jsonPath().getString(".");
-//
-//        // token을 이용해서 내 정보 조회를 했을 때 profileResponse
-//        // assertThat(profileResponse.getEmail()).isEqualTo(GithubResponses.사용자1.getEmail());
-//    }
 
 }

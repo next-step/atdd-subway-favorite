@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.member.application.request.GetAccessTokenRequest;
 import nextstep.member.application.request.TokenRequest;
 import nextstep.member.application.response.GetAccessTokenResponse;
+import nextstep.member.application.response.MemberResponse;
 import nextstep.member.application.response.TokenResponse;
 import org.springframework.http.MediaType;
 
@@ -22,6 +23,18 @@ public class AuthAcceptanceStep {
 
     public static String 로그인_성공(String email, String password) {
         return 로그인_시도(TokenRequest.of(email, password)).as(TokenResponse.class).getAccessToken();
+    }
+
+    public static ExtractableResponse<Response> 사용자_조회(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static MemberResponse 사용자_조회됨(String accessToken) {
+        return 사용자_조회(accessToken).as(MemberResponse.class);
     }
 
     public static ExtractableResponse<Response> 깃허브_로그인_시도(GetAccessTokenRequest getAccessTokenRequest) {
