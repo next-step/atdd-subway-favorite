@@ -2,7 +2,7 @@ package nextstep.core.pathFinder.application.converter;
 
 
 import nextstep.core.pathFinder.application.dto.PathFinderResponse;
-import nextstep.core.pathFinder.domain.PathFinderResult;
+import nextstep.core.pathFinder.domain.dto.PathFinderResult;
 
 public class PathFinderConverter {
 

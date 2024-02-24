@@ -34,7 +34,9 @@ public class FavoriteService {
 
     @Transactional
     public Favorite createFavorite(FavoriteRequest request, Member member) {
-        pathFinderService.findShortestPath(new PathFinderRequest(request.getSource(), request.getTarget()));
+        if(!pathFinderService.isValidPath(new PathFinderRequest(request.getSource(), request.getTarget()))) {
+            throw new IllegalArgumentException("출발역과 도착역을 잇는 경로가 없습니다.");
+        }
 
         Favorite favorite = new Favorite(
                 stationService.findStation(request.getSource()),
