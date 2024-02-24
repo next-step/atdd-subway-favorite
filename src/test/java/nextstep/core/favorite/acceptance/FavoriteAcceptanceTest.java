@@ -4,14 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.common.annotation.AcceptanceTest;
-import nextstep.core.member.domain.Member;
-import nextstep.core.member.domain.MemberRepository;
 import nextstep.core.station.fixture.StationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -19,15 +16,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.common.utils.HttpResponseUtils.getCreatedLocationId;
+import static nextstep.core.favorite.fixture.FavoriteFixture.추가할_즐겨찾기_정보;
+import static nextstep.core.favorite.fixture.FavoriteFixture.확인할_즐겨찾기_정보;
+import static nextstep.core.favorite.step.FavoriteSteps.*;
 import static nextstep.core.line.fixture.LineFixture.*;
-import static nextstep.core.line.fixture.LineFixture.사호선;
 import static nextstep.core.line.step.LineSteps.지하철_노선_생성;
+import static nextstep.core.member.step.AuthSteps.회원생성_후_토큰_발급;
 import static nextstep.core.section.fixture.SectionFixture.지하철_구간;
 import static nextstep.core.section.step.SectionSteps.성공하는_지하철_구간_추가요청;
 import static nextstep.core.station.step.StationSteps.지하철_역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("즐겨찾기 관련 기능")
+@DisplayName("즐겨찾기 관련 인수 테스트")
 @AcceptanceTest
 public class FavoriteAcceptanceTest {
 
@@ -47,9 +47,6 @@ public class FavoriteAcceptanceTest {
 
     String 정상적인_회원의_토큰;
     String 비정상적인_회원의_토큰 = "Bearer InValid Token";
-
-    @Autowired
-    private MemberRepository memberRepository;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -78,26 +75,10 @@ public class FavoriteAcceptanceTest {
     }
 
     @BeforeEach
-    void 사전_정상적인_회원의_토큰_발급() {
-        String email = "admin@email.com";
-        String password = "password";
-        Integer age = 20;
-
-        memberRepository.save(new Member(email, password, age));
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        ExtractableResponse<Response> 토큰_발급_요청 = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        정상적인_회원의_토큰 = String.format("Bearer %s", 토큰_발급_요청.jsonPath().getString("accessToken"));
-        assertThat(정상적인_회원의_토큰).isNotBlank();
+    void 사전_회원의_토큰_발급() {
+        var 정상적인_회원의_이메일 = "admin@email.com";
+        var 정상적인_회원의_비밀번호 = "password";
+        정상적인_회원의_토큰 = 회원생성_후_토큰_발급(정상적인_회원의_이메일, 정상적인_회원의_비밀번호);
     }
 
     @Nested
@@ -106,42 +87,17 @@ public class FavoriteAcceptanceTest {
         class 성공 {
             /**
              * Given 회원을 생성한다.
-             * When  즐겨찾기를 추가하면
+             * When  즐겨찾기 추가 요청을 할 때
+             * When     회원 정보로 발급한 토큰을 같이 전달할 경우
              * Then  해당 회원의 즐겨찾기 목록에 추가된다.
              */
             @Test
-            void 즐겨찾기_추가() {
-                // given
-                String 출발역_번호 = String.valueOf(교대역);
-                String 도착역_번호 = String.valueOf(강남역);
-                Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                경로_조회_요청_맵.put("source", 출발역_번호);
-                경로_조회_요청_맵.put("target", 도착역_번호);
-
+            void 토큰과_함께_즐겨찾기_추가() {
                 // when
-                ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                        .given().log().all()
-                        .header("Authorization", 정상적인_회원의_토큰)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(경로_조회_요청_맵)
-                        .when()
-                        .post("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .extract();
+                성공하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
 
                 // then
-                ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                        .given().log().all()
-                        .header("Authorization", 정상적인_회원의_토큰)
-                        .when()
-                        .get("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.OK.value())
-                        .extract();
-
-                assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).containsExactly(Long.parseLong(출발역_번호));
-                assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).containsExactly(Long.parseLong(도착역_번호));
+                특정_회원의_즐겨찾기_목록_검증(확인할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
             }
         }
 
@@ -151,56 +107,23 @@ public class FavoriteAcceptanceTest {
             class 회원_관련 {
                 /**
                  * Given 회원을 생성한다.
-                 * When  즐겨찾기를 추가할 때,
-                 * When     회원 정보를 전달하지 않은 경우
+                 * When  즐겨찾기 추가 요청을 할 때
+                 * When     회원 정보로 발급한 토큰을 같이 전달하지 않은 경우
                  * Then  해당 회원의 즐겨찾기 목록에 추가할 수 없다.
                  */
                 @Test
-                void 회원정보_없이_즐겨찾기_추가() {
-                    // given
-                    String 출발역_번호 = String.valueOf(교대역);
-                    String 도착역_번호 = String.valueOf(강남역);
-                    Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                    경로_조회_요청_맵.put("source", 출발역_번호);
-                    경로_조회_요청_맵.put("target", 도착역_번호);
-
-                    // when, then
-                    ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                            .given().log().all()
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(경로_조회_요청_맵)
-                            .when()
-                            .post("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.UNAUTHORIZED.value())
-                            .extract();
+                void 토큰없이_즐겨찾기_추가() {
+                    토큰없이_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(교대역, 강남역));
                 }
 
                 /**
-                 * When  즐겨찾기를 추가할 때,
-                 * When     존재하지 않는 회원 정보를 전달한 경우
+                 * When  즐겨찾기 추가 요청을 할 때
+                 * When     회원 정보로 발급한 토큰이 아닌, 임의로 생성한 토큰을 전달한 경우
                  * Then  해당 회원의 즐겨찾기 목록에 추가할 수 없다.
                  */
                 @Test
-                void 존재하지_않는_회원_정보로_즐겨찾기_추가() {
-                    // given
-                    String 출발역_번호 = String.valueOf(교대역);
-                    String 도착역_번호 = String.valueOf(강남역);
-                    Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                    경로_조회_요청_맵.put("source", 출발역_번호);
-                    경로_조회_요청_맵.put("target", 도착역_번호);
-
-                    // when, then
-                    ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 비정상적인_회원의_토큰)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(경로_조회_요청_맵)
-                            .when()
-                            .post("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.UNAUTHORIZED.value())
-                            .extract();
+                void 비정상적인_토큰으로_즐겨찾기_추가() {
+                    잘못된_토큰으로_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(교대역, 강남역), 비정상적인_회원의_토큰);
                 }
             }
 
@@ -208,164 +131,62 @@ public class FavoriteAcceptanceTest {
             class 경로_관련 {
                 /**
                  * Given 회원을 생성한다.
-                 * When  즐겨찾기를 추가할 때,
+                 * When  즐겨찾기 추가 요청을 할 때
                  * When     존재하지 않는 출발역일 경우
                  * Then  해당 회원의 즐겨찾기 목록에 추가할 수 없다.
                  */
                 @Test
                 void 존재하지_않는_출발역으로_즐겨찾기_추가() {
-                    // given
-                    String 존재하지_않는_출발역_번호 = "999";
-                    String 도착역_번호 = String.valueOf(강남역);
+                    // when
+                    실패하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(존재하지_않는_역, 강남역), 정상적인_회원의_토큰);
 
-                    Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                    경로_조회_요청_맵.put("source", 존재하지_않는_출발역_번호);
-                    경로_조회_요청_맵.put("target", 도착역_번호);
-
-                    // when, then
-                    ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(경로_조회_요청_맵)
-                            .when()
-                            .post("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .extract();
-
-                    ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .when()
-                            .get("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.OK.value())
-                            .extract();
-
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).doesNotContain(Long.parseLong(존재하지_않는_출발역_번호));
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).doesNotContain(Long.parseLong(도착역_번호));
+                    // then
+                    특정_회원의_즐겨찾기_목록_없음_검증(확인할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
                 }
 
                 /**
                  * Given 회원을 생성한다.
-                 * When  즐겨찾기를 추가할 때,
+                 * When  즐겨찾기 추가 요청을 할 때
                  * When     존재하지 않는 도착역일 경우
                  * Then  해당 회원의 즐겨찾기 목록에 추가할 수 없다.
                  */
                 @Test
                 void 존재하지_않는_도착역으로_즐겨찾기_추가() {
-                    // given
-                    String 출발역_번호 = String.valueOf(교대역);
-                    String 존재하지_않는_도착역_번호 = "999";
+                    // when
+                    실패하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(강남역, 존재하지_않는_역), 정상적인_회원의_토큰);
 
-                    Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                    경로_조회_요청_맵.put("source", 출발역_번호);
-                    경로_조회_요청_맵.put("target", 존재하지_않는_도착역_번호);
-
-                    // when, then
-                    ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(경로_조회_요청_맵)
-                            .when()
-                            .post("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .extract();
-
-                    ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .when()
-                            .get("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.OK.value())
-                            .extract();
-
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).doesNotContain(Long.parseLong(출발역_번호));
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).doesNotContain(Long.parseLong(존재하지_않는_도착역_번호));
+                    // then
+                    특정_회원의_즐겨찾기_목록_없음_검증(확인할_즐겨찾기_정보(교대역, 존재하지_않는_역), 정상적인_회원의_토큰);
                 }
 
                 /**
                  * Given 회원을 생성한다.
-                 * When  즐겨찾기를 추가할 때,
+                 * When  즐겨찾기 추가 요청을 할 때
                  * When     출발역과 도착역이 동일할 경우
                  * Then  해당 회원의 즐겨찾기 목록에 추가할 수 없다.
                  */
                 @Test
                 void 출발역과_도착역이_동일하게_즐겨찾기_추가() {
-                    // given
-                    String 출발역_번호 = String.valueOf(교대역);
-                    String 도착역_번호 = "1";
-                    Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                    경로_조회_요청_맵.put("source", 출발역_번호);
-                    경로_조회_요청_맵.put("target", 도착역_번호);
+                    // when
+                    실패하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(강남역, 강남역), 정상적인_회원의_토큰);
 
-                    // when, then
-                    ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(경로_조회_요청_맵)
-                            .when()
-                            .post("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .extract();
-
-                    ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .when()
-                            .get("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.OK.value())
-                            .extract();
-
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).doesNotContain(Long.parseLong(출발역_번호));
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).doesNotContain(Long.parseLong(도착역_번호));
+                    // then
+                    특정_회원의_즐겨찾기_목록_없음_검증(확인할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
                 }
 
                 /**
                  * Given 회원을 생성한다.
-                 * When  즐겨찾기를 추가할 때,
+                 * When  즐겨찾기 추가 요청을 할 때
                  * When     출발역과 도착역이 연결되지 않았을 경우
                  * Then  해당 회원의 즐겨찾기 목록에 추가할 수 없다.
                  */
                 @Test
                 void 출발역과_도착역이_연결되지_않은_즐겨찾기_추가() {
-                    // given
-                    String 출발역_번호 = String.valueOf(교대역);
-                    String 도착역_번호 = "11";
-                    Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                    경로_조회_요청_맵.put("source", 출발역_번호);
-                    경로_조회_요청_맵.put("target", 도착역_번호);
+                    // when
+                    실패하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(강남역, 오이도역), 정상적인_회원의_토큰);
 
-                    // when, then
-                    ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(경로_조회_요청_맵)
-                            .when()
-                            .post("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .extract();
-
-                    ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                            .given().log().all()
-                            .header("Authorization", 정상적인_회원의_토큰)
-                            .when()
-                            .get("/favorites")
-                            .then().log().all()
-                            .statusCode(HttpStatus.OK.value())
-                            .extract();
-
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).doesNotContain(Long.parseLong(출발역_번호));
-                    assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).doesNotContain(Long.parseLong(도착역_번호));
+                    // then
+                    특정_회원의_즐겨찾기_목록_없음_검증(확인할_즐겨찾기_정보(강남역, 오이도역), 정상적인_회원의_토큰);
                 }
             }
         }
@@ -554,49 +375,18 @@ public class FavoriteAcceptanceTest {
 
             @BeforeEach
             void 사전_정상적인_회원A의_토큰_발급() {
-                String email = "admin003@email.com";
-                String password = "password";
-                Integer age = 20;
-
-                memberRepository.save(new Member(email, password, age));
-
-                Map<String, String> params = new HashMap<>();
-                params.put("email", email);
-                params.put("password", password);
-
-                ExtractableResponse<Response> 토큰_발급_요청 = RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(params)
-                        .when().post("/login/token")
-                        .then().log().all()
-                        .statusCode(HttpStatus.OK.value()).extract();
-
-                정상적인_회원A의_토큰 = String.format("Bearer %s", 토큰_발급_요청.jsonPath().getString("accessToken"));
-                assertThat(정상적인_회원의_토큰).isNotBlank();
+                var 정상적인_회원A의_이메일 = "admin001@email.com";
+                var 정상적인_회원A의_비밀번호 = "password";
+                정상적인_회원A의_토큰 = 회원생성_후_토큰_발급(정상적인_회원A의_이메일, 정상적인_회원A의_비밀번호);
             }
 
             @BeforeEach
             void 사전_정상적인_회원B의_토큰_발급() {
-                String email = "admin004@email.com";
-                String password = "password";
-                Integer age = 20;
-
-                memberRepository.save(new Member(email, password, age));
-
-                Map<String, String> params = new HashMap<>();
-                params.put("email", email);
-                params.put("password", password);
-
-                ExtractableResponse<Response> 토큰_발급_요청 = RestAssured.given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(params)
-                        .when().post("/login/token")
-                        .then().log().all()
-                        .statusCode(HttpStatus.OK.value()).extract();
-
-                정상적인_회원B의_토큰 = String.format("Bearer %s", 토큰_발급_요청.jsonPath().getString("accessToken"));
-                assertThat(정상적인_회원의_토큰).isNotBlank();
+                var 정상적인_회원B의_이메일 = "admin002@email.com";
+                var 정상적인_회원B의_비밀번호 = "password";
+                정상적인_회원B의_토큰 = 회원생성_후_토큰_발급(정상적인_회원B의_이메일, 정상적인_회원B의_비밀번호);
             }
+
             /**
              * Given 회원을 생성하고, 즐겨찾기를 추가한다.
              * When  추가한 즐겨찾기가 아닌 다른 사용자의 즐겨찾기를 삭제할 경우
