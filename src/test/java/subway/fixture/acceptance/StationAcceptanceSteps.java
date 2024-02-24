@@ -2,8 +2,8 @@ package subway.fixture.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.dto.line.LineResponse;
 import subway.dto.station.StationRequest;
+import subway.dto.station.StationResponse;
 import subway.utils.enums.Location;
 import subway.utils.rest.Rest;
 
@@ -17,6 +17,6 @@ public class StationAcceptanceSteps {
 	}
 
 	public static Long 정류장_생성_ID_반환(String name) {
-		return 정류장_생성(name).as(LineResponse.class).getId();
+		return 정류장_생성(name).as(StationResponse.class).getId();
 	}
 }
