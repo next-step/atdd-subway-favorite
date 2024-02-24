@@ -2,7 +2,9 @@ package nextstep.subway.ui;
 
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import nextstep.member.AuthenticationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> handleBusinessException(ConstraintViolationException e) {
+    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
         log.info(e.getMessage());
 
         return ResponseEntity
@@ -26,6 +28,15 @@ public class ControllerExceptionHandler {
 
         return ResponseEntity
             .badRequest()
+            .body(e.getMessage());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
+        log.info(e.getMessage());
+
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
             .body(e.getMessage());
     }
 
