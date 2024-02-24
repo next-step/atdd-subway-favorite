@@ -92,4 +92,22 @@ class FavoriteServiceMockTest {
 			.hasMessage("경로를 찾을수 없습니다.")
 			.isInstanceOf(IllegalArgumentException.class);
 	}
+
+	@DisplayName("즐겨찾기를 조회한다.")
+	void successFindFavorite() {
+		// given
+		member.addFavorite(new Favorite(member, 강남역, 불광역));
+		given(memberService.findMemberByEmail(anyString())).willReturn(member);
+
+		// when
+		List<FavoriteResponse> actualResponses = favoriteService.findFavorite(EMAIL);
+
+		// then
+		List<FavoriteResponse> expectedResponses = member.getFavoriteList()
+			.stream()
+			.map(FavoriteResponse::of)
+			.collect(toList());
+		assertThat(actualResponses).usingRecursiveComparison().isEqualTo(expectedResponses);
+	}
+
 }

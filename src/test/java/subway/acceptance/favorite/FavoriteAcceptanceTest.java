@@ -42,4 +42,20 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 			.then().log().all()
 			.statusCode(HttpStatus.CREATED.value());
 	}
+
+	/**
+	 * given 로그인된 회원인지 검사한다.
+	 * when 모든 즐겨찾기를 조회한다.
+	 * then 조회된 즐겨찾기를 응답받는다.
+	 */
+	@DisplayName("즐겨찾기를 조회한다.")
+	@Test
+	void findFavorite() {
+		FavoriteResponse response = 즐겨찾기_생성().as(FavoriteResponse.class);
+
+		List<FavoriteResponse> responses = 즐겨찾기_조회();
+
+		assertThat(List.of(response)).usingRecursiveComparison().isEqualTo(responses);
+	}
+
 }

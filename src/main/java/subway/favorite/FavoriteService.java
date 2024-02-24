@@ -44,4 +44,13 @@ public class FavoriteService {
 	private void checkConnectedPath(Station sourceStation, Station targetStation) {
 		pathService.findShortestPath(sourceStation, targetStation);
 	}
+
+	public List<FavoriteResponse> findFavorite(String email) {
+		Member member = findMemberByEmail(email);
+		return member.getFavoriteList()
+			.stream()
+			.map(FavoriteResponse::of)
+			.collect(toList());
+	}
+
 }
