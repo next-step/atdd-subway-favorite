@@ -1,11 +1,12 @@
 package nextstep.subway.service;
 
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import nextstep.subway.dto.FavoriteRequest;
 import nextstep.subway.dto.FavoriteResponse;
 import nextstep.subway.domain.entity.Favorite;
-import nextstep.subway.dto.StationResponse;
 import nextstep.subway.repository.FavoriteRepository;
-import nextstep.subway.repository.StationRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -17,28 +18,33 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
     private final PathService pathService;
+    private final MemberService memberService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, PathService pathService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, PathService pathService, MemberService memberService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
         this.pathService = pathService;
+        this.memberService = memberService;
     }
 
-    public FavoriteResponse saveFavorite(FavoriteRequest request) {
+    public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest request) {
         validFavoriteRequest(request);
 
-        Favorite favorite = new Favorite(request.getSource(), request.getTarget());
+        Favorite favorite = new Favorite(memberService.findMemberByEmail(loginMember.getEmail()), request.getSource(), request.getTarget());
         return createFavoriteResponse(favoriteRepository.save(favorite));
     }
 
-    public List<FavoriteResponse> findFavorites() {
-        return favoriteRepository.findAll().stream()
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        return favoriteRepository.findByMember(member).stream()
                 .map(this::createFavoriteResponse)
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
-        favoriteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+
+        favoriteRepository.findByIdAndMember(id, member).orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
 
         favoriteRepository.deleteById(id);
     }
