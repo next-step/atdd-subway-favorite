@@ -77,4 +77,8 @@ public class Member {
 	public void addFavorite(Favorite favorite) {
 		getFavorites().addFavorite(favorite);
 	}
+
+	public void remove(Favorite favorite) {
+		getFavoriteList().remove(favorite);
+	}
 }
