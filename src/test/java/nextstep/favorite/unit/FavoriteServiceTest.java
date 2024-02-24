@@ -5,6 +5,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -121,5 +122,35 @@ public class FavoriteServiceTest {
 
         //then
         assertThat(favorites).hasSize(1);
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void deleteFavorite() {
+        //given
+        FavoriteRequest request = new FavoriteRequest(교대역.getId(), 양재역.getId());
+        LoginMember loginMember = new LoginMember(member.getEmail());
+        Long id = favoriteService.createFavorite(request, loginMember);
+
+        //when
+        favoriteService.deleteFavorite(id);
+
+        //then
+        List<FavoriteResponse> favorites = favoriteService.findFavorites();
+        assertThat(favorites).hasSize(0);
+    }
+
+    @DisplayName("존재하지 않는 즐겨찾기 삭제시 예외 발생")
+    @Test
+    void notFavoriteDelete() {
+        //given
+        FavoriteRequest request = new FavoriteRequest(교대역.getId(), 양재역.getId());
+        LoginMember loginMember = new LoginMember(member.getEmail());
+        Long id = favoriteService.createFavorite(request, loginMember);
+
+        //when
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(id + 1L))
+                .isExactlyInstanceOf(FavoriteException.class)
+                .hasMessage("존재하지 않는 즐겨찾기입니다.");
     }
 }

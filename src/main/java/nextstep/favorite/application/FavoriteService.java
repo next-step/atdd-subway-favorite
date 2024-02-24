@@ -4,6 +4,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
@@ -69,12 +70,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
     public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+        Favorite favorite = favoriteRepository
+                .findById(id)
+                .orElseThrow(() -> new FavoriteException("존재하지 않는 즐겨찾기입니다."));
+        favoriteRepository.delete(favorite);
     }
 }
