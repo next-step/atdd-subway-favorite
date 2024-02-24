@@ -2,7 +2,6 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.utils.AcceptanceTest;
 import nextstep.utils.subway.LineSteps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.member.acceptance.TokenSteps.인증정보_생성_요청;
 import static nextstep.utils.subway.FavoriteSteps.*;
 import static nextstep.utils.subway.StationSteps.역_삭제_요청;
 import static nextstep.utils.subway.StationSteps.역_생성_요청;
@@ -21,14 +22,22 @@ public class FavoriteAcceptanceTest {
 	private Long 종로3가역;
 	private Long 시청역;
 	private Long 서울역;
+	private String accessToken;
+
 	@BeforeEach
 	public void setup() {
 		종로3가역 = 역_생성_요청("종로3가역").jsonPath().getLong("id");
 		시청역 = 역_생성_요청("시청역").jsonPath().getLong("id");
 		서울역 = 역_생성_요청("서울역").jsonPath().getLong("id");
 
-
 		LineSteps.노선_생성_요청("분당선", "노랑", 종로3가역, 시청역, 6);
+
+		String email = "aab555586@gmail.com";
+		String password = "password";
+		int age = 20;
+
+		회원_생성_요청(email, password, age);
+		accessToken = 인증정보_생성_요청(email, password).jsonPath().getString("accessToken");
 	}
 
 	/**
@@ -41,17 +50,17 @@ public class FavoriteAcceptanceTest {
 	@Test
 	void 즐겨찾기_생성() {
 		// when
-		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(종로3가역, 시청역);
+		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
 		Long id = Long.valueOf(response.header("Location").replace("/favorites/", ""));
-		assertThat(즐겨찾기_전체_조회_요청().jsonPath().getList("id", Long.class)).contains(id);
+		assertThat(즐겨찾기_전체_조회_요청(accessToken).jsonPath().getList("id", Long.class)).contains(id);
 	}
 
 	/**
-	 * Scenario: 재하지 않는 역이 포함된 경로를 즐겨찾기로 생성할 경우 생성 실패
+	 * Scenario: 존재하지 않는 역이 포함된 경로를 즐겨찾기로 생성할 경우 생성 실패
 	 * Given 상행역 : 종로3가역 / 하행역 : 시청역 / 길이 : 6 인 구간들이 존재하는 노선을 생성한다.
 	 * When 종로3울역부터 서울역까지의 경로를 즐겨찾기로 생성한다.
 	 * Then "역이 존재하지 않습니다."라는 메시지를 반환한다.
@@ -61,13 +70,14 @@ public class FavoriteAcceptanceTest {
 	void 존재하지_않는_역_즐겨찾기_생성_실패() {
 		// when
 		역_삭제_요청(서울역);
-		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(종로3가역, 서울역);
+		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 종로3가역, 서울역);
 
 		// then
 		실패시_코드값_메시지_검증(response, HttpStatus.BAD_REQUEST.value(), "역이 존재하지 않습니다.");
 	}
 
-	/**
+
+		/**
 	 * Scenario: 존재하지 않는 경로를 즐겨찾기로 생성할 경우 생성 실패
 	 * ````
 	 * Given 상행역 : 종로3가역 / 하행역 : 시청역 / 길이 : 6 인 구간들이 존재하는 노선을 생성한다.
@@ -84,7 +94,7 @@ public class FavoriteAcceptanceTest {
 		LineSteps.노선_생성_요청("4호선", "하늘", 동대문역, 서울역, 6);
 
 		// when
-		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(종로3가역, 동대문역);
+		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 종로3가역, 동대문역);
 
 		// then
 		실패시_코드값_메시지_검증(response, HttpStatus.BAD_REQUEST.value(), "경로가 존재하지 않습니다.");
@@ -101,10 +111,10 @@ public class FavoriteAcceptanceTest {
 	@Test
 	void 즐겨찾기_조회_성공() {
 		// given
-		즐겨찾기_생성_요청(종로3가역, 시청역);
+		즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역);
 
 		// when
-		ExtractableResponse<Response> response = 즐겨찾기_전체_조회_요청();
+		ExtractableResponse<Response> response = 즐겨찾기_전체_조회_요청(accessToken);
 
 		//
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -122,14 +132,14 @@ public class FavoriteAcceptanceTest {
 	@Test
 	void 즐겨찾기_삭제_성공() {
 		// given
-		Long id = Long.valueOf(즐겨찾기_생성_요청(종로3가역, 시청역).header("Location").replace("/favorites/", ""));
+		Long id = Long.valueOf(즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역).header("Location").replace("/favorites/", ""));
 
 		// when
-		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(id);
+		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(accessToken, id);
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-		assertThat(즐겨찾기_전체_조회_요청().jsonPath().getList("id", Long.class)).doesNotContain(id);
+		assertThat(즐겨찾기_전체_조회_요청(accessToken).jsonPath().getList("id", Long.class)).doesNotContain(id);
 	}
 
 	/**
@@ -140,14 +150,28 @@ public class FavoriteAcceptanceTest {
 	@Test
 	void 존재하지_않는_즐겨찾기_삭제_실패() {
 		// given
-		Long id = Long.valueOf(즐겨찾기_생성_요청(종로3가역, 시청역).header("Location").replace("/favorites/", ""));
+		Long id = Long.valueOf(즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역).header("Location").replace("/favorites/", ""));
 
 		// when
-		즐겨찾기_삭제_요청(id);
-		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(id);
+		즐겨찾기_삭제_요청(accessToken, id);
+		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(accessToken, id);
 
 		// then
 		실패시_코드값_메시지_검증(response, HttpStatus.BAD_REQUEST.value(), "즐겨찾기가 존재하지 않습니다.");
+	}
+
+	/**
+	 * Scenario: 인증정보 없이 즐겨찾기를 생성, 조회, 삭제 시 실패한다.
+	 * When 인증정보 없이 즐겨찾기를 생성, 조회, 삭제 할 경우
+	 * Then "인증정보가 존재하지 않습니다."라는 메시지를 반환한다.
+	 */
+	@DisplayName("인증정보 없이 즐겨찾기 생성, 조회, 삭제 시도 시, 즐겨찾기 생성이 실패한다.")
+	@Test
+	void 인증정보_없이_즐겨찾기_생성_실패() {
+		// when & then
+		실패시_코드값_메시지_검증(즐겨찾기_생성_요청("", 종로3가역, 서울역), HttpStatus.UNAUTHORIZED.value(), "인증정보가 존재하지 않습니다.");
+		실패시_코드값_메시지_검증(즐겨찾기_전체_조회_요청(""), HttpStatus.UNAUTHORIZED.value(), "인증정보가 존재하지 않습니다.");
+		실패시_코드값_메시지_검증(즐겨찾기_삭제_요청("",1L), HttpStatus.UNAUTHORIZED.value(), "인증정보가 존재하지 않습니다.");
 	}
 
 	private void 실패시_코드값_메시지_검증(ExtractableResponse<Response> response, int statusCode, String message) {

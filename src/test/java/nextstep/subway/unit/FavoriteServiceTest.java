@@ -1,5 +1,8 @@
 package nextstep.subway.unit;
 
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import nextstep.subway.domain.entity.Favorite;
 import nextstep.subway.dto.FavoriteRequest;
 import nextstep.subway.dto.FavoriteResponse;
@@ -33,14 +36,23 @@ public class FavoriteServiceTest {
 	private StationService stationService;
 	@Mock
 	private PathService pathService;
+	@Mock
+	private MemberService memberService;
 	private FavoriteService favoriteService;
 
 	private Long source = 1L;
 	private Long target = 2L;
+	private String email = "aab555586@gmail.com";
+	private String password = "password";
+	private Member member = new Member(email, password, 20);
+	private LoginMember loginMember = new LoginMember(email);
 
 	@BeforeEach
 	void setup() {
-		favoriteService = new FavoriteService(favoriteRepository, stationService, pathService);
+		favoriteService = new FavoriteService(favoriteRepository, stationService, pathService, memberService);
+
+		given(memberService.findMemberByEmail(email))
+				.willReturn(member);
 	}
 
 	@Test
@@ -56,11 +68,11 @@ public class FavoriteServiceTest {
 				.willReturn(targetResponse);
 		given(pathService.getPath(source, target))
 				.willReturn(new PathResponse(List.of(sourceResponse, targetResponse), 10));
-		given(favoriteRepository.save(new Favorite(source, target)))
-				.willReturn(new Favorite(source, target));
+		given(favoriteRepository.save(new Favorite(member, source, target)))
+				.willReturn(new Favorite(member, source, target));
 
 		// when
-		FavoriteResponse response = favoriteService.saveFavorite(new FavoriteRequest(source, target));
+		FavoriteResponse response = favoriteService.saveFavorite(loginMember, new FavoriteRequest(source, target));
 
 		// then
 		assertThat(response.getSource().getId()).isEqualTo(source);
@@ -71,21 +83,21 @@ public class FavoriteServiceTest {
 	@DisplayName("즐겨찾기를 삭제한다.")
 	void deleteFavorites() {
 		// given
-		given(favoriteRepository.findById(1L))
-				.willReturn(Optional.of(new Favorite(source, target)));
+		given(favoriteRepository.findByIdAndMember(1L, member))
+				.willReturn(Optional.of(new Favorite(member, source, target)));
 
 		// when
-		assertDoesNotThrow(() -> favoriteService.deleteFavorite(1L));
+		assertDoesNotThrow(() -> favoriteService.deleteFavorite(loginMember, 1L));
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 즐겨찾기 삭제 시 실패한다.")
 	void deleteFavoritesNotExist() {
 		// given
-		given(favoriteRepository.findById(1L))
+		given(favoriteRepository.findByIdAndMember(1L, member))
 				.willReturn(Optional.empty());
 
 		// when
-		assertThrows(EntityNotFoundException.class, () -> favoriteService.deleteFavorite(1L));
+		assertThrows(EntityNotFoundException.class, () -> favoriteService.deleteFavorite(loginMember, 1L));
 	}
 }
