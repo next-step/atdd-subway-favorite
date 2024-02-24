@@ -24,15 +24,18 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
+        validateAuthorization(authorization);
+
+        return new LoginMember(jwtTokenProvider.getPrincipal(getToken(authorization)));
+    }
+
+    private void validateAuthorization(String authorization) {
         if (authorization == null) {
             throw new InvalidTokenException("토큰이 전달되지 않았습니다.");
         }
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new InvalidTokenException("토큰 형식에 맞지 않습니다.");
         }
-
-        String email = jwtTokenProvider.getPrincipal(getToken(authorization));
-        return new LoginMember(email);
     }
 
     private String getToken(String authorization) {
