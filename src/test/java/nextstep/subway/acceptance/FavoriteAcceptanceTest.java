@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+public class FavoriteAcceptanceTest {
 	private Long 종로3가역;
 	private Long 시청역;
 	private Long 서울역;
