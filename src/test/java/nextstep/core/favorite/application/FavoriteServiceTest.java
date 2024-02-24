@@ -29,6 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -36,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @ApplicationTest
 @DisplayName("즐겨찾기 서비스 레이어 테스트")
 public class FavoriteServiceTest {
-
     FavoriteService favoriteService;
 
     @Autowired
@@ -81,6 +81,8 @@ public class FavoriteServiceTest {
     Long 정왕역_번호;
     Long 오이도역_번호;
     Long 가산디지털단지역_번호;
+    Long 존재하지_않는_상행역_번호;
+    Long 존재하지_않는_하행역_번호;
 
     Line 이호선;
     Line 신분당선;
@@ -120,11 +122,14 @@ public class FavoriteServiceTest {
         삼호선 = lineRepository.save(new Line("삼호선", "orange"));
         사호선 = lineRepository.save(new Line("사호선", "blue"));
 
-        Section 교대_강남_구간 = sectionRepository.save(new Section(교대, 강남, 10, 이호선));
-        Section 강남_양재_구간 = sectionRepository.save(new Section(강남, 양재, 10, 신분당선));
-        Section 교대_남부터미널_구간 = sectionRepository.save(new Section(교대, 남부터미널, 2, 삼호선));
-        Section 남부터미널_양재_구간 = sectionRepository.save(new Section(남부터미널, 양재, 3, 삼호선));
-        Section 정왕_오이도_구간 = sectionRepository.save(new Section(정왕, 오이도, 3, 사호선));
+        sectionRepository.save(new Section(교대, 강남, 10, 이호선));
+        sectionRepository.save(new Section(강남, 양재, 10, 신분당선));
+        sectionRepository.save(new Section(교대, 남부터미널, 2, 삼호선));
+        sectionRepository.save(new Section(남부터미널, 양재, 3, 삼호선));
+        sectionRepository.save(new Section(정왕, 오이도, 3, 사호선));
+
+        존재하지_않는_상행역_번호 = 999L;
+        존재하지_않는_하행역_번호 = 998L;
     }
 
     @Nested
@@ -140,23 +145,13 @@ public class FavoriteServiceTest {
             @Test
             void 즐겨찾기_추가() {
                 // given
-                Member member = new Member("test@test.com", "test001!", 30);
-                MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
-                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
-
-
-                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
+                Member member = createMember("test@test.com", "test001!", 30);
 
                 // when
-                favoriteService.createFavorite(favoriteRequest, member);
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member);
 
                 // then
-                assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
-                        .ignoringFields("id", "member.id")
-                        .isEqualTo(List.of(new Favorite(
-                                stationService.findStation(강남역_번호),
-                                stationService.findStation(교대역_번호),
-                                member)));
+                assertSavedFavoriteForMember(favorite, member);
             }
         }
 
@@ -174,10 +169,8 @@ public class FavoriteServiceTest {
                 @Test
                 void 존재하지_않는_출발역으로_즐겨찾기_추가() {
                     // given
-                    Member member = new Member("test@test.com", "test001!", 30);
-                    memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                    Member member = createMember("test@test.com", "test001!", 30);
 
-                    Long 존재하지_않는_상행역_번호 = 999L;
                     FavoriteRequest favoriteRequest = new FavoriteRequest(존재하지_않는_상행역_번호, 교대역_번호);
 
                     // when, then
@@ -197,10 +190,8 @@ public class FavoriteServiceTest {
                 @Test
                 void 존재하지_않는_도착역으로_즐겨찾기_추가() {
                     // given
-                    Member member = new Member("test@test.com", "test001!", 30);
-                    memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                    Member member = createMember("test@test.com", "test001!", 30);
 
-                    Long 존재하지_않는_하행역_번호 = 999L;
                     FavoriteRequest favoriteRequest = new FavoriteRequest(교대역_번호, 존재하지_않는_하행역_번호);
 
                     // when, then
@@ -220,10 +211,7 @@ public class FavoriteServiceTest {
                 @Test
                 void 출발역과_도착역이_동일하게_즐겨찾기_추가() {
                     // given
-                    Member member = new Member("test@test.com", "test001!", 30);
-                    MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
-                    ReflectionTestUtils.setField(member, "id", memberResponse.getId());
-
+                    Member member = createMember("test@test.com", "test001!", 30);
 
                     FavoriteRequest favoriteRequest = new FavoriteRequest(교대역_번호, 교대역_번호);
 
@@ -244,8 +232,7 @@ public class FavoriteServiceTest {
                 @Test
                 void 출발역과_도착역이_연결되지_않은_즐겨찾기_추가() {
                     // given
-                    Member member = new Member("test@test.com", "test001!", 30);
-                    memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
+                    Member member = createMember("test@test.com", "test001!", 30);
 
                     FavoriteRequest favoriteRequest = new FavoriteRequest(교대역_번호, 오이도역_번호);
 
@@ -272,14 +259,9 @@ public class FavoriteServiceTest {
             @Test
             void 추가한_즐겨찾기_조회() {
                 // given
-                Member member = new Member("test@test.com", "test001!", 30);
-                MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
-                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+                Member member = createMember("test@test.com", "test001!", 30);
 
                 FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
-                FavoriteResponse favoriteResponse = new FavoriteResponse(
-                        new StationResponse(강남.getId(), 강남.getName()),
-                        new StationResponse(교대.getId(), 교대.getName()));
 
                 // when
                 favoriteService.createFavorite(favoriteRequest, member);
@@ -287,7 +269,9 @@ public class FavoriteServiceTest {
                 // then
                 assertThat(favoriteService.findFavorites(member)).usingRecursiveComparison()
                         .ignoringFields("id")
-                        .isEqualTo(List.of(favoriteResponse));
+                        .isEqualTo(List.of(new FavoriteResponse(
+                                new StationResponse(강남.getId(), 강남.getName()),
+                                new StationResponse(교대.getId(), 교대.getName()))));
             }
         }
     }
@@ -304,28 +288,19 @@ public class FavoriteServiceTest {
             @Test
             void 즐겨찾기_추가() {
                 // given
-                Member member = new Member("test@test.com", "test001!", 30);
-                MemberResponse memberResponse = memberService.createMember(new MemberRequest("test@test.com", "test001!", 30));
-                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+                Member member = createMember("test@test.com", "test001!", 30);
 
-                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
-
-                Favorite favorite = favoriteService.createFavorite(favoriteRequest, member);
-
-                assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
-                        .ignoringFields("id", "member.id")
-                        .isEqualTo(List.of(new Favorite(
-                                stationService.findStation(강남역_번호),
-                                stationService.findStation(교대역_번호),
-                                member)));
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member);
+                assertSavedFavoriteForMember(favorite, member);
 
                 // when
                 favoriteService.deleteFavorite(favorite.getId(), member);
 
                 // then
-                assertThat(favoriteRepository.findAll()).isEmpty();
+                assertThat(favoriteRepository.findAll()).doesNotContain(favorite);
             }
         }
+
         @Nested
         class 실패 {
             /**
@@ -336,29 +311,16 @@ public class FavoriteServiceTest {
             @Test
             void 다른_사용자의_즐겨찾기_삭제() {
                 // given
-                Member member_A = new Member("memberA@test.com", "test001!", 30);
-                MemberResponse memberResponseA = memberService.createMember(new MemberRequest("memberA@test.com", "test001!", 30));
-                ReflectionTestUtils.setField(member_A, "id", memberResponseA.getId());
+                Member memberA = createMember("test001@test.com", "test001!", 30);
+                Member memberB = createMember("test002@test.com", "test001!", 30);
 
-                Member member_B = new Member("memberB@test.com", "test001!", 30);
-                MemberResponse memberResponseB = memberService.createMember(new MemberRequest("memberB@test.com", "test001!", 30));
-                ReflectionTestUtils.setField(member_B, "id", memberResponseB.getId());
-
-
-                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
-                Favorite favorite = favoriteService.createFavorite(favoriteRequest, member_A);
-
-                assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
-                        .ignoringFields("id", "member.id")
-                        .isEqualTo(List.of(new Favorite(
-                                stationService.findStation(강남역_번호),
-                                stationService.findStation(교대역_번호),
-                                member_A)));
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), memberA);
+                assertSavedFavoriteForMember(favorite, memberA);
 
                 // when
                 assertThatExceptionOfType(NonMatchingMemberException.class)
                         .isThrownBy(() -> {
-                            favoriteService.deleteFavorite(favorite.getId(), member_B);
+                            favoriteService.deleteFavorite(favorite.getId(), memberB);
                         })
                         .withMessageMatching("다른 회원의 즐겨찾기를 삭제할 수 없습니다.");
             }
@@ -371,19 +333,10 @@ public class FavoriteServiceTest {
             @Test
             void 존재하지_않는_즐겨찾기_삭제() {
                 // given
-                Member member = new Member("memberA@test.com", "test001!", 30);
-                MemberResponse memberResponse = memberService.createMember(new MemberRequest("memberA@test.com", "test001!", 30));
-                ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+                Member member = createMember("test@test.com", "test001!", 30);
 
-                FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
-                Favorite favorite = favoriteService.createFavorite(favoriteRequest, member);
-
-                assertThat(favoriteRepository.findAll()).usingRecursiveComparison()
-                        .ignoringFields("id", "member.id")
-                        .isEqualTo(List.of(new Favorite(
-                                stationService.findStation(강남역_번호),
-                                stationService.findStation(교대역_번호),
-                                member)));
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member);
+                assertSavedFavoriteForMember(favorite, member);
 
                 // when
                 assertThatExceptionOfType(EntityNotFoundException.class)
@@ -393,5 +346,26 @@ public class FavoriteServiceTest {
                         .withMessageMatching("즐겨찾기 번호에 해당하는 즐겨찾기가 없습니다.");
             }
         }
+    }
+
+    private Member createMember(String email, String password, int age) {
+        Member member = new Member(email, password, age);
+        MemberResponse memberResponse = memberService.createMember(new MemberRequest(email, password, age));
+
+        ReflectionTestUtils.setField(member, "id", memberResponse.getId());
+        return member;
+    }
+
+    private void assertSavedFavoriteForMember(Favorite favorite, Member member) {
+        List<Favorite> favorites = favoriteRepository.findAll();
+
+        List<Favorite> filteredByMember = favorites.stream()
+                .filter(it -> it.getMember().equals(member))
+                .collect(Collectors.toList());
+
+        assertThat(favorites).isEqualTo(filteredByMember);
+        assertThat(favorites).usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(List.of(favorite));
     }
 }
