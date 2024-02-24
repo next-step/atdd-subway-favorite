@@ -40,12 +40,12 @@ public class FavoriteServiceMockTest {
 	private MemberService memberService;
 	private FavoriteService favoriteService;
 
-	private Long source = 1L;
-	private Long target = 2L;
-	private String email = "aab555586@gmail.com";
-	private String password = "password";
-	private Member member = new Member(email, password, 20);
-	private LoginMember loginMember = new LoginMember(email);
+	private final Long source = 1L;
+	private final Long target = 2L;
+	private final String email = "aab555586@gmail.com";
+	private final String password = "password";
+	private final Member member = new Member(email, password, 20);
+	private final LoginMember loginMember = new LoginMember(email);
 
 	@BeforeEach
 	void setup() {

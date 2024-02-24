@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 public class LineController {
-	private LineService lineService;
+	private final LineService lineService;
 
 	public LineController(LineService lineService) {
 		this.lineService = lineService;
