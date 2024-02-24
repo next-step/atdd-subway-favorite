@@ -3,7 +3,6 @@ package nextstep.favorite.acceptance;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.exception.ExceptionMessage;
 import nextstep.exception.ExceptionResponse;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.fixture.MemberFixture;
@@ -18,7 +17,8 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.exception.ExceptionMessage.*;
+import static nextstep.exception.ExceptionMessage.AUTHENTICATION_FAILED;
+import static nextstep.exception.ExceptionMessage.NOT_CONNECTED_EXCEPTION;
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
@@ -140,6 +140,36 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(message).isEqualTo(NOT_CONNECTED_EXCEPTION.getMessage())
+        );
+    }
+
+    @Test
+    void 로그인X_즐겨찾기_조회() {
+        // give
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청("");
+        String message = response.as(ExceptionResponse.class).getMessage();
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(401), // TODO UNAUTHORIZED 못 받아옴..
+                () -> assertThat(message).isEqualTo(AUTHENTICATION_FAILED.getMessage())
+        );
+    }
+
+    @Test
+    void 로그인X_즐겨찾기_삭제() {
+        // give
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청("", 1L);
+        String message = response.as(ExceptionResponse.class).getMessage();
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(401), // TODO UNAUTHORIZED 못 받아옴..
+                () -> assertThat(message).isEqualTo(AUTHENTICATION_FAILED.getMessage())
         );
     }
 }
