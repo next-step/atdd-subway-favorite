@@ -21,13 +21,19 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
     }
 
+    // Authorization=Bearer {token}
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new AuthenticationException();
         }
-        String token = authorization.split(" ")[1];
+        String token = "";
+        try {
+            token = authorization.split(" ")[1];
+        } catch (Exception e) {
+            throw new AuthenticationException();
+        }
 
         String email = jwtTokenProvider.getPrincipal(token);
 

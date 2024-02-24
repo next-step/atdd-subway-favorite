@@ -1,20 +1,24 @@
 package nextstep.favorite.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.exception.ExceptionMessage;
+import nextstep.exception.ExceptionResponse;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.fixture.MemberFixture;
 import nextstep.subway.domain.request.LineRequest;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static nextstep.exception.ExceptionMessage.AUTHENTICATION_FAILED;
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
@@ -25,11 +29,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
     long 강남역, 역삼역, 선릉역, 이호선;
     String accessToken;
 
     @BeforeEach
     public void setUp() {
+        databaseCleanup.execute();
+
         강남역 = 지하철역_생성("강남역").jsonPath().getLong("id");
         역삼역 = 지하철역_생성("역삼역").jsonPath().getLong("id");
         선릉역 = 지하철역_생성("선릉역").jsonPath().getLong("id");
@@ -97,4 +106,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                                 && favorite.getTarget().getId().equals(선릉역))).isFalse()
         );
     }
+
+    @DisplayName("로그인 하지않으면 즐겨찾기 생성 불가")
+    @Test
+    void 로그인X_즐겨찾기_생성() {
+        // give
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 선릉역, "");
+        String message = response.as(ExceptionResponse.class).getMessage();
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(401), // TODO UNAUTHORIZED 못 받아옴..
+                () -> assertThat(message).isEqualTo(AUTHENTICATION_FAILED.getMessage())
+        );
+    }
+
 }

@@ -1,12 +1,13 @@
 package nextstep.exception;
 
+import nextstep.member.AuthenticationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import static nextstep.exception.ExceptionMessage.AUTHENTICATION_FAILED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,5 +24,14 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(OK).body(response);
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        ExceptionResponse response = ExceptionResponse.builder()
+                .message(AUTHENTICATION_FAILED.getMessage())
+                .build();
+        return ResponseEntity.status(UNAUTHORIZED).body(response);
+    }
+
 
 }

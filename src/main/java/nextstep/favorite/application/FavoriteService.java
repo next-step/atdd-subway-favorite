@@ -5,6 +5,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.AuthenticationException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -47,7 +48,8 @@ public class FavoriteService {
     }
 
     private Member getMember(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new ApplicationException(NO_EXISTS_MEMBER_EXCEPTION.getMessage()));
+        return memberRepository.findByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new AuthenticationException());
     }
 
     private Station getStation(Long stationId) {
