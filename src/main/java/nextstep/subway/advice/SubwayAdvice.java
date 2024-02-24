@@ -1,11 +1,20 @@
 package nextstep.subway.advice;
 
+import nextstep.member.AuthenticationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class SubwayAdvice {
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(e.getMessage());
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRunTimeException(RuntimeException e) {

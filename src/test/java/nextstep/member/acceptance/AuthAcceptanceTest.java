@@ -52,4 +52,25 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    @DisplayName("유효하지 않은 토큰일시 에러가 발생한다.")
+    @Test
+    void 유효하지_않은_토큰_호출_실패() {
+        String 유효하지_않은_토큰 = "invalidToken";
+
+        RestAssured.given().log().all()
+            .auth().oauth2(유효하지_않은_토큰)
+            .when().get("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
+    }
+
+    @DisplayName("비로그인 시 에러가 발생한다.")
+    @Test
+    void 비로그인_호출_실패() {
+        RestAssured.given().log().all()
+            .when().get("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
+    }
 }

@@ -6,13 +6,13 @@ import io.restassured.response.Response;
 import nextstep.subway.acceptance.fixture.StationFixture;
 import nextstep.subway.dto.line.LineRequest;
 import nextstep.subway.dto.line.LineUpdateRequest;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -20,11 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 노선 관리 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql(scripts = {"/truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class LineAcceptanceTest {
+public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
+
         for (String name : List.of("강남역", "역삼역", "선릉역")) {
             StationFixture.지하철역_생성_요청(name);
         }
