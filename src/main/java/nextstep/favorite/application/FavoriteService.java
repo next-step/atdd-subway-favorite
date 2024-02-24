@@ -10,8 +10,6 @@ import nextstep.member.domain.Member;
 import nextstep.subway.entity.Sections;
 import nextstep.subway.entity.Station;
 import nextstep.subway.service.LineService;
-import nextstep.subway.service.PathFinder;
-import nextstep.subway.service.PathService;
 import nextstep.subway.service.StationService;
 import org.springframework.stereotype.Service;
 
@@ -24,30 +22,25 @@ public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationService stationService;
     private MemberService memberService;
-    private PathService pathService;
+    private LineService lineService;
 
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService, PathService pathService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService, LineService lineService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
         this.memberService = memberService;
-        this.pathService = pathService;
+        this.lineService = lineService;
     }
 
     /** 즐겨찾기 등록 */
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        verifyConnectedStation(request);
-
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
         Station sourceStation = stationService.findStation(request.getSource());
         Station targetStation = stationService.findStation(request.getTarget());
+        List<Sections> sectionsList = lineService.findSectionsList();
 
-        Favorite favorite = new Favorite(member, sourceStation, targetStation);
+        Favorite favorite = new Favorite(member, sourceStation, targetStation, sectionsList);
         favoriteRepository.save(favorite);
-    }
-
-    private void verifyConnectedStation(FavoriteRequest request) {
-        pathService.getPaths(request.getSource(), request.getTarget());
     }
 
     /** 즐겨찾기 목록 조회 */
@@ -61,9 +54,7 @@ public class FavoriteService {
 
     /** 즐겨찾기 삭제 */
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        List<Favorite> favorites = favoriteRepository.findAllByMemberEmail(loginMember.getEmail());
-
-        Optional<Favorite> deleteFavorite = favorites.stream()
+        Optional<Favorite> deleteFavorite = favoriteRepository.findAllByMemberEmail(loginMember.getEmail()).stream()
             .filter(it -> it.getId().equals(id))
             .findAny();
 

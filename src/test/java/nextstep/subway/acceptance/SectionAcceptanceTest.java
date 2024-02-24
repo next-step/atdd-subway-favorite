@@ -8,6 +8,7 @@ import nextstep.subway.acceptance.fixture.StationFixture;
 import nextstep.subway.dto.line.LineResponse;
 import nextstep.subway.dto.section.SectionRequest;
 import nextstep.subway.dto.station.StationResponse;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,8 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관리 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql(scripts = {"/truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class SectionAcceptanceTest {
+public class SectionAcceptanceTest extends AcceptanceTest {
     private static Long 강남역_ID;
     private static Long 역삼역_ID;
     private static Long 선릉역_ID;
@@ -33,7 +32,9 @@ public class SectionAcceptanceTest {
 
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
+
         강남역_ID = StationFixture.지하철역_생성_요청("강남역").as(StationResponse.class).getId();
         역삼역_ID = StationFixture.지하철역_생성_요청("역삼역").as(StationResponse.class).getId();
         선릉역_ID = StationFixture.지하철역_생성_요청("선릉역").as(StationResponse.class).getId();

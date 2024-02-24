@@ -28,10 +28,28 @@ public class Favorite {
 
     protected Favorite() {}
 
-    public Favorite(Member member, Station sourceStation, Station targetStation) {
+    public Favorite(Member member, Station sourceStation, Station targetStation, List<Sections> sectionsList) {
+        verifyCreateFavorite(sourceStation, targetStation, sectionsList);
+
         this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+    }
+
+    private void verifyCreateFavorite(Station sourceStation, Station targetStation, List<Sections> sectionsList) {
+        verifySameStation(sourceStation, targetStation);
+        verifyConnectedStation(sectionsList, sourceStation, targetStation);
+    }
+
+    private void verifySameStation(Station sourceStation, Station targetStation) {
+        if(sourceStation == targetStation) {
+            throw new IllegalArgumentException("출발역과 도착역은 동일할 수 없다");
+        }
+    }
+
+    private void verifyConnectedStation(List<Sections> sectionsList, Station sourceStation, Station targetStation) {
+        PathFinder pathFinder = new PathFinder(sectionsList);
+        pathFinder.getShortestPath(sourceStation, targetStation);
     }
 
     public Long getId() {

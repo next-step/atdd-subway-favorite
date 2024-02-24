@@ -61,16 +61,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         /**
          * When 즐겨찾기를 생성하면
-         * Then 비정상 경로일시 에러가 발생한다.
+         * Then 출발역과 도착역이 동일 시 에러가 발생한다.
          */
-        @DisplayName("비정상 경로는 즐겨찾기를 등록할 수 없다.")
+        @DisplayName("출발역과 도착역이 동일하면 즐겨찾기를 등록할 수 없다.")
+        @Test
+        void 출발역_도착역_동일_즐겨찾기_등록_실패() {
+            // when
+            ExtractableResponse<Response> 즐겨찾기_등록_응답 = 즐겨찾기_등록_요청(교대역, 교대역);
+
+            // then
+            assertThat(즐겨찾기_등록_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        }
+
+        /**
+         * When 즐겨찾기를 생성하면
+         * Then 연결되지 않은 역인 경우 에러가 발생한다.
+         */
+        @DisplayName("연결되지 않은 역은 즐겨찾기를 등록할 수 없다.")
         @Test
         void 비정상_경로_즐겨찾기_등록_실패() {
             // given
-            Long 비정상_경로_역 = -9999L;
+            Long 연결되지_않은_역 = -9999L;
 
             // when
-            ExtractableResponse<Response> 즐겨찾기_등록_응답 = 즐겨찾기_등록_요청(교대역, 비정상_경로_역);
+            ExtractableResponse<Response> 즐겨찾기_등록_응답 = 즐겨찾기_등록_요청(교대역, 연결되지_않은_역);
 
             // then
             assertThat(즐겨찾기_등록_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
