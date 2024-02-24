@@ -21,7 +21,7 @@ public class PathFinderService {
     public PathFinderResponse findShortestPath(PathFinderRequest pathFinderRequest) {
         validatePathRequest(pathFinderRequest);
 
-        return PathFinderConverter.convertToPathResponse(pathFinder.calculateShortestPath(
+        return PathFinderConverter.convertToPathFinderResponse(pathFinder.calculateShortestPath(
                 lineService.findAllLines(),
                 lineService.findStation(pathFinderRequest.getDepartureStationId()),
                 lineService.findStation(pathFinderRequest.getArrivalStationId())));
