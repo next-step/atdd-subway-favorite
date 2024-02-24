@@ -37,7 +37,7 @@ public class PathFinderTest {
      * (distance 10) *신분당선*
      *                  |
      *                  |
-     *                강남역 ---- *9호선* ------ 역삼역
+     *                강남역 ---- *2호선* ------ 역삼역
      *                        (distance 7)
      */
     @BeforeEach

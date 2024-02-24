@@ -17,6 +17,10 @@ public class LineFixture {
         return Line.create("3호선", "bg-red-300", upStation, downStation, 10);
     }
 
+    public static Line 경의중앙선_엔티티(Station upStation, Station downStation) {
+        return Line.create("경의중앙선", "bg-blue-600", upStation, downStation, 14);
+    }
+
     public static LineCreateRequestBody 신분당선_생성_바디(Long upStationId, Long downStationId) {
         return new LineCreateRequestBody(
                 "신분당선", "bg-red-600", upStationId, downStationId, 10
@@ -43,7 +47,7 @@ public class LineFixture {
 
     public static LineCreateRequestBody 경의중앙선_생성_바디(Long upStationId, Long downStationId) {
         return new LineCreateRequestBody(
-                "신분당선", "bg-blue-600", upStationId, downStationId, 14
+                "경의중앙선", "bg-blue-600", upStationId, downStationId, 14
         );
     }
 

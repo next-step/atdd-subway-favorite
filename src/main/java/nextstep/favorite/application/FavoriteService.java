@@ -4,6 +4,9 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.Member;
+import nextstep.station.domain.Station;
+import nextstep.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +14,8 @@ import java.util.List;
 @Service
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
+
+    private StationRepository stationRepository;
 
     public FavoriteService(FavoriteRepository favoriteRepository) {
         this.favoriteRepository = favoriteRepository;
@@ -22,7 +27,9 @@ public class FavoriteService {
      * @param request
      */
     public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
+        Station source = stationRepository.findById(request.getSource()).orElseThrow();
+        Station target = stationRepository.findById(request.getTarget()).orElseThrow();
+        Favorite favorite = new Favorite(source, target, new Member("", "", 1));
         favoriteRepository.save(favorite);
     }
 
