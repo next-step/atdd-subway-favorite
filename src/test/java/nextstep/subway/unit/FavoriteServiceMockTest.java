@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class FavoriteServiceTest {
+public class FavoriteServiceMockTest {
 	@Mock
 	private FavoriteRepository favoriteRepository;
 	@Mock

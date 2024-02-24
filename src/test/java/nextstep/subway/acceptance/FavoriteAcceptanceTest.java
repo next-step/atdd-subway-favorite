@@ -55,8 +55,7 @@ public class FavoriteAcceptanceTest {
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-		Long id = Long.valueOf(response.header("Location").replace("/favorites/", ""));
-		assertThat(즐겨찾기_전체_조회_요청(accessToken).jsonPath().getList("id", Long.class)).contains(id);
+		assertThat(즐겨찾기_전체_조회_요청(accessToken).jsonPath().getList("id", Long.class)).contains(get생성한_즐겨찾기_ID(response));
 	}
 
 	/**
@@ -132,7 +131,7 @@ public class FavoriteAcceptanceTest {
 	@Test
 	void 즐겨찾기_삭제_성공() {
 		// given
-		Long id = Long.valueOf(즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역).header("Location").replace("/favorites/", ""));
+		Long id = get생성한_즐겨찾기_ID(즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역));
 
 		// when
 		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(accessToken, id);
@@ -150,7 +149,7 @@ public class FavoriteAcceptanceTest {
 	@Test
 	void 존재하지_않는_즐겨찾기_삭제_실패() {
 		// given
-		Long id = Long.valueOf(즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역).header("Location").replace("/favorites/", ""));
+		Long id = get생성한_즐겨찾기_ID(즐겨찾기_생성_요청(accessToken, 종로3가역, 시청역));
 
 		// when
 		즐겨찾기_삭제_요청(accessToken, id);
@@ -172,6 +171,10 @@ public class FavoriteAcceptanceTest {
 		실패시_코드값_메시지_검증(즐겨찾기_생성_요청("", 종로3가역, 서울역), HttpStatus.UNAUTHORIZED.value(), "인증정보가 존재하지 않습니다.");
 		실패시_코드값_메시지_검증(즐겨찾기_전체_조회_요청(""), HttpStatus.UNAUTHORIZED.value(), "인증정보가 존재하지 않습니다.");
 		실패시_코드값_메시지_검증(즐겨찾기_삭제_요청("",1L), HttpStatus.UNAUTHORIZED.value(), "인증정보가 존재하지 않습니다.");
+	}
+
+	private Long get생성한_즐겨찾기_ID(ExtractableResponse<Response> response) {
+		return Long.valueOf(response.header("Location").replace("/favorites/", ""));
 	}
 
 	private void 실패시_코드값_메시지_검증(ExtractableResponse<Response> response, int statusCode, String message) {
