@@ -203,37 +203,11 @@ public class FavoriteAcceptanceTest {
              */
             @Test
             void 추가한_즐겨찾기_조회() {
-                // given
-                String 출발역_번호 = String.valueOf(교대역);
-                String 도착역_번호 = String.valueOf(강남역);
-                Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                경로_조회_요청_맵.put("source", 출발역_번호);
-                경로_조회_요청_맵.put("target", 도착역_번호);
+                // when
+                성공하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
 
-                // when, then
-                ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                        .given().log().all()
-                        .header("Authorization", 정상적인_회원의_토큰)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(경로_조회_요청_맵)
-                        .when()
-                        .post("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .extract();
-
-                ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                        .given().log().all()
-                        .header("Authorization", 정상적인_회원의_토큰)
-                        .when()
-                        .get("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.OK.value())
-                        .extract();
-
-                assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).containsExactly(Long.valueOf(출발역_번호));
-                assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).containsExactly(Long.valueOf(도착역_번호));
-
+                // then
+                특정_회원의_즐겨찾기_목록_검증(확인할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
             }
         }
 
@@ -248,31 +222,10 @@ public class FavoriteAcceptanceTest {
             @Test
             void 회원정보를_전달하지_않은_즐겨찾기_조회() {
                 // given
-                String 출발역_번호 = String.valueOf(교대역);
-                String 도착역_번호 = String.valueOf(강남역);
-                Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                경로_조회_요청_맵.put("source", 출발역_번호);
-                경로_조회_요청_맵.put("target", 도착역_번호);
+                성공하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
 
                 // when, then
-                ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                        .given().log().all()
-                        .header("Authorization", 정상적인_회원의_토큰)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(경로_조회_요청_맵)
-                        .when()
-                        .post("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .extract();
-
-                ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                        .given().log().all()
-                        .when()
-                        .get("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.UNAUTHORIZED.value())
-                        .extract();
+                토큰없이_즐겨찾기_목록_검증(추가할_즐겨찾기_정보(교대역, 강남역));
             }
 
             /**
@@ -283,33 +236,11 @@ public class FavoriteAcceptanceTest {
              */
             @Test
             void 존재하지_않는_회원정보로_즐겨찾기_조회() {
-                // given
-                String 출발역_번호 = String.valueOf(교대역);
-                String 도착역_번호 = String.valueOf(강남역);
-                Map<String, String> 경로_조회_요청_맵 = new HashMap<>();
-                경로_조회_요청_맵.put("source", 출발역_번호);
-                경로_조회_요청_맵.put("target", 도착역_번호);
+                // when
+                성공하는_즐겨찾기_추가_요청(추가할_즐겨찾기_정보(교대역, 강남역), 정상적인_회원의_토큰);
 
-                // when, then
-                ExtractableResponse<Response> 즐겨찾기_추가_요청_응답 = RestAssured
-                        .given().log().all()
-                        .header("Authorization", 정상적인_회원의_토큰)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(경로_조회_요청_맵)
-                        .when()
-                        .post("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .extract();
-
-                ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
-                        .given().log().all()
-                        .header("Authorization", 비정상적인_회원의_토큰)
-                        .when()
-                        .get("/favorites")
-                        .then().log().all()
-                        .statusCode(HttpStatus.UNAUTHORIZED.value())
-                        .extract();
+                // then
+                잘못된_토큰으로_즐겨찾기_목록_검증(추가할_즐겨찾기_정보(교대역, 강남역), 비정상적인_회원의_토큰);
             }
         }
     }

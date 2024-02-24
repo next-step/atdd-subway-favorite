@@ -77,6 +77,31 @@ public class FavoriteSteps {
         assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).containsExactly(확인할_즐겨찾기_정보.getTarget());
     }
 
+    public static void 토큰없이_즐겨찾기_목록_검증(FavoriteRequest 확인할_즐겨찾기_정보) {
+        ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
+                .given().log().all()
+                .when()
+                .get("/favorites")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract();
+        assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).doesNotContain(확인할_즐겨찾기_정보.getSource());
+        assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).doesNotContain(확인할_즐겨찾기_정보.getTarget());
+    }
+
+    public static void 잘못된_토큰으로_즐겨찾기_목록_검증(FavoriteRequest 확인할_즐겨찾기_정보, String 토큰) {
+        ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
+                .given().log().all()
+                .when()
+                .get("/favorites")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract();
+
+        assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("source.id", Long.class)).doesNotContain(확인할_즐겨찾기_정보.getSource());
+        assertThat(즐겨찾기_조회_요청_응답.jsonPath().getList("target.id", Long.class)).doesNotContain(확인할_즐겨찾기_정보.getTarget());
+    }
+
     public static void 특정_회원의_즐겨찾기_목록_없음_검증(FavoriteRequest 확인할_즐겨찾기_정보, String 토큰) {
         ExtractableResponse<Response> 즐겨찾기_조회_요청_응답 = RestAssured
                 .given().log().all()
