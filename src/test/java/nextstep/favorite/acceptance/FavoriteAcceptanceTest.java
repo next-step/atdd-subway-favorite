@@ -1,8 +1,11 @@
 package nextstep.favorite.acceptance;
 
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.fixture.TokenProvider;
 import nextstep.subway.acceptance.annotation.AcceptanceTest;
 import nextstep.subway.acceptance.line.LineApiRequester;
 import nextstep.subway.acceptance.section.SectionApiRequester;
@@ -32,6 +35,8 @@ public class FavoriteAcceptanceTest {
     Long 신분당선id;
     Long 삼호선id;
 
+    String accessToken;
+
     @BeforeEach
     void setUp() {
         교대역id = JsonPathUtil.getId(StationApiRequester.createStationApiCall("교대역"));
@@ -50,6 +55,8 @@ public class FavoriteAcceptanceTest {
 
         SectionCreateRequest 남부터미널양재역 = new SectionCreateRequest(남부터미널역id, 양재역id, 3);
         SectionApiRequester.generateSection(남부터미널양재역, 삼호선id);
+
+        accessToken = TokenProvider.getAccessToken();
     }
 
     /**
@@ -63,6 +70,8 @@ public class FavoriteAcceptanceTest {
         FavoriteRequest request = new FavoriteRequest(교대역id, 양재역id);
 
         ExtractableResponse<Response> response = given().log().all()
+                .header("Authorization", accessToken)
+                .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/favorites")
                 .then().log().all()
@@ -72,6 +81,7 @@ public class FavoriteAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         ExtractableResponse<Response> findResponse = given().log().all()
+                .header("Authorization", accessToken)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
@@ -87,10 +97,16 @@ public class FavoriteAcceptanceTest {
     @DisplayName("경로를 찾을 수 없거나 연결되지 않은 경로 즐겨찾기 등록")
     @Test
     void createDisconnectStationsFavorite() {
+        //given
+        Long 건대입구역id = JsonPathUtil.getId(StationApiRequester.createStationApiCall("건대입구역"));
+        Long 성수역id = JsonPathUtil.getId(StationApiRequester.createStationApiCall("성수역"));
+
         //when
-        FavoriteRequest request = new FavoriteRequest(Long.MIN_VALUE, Long.MAX_VALUE);
+        FavoriteRequest request = new FavoriteRequest(건대입구역id, 성수역id);
 
         ExtractableResponse<Response> response = given().log().all()
+                .header("Authorization", accessToken)
+                .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/favorites")
                 .then().log().all()
@@ -113,20 +129,34 @@ public class FavoriteAcceptanceTest {
         FavoriteRequest request = new FavoriteRequest(교대역id, 양재역id);
 
         given().log().all()
+                .header("Authorization", accessToken)
+                .contentType(ContentType.JSON)
                 .body(request)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+
+        FavoriteRequest request2 = new FavoriteRequest(교대역id, 강남역id);
+
+        given().log().all()
+                .header("Authorization", accessToken)
+                .contentType(ContentType.JSON)
+                .body(request2)
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
 
         //when
         ExtractableResponse<Response> response = given().log().all()
+                .header("Authorization", accessToken)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
 
         //then
-        List<FavoriteRequest> favorites = JsonPathUtil.getList(response, "favorites", FavoriteRequest.class);
-        assertThat(favorites).hasSize(1);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<FavoriteResponse> favorites = JsonPathUtil.getList(response, "favorites", FavoriteResponse.class);
+        assertThat(favorites).hasSize(2);
     }
 
     /**
@@ -141,26 +171,32 @@ public class FavoriteAcceptanceTest {
         FavoriteRequest request = new FavoriteRequest(교대역id, 양재역id);
 
         ExtractableResponse<Response> createResponse = given().log().all()
+                .header("Authorization", accessToken)
+                .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
 
-        Long id = JsonPathUtil.getId(createResponse);
+        Long id = Long.valueOf(createResponse.asString());
+        System.out.println("id = " + id);
 
         //when
         ExtractableResponse<Response> response = given().log().all()
+                .header("Authorization", accessToken)
                 .pathParam("id", id)
-                .when().delete("/favorites")
+                .when().delete("/favorites/{id}")
                 .then().log().all()
                 .extract();
 
         //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         ExtractableResponse<Response> findResponse = given().log().all()
+                .header("Authorization", accessToken)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
-        List<FavoriteRequest> favorites = JsonPathUtil.getList(response, "favorites", FavoriteRequest.class);
+        List<FavoriteRequest> favorites = JsonPathUtil.getList(findResponse, "favorites", FavoriteRequest.class);
         assertThat(favorites).hasSize(0);
     }
 }
