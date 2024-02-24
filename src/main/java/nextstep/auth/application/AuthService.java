@@ -1,21 +1,22 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.UserDetail;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    private final MemberService memberService;
     private final TokenService tokenService;
     private GithubClient githubClient;
 
-    public AuthService(TokenService tokenService, GithubClient githubClient, MemberService memberService){
+    private final UserDetailService userDetailService;
+
+    public AuthService(TokenService tokenService, GithubClient githubClient, UserDetailService userDetailService) {
         this.tokenService = tokenService;
         this.githubClient = githubClient;
-        this.memberService = memberService;
+        this.userDetailService = userDetailService;
     }
 
     public TokenResponse login(String email, String password) {
@@ -26,8 +27,8 @@ public class AuthService {
         final String accessToken = githubClient.requestGithubToken(code);
         final GithubProfileResponse profile = githubClient.requestGithubProfile(accessToken);
 
-        memberService.findOrCreateMember(new MemberRequest(profile.getEmail(), code, profile.getAge()));
+        final UserDetail userDetail = userDetailService.findOrCreate(profile.getEmail());
 
-        return new TokenResponse(tokenService.createToken(profile.getEmail(), code).getAccessToken());
+        return new TokenResponse(tokenService.createToken(userDetail.getEmail(), userDetail.getPassword()).getAccessToken());
     }
 }

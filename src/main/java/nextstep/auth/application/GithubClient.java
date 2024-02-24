@@ -1,12 +1,9 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,8 +13,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-@ConfigurationProperties
-@ConfigurationPropertiesScan
 public class GithubClient {
     @Value("${github.client.id}")
     private String githubClientId;
@@ -26,10 +21,10 @@ public class GithubClient {
     private String githubClientSecret;
 
     @Value("${github.client.access-token-url}")
-    private String accessTokenUrl = "http://localhost:8080/github/login/oauth/access_token";
+    private String accessTokenUrl;
 
     @Value("${github.client.profile-url}")
-    private String profileUrl = "http://localhost:8080/github/user";
+    private String profileUrl;
 
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(

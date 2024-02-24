@@ -2,11 +2,11 @@ package nextstep.member.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.swing.Spring;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.utils.GithubResponses;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -17,10 +17,11 @@ public class GithubClientTest {
     // 1. github token 받아오기
     // 2. github 사용자 정보 받아오기
 
+    @Autowired
+    private GithubClient githubClient;
+
     @Test
     void requestGithubToken() {
-        // given
-        GithubClient githubClient = new GithubClient();
 
         // when
         String githubToken = githubClient.requestGithubToken(GithubResponses.사용자1.getCode());
@@ -32,9 +33,6 @@ public class GithubClientTest {
 
     @Test
     void requestGithubProfile() {
-        // given
-        GithubClient githubClient = new GithubClient();
-
         // when
         GithubProfileResponse githubProfile = githubClient.requestGithubProfile(GithubResponses.사용자1.getAccessToken());
 
