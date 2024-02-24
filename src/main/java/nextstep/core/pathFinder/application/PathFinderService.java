@@ -30,7 +30,7 @@ public class PathFinderService {
     public boolean isValidPath(PathFinderRequest pathFinderRequest) {
         validatePathRequest(pathFinderRequest);
 
-        return pathFinder.isFoundPath(
+        return pathFinder.existPathBetweenStations(
                 lineService.findAllLines(),
                 lineService.findStation(pathFinderRequest.getDepartureStationId()),
                 lineService.findStation(pathFinderRequest.getArrivalStationId()));

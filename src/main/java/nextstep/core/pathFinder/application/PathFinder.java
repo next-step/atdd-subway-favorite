@@ -15,24 +15,25 @@ import java.util.List;
 @Component
 public class PathFinder {
     public PathFinderResult calculateShortestPath(List<Line> lines, Station departureStation, Station arrivalStation) {
-        validateLines(lines, departureStation, arrivalStation);
+        GraphPath<Station, DefaultWeightedEdge> path = findShortestPath(lines, departureStation, arrivalStation);
 
-        GraphPath<Station, DefaultWeightedEdge> path = findShortestPath(
-                departureStation,
-                arrivalStation,
-                buildPathFromLines(lines, new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class)));
-
-        if (!isFoundPath(path)) {
+        if (!hasFoundPath(path)) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
         return generatePathResult(path);
     }
 
-    public boolean isFoundPath(List<Line> lines, Station arrivalStation, Station departureStation) {
+    public boolean existPathBetweenStations(List<Line> lines, Station departureStation, Station arrivalStation) {
+        return hasFoundPath(findShortestPath(lines, departureStation, arrivalStation));
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> findShortestPath(List<Line> lines, Station departureStation, Station arrivalStation) {
         validateLines(lines, departureStation, arrivalStation);
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> pathGraph = buildPathFromLines(lines, new WeightedMultigraph<>(DefaultWeightedEdge.class));
-        return new DijkstraShortestPath<>(pathGraph).getPath(departureStation, arrivalStation) != null;
+        return findShortestPath(
+                departureStation,
+                arrivalStation,
+                buildPathFromLines(lines, new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class)));
     }
 
     private void validateLines(List<Line> lines, Station departureStation, Station arrivalStation) {
@@ -81,7 +82,7 @@ public class PathFinder {
         });
     }
 
-    private boolean isFoundPath(GraphPath<Station, DefaultWeightedEdge> path) {
+    private boolean hasFoundPath(GraphPath<Station, DefaultWeightedEdge> path) {
         return path != null;
     }
 

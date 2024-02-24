@@ -239,7 +239,7 @@ public class PathFinderTest {
              */
             @Test
             void 강남역에서_남부터미널역까지_경로_조회() {
-                assertThat(pathFinder.isFoundPath(모든_노선_목록, 강남, 남부터미널)).isTrue();
+                assertThat(pathFinder.existPathBetweenStations(모든_노선_목록, 강남, 남부터미널)).isTrue();
             }
         }
 
@@ -252,7 +252,7 @@ public class PathFinderTest {
              */
             @Test
             void 강남역에서_오이도까지_경로_조회() {
-                assertThat(pathFinder.isFoundPath(모든_노선_목록, 강남, 오이도)).isFalse();
+                assertThat(pathFinder.existPathBetweenStations(모든_노선_목록, 강남, 오이도)).isFalse();
             }
         }
     }
