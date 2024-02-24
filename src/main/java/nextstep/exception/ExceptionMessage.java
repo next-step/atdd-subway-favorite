@@ -13,7 +13,7 @@ public enum ExceptionMessage {
     NO_EXISTS_LAST_SECTION_EXCEIPTION("마지막 구간을 찾을 수 없습니다."),
     LONGER_DISTANCE_SECTION_EXCEPTION("기존 구간보다 거리가 긴 구간은 추가할 수 없습니다."),
     SAME_SOURCE_TARGET_EXCEPTION("출발역과 도착역이 같습니다."),
-    NOT_CONNECTED_EXCEPTION("출발역과 도착역이 연결되어 있지 않습니다."),
+    NOT_CONNECTED_EXCEPTION("해당 경로는 연결되어 있지 않습니다."),
     NO_EXISTS_STATION_EXCEPTION("존재하지 않는 지하철역 입니다."),
     NO_EXISTS_MEMBER_EXCEPTION("존재하지 않는 회원 입니다."),
     AUTHENTICATION_FAILED("인증에 실패했습니다.");

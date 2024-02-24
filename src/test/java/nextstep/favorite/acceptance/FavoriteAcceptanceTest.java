@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static nextstep.exception.ExceptionMessage.AUTHENTICATION_FAILED;
+import static nextstep.exception.ExceptionMessage.*;
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
@@ -122,4 +122,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    /** 이호선 : 강남역 - 역삼역 - 선릉역
+     * 사호선 : 사당역 - 이수역
+     */
+    @Test
+    void 비정상_경로_즐겨찾기_등록() {
+        // give
+        long 사당역 = 지하철역_생성("사당역").jsonPath().getLong("id");
+        long 이수역 = 지하철역_생성("이수역").jsonPath().getLong("id");
+
+        long 사호선 = 지하철_노선_생성(new LineRequest("4호선", "blue", 사당역, 이수역, 15)).jsonPath().getLong("id");
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 이수역, accessToken);
+        String message = response.as(ExceptionResponse.class).getMessage();
+
+        // then
+        assertAll(
+                () -> assertThat(message).isEqualTo(NOT_CONNECTED_EXCEPTION.getMessage())
+        );
+    }
 }
