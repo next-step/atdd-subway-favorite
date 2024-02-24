@@ -4,26 +4,46 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.subway.path.PathService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final MemberService memberService;
+    private final PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteService(
+            FavoriteRepository favoriteRepository,
+            MemberService memberService,
+            PathService pathService
+    ) {
         this.favoriteRepository = favoriteRepository;
+        this.memberService = memberService;
+        this.pathService = pathService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        verifyDisConnectedStations(request);
+
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+
+        Favorite favorite = new Favorite(
+                request.getSource(),
+                request.getTarget(),
+                member.getId()
+        );
+
+        return favoriteRepository.save(favorite).getId();
+    }
+
+    private void verifyDisConnectedStations(FavoriteRequest request) {
+        pathService.getPath(request.getSource(), request.getTarget());
     }
 
     /**
@@ -38,6 +58,7 @@ public class FavoriteService {
 
     /**
      * TODO: 요구사항 설명에 맞게 수정합니다.
+     *
      * @param id
      */
     public void deleteFavorite(Long id) {
