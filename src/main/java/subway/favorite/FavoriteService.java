@@ -1,31 +1,47 @@
 package subway.favorite;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.dto.favorite.FavoriteRequest;
 import subway.member.Member;
 import subway.member.MemberService;
+import subway.path.PathService;
 import subway.station.Station;
 import subway.station.StationService;
 
+@Transactional(readOnly = true)
 @Service
 public class FavoriteService {
 	private final MemberService memberService;
 	private final StationService stationService;
-	private final FavoriteRepository favoriteRepository;
+	private final PathService pathService;
 
-	public FavoriteService(MemberService memberService, StationService stationService,
-		FavoriteRepository favoriteRepository) {
+	public FavoriteService(MemberService memberService, StationService stationService, PathService pathService) {
 		this.memberService = memberService;
 		this.stationService = stationService;
-		this.favoriteRepository = favoriteRepository;
+		this.pathService = pathService;
 	}
 
+	private Station findStationById(Long stationId) {
+		return stationService.findStationById(stationId);
+	}
+
+	@Transactional
 	public Long save(String email, FavoriteRequest request) {
 		Member member = memberService.findMemberByEmail(email);
-		Station stationById = stationService.findStationById(request.getSource());
-		Station stationById1 = stationService.findStationById(request.getTarget());
-		Favorite save = favoriteRepository.save(new Favorite(member, stationById, stationById1));
-		return save.getId();
+		Station sourceStation = findStationById(request.getSource());
+		Station targetStation = findStationById(request.getTarget());
+
+		checkConnectedPath(sourceStation, targetStation);
+
+		member.addFavorite(new Favorite(member, sourceStation, targetStation));
+		return member.getFavoriteList()
+			.get(0)
+			.getId();
+	}
+
+	private void checkConnectedPath(Station sourceStation, Station targetStation) {
+		pathService.findShortestPath(sourceStation, targetStation);
 	}
 }
