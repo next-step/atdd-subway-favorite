@@ -3,6 +3,7 @@ package nextstep.core.favorite.presentation;
 import nextstep.core.favorite.application.FavoriteService;
 import nextstep.core.favorite.application.dto.FavoriteRequest;
 import nextstep.core.favorite.application.dto.FavoriteResponse;
+import nextstep.core.favorite.domain.Favorite;
 import nextstep.core.member.application.MemberService;
 import nextstep.core.member.domain.LoginMember;
 import nextstep.core.member.presentation.AuthenticationPrincipal;
@@ -25,9 +26,9 @@ public class FavoriteController {
     @PostMapping("/favorites")
     public ResponseEntity<Void> createFavorite(@RequestBody FavoriteRequest request,
                                                @AuthenticationPrincipal LoginMember loginMember) {
-        favoriteService.createFavorite(request, memberService.findMemberByEmail(loginMember.getEmail()));
+        Favorite favorite = favoriteService.createFavorite(request, memberService.findMemberByEmail(loginMember.getEmail()));
         return ResponseEntity
-                .created(URI.create("/favorites/" + 1L))
+                .created(URI.create("/favorites/" + favorite.getId()))
                 .build();
     }
 
