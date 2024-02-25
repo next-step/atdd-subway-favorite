@@ -41,9 +41,9 @@ public class PathService {
     }
 
 
-    public boolean isConnectedPath(long source, long target) {
+    public boolean isConnectedPath(Station source, Station target) {
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
-        return pathFinder.isConnected(getStation(source), getStation(target));
+        return pathFinder.isConnected(getStation(source.getId()), getStation(target.getId()));
     }
 
 

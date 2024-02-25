@@ -31,10 +31,12 @@ public class FavoriteService {
     public FavoriteService(
             FavoriteRepository favoriteRepository,
             MemberRepository memberRepository,
-            StationDao stationDao) {
+            StationDao stationDao,
+            PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
         this.stationDao = stationDao;
+        this.pathService = pathService;
     }
 
     /**
@@ -47,7 +49,7 @@ public class FavoriteService {
 
         Station source = stationDao.findStation(request.getSource());
         Station target = stationDao.findStation(request.getTarget());
-        if (!pathService.isConnectedPath(source.getId(), source.getId())) {
+        if (!pathService.isConnectedPath(source, target)) {
             throw new CannotFavoriteStationException("연결된 역이 아닙니다");
         }
 
