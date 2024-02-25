@@ -37,11 +37,9 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public StationResponse findByStationId(Long id) {
-        Station station = stationRepository.findById(id)
+    public Station findByStationId(Long id) {
+        return stationRepository.findById(id)
             .orElseThrow(EntityNotFoundException::new);
-
-        return createStationResponse(station);
     }
 
     private StationResponse createStationResponse(Station station) {

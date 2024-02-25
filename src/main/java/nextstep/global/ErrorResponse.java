@@ -1,4 +1,4 @@
-package nextstep.subway.global;
+package nextstep.global;
 
 public class ErrorResponse {
 

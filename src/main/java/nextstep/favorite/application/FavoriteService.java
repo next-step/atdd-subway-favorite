@@ -1,46 +1,86 @@
 package nextstep.favorite.application;
 
-import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteCreateRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.AuthenticationException;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.service.StationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    private final FavoriteRepository favoriteRepository;
+    private final MemberRepository memberRepository;
+    private final StationService stationService;
+
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
+        this.memberRepository = memberRepository;
+        this.stationService = stationService;
     }
 
     /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
+     * 주어진 로그인 회원 정보와, 즐겨찾기 추가 요청 정보를 이용해 즐겨찾기 구간으로 등록합니다.
      *
-     * @param request
+     * @param loginMember 로그인한 회원 정보
+     * @param request     즐겨찾기 추가 요청 정보
+     * @return 추가된 즐겨찾기의 식별자
      */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    @Transactional
+    public long createFavorite(LoginMember loginMember, FavoriteCreateRequest request) {
+        Member member = findMember(loginMember);
+        Favorite favorite = new Favorite(member.getId(), request.getSource(), request.getTarget());
+
+        return favoriteRepository.save(favorite).getId();
     }
 
     /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
+     * 주어진 로그인 회원정보를 통해 찾은 즐겨찾기 목록을 반환하니다.
      *
-     * @return
+     * @return 조회한 즐겨찾기 목록
      */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = findMember(loginMember);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+
+        return favorites.stream()
+            .map(favorite -> FavoriteResponse.of(
+                favorite.getId(),
+                stationService.findByStationId(favorite.getSourceStationId()),
+                stationService.findByStationId(favorite.getTargetStationId())
+            ))
+            .collect(Collectors.toList());
     }
 
     /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
+     * 주어진 로그인 회원정보와 삭제할 즐겨찾기 식별자를 이용해 해당하는 즐겨찾기를 제거합니다.
+     *
+     * @param loginMember 로그인한 회원 정보
+     * @param id 즐겨찾기 식별자
      */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    @Transactional
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = findMember(loginMember);
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
+            .orElseThrow(EntityNotFoundException::new);
+
+        favoriteRepository.deleteById(favorite.getId());
+    }
+
+    private Member findMember(LoginMember loginMember) {
+        return memberRepository.findByEmail(loginMember.getEmail())
+            .orElseThrow(AuthenticationException::new);
     }
 }
