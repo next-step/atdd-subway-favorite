@@ -9,6 +9,9 @@ import nextstep.core.member.exception.NotFoundMemberException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Transactional(readOnly = true)
 @Service
 public class MemberService {
@@ -47,5 +50,13 @@ public class MemberService {
 
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new NotFoundMemberException("회원 정보가 없습니다."));
+    }
+
+    public Member findOrCreate(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        if(optionalMember.isPresent()) {
+            return optionalMember.get();
+        }
+        return memberRepository.save(new Member(email, UUID.fromString(email).toString(), 1));
     }
 }

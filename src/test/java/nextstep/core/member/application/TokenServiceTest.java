@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,9 +26,12 @@ public class TokenServiceTest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    GithubClient githubClient;
+
     @BeforeEach
     void 사전_토큰_서비스_생성() {
-        tokenService = new TokenService(memberService, jwtTokenProvider);
+        tokenService = new TokenService(memberService, jwtTokenProvider, githubClient);
     }
 
     @Nested
