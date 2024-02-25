@@ -53,11 +53,15 @@ public class FavoriteService {
 
 		checkConnectedPath(sourceStation, targetStation);
 
-		Favorite favorite = new Favorite(member, sourceStation, targetStation);
-		member.addFavorite(favorite);
-		Favorite savedFavorite = favoriteRepository.save(favorite);
+		Favorite savedFavorite = addFavorite(member, sourceStation, targetStation);
 
 		return FavoriteResponse.of(savedFavorite);
+	}
+
+	private Favorite addFavorite(Member member, Station sourceStation, Station targetStation) {
+		Favorite favorite = new Favorite(sourceStation, targetStation);
+		member.addFavorite(favorite);
+		return favoriteRepository.save(favorite);
 	}
 
 	private void checkConnectedPath(Station sourceStation, Station targetStation) {

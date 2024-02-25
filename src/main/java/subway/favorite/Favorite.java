@@ -37,12 +37,21 @@ public class Favorite {
 		this.targetStation = targetStation;
 	}
 
+	public Favorite(Station sourceStation, Station targetStation) {
+		this.sourceStation = sourceStation;
+		this.targetStation = targetStation;
+	}
+
 	public Long getId() {
 		return id;
 	}
 
 	public Member getMember() {
 		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	public Station getSourceStation() {
