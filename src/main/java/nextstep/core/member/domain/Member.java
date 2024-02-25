@@ -1,6 +1,7 @@
 package nextstep.core.member.domain;
 
 import nextstep.core.favorite.domain.Favorite;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,10 +14,17 @@ public class Member {
     @Column(unique = true)
     private String email;
     private String password;
+    @Column(name = "age", nullable = true)
     private Integer age;
 
     public Member() {
     }
+
+    public Member(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
 
     public Member(String email, String password, Integer age) {
         this.email = email;

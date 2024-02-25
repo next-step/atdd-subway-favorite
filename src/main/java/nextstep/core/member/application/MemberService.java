@@ -54,9 +54,6 @@ public class MemberService {
 
     public Member findOrCreate(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if(optionalMember.isPresent()) {
-            return optionalMember.get();
-        }
-        return memberRepository.save(new Member(email, UUID.fromString(email).toString(), 1));
+        return optionalMember.orElseGet(() -> memberRepository.save(new Member(email, UUID.randomUUID().toString())));
     }
 }
