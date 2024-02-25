@@ -34,6 +34,6 @@ public class TokenService {
 
         // TODO create token (+ 회원가입)
 
-        return null;
+        return new TokenResponse(null);
     }
 }
