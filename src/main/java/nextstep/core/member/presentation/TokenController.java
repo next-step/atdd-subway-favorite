@@ -1,5 +1,6 @@
 package nextstep.core.member.presentation;
 
+import nextstep.core.member.application.dto.CodeRequest;
 import nextstep.core.member.application.dto.TokenRequest;
 import nextstep.core.member.application.dto.TokenResponse;
 import nextstep.core.member.application.TokenService;
@@ -19,5 +20,10 @@ public class TokenController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         return ResponseEntity.ok(tokenService.createToken(request.getEmail(), request.getPassword()));
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody CodeRequest request) {
+        return ResponseEntity.ok(tokenService.createTokenByGithub(request.getCode()));
     }
 }
