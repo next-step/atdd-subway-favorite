@@ -3,9 +3,11 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.GithubResponse;
+import nextstep.member.application.dto.GithubLoginRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.utils.AcceptanceTest;
+import nextstep.subway.acceptance.annotation.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+@AcceptanceTest
+class AuthAcceptanceTest {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final Integer AGE = 20;
@@ -56,16 +59,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("깃허브 로그인")
     @Test
     void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        //given
+        GithubResponse user = GithubResponse.사용자1;
+
+        //when
+        GithubLoginRequest request = new GithubLoginRequest(user.getCode());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(request)
                 .when().post("/login/github")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        //given
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo(user.getAccessToken());
     }
 }
