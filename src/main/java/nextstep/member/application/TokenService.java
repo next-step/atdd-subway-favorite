@@ -12,6 +12,7 @@ public class TokenService {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
     public TokenResponse createToken(String email, String password) {
         Member member = memberService.findMemberByEmail(email)
@@ -24,5 +25,15 @@ public class TokenService {
         String token = jwtTokenProvider.createToken(member.getEmail());
 
         return new TokenResponse(token);
+    }
+
+    public TokenResponse createTokenFromGithub(final String code) {
+        final String githubToken = githubClient.requestGithubToken(code);
+
+        // TODO get user profile
+
+        // TODO create token (+ 회원가입)
+
+        return null;
     }
 }
