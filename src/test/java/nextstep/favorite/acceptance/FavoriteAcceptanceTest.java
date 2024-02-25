@@ -156,8 +156,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
     final var result = 즐겨찾기_목록_조회_요청(accessToken);
-    assertThat(result.jsonPath().getList("source.id")).contains(강남역.getId());
-    assertThat(result.jsonPath().getList("target.id")).contains(양재역.getId());
+    assertThat(result.jsonPath().getList("source.id")).contains(강남역.getId().intValue());
+    assertThat(result.jsonPath().getList("target.id")).contains(양재역.getId().intValue());
   }
 
   /**
@@ -168,7 +168,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   @Test
   void 즐겨찾기_목록_조회_실패_인증_토큰_누락() {
     // when
-    final var response = 즐겨찾기_목록_조회_요청(null);
+    final var response = RestAssured
+        .given().log().all()
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .when().get("/favorites")
+        .then().log().all().extract();
 
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());

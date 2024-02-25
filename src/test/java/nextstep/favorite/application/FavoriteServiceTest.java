@@ -7,8 +7,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import java.util.List;
 import java.util.Optional;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.AuthenticationException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -26,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @SpringBootTest
 @Transactional
@@ -147,7 +148,7 @@ class FavoriteServiceTest {
     var 즐겨찾기 = 즐겨찾기_생성(멤버, 강남역, 양재역);
 
     // when
-    var result = favoriteService.findFavoriteByMemberAndId(인증정보, 즐겨찾기.getId());
+    var result = favoriteService.findFavoriteByMemberEmail(인증정보.getEmail(), 즐겨찾기.getId());
 
     // then
     assertThat(result.getId()).isEqualTo(즐겨찾기.getId());
@@ -162,7 +163,7 @@ class FavoriteServiceTest {
     var 등록되지_않은_즐겨찾기_ID = -1L;
 
     // when
-    var result = catchThrowable(() -> favoriteService.findFavoriteByMemberAndId(인증정보, 등록되지_않은_즐겨찾기_ID));
+    var result = catchThrowable(() -> favoriteService.findFavoriteByMemberEmail(인증정보.getEmail(), 등록되지_않은_즐겨찾기_ID));
 
     // then
     assertThat(result).isInstanceOf(BusinessException.class)
@@ -177,7 +178,7 @@ class FavoriteServiceTest {
     var 즐겨찾기 = 즐겨찾기_생성(다른멤버, 강남역, 양재역);
 
     // when
-    var result = catchThrowable(() -> favoriteService.findFavoriteByMemberAndId(인증정보, 즐겨찾기.getId()));
+    var result = catchThrowable(() -> favoriteService.findFavoriteByMemberEmail(인증정보.getEmail(), 즐겨찾기.getId()));
 
     // then
     assertThat(result).isInstanceOf(BusinessException.class)

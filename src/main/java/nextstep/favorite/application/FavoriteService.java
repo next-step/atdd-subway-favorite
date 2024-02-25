@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -48,8 +49,8 @@ public class FavoriteService {
         return null;
     }
 
-    public FavoriteResponse findFavoriteByMemberAndId(final LoginMember loginMember, final Long favoriteId) {
-        final var member = memberService.findMemberByEmail(loginMember.getEmail())
+    public FavoriteResponse findFavoriteByMemberEmail(final String email, final Long favoriteId) {
+        final var member = memberService.findMemberByEmail(email)
             .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
 
         return favoriteRepository.findByIdAndMember(favoriteId, member)

@@ -42,7 +42,7 @@ public class FavoriteController {
         @AuthenticationPrincipal LoginMember loginMember,
         @PathVariable Long id
     ) {
-        final var favorite = favoriteService.findFavoriteByMemberAndId(loginMember, id);
+        final var favorite = favoriteService.findFavoriteByMemberEmail(loginMember.getEmail(), id);
         return ResponseEntity.ok().body(favorite);
     }
 
