@@ -32,6 +32,24 @@ public class MemberServiceTest {
     @Nested
     class 내_정보_조회 {
 
+        final String EXISTENT_EMAIL = "admin001@email.com";
+        final String NON_EXISTENT_EMAIL = "admin100@email.com";
+
+        Member savedMember;
+
+        @BeforeEach
+        void 사전_회원_생성() {
+            String password = "password!";
+            int age = 30;
+
+            savedMember = memberRepository.save(new Member(EXISTENT_EMAIL, password, age));
+            memberRepository.save(new Member("admin002@email.com", password, age));
+            memberRepository.save(new Member("admin003@email.com", password, age));
+            memberRepository.save(new Member("admin004@email.com", password, age));
+            memberRepository.save(new Member("admin005@email.com", password, age));
+            memberRepository.save(new Member("admin006@email.com", password, age));
+        }
+
         @Nested
         class 성공 {
             /**
@@ -41,19 +59,12 @@ public class MemberServiceTest {
              */
             @Test
             void 내_이메일로_내_정보_조회() {
-                // given
-                String email = "admin@email.com";
-                String password = "password";
-                int age = 20;
-
-                memberRepository.save(new Member(email, password, age));
-
                 // when
-                MemberResponse me = memberService.findMe(new LoginMember(email));
+                MemberResponse me = memberService.findMe(new LoginMember(EXISTENT_EMAIL));
 
                 // then
-                assertThat(me.getEmail()).isEqualTo(email);
-                assertThat(me.getAge()).isEqualTo(age);
+                assertThat(me.getEmail()).isEqualTo(EXISTENT_EMAIL);
+                assertThat(me.getAge()).isEqualTo(30);
             }
         }
 
@@ -66,16 +77,64 @@ public class MemberServiceTest {
              */
             @Test
             void 존재하지_않는_이메일을_가진_회원_조회() {
-                // given
-                String nonExistentEmail  = "admin@email.com";
-
                 // when, then
                 assertThatExceptionOfType(NotFoundMemberException.class)
                         .isThrownBy(() -> {
-                            memberService.findMe(new LoginMember(nonExistentEmail));
+                            memberService.findMe(new LoginMember(NON_EXISTENT_EMAIL));
                         })
                         .withMessageMatching("회원 정보가 없습니다.");
             }
+        }
+    }
+    @Nested
+    class 회원_조회_혹은_생성 {
+
+        final String EXISTENT_EMAIL = "admin001@email.com";
+
+        Member savedMember;
+
+        @BeforeEach
+        void 사전_회원_생성() {
+            String password = "password!";
+            int age = 30;
+
+            savedMember = memberRepository.save(new Member(EXISTENT_EMAIL, password, age));
+            memberRepository.save(new Member("admin002@email.com", password, age));
+            memberRepository.save(new Member("admin003@email.com", password, age));
+            memberRepository.save(new Member("admin004@email.com", password, age));
+            memberRepository.save(new Member("admin005@email.com", password, age));
+            memberRepository.save(new Member("admin006@email.com", password, age));
+        }
+
+        /**
+         * Given 회원을 추가한다.
+         * When  추가된 회원의 이메일을 통해 회원 정보를 조회할 경우
+         * Then  회원 정보를 조회할 수 있다.
+         */
+        @Test
+        void 기존_생성된_회원_조회() {
+            // when
+            Member member = memberService.findOrCreate(EXISTENT_EMAIL);
+
+            // then
+            assertThat(savedMember).usingRecursiveComparison()
+                    .isEqualTo(member);
+        }
+
+        /**
+         * When  이메일을 통해 회원 정보를 조회할 때
+         * When     이메일이 동일한 회원이 없을 경우
+         * Then  회원이 추가되고, 추가된 회원 정보를 조회할 수 있다.
+         */
+        @Test
+        void 새로운_회원_추가() {
+            // when
+            Member member = memberService.findOrCreate("admin100@email.com");
+
+            // then
+            assertThat(member.getEmail()).isEqualTo("admin100@email.com");
+            assertThat(member.getPassword()).isNotBlank();
+            assertThat(member.getAge()).isNull();
         }
     }
 }
