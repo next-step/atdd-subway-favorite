@@ -27,6 +27,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member createMember(final String email, final String password, final int age) {
+        return memberRepository.save(new Member(email, password, age));
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());

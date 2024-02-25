@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.application.dto.GithubLoginRequest;
+import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -64,6 +65,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void 기존_멤버의_깃헙_로그인() {
         // given
+        MemberSteps.회원_생성_요청("domodazzi@gmail.com", "password", 20);
         var body = FixtureUtil.getBuilder(GithubLoginRequest.class)
             .set("code", "domodazzi")
             .sample();
@@ -72,7 +74,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         var response = 깃헙_로그인(body);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 
@@ -85,15 +87,19 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void 회원이_아닌_멤버의_깃헙_로그인() {
         // given
         var body = FixtureUtil.getBuilder(GithubLoginRequest.class)
-            .set("code", "UnknownCode")
+            .set("code", "unknown")
             .sample();
 
         // when
         var response = 깃헙_로그인(body);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+
+        var member = MemberSteps.회원_정보_조회_요청(response.jsonPath().getString("accessToken"))
+            .as(MemberResponse.class);
+        assertThat(member.getEmail()).isEqualTo("unknown@gmail.com");
     }
 
     private static ExtractableResponse<Response> 깃헙_로그인(GithubLoginRequest body) {

@@ -31,9 +31,14 @@ public class TokenService {
         final var accessToken = githubClient.requestGithubToken(code);
         final var profile = githubClient.requestGithubProfile(accessToken);
 
-        // TODO create token (+ 회원가입)
+        var member = memberService.findMemberByEmail(profile.getEmail())
+            .orElseGet(() -> memberService.createMember(
+                profile.getEmail(),
+                // TODO password 처리
+                "password",
+                profile.getAge()
+            ));
 
-
-        return new TokenResponse(null);
+        return createToken(member.getEmail(), member.getPassword());
     }
 }
