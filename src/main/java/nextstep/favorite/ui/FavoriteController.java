@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteService favoriteService;
 
     public FavoriteController(FavoriteService favoriteService) {
         this.favoriteService = favoriteService;
@@ -22,7 +22,7 @@ public class FavoriteController {
     @PostMapping("/favorites")
     public ResponseEntity<FavoriteResponse> createFavorite(@RequestBody FavoriteRequest request, @AuthenticationPrincipal LoginMember loginMember) {
         FavoriteResponse favorite = favoriteService.createFavorite(request, loginMember);
-        return ResponseEntity.created(URI.create("/favorites/" + 1L)).body(favorite);
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
 
     @GetMapping("/favorites")

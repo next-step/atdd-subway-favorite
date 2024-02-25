@@ -21,10 +21,10 @@ import static nextstep.favorite.application.dto.FavoriteResponse.listFrom;
 
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
-    private MemberRepository memberRepository;
-    private StationRepository stationRepository;
-    private PathService pathService;
+    private final FavoriteRepository favoriteRepository;
+    private final MemberRepository memberRepository;
+    private final StationRepository stationRepository;
+    private final PathService pathService;
 
     public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
@@ -57,7 +57,7 @@ public class FavoriteService {
 
     private Member getMember(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
-                .orElseThrow(() -> new AuthenticationException());
+                .orElseThrow(AuthenticationException::new);
     }
 
     private Station getStation(Long stationId) {
