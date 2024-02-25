@@ -14,6 +14,7 @@ public class FavoriteConverter {
 
         favorites.forEach(favorite -> {
             favoriteResponses.add(new FavoriteResponse(
+                    favorite.getId(),
                     new StationResponse(favorite.getSourceStation().getId(), favorite.getSourceStation().getName()),
                     new StationResponse(favorite.getTargetStation().getId(), favorite.getTargetStation().getName())));
         });

@@ -264,12 +264,12 @@ public class FavoriteServiceTest {
                 FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
 
                 // when
-                favoriteService.createFavorite(favoriteRequest, member);
+                Favorite savedFavorite = favoriteService.createFavorite(favoriteRequest, member);
 
                 // then
                 assertThat(favoriteService.findFavorites(member)).usingRecursiveComparison()
-                        .ignoringFields("id")
                         .isEqualTo(List.of(new FavoriteResponse(
+                                savedFavorite.getId(),
                                 new StationResponse(강남.getId(), 강남.getName()),
                                 new StationResponse(교대.getId(), 교대.getName()))));
             }

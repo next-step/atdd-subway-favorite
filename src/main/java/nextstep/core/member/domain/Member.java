@@ -50,7 +50,7 @@ public class Member {
         return Objects.equals(this.password, password);
     }
 
-    public boolean isThisYours(Favorite favorite) {
+    public boolean isMine(Favorite favorite) {
         return this.equals(favorite.getMember());
     }
 
