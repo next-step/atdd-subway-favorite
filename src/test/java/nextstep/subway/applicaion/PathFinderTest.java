@@ -13,11 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PathFinderTest {
+class DijkstraPathFinderTest {
 
   static Station 강남역;
   static Station 역삼역;
@@ -30,8 +29,7 @@ class PathFinderTest {
   static Station 서면역;
   static List<Section> 구간_목록;
 
-  @InjectMocks
-  private PathFinder pathFinder;
+  static DijkstraPathFinder pathFinder;
 
   @BeforeEach
   public void setUp() {
@@ -71,13 +69,15 @@ class PathFinderTest {
         지하철_구간_생성(매봉역, 도곡역, 1),
         지하철_구간_생성(남포역, 서면역, 5)
     );
+
+    pathFinder = new DijkstraPathFinder(구간_목록);
   }
 
   @DisplayName("최단 경로 조회 성공")
   @Test
   void 최단_경로_조회_성공() {
     // when
-    final var result = pathFinder.find(구간_목록, 매봉역, 역삼역);
+    final var result = pathFinder.find(매봉역, 역삼역);
 
     // then
     assertThat(result.isPresent()).isTrue();
@@ -99,7 +99,7 @@ class PathFinderTest {
   @Test
   void 연결할_수_없는_경로() {
     // when
-    final var result = pathFinder.find(구간_목록, 강남역, 서면역);
+    final var result = pathFinder.find(강남역, 서면역);
 
     // then
     assertThat(result.isPresent()).isFalse();
