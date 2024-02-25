@@ -1,7 +1,9 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.TokenService;
+import nextstep.member.application.request.GetAccessTokenRequest;
 import nextstep.member.application.request.TokenRequest;
+import nextstep.member.application.response.GetAccessTokenResponse;
 import nextstep.member.application.response.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,4 +23,11 @@ public class TokenController {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<GetAccessTokenResponse> createGithubToken(@RequestBody GetAccessTokenRequest getAccessTokenRequest) {
+        GetAccessTokenResponse getAccessTokenResponse = tokenService.getAccessToken(getAccessTokenRequest);
+        return ResponseEntity.ok(getAccessTokenResponse);
+    }
+
 }

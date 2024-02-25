@@ -1,10 +1,14 @@
 package nextstep.member.acceptance;
 
+import nextstep.member.application.response.MemberResponse;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.common.Constant.*;
+import static nextstep.member.acceptance.AuthAcceptanceStep.로그인_성공;
+import static nextstep.member.acceptance.AuthAcceptanceStep.사용자_조회됨;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,7 +75,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("내 정보를 조회한다.")
     @Test
-    void getMyInfo() {
+    void 내_정보_조회_성공() {
+        // given
+        회원_생성_요청(임꺽정_이메일, 임꺽정_비밀번호, 임꺽정_나이);
+        String accessToken = 로그인_성공(임꺽정_이메일, 임꺽정_비밀번호);
 
+        // thwn
+        MemberResponse 사용자_조회_응답 = 사용자_조회됨(accessToken);
+        String 사용자_이메일 = 사용자_조회_응답.getEmail();
+
+        // then
+        assertThat(사용자_이메일).isEqualTo(임꺽정_이메일);
     }
+
 }
