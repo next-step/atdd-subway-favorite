@@ -39,14 +39,19 @@ public class FavoriteService {
         return favoriteRepository.save(favorite).getId();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavoritesByMemberEmail(final String email) {
+        final var member = memberService.findMemberByEmail(email)
+            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+
+        return favoriteRepository.findAllByMember(member).stream()
+            .map(favorite ->
+                FavoriteResponse.from(
+                    favorite,
+                    StationResponse.from(favorite.getSource()),
+                    StationResponse.from(favorite.getTarget())
+                )
+            )
+            .collect(Collectors.toList());
     }
 
     public FavoriteResponse findFavoriteByMemberEmail(final String email, final Long favoriteId) {

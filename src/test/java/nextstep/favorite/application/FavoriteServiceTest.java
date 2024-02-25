@@ -185,6 +185,35 @@ class FavoriteServiceTest {
         .hasMessageContaining("즐겨찾기 정보를 찾을 수 없습니다.");
   }
 
+  @DisplayName("즐겨찾기 목록 조회 성공")
+  @Test
+  void 즐겨찾기_목록_조회_성공() {
+    // given
+    var 신분당선_즐겨찾기 = 즐겨찾기_생성(멤버, 강남역, 양재역);
+    var 부산1호선_즐겨찾기 = 즐겨찾기_생성(멤버, 남포역, 서면역);
+
+    // when
+    var result = favoriteService.findFavoritesByMemberEmail(인증정보.getEmail());
+
+    // then
+    assertThat(result).hasSize(2);
+    assertThat(result.stream().map(FavoriteResponse::getId)).contains(신분당선_즐겨찾기.getId(), 부산1호선_즐겨찾기.getId());
+  }
+
+  @DisplayName("즐겨찾기 목록 조회 실패 - 멤버를 찾을 수 없음")
+  @Test
+  void 즐겨찾기_목록_조회_실패_멤버를_찾을_수_없음() {
+    // given
+    var 등록하지_않은_멤버 = "Unregistered Email";
+
+    // when
+    var result = catchThrowable(() -> favoriteService.findFavoritesByMemberEmail(등록하지_않은_멤버));
+
+    // then
+    assertThat(result).isInstanceOf(AuthenticationException.class)
+            .hasMessageContaining("유효한 인증 토큰이 아닙니다.");
+  }
+
   private Station 역_생성(String name) {
     return stationRepository.save(new Station(name));
   }
