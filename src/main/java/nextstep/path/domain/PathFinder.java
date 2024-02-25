@@ -46,4 +46,18 @@ public class PathFinder {
         return new PathsDto(dijkstraShortestPath.getPathWeight(start, end), dijkstraShortestPath.getPath(start, end).getVertexList());
     }
 
+    public boolean isConnected(Station start, Station end) {
+        if (start.equals(end)) {
+            throw new IllegalStateException("시작과 끝이 같은 역입니다");
+        }
+
+        try {
+            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+                    = new DijkstraShortestPath<>(graph);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
 }

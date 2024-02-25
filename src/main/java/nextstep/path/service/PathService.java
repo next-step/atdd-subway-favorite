@@ -40,6 +40,13 @@ public class PathService {
         }
     }
 
+
+    public boolean isConnectedPath(long source, long target) {
+        PathFinder pathFinder = new PathFinder(lineRepository.findAll());
+        return pathFinder.isConnected(getStation(source), getStation(target));
+    }
+
+
     private Station getStation(long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(() -> new StationNotFoundException(Long.toString(stationId)));

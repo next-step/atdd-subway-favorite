@@ -1,4 +1,4 @@
-package nextstep.favorite.application;
+package nextstep.favorite.application.exceptions;
 
 public class FavoriteNotFoundException extends RuntimeException {
     public FavoriteNotFoundException(long favoriteId) {

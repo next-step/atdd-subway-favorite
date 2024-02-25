@@ -1,6 +1,8 @@
 package nextstep.favorite.application;
 
-import nextstep.favorite.MemberNotFoundException;
+import nextstep.favorite.application.exceptions.CannotFavoriteStationException;
+import nextstep.favorite.application.exceptions.FavoriteNotFoundException;
+import nextstep.member.MemberNotFoundException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.dao.StationDao;
@@ -9,6 +11,7 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.path.service.PathService;
 import nextstep.station.domain.Station;
 import nextstep.station.presentation.StationResponse;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
     private StationDao stationDao;
+    private PathService pathService;
 
     public FavoriteService(
             FavoriteRepository favoriteRepository,
@@ -43,8 +47,11 @@ public class FavoriteService {
 
         Station source = stationDao.findStation(request.getSource());
         Station target = stationDao.findStation(request.getTarget());
-        Favorite favorite = new Favorite(source, target, member);
+        if (!pathService.isConnectedPath(source.getId(), source.getId())) {
+            throw new CannotFavoriteStationException("연결된 역이 아닙니다");
+        }
 
+        Favorite favorite = new Favorite(source, target, member);
         Favorite saved = favoriteRepository.save(favorite);
         return new FavoriteResponse(saved.getId());
     }
