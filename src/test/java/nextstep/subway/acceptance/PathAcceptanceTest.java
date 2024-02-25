@@ -1,14 +1,13 @@
 package nextstep.subway.acceptance;
 
+import nextstep.exception.ExceptionResponse;
 import nextstep.subway.domain.request.LineRequest;
 import nextstep.subway.domain.response.PathResponse;
 import nextstep.subway.domain.response.StationResponse;
-import nextstep.exception.ExceptionResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 경로 검색")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/truncate.sql")
-public class PathAcceptanceTest {
+public class PathAcceptanceTest extends AcceptanceTest {
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;

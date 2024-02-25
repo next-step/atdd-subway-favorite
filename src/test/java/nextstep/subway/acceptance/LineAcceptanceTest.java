@@ -11,24 +11,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.LineTestUtil.getLines;
+import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/truncate.sql")
-public class LineAcceptanceTest {
+public class LineAcceptanceTest extends AcceptanceTest {
 
     long stationId1, stationId2, stationId3;
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         stationId1 = StationTestUtil.지하철역_생성("지하철역").jsonPath().getLong("id");
         stationId2 = StationTestUtil.지하철역_생성("새로운지하철역").jsonPath().getLong("id");
         stationId3 = StationTestUtil.지하철역_생성("또다른지하철역").jsonPath().getLong("id");

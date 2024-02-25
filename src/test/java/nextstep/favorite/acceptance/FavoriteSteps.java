@@ -34,7 +34,7 @@ public class FavoriteSteps {
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/favorites/" + favoriteId)
+                .when().delete("/favorites/{favoriteId}", favoriteId)
                 .then().log().all()
                 .extract();
     }

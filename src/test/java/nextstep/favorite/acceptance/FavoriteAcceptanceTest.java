@@ -78,12 +78,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         List<FavoriteResponse> favorites = response.as(new TypeRef<>() {});
 
         // then
+
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(favorites).hasSize(1),
                 () -> assertThat(favorites.stream().anyMatch(
                         favorite -> favorite.getSource().getId().equals(강남역)
-                        && favorite.getTarget().getId().equals(선릉역))).isTrue()
+                                && favorite.getTarget().getId().equals(선릉역))).isTrue()
         );
     }
 

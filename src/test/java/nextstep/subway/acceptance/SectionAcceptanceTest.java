@@ -3,40 +3,39 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.exception.ExceptionResponse;
 import nextstep.subway.domain.request.LineRequest;
 import nextstep.subway.domain.response.LineResponse;
 import nextstep.subway.domain.response.StationResponse;
-import nextstep.exception.ExceptionResponse;
 import nextstep.subway.utils.StationTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.exception.ExceptionMessage.*;
-import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.LineTestUtil.getLine;
-import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
+import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.SectionTestUtil.deleteSection;
+import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("지하철 구간 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/truncate.sql")
-public class SectionAcceptanceTest {
+public class SectionAcceptanceTest extends AcceptanceTest {
 
     long stationId1, stationId2, stationId3, lineId;
     int distance;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         stationId1 = StationTestUtil.지하철역_생성("A").jsonPath().getLong("id");
         stationId2 = StationTestUtil.지하철역_생성("B").jsonPath().getLong("id");
         stationId3 = StationTestUtil.지하철역_생성("C").jsonPath().getLong("id");
