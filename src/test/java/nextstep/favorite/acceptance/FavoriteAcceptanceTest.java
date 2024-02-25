@@ -143,7 +143,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
    * When 즐겨찾기 목록을 조회하면
    * Then 생성한 즐겨찾기를 조회할 수 있다.
    */
-  @DisplayName("즐겨찾기를 조회한다.")
+  @DisplayName("즐겨찾기 목록을 조회한다.")
   @Test
   void 즐겨찾기_목록_조회() {
     // given

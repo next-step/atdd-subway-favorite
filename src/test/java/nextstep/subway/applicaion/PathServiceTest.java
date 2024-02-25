@@ -89,9 +89,9 @@ class PathServiceTest {
         .hasMessageContaining("경로를 찾을 수 없습니다.");
   }
 
-  @DisplayName("존재하지 않는 출발역")
+  @DisplayName("등록하지 않은 출발역")
   @Test
-  void 존재하지_않는_출발역() {
+  void 등록하지_않은_출발역() {
     // given
     when(stationService.getStation(강남역.getId())).thenReturn(Optional.empty());
 
@@ -103,9 +103,9 @@ class PathServiceTest {
         .hasMessageContaining("출발역 정보를 찾을 수 없습니다.");
   }
 
-  @DisplayName("존재하지 않는 도착역")
+  @DisplayName("등록하지 않은 도착역")
   @Test
-  void 존재하지_않는_도착역() {
+  void 등록하지_않은_도착역() {
     // given
     when(stationService.getStation(강남역.getId())).thenReturn(Optional.of(강남역));
     when(stationService.getStation(역삼역.getId())).thenReturn(Optional.empty());
@@ -115,7 +115,7 @@ class PathServiceTest {
 
     // then
     assertThat(throwable).isInstanceOf(BusinessException.class)
-        .hasMessageContaining("출발역 정보를 찾을 수 없습니다.");
+        .hasMessageContaining("도착역 정보를 찾을 수 없습니다.");
   }
 
   @DisplayName("출발역과 도착역이 같음")
