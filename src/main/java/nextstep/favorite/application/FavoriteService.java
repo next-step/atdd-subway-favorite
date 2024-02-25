@@ -8,7 +8,6 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
 import nextstep.subway.applicaion.SectionService;
 import nextstep.subway.applicaion.StationService;
 import nextstep.subway.applicaion.dto.StationResponse;
@@ -69,11 +68,14 @@ public class FavoriteService {
             .orElseThrow(() -> new BusinessException("즐겨찾기 정보를 찾을 수 없습니다."));
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(final String email, final Long id) {
+        final var member = memberService.findMemberByEmail(email)
+            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+
+        favoriteRepository.findByIdAndMember(id, member)
+            .ifPresentOrElse(
+                favoriteRepository::delete,
+                () -> {throw new BusinessException("즐겨찾기 정보를 찾을 수 없습니다.");}
+            );
     }
 }

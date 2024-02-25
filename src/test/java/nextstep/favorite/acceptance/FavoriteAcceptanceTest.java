@@ -8,6 +8,7 @@ import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import nextstep.favorite.application.dto.FavoriteCreateResponse;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
@@ -201,14 +202,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   @Test
   void 즐겨찾기_삭제() {
     // given
-    final var favoriteId = 즐겨찾기_생성_요청(강남역.getId(), 양재역.getId(), accessToken).header("Location");
+    var favorite = 즐겨찾기_생성_요청(강남역.getId(), 양재역.getId(), accessToken)
+        .as(FavoriteCreateResponse.class);
 
     // when
-    final var response = 즐겨찾기_삭제_요청(Long.valueOf(favoriteId), accessToken);
+    final var response = 즐겨찾기_삭제_요청(favorite.getId(), accessToken);
 
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    assertThat(즐겨찾기_목록_조회_요청(accessToken).jsonPath().getList("id")).doesNotContain(favoriteId);
+    assertThat(즐겨찾기_목록_조회_요청(accessToken).jsonPath().getList("id")).doesNotContain(favorite.getId());
   }
 
   /**
@@ -219,7 +221,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   @Test
   void 즐겨찾기_삭제_실패_인증_토큰_누락() {
     // when
-    final var response = 즐겨찾기_삭제_요청(1L, null);
+    final var response = RestAssured
+        .given().log().all()
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .when().delete("/favorites/{id}", 1L)
+        .then().log().all().extract();
 
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
