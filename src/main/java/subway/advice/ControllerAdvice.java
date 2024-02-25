@@ -17,7 +17,7 @@ public class ControllerAdvice {
 	public ResponseEntity<SubwayError> unAuthenticationException(AuthenticationException ex) {
 		String errorCode = getErrorCode(ex);
 		String errorMessage = ex.getMessage();
-		return ResponseEntity.badRequest().body(new SubwayError(errorCode, errorMessage));
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new SubwayError(errorCode, errorMessage));
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)

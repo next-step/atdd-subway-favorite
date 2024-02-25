@@ -19,7 +19,7 @@ public class TokenService {
 	public TokenResponse createToken(String email, String password) {
 		Member member = memberService.findMemberByEmail(email);
 		if (!member.checkPassword(password)) {
-			throw new AuthenticationException();
+			throw new AuthenticationException("비밀번호가 일치하지 않습니다.");
 		}
 
 		String token = jwtTokenProvider.createToken(member.getEmail());

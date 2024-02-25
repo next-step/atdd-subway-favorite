@@ -102,4 +102,39 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 			.jsonPath()
 			.getList("", FavoriteResponse.class);
 	}
+
+	/**
+	 * when 토큰이 없는채로 생성 요청을 한다.
+	 * then 401 오류를 반환한다.
+	 */
+	@DisplayName("권한이 없는 경우, 401을 반환한다.")
+	@Test
+	void failFavoriteNoToken() {
+		FavoriteRequest favoriteRequest = FavoriteRequestFixture.builder().build();
+
+		RestAssured.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(favoriteRequest)
+			.when().post(Location.FAVORITES.path())
+			.then().log().all()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	/**
+	 * when 유효하지 않은 토큰으로 생성 요청을 한다.
+	 * then 401 오류를 반환한다.
+	 */
+	@DisplayName("유효하지 않은 토큰인 경우, 401을 반환한다.")
+	@Test
+	void failFavoriteInvalidToken() {
+		FavoriteRequest favoriteRequest = FavoriteRequestFixture.builder().build();
+
+		RestAssured.given().log().all()
+			.auth().oauth2("INVALID TOKEN")
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(favoriteRequest)
+			.when().post(Location.FAVORITES.path())
+			.then().log().all()
+			.statusCode(HttpStatus.UNAUTHORIZED.value());
+	}
 }
