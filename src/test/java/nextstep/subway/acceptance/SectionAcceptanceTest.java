@@ -3,46 +3,45 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.exception.ExceptionResponse;
 import nextstep.subway.domain.request.LineRequest;
 import nextstep.subway.domain.response.LineResponse;
 import nextstep.subway.domain.response.StationResponse;
-import nextstep.subway.exception.ExceptionResponse;
 import nextstep.subway.utils.StationTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.exception.ExceptionMessage.*;
-import static nextstep.subway.utils.LineTestUtil.createSubwayLine;
+import static nextstep.exception.ExceptionMessage.*;
 import static nextstep.subway.utils.LineTestUtil.getLine;
-import static nextstep.subway.utils.SectionTestUtil.addSection;
+import static nextstep.subway.utils.LineTestUtil.지하철_노선_생성;
 import static nextstep.subway.utils.SectionTestUtil.deleteSection;
+import static nextstep.subway.utils.SectionTestUtil.지하철_구간_추가;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("지하철 구간 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/truncate.sql")
-public class SectionAcceptanceTest {
+public class SectionAcceptanceTest extends AcceptanceTest {
 
     long stationId1, stationId2, stationId3, lineId;
     int distance;
 
     @BeforeEach
-    void setUp() {
-        stationId1 = StationTestUtil.createStation("A").jsonPath().getLong("id");
-        stationId2 = StationTestUtil.createStation("B").jsonPath().getLong("id");
-        stationId3 = StationTestUtil.createStation("C").jsonPath().getLong("id");
+    public void setUp() {
+        super.setUp();
+        stationId1 = StationTestUtil.지하철역_생성("A").jsonPath().getLong("id");
+        stationId2 = StationTestUtil.지하철역_생성("B").jsonPath().getLong("id");
+        stationId3 = StationTestUtil.지하철역_생성("C").jsonPath().getLong("id");
 
         distance = 10;
-        lineId = createSubwayLine(new LineRequest("2호선", "green", stationId1, stationId2, distance)).jsonPath().getLong("id");
+        lineId = 지하철_노선_생성(new LineRequest("2호선", "green", stationId1, stationId2, distance)).jsonPath().getLong("id");
     }
 
     /**
@@ -53,14 +52,9 @@ public class SectionAcceptanceTest {
     @Test
     void addSectionTest() {
         //given
-        Map<String, Object> params = new HashMap<>();
-        int distance = 10;
-        params.put("upStationId", stationId2);
-        params.put("downStationId", stationId3);
-        params.put("distance", distance);
 
         //when
-        ExtractableResponse<Response> response = addSection(params, lineId);
+        ExtractableResponse<Response> response = 지하철_구간_추가(lineId, stationId2, stationId3, 10);
 
         // ERROR
         LineResponse lineResponse = response.as(LineResponse.class);
@@ -82,11 +76,7 @@ public class SectionAcceptanceTest {
         //given
 
         //when
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", stationId2);
-        params.put("downStationId", stationId2);
-        params.put("distance", 13);
-        String exceptionMessage = addSection(params, lineId).as(ExceptionResponse.class).getMessage();
+        String exceptionMessage = 지하철_구간_추가(lineId, stationId2, stationId2, 13).as(ExceptionResponse.class).getMessage();
 
         //then
         assertThat(exceptionMessage).isEqualTo(NEW_SECTION_VALIDATION_EXCEPTION.getMessage());
@@ -100,11 +90,7 @@ public class SectionAcceptanceTest {
     @Test
     void deleteSectionTest() {
         //given
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", stationId2);
-        params.put("downStationId", stationId3);
-        params.put("distance", 11);
-        addSection(params, lineId);
+        지하철_구간_추가(lineId, stationId2, stationId3, 11);
 
         //when
         deleteSection(lineId, stationId3);
@@ -140,11 +126,7 @@ public class SectionAcceptanceTest {
     @Test
     void showSection() {
         //given
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", stationId2);
-        params.put("downStationId", stationId3);
-        params.put("distance", 11);
-        addSection(params, lineId);
+        지하철_구간_추가(lineId, stationId2, stationId3, 11);
 
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -179,11 +161,7 @@ public class SectionAcceptanceTest {
 
         // when
         // A-C를 추가하면
-        Map<String, Object> param = new HashMap<>();
-        param.put("upStationId", stationId1);
-        param.put("downStationId", stationId3);
-        param.put("distance", 4);
-        LineResponse response = addSection(param, lineId).as(LineResponse.class);
+        LineResponse response = 지하철_구간_추가(lineId, stationId1, stationId3, 4).as(LineResponse.class);
 
         // then
         // A-C-B 가 된다.
@@ -207,11 +185,7 @@ public class SectionAcceptanceTest {
 
         // when
         // C-A를 추가하면
-        Map<String, Object> param = new HashMap<>();
-        param.put("upStationId", stationId3);
-        param.put("downStationId", stationId1);
-        param.put("distance", 4);
-        LineResponse response = addSection(param, lineId).as(LineResponse.class);
+        LineResponse response = 지하철_구간_추가(lineId, stationId3, stationId1, 4).as(LineResponse.class);
 
         // then
         // C-A-B 가 된다.
@@ -229,19 +203,11 @@ public class SectionAcceptanceTest {
     void addRegisteredStation() {
         // given
         // 노선 A-B-C
-        Map<String, Object> param = new HashMap<>();
-        param.put("upStationId", stationId2);
-        param.put("downStationId", stationId3);
-        param.put("distance", 4);
-        addSection(param, lineId).as(LineResponse.class);
+        지하철_구간_추가(lineId, stationId2, stationId3, 4).as(LineResponse.class);
 
         // when
         // C-A를 추가하면
-        Map<String, Object> param2 = new HashMap<>();
-        param2.put("upStationId", stationId3);
-        param2.put("downStationId", stationId1);
-        param2.put("distance", 4);
-        ExtractableResponse<Response> response = addSection(param2, lineId);
+        ExtractableResponse<Response> response = 지하철_구간_추가(lineId, stationId3, stationId1, 4);
 
         // then
         // 에러 발생
@@ -261,11 +227,7 @@ public class SectionAcceptanceTest {
 
         // when
         // A-C, 거리 11 을 추가하면
-        Map<String, Object> param = new HashMap<>();
-        param.put("upStationId", stationId1);
-        param.put("downStationId", stationId3);
-        param.put("distance", 11);
-        ExtractableResponse<Response> response = addSection(param, lineId);
+        ExtractableResponse<Response> response = 지하철_구간_추가(lineId, stationId1, stationId3, 11);
 
         // then
         // 에러 발생
@@ -283,11 +245,7 @@ public class SectionAcceptanceTest {
     void removeStationInMiddleOfLine() {
         //given
         // A-B-C (A-B : 10, B-C : 10)
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", stationId2);
-        params.put("downStationId", stationId3);
-        params.put("distance", 10);
-        addSection(params, lineId);
+        지하철_구간_추가(lineId, stationId2, stationId3, 10);
 
         //when
         // B 역 제거
@@ -317,7 +275,7 @@ public class SectionAcceptanceTest {
         params.put("upStationId", stationId2);
         params.put("downStationId", stationId3);
         params.put("distance", 10);
-        addSection(params, lineId);
+        지하철_구간_추가(lineId, stationId2, stationId3, 10);
 
         // when
         // A 제거
@@ -343,11 +301,7 @@ public class SectionAcceptanceTest {
         // given
         // A-B-C
         // A-B-C (A-B : 10, B-C : 10)
-        Map<String, Object> params = new HashMap<>();
-        params.put("upStationId", stationId2);
-        params.put("downStationId", stationId3);
-        params.put("distance", 10);
-        addSection(params, lineId);
+        지하철_구간_추가(lineId, stationId2, stationId3, 10);
 
         // when
         // C 제거

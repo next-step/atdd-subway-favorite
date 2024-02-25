@@ -1,6 +1,7 @@
 package nextstep.utils;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 @Profile("test")
 @Service
 public class DatabaseCleanup implements InitializingBean {
+
+
     @PersistenceContext
     private EntityManager entityManager;
 

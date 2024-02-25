@@ -20,7 +20,7 @@ public class Path {
 
     public PathResponse createPathResponse() {
         List<StationResponse> stationList = new ArrayList<>();
-        this.stations.forEach(station -> stationList.add(new StationResponse().createStationResponseFromEntity(station)));
+        this.stations.forEach(station -> stationList.add(new StationResponse().from(station)));
 
         return new PathResponse(stationList, this.shortestDistance);
     }

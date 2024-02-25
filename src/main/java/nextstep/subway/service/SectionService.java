@@ -5,8 +5,8 @@ import nextstep.subway.domain.entity.Section;
 import nextstep.subway.domain.entity.Sections;
 import nextstep.subway.domain.entity.Station;
 import nextstep.subway.domain.response.SectionResponse;
-import nextstep.subway.exception.ApplicationException;
-import nextstep.subway.exception.ExceptionMessage;
+import nextstep.exception.ApplicationException;
+import nextstep.exception.ExceptionMessage;
 import nextstep.subway.repository.LineRepository;
 import nextstep.subway.repository.SectionRepository;
 import org.springframework.stereotype.Service;
@@ -54,15 +54,7 @@ public class SectionService {
 
     public SectionResponse findSectionByLineIdAndId(Long lineId, Long sectionId) {
         Section section = sectionRepository.findByLineIdAndId(lineId, sectionId);
-        return createSectionResponse(section);
+        return new SectionResponse().createSectionResponseFromEntity(section);
     }
 
-    public SectionResponse createSectionResponse(Section section) {
-        return new SectionResponse(
-                section.getId(),
-                section.getUpStation(),
-                section.getDownStation(),
-                section.getDistance()
-        );
-    }
 }

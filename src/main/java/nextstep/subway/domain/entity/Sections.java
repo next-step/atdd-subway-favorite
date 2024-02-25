@@ -1,7 +1,7 @@
 package nextstep.subway.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import nextstep.subway.exception.ApplicationException;
+import nextstep.exception.ApplicationException;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.CascadeType;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static nextstep.subway.exception.ExceptionMessage.*;
+import static nextstep.exception.ExceptionMessage.*;
 
 @Embeddable
 public class Sections {

@@ -1,4 +1,4 @@
-package nextstep.subway.exception;
+package nextstep.exception;
 
 
 public class ApplicationException extends RuntimeException {
