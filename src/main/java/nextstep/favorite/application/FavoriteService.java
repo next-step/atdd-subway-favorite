@@ -26,8 +26,8 @@ public class FavoriteService {
     private final MemberService memberService;
     private final SectionService sectionService;
 
-    public Long createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
-        final var member = memberService.findMemberByEmail(loginMember.getEmail())
+    public Long createFavorite(final String email, final FavoriteRequest request) {
+        final var member = memberService.findMemberByEmail(email)
             .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
 
         final var source = stationService.findById(request.getSource());

@@ -88,7 +88,7 @@ class FavoriteServiceTest {
     var request = new FavoriteRequest(강남역.getId(), 양재역.getId());
 
     // when
-    final var result = favoriteService.createFavorite(인증정보, request);
+    final var result = favoriteService.createFavorite(인증정보.getEmail(), request);
 
     // then
     Optional<Favorite> favorite = favoriteRepository.findById(result);
@@ -105,7 +105,7 @@ class FavoriteServiceTest {
     var request = new FavoriteRequest(강남역.getId(), 강남역.getId());
 
     // when
-    final var result = catchThrowable(() -> favoriteService.createFavorite(인증정보, request));
+    final var result = catchThrowable(() -> favoriteService.createFavorite(인증정보.getEmail(), request));
 
     // then
     assertThat(result).isInstanceOf(BusinessException.class)
@@ -120,7 +120,7 @@ class FavoriteServiceTest {
     var request = new FavoriteRequest(등록하지_않은_역_ID, 등록하지_않은_역_ID);
 
     // when
-    final var result = catchThrowable(() -> favoriteService.createFavorite(인증정보, request));
+    final var result = catchThrowable(() -> favoriteService.createFavorite(인증정보.getEmail(), request));
 
     // then
     assertThat(result).isInstanceOf(BusinessException.class)
@@ -134,7 +134,7 @@ class FavoriteServiceTest {
     var request = new FavoriteRequest(강남역.getId(), 서면역.getId());
 
     // when
-    final var result = catchThrowable(() -> favoriteService.createFavorite(인증정보, request));
+    final var result = catchThrowable(() -> favoriteService.createFavorite(인증정보.getEmail(), request));
 
     // then
     assertThat(result).isInstanceOf(BusinessException.class)
