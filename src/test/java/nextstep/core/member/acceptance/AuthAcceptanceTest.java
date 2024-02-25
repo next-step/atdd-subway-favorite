@@ -1,9 +1,17 @@
 package nextstep.core.member.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.common.annotation.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static nextstep.core.member.step.AuthSteps.성공하는_토큰_발급_요청;
 import static nextstep.core.member.step.AuthSteps.실패하는_토큰_발급_요청;
@@ -79,13 +87,13 @@ class AuthAcceptanceTest {
      * GitHub Server ----------------------------------------->
      * 1. 코드로 토큰 요청 -> 토큰을 응답
      * 2. 토큰으로 리소스 요청 -> 리소스 응답
-     * 
+     * <p>
      * My Server --------------------------------------------->
      * 1. 리소스로 사용자 저장 및 사용자 조회 요청 -> 사용자 조회 응답
      * 2. 액세스 토큰 발급
      */
     @Nested
-    class 깃허브_로그인 {
+    class 깃허브_로그인_요청 {
         @Nested
         class 성공 {
             @Nested
@@ -95,6 +103,28 @@ class AuthAcceptanceTest {
                  * When  깃허브로 로그인 요청을 경우
                  * Then  깃허브로 로그인 된다.
                  */
+                @Test
+                void 깃허브로_회원가입된_회원의_로그인_요청() {
+                    // given
+                    String 발급된_코드 = "qwerasdfzxvcqwerasdfzxcv";
+
+                    Map<String, String> params = new HashMap<>();
+                    params.put("code", 발급된_코드);
+
+                    // when
+                    ExtractableResponse<Response> 토큰_응답 = RestAssured
+                            .given().log().all()
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .body(params)
+                            .when()
+                            .post("/login/github")
+                            .then().log().all()
+                            .statusCode(HttpStatus.OK.value())
+                            .extract();
+
+                    // then
+                    토큰_확인(토큰_응답.jsonPath().getString("accessToken")); // TODO: Steps에서 공통 메서드로 추출
+                }
             }
 
             @Nested
@@ -104,46 +134,28 @@ class AuthAcceptanceTest {
                  * When  깃허브로 로그인 요청을 경우
                  * Then  회원가입 후 깃허브로 로그인 된다.
                  */
-            }
-        }
+                @Test
+                void 깃허브로_회원가입_되지_않은_회원의_로그인_요청() {
+                    // given
+                    String 발급된_코드 = "qwerasdfzxvcqwerasdfzxcv";
 
-        @Nested
-        class 실패 {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("code", 발급된_코드);
 
-            @Nested
-            class 가입된_회원 {
-                /**
-                 * Given 깃허브를 통해 회원가입된 회원을 생성한다.
-                 * When  깃허브로 로그인 요청할 때
-                 * When     깃허브로부터 토큰이 발급되지 않은 경우
-                 * Then  깃허브로 로그인할 수 없다.
-                 */
+                    // when
+                    ExtractableResponse<Response> 토큰_응답 = RestAssured
+                            .given().log().all()
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .body(params)
+                            .when()
+                            .post("/login/github")
+                            .then().log().all()
+                            .statusCode(HttpStatus.OK.value())
+                            .extract();
 
-                /**
-                 * Given 깃허브를 통해 회원가입된 회원을 생성한다.
-                 * When  깃허브로 로그인 요청할 때
-                 * When     깃허브로부터 발급된 토큰을 통해 회원 정보를 요청할 경우
-                 * When         회원 정보가 응답되지 않는다면
-                 * Then  깃허브로 로그인할 수 없다.
-                 */
-            }
-
-            @Nested
-            class 가입되지_않은_회원 {
-                /**
-                 * Given 깃허브를 통해 회원가입 되지 않은 회원을 생성한다.
-                 * When  깃허브로 로그인 요청할 때
-                 * When     깃허브로부터 토큰이 발급되지 않은 경우
-                 * Then  깃허브로 로그인할 수 없다.
-                 */
-
-                /**
-                 * Given 깃허브를 통해 회원가입 되지 않은 회원을 생성한다.
-                 * When  깃허브로 로그인 요청할 때
-                 * When     깃허브로부터 발급된 토큰을 통해 회원 정보를 요청할 경우
-                 * When         회원 정보가 응답되지 않는다면
-                 * Then  깃허브로 로그인할 수 없다.
-                 */
+                    // then
+                    토큰_확인(토큰_응답.jsonPath().getString("accessToken")); // TODO: Steps에서 공통 메서드로 추출
+                }
             }
         }
     }
