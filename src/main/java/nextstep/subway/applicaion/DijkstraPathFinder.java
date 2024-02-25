@@ -18,8 +18,9 @@ public class DijkstraPathFinder implements PathFinder {
     graph = buildGraph(sections);
   }
 
-  public Optional<Path> find(Collection<Section> sections, Station source, Station target) {
-    verifyRequiredArguments(sections, source, target);
+  @Override
+  public Optional<Path> find(Station source, Station target) {
+    verifyRequiredArguments(source, target);
 
     final var path = new DijkstraShortestPath<>(graph).getPath(source, target);
 
@@ -27,11 +28,13 @@ public class DijkstraPathFinder implements PathFinder {
         .map(it -> Path.from(it.getVertexList(), Double.valueOf(it.getWeight()).intValue()));
   }
 
-  private void verifyRequiredArguments(Collection<Section> sections, Station source, Station target) {
-    if (sections == null) {
-      throw new IllegalArgumentException("구간 정보가 없습니다.");
-    }
+  @Override
+  public boolean isPathExists(Station source, Station target) {
+    final var path = new DijkstraShortestPath<>(graph).getPath(source, target);
+    return path != null;
+  }
 
+  private void verifyRequiredArguments(Station source, Station target) {
     if (source == null) {
       throw new IllegalArgumentException("출발역 정보가 없습니다.");
     }
@@ -44,6 +47,10 @@ public class DijkstraPathFinder implements PathFinder {
   private static WeightedMultigraph<Station, DefaultWeightedEdge> buildGraph(
       final Collection<Section> sections
   ) {
+    if (sections == null) {
+      throw new IllegalArgumentException("구간 정보가 없습니다.");
+    }
+
     final var graph = WeightedMultigraph.<Station, DefaultWeightedEdge>builder(DefaultWeightedEdge.class).build();
 
     sections.forEach(section -> {

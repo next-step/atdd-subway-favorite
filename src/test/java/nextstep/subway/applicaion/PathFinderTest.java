@@ -77,7 +77,7 @@ class DijkstraPathFinderTest {
   @Test
   void 최단_경로_조회_성공() {
     // when
-    final var result = pathFinder.find(구간_목록, 매봉역, 역삼역);
+    final var result = pathFinder.find(매봉역, 역삼역);
 
     // then
     assertThat(result.isPresent()).isTrue();
@@ -99,7 +99,7 @@ class DijkstraPathFinderTest {
   @Test
   void 연결할_수_없는_경로() {
     // when
-    final var result = pathFinder.find(구간_목록, 강남역, 서면역);
+    final var result = pathFinder.find(강남역, 서면역);
 
     // then
     assertThat(result.isPresent()).isFalse();

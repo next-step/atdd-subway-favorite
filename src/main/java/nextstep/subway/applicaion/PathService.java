@@ -23,7 +23,7 @@ public class PathService {
     final var sections = sectionService.findAll();
 
     final var pathFinder = new DijkstraPathFinder(sections);
-    final var path = pathFinder.find(sections, sourceStation, targetStation)
+    final var path = pathFinder.find(sourceStation, targetStation)
         .orElseThrow(() -> new BusinessException("경로를 찾을 수 없습니다."));
 
     return new FindPathResponse(path.getVertices(), path.getDistance());
