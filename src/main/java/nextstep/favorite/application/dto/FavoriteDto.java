@@ -1,16 +1,14 @@
 package nextstep.favorite.application.dto;
 
+import nextstep.favorite.domain.Favorite;
 import nextstep.station.application.dto.StationDto;
 
-/**
- * TODO: StationResponse를 포함하는 클래스로 만듭니다.
- */
-public class FavoriteResponse {
+public class FavoriteDto {
     private Long id;
     private StationDto source;
     private StationDto target;
 
-    public FavoriteResponse(Long id, StationDto source, StationDto target) {
+    public FavoriteDto(Long id, StationDto source, StationDto target) {
         this.id = id;
         this.source = source;
         this.target = target;
@@ -26,5 +24,11 @@ public class FavoriteResponse {
 
     public StationDto getTarget() {
         return target;
+    }
+
+    public static FavoriteDto from(Favorite favorite) {
+        StationDto source = StationDto.from(favorite.getSourceStation());
+        StationDto target = StationDto.from(favorite.getTargetStation());
+        return new FavoriteDto(favorite.getId(), source, target);
     }
 }

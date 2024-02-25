@@ -18,7 +18,6 @@ public class PathFinderDijkstraStrategy implements PathFinderStrategy {
     @Override
     public Path findShortestPathAndItsDistance(List<Line> lines, Station sourceStation, Station targetStation) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = buildGraph(lines);
-
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
 
