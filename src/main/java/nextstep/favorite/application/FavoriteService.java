@@ -4,43 +4,77 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteException;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.subway.path.PathResponse;
+import nextstep.subway.path.PathService;
+import nextstep.subway.station.Station;
+import nextstep.subway.station.service.StationDataService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final MemberService memberService;
+    private final PathService pathService;
+    private final StationDataService stationDataService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteService(
+            FavoriteRepository favoriteRepository,
+            MemberService memberService,
+            PathService pathService,
+            StationDataService stationDataService
+    ) {
         this.favoriteRepository = favoriteRepository;
+        this.memberService = memberService;
+        this.pathService = pathService;
+        this.stationDataService = stationDataService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        verifyDisConnectedStations(request);
+
+        System.out.println("loginMember.getEmail() = " + loginMember.getEmail());
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+
+        Favorite favorite = new Favorite(
+                request.getSource(),
+                request.getTarget(),
+                member.getId()
+        );
+
+        return favoriteRepository.save(favorite).getId();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
+    private void verifyDisConnectedStations(FavoriteRequest request) {
+        pathService.getPath(request.getSource(), request.getTarget());
+    }
+
     public List<FavoriteResponse> findFavorites() {
         List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+
+        return mappingToFavoriteResponse(favorites);
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
+    private List<FavoriteResponse> mappingToFavoriteResponse(List<Favorite> favorites) {
+        return favorites.stream().map(f -> {
+                    Station source = stationDataService.findStation(f.getSourceStationId());
+                    Station target = stationDataService.findStation(f.getTargetStationId());
+
+                    return FavoriteResponse.ofEntity(f.getId(), source, target);
+                })
+                .collect(Collectors.toList());
+    }
+
     public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+        Favorite favorite = favoriteRepository
+                .findById(id)
+                .orElseThrow(() -> new FavoriteException("존재하지 않는 즐겨찾기입니다."));
+        favoriteRepository.delete(favorite);
     }
 }
