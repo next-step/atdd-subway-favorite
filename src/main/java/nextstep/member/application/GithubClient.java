@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.GithubClientProperties;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -39,5 +40,9 @@ public class GithubClient {
         .exchange(url, HttpMethod.POST, new HttpEntity<>(body), GithubAccessTokenResponse.class)
         .getBody()
         .getAccessToken();
+  }
+
+  public GithubProfileResponse requestGithubProfile(final String accessToken) {
+    return null;
   }
 }

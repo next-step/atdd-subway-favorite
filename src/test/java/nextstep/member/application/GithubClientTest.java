@@ -27,4 +27,17 @@ class GithubClientTest {
     // then
     assertThat(accessToken).isEqualTo(code + " access token");
   }
+
+  @DisplayName("인증 서버를 호출하고 인증서버로부터 획득한 토큰을 반환한다.")
+  @Test
+  void requestGithubProfile() {
+    // given
+    var accessToken = "domodazzi access token";
+
+    // when
+    var response = githubClient.requestGithubProfile(accessToken);
+
+    // then
+    assertThat(response.getEmail()).isEqualTo("domodazzi@gmail.com");
+  }
 }
