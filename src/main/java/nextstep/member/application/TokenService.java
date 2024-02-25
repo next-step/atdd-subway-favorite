@@ -28,7 +28,7 @@ public class TokenService {
     }
 
     public TokenResponse createTokenFromGithub(final String code) {
-        final String githubToken = githubClient.requestGithubToken(code);
+        final String accessToken = githubClient.requestGithubToken(code);
 
         // TODO get user profile
 

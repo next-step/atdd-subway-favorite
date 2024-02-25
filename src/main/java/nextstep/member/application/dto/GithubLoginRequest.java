@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GithubLoginRequest {
 
-  String code;
+  private String code;
 }
