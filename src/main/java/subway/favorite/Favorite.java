@@ -37,11 +37,6 @@ public class Favorite {
 		this.targetStation = targetStation;
 	}
 
-	public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
-		this(member, sourceStation, targetStation);
-		this.id = id;
-	}
-
 	public Long getId() {
 		return id;
 	}
