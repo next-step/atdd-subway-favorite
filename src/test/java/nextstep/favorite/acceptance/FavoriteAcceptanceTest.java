@@ -1,6 +1,5 @@
 package nextstep.favorite.acceptance;
 
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteRequest;
@@ -19,8 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 @AcceptanceTest

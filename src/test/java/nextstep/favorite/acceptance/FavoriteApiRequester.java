@@ -10,16 +10,16 @@ import static io.restassured.RestAssured.given;
 
 public class FavoriteApiRequester {
 
-    ;
-
+    private static final String URL = "/favorites";
+    private static final String AUTHORIZATION = "Authorization";
 
     public static ExtractableResponse<Response> createFavoriteApiCall(FavoriteRequest request) {
         String accessToken = MockTokenFactory.getAccessToken();
         return given().log().all()
-                .header("Authorization", accessToken)
+                .header(AUTHORIZATION, accessToken)
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/favorites")
+                .when().post(URL)
                 .then().log().all()
                 .extract();
     }
@@ -27,8 +27,8 @@ public class FavoriteApiRequester {
     public static ExtractableResponse<Response> findFavoritesApiCall() {
         String accessToken = MockTokenFactory.getAccessToken();
         return given().log().all()
-                .header("Authorization", accessToken)
-                .when().get("/favorites")
+                .header(AUTHORIZATION, accessToken)
+                .when().get(URL)
                 .then().log().all()
                 .extract();
     }
@@ -36,9 +36,9 @@ public class FavoriteApiRequester {
     public static ExtractableResponse<Response> deleteFavoriteApiCall(Long id) {
         String accessToken = MockTokenFactory.getAccessToken();
         return given().log().all()
-                .header("Authorization", accessToken)
+                .header(AUTHORIZATION, accessToken)
                 .pathParam("id", id)
-                .when().delete("/favorites/{id}")
+                .when().delete(URL + "/{id}")
                 .then().log().all()
                 .extract();
     }

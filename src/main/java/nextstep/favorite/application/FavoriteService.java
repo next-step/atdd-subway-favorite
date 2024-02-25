@@ -8,7 +8,6 @@ import nextstep.favorite.exception.FavoriteException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
-import nextstep.subway.path.PathResponse;
 import nextstep.subway.path.PathService;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.service.StationDataService;
@@ -39,7 +38,6 @@ public class FavoriteService {
     public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
         verifyDisConnectedStations(request);
 
-        System.out.println("loginMember.getEmail() = " + loginMember.getEmail());
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
         Favorite favorite = new Favorite(
