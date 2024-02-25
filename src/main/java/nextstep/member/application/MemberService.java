@@ -7,6 +7,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -35,7 +37,8 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
     }
 
     public MemberResponse findMe(LoginMember loginMember) {

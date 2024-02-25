@@ -34,7 +34,7 @@ public class StationService {
 
     public StationResponse findStationById(Long id) {
         return createStationResponse(stationRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new));
+                .orElseThrow(() -> new EntityNotFoundException("역이 존재하지 않습니다.")));
     }
 
     @Transactional

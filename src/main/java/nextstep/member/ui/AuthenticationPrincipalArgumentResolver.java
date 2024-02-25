@@ -1,6 +1,6 @@
 package nextstep.member.ui;
 
-import nextstep.member.AuthenticationException;
+import nextstep.exception.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
 import org.springframework.core.MethodParameter;
@@ -24,6 +24,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
+        if(authorization.isEmpty()) {
+            throw new AuthenticationException("인증정보가 존재하지 않습니다.");
+        }
+
+        if(authorization.trim().equalsIgnoreCase("bearer")) {
+            throw new AuthenticationException("인증정보가 존재하지 않습니다.");
+        }
+
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new AuthenticationException();
         }
