@@ -117,7 +117,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String message = response.as(ExceptionResponse.class).getMessage();
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(401), // TODO UNAUTHORIZED 못 받아옴..
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
                 () -> assertThat(message).isEqualTo(AUTHENTICATION_FAILED.getMessage())
         );
     }
@@ -153,7 +153,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(401), // TODO UNAUTHORIZED 못 받아옴..
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
                 () -> assertThat(message).isEqualTo(AUTHENTICATION_FAILED.getMessage())
         );
     }
@@ -168,7 +168,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(401), // TODO UNAUTHORIZED 못 받아옴..
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
                 () -> assertThat(message).isEqualTo(AUTHENTICATION_FAILED.getMessage())
         );
     }
