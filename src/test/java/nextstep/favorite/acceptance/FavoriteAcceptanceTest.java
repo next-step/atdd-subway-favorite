@@ -85,5 +85,11 @@ public class FavoriteAcceptanceTest {
 
     }
 
+    @Test
+    @DisplayName("인증되지 않은 멤버의 요청은 UNAUTHORIZED로 응답온다")
+    public void shouldFailIfUnauthorizedMemberRequest() {
+        FavoriteSteps.미인증된_유저가_즐겨찾기_생성할수없다();
+    }
+
 
 }

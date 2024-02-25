@@ -42,7 +42,7 @@ public class FavoriteSteps {
         param.put("source", source);
         param.put("target", target);
 
-        Response response = getSpec()
+        Response response = getAuthorizedSpec()
                 .log().all()
                 .body(param)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -58,7 +58,7 @@ public class FavoriteSteps {
     }
 
     public static FavoriteResponse 즐겨찾기_조회한다(long favoriteId) {
-        return getSpec().log().all()
+        return getAuthorizedSpec().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites/" + favoriteId)
                 .then().extract()
@@ -66,7 +66,7 @@ public class FavoriteSteps {
     }
 
     public static List<FavoriteResponse> 모든_즐겨찾기_조회한다() {
-        return getSpec().log().all()
+        return getAuthorizedSpec().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().extract()
@@ -74,19 +74,46 @@ public class FavoriteSteps {
     }
 
     public static void 즐겨찾기_삭제한다(long id) {
-        getSpec().log().all()
+        getAuthorizedSpec().log().all()
                 .when().delete("/favorites/" + id)
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    private static RequestSpecification getSpec() {
+    public static void 미인증된_유저가_즐겨찾기_생성할수없다() {
+        Map<String, Long> param = new HashMap<>();
+        param.put("source", 1L);
+        param.put("target", 2L);
+
+        getUnAuthorizedSpec()
+                .log().all()
+                .body(param)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private static RequestSpecification getAuthorizedSpec() {
         var requestSpecification = new RequestSpecBuilder()
                 .addHeader("Authorization", TOKEN)
                 .build();
 
         return RestAssured
                 .given()
+                .spec(requestSpecification);
+    }
+
+
+
+
+    private static RequestSpecification getUnAuthorizedSpec() {
+        var requestSpecification = new RequestSpecBuilder()
+                .build();
+
+        return RestAssured
+                .given()
+                .header("Authorization", "bearer WRONG_TOKEN")
                 .spec(requestSpecification);
     }
 }

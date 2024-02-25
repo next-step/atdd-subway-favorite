@@ -1,5 +1,7 @@
 package nextstep.member.ui;
 
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
@@ -29,8 +31,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         }
         String token = authorization.split(" ")[1];
 
-        String email = jwtTokenProvider.getPrincipal(token);
+        try {
+            String email = jwtTokenProvider.getPrincipal(token);
+            return new LoginMember(email);
+        } catch (JwtException e) {
+            throw new AuthenticationException();
+        }
 
-        return new LoginMember(email);
     }
 }
