@@ -16,13 +16,11 @@ import java.util.Map;
 
 public class FavoriteSteps {
 
-    private static final String TOKEN;
+    private static String TOKEN;
 
-    static {
-        TOKEN = setUpToken();
-    }
 
-    public static String setUpToken() {
+
+    public static void setUpToken() {
         String EMAIL = "email@naver.com";
         String PASSWORD = "password";
         int AGE = 12;
@@ -32,12 +30,12 @@ public class FavoriteSteps {
         param.put("email", EMAIL);
         param.put("password", PASSWORD);
         param.put("age", AGE);
-        return "bearer " + MemberSteps.토큰_생성(param);
+        TOKEN = "bearer " + MemberSteps.토큰_생성(param);
     }
 
 
     public static long 즐겨찾기_생성한다(long source, long target) {
-
+        setUpToken();
         Map<String, Long> param = new HashMap<>();
         param.put("source", source);
         param.put("target", target);
@@ -58,6 +56,7 @@ public class FavoriteSteps {
     }
 
     public static FavoriteResponse 즐겨찾기_조회한다(long favoriteId) {
+        setUpToken();
         return getAuthorizedSpec().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites/" + favoriteId)
@@ -74,6 +73,7 @@ public class FavoriteSteps {
     }
 
     public static void 즐겨찾기_삭제한다(long id) {
+        setUpToken();
         getAuthorizedSpec().log().all()
                 .when().delete("/favorites/" + id)
                 .then().log().all()

@@ -30,6 +30,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new AuthenticationException();
         }
         String token = authorization.split(" ")[1];
+        if(!jwtTokenProvider.validateToken(token)){
+            throw new AuthenticationException();
+        }
 
         try {
             String email = jwtTokenProvider.getPrincipal(token);
