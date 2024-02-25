@@ -45,7 +45,6 @@ public class FavoriteServiceMockTest {
 	private final String email = "aab555586@gmail.com";
 	private final String password = "password";
 	private final Member member = new Member(email, password, 20);
-	private final LoginMember loginMember = new LoginMember(email);
 
 	@BeforeEach
 	void setup() {
@@ -72,7 +71,7 @@ public class FavoriteServiceMockTest {
 				.willReturn(new Favorite(member, source, target));
 
 		// when
-		FavoriteResponse response = favoriteService.saveFavorite(loginMember, new FavoriteRequest(source, target));
+		FavoriteResponse response = favoriteService.saveFavorite(email, new FavoriteRequest(source, target));
 
 		// then
 		assertThat(response.getSource().getId()).isEqualTo(source);
@@ -87,7 +86,7 @@ public class FavoriteServiceMockTest {
 				.willReturn(Optional.of(new Favorite(member, source, target)));
 
 		// when
-		assertDoesNotThrow(() -> favoriteService.deleteFavorite(loginMember, 1L));
+		assertDoesNotThrow(() -> favoriteService.deleteFavorite(email, 1L));
 	}
 
 	@Test
@@ -98,6 +97,6 @@ public class FavoriteServiceMockTest {
 				.willReturn(Optional.empty());
 
 		// when
-		assertThrows(EntityNotFoundException.class, () -> favoriteService.deleteFavorite(loginMember, 1L));
+		assertThrows(EntityNotFoundException.class, () -> favoriteService.deleteFavorite(email, 1L));
 	}
 }
