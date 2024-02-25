@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 public class GithubProfileResponse {
 
   private String email;
+
+  private int age;
 }

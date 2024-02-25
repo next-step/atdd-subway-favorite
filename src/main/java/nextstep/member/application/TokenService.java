@@ -28,11 +28,11 @@ public class TokenService {
     }
 
     public TokenResponse createTokenFromGithub(final String code) {
-        final String accessToken = githubClient.requestGithubToken(code);
-
-        // TODO get user profile
+        final var accessToken = githubClient.requestGithubToken(code);
+        final var profile = githubClient.requestGithubProfile(accessToken);
 
         // TODO create token (+ 회원가입)
+
 
         return new TokenResponse(null);
     }
