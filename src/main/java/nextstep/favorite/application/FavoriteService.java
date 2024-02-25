@@ -26,8 +26,10 @@ public class FavoriteService {
     private final SectionService sectionService;
 
     public Long createFavorite(final String email, final FavoriteRequest request) {
-        final var member = memberService.findMemberByEmail(email)
-            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+        final var member = memberService.findMemberOrElseThrow(
+            email,
+            () -> new AuthenticationException("유효한 인증 토큰이 아닙니다.")
+        );
 
         final var source = stationService.findById(request.getSource());
         final var target = stationService.findById(request.getTarget());
@@ -39,8 +41,10 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavoritesByMemberEmail(final String email) {
-        final var member = memberService.findMemberByEmail(email)
-            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+        final var member = memberService.findMemberOrElseThrow(
+            email,
+            () -> new AuthenticationException("유효한 인증 토큰이 아닙니다.")
+        );
 
         return favoriteRepository.findAllByMember(member).stream()
             .map(favorite ->
@@ -54,8 +58,10 @@ public class FavoriteService {
     }
 
     public FavoriteResponse findFavoriteByMemberEmail(final String email, final Long favoriteId) {
-        final var member = memberService.findMemberByEmail(email)
-            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+        final var member = memberService.findMemberOrElseThrow(
+            email,
+            () -> new AuthenticationException("유효한 인증 토큰이 아닙니다.")
+        );
 
         return favoriteRepository.findByIdAndMember(favoriteId, member)
             .map(favorite ->
@@ -69,8 +75,10 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(final String email, final Long id) {
-        final var member = memberService.findMemberByEmail(email)
-            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+        final var member = memberService.findMemberOrElseThrow(
+            email,
+            () -> new AuthenticationException("유효한 인증 토큰이 아닙니다.")
+        );
 
         favoriteRepository.findByIdAndMember(id, member)
             .ifPresentOrElse(
