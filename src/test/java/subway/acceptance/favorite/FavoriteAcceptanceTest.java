@@ -51,8 +51,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 			.extract()
 			.as(FavoriteResponse.class);
 
-		assertThat(response.getSource()).isEqualTo(출발역);
-		assertThat(response.getTarget()).isEqualTo(도착역);
+		assertThat(response.getSource().getId()).isEqualTo(출발역);
+		assertThat(response.getTarget().getId()).isEqualTo(도착역);
 	}
 
 	/**
