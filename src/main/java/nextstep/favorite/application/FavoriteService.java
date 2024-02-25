@@ -1,29 +1,41 @@
 package nextstep.favorite.application;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.AuthenticationException;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.subway.applicaion.SectionService;
+import nextstep.subway.applicaion.StationService;
+import nextstep.subway.applicaion.dto.StationResponse;
+import nextstep.subway.ui.BusinessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
-        this.favoriteRepository = favoriteRepository;
-    }
+    private final FavoriteRepository favoriteRepository;
+    private final StationService stationService;
+    private final MemberService memberService;
+    private final SectionService sectionService;
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    public Long createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
+        final var member = memberService.findMemberByEmail(loginMember.getEmail())
+            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+
+        final var source = stationService.findById(request.getSource());
+        final var target = stationService.findById(request.getTarget());
+
+        final var sections = sectionService.findAll();
+
+        final var favorite = new Favorite(member, source, target, sections);
+        return favoriteRepository.save(favorite).getId();
     }
 
     /**
@@ -34,6 +46,21 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavorites() {
         List<Favorite> favorites = favoriteRepository.findAll();
         return null;
+    }
+
+    public FavoriteResponse findFavoriteByMemberAndId(final LoginMember loginMember, final Long favoriteId) {
+        final var member = memberService.findMemberByEmail(loginMember.getEmail())
+            .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+
+        return favoriteRepository.findByIdAndMember(favoriteId, member)
+            .map(favorite ->
+                FavoriteResponse.from(
+                    favorite,
+                    StationResponse.from(favorite.getSource()),
+                    StationResponse.from(favorite.getTarget())
+                )
+            )
+            .orElseThrow(() -> new BusinessException("즐겨찾기 정보를 찾을 수 없습니다."));
     }
 
     /**

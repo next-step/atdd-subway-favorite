@@ -1,10 +1,12 @@
 package nextstep.member.application;
 
+import java.util.Optional;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.ui.BusinessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,13 +36,13 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    public Optional<Member> findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
-                .map(it -> MemberResponse.of(it))
-                .orElseThrow(RuntimeException::new);
+                .map(MemberResponse::of)
+                .orElseThrow(() -> new BusinessException("멤버를 찾을 수 없습니다."));
     }
 }

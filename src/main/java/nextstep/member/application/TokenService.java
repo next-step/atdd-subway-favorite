@@ -14,7 +14,9 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
+        Member member = memberService.findMemberByEmail(email)
+            .orElseThrow(() -> new AuthenticationException("인증 정보가 올바르지 않습니다."));
+
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException("인증 정보가 올바르지 않습니다.");
         }
