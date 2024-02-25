@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TokenController {
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
     public TokenController(TokenService tokenService) {
         this.tokenService = tokenService;
@@ -18,8 +18,6 @@ public class TokenController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(tokenService.createToken(request.getEmail(), request.getPassword()));
     }
 }

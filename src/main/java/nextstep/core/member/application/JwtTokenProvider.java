@@ -1,6 +1,7 @@
 package nextstep.core.member.application;
 
 import io.jsonwebtoken.*;
+import nextstep.core.member.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +9,10 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
+
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
@@ -27,7 +30,11 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        validateToken(token);
+        return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody().getSubject();
     }
 
     public boolean validateToken(String token) {
@@ -36,7 +43,7 @@ public class JwtTokenProvider {
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new AuthenticationException();
         }
     }
 }

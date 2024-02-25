@@ -1,8 +1,8 @@
 package nextstep.core.member.presentation;
 
-import nextstep.core.member.domain.LoginMember;
-import nextstep.core.member.AuthenticationException;
 import nextstep.core.member.application.JwtTokenProvider;
+import nextstep.core.member.domain.LoginMember;
+import nextstep.core.member.exception.InvalidTokenException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -10,7 +10,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -24,13 +24,25 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException();
+        validateAuthorization(authorization);
+
+        return new LoginMember(jwtTokenProvider.getPrincipal(getToken(authorization)));
+    }
+
+    private void validateAuthorization(String authorization) {
+        if (authorization == null) {
+            throw new InvalidTokenException("토큰이 전달되지 않았습니다.");
         }
-        String token = authorization.split(" ")[1];
+        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+            throw new InvalidTokenException("토큰 형식에 맞지 않습니다.");
+        }
+    }
 
-        String email = jwtTokenProvider.getPrincipal(token);
-
-        return new LoginMember(email);
+    private String getToken(String authorization) {
+        try {
+            return authorization.split(" ")[1];
+        } catch (Exception e) {
+            throw new InvalidTokenException("토큰 형식에 맞지 않습니다");
+        }
     }
 }

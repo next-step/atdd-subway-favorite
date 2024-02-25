@@ -1,4 +1,4 @@
-package nextstep.core.line.unit;
+package nextstep.core.line.application;
 
 import nextstep.core.line.application.LineService;
 import nextstep.core.line.domain.LineRepository;

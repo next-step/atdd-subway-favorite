@@ -1,8 +1,9 @@
-package nextstep.core.member.acceptance;
+package nextstep.core.member.step;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -59,7 +60,27 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static ExtractableResponse<Response> 성공하는_토큰으로_회원정보_요청(String 발급받은_토큰) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(발급받은_토큰)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 실패하는_토큰으로_회원정보_요청(String 발급받은_토큰) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(발급받은_토큰)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
+    }
+
+    public static void 회원_정보_확인(ExtractableResponse<Response> 회원정보_요청_응답, String 예상하는_이메일) {
+        assertThat(회원정보_요청_응답.jsonPath().getString("email")).isEqualTo(예상하는_이메일);
+    }
+
+    public static void 회원_정보_확인(ExtractableResponse<Response> response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
