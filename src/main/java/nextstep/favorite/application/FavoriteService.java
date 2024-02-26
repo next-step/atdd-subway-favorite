@@ -49,12 +49,12 @@ public class FavoriteService {
 
         Station source = stationDao.findStation(request.getSource());
         Station target = stationDao.findStation(request.getTarget());
+
         if (!pathService.isConnectedPath(source, target)) {
             throw new CannotFavoriteStationException("연결된 역이 아닙니다");
         }
 
-        Favorite favorite = new Favorite(source, target, member);
-        Favorite saved = favoriteRepository.save(favorite);
+        Favorite saved = favoriteRepository.save(new Favorite(source, target, member));
         return new FavoriteResponse(saved.getId());
     }
 

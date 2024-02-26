@@ -3,9 +3,11 @@ package nextstep.subway.unit;
 import nextstep.line.domain.Color;
 import nextstep.line.domain.Line;
 import nextstep.line.domain.Section;
+import nextstep.line.presentation.LineRequest;
 import nextstep.path.domain.PathFinder;
 import nextstep.path.domain.dto.PathsDto;
 import nextstep.station.domain.Station;
+import nextstep.subway.fixture.LineSteps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -91,7 +93,6 @@ public class PathFinderTest {
         );
     }
     
-    //존재하지 않은 출발역이나 도착역을 조회 할 경우
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 최단 경로를 탐색할 수 없다")
     @Test
     public void shouldFailIfStationsAreNotExist() {
@@ -101,6 +102,28 @@ public class PathFinderTest {
                 IllegalArgumentException.class,
                 () -> pathFinder.findPath(new Station("미등록역"), new Station("미등록역2"))
         );
+    }
+
+    @Test
+    @DisplayName("두 역이 연결되어 있으면 TRUE를 반환한다")
+    public void isConnectedShouldReturnTrueIfStationsAreConnected() {
+
+        PathFinder pathFinder = new PathFinder(List.of(이호선, 신분당선, 삼호선));
+
+        assertThat(pathFinder.isConnected(강남역, 남부터미널역)).isTrue();
+    }
+
+
+    @Test
+    @DisplayName("두 역이 연결되어있지 않으면 FALSE를 반환한다")
+    public void isConnectedShouldReturnFalse_IfStationsAreConnected() {
+
+        신분당선 = new Line("신분당선", Color.ORANGE, 강남역, 양재역, 19999);
+        삼호선 = new Line("3호선", Color.ORANGE, 교대역, 남부터미널역, 1);
+
+        PathFinder pathFinder = new PathFinder(List.of(신분당선, 삼호선));
+
+        assertThat(pathFinder.isConnected(강남역, 남부터미널역)).isFalse();
     }
 
 }

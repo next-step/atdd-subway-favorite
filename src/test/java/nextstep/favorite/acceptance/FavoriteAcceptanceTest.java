@@ -3,6 +3,11 @@ package nextstep.favorite.acceptance;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.restassured.RestAssured;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.line.domain.Color;
+import nextstep.line.presentation.LineRequest;
+import nextstep.line.presentation.SectionRequest;
+import nextstep.subway.fixture.LineSteps;
+import nextstep.subway.fixture.SectionSteps;
 import nextstep.subway.fixture.StationSteps;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +42,9 @@ public class FavoriteAcceptanceTest {
         구의역 = StationSteps.createStation("구의역").getId();
         건대입구역 = StationSteps.createStation("건대입구역").getId();
         잠실역 = StationSteps.createStation("잠실역").getId();
+        long 이호선 = LineSteps.노선_생성(new LineRequest("이호선", Color.GREEN, 강변역, 구의역, 19)).getId();
+        SectionSteps.라인에_구간을_추가한다(이호선, new SectionRequest(구의역, 건대입구역, 4));
+        SectionSteps.라인에_구간을_추가한다(이호선, new SectionRequest(건대입구역, 잠실역, 4));
     }
 
     @Test
