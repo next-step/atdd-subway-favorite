@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.core.member.fixture.GithubFixture.코드없는_로그인_정보;
 import static nextstep.core.member.fixture.GithubMemberFixture.*;
 import static nextstep.core.member.step.AuthSteps.성공하는_토큰_발급_요청;
 import static nextstep.core.member.step.AuthSteps.실패하는_토큰_발급_요청;
@@ -91,7 +92,7 @@ class AuthAcceptanceTest {
 
                 /**
                  * Given 깃허브를 통해 회원가입된 회원을 생성한다.
-                 * When  깃허브로 로그인 요청을 경우
+                 * When  깃허브로 로그인 요청할 경우
                  * Then  깃허브로 로그인 된다.
                  */
                 @Test
@@ -117,7 +118,7 @@ class AuthAcceptanceTest {
 
                 /**
                  * Given 깃허브가 아닌 이미 회원가입된 회원을 생성한다.
-                 * When  깃허브로 로그인 요청을 경우
+                 * When  깃허브로 로그인 요청할 경우
                  * Then  깃허브로 로그인 된다.
                  */
                 @Test
@@ -133,7 +134,7 @@ class AuthAcceptanceTest {
             @Nested
             class 가입되지_않은_회원 {
                 /**
-                 * When  깃허브로 로그인 요청을 경우
+                 * When  깃허브로 로그인 요청할 경우
                  * Then  회원가입 후 깃허브로 로그인 된다.
                  */
                 @Test
@@ -144,6 +145,24 @@ class AuthAcceptanceTest {
                     // given
                     토큰_확인(토큰_목록);
                 }
+            }
+        }
+
+        @Nested
+        class 실패 {
+            /**
+             * When  깃허브로 로그인 요청할 때
+             * When     임시로 발급된 코드를 전달하지 않은 경우
+             * Then  깃허브로 로그인할 수 없다.
+             */
+            @Test
+            void 깃허브로_회원가입된_회원의_로그인_요청() {
+                // when
+                var 깃허브_로그인_요청 = 깃허브_로그인_요청(코드없는_로그인_정보());
+
+                // then
+                토큰_없음_확인(깃허브_로그인_요청);
+
             }
         }
     }
