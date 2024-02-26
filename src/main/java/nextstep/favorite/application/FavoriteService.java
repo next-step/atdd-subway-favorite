@@ -30,12 +30,6 @@ public class FavoriteService {
         this.memberRepository = memberRepository;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     * @return
-     */
     public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(IllegalArgumentException::new);
         Station sourceStation = stationRepository.findById(request.getSource()).orElseThrow(IllegalArgumentException::new);
@@ -47,22 +41,12 @@ public class FavoriteService {
         return favorite.getId();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(IllegalArgumentException::new);
         List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
         return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
     public void deleteFavorite(Long id) {
         favoriteRepository.deleteById(id);
     }

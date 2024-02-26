@@ -115,7 +115,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * when 회원이 등록하지 않은 즐겨찾기 정보를 삭제하면
-     * then 403 Bad Request 코드로 응답한다.
+     * then 500 Internal server error 코드로 응답한다.
      */
     @Test
     void error_존재하지_않는_즐겨찾기_삭제() {

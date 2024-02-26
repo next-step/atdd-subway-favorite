@@ -58,4 +58,8 @@ public class PathFinder {
         sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
         return graph;
     }
+
+    public void isConnected(Station sourceStation, Station targetStation) {
+        shortestPath(sourceStation, targetStation);
+    }
 }
