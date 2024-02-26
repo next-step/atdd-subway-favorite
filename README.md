@@ -3,12 +3,14 @@
 
 ## 2단계
 
+### 정리
+1. [GitHub 응답 스키마](https://docs.github.com/ko/enterprise-server@3.10/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user) 
+2. [GitHub OAuth 권한 부여 절차](https://docs.github.com/ko/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
+
 ### 고민
 1. 깃허브로부터 받은 회원정보로 데이터베이스에 어떻게 회원을 추가할 것인가?
    - 회원을 추가하기 위해서 필요한 정보는 `이메일`, `비밀번호`, `나이`
      - 데이터베이스에서 회원을 식별하는 주요 정보는 `이메일`
-   - [응답 스키마 참고](https://docs.github.com/ko/enterprise-server@3.10/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user)
-     - 응답 스키마에 `email` 속성 확인
 
 ## 1단계
 

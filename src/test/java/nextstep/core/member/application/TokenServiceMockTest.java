@@ -52,7 +52,7 @@ public class TokenServiceMockTest {
             @Test
             void 깃허브로_회원가입된_회원의_토큰_발급_요청() {
                 // given
-                when(githubClient.requestMemberInfo(any(GithubProfileRequest.class))).thenReturn(new GithubProfileResponse(EMAIL));
+                when(githubClient.requestMemberInfo(VALID_CODE)).thenReturn(new GithubProfileResponse(EMAIL));
                 when(memberService.findOrCreate(EMAIL)).thenReturn(new Member(EMAIL, PASSWORD, AGE));
                 when(jwtTokenProvider.createToken(EMAIL)).thenReturn(VALID_TOKEN);
 
@@ -62,7 +62,7 @@ public class TokenServiceMockTest {
                 // then
                 assertThat(tokenResponse.getAccessToken()).isNotBlank();
 
-                verify(githubClient, times(1)).requestMemberInfo(any(GithubProfileRequest.class));
+                verify(githubClient, times(1)).requestMemberInfo(VALID_CODE);
                 verify(memberService, times(1)).findOrCreate(any(String.class));
                 verify(jwtTokenProvider, times(1)).createToken(EMAIL);
             }
