@@ -12,6 +12,7 @@ public class TokenService {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
     public TokenResponse createToken(String email, String password) {
         Member member = memberService.findMemberByEmail(email)
@@ -24,5 +25,20 @@ public class TokenService {
         String token = jwtTokenProvider.createToken(member.getEmail());
 
         return new TokenResponse(token);
+    }
+
+    public TokenResponse createTokenFromGithub(final String code) {
+        final var accessToken = githubClient.requestGithubToken(code);
+        final var profile = githubClient.requestGithubProfile(accessToken);
+
+        var member = memberService.findMemberByEmail(profile.getEmail())
+            .orElseGet(() -> memberService.createMember(
+                profile.getEmail(),
+                // TODO password 처리
+                "password",
+                profile.getAge()
+            ));
+
+        return createToken(member.getEmail(), member.getPassword());
     }
 }

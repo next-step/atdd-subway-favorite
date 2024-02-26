@@ -1,6 +1,8 @@
 package nextstep.member.application;
 
 import java.util.Optional;
+import java.util.function.Supplier;
+import lombok.RequiredArgsConstructor;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -9,13 +11,11 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.ui.BusinessException;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+    private final MemberRepository memberRepository;
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
@@ -25,6 +25,10 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member createMember(final String email, final String password, final int age) {
+        return memberRepository.save(new Member(email, password, age));
     }
 
     public void updateMember(Long id, MemberRequest param) {
@@ -44,5 +48,9 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(MemberResponse::of)
                 .orElseThrow(() -> new BusinessException("멤버를 찾을 수 없습니다."));
+    }
+
+    public Member findMemberOrElseThrow(final String email, Supplier<RuntimeException> exceptionSupplier) {
+        return findMemberByEmail(email).orElseThrow(exceptionSupplier);
     }
 }
