@@ -1,7 +1,7 @@
 package nextstep.auth.ui;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.application.TokenService;
+import nextstep.auth.application.AuthService;
 import nextstep.auth.application.dto.GithubLoginRequest;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
@@ -14,18 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TokenController {
 
-    private final TokenService tokenService;
+    private final AuthService authService;
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+        TokenResponse response = authService.createToken(request.getEmail(), request.getPassword());
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login/github")
     public ResponseEntity<TokenResponse> createTokenFromGithub(@RequestBody GithubLoginRequest request) {
-        TokenResponse response = tokenService.createTokenFromGithub(request.getCode());
+        TokenResponse response = authService.createTokenFromGithub(request.getCode());
 
         return ResponseEntity.ok(response);
     }
