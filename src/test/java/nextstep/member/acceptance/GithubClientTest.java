@@ -1,6 +1,7 @@
 package nextstep.member.acceptance;
 
 import nextstep.member.application.GithubClient;
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,17 @@ public class GithubClientTest {
         String accessCode = githubClient.requestGithubToken(code);
 
         assertThat(accessCode).isEqualTo("access_token");
+    }
+
+    @DisplayName("깃헙 프로필 요청")
+    @Test
+    void requestGithubProfile() {
+        String code = "code";
+        String accessToken = githubClient.requestGithubToken(code);
+
+        GithubProfileResponse response = githubClient.requestGithubProfile(accessToken);
+
+        assertThat(response.getEmail()).isEqualTo("email@email.com");
+        assertThat(response.getAge()).isEqualTo(20);
     }
 }
