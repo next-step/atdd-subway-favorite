@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

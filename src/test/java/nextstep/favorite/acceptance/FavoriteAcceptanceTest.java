@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import nextstep.favorite.application.dto.FavoriteCreateResponse;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
 import nextstep.subway.applicaion.dto.StationResponse;

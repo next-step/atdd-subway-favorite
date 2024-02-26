@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
