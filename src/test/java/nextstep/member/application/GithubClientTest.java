@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,5 +19,13 @@ public class GithubClientTest {
     void requestGithubToken() {
         String githubToken = githubClient.requestGithubToken("code");
         assertThat(githubToken).isNotBlank();
+    }
+
+    @Test
+    void requestUserProfile() {
+        String access_token = "access_token";
+        GithubProfileResponse response = githubClient.requestUserProfile(access_token);
+
+        assertThat(response.getEmail()).isNotBlank();
     }
 }
