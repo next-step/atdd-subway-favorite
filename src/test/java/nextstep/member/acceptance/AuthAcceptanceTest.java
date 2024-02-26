@@ -1,6 +1,5 @@
 package nextstep.member.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
@@ -9,12 +8,9 @@ import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.member.acceptance.AuthSteps.내_정보_요청;
+import static nextstep.member.acceptance.AuthSteps.회원_로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -30,26 +26,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void bearerAuth() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
+        ExtractableResponse<Response> loginResponse = 회원_로그인_요청(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        String accessToken = response.jsonPath().getString("accessToken");
+        String accessToken = loginResponse.jsonPath().getString("accessToken");
         assertThat(accessToken).isNotBlank();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> info = 내_정보_요청(accessToken);
 
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(info.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 }
