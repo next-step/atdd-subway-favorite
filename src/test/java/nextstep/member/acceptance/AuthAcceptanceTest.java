@@ -73,4 +73,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
     }
+
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", "code");
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/login/github")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
 }
