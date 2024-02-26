@@ -3,7 +3,8 @@ package nextstep.member.acceptance;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.dto.GithubProfileResponse;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,24 +18,26 @@ public class GithubClientTest {
     private GithubClient githubClient;
 
     @DisplayName("깃헙 토큰 요청")
-    @Test
-    void requestGithubToken() {
-        String code = "code";
+    @ParameterizedTest
+    @EnumSource(value = GithubResponse.class)
+    void requestGithubToken(GithubResponse githubResponse) {
+        String code = githubResponse.getCode();
 
         String accessCode = githubClient.requestGithubToken(code);
 
-        assertThat(accessCode).isEqualTo("access_token");
+        assertThat(accessCode).isEqualTo(githubResponse.getAccessToken());
     }
 
     @DisplayName("깃헙 프로필 요청")
-    @Test
-    void requestGithubProfile() {
-        String code = "code";
+    @ParameterizedTest
+    @EnumSource(value = GithubResponse.class)
+    void requestGithubProfile(GithubResponse githubResponse) {
+        String code = githubResponse.getCode();
         String accessToken = githubClient.requestGithubToken(code);
 
         GithubProfileResponse response = githubClient.requestGithubProfile(accessToken);
 
-        assertThat(response.getEmail()).isEqualTo("email@email.com");
-        assertThat(response.getAge()).isEqualTo(20);
+        assertThat(response.getEmail()).isEqualTo(githubResponse.getEmail());
+        assertThat(response.getAge()).isEqualTo(githubResponse.getAge());
     }
 }
