@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthServiceTest {
 
   @Autowired
@@ -24,7 +26,7 @@ class AuthServiceTest {
     MemberSteps.회원_생성_요청(email, "password", age);
 
     // when
-    var token = authService.createToken("domodazzi", "password");
+    var token = authService.createToken(email, "password");
 
     // then
     var response = MemberSteps.회원_정보_조회_요청(token.getAccessToken());
