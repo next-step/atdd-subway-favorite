@@ -1,7 +1,5 @@
 package nextstep.core.member.application;
 
-import nextstep.core.member.application.dto.GithubProfileRequest;
-import nextstep.core.member.application.dto.MemberResponse;
 import nextstep.core.member.application.dto.TokenResponse;
 import nextstep.core.member.domain.Member;
 import org.springframework.stereotype.Service;

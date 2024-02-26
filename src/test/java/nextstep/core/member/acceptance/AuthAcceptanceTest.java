@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.core.member.fixture.GithubMemberFixture.getAllGitHubMembers;
 import static nextstep.core.member.step.AuthSteps.성공하는_토큰_발급_요청;
 import static nextstep.core.member.step.AuthSteps.실패하는_토큰_발급_요청;
 import static nextstep.core.member.step.MemberSteps.회원_생성_요청;
@@ -105,25 +106,29 @@ class AuthAcceptanceTest {
                  */
                 @Test
                 void 깃허브로_회원가입된_회원의_로그인_요청() {
-                    // given
-                    String 발급된_코드 = "qwerasdfzxvcqwerasdfzxcv";
 
-                    Map<String, String> params = new HashMap<>();
-                    params.put("code", 발급된_코드);
+                    getAllGitHubMembers().forEach(githubMember -> {
+                        // given
+                        String 발급된_코드 = githubMember.getCode();
 
-                    // when
-                    ExtractableResponse<Response> 토큰_응답 = RestAssured
-                            .given().log().all()
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(params)
-                            .when()
-                            .post("/login/github")
-                            .then().log().all()
-                            .statusCode(HttpStatus.OK.value())
-                            .extract();
+                        Map<String, String> params = new HashMap<>();
+                        params.put("code", 발급된_코드);
 
-                    // then
-                    토큰_확인(토큰_응답.jsonPath().getString("accessToken")); // TODO: Steps에서 공통 메서드로 추출
+                        // when
+                        ExtractableResponse<Response> 토큰_응답 = RestAssured
+                                .given().log().all()
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .body(params)
+                                .when()
+                                .post("/login/github")
+                                .then().log().all()
+                                .statusCode(HttpStatus.OK.value())
+                                .extract();
+
+                        // then
+                        토큰_확인(토큰_응답.jsonPath().getString("accessToken"));
+
+                    });
                 }
             }
 
@@ -136,25 +141,27 @@ class AuthAcceptanceTest {
                  */
                 @Test
                 void 깃허브로_회원가입_되지_않은_회원의_로그인_요청() {
-                    // given
-                    String 발급된_코드 = "qwerasdfzxvcqwerasdfzxcv";
+                    getAllGitHubMembers().forEach(githubMember -> {
+                        // given
+                        String 발급된_코드 = githubMember.getCode();
 
-                    Map<String, String> params = new HashMap<>();
-                    params.put("code", 발급된_코드);
+                        Map<String, String> params = new HashMap<>();
+                        params.put("code", 발급된_코드);
 
-                    // when
-                    ExtractableResponse<Response> 토큰_응답 = RestAssured
-                            .given().log().all()
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .body(params)
-                            .when()
-                            .post("/login/github")
-                            .then().log().all()
-                            .statusCode(HttpStatus.OK.value())
-                            .extract();
+                        // when
+                        ExtractableResponse<Response> 토큰_응답 = RestAssured
+                                .given().log().all()
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .body(params)
+                                .when()
+                                .post("/login/github")
+                                .then().log().all()
+                                .statusCode(HttpStatus.OK.value())
+                                .extract();
 
-                    // then
-                    토큰_확인(토큰_응답.jsonPath().getString("accessToken")); // TODO: Steps에서 공통 메서드로 추출
+                        // then
+                        토큰_확인(토큰_응답.jsonPath().getString("accessToken")); // TODO: Steps에서 공통 메서드로 추출
+                    });
                 }
             }
         }
