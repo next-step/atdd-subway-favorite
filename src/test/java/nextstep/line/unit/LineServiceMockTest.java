@@ -41,8 +41,8 @@ public class LineServiceMockTest {
         final Long downStationId = 3L;
 
         // given
-        when(stationRepository.findById(upStationId)).thenReturn(Optional.ofNullable(역삼역_엔티티));
-        when(stationRepository.findById(downStationId)).thenReturn(Optional.ofNullable(선릉역_엔티티));
+        when(stationRepository.findByIdOrFail(upStationId)).thenReturn(역삼역_엔티티);
+        when(stationRepository.findByIdOrFail(downStationId)).thenReturn(선릉역_엔티티);
         when(lineRepository.findById(lineId)).thenReturn(Optional.of(신분당선_엔티티(강남역_엔티티, 역삼역_엔티티)));
 
         // when

@@ -48,8 +48,8 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteDto createFavorite(FavoriteCreateCommand command) {
-        Station source = stationRepository.findById(command.getSource()).orElseThrow(StationNotFoundException::new);
-        Station target = stationRepository.findById(command.getTarget()).orElseThrow(StationNotFoundException::new);
+        Station source = stationRepository.findByIdOrFail(command.getSource());
+        Station target = stationRepository.findByIdOrFail(command.getTarget());
         Member member = memberRepository.findByEmailOrFail(command.getMemberEmail());
 
         validateDataForCreatingFavorite(member, source, target);

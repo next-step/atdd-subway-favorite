@@ -7,7 +7,6 @@ import nextstep.path.domain.Path;
 import nextstep.path.domain.PathFinder;
 import nextstep.station.domain.Station;
 import nextstep.station.domain.StationRepository;
-import nextstep.station.domain.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +24,8 @@ public class PathService {
     }
 
     public PathDto findShortestPath(Long sourceStationId, Long targetStationId) {
-        Station sourceStation = stationRepository.findById(sourceStationId).orElseThrow(StationNotFoundException::new);
-        Station targetStation = stationRepository.findById(targetStationId).orElseThrow(StationNotFoundException::new);
+        Station sourceStation = stationRepository.findByIdOrFail(sourceStationId);
+        Station targetStation = stationRepository.findByIdOrFail(targetStationId);
         List<Line> lines = lineRepository.findAll();
 
         Path path = pathFinder.findShortestPathAndItsDistance(lines, sourceStation, targetStation);
