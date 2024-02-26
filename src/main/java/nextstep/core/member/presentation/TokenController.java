@@ -1,7 +1,7 @@
 package nextstep.core.member.presentation;
 
 import nextstep.core.member.application.TokenService;
-import nextstep.core.member.application.dto.CodeRequest;
+import nextstep.core.member.application.dto.GithubCodeRequest;
 import nextstep.core.member.application.dto.TokenRequest;
 import nextstep.core.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class TokenController {
     }
 
     @PostMapping("/login/github")
-    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody CodeRequest request) {
+    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody GithubCodeRequest request) {
         return ResponseEntity.ok(tokenService.createTokenByGithub(request.getCode()));
     }
 }

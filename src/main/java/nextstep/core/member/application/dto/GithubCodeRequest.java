@@ -1,12 +1,12 @@
 package nextstep.core.member.application.dto;
 
-public class CodeRequest {
+public class GithubCodeRequest {
     private String code;
 
-    public CodeRequest() {
+    public GithubCodeRequest() {
     }
 
-    public CodeRequest(String code) {
+    public GithubCodeRequest(String code) {
         this.code = code;
     }
 
