@@ -3,7 +3,7 @@ package nextstep.favorite.application;
 import nextstep.favorite.application.exceptions.BadRequestException;
 import nextstep.favorite.application.exceptions.CannotFavoriteStationException;
 import nextstep.favorite.application.exceptions.FavoriteNotFoundException;
-import nextstep.member.MemberNotFoundException;
+import nextstep.member.exceptions.MemberNotFoundException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.dao.StationDao;

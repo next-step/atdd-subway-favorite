@@ -76,4 +76,11 @@ public class MemberSteps {
 
         return response.jsonPath().getString("accessToken");
     }
+
+    public static String 토큰_생성(String email, String pw) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("email", email);
+        param.put("password", pw);
+        return 토큰_생성(param);
+    }
 }
