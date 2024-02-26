@@ -22,6 +22,7 @@ public class GithubClient {
     private String accessTokenUrl;
     @Value("${github.url.profile}")
     private String userProfileUrl;
+
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
@@ -45,7 +46,7 @@ public class GithubClient {
 
     public GithubProfileResponse requestUserProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer "+accessToken);
+        headers.add("Authorization", "Bearer " + accessToken);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
         RestTemplate restTemplate = new RestTemplate();

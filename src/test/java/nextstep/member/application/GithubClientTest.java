@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import static nextstep.utils.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -27,5 +28,17 @@ public class GithubClientTest {
         GithubProfileResponse response = githubClient.requestUserProfile(access_token);
 
         assertThat(response.getEmail()).isNotBlank();
+    }
+
+    @Test
+    void requestGithubToken_with_user(){
+        String githubToken = githubClient.requestGithubToken(사용자1.getCode());
+        assertThat(githubToken).isEqualTo(사용자1.getGithubToken());
+    }
+
+    @Test
+    void requestUserProfile_with_user() {
+        GithubProfileResponse response = githubClient.requestUserProfile(githubClient.requestGithubToken(사용자1.getCode()));
+        assertThat(response.getEmail()).isEqualTo(사용자1.getEmail());
     }
 }
