@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import subway.dto.member.GithubAccessTokenRequest;
 import subway.dto.member.GithubAccessTokenResponse;
+import subway.dto.member.GithubProfileResponse;
 
 @Component
 public class GithubClient {
@@ -42,5 +43,17 @@ public class GithubClient {
 				.exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
 				.getBody())
 			.getAccessToken();
+	}
+
+	public GithubProfileResponse requestUser(String accessToken) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", accessToken));
+
+		HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		return restTemplate
+			.exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+			.getBody();
 	}
 }

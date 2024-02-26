@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import subway.acceptance.AcceptanceTest;
+import subway.dto.member.GithubProfileResponse;
 import subway.fixture.member.GithubResponses;
 import subway.member.GithubClient;
 
@@ -39,5 +40,18 @@ class GithubClientTest extends AcceptanceTest {
 
 		// then
 		assertThat(accessToken).isEqualTo(사용자1.getAccessToken());
+	}
+
+	@DisplayName("github accessToken으로 사용자 정보 받아오기")
+	@Test
+	void requestUser() {
+		// given
+		GithubResponses 사용자1 = GithubResponses.사용자1;
+
+		// when
+		GithubProfileResponse githubProfileResponse = githubClient.requestUser(사용자1.getAccessToken());
+
+		// then
+		assertThat(githubProfileResponse.getEmail()).isEqualTo(사용자1.getEmail());
 	}
 }
