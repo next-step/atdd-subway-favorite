@@ -97,16 +97,9 @@ class MemberAcceptanceTest {
 
         @Nested
         class 실패 {
-            String 이메일;
-            String 비밀번호;
-            int 나이;
 
             @BeforeEach
             void 사전_회원_생성() {
-                이메일 = "admin@email.com";
-                비밀번호 = "password";
-                나이 = 20;
-
                 회원_생성_요청(JOHNSON);
             }
 

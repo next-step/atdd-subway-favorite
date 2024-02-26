@@ -57,6 +57,19 @@ public class AuthSteps {
                 .statusCode(HttpStatus.BAD_REQUEST.value()).extract();
     }
 
+    public static void 실패하는_토큰_발급_요청(MemberFixture 회원, String 변경된_비밀번호) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", 회원.getEmail());
+        params.put("password", 변경된_비밀번호 + 회원.getPassword());
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value()).extract();
+    }
+
     public static String 회원생성_후_토큰_발급(MemberFixture memberFixture) {
         회원_생성_요청(memberFixture);
         return "Bearer " + 성공하는_토큰_발급_요청(memberFixture);

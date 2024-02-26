@@ -36,12 +36,12 @@ public class TokenServiceMockTest {
         @Nested
         class 성공 {
 
-            final String VALID_CODE = "Valid Code";
-            final String VALID_TOKEN = "Valid Token";
+            final String code = "Temp Code";
+            final String token = "Bearer TOKEN ";
 
-            final String EMAIL = "test@test.com";
-            final String PASSWORD = "PASSWORD";
-            final int AGE = 20;
+            final String email = "test@test.com";
+            final String password = "PASSWORD";
+            final int age = 20;
 
             /**
              * When  코드를 통해 깃허브에 회원정보를 요청한다.
@@ -51,19 +51,19 @@ public class TokenServiceMockTest {
             @Test
             void 깃허브로_회원가입된_회원의_토큰_발급_요청() {
                 // given
-                when(githubClient.requestGithubProfile(VALID_CODE)).thenReturn(new GithubProfileResponse(EMAIL));
-                when(memberService.findOrCreate(EMAIL)).thenReturn(new Member(EMAIL, PASSWORD, AGE));
-                when(jwtTokenProvider.createToken(EMAIL)).thenReturn(VALID_TOKEN);
+                when(githubClient.requestGithubProfile(code)).thenReturn(new GithubProfileResponse(email));
+                when(memberService.findOrCreate(email)).thenReturn(new Member(email, password, age));
+                when(jwtTokenProvider.createToken(email)).thenReturn(token);
 
                 // when
-                TokenResponse tokenResponse = tokenService.createTokenByGithub(VALID_CODE);
+                TokenResponse tokenResponse = tokenService.createTokenByGithub(code);
 
                 // then
                 assertThat(tokenResponse.getAccessToken()).isNotBlank();
 
-                verify(githubClient, times(1)).requestGithubProfile(VALID_CODE);
+                verify(githubClient, times(1)).requestGithubProfile(code);
                 verify(memberService, times(1)).findOrCreate(any(String.class));
-                verify(jwtTokenProvider, times(1)).createToken(EMAIL);
+                verify(jwtTokenProvider, times(1)).createToken(email);
             }
         }
     }

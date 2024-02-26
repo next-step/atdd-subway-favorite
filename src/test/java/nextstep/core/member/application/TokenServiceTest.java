@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static nextstep.core.member.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -46,15 +47,11 @@ public class TokenServiceTest {
             @Test
             void 저장된_회원으로_토큰_발급_요청() {
                 // given
-                String email = "admin@email.com";
-                String password = "password";
-                int age = 20;
-
-                MemberRequest memberRequest = new MemberRequest(email, password, age);
+                MemberRequest memberRequest = new MemberRequest(BROWN.getEmail(), BROWN.getPassword(), BROWN.age);
                 memberService.createMember(memberRequest);
 
                 // when
-                TokenResponse tokenResponse = tokenService.createToken(email, password);
+                TokenResponse tokenResponse = tokenService.createToken(BROWN.getEmail(), BROWN.getPassword());
 
                 // then
                 assertThat(tokenResponse.getAccessToken()).isNotBlank();
@@ -71,18 +68,15 @@ public class TokenServiceTest {
             @Test
             void 비밀번호가_다른_회원의_토큰_발급_요청() {
                 // given
-                String email = "admin@email.com";
-                String password = "password";
                 String changedPassword = "changed password";
-                int age = 20;
 
-                MemberRequest memberRequest = new MemberRequest(email, password, age);
+                MemberRequest memberRequest = new MemberRequest(SMITH.getEmail(), SMITH.getPassword(), SMITH.getAge());
                 memberService.createMember(memberRequest);
 
                 // when, then
                 assertThatExceptionOfType(IllegalArgumentException.class)
                         .isThrownBy(() -> {
-                            tokenService.createToken(email, changedPassword);
+                            tokenService.createToken(SMITH.getEmail(), changedPassword);
                         }).withMessageMatching("비밀번호가 다릅니다.");
             }
 
@@ -93,15 +87,10 @@ public class TokenServiceTest {
              */
             @Test
             void 존재하지_않는_회원의_토큰_발급_요청() {
-                // given
-                String email = "admin@email.com";
-                String password = "password";
-                int age = 20;
-
                 // when, then
                 assertThatExceptionOfType(NotFoundMemberException.class)
                         .isThrownBy(() -> {
-                            tokenService.createToken(email, password);
+                            tokenService.createToken(JOHNSON.getEmail(), JOHNSON.getPassword());
                         }).withMessageMatching("회원 정보가 없습니다.");
             }
         }
