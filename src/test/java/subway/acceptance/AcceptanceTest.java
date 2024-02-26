@@ -11,7 +11,7 @@ import subway.utils.database.DatabaseCleanup;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AcceptanceTest {
 	@LocalServerPort
-	private int port;
+	protected int port;
 
 	@Autowired
 	private DatabaseCleanup databaseCleanup;
