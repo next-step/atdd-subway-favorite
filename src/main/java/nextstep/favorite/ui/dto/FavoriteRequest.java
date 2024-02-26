@@ -1,7 +1,7 @@
 package nextstep.favorite.ui.dto;
 
 import nextstep.favorite.application.dto.FavoriteCreateCommand;
-import nextstep.member.domain.Member;
+import nextstep.member.domain.LoginMember;
 
 public class FavoriteRequest {
     private Long source;
@@ -23,7 +23,7 @@ public class FavoriteRequest {
         return target;
     }
 
-    public static FavoriteCreateCommand toCommand(Long source, Long target, Member member) {
-        return new FavoriteCreateCommand(source, target, member.getId());
+    public static FavoriteCreateCommand toCommand(FavoriteRequest request, LoginMember loginMember) {
+        return new FavoriteCreateCommand(request.getSource(), request.getTarget(), loginMember.getEmail());
     }
 }

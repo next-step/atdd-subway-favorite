@@ -1,5 +1,6 @@
 package nextstep.favorite.ui.dto;
 
+import nextstep.favorite.application.dto.FavoriteDto;
 import nextstep.station.application.dto.StationResponseBody;
 
 public class FavoriteResponse {
@@ -23,5 +24,11 @@ public class FavoriteResponse {
 
     public StationResponseBody getTarget() {
         return target;
+    }
+
+    public static FavoriteResponse from(FavoriteDto favoriteDto) {
+        StationResponseBody source = StationResponseBody.from(favoriteDto.getSource());
+        StationResponseBody target = StationResponseBody.from(favoriteDto.getTarget());
+        return new FavoriteResponse(favoriteDto.getId(), source, target);
     }
 }

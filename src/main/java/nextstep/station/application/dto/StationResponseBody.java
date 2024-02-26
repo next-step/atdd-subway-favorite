@@ -20,9 +20,13 @@ public class StationResponseBody {
         return name;
     }
 
-    public static List<StationResponseBody> create (List<StationDto> stationDtoList) {
+    public static List<StationResponseBody> from (List<StationDto> stationDtoList) {
         return stationDtoList.stream()
                 .map(stationDto -> new StationResponseBody(stationDto.getId(), stationDto.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public static StationResponseBody from (StationDto stationDto) {
+        return new StationResponseBody(stationDto.getId(), stationDto.getName());
     }
 }

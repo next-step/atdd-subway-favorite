@@ -16,7 +16,7 @@ public class LineResponseBody {
         this.id = lineDto.getId();
         this.name = lineDto.getName();
         this.color = lineDto.getColor();
-        this.stations = StationResponseBody.create(lineDto.getStations());
+        this.stations = StationResponseBody.from(lineDto.getStations());
     }
 
     public static List<LineResponseBody> create (List<LineDto> lineDtoList) {
