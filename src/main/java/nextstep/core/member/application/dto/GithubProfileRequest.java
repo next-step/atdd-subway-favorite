@@ -1,13 +1,13 @@
 package nextstep.core.member.application.dto;
 
 public class GithubProfileRequest {
-    String code;
+    String accessToken;
 
     public GithubProfileRequest(String code) {
-        this.code = code;
+        this.accessToken = code;
     }
 
-    public String getCode() {
-        return code;
+    public String getAccessToken() {
+        return accessToken;
     }
 }

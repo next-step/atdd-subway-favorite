@@ -3,7 +3,10 @@ package nextstep.core.member.application;
 import java.util.Objects;
 
 public class GithubProfileResponse {
-    private final String email;
+    private String email;
+
+    public GithubProfileResponse() {
+    }
 
     public GithubProfileResponse(String email) {
         this.email = email;

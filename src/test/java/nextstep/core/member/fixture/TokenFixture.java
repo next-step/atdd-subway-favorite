@@ -28,6 +28,14 @@ public enum TokenFixture {
                 .getToken();
     }
 
+    public static String findMemberInfo(String token) {
+        return Arrays.stream(values())
+                .filter(tokenFixture -> tokenFixture.getToken().equals(token))
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException("확인되지 않은 토큰입니다."))
+                .getEmail();
+    }
+
     public String getCode() {
         return code;
     }
