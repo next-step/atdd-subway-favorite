@@ -54,14 +54,11 @@ public class FavoriteService {
 
     /** 즐겨찾기 삭제 */
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Optional<Favorite> deleteFavorite = favoriteRepository.findAllByMemberEmail(loginMember.getEmail()).stream()
+        Favorite deleteFavorite = favoriteRepository.findAllByMemberEmail(loginMember.getEmail()).stream()
             .filter(it -> it.getId().equals(id))
-            .findAny();
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("등록하지 않은 즐겨찾기는 삭제할 수 없다"));
 
-        if(deleteFavorite.isEmpty()) {
-            throw new IllegalArgumentException("등록하지 않은 즐겨찾기는 삭제할 수 없다");
-        }
-
-        favoriteRepository.delete(deleteFavorite.get());
+        favoriteRepository.delete(deleteFavorite);
     }
 }
