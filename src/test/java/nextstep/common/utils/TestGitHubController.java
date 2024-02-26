@@ -14,13 +14,13 @@ public class TestGitHubController {
 
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> createToken(@RequestBody GithubAccessTokenRequest request) {
-        GithubAccessTokenResponse githubAccessTokenResponse = new GithubAccessTokenResponse(GithubMemberFixture.findToken(
+        GithubAccessTokenResponse githubAccessTokenResponse = new GithubAccessTokenResponse(GithubMemberFixture.findTokenByCode(
                 request.getCode()), "repo,gist", "bearer");
         return ResponseEntity.ok().body(githubAccessTokenResponse);
     }
 
     @GetMapping("/github/user")
     public ResponseEntity<GithubProfileResponse> findAuthenticateUser(@RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok().body(new GithubProfileResponse(GithubMemberFixture.findMemberInfo(token)));
+        return ResponseEntity.ok().body(new GithubProfileResponse(GithubMemberFixture.findMemberByToken(token)));
     }
 }

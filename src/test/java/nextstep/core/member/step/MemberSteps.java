@@ -3,6 +3,8 @@ package nextstep.core.member.step;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.core.member.fixture.GithubMemberFixture;
+import nextstep.core.member.fixture.MemberFixture;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -12,11 +14,40 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
-    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_생성_요청(MemberFixture memberFixture) {
         Map<String, String> params = new HashMap<>();
-        params.put("email", email);
+        params.put("email", memberFixture.getEmail());
+        params.put("password", memberFixture.getPassword());
+        params.put("age", memberFixture.getAge() + "");
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/members")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_생성_요청(GithubMemberFixture githubMemberFixture, String password, int age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", githubMemberFixture.getEmail());
         params.put("password", password);
         params.put("age", age + "");
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/members")
+                .then().log().all().extract();
+    }
+
+
+    public static ExtractableResponse<Response> 회원_생성_요청(String 이메일, String 비밀번호, int 나이) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", 이메일);
+        params.put("password", 비밀번호);
+        params.put("age", 나이 + "");
 
         return RestAssured
                 .given().log().all()
@@ -76,8 +107,8 @@ public class MemberSteps {
                 .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
     }
 
-    public static void 회원_정보_확인(ExtractableResponse<Response> 회원정보_요청_응답, String 예상하는_이메일) {
-        assertThat(회원정보_요청_응답.jsonPath().getString("email")).isEqualTo(예상하는_이메일);
+    public static void 회원_정보_확인(ExtractableResponse<Response> 회원정보_요청_응답, MemberFixture memberFixture) {
+        assertThat(회원정보_요청_응답.jsonPath().getString("email")).isEqualTo(memberFixture.getEmail());
     }
 
     public static void 회원_정보_확인(ExtractableResponse<Response> response, String email, int age) {

@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum GithubMemberFixture {
-    KIM("K_CODE", "K_TOKEN", "K_EMAIL"),
-    HWANG("H_CODE", "H_TOKEN", "H_EMAIL"),
-    JUNG("J_CODE", "J_TOKEN", "J_EMAIL"),
-    LEE("L_CODE", "L_TOKEN", "L_EMAIL");
+    KIM("kim_code", "Bearer K_TOKEN", "kim_email@email.com"),
+    HWANG("hwang_code", "Bearer H_TOKEN", "hwang_email@email.com"),
+    JUNG("jung_code", "Bearer J_TOKEN", "jung_email@email.com"),
+    LEE("lee_code", "Bearer L_TOKEN", "lee_email@email.com");
 
     public final String code;
     public final String token;
@@ -21,7 +21,7 @@ public enum GithubMemberFixture {
         this.email = email;
     }
 
-    public static String findToken(String code) {
+    public static String findTokenByCode(String code) {
         return Arrays.stream(values())
                 .filter(tokenFixture -> tokenFixture.getCode().equals(code))
                 .findFirst()
@@ -29,7 +29,7 @@ public enum GithubMemberFixture {
                 .getToken();
     }
 
-    public static String findMemberInfo(String token) {
+    public static String findMemberByToken(String token) {
         return Arrays.stream(values())
                 .filter(tokenFixture -> tokenFixture.getToken().equals(token))
                 .findFirst()

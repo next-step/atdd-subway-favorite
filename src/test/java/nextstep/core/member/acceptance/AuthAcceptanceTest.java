@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.core.member.fixture.GithubFixture.코드없는_로그인_정보;
 import static nextstep.core.member.fixture.GithubMemberFixture.*;
+import static nextstep.core.member.fixture.MemberFixture.WILLIAMS;
 import static nextstep.core.member.step.AuthSteps.성공하는_토큰_발급_요청;
 import static nextstep.core.member.step.AuthSteps.실패하는_토큰_발급_요청;
 import static nextstep.core.member.step.GithubSteps.*;
@@ -29,13 +30,10 @@ class AuthAcceptanceTest {
             @Test
             void 저장된_회원으로_토큰_발급_요청() {
                 // given
-                var 이메일 = "admin@email.com";
-                var 비밀번호 = "password";
-
-                회원_생성_요청(이메일, 비밀번호, 20);
+                회원_생성_요청(WILLIAMS);
 
                 // when
-                var 발급된_토큰 = 성공하는_토큰_발급_요청(이메일, 비밀번호);
+                var 발급된_토큰 = 성공하는_토큰_발급_요청(WILLIAMS);
 
                 // then
                 토큰_확인(발급된_토큰);
@@ -110,10 +108,10 @@ class AuthAcceptanceTest {
 
                 @BeforeEach
                 void 사전_깃허브_회원가입() {
-                    회원_생성_요청(KIM.getEmail(), "password", 10);
-                    회원_생성_요청(HWANG.getEmail(), "password", 10);
-                    회원_생성_요청(JUNG.getEmail(), "password", 10);
-                    회원_생성_요청(LEE.getEmail(), "password", 10);
+                    회원_생성_요청(KIM, "password", 10);
+                    회원_생성_요청(HWANG, "password", 10);
+                    회원_생성_요청(JUNG, "password", 10);
+                    회원_생성_요청(LEE, "password", 10);
                 }
 
                 /**
