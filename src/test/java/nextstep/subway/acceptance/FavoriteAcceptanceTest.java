@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
-import static nextstep.member.acceptance.TokenSteps.인증정보_생성_요청;
+import static nextstep.member.acceptance.LoginSteps.인증정보_생성_요청;
 import static nextstep.utils.subway.FavoriteSteps.*;
 import static nextstep.utils.subway.StationSteps.역_삭제_요청;
 import static nextstep.utils.subway.StationSteps.역_생성_요청;
