@@ -1,14 +1,19 @@
 package nextstep.core.member.acceptance;
 
 import nextstep.common.annotation.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.core.member.fixture.GithubFixture.코드없는_로그인_정보;
+import static nextstep.core.member.fixture.GithubMemberFixture.*;
+import static nextstep.core.member.fixture.MemberFixture.JOHNSON;
+import static nextstep.core.member.fixture.MemberFixture.WILLIAMS;
 import static nextstep.core.member.step.AuthSteps.성공하는_토큰_발급_요청;
 import static nextstep.core.member.step.AuthSteps.실패하는_토큰_발급_요청;
+import static nextstep.core.member.step.GithubSteps.*;
 import static nextstep.core.member.step.MemberSteps.회원_생성_요청;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("인증 인수 테스트")
 @AcceptanceTest
@@ -26,13 +31,10 @@ class AuthAcceptanceTest {
             @Test
             void 저장된_회원으로_토큰_발급_요청() {
                 // given
-                var 이메일 = "admin@email.com";
-                var 비밀번호 = "password";
-
-                회원_생성_요청(이메일, 비밀번호, 20);
+                회원_생성_요청(WILLIAMS);
 
                 // when
-                var 발급된_토큰 = 성공하는_토큰_발급_요청(이메일, 비밀번호);
+                var 발급된_토큰 = 성공하는_토큰_발급_요청(WILLIAMS);
 
                 // then
                 토큰_확인(발급된_토큰);
@@ -49,14 +51,10 @@ class AuthAcceptanceTest {
             @Test
             void 비밀번호가_다른_회원의_토큰_발급_요청() {
                 // given
-                var 이메일 = "admin@email.com";
-                var 비밀번호 = "password";
-                var 변경된_비밀번호 = "changed password";
-
-                회원_생성_요청(이메일, 비밀번호, 20);
+                회원_생성_요청(JOHNSON);
 
                 // then
-                실패하는_토큰_발급_요청(이메일, 변경된_비밀번호);
+                실패하는_토큰_발급_요청(JOHNSON, "Changed Password");
             }
 
             /**
@@ -65,17 +63,98 @@ class AuthAcceptanceTest {
              */
             @Test
             void 존재하지_않는_회원의_토큰_발급_요청() {
-                // given
-                var 이메일 = "admin@email.com";
-                var 비밀번호 = "password";
-
                 // when, then
-                실패하는_토큰_발급_요청(이메일, 비밀번호);
+                실패하는_토큰_발급_요청(WILLIAMS);
             }
         }
     }
 
-    public static void 토큰_확인(String 발급된_토큰) {
-        assertThat(발급된_토큰).isNotBlank();
+    @Nested
+    class 깃허브_로그인 {
+        @Nested
+        class 성공 {
+            @Nested
+            class 이미_깃허브로_가입된_회원 {
+
+                @BeforeEach
+                void 사전_깃허브_회원가입() {
+                    깃허브_회원가입(KIM, HWANG, JUNG, LEE);
+                }
+
+                /**
+                 * Given 깃허브를 통해 회원가입된 회원을 생성한다.
+                 * When  깃허브로 로그인 요청할 경우
+                 * Then  깃허브로 로그인 된다.
+                 */
+                @Test
+                void 깃허브로_회원가입된_회원의_로그인_요청() {
+                    // when
+                    var 토큰_목록 = 깃허브_로그인_요청(KIM, HWANG, JUNG, LEE);
+
+                    // then
+                    토큰_확인(토큰_목록);
+                }
+            }
+
+            @Nested
+            class 이미_가입된_회원 {
+
+                @BeforeEach
+                void 사전_깃허브_회원가입() {
+                    회원_생성_요청(KIM, "password001!", 10);
+                    회원_생성_요청(HWANG, "password002!", 10);
+                    회원_생성_요청(JUNG, "password003!", 10);
+                    회원_생성_요청(LEE, "password004!", 10);
+                }
+
+                /**
+                 * Given 깃허브가 아닌 이미 회원가입된 회원을 생성한다.
+                 * When  깃허브로 로그인 요청할 경우
+                 * Then  깃허브로 로그인 된다.
+                 */
+                @Test
+                void 깃허브로_회원가입된_회원의_로그인_요청() {
+                    // when
+                    var 토큰_목록 = 깃허브_로그인_요청(KIM, HWANG, JUNG, LEE);
+
+                    // then
+                    토큰_확인(토큰_목록);
+                }
+            }
+
+            @Nested
+            class 가입되지_않은_회원 {
+                /**
+                 * When  깃허브로 로그인 요청할 경우
+                 * Then  회원가입 후 깃허브로 로그인 된다.
+                 */
+                @Test
+                void 깃허브로_회원가입_되지_않은_회원의_로그인_요청() {
+                    // when
+                    var 토큰_목록 = 깃허브_로그인_요청(KIM, HWANG, JUNG, LEE);
+
+                    // given
+                    토큰_확인(토큰_목록);
+                }
+            }
+        }
+
+        @Nested
+        class 실패 {
+            /**
+             * When  깃허브로 로그인 요청할 때
+             * When     임시로 발급된 코드를 전달하지 않은 경우
+             * Then  깃허브로 로그인할 수 없다.
+             */
+            @Test
+            void 깃허브로_회원가입된_회원의_로그인_요청() {
+                // when
+                var 깃허브_로그인_요청 = 깃허브_로그인_요청(코드없는_로그인_정보());
+
+                // then
+                토큰_없음_확인(깃허브_로그인_요청);
+
+            }
+        }
     }
 }

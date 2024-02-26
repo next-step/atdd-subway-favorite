@@ -1,8 +1,20 @@
 # 지하철 노선도 미션
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
+## 2단계
 
-## 고민
+### 정리
+1. [GitHub 응답 스키마](https://docs.github.com/ko/enterprise-server@3.10/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user) 
+2. [GitHub OAuth 권한 부여 절차](https://docs.github.com/ko/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
+
+### 고민
+1. 깃허브로부터 받은 회원정보로 데이터베이스에 어떻게 회원을 추가할 것인가?
+   - 회원을 추가하기 위해서 필요한 정보는 `이메일`, `비밀번호`, `나이`
+     - 데이터베이스에서 회원을 식별하는 주요 정보는 `이메일`
+
+## 1단계
+
+### 고민
 
 1. 즐겨찾기 관련 인수 테스트 시나리오를 작성하다 보니, 경로 조회을 포함해서 다른 도메인의 인수테스트와 중복되는? 시나리오들이 적지않다.
   - 가령, 즐겨찾기 관련 인수 테스트에서 작성한 `출발역과_도착역이_연결되지_않은_즐겨찾기_추가` 같은 경우도, 경로 조회 관련 테스트에서 충분히 검증한 것 같다고 생각된다.

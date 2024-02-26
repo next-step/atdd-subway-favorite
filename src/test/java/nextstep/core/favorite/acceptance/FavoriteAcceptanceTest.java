@@ -13,6 +13,8 @@ import static nextstep.core.favorite.fixture.FavoriteFixture.확인할_즐겨찾
 import static nextstep.core.favorite.step.FavoriteSteps.*;
 import static nextstep.core.line.fixture.LineFixture.*;
 import static nextstep.core.line.step.LineSteps.지하철_노선_생성;
+import static nextstep.core.member.fixture.MemberFixture.SMITH;
+import static nextstep.core.member.fixture.MemberFixture.WILLIAMS;
 import static nextstep.core.member.step.AuthSteps.회원생성_후_토큰_발급;
 import static nextstep.core.section.fixture.SectionFixture.지하철_구간;
 import static nextstep.core.section.step.SectionSteps.성공하는_지하철_구간_추가요청;
@@ -70,9 +72,7 @@ public class FavoriteAcceptanceTest {
 
     @BeforeEach
     void 사전_회원의_토큰_발급() {
-        var 정상적인_회원의_이메일 = "admin@email.com";
-        var 정상적인_회원의_비밀번호 = "password";
-        정상적인_회원의_토큰 = 회원생성_후_토큰_발급(정상적인_회원의_이메일, 정상적인_회원의_비밀번호);
+        정상적인_회원의_토큰 = 회원생성_후_토큰_발급(SMITH);
     }
 
     @Nested
@@ -290,16 +290,12 @@ public class FavoriteAcceptanceTest {
 
             @BeforeEach
             void 사전_정상적인_회원A의_토큰_발급() {
-                var 정상적인_회원A의_이메일 = "admin001@email.com";
-                var 정상적인_회원A의_비밀번호 = "password";
-                정상적인_회원A의_토큰 = 회원생성_후_토큰_발급(정상적인_회원A의_이메일, 정상적인_회원A의_비밀번호);
+                정상적인_회원A의_토큰 = 회원생성_후_토큰_발급(SMITH);
             }
 
             @BeforeEach
             void 사전_정상적인_회원B의_토큰_발급() {
-                var 정상적인_회원B의_이메일 = "admin002@email.com";
-                var 정상적인_회원B의_비밀번호 = "password";
-                정상적인_회원B의_토큰 = 회원생성_후_토큰_발급(정상적인_회원B의_이메일, 정상적인_회원B의_비밀번호);
+                정상적인_회원B의_토큰 = 회원생성_후_토큰_발급(WILLIAMS);
             }
 
             /**

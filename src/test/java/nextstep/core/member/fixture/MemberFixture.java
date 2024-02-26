@@ -1,9 +1,30 @@
 package nextstep.core.member.fixture;
 
-import nextstep.core.member.domain.Member;
+public enum MemberFixture {
+    SMITH("smith@email.com", "smith_password", 20),
+    JOHNSON("johnson@email.com", "johnson_password", 25),
+    WILLIAMS("williams@email.com", "williams_password", 30),
+    BROWN("brown@email.com", "brown_password", 50);
 
-public class MemberFixture {
-    public static Member 회원_생성(String 이메일, String 비밀번호, int 나이) {
-        return new Member(이메일, 비밀번호, 나이);
+    public final String email;
+    public final String password;
+    public final int age;
+
+    MemberFixture(String email, String password, int age) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public int getAge() {
+        return age;
     }
 }
