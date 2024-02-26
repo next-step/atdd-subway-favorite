@@ -98,7 +98,6 @@ public class FavoriteSteps {
         var requestSpecification = new RequestSpecBuilder()
                 .addHeader("Authorization", TOKEN)
                 .build();
-
         return RestAssured
                 .given()
                 .spec(requestSpecification);

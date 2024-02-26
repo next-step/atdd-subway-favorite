@@ -2,10 +2,12 @@ package nextstep.favorite.acceptance;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.line.domain.Color;
 import nextstep.line.presentation.LineRequest;
 import nextstep.line.presentation.SectionRequest;
+import nextstep.member.acceptance.MemberSteps;
 import nextstep.subway.fixture.LineSteps;
 import nextstep.subway.fixture.SectionSteps;
 import nextstep.subway.fixture.StationSteps;
@@ -15,9 +17,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,9 +100,66 @@ public class FavoriteAcceptanceTest {
     }
 
     @Test
+    @DisplayName("노선에 등록되지 않은 역으로 즐겨찾기할 수 없다")
+    public void shouldFailIfFavoriteStationsAreNotExist() {
+
+        // given
+        long UNKNOWN_RATION = Long.MAX_VALUE;
+
+        // when
+        Assertions.assertThrows(
+                AssertionError.class,
+                () -> FavoriteSteps.즐겨찾기_생성한다(강변역, UNKNOWN_RATION));
+    }
+
+    @Test
     @DisplayName("인증되지 않은 멤버의 요청은 UNAUTHORIZED로 응답온다")
     public void shouldFailIfUnauthorizedMemberRequest() {
         FavoriteSteps.미인증된_유저가_즐겨찾기_생성할수없다();
+    }
+
+    
+    @Test
+    @DisplayName("다른 유저의 즐겨찾기를 삭제할 수 없다")
+    public void shouldFail_IfTryOtherMemberFavorite() {
+
+        var TOKEN = 다른_유저의_토큰_생성하기();
+        var requestSpecification = new RequestSpecBuilder()
+                .addHeader("Authorization", TOKEN)
+                .build();
+
+        Map<String, Long> param2 = new HashMap<>();
+        param2.put("source", 강변역);
+        param2.put("target", 건대입구역);
+
+        // given
+        long 다른_유저의_즐겨찾기 = FavoriteSteps.즐겨찾기_생성한다(강변역, 건대입구역);
+
+        RestAssured
+                .given()
+                .spec(requestSpecification)
+                .log().all()
+                .body(param2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/" + 다른_유저의_즐겨찾기)
+                .then().log().all()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .extract()
+                .response();
+    }
+
+    private static String 다른_유저의_토큰_생성하기() {
+        String EMAIL = "otherUser@naver.com";
+        String PASSWORD = "password";
+        int AGE = 12;
+
+        MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
+        Map<String, Object> param = new HashMap<>();
+        param.put("email", EMAIL);
+        param.put("password", PASSWORD);
+        param.put("age", AGE);
+        var TOKEN = "bearer " + MemberSteps.토큰_생성(param);
+        return TOKEN;
     }
 
 

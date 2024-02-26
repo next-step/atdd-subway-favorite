@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import nextstep.favorite.application.exceptions.BadRequestException;
 import nextstep.favorite.application.exceptions.CannotFavoriteStationException;
 import nextstep.favorite.application.exceptions.FavoriteNotFoundException;
 import nextstep.member.MemberNotFoundException;
@@ -39,11 +40,7 @@ public class FavoriteService {
         this.pathService = pathService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
+
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = getMember(loginMember.getEmail());
 
@@ -58,11 +55,7 @@ public class FavoriteService {
         return new FavoriteResponse(saved.getId());
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
+
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = getMember(loginMember.getEmail());
         List<Favorite> favorites = favoriteRepository.findByMember(member);
@@ -75,15 +68,16 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param loginMember
-     * @param id
-     */
+
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = getMember(loginMember.getEmail());
-        favoriteRepository.deleteByMemberAndId(member, id);
+        favoriteRepository.findById(id)
+            .ifPresent(favorite -> {
+                if (!favorite.isOwner(member)) {
+                    throw new BadRequestException("다른 회원의 즐겨찾기를 삭제할 수 없어요.");
+                }
+                favoriteRepository.deleteByMemberAndId(member, id);
+        });
     }
 
     public FavoriteResponse findFavorite(long favoriteId) {
@@ -96,6 +90,7 @@ public class FavoriteService {
                 new StationResponse(favorite.getTarget().getId(), favorite.getTarget().getName())
             );
     }
+
 
     @Transactional(readOnly = true)
     public Member getMember(String email) {
