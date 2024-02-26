@@ -80,6 +80,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    /**
+     * github 토큰 요청, 리소스 조회 요청, 사용자 저장/조회 요청 후 access token 발급
+     */
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
