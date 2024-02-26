@@ -10,17 +10,21 @@ import subway.dto.member.TokenResponse;
 
 @RestController
 public class TokenController {
-    private final TokenService tokenService;
+	private final TokenService tokenService;
 
-    public TokenController(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
+	public TokenController(TokenService tokenService) {
+		this.tokenService = tokenService;
+	}
 
+	@PostMapping("/login/token")
+	public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
+		TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
 
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+		return ResponseEntity.ok(response);
+	}
 
-        return ResponseEntity.ok(response);
-    }
+	@PostMapping("/login/github")
+	public ResponseEntity<TokenResponse> createTokenByGitHub(@RequestBody TokenRequest request) {
+		return ResponseEntity.ok(null);
+	}
 }
