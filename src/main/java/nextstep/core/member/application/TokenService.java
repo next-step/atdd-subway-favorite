@@ -26,7 +26,7 @@ public class TokenService {
     }
 
     public TokenResponse createTokenByGithub(String code) {
-        GithubProfileResponse githubProfileResponse = githubClient.requestMemberInfo(code);
+        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(code);
         Member member = memberService.findOrCreate(githubProfileResponse.getEmail());
 
         return new TokenResponse(jwtTokenProvider.createToken(member.getEmail()));

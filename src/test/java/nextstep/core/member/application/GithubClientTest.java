@@ -24,15 +24,15 @@ public class GithubClientTest {
         class 성공 {
             /**
              * When 코드를 통해 토큰을 요청하고 응답받았고
-             * When    응답받은 토큰을 통해 리소스를 요청하고
-             * When        리소스를 응답받았을 경우
-             * Then 응답받은 리소스를 기반으로 회원 정보를 반환한다.
+             * When    응답받은 토큰을 통해 깃허브 프로필 정보를 요청하고
+             * When        프로필 정보를 응답받았을 경우
+             * Then 응답받은 프로필 정보를 기반으로 회원 정보를 반환한다.
              */
             @Test
             void 회원_정보_반환() {
                 getAllGitHubMembers().forEach(githubMember -> {
                     // when
-                    GithubProfileResponse githubProfileResponse = githubClient.requestMemberInfo(githubMember.getCode());
+                    GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubMember.getCode());
 
                     // then
                     assertThat(githubProfileResponse.getEmail()).isEqualTo(githubMember.getEmail());
