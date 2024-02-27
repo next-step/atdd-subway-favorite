@@ -10,15 +10,14 @@ import org.springframework.web.bind.annotation.*;
 public class GithubTestController {
 	@PostMapping("/github/login/oauth/access_token")
 	public ResponseEntity<GithubAccessTokenResponse> getAccessToken(@RequestBody GithubAccessTokenRequest request) {
-		GithubAccessTokenResponse response = new GithubAccessTokenResponse("accessToken", "", "");
+		String accessToken = GithubAuthFixture.getAccessTokenByCode(request.getCode());
+		GithubAccessTokenResponse response = new GithubAccessTokenResponse(accessToken, "", "");
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/github/user")
 	public ResponseEntity<GithubProfileResponse> getProfile(@RequestHeader("Authorization") String authorization) {
-		String accessToken = authorization.split(" ")[0];
-		//
-		GithubProfileResponse response = new GithubProfileResponse("email@email.com");
+		GithubProfileResponse response = new GithubProfileResponse(GithubAuthFixture.getEmailByCode(authorization));
 		return ResponseEntity.ok(response);
 	}
 }
