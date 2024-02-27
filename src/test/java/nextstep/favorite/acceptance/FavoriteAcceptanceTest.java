@@ -93,7 +93,35 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @Test
     @DisplayName("인증된 회원의 즐겨찾기를 생성하고 조회한다.")
     void 즐겨찾기_생성_조회() {
+        //회원 정보 생성
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
+        Map<String, String> params = new HashMap<>();
+        params.put("email", EMAIL);
+        params.put("password", PASSWORD);
+
+        //회원 정보(이메일)로 토큰 발급 (회원 정보가 없으면 오류 발생)
+        ExtractableResponse<Response> authResponse = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        String accessToken = authResponse.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> createResponse = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, accessToken);
+
+        Assertions.assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        ExtractableResponse<Response> findResponse = FavoriteRestAssuredCRUD.findFavorite(accessToken);
+
+        List<Long> favoriteSourceIds = findResponse.jsonPath().getList("source.id");
+        List<Long> favoriteTargetIds = findResponse.jsonPath().getList("target.id");
+
+        Assertions.assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(favoriteSourceIds).contains(강남역Id);
+        Assertions.assertThat(favoriteTargetIds).contains(양재역Id);
     }
 
     /**
@@ -133,7 +161,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
      */
     @Test
     @DisplayName("인증된 회원의 즐겨찾기를 삭제한다.")
-    void deleteFavorite() {
+    void 즐겨찾기_삭제() {
 
     }
 
@@ -143,6 +171,9 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
      */
     @Test
     @DisplayName("인증되지 않은 회원이 즐겨찾기를 삭제하면 인증 오류가 발생한다.")
+    void 즐겨찾기_삭제_인증오류() {
+
+    }
 
     Long extractResponseId(ExtractableResponse<Response> response) {
         return response.body().jsonPath().getLong("id");
