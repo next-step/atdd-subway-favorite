@@ -76,3 +76,27 @@ Keep-Alive: timeout=60
 Connection: keep-alive
 Date: Mon, 22 Mar 2021 14:27:37 GMT
 ~~~
+
+### 2. 깃헙 로그인 구현
+- 깃허브를 이용한 로그인 구현(토큰 발행)
+- 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
+- GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
+
+Request
+~~~
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "code": "qwerasdfzxvcqwerasdfzxcv"
+}
+~~~
+Response
+- accessToken는 깃헙으로부터 받아온게 아니라 subway 애플리케이션에서 생성한 토큰
+- 아이디/패스워드를 이용한 로그인 시 응답받는 토큰과 동일한 토큰
+~~~
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
+}
+~~~
