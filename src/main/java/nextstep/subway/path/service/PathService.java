@@ -6,7 +6,7 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.controller.dto.PathResponse;
 import nextstep.subway.path.exception.PathException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.service.StationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,21 +17,19 @@ import java.util.stream.Collectors;
 @Service
 public class PathService {
 
-    private final StationRepository stationRepository;
+    private final StationService stationService;
     private final LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
-        this.stationRepository = stationRepository;
+    public PathService(StationService stationService, LineRepository lineRepository) {
+        this.stationService = stationService;
         this.lineRepository = lineRepository;
     }
 
     public PathResponse getPaths(Long sourceStationId, Long targetStationId) {
         validate(sourceStationId, targetStationId);
 
-        Station source = stationRepository.findById(sourceStationId)
-            .orElseThrow(() -> new PathException("출발역을 찾을 수 없습니다."));
-        Station target = stationRepository.findById(targetStationId)
-            .orElseThrow(() -> new PathException("도착역을 찾을 수 없습니다."));
+        Station source = stationService.findByStationId(sourceStationId);
+        Station target = stationService.findByStationId(targetStationId);
 
         return new PathFinder().findPath(findAllSections(), source, target);
     }

@@ -1,13 +1,13 @@
 package nextstep.favorite.application.dto;
 
-public class FavoriteRequest {
+public class FavoriteCreateRequest {
     private Long source;
     private Long target;
 
-    public FavoriteRequest() {
+    public FavoriteCreateRequest() {
     }
 
-    public FavoriteRequest(Long source, Long target) {
+    public FavoriteCreateRequest(Long source, Long target) {
         this.source = source;
         this.target = target;
     }
