@@ -7,26 +7,31 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import subway.acceptance.AcceptanceTest;
 import subway.dto.member.GithubProfileResponse;
 import subway.fixture.member.GithubResponses;
 import subway.member.GithubClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class GithubClientTest extends AcceptanceTest {
+class GithubClientTest {
 	@Autowired
 	private GithubClient githubClient;
 
+	// todo: DEFINED_PORT가 아닌 RANDOM_PORT로 설정해보기
 	// @BeforeEach
-	// public void setUp(ConfigurableApplicationContext context) {
+	// public void setUp(@Autowired ConfigurableApplicationContext context) {
 	// 	int port = super.port;
+	//
 	// 	Map<String, String> properties =
 	// 		Map.of(
-	// 			"github.access-token.url",
-	// 			String.format("%s%d%s", "http://localhost:", port, "/github/login/oauth/access_token")
+	// 			"github.url.access-token",
+	// 			String.format("%s%d%s", "http://localhost:", port, "/github/login/oauth/access_token"),
+	// 			"github.url.profile",
+	// 			String.format("%s%d%s", "http://localhost:", port, "/github/user"),
+	// 			"github.client.id", "client-id",
+	// 			"github.client.secret", "client-secret"
 	// 		);
 	//
-	// 	TestPropertyValues.of(properties).applyTo(context.getEnvironment());
+	// 	TestPropertyValues.of(properties).applyTo(context);
 	// }
 
 	@DisplayName("github code로 accessToken 발급 테스트")
