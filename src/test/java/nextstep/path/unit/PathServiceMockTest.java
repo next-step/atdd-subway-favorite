@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static nextstep.utils.fixture.LineFixture.신분당선_엔티티;
@@ -54,8 +53,8 @@ public class PathServiceMockTest {
         List<Line> 모든_노선 = List.of(신분당선, 이호선);
         Path 예상_경로 = new Path(List.of(출발역, 강남역_엔티티, 도착역), 5);
 
-        when(stationRepository.findById(출발역ID)).thenReturn(Optional.of(출발역));
-        when(stationRepository.findById(도착역ID)).thenReturn(Optional.of(도착역));
+        when(stationRepository.findByIdOrFail(출발역ID)).thenReturn(출발역);
+        when(stationRepository.findByIdOrFail(도착역ID)).thenReturn(도착역);
         when(lineRepository.findAll()).thenReturn(모든_노선);
         when(pathFinder.findShortestPathAndItsDistance(anyList(), eq(출발역), eq(도착역))).thenReturn(예상_경로);
 
@@ -76,8 +75,8 @@ public class PathServiceMockTest {
                 .collect(Collectors.toList())
         ).containsExactlyElementsOf(경로_역들_이름);
 
-        verify(stationRepository, times(1)).findById(출발역ID);
-        verify(stationRepository, times(1)).findById(도착역ID);
+        verify(stationRepository, times(1)).findByIdOrFail(출발역ID);
+        verify(stationRepository, times(1)).findByIdOrFail(도착역ID);
         verify(lineRepository, times(1)).findAll();
     }
 }

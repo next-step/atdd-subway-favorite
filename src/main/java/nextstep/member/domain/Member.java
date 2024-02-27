@@ -13,7 +13,7 @@ public class Member {
     private String password;
     private Integer age;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {

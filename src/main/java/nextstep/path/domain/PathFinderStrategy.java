@@ -2,6 +2,8 @@ package nextstep.path.domain;
 
 import nextstep.line.domain.Line;
 import nextstep.station.domain.Station;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 

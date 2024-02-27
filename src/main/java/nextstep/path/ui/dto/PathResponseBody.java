@@ -23,8 +23,6 @@ public class PathResponseBody {
     }
 
     public static PathResponseBody create(PathDto pathDto) {
-        return new PathResponseBody(
-                StationResponseBody.create(pathDto.getStations()),
-                pathDto.getDistance());
+        return new PathResponseBody(StationResponseBody.from(pathDto.getStations()), pathDto.getDistance());
     }
 }

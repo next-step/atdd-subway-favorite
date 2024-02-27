@@ -25,4 +25,6 @@ public class StationFixture {
     public static Station 역삼역_엔티티 = new Station(6L, "역삼역");
     public static Station 선릉역_엔티티 = new Station(7L, "선릉역");
     public static Station 삼성역_엔티티 = new Station(8L, "삼성역");
+    public static Station 한남역_엔티티 = new Station(9L, "한남역");
+    public static Station 서빙고역_엔티티 = new Station(10L, "한남역");
 }

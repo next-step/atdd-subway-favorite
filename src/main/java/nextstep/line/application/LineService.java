@@ -33,8 +33,8 @@ public class LineService {
 
     @Transactional
     public LineDto saveLine(AddLineCommand command) {
-        Station upStation = findStationByIdOrFail(command.getUpStationId());
-        Station downStation = findStationByIdOrFail(command.getDownStationId());
+        Station upStation = stationRepository.findByIdOrFail(command.getUpStationId());
+        Station downStation = stationRepository.findByIdOrFail(command.getDownStationId());
         Line line = lineRepository.save(Line.create(
                 command.getName(),
                 command.getColor(),
@@ -68,8 +68,8 @@ public class LineService {
 
     @Transactional
     public SectionDto addSection(AddSectionCommand command) {
-        Station upStation = findStationByIdOrFail(command.getUpStationId());
-        Station downStation = findStationByIdOrFail(command.getDownStationId());
+        Station upStation = stationRepository.findByIdOrFail(command.getUpStationId());
+        Station downStation = stationRepository.findByIdOrFail(command.getDownStationId());
 
         Line line = findLineByIdOrFail(command.getLineId());
 
@@ -87,9 +87,5 @@ public class LineService {
 
     private Line findLineByIdOrFail(Long id) {
         return lineRepository.findById(id).orElseThrow(LineNotFoundException::new);
-    }
-
-    private Station findStationByIdOrFail(Long id) {
-        return stationRepository.findById(id).orElseThrow(StationNotFoundException::new);
     }
 }
