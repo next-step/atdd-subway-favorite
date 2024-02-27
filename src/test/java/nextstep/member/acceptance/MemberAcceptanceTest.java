@@ -1,12 +1,12 @@
 package nextstep.member.acceptance;
 
-import nextstep.utils.AcceptanceTest;
+import nextstep.common.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.MemberSteps.*;
-import static nextstep.member.acceptance.TokenSteps.인증정보_생성_요청;
+import static nextstep.member.utils.steps.MemberSteps.*;
+import static nextstep.member.utils.steps.TokenSteps.인증정보_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {

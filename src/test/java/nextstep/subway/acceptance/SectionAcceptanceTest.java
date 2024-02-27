@@ -2,8 +2,8 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.dto.LineResponse;
-import nextstep.subway.dto.SectionResponse;
+import nextstep.subway.application.dto.LineResponse;
+import nextstep.subway.application.dto.SectionResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.utils.subway.LineSteps.노선_단건_조회_요청;
-import static nextstep.utils.subway.LineSteps.노선_생성_요청;
-import static nextstep.utils.subway.SectionSteps.*;
-import static nextstep.utils.subway.StationFixture.*;
+import static nextstep.subway.utils.steps.LineSteps.노선_단건_조회_요청;
+import static nextstep.subway.utils.steps.LineSteps.노선_생성_요청;
+import static nextstep.subway.utils.steps.SectionSteps.*;
+import static nextstep.subway.utils.fixture.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

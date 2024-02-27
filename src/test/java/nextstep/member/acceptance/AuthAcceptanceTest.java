@@ -3,10 +3,10 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
-import nextstep.utils.AcceptanceTest;
-import nextstep.utils.member.GithubAuthFixture;
+import nextstep.member.domain.entity.Member;
+import nextstep.member.domain.repository.MemberRepository;
+import nextstep.common.AcceptanceTest;
+import nextstep.member.utils.fixture.GithubAuthFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,10 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.member.acceptance.MemberSteps.회원_삭제_요청;
-import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
-import static nextstep.member.acceptance.TokenSteps.깃헙_로그인_요청;
-import static nextstep.member.acceptance.TokenSteps.인증정보_생성_요청;
+import static nextstep.member.utils.steps.MemberSteps.회원_삭제_요청;
+import static nextstep.member.utils.steps.MemberSteps.회원_생성_요청;
+import static nextstep.member.utils.steps.TokenSteps.깃헙_로그인_요청;
+import static nextstep.member.utils.steps.TokenSteps.인증정보_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)

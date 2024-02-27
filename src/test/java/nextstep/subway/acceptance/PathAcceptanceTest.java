@@ -9,13 +9,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import static nextstep.utils.subway.LineSteps.노선_생성_요청;
-import static nextstep.utils.subway.PathFixture.*;
-import static nextstep.utils.subway.PathSteps.최단_경로_조회_요청;
-import static nextstep.utils.subway.SectionSteps.구간_생성_요청;
+import static nextstep.subway.utils.steps.LineSteps.노선_생성_요청;
+import static nextstep.subway.utils.fixture.PathFixture.*;
+import static nextstep.subway.utils.steps.PathSteps.최단_경로_조회_요청;
+import static nextstep.subway.utils.steps.SectionSteps.구간_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 관련 기능")

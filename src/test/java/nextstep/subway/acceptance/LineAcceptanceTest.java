@@ -2,14 +2,14 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.utils.subway.LineSteps;
+import nextstep.subway.utils.steps.LineSteps;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.utils.subway.LineSteps.노선_생성_요청;
-import static nextstep.utils.subway.StationFixture.*;
+import static nextstep.subway.utils.steps.LineSteps.노선_생성_요청;
+import static nextstep.subway.utils.fixture.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")

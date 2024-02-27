@@ -1,6 +1,6 @@
 package nextstep.subway.domain.entity;
 
-import nextstep.member.domain.Member;
+import nextstep.member.domain.entity.Member;
 
 import javax.persistence.*;
 import java.util.Objects;
