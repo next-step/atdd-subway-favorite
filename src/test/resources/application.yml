@@ -1,10 +1,10 @@
 spring:
   profiles:
-    active: dev # defualt
+    active: test # defualt
     group:
-      dev:
+      test:
         - common
-        - dev
+        - test
 
 ---
 spring:
@@ -26,11 +26,10 @@ spring:
       org.hibernate.type.descriptor.sql: trace
 
 ---
-
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: test
 
 security:
   jwt:
@@ -39,7 +38,7 @@ security:
       expire-length: 3600000
 
 github:
-  base-url: https://github.com/
+  base-url: http://localhost:8080/github/
   client:
     id: client-id
     secret: github-client-secret

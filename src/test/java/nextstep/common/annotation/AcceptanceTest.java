@@ -10,6 +10,5 @@ import java.lang.annotation.RetentionPolicy;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Retention(RetentionPolicy.RUNTIME)
 @Sql(value = "/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@ActiveProfiles("test")
 public @interface AcceptanceTest {
 }
