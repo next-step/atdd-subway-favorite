@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class TokenController {
     private TokenService tokenService;
@@ -21,5 +23,11 @@ public class TokenController {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> githubLogin(@RequestBody Map<String, String> codeMap) {
+        TokenResponse tokenResponse = tokenService.doGithubLogin(codeMap.get("code"));
+        return ResponseEntity.ok(tokenResponse);
     }
 }

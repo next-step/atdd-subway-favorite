@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.utils.GithubResponses.사용자2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -78,5 +79,83 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * github 토큰 요청, 리소스 조회 요청, 사용자 저장/조회 요청 후 access token 발급
+     */
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", "code");
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    /**
+     * when 가입되지 않은 사용자가 github login을 시도하면
+     * then accessToken으로 해당 회원 정보 조회가 가능하다.
+     */
+    @DisplayName("Github login_신규 회원")
+    @Test
+    void github_login() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", 사용자2.getCode());
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        String accessToken = response.jsonPath().getString("accessToken");
+        assertThat(accessToken).isNotBlank();
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(사용자2.getEmail());
+    }
+
+    /**
+     * given 기존 사용자 한명을 저장하고
+     * when 해당 사용자가 github login을 시도하면
+     * then accessToken으로 해당 회원 정보 조회가 가능하다.
+     */
+    @DisplayName("Github login_기존 회원")
+    @Test
+    void github_login_exist_user() {
+        memberRepository.save(new Member(사용자2.getEmail(), null, 20));
+
+        Map<String, String> params = new HashMap<>();
+        params.put("code", 사용자2.getCode());
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        String accessToken = response.jsonPath().getString("accessToken");
+        assertThat(accessToken).isNotBlank();
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(사용자2.getEmail());
     }
 }

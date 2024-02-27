@@ -2,7 +2,6 @@ package nextstep.favorite.domain;
 
 import nextstep.subway.line.Line;
 import nextstep.subway.path.PathFinder;
-import nextstep.subway.path.PathResponse;
 import nextstep.subway.station.Station;
 
 import javax.persistence.*;
@@ -29,12 +28,16 @@ public class Favorite {
     }
 
     public Favorite(Long id, Long memberId, Station sourceStation, Station targetStation, List<Line> lines) {
-        PathResponse pathResponse = new PathFinder(lines).shortestPath(sourceStation, targetStation);
+        isConnected(lines, sourceStation, targetStation);
 
         this.id = id;
         this.memberId = memberId;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+    }
+
+    private void isConnected(List<Line> lines, Station sourceStation, Station targetStation) {
+        new PathFinder(lines).isConnected(sourceStation, targetStation);
     }
 
     public Long getId() {

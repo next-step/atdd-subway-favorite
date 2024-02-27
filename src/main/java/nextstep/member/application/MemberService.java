@@ -43,4 +43,8 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }
+
+    public Member findMemberByEmailForGithub(String email) {
+        return memberRepository.findByEmail(email).orElse(null);
+    }
 }

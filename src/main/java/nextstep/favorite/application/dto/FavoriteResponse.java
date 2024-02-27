@@ -3,9 +3,6 @@ package nextstep.favorite.application.dto;
 import nextstep.favorite.domain.Favorite;
 import nextstep.subway.station.StationResponse;
 
-/**
- * TODO: StationResponse를 포함하는 클래스로 만듭니다.
- */
 public class FavoriteResponse {
     private Long id;
     private StationResponse source;
