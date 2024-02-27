@@ -4,46 +4,51 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
-import java.util.Set;
+import nextstep.subway.domain.Line;
 import nextstep.subway.domain.Path;
 import nextstep.subway.domain.PathFinder;
-import nextstep.subway.domain.SectionEdge;
+import nextstep.subway.domain.SectionEdges;
+import nextstep.subway.domain.Station;
 import nextstep.subway.domain.exception.PathException;
+import nextstep.subway.unit.Fixtures.LineFixture;
+import nextstep.subway.unit.Fixtures.StationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class PathFinderTest {
 
     private PathFinder pathFinder;
-    private Long 신사역;
-    private Long 강남역;
-    private Long 양재역;
-    private Long 양재시민의숲역;
-    private Long 잠원역;
-    private Long 교대역;
-    private Long 북한역;
-    private Long 남한역;
+    private Station 신사역;
+    private Station 강남역;
+    private Station 양재역;
+    private Station 양재시민의숲역;
+    private Station 잠원역;
+    private Station 교대역;
+    private Station 북한역;
+    private Station 남한역;
 
 
     @BeforeEach
     void setUp() {
-        신사역 = 1L;
-        강남역 = 2L;
-        양재역 = 3L;
-        양재시민의숲역 = 4L;
-        잠원역 = 5L;
-        교대역 = 6L;
-        북한역 = 7L;
-        남한역 = 8L;
-        pathFinder = new PathFinder(Set.of(
-                new SectionEdge(신사역, 강남역, 10),
-                new SectionEdge(강남역, 양재역, 10),
-                new SectionEdge(양재역, 양재시민의숲역, 10),
-                new SectionEdge(신사역, 잠원역, 10),
-                new SectionEdge(잠원역, 교대역, 10),
-                new SectionEdge(북한역, 남한역, 10),
-                new SectionEdge(잠원역, 교대역, 10)
-        ));
+        신사역 = StationFixture.station(1L, "신사역");
+        강남역 = StationFixture.station(2L, "강남역");
+        양재역 = StationFixture.station(3L, "양재역");
+        양재시민의숲역 = StationFixture.station(4L, "양재시민의숲역");
+        잠원역 = StationFixture.station(5L, "잠원역");
+        교대역 = StationFixture.station(6L, "교대역");
+        북한역 = StationFixture.station(7L, "북한역");
+        남한역 = StationFixture.station(8L, "남한역");
+        Line 신분당선 = LineFixture.line(1L, "신분당선", "RED");
+        Line 삼호선 = LineFixture.line(2L, "삼호선", "ORANGE");
+        Line 한국선 = LineFixture.line(3L, "한국선", "BLUE");
+        신분당선.addSection(신사역, 강남역, 10);
+        신분당선.addSection(강남역, 양재역, 10);
+        신분당선.addSection(양재역, 양재시민의숲역, 10);
+        삼호선.addSection(신사역, 잠원역, 10);
+        삼호선.addSection(잠원역, 교대역, 10);
+        한국선.addSection(북한역, 남한역, 10);
+        SectionEdges edges = new SectionEdges(List.of(신분당선, 삼호선, 한국선));
+        pathFinder = new PathFinder(edges);
     }
 
     /**
@@ -53,11 +58,12 @@ class PathFinderTest {
     @Test
     void findPath() {
         // given
-        Path path = pathFinder.findShortedPath(양재시민의숲역, 교대역);
+        Path path = pathFinder.findShortedPath(양재시민의숲역.getId(), 교대역.getId());
         // when
         List<Long> shortedPath = path.getVertexList();
         // then
-        assertThat(shortedPath).containsExactly(양재시민의숲역, 양재역, 강남역, 신사역, 잠원역, 교대역);
+        assertThat(shortedPath).containsExactly(양재시민의숲역.getId(), 양재역.getId(), 강남역.getId(),
+            신사역.getId(), 잠원역.getId(), 교대역.getId());
         assertThat(path.getDistance()).isEqualTo(50);
     }
 
@@ -70,8 +76,8 @@ class PathFinderTest {
         // given
         // when
         // then
-        assertThatThrownBy(() -> pathFinder.findShortedPath(양재시민의숲역, 양재시민의숲역))
-                .isInstanceOf(PathException.PathSourceTargetSameException.class);
+        assertThatThrownBy(() -> pathFinder.findShortedPath(양재시민의숲역.getId(), 양재시민의숲역.getId()))
+            .isInstanceOf(PathException.PathSourceTargetSameException.class);
     }
 
     /**
@@ -83,8 +89,8 @@ class PathFinderTest {
         // given
         // when
         // then
-        assertThatThrownBy(() -> pathFinder.findShortedPath(양재시민의숲역, 9L))
-                .isInstanceOf(PathException.PathNotFoundException.class);
+        assertThatThrownBy(() -> pathFinder.findShortedPath(양재시민의숲역.getId(), 9L))
+            .isInstanceOf(PathException.PathNotFoundException.class);
     }
 
     /**
@@ -96,7 +102,7 @@ class PathFinderTest {
         // given
         // when
         // then
-        assertThatThrownBy(() -> pathFinder.findShortedPath(북한역, 잠원역))
-                .isInstanceOf(PathException.SourceTargetNotConnectedException.class);
+        assertThatThrownBy(() -> pathFinder.findShortedPath(북한역.getId(), 잠원역.getId()))
+            .isInstanceOf(PathException.SourceTargetNotConnectedException.class);
     }
 }
