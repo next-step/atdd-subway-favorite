@@ -7,6 +7,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -44,7 +46,7 @@ public class MemberService {
                 .orElseThrow(RuntimeException::new);
     }
 
-    public Member findMemberByEmailForGithub(String email) {
-        return memberRepository.findByEmail(email).orElse(null);
+    public Optional<Member> findMemberByEmailForGithub(String email) {
+        return memberRepository.findByEmail(email);
     }
 }

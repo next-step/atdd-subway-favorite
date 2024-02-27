@@ -8,6 +8,8 @@ import nextstep.member.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class TokenService {
     private MemberService memberService;
@@ -34,15 +36,15 @@ public class TokenService {
     public TokenResponse doGithubLogin(String code) {
         String token = githubClient.requestGithubToken(code);
         GithubProfileResponse response = githubClient.requestUserProfile(token);
-        Member member = memberService.findMemberByEmailForGithub(response.getEmail());
+        Optional<Member> member = memberService.findMemberByEmailForGithub(response.getEmail());
 
-        if (member == null){
+        if (member.isEmpty()){
             memberService.createMember(new MemberRequest(response.getEmail(), null, response.getAge()));
             String accessToken = jwtTokenProvider.createToken(response.getEmail());
             return new TokenResponse(accessToken);
         }
 
-        String accessToken = jwtTokenProvider.createToken(member.getEmail());
+        String accessToken = jwtTokenProvider.createToken(member.get().getEmail());
         return new TokenResponse(accessToken);
     }
 }
