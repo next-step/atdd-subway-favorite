@@ -26,11 +26,4 @@ public class AuthSteps {
         return response.jsonPath().getString("accessToken");
     }
 
-    public static ExtractableResponse<Response> 내_정보_요청(String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-    }
 }
