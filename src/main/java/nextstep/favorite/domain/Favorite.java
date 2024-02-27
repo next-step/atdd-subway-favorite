@@ -18,7 +18,7 @@ public class Favorite {
 
     private Long target;
 
-    private Favorite() {
+    public Favorite() {
     }
 
     public Favorite(Long memberId, Long source, Long target) {
@@ -29,5 +29,17 @@ public class Favorite {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Long getSource() {
+        return source;
+    }
+
+    public Long getTarget() {
+        return target;
     }
 }
