@@ -23,14 +23,14 @@ public class GithubClient {
     private String clientSecret;
 
     public GithubProfileResponse requestGithubProfile(String code) {
-        return requestGithubProfile(requestGithubToken(code), new RestTemplate());
+        return requestGithubUserInfo(requestGithubToken(code));
     }
 
-    private GithubProfileResponse requestGithubProfile(String accessToken, RestTemplate restTemplate) {
+    private GithubProfileResponse requestGithubUserInfo(String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.AUTHORIZATION, accessToken);
 
-        return restTemplate
+        return new RestTemplate()
                 .exchange(baseUrl + "user",
                         HttpMethod.GET,
                         new HttpEntity<>(httpHeaders),
