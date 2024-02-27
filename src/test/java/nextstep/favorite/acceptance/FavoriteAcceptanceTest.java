@@ -162,4 +162,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response2.statusCode()).isEqualTo(200);
         assertThat(response2.body().jsonPath().getList("id")).isNotEmpty();
     }
+
+    /**
+     * Given 즐겨찾기가 주어진다.
+     * When 즐겨찾기를 삭제한다.
+     * Then 즐겨찾기가 삭제된다.
+     */
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(accessToken, 강남역, 교대역);
+        String location = response.header("Location");
+        assertThat("/favorites/1").isEqualTo(location);
+        // when
+        ExtractableResponse<Response> result = RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when()
+            .delete(location)
+            .then().log().all().extract();
+        // then
+        assertThat(result.statusCode()).isEqualTo(204);
+    }
 }
