@@ -167,7 +167,19 @@ host: localhost:8080
 
 --- 
 ## TODO
-- [ ] 인수테스트 작성
-- [ ] GithubClientTest 작성
-    - [ ] code를 보내면 github token 응답
-    - [ ] token을 보내면 profile 응답
+- [x] 인수테스트 작성
+  - Scenario: 이미 가입된 회원으로 깃헙 로그인 성공
+    ````
+    Given 회원가입으로 회원을 생성                 
+    When 깃헙 로그인 요청 시                    
+    Then accessToken이 올바르게 생성된다.
+    ````
+  - Scenario: 가입 안된 회원으로 깃헙 로그인 성공
+    ````
+    Given 존재하지 않는 회원으로         
+    When 깃헙 로그인 요청 시           
+    Then accessToken을 확인할 수 있다.
+    ````
+- [x] GithubClientTest 작성
+    - [x] code를 보내면 github token 응답
+    - [x] token을 보내면 profile 응답

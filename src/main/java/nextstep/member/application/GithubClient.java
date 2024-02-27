@@ -19,7 +19,7 @@ public class GithubClient {
 	}
 
 	public String requestGithubToken(String code) {
-		GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(code, githubConfigProperties.getClientId(), githubConfigProperties.getClientSecret());
+		GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(githubConfigProperties.getClientId(), githubConfigProperties.getClientSecret(), code);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);

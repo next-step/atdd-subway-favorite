@@ -6,7 +6,7 @@ import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.utils.RestApiRequest;
 
-public class LoginSteps {
+public class TokenSteps {
 	private static final String TOKEN_API_URL = "/login";
 	private static final RestApiRequest<TokenRequest> apiRequest = new RestApiRequest<>();
 	private static final RestApiRequest<GithubAccessTokenRequest> githubApiRequest = new RestApiRequest<>();
