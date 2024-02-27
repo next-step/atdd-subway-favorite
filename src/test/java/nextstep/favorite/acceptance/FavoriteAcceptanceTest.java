@@ -102,12 +102,43 @@ public class FavoriteAcceptanceTest {
      * then 즐겨찾기 조회에서 추가된 즐겨찾기를 확인할 수 있다
      */
     @DisplayName("즐겨찾기 생성")
-    @Test
-    void createFavoritePaths() {
-        ExtractableResponse<Response> response = createFavorite(accessToken, 강남역, 논현역);
+    @Nested
+    class 즐겨찾기_생성 {
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header(HttpHeaders.LOCATION)).isNotEmpty();
+        @DisplayName("로그인이 되어있고, 올바른 출발역과 도착역이 주어지면 즐겨찾기 생성에 성공한다")
+        @Test
+        void createFavoritePaths() {
+            ExtractableResponse<Response> response = createFavorite(accessToken, 강남역, 논현역);
+
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            assertThat(response.header(HttpHeaders.LOCATION)).isNotEmpty();
+        }
+
+        @DisplayName("존재하지 않는 출발역 혹은 도착역이 주어지면, 즐겨찾기 생성에 실패한다")
+        @Test
+        void failCreateFavoriteIfNotExistsStation() {
+            ExtractableResponse<Response> response = createFavorite(accessToken, 강남역, 없는역);
+
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        }
+
+        @DisplayName("주어진 출발역과 도착역이 연결되어있지 않으면, 즐겨찾기 생성에 실패한다")
+        @Test
+        void failCreateFavoriteIfNotConnected() {
+            ExtractableResponse<Response> response = createFavorite(accessToken, 강남역, 수원역);
+
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @DisplayName("올바른 토큰 정보가 주어지지 않는다면, 즐겨찾기 생성에 실패한다")
+        @Test
+        void failCreateFavoriteIfNotLogin() {
+            String fakeToken = "diejslfkjeis;aldjkslieediajfbwbfzjueu2l34jehfqw212o";
+
+            ExtractableResponse<Response> response = createFavorite(fakeToken, 강남역, 논현역);
+
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        }
     }
 
     /**
@@ -145,7 +176,7 @@ public class FavoriteAcceptanceTest {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         }
 
-        @DisplayName("주어진 즐겨찾기 식별자로 즐겨찾기 정보를 찾을 수 없으면 삭제에 실패한다")
+        @DisplayName("주어진 즐겨찾기 식별자와 토큰 정보로 즐겨찾기 정보를 찾을 수 없으면 삭제에 실패한다")
         @Test
         void deleteFailWithNotExistFavoriteId() {
             String location = createFavoriteWithSuccess(accessToken, 출발역, 도착역).header(HttpHeaders.LOCATION);
