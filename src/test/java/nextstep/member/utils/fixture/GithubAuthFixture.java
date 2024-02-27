@@ -3,17 +3,19 @@ package nextstep.member.utils.fixture;
 import java.util.Arrays;
 
 public enum GithubAuthFixture {
-	사용자1("code1", "accessToken1", "email1@email.com"),
-	사용자2("code2", "accessToken2", "email2@email.com");
+	사용자1("code1", "accessToken1", "email1@email.com", "password1"),
+	사용자2("code2", "accessToken2", "email2@email.com", "password2");
 
 	private String code;
 	private String accessToken;
 	private String email;
+	private String password;
 
-	GithubAuthFixture(String code, String accessToken, String email) {
+	GithubAuthFixture(String code, String accessToken, String email, String password) {
 		this.code = code;
 		this.accessToken = accessToken;
 		this.email = email;
+		this.password = password;
 	}
 
 	public String getCode() {
@@ -26,6 +28,10 @@ public enum GithubAuthFixture {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	public static String getAccessTokenByCode(String code) {

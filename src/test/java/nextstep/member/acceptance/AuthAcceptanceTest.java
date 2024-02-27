@@ -71,14 +71,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void 가입됭_회원_깃헙_로그인() {
         // given
         GithubAuthFixture 회원 = GithubAuthFixture.사용자1;
-        회원_생성_요청(회원.getEmail(), "password", 10);
+        회원_생성_요청(회원.getEmail(), 회원.getPassword(), 10);
 
         // when
         ExtractableResponse<Response> response = 깃헙_로그인_요청(회원.getCode());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        String accessToken = 인증정보_생성_요청(회원.getEmail(), "password").jsonPath().getString("accessToken");
+        String accessToken = 인증정보_생성_요청(회원.getEmail(), 회원.getPassword()).jsonPath().getString("accessToken");
         assertThat(response.jsonPath().getString("accessToken")).isEqualTo(accessToken);
     }
 
@@ -93,7 +93,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void 미가입_회원_깃헙_로그인() {
         // given
         GithubAuthFixture 회원 = GithubAuthFixture.사용자2;
-        var createResponse = 회원_생성_요청(회원.getEmail(), "password", 10);
+        var createResponse = 회원_생성_요청(회원.getEmail(), 회원.getPassword(), 10);
         회원_삭제_요청(createResponse);
 
         // when
@@ -101,7 +101,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        String accessToken = 인증정보_생성_요청(회원.getEmail(), "").jsonPath().getString("accessToken");
+        String accessToken = 인증정보_생성_요청(회원.getEmail(), 회원.getPassword()).jsonPath().getString("accessToken");
         assertThat(response.jsonPath().getString("accessToken")).isEqualTo(accessToken);
     }
 }
