@@ -7,6 +7,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.dto.FavoriteSimpleResponse;
 import nextstep.favorite.application.exception.FavoriteException.NotCreatedException;
+import nextstep.favorite.application.exception.FavoriteException.NotFoundException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
@@ -40,12 +41,6 @@ public class FavoriteService {
         this.lineRepository = lineRepository;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     * @return
-     */
     @Transactional
     public FavoriteSimpleResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
@@ -63,11 +58,6 @@ public class FavoriteService {
         return new FavoriteSimpleResponse(favorite.getId());
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = memberRepository.findByEmail(loginMember.getEmail())
@@ -87,12 +77,12 @@ public class FavoriteService {
         }).collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    @Transactional
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail())
+            .orElseThrow(NotCreatedException::new);
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
+            .orElseThrow(NotFoundException::new);
+        favoriteRepository.delete(favorite);
     }
 }
