@@ -4,9 +4,7 @@ import java.util.Arrays;
 
 public enum GithubAuthFixture {
 	사용자1("code1", "accessToken1", "email1@email.com"),
-	사용자2("code2", "accessToken2", "email2@email.com"),
-	사용자3("code3", "accessToken3", "email3@email.com"),
-	사용자4("code4", "accessToken4", "email4@email.com");
+	사용자2("code2", "accessToken2", "email2@email.com");
 
 	private String code;
 	private String accessToken;

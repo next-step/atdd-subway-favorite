@@ -2,6 +2,7 @@ package nextstep.member.unit;
 
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.utils.member.GithubAuthFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,21 +16,19 @@ public class GithubClientTest {
 	@Autowired
 	private GithubClient githubClient;
 
+	private GithubAuthFixture 회원 = GithubAuthFixture.사용자1;
+
 	@Test
 	void 깃헙_토큰_요청() {
-		String code = "code";
+		String githubToken = githubClient.requestGithubToken(회원.getCode());
 
-		String githubToken = githubClient.requestGithubToken(code);
-
-		assertThat(githubToken).isEqualTo("accessToken");
+		assertThat(githubToken).isEqualTo(회원.getAccessToken());
 	}
 
 	@Test
 	void 깃헙_프로필_요청() {
-		String accessToken = "accessToken";
+		GithubProfileResponse response = githubClient.requestGithubProfile(회원.getAccessToken());
 
-		GithubProfileResponse response = githubClient.requestGithubProfile(accessToken);
-
-		assertThat(response.getEmail()).isEqualTo("email@email.com");
+		assertThat(response.getEmail()).isEqualTo(회원.getEmail());
 	}
 }
