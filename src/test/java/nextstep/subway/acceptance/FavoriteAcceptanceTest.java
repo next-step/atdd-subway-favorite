@@ -2,18 +2,18 @@ package nextstep.subway.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.utils.subway.LineSteps;
+import nextstep.subway.utils.steps.LineSteps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
-import static nextstep.member.acceptance.TokenSteps.인증정보_생성_요청;
-import static nextstep.utils.subway.FavoriteSteps.*;
-import static nextstep.utils.subway.StationSteps.역_삭제_요청;
-import static nextstep.utils.subway.StationSteps.역_생성_요청;
+import static nextstep.member.utils.steps.MemberSteps.회원_생성_요청;
+import static nextstep.member.utils.steps.TokenSteps.인증정보_생성_요청;
+import static nextstep.subway.utils.steps.FavoriteSteps.*;
+import static nextstep.subway.utils.steps.StationSteps.역_삭제_요청;
+import static nextstep.subway.utils.steps.StationSteps.역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")

@@ -1,6 +1,6 @@
 package nextstep.subway.domain.entity;
 
-import nextstep.subway.dto.SectionResponse;
+import nextstep.subway.application.dto.SectionResponse;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

@@ -1,6 +1,6 @@
 package nextstep.member.application.dto;
 
-import nextstep.member.domain.Member;
+import nextstep.member.domain.entity.Member;
 
 public class MemberRequest {
     private String email;

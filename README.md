@@ -1,6 +1,6 @@
 # 🚀 즐겨찾기 기능 완성
 
----
+--- 
 
 ## 1. 즐겨 찾기 기능 인수 테스트 작성
 ### -  즐겨찾기 생성 API
@@ -133,11 +133,53 @@ Date: Mon, 22 Mar 2021 14:27:37 GMT
 - [x] 인수테스트 작성
 - [x] 단위테스트
 - [x] api 구현
-- [ ] 인증에 따른 개인 별 즐겨찾기 관리 로직 추가가
+- [x] 인증에 따른 개인 별 즐겨찾기 관리 로직 추가가
   - [x] 시나리오 추가
     - Scenario: 인증정보 없이 즐겨찾기를 생성, 조회, 삭제 시 실패한다.
       ````
       When 인증정보 없이 즐겨찾기를 생성, 조회, 삭제 할 경우        
       Then "인증정보가 존재하지 않습니다."라는 메시지를 반환한다.
       ````  
-  - [ ] 인수테스트 작성   
+  - [x] 인수테스트 작성   
+
+---
+# 🚀 깃헙 로그인 구현
+
+---
+## 1. 깃헙 로그인 API
+````
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "code": "qwerasdfzxvcqwerasdfzxcv"
+}
+````
+````
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
+}
+````
+- code 별 응답 response
+  - 매번 실제 깃헙 서비스에 요청을 보낼 수 없으니 어떤 코드로 요청이 오면 정해진 response를 응답하는 구조를 만든다.
+
+
+--- 
+## TODO
+- [x] 인수테스트 작성
+  - Scenario: 이미 가입된 회원으로 깃헙 로그인 성공
+    ````
+    Given 회원가입으로 회원을 생성                 
+    When 깃헙 로그인 요청 시                    
+    Then accessToken이 올바르게 생성된다.
+    ````
+  - Scenario: 가입 안된 회원으로 깃헙 로그인 성공
+    ````
+    Given 존재하지 않는 회원으로         
+    When 깃헙 로그인 요청 시           
+    Then accessToken을 확인할 수 있다.
+    ````
+- [x] GithubClientTest 작성
+    - [x] code를 보내면 github token 응답
+    - [x] token을 보내면 profile 응답
