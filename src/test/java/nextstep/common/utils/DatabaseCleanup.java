@@ -1,4 +1,4 @@
-package nextstep.utils;
+package nextstep.common.utils;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
