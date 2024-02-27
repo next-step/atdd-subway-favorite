@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

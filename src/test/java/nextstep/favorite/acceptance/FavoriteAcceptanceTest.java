@@ -3,13 +3,13 @@ package nextstep.favorite.acceptance;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
-import static nextstep.member.acceptance.AuthSteps.토큰_요청;
+import static nextstep.auth.acceptance.AuthSteps.토큰_요청;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import nextstep.favorite.application.dto.FavoriteCreateResponse;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.subway.acceptance.LineSteps;
 import nextstep.subway.acceptance.StationSteps;
 import nextstep.subway.applicaion.dto.StationResponse;
