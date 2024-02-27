@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import subway.dto.member.GithubLoginRequest;
 import subway.dto.member.TokenRequest;
 import subway.dto.member.TokenResponse;
 
@@ -19,12 +20,12 @@ public class TokenController {
 	@PostMapping("/login/token")
 	public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
 		TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
-
 		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/login/github")
-	public ResponseEntity<TokenResponse> createTokenByGitHub(@RequestBody TokenRequest request) {
-		return ResponseEntity.ok(null);
+	public ResponseEntity<TokenResponse> createTokenByGitHub(@RequestBody GithubLoginRequest request) {
+		TokenResponse response = tokenService.createTokenByGitHub(request.getCode());
+		return ResponseEntity.ok(response);
 	}
 }

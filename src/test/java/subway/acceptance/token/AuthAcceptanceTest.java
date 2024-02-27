@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -15,10 +16,16 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.acceptance.AcceptanceTest;
+import subway.fixture.member.GithubResponses;
+import subway.member.JwtTokenProvider;
 import subway.member.Member;
 import subway.member.MemberRepository;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthAcceptanceTest extends AcceptanceTest {
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
+
 	public static final String EMAIL = "admin@email.com";
 	public static final String PASSWORD = "password";
 	public static final Integer AGE = 20;
@@ -48,8 +55,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Github Auth")
 	@Test
 	void githubAuth() {
+		GithubResponses 사용자1 = GithubResponses.사용자1;
 		Map<String, String> params = new HashMap<>();
-		params.put("code", "code");
+		params.put("code", 사용자1.getCode());
 
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -59,6 +67,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 			.statusCode(HttpStatus.OK.value())
 			.extract();
 
-		assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+		String token = jwtTokenProvider.createToken(사용자1.getEmail());
+		assertThat(response.jsonPath().getString("accessToken")).isEqualTo(token);
 	}
 }
