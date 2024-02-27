@@ -47,11 +47,11 @@ public class TokenServiceTest {
             @Test
             void 저장된_회원으로_토큰_발급_요청() {
                 // given
-                MemberRequest memberRequest = new MemberRequest(BROWN.getEmail(), BROWN.getPassword(), BROWN.age);
+                MemberRequest memberRequest = new MemberRequest(브라운.이메일, 브라운.비밀번호, 브라운.나이);
                 memberService.createMember(memberRequest);
 
                 // when
-                TokenResponse tokenResponse = tokenService.createToken(BROWN.getEmail(), BROWN.getPassword());
+                TokenResponse tokenResponse = tokenService.createToken(브라운.이메일, 브라운.비밀번호);
 
                 // then
                 assertThat(tokenResponse.getAccessToken()).isNotBlank();
@@ -70,13 +70,13 @@ public class TokenServiceTest {
                 // given
                 String changedPassword = "changed password";
 
-                MemberRequest memberRequest = new MemberRequest(SMITH.getEmail(), SMITH.getPassword(), SMITH.getAge());
+                MemberRequest memberRequest = new MemberRequest(스미스.이메일, 스미스.비밀번호, 스미스.나이);
                 memberService.createMember(memberRequest);
 
                 // when, then
                 assertThatExceptionOfType(IllegalArgumentException.class)
                         .isThrownBy(() -> {
-                            tokenService.createToken(SMITH.getEmail(), changedPassword);
+                            tokenService.createToken(스미스.이메일, changedPassword);
                         }).withMessageMatching("비밀번호가 다릅니다.");
             }
 
@@ -90,7 +90,7 @@ public class TokenServiceTest {
                 // when, then
                 assertThatExceptionOfType(NotFoundMemberException.class)
                         .isThrownBy(() -> {
-                            tokenService.createToken(JOHNSON.getEmail(), JOHNSON.getPassword());
+                            tokenService.createToken(존슨.이메일, 존슨.비밀번호);
                         }).withMessageMatching("회원 정보가 없습니다.");
             }
         }

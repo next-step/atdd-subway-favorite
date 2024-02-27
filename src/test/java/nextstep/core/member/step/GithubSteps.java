@@ -37,7 +37,7 @@ public class GithubSteps {
         ExtractableResponse<Response> 토큰_응답 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new GithubCodeRequest(member.getCode()))
+                .body(new GithubCodeRequest(member.get코드()))
                 .when()
                 .post("/login/github")
                 .then().log().all()

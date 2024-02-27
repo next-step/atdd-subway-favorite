@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static nextstep.core.member.fixture.GithubMemberFixture.getAllGitHubMembers;
+import static nextstep.core.member.fixture.GithubMemberFixture.모든_깃허브_회원;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("깃허브 클라이언트 컴포넌트 테스트")
@@ -30,12 +30,12 @@ public class GithubClientTest {
              */
             @Test
             void 회원_정보_반환() {
-                getAllGitHubMembers().forEach(githubMember -> {
+                모든_깃허브_회원().forEach(githubMember -> {
                     // when
-                    GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubMember.getCode());
+                    GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubMember.get코드());
 
                     // then
-                    assertThat(githubProfileResponse.getEmail()).isEqualTo(githubMember.getEmail());
+                    assertThat(githubProfileResponse.getEmail()).isEqualTo(githubMember.get이메일());
                 });
             }
         }

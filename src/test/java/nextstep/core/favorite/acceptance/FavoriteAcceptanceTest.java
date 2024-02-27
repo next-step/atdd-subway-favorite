@@ -1,7 +1,6 @@
 package nextstep.core.favorite.acceptance;
 
 import nextstep.common.annotation.AcceptanceTest;
-import nextstep.core.favorite.step.FavoriteSteps;
 import nextstep.core.station.fixture.StationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +12,8 @@ import static nextstep.core.favorite.fixture.FavoriteFixture.확인할_즐겨찾
 import static nextstep.core.favorite.step.FavoriteSteps.*;
 import static nextstep.core.line.fixture.LineFixture.*;
 import static nextstep.core.line.step.LineSteps.지하철_노선_생성;
-import static nextstep.core.member.fixture.MemberFixture.SMITH;
-import static nextstep.core.member.fixture.MemberFixture.WILLIAMS;
+import static nextstep.core.member.fixture.MemberFixture.스미스;
+import static nextstep.core.member.fixture.MemberFixture.윌리엄스;
 import static nextstep.core.member.step.AuthSteps.회원생성_후_토큰_발급;
 import static nextstep.core.section.fixture.SectionFixture.지하철_구간;
 import static nextstep.core.section.step.SectionSteps.성공하는_지하철_구간_추가요청;
@@ -72,7 +71,7 @@ public class FavoriteAcceptanceTest {
 
     @BeforeEach
     void 사전_회원의_토큰_발급() {
-        정상적인_회원의_토큰 = 회원생성_후_토큰_발급(SMITH);
+        정상적인_회원의_토큰 = 회원생성_후_토큰_발급(스미스);
     }
 
     @Nested
@@ -290,12 +289,12 @@ public class FavoriteAcceptanceTest {
 
             @BeforeEach
             void 사전_정상적인_회원A의_토큰_발급() {
-                정상적인_회원A의_토큰 = 회원생성_후_토큰_발급(SMITH);
+                정상적인_회원A의_토큰 = 회원생성_후_토큰_발급(스미스);
             }
 
             @BeforeEach
             void 사전_정상적인_회원B의_토큰_발급() {
-                정상적인_회원B의_토큰 = 회원생성_후_토큰_발급(WILLIAMS);
+                정상적인_회원B의_토큰 = 회원생성_후_토큰_발급(윌리엄스);
             }
 
             /**
