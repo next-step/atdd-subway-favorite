@@ -1,11 +1,14 @@
 package nextstep.member.application;
 
+import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -35,7 +38,9 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).stream()
+            .findAny()
+            .orElseThrow(AuthenticationException::new);
     }
 
     public MemberResponse findMe(LoginMember loginMember) {
