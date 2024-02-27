@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class AuthSteps {
 
-    public static ExtractableResponse<Response> 회원_로그인_요청(String email, String password) {
+    public static String 토큰_생성(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -22,7 +22,8 @@ public class AuthSteps {
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
-        return response;
+
+        return response.jsonPath().getString("accessToken");
     }
 
     public static ExtractableResponse<Response> 내_정보_요청(String accessToken) {

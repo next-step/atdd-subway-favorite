@@ -9,8 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static nextstep.member.acceptance.AuthSteps.내_정보_요청;
-import static nextstep.member.acceptance.AuthSteps.회원_로그인_요청;
+import static nextstep.member.acceptance.AuthSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -26,9 +25,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void bearerAuth() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        ExtractableResponse<Response> loginResponse = 회원_로그인_요청(EMAIL, PASSWORD);
+        String accessToken = 토큰_생성(EMAIL, PASSWORD);
 
-        String accessToken = loginResponse.jsonPath().getString("accessToken");
         assertThat(accessToken).isNotBlank();
 
         ExtractableResponse<Response> info = 내_정보_요청(accessToken);
