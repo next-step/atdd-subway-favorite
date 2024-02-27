@@ -1,7 +1,7 @@
 package nextstep.common.exception;
 
 import nextstep.common.exception.dto.ExceptionResponse;
-import nextstep.core.member.AuthenticationException;
+import nextstep.core.auth.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,9 +1,9 @@
 package nextstep.common.utils;
 
-import nextstep.core.member.application.GithubProfileResponse;
-import nextstep.core.member.application.dto.GithubAccessTokenRequest;
-import nextstep.core.member.application.dto.GithubAccessTokenResponse;
-import nextstep.core.member.fixture.GithubMemberFixture;
+import nextstep.core.auth.application.dto.GithubProfileResponse;
+import nextstep.core.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.core.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.core.auth.fixture.GithubMemberFixture;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

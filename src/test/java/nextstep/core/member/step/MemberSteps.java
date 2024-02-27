@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.core.member.application.dto.MemberRequest;
-import nextstep.core.member.fixture.GithubMemberFixture;
+import nextstep.core.auth.fixture.GithubMemberFixture;
 import nextstep.core.member.fixture.MemberFixture;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

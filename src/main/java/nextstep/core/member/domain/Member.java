@@ -1,7 +1,6 @@
 package nextstep.core.member.domain;
 
-import nextstep.core.favorite.domain.Favorite;
-import org.springframework.lang.Nullable;
+import nextstep.core.subway.favorite.domain.Favorite;
 
 import javax.persistence.*;
 import java.util.Objects;

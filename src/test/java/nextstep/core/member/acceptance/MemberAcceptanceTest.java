@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.core.member.fixture.MemberFixture.*;
-import static nextstep.core.member.step.AuthSteps.성공하는_토큰_발급_요청;
+import static nextstep.core.auth.step.AuthSteps.성공하는_토큰_발급_요청;
 import static nextstep.core.member.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
