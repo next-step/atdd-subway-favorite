@@ -23,15 +23,15 @@ import subway.member.MemberRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthAcceptanceTest extends AcceptanceTest {
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
-
 	public static final String EMAIL = "admin@email.com";
 	public static final String PASSWORD = "password";
 	public static final Integer AGE = 20;
 
 	@Autowired
 	private MemberRepository memberRepository;
+	
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
 
 	@DisplayName("Bearer Auth")
 	@Test
