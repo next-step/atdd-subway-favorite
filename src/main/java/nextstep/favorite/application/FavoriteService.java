@@ -1,6 +1,8 @@
 package nextstep.favorite.application;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.dto.FavoriteSimpleResponse;
@@ -10,6 +12,7 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.applicaion.dto.StationResponse;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.LineRepository;
 import nextstep.subway.domain.PathFinder;
@@ -65,9 +68,23 @@ public class FavoriteService {
      *
      * @return
      */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail())
+            .orElseThrow(NotCreatedException::new);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+        List<Line> lines = lineRepository.findAll();
+        Map<Long, Station> stationIdMap = lines.stream()
+            .flatMap(line -> line.getStations().stream())
+            .collect(Collectors.toSet()).stream()
+            .collect(Collectors.toMap(Station::getId, station -> station));
+        return favorites.stream().map(favorite -> {
+            Station source = stationIdMap.get(favorite.getSource());
+            Station target = stationIdMap.get(favorite.getTarget());
+            return new FavoriteResponse(favorite.getId(),
+                new StationResponse(source.getId(), source.getName()),
+                new StationResponse(target.getId(), target.getName()));
+        }).collect(Collectors.toList());
     }
 
     /**
