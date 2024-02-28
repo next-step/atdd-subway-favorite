@@ -1,39 +1,34 @@
 package nextstep.auth.application;
 
 import nextstep.auth.AuthenticationException;
-import nextstep.member.application.MemberService;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
+import nextstep.auth.domain.UserDetail;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private final MemberService memberService;
+    private final UserDetailService userDetailService;
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
-    private final MemberRepository memberRepository;
 
     public TokenService(
-            MemberService memberService,
             JwtTokenProvider jwtTokenProvider,
             GithubClient githubClient,
-            MemberRepository memberRepository
+            UserDetailService userDetailService
     ) {
-        this.memberService = memberService;
+        this.userDetailService = userDetailService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.githubClient = githubClient;
-        this.memberRepository = memberRepository;
     }
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
+        UserDetail userDetail = userDetailService.getUser(email);
+        if (!userDetail.checkPassword(password)) {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = jwtTokenProvider.createToken(userDetail.getEmail());
 
         return new TokenResponse(token);
     }
@@ -42,8 +37,7 @@ public class TokenService {
         String accessToken = githubClient.requestToken(code);
         GithubProfileResponse profile = githubClient.requestUser(accessToken);
 
-        memberRepository.findByEmail(profile.getEmail())
-                .orElseGet(() -> memberRepository.save(new Member(profile.getEmail(), "github-login", profile.getAge())));
+        userDetailService.getGithubUser(profile.getEmail(), profile.getAge());
 
         return new TokenResponse(accessToken);
     }

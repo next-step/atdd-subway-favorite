@@ -1,6 +1,6 @@
-package nextstep.member.unit;
+package nextstep.auth.unit;
 
-import nextstep.member.GithubResponse;
+import nextstep.auth.GithubResponse;
 import nextstep.auth.application.TokenService;
 import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;

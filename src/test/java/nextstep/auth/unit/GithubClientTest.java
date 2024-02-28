@@ -1,6 +1,6 @@
-package nextstep.member.unit;
+package nextstep.auth.unit;
 
-import nextstep.member.GithubResponse;
+import nextstep.auth.GithubResponse;
 import nextstep.auth.application.GithubClient;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import org.junit.jupiter.api.DisplayName;
