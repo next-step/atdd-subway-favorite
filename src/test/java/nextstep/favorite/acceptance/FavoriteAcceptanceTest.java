@@ -3,6 +3,7 @@ package nextstep.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.common.annotation.AcceptanceTest;
+import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.acceptance.MemberSteps;
 import nextstep.member.acceptance.TokenSteps;
 import nextstep.member.application.dto.TokenResponse;
@@ -84,7 +85,7 @@ public class FavoriteAcceptanceTest{
     @DisplayName("토큰 없이 즐겨찾기를 등록한다.")
     void 토큰없이_즐겨찾기등록_오류() {
         //when
-        ExtractableResponse<Response> 즐겨찾기_생성요청 = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), "accessToken");
+        ExtractableResponse<Response> 즐겨찾기_생성요청 = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), "");
 
         //then
         assertThat(즐겨찾기_생성요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -129,6 +130,82 @@ public class FavoriteAcceptanceTest{
         //then
         assertThat(즐겨찾기_조회요청.jsonPath().getList("source").get(0)).isEqualTo(교대역.jsonPath().get());
         assertThat(즐겨찾기_조회요청.jsonPath().getList("target").get(0)).isEqualTo(강남역.jsonPath().get());
+    }
 
+    /**
+     * given 사용자 등록, 토큰을 생성, 즐겨찾기 등록한다.
+     * when 토큰 없이 즐겨찾기 조회하면
+     * then 401 오류를 반환한다.
+     */
+    @Test
+    @DisplayName("토큰없이 즐겨찾기를 조회하면 오류를 반환한다.")
+    void 토큰없이_즐겨찾기조회() {
+        //given
+        MemberSteps.회원_생성_요청(email, password, 1);
+        String accessToken = TokenSteps.토큰_생성요청(email, password).as(TokenResponse.class).getAccessToken();
+        FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회요청 = FavoriteSteps.즐겨찾기_조회요청("");
+
+        //then
+        assertThat(즐겨찾기_조회요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * given 사용자 등록, 토큰을 생성, 즐겨찾기 등록한다.
+     * when 즐겨찾기 삭제한다.
+     * then 조회했을때 즐겨찾기를 찾을 수 없다.
+     */
+    @Test
+    @DisplayName("즐겨찾기를 삭제한다.")
+    void 즐겨찾기삭제() {
+        //given
+        MemberSteps.회원_생성_요청(email, password, 1);
+        String accessToken = TokenSteps.토큰_생성요청(email, password).as(TokenResponse.class).getAccessToken();
+        FavoriteResponse favoriteResponse = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken)
+                .as(FavoriteResponse.class);
+
+
+        //when
+        FavoriteSteps.즐겨찾기_삭제요청(favoriteResponse.getId(), accessToken);
+
+        //then
+        ExtractableResponse<Response> 즐겨찾기_조회요청 = FavoriteSteps.즐겨찾기_조회요청(accessToken);
+        assertThat(즐겨찾기_조회요청.jsonPath().getList("id")).doesNotContain(favoriteResponse.getId());
+    }
+
+    /**
+     * given 사용자 등록, 토큰을 생성, 즐겨찾기 등록한다.
+     * when 토큰 없이 즐겨찾기 삭제하면
+     * then 401 오류를 반환한다.
+     */
+    @Test
+    @DisplayName("토큰없이 즐겨찾기를 삭제하면 오류를 반환한다.")
+    void 토큰없이_즐겨찾기삭제() {
+        //given
+        MemberSteps.회원_생성_요청(email, password, 1);
+        String accessToken = TokenSteps.토큰_생성요청(email, password).as(TokenResponse.class).getAccessToken();
+        FavoriteResponse favoriteResponse = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken)
+                .as(FavoriteResponse.class);
+        //when
+        ExtractableResponse<Response> 즐겨찾기_삭제요청 = FavoriteSteps.즐겨찾기_삭제요청(favoriteResponse.getId(), "123");
+        assertThat(즐겨찾기_삭제요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * given 사용자 등록, 토큰을 생성한다.
+     * when 즐겨찾기 삭제하면
+     * then 오류를 반환한다.
+     */
+    @Test
+    @DisplayName("존재하지않는 즐겨찾기를 삭제하면 오류를 반환한다.")
+    void 존재하지않는_즐겨찾기삭제() {
+        //given
+        MemberSteps.회원_생성_요청(email, password, 1);
+        String accessToken = TokenSteps.토큰_생성요청(email, password).as(TokenResponse.class).getAccessToken();
+        //when
+        ExtractableResponse<Response> 즐겨찾기_삭제요청 = FavoriteSteps.즐겨찾기_삭제요청(999L, accessToken);
+        assertThat(즐겨찾기_삭제요청.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
