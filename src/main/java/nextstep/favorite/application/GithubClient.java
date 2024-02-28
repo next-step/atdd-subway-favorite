@@ -2,6 +2,7 @@ package nextstep.favorite.application;
 
 import nextstep.favorite.application.dto.GithubAccessTokenRequest;
 import nextstep.favorite.application.dto.GithubAccessTokenResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,11 +13,20 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class GithubClient {
+    @Value("${github.client.id}")
+    private String clientId;
+    @Value("${github.client.secret}")
+    private String clientSecret;
+    @Value("${github.url.access-token}")
+    private String accessTokenUrl;
+    @Value("${github.url.user}")
+    private String userUrl;
+
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
-                "clientId", // client id
-                "clientSecret" // client secret
+                clientId,
+                clientSecret
         );
 
         HttpHeaders headers = new HttpHeaders();
@@ -25,10 +35,8 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        String url = "http://localhost:8080/github/login/oauth/access_token";
-
         String accessToken = restTemplate
-                .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                 .getBody()
                 .getAccessToken();
 
