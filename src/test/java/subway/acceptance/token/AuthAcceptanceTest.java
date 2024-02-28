@@ -63,8 +63,9 @@ class AuthAcceptanceTest {
 			.extract();
 
 		// then
-		String token = jwtTokenProvider.createToken(EMAIL);
-		assertThat(response.jsonPath().getString("accessToken")).isEqualTo(token);
+		String accessToken = response.jsonPath().getString("accessToken");
+		String expectedEmail = jwtTokenProvider.getPrincipal(accessToken);
+		assertThat(EMAIL).isEqualTo(expectedEmail);
 	}
 
 	/** given 시스템 DB에 등록 되어 있지 않은 임의의 사용자를 정의한다.
@@ -77,7 +78,8 @@ class AuthAcceptanceTest {
 	void githubAuth() {
 		// given
 		GithubResponses 사용자1 = GithubResponses.사용자1;
-
+		String actualEmail = 사용자1.getEmail();
+		
 		// when
 		Map<String, String> params = new HashMap<>();
 		params.put("code", 사용자1.getCode());
@@ -91,9 +93,12 @@ class AuthAcceptanceTest {
 			.extract();
 
 		// then
-		String token = jwtTokenProvider.createToken(사용자1.getEmail());
 		Member member = memberService.findMemberByEmail(사용자1.getEmail());
-		assertThat(사용자1.getEmail()).isEqualTo(member.getEmail());
-		assertThat(response.jsonPath().getString("accessToken")).isEqualTo(token);
+		assertThat(actualEmail).isEqualTo(member.getEmail());
+
+		// then
+		String accessToken = response.jsonPath().getString("accessToken");
+		String expectedEmail = jwtTokenProvider.getPrincipal(accessToken);
+		assertThat(actualEmail).isEqualTo(expectedEmail);
 	}
 }

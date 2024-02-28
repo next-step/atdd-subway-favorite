@@ -31,6 +31,7 @@ public class TokenService {
 		return new TokenResponse(token);
 	}
 
+	@Transactional
 	public TokenResponse createTokenByGitHub(String code) {
 		String accessToken = githubClient.requestGithubToken(code);
 		GithubProfileResponse githubProfileResponse = githubClient.requestUser(accessToken);
