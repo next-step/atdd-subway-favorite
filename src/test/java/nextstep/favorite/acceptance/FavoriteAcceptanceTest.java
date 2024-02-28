@@ -45,14 +45,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         이호선 = 지하철_노선_생성(new LineRequest("2호선", "green", 강남역, 역삼역, 10)).jsonPath().getLong("id");
         지하철_구간_추가(이호선, 역삼역, 선릉역, 10);
-
-        MemberFixture memberFixture = new MemberFixture();
-        accessToken = memberFixture.getAccessToken();
     }
 
     @Test
     void 즐겨찾기_생성() {
         // give
+        MemberFixture memberFixture = new MemberFixture();
+        accessToken = memberFixture.getAccessToken();
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
@@ -70,6 +69,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_조회() {
         // give
+        MemberFixture memberFixture = new MemberFixture();
+        accessToken = memberFixture.getAccessToken();
+
         즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
 
         // when
@@ -92,6 +94,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_삭제() {
         // give
+        MemberFixture memberFixture = new MemberFixture();
+        accessToken = memberFixture.getAccessToken();
+
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
         long favoriteId = response.jsonPath().getLong("id");
 
@@ -130,6 +135,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 비정상_경로_즐겨찾기_등록() {
         // give
+        MemberFixture memberFixture = new MemberFixture();
+        accessToken = memberFixture.getAccessToken();
+
         long 사당역 = 지하철역_생성("사당역").jsonPath().getLong("id");
         long 이수역 = 지하철역_생성("이수역").jsonPath().getLong("id");
 
