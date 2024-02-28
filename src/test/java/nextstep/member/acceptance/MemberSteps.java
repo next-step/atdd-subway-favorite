@@ -73,4 +73,10 @@ public class MemberSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
+
+    public static ExtractableResponse<Response> 토큰_없이_내_정보_요청() {
+        return RestAssured.given().log().all()
+                .when().get("/members/me")
+                .then().log().all().extract();
+    }
 }

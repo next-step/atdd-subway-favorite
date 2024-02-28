@@ -8,9 +8,11 @@ import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.member.acceptance.AuthSteps.*;
 import static nextstep.member.acceptance.MemberSteps.내_정보_요청;
+import static nextstep.member.acceptance.MemberSteps.토큰_없이_내_정보_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -34,4 +36,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(info.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    @DisplayName("Validate Bearer Auth Without Token")
+    @Test
+    void validateBearerAuthWithoutToken() {
+        ExtractableResponse<Response> response = 토큰_없이_내_정보_요청();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }
