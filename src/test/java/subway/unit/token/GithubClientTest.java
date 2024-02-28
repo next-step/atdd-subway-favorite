@@ -2,37 +2,38 @@ package subway.unit.token;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Objects;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
+import subway.acceptance.AcceptanceTest;
 import subway.dto.member.GithubProfileResponse;
 import subway.fixture.member.GithubResponses;
 import subway.member.GithubClient;
+import subway.member.GithubClientProperties;
+import subway.member.GithubUrlProperties;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class GithubClientTest {
-	@Autowired
+class GithubClientTest extends AcceptanceTest {
 	private GithubClient githubClient;
 
-	// todo: DEFINED_PORT가 아닌 RANDOM_PORT로 설정해보기
-	// @BeforeEach
-	// public void setUp(@Autowired ConfigurableApplicationContext context) {
-	// 	int port = super.port;
-	//
-	// 	Map<String, String> properties =
-	// 		Map.of(
-	// 			"github.url.access-token",
-	// 			String.format("%s%d%s", "http://localhost:", port, "/github/login/oauth/access_token"),
-	// 			"github.url.profile",
-	// 			String.format("%s%d%s", "http://localhost:", port, "/github/user"),
-	// 			"github.client.id", "client-id",
-	// 			"github.client.secret", "client-secret"
-	// 		);
-	//
-	// 	TestPropertyValues.of(properties).applyTo(context);
-	// }
+	@BeforeEach
+	public void setUp(@Autowired ApplicationContext context) {
+		Environment env = context.getEnvironment();
+		int port = Integer.parseInt(Objects.requireNonNull(env.getProperty("local.server.port")));
+
+		String accessTokenUrl = String.format("http://localhost:%d/github/login/oauth/access_token", port);
+		String profileUrl = String.format("http://localhost:%d/github/user", port);
+
+		GithubUrlProperties githubUrlProperties = new GithubUrlProperties(accessTokenUrl, profileUrl);
+		GithubClientProperties githubClientProperties = new GithubClientProperties("client-id", "client-secret");
+
+		githubClient = new GithubClient(githubUrlProperties, githubClientProperties);
+	}
 
 	@DisplayName("github code로 accessToken 발급 테스트")
 	@Test

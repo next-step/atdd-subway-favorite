@@ -2,7 +2,6 @@ package subway.member;
 
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,21 +16,30 @@ import subway.dto.member.GithubProfileResponse;
 
 @Component
 public class GithubClient {
-	@Value("${github.client.id}")
-	private String clientId;
+	// @Value("${github.client.id}")
+	// private String clientId;
+	//
+	// @Value("${github.client.secret}")
+	// private String clientSecret;
+	//
+	// @Value("${github.url.access-token}")
+	// private String accessTokenUrl;
+	//
+	// @Value("${github.url.profile}")
+	// private String profileUrl;
 
-	@Value("${github.client.secret}")
-	private String clientSecret;
+	private final GithubUrlProperties githubUrlProperties;
 
-	@Value("${github.url.access-token}")
-	private String accessTokenUrl;
+	private final GithubClientProperties githubClientProperties;
 
-	@Value("${github.url.profile}")
-	private String profileUrl;
+	public GithubClient(GithubUrlProperties githubUrlProperties, GithubClientProperties githubClientProperties) {
+		this.githubUrlProperties = githubUrlProperties;
+		this.githubClientProperties = githubClientProperties;
+	}
 
 	public String requestGithubToken(String code) {
 		GithubAccessTokenRequest githubAccessTokenRequest =
-			new GithubAccessTokenRequest(code, clientId, clientSecret);
+			new GithubAccessTokenRequest(code, githubClientProperties.getId(), githubClientProperties.getSecret());
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -40,7 +48,8 @@ public class GithubClient {
 		RestTemplate restTemplate = new RestTemplate();
 
 		return Objects.requireNonNull(restTemplate
-				.exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+				.exchange(githubUrlProperties.getAccessToken(), HttpMethod.POST, httpEntity,
+					GithubAccessTokenResponse.class)
 				.getBody())
 			.getAccessToken();
 	}
@@ -53,7 +62,7 @@ public class GithubClient {
 		RestTemplate restTemplate = new RestTemplate();
 
 		return restTemplate
-			.exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+			.exchange(githubUrlProperties.getProfile(), HttpMethod.GET, httpEntity, GithubProfileResponse.class)
 			.getBody();
 	}
 }
