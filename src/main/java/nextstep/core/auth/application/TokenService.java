@@ -1,9 +1,7 @@
 package nextstep.core.auth.application;
 
 import nextstep.core.auth.application.dto.GithubProfileResponse;
-import nextstep.core.member.application.MemberService;
 import nextstep.core.auth.application.dto.TokenResponse;
-import nextstep.core.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,12 +14,8 @@ public class TokenService {
         this.githubClient = githubClient;
     }
 
-    public TokenResponse createToken(String email) {
-        return new TokenResponse(jwtTokenProvider.createToken(email));
-    }
-
-    public TokenResponse createTokenByGithub(String email) {
-        return new TokenResponse(jwtTokenProvider.createToken(email));
+    public TokenResponse createToken(String value) {
+        return new TokenResponse(jwtTokenProvider.createToken(value));
     }
 
     public GithubProfileResponse requestGithubProfile(String code) {

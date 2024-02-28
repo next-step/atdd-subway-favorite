@@ -30,6 +30,6 @@ public class UserDetailService {
         GithubProfileResponse githubProfileResponse = tokenService.requestGithubProfile(code);
         Member member = memberService.findOrCreate(githubProfileResponse.getEmail());
 
-        return tokenService.createTokenByGithub(member.getEmail());
+        return tokenService.createToken(member.getEmail());
     }
 }
