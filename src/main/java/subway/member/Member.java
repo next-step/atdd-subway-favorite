@@ -22,7 +22,6 @@ public class Member {
 	@Column(unique = true)
 	private String email;
 
-	@Column(nullable = false)
 	private String password;
 
 	@Column(nullable = false)

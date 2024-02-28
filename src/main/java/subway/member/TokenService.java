@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import subway.dto.member.GithubProfileResponse;
+import subway.dto.member.MemberRequest;
 import subway.dto.member.TokenResponse;
 
 @Transactional(readOnly = true)
@@ -33,6 +34,11 @@ public class TokenService {
 	public TokenResponse createTokenByGitHub(String code) {
 		String accessToken = githubClient.requestGithubToken(code);
 		GithubProfileResponse githubProfileResponse = githubClient.requestUser(accessToken);
+
+		MemberRequest memberRequest =
+			new MemberRequest(githubProfileResponse.getEmail(), null, githubProfileResponse.getAge());
+		memberService.findByEmailIfNotExistsRegister(memberRequest);
+
 		String token = jwtTokenProvider.createToken(githubProfileResponse.getEmail());
 		return new TokenResponse(token);
 	}
