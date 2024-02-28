@@ -3,6 +3,8 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.GithubResponses;
+import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -15,6 +17,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.helper.JsonPathUtils.getStringPath;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AcceptanceTest
@@ -52,5 +55,24 @@ class AuthAcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        GithubResponses githubUser = GithubResponses.사용자1;
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(
+                new GithubAccessTokenRequest(githubUser.getCode(), "clientId", "clientSecret")
+            )
+            .when().post("/login/github")
+            .then().log().all()
+            .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(getStringPath(response.body(), "accessToken"))
+            .isEqualTo(githubUser.getAccessToken());
     }
 }
