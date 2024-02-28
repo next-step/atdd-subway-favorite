@@ -82,7 +82,7 @@ public class FavoriteService {
     }
 
     private void validFindPath(List<Line> lineList, Station source, Station target) {
-        PathFinder pathFinder = new PathFinder();
-        pathFinder.findPath(lineList, source, target);
+        PathFinder pathFinder = new PathFinder(lineList);
+        pathFinder.findPath(source, target);
     }
 }
