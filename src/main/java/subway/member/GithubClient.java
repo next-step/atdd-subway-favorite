@@ -16,20 +16,7 @@ import subway.dto.member.GithubProfileResponse;
 
 @Component
 public class GithubClient {
-	// @Value("${github.client.id}")
-	// private String clientId;
-	//
-	// @Value("${github.client.secret}")
-	// private String clientSecret;
-	//
-	// @Value("${github.url.access-token}")
-	// private String accessTokenUrl;
-	//
-	// @Value("${github.url.profile}")
-	// private String profileUrl;
-
 	private final GithubUrlProperties githubUrlProperties;
-
 	private final GithubClientProperties githubClientProperties;
 
 	public GithubClient(GithubUrlProperties githubUrlProperties, GithubClientProperties githubClientProperties) {
