@@ -1,6 +1,7 @@
 package nextstep.favorite.application;
 
 import nextstep.exception.NotFoundException;
+import nextstep.favorite.application.dto.FavoriteCreateResponse;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
@@ -34,7 +35,7 @@ public class FavoriteService {
         this.lineRepository = lineRepository;
     }
 
-    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public FavoriteCreateResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.getMemberByEmailOrThrow(loginMember.getEmail());
 
         Station sourceStation = stationService.getStationById(request.getSource());
@@ -50,10 +51,8 @@ public class FavoriteService {
         member.addFavorite(favoriteBuilder);
 
         Favorite favorite = favoriteRepository.save(favoriteBuilder);
-        return FavoriteResponse.builder()
+        return FavoriteCreateResponse.builder()
                 .id(favorite.getId())
-                .source(stationToStationResponse(favorite.getSourceStation()))
-                .target(stationToStationResponse(favorite.getTargetStation()))
                 .build();
     }
 

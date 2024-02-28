@@ -3,7 +3,6 @@ package nextstep.favorite.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.common.annotation.AcceptanceTest;
-import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.acceptance.MemberSteps;
 import nextstep.member.acceptance.TokenSteps;
 import nextstep.member.application.dto.TokenResponse;
@@ -163,16 +162,15 @@ public class FavoriteAcceptanceTest{
         //given
         MemberSteps.회원_생성_요청(email, password, 1);
         String accessToken = TokenSteps.토큰_생성요청(email, password).as(TokenResponse.class).getAccessToken();
-        FavoriteResponse favoriteResponse = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken)
-                .as(FavoriteResponse.class);
-
+        ExtractableResponse<Response> 즐겨찾기_생성요청 = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken);
+        Long favoriteId = 즐겨찾기_생성요청.jsonPath().getLong("id");
 
         //when
-        FavoriteSteps.즐겨찾기_삭제요청(favoriteResponse.getId(), accessToken);
+        FavoriteSteps.즐겨찾기_삭제요청(favoriteId, accessToken);
 
         //then
         ExtractableResponse<Response> 즐겨찾기_조회요청 = FavoriteSteps.즐겨찾기_조회요청(accessToken);
-        assertThat(즐겨찾기_조회요청.jsonPath().getList("id")).doesNotContain(favoriteResponse.getId());
+        assertThat(즐겨찾기_조회요청.jsonPath().getList("id")).doesNotContain(favoriteId);
     }
 
     /**
@@ -186,10 +184,9 @@ public class FavoriteAcceptanceTest{
         //given
         MemberSteps.회원_생성_요청(email, password, 1);
         String accessToken = TokenSteps.토큰_생성요청(email, password).as(TokenResponse.class).getAccessToken();
-        FavoriteResponse favoriteResponse = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken)
-                .as(FavoriteResponse.class);
+        ExtractableResponse<Response> 즐겨찾기_생성요청 = FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken);
         //when
-        ExtractableResponse<Response> 즐겨찾기_삭제요청 = FavoriteSteps.즐겨찾기_삭제요청(favoriteResponse.getId(), "123");
+        ExtractableResponse<Response> 즐겨찾기_삭제요청 = FavoriteSteps.즐겨찾기_삭제요청(즐겨찾기_생성요청.jsonPath().getLong("id"), "123");
         assertThat(즐겨찾기_삭제요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
