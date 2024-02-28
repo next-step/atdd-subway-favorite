@@ -17,19 +17,15 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import subway.dto.member.MemberResponse;
 import subway.fixture.member.GithubResponses;
 import subway.member.JwtTokenProvider;
-import subway.member.Member;
-import subway.member.MemberService;
 import subway.utils.database.DatabaseCleanup;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthAcceptanceTest {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
-
-	@Autowired
-	private MemberService memberService;
 
 	@Autowired
 	private DatabaseCleanup databaseCleanup;
@@ -70,8 +66,9 @@ class AuthAcceptanceTest {
 
 	/** given 시스템 DB에 등록 되어 있지 않은 임의의 사용자를 정의한다.
 	 *  when github oauth를 이용하여 로그인을 한다.
-	 *  then 임의의 사용자는 회원가입이 자동으로 이루어 진다.
+	 *  when 임의의 사용자는 자동으로 회원가입이 된다.
 	 *  then 로그인 가능한 토큰이 반환된다.
+	 *  then 임의의 사용자가 회원가입이 자동으로 이루어 졌는지 확인한다.
 	 */
 	@DisplayName("Github Auth")
 	@Test
@@ -79,7 +76,7 @@ class AuthAcceptanceTest {
 		// given
 		GithubResponses 사용자1 = GithubResponses.사용자1;
 		String actualEmail = 사용자1.getEmail();
-		
+
 		// when
 		Map<String, String> params = new HashMap<>();
 		params.put("code", 사용자1.getCode());
@@ -93,12 +90,12 @@ class AuthAcceptanceTest {
 			.extract();
 
 		// then
-		Member member = memberService.findMemberByEmail(사용자1.getEmail());
-		assertThat(actualEmail).isEqualTo(member.getEmail());
-
-		// then
 		String accessToken = response.jsonPath().getString("accessToken");
 		String expectedEmail = jwtTokenProvider.getPrincipal(accessToken);
 		assertThat(actualEmail).isEqualTo(expectedEmail);
+
+		// then
+		MemberResponse memberResponse = 멤버_ME_조회(accessToken).as(MemberResponse.class);
+		assertThat(actualEmail).isEqualTo(memberResponse.getEmail());
 	}
 }
