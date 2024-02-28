@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import nextstep.exception.NotFoundException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
@@ -34,7 +35,7 @@ public class FavoriteService {
         this.lineRepository = lineRepository;
     }
 
-    public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.getMemberByEmailOrThrow(loginMember.getEmail());
 
         Station sourceStation = stationService.getStationById(request.getSource());
@@ -42,14 +43,19 @@ public class FavoriteService {
 
         validFindPath(lineRepository.findAll(), sourceStation, targetStation);
 
-        Favorite favorite = Favorite.builder()
+        Favorite favoriteBuilder = Favorite.builder()
                 .sourceStation(sourceStation)
                 .targetStation(targetStation)
                 .member(member)
                 .build();
-        member.addFavorite(favorite);
+        member.addFavorite(favoriteBuilder);
 
-        return favoriteRepository.save(favorite).getId();
+        Favorite favorite = favoriteRepository.save(favoriteBuilder);
+        return FavoriteResponse.builder()
+                .id(favorite.getId())
+                .source(stationToStationResponse(favorite.getSourceStation()))
+                .target(stationToStationResponse(favorite.getTargetStation()))
+                .build();
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
@@ -63,13 +69,17 @@ public class FavoriteService {
                 .build()).collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+
+        Favorite favorite = findFavoriteById(id);
+
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite findFavoriteById(Long id) {
+        return favoriteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 즐겨찾기입니다."));
     }
 
     private void validFindPath(List<Line> lineList, Station source, Station target) {

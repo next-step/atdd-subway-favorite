@@ -33,7 +33,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     private void checkTokenExists(String authorization) {
-        if (!authorization.split(" ")[0].equalsIgnoreCase("bearer")) {
+        if (!authorization.split(" ")[0].equalsIgnoreCase("bearer")
+        || authorization.split(" ").length == 1) {
             throw new AuthenticationException("존재하지 않는 토큰의 인증입니다.");
         }
     }

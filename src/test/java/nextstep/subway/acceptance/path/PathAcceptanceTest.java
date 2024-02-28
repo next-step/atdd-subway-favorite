@@ -141,6 +141,6 @@ public class PathAcceptanceTest {
         //when
         ExtractableResponse<Response> 조회_요청 = 경로_조회_요청("/paths", 888L, 999L);
         //then
-        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
