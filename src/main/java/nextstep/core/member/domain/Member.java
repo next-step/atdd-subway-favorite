@@ -1,7 +1,5 @@
 package nextstep.core.member.domain;
 
-import nextstep.core.subway.favorite.domain.Favorite;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -61,7 +59,7 @@ public class Member {
         return Objects.equals(this.password, password);
     }
 
-    public boolean isMine(Long memberId) {
+    public boolean isSameId(Long memberId) {
         return this.id.equals(memberId);
     }
 
