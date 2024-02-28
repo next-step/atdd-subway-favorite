@@ -6,6 +6,7 @@ import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class TokenService {
@@ -32,6 +33,9 @@ public class TokenService {
 
     public TokenResponse createGithubToken(final String code) {
         String githubToken = githubClient.requestGithubToken(code);
+        if (StringUtils.isEmpty(githubToken)) {
+            throw new AuthenticationException();
+        }
         GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubToken);
         Member member = memberService.findOrCreateMember(githubProfileResponse);
         String token = jwtTokenProvider.createToken(member.getEmail());

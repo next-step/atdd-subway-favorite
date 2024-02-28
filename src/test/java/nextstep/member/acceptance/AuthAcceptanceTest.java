@@ -20,8 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.member.acceptance.MemberSteps.깃허브_정보_조회;
-import static nextstep.member.acceptance.MemberSteps.깃허브_토큰_발급;
+import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -71,9 +70,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(githubAccessTokenResponse.getAccessToken()).isEqualTo(GithubResponses.사용자3.getAccessToken());
     }
 
-    @DisplayName("Github Login")
+    @DisplayName("Github Profile 조회")
     @Test
-    void githubLogin() {
+    void githubProfile() {
         ExtractableResponse<Response> tokenResponse = 깃허브_토큰_발급(GithubResponses.사용자3.getCode());
         GithubAccessTokenResponse githubAccessTokenResponse = tokenResponse.as(GithubAccessTokenResponse.class);
 
@@ -88,4 +87,21 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(githubProfileResponse.getAge()).isEqualTo(GithubResponses.사용자3.getAge());
     }
 
+    @DisplayName("Github Login")
+    @Test
+    void githubLogin() {
+        ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.사용자1.getCode());
+
+        // then 토큰 발급 성공
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    @DisplayName("Github Login 실패")
+    @Test
+    void githubLoginFail() {
+        final ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.사용자_인증X.getCode());
+
+        // then 토큰 발급 실패
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

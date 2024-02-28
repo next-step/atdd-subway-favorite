@@ -12,6 +12,7 @@ public class TestController {
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(@RequestBody GithubAccessTokenRequest tokenRequest) {
         GithubResponses githubUser = GithubResponses.findByCode(tokenRequest.getCode());
+
         GithubAccessTokenResponse response = new GithubAccessTokenResponse(githubUser.getAccessToken(), "", "", "");
         return ResponseEntity.ok(response);
     }
