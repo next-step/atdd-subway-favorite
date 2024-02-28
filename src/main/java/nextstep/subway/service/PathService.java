@@ -30,8 +30,8 @@ public class PathService {
         Station sourceStation = stationService.getStationById(source);
         Station targetStation = stationService.getStationById(target);
 
-        PathFinder pathFinder = new PathFinder();
-        Path path = pathFinder.findPath(lines, sourceStation, targetStation);
+        PathFinder pathFinder = new PathFinder(lines);
+        Path path = pathFinder.findPath(sourceStation, targetStation);
         return PathResponse.builder()
                 .stations(stationsToStationResponses(path.getPath()))
                 .distance(path.getDistance())

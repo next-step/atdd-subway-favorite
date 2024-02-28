@@ -11,22 +11,8 @@ import java.util.List;
 
 
 public class PathFinder {
-    public Path findPath(List<Line> lineList, Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph(lineList);
-
-        validateSourceAndTargetAreDifferent(source, target);
-
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
-
-        validatePathExists(path);
-
-        return Path.builder().path(path.getVertexList()).distance(shortestPath.getPathWeight(source, target)).build();
-    }
-
-    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(List<Line> lineList) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
+    private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public PathFinder(List<Line> lineList) {
         lineList.stream()
                 .flatMap(line -> line.getSections().getSections().stream())
                 .distinct()
@@ -35,8 +21,17 @@ public class PathFinder {
                     graph.addVertex(section.getDownStation());
                     graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
                 });
+    }
 
-        return graph;
+    public Path findPath(Station source, Station target) {
+        validateSourceAndTargetAreDifferent(source, target);
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
+
+        validatePathExists(path);
+
+        return Path.builder().path(path.getVertexList()).distance(shortestPath.getPathWeight(source, target)).build();
     }
 
     private void validateSourceAndTargetAreDifferent(Station source, Station target) {

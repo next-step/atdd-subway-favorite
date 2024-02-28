@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.subway.acceptance.util.RestAssuredUtil.경로_조회_요청;
 import static nextstep.subway.acceptance.util.RestAssuredUtil.생성_요청;
-import static nextstep.subway.acceptance.util.RestAssuredUtil.조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AcceptanceTest
@@ -73,8 +73,7 @@ public class PathAcceptanceTest {
     @DisplayName("지하철 경로를 조회한다.")
     void 지하철_경로_조회한다() {
         //when
-        ExtractableResponse<Response> 고속터미널역_신사역_경로_조회 = 조회_요청("/paths?source=" + 교대역.jsonPath().getLong("id")
-                + "&target=" + 양재역.jsonPath().getLong("id"));
+        ExtractableResponse<Response> 고속터미널역_신사역_경로_조회 = 경로_조회_요청("/paths",교대역.jsonPath().getLong("id"),양재역.jsonPath().getLong("id"));
 
         //then
         assertThat(고속터미널역_신사역_경로_조회.jsonPath().getList("stations")).containsExactly(교대역.jsonPath().get(), 남부터미널역.jsonPath().get(), 양재역.jsonPath().get());
@@ -89,8 +88,7 @@ public class PathAcceptanceTest {
     @DisplayName("출발역과 마지막역을 동일한 역으로 조회하면 에러가 발생한다.")
     void 출발역과_도착역이_같은_경로에러() {
         //when
-        ExtractableResponse<Response> 조회_요청 = 조회_요청("/paths?source=" + 교대역.jsonPath().getLong("id")
-                + "&target=" + 교대역.jsonPath().getLong("id"));
+        ExtractableResponse<Response> 조회_요청 = 경로_조회_요청("/paths",교대역.jsonPath().getLong("id"),교대역.jsonPath().getLong("id"));
         //then
        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
@@ -125,11 +123,10 @@ public class PathAcceptanceTest {
                 "/lines");
 
         //when
-        ExtractableResponse<Response> 조회_요청 = 조회_요청("/paths?source=" + 신림역.jsonPath().getLong("id")
-                + "&target=" + 사당역.jsonPath().getLong("id"));
+        ExtractableResponse<Response> 조회_요청 = 경로_조회_요청("/paths",신림역.jsonPath().getLong("id"),사당역.jsonPath().getLong("id"));
 
         //then
-        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -143,9 +140,8 @@ public class PathAcceptanceTest {
         //given
 
         //when
-        ExtractableResponse<Response> 조회_요청 = 조회_요청("/paths?source=" + 888
-                + "&target=" + 999);
+        ExtractableResponse<Response> 조회_요청 = 경로_조회_요청("/paths", 888L, 999L);
         //then
-        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

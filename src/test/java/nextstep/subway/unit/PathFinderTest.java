@@ -50,8 +50,8 @@ public class PathFinderTest {
     @DisplayName("지하철 최단거리를 조회한다.")
     @Test
     void 지하철경로_조회() {
-        PathFinder pathFinder = new PathFinder();
-        Path path = pathFinder.findPath(Arrays.asList(이호선, 신분당선, 삼호선), 교대역, 양재역);
+        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 신분당선, 삼호선));
+        Path path = pathFinder.findPath(교대역, 양재역);
 
         assertThat(path.getPath()).containsExactly(교대역, 남부터미널역, 양재역);
         assertThat(path.getDistance()).isEqualTo(5);
@@ -60,9 +60,9 @@ public class PathFinderTest {
     @DisplayName("출발역과 도착역이 같으면 에러가 발생한다.")
     @Test
     void 출발역과_도착역이_같은_경로_조회_애러() {
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 신분당선, 삼호선));
 
-        assertThatThrownBy(() -> pathFinder.findPath(Arrays.asList(이호선, 신분당선, 삼호선), 교대역, 교대역))
+        assertThatThrownBy(() -> pathFinder.findPath(교대역, 교대역))
                 .isInstanceOf(PathSourceTargetSameException.class);
     }
 
@@ -76,9 +76,9 @@ public class PathFinderTest {
         Line 신림선 = Line.builder().name("신림선").color("GRAY").upStation(신림역).downStation(보라매역).distance(2L).build();
         Line 사호선 = Line.builder().name("4호선").color("BLUE").upStation(사당역).downStation(이수역).distance(2L).build();
 
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신림선, 사호선));
 
-        assertThatThrownBy(() -> pathFinder.findPath(Arrays.asList(신림선, 사호선), 신림역, 사당역))
+        assertThatThrownBy(() -> pathFinder.findPath(신림역, 사당역))
                 .isInstanceOf(PathSourceTargetNotConnectedException.class);
     }
 

@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.exception.BadRequestException;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
@@ -16,7 +17,8 @@ public class TokenService {
     }
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
+        Member member = memberService.findMemberByEmail(email)
+                .orElseThrow(() -> new BadRequestException("요청하신 사용자 정보는 올바르지 않은 정보입니다."));
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
         }

@@ -1,11 +1,14 @@
 package nextstep.member.application;
 
+import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -34,8 +37,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    public Optional<Member> findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     public MemberResponse findMe(LoginMember loginMember) {
@@ -43,4 +46,10 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }
+
+    public Member getMemberByEmailOrThrow(String email) {
+        return  findMemberByEmail(email)
+                .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+    }
+
 }

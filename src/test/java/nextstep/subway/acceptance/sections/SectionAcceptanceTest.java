@@ -114,7 +114,7 @@ public class SectionAcceptanceTest {
     void 동일한구간_에러발생() {
         //when
         ExtractableResponse<Response> 신림선_구간_생성 = 생성_요청(
-                SectionFixture.createSectionParams(신림역.jsonPath().getLong("id"), 서원역.jsonPath().getLong("id"), 20L),
+                SectionFixture.createSectionParams(신림역.jsonPath().getLong("id"), 보라매역.jsonPath().getLong("id"), 10L),
                 "/lines/" + 신림선.jsonPath().getLong("id") + "/sections"
         );
 
@@ -131,7 +131,7 @@ public class SectionAcceptanceTest {
     void 노선길이_초과에러() {
         //when
         ExtractableResponse<Response> 신림선_구간_생성 = 생성_요청(
-                SectionFixture.createSectionParams(신림역.jsonPath().getLong("id"), 보라매역.jsonPath().getLong("id"), 20L),
+                SectionFixture.createSectionParams(신림역.jsonPath().getLong("id"), 서원역.jsonPath().getLong("id"), 22L),
                 "/lines/" + 신림선.jsonPath().getLong("id") + "/sections"
         );
 

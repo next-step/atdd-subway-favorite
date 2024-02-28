@@ -22,6 +22,15 @@ public class RestAssuredUtil {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 경로_조회_요청(String path, Long source, Long target) {
+        return RestAssured.given().log().all()
+                .param("source", source)
+                .param("target", target)
+                .when().get(path)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 수정_요청(Object param, String path) {
         return RestAssured.given().log().all()
                 .body(param)
