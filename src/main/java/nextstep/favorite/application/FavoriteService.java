@@ -4,6 +4,12 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.AuthenticationException;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.subway.domain.Station;
+import nextstep.subway.service.StationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,19 +17,27 @@ import java.util.List;
 @Service
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
+    private MemberService memberService;
+    private StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
+        this.memberService = memberService;
+        this.stationService = stationService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+
+        Station sourceStation = stationService.getStationById(request.getSource());
+        Station targetStation = stationService.getStationById(request.getTarget());
+
+        return favoriteRepository.save(Favorite.builder()
+                .sourceStation(sourceStation)
+                .targetStation(targetStation)
+                .member(member)
+                .build()).getId();
     }
 
     /**
