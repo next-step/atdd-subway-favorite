@@ -1,8 +1,7 @@
 package nextstep.member.ui;
 
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import nextstep.member.AuthenticationException;
+import nextstep.member.exceptions.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
 import org.springframework.core.MethodParameter;

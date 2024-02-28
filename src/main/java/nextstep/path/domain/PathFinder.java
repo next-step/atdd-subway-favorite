@@ -4,11 +4,13 @@ import nextstep.line.domain.Line;
 import nextstep.line.domain.Section;
 import nextstep.path.domain.dto.PathsDto;
 import nextstep.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class PathFinder {
@@ -50,11 +52,9 @@ public class PathFinder {
         if (start.equals(end)) {
             throw new IllegalStateException("시작과 끝이 같은 역입니다");
         }
-
         try {
-            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
-                    = new DijkstraShortestPath<>(graph);
-            return true;
+            return Optional.ofNullable(DijkstraShortestPath.findPathBetween(graph, start, end))
+                    .isPresent();
         } catch (IllegalArgumentException e) {
             return false;
         }

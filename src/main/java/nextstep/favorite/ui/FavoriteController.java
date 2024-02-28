@@ -1,11 +1,11 @@
 package nextstep.favorite.ui;
 
+import nextstep.favorite.application.exceptions.BadRequestException;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.ui.AuthenticationPrincipal;
-import org.apache.juli.logging.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +24,14 @@ public class FavoriteController {
     public ResponseEntity<Void> createFavorite(
             @AuthenticationPrincipal LoginMember loginMember,
             @RequestBody FavoriteRequest request) {
-        FavoriteResponse response = favoriteService.createFavorite(loginMember, request);
-        return ResponseEntity
-                .created(URI.create("/favorites/" + response.getId()))
-                .build();
+        try {
+            FavoriteResponse response = favoriteService.createFavorite(loginMember, request);
+            return ResponseEntity
+                    .created(URI.create("/favorites/" + response.getId()))
+                    .build();
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/favorites")
