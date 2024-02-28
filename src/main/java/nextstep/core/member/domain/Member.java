@@ -9,10 +9,14 @@ import java.util.Objects;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_ID")
     private Long id;
+
     @Column(unique = true)
     private String email;
+
     private String password;
+
     @Column(name = "age", nullable = true)
     private Integer age;
 
@@ -57,8 +61,8 @@ public class Member {
         return Objects.equals(this.password, password);
     }
 
-    public boolean isMine(Favorite favorite) {
-        return this.equals(favorite.getMember());
+    public boolean isMine(Long memberId) {
+        return this.id.equals(memberId);
     }
 
     @Override

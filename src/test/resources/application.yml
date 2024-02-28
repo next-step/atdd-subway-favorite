@@ -18,12 +18,12 @@ spring:
         show_sql: true
         format_sql: true
 
-  logging:
-    level:
-      ROOT: INFO
-      org.springframework.orm.jpa: DEBUG
-      org.springframework.transaction: DEBUG
-      org.hibernate.type.descriptor.sql: trace
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
+    org.hibernate.type.descriptor.sql: trace
 
 ---
 spring:

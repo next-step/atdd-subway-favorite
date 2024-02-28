@@ -1,13 +1,12 @@
 package nextstep.core.subway.line.acceptance;
 
 import nextstep.common.annotation.AcceptanceTest;
-import nextstep.core.subway.line.fixture.LineFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static nextstep.core.subway.line.fixture.LineFixture.신분당선;
+import static nextstep.core.subway.line.fixture.LineFixture.*;
 import static nextstep.core.subway.line.step.LineSteps.*;
 import static nextstep.core.subway.station.fixture.StationFixture.역_10개;
 import static nextstep.core.subway.station.step.StationSteps.*;
@@ -56,7 +55,7 @@ public class LineAcceptanceTest {
     @Test
     void 지하철_노선_생성() {
         // given
-        var 신분당선 = LineFixture.신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
+        var 신분당선 = 신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
 
         // when
         지하철_노선_생성_요청_검증_포함(신분당선);
@@ -75,8 +74,8 @@ public class LineAcceptanceTest {
     @Test
     void 지하철_노선_목록_조회() {
         // given
-        var 신분당선 = LineFixture.신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
-        var 분당선 = LineFixture.신분당선(구로디지털단지역_번호, 신도림역_번호);
+        var 신분당선 = 신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
+        var 분당선 = 신분당선(구로디지털단지역_번호, 신도림역_번호);
 
         지하철_노선_생성_요청_검증_포함(신분당선);
         지하철_노선_생성_요청_검증_포함(분당선);
@@ -94,7 +93,7 @@ public class LineAcceptanceTest {
     @Test
     void 지하철_노선_조회() {
         // given
-        var 신분당선 = LineFixture.신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
+        var 신분당선 = 신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
         지하철_노선_생성_요청_검증_포함(신분당선);
 
         // when, then
@@ -110,8 +109,8 @@ public class LineAcceptanceTest {
     @Test
     void 지하철_노선_수정() {
         // given
-        var 신분당선 = LineFixture.신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
-        var 수정된_신분당선 = LineFixture.수정된_신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
+        var 신분당선 = 신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
+        var 수정된_신분당선 = 수정된_신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
 
         var 신분당선_노선_생성_응답 = 지하철_노선_생성_요청_검증_포함(신분당선);
 
@@ -131,9 +130,9 @@ public class LineAcceptanceTest {
     @Test
     void 지하철_노선_삭제() {
         // given
-        var 신분당선 = LineFixture.신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
-        var 분당선 = LineFixture.분당선(구로디지털단지역_번호, 신도림역_번호);
-        var 신림선 = LineFixture.신림선(종각역_번호, 서울역_번호);
+        var 신분당선 = 신분당선(가산디지털단지역_번호, 구로디지털단지역_번호);
+        var 분당선 = 분당선(구로디지털단지역_번호, 신도림역_번호);
+        var 신림선 = 신림선(종각역_번호, 서울역_번호);
 
         var 신분당선_생성요청_응답 = 지하철_노선_생성_요청_검증_포함(신분당선);
         var 분당선_생성요청_응답 = 지하철_노선_생성_요청_검증_포함(분당선);

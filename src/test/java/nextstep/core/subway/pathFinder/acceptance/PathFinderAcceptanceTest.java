@@ -3,7 +3,7 @@ package nextstep.core.subway.pathFinder.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.common.annotation.AcceptanceTest;
-import nextstep.core.subway.pathFinder.fixture.PathFinderFixture;
+import nextstep.core.subway.pathFinder.fixture.PathFinderFixture.*;
 import nextstep.core.subway.station.fixture.StationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.core.subway.line.fixture.LineFixture.*;
 import static nextstep.core.subway.line.step.LineSteps.지하철_노선_생성;
+import static nextstep.core.subway.pathFinder.fixture.PathFinderFixture.지하철_경로;
 import static nextstep.core.subway.pathFinder.step.PathFinderSteps.*;
 import static nextstep.core.subway.section.fixture.SectionFixture.지하철_구간;
 import static nextstep.core.subway.section.step.SectionSteps.성공하는_지하철_구간_추가요청;
@@ -73,7 +74,7 @@ public class PathFinderAcceptanceTest {
         @Test
         void 강남역에서_남부터미널역까지_경로_조회() {
             // when
-            var 성공하는_경로_조회_응답 = 성공하는_지하철_경로_조회_요청(PathFinderFixture.지하철_경로(강남역, 남부터미널역));
+            var 성공하는_경로_조회_응답 = 성공하는_지하철_경로_조회_요청(지하철_경로(강남역, 남부터미널역));
 
             // then
             경로에_포함된_역_목록_검증(성공하는_경로_조회_응답, 강남역, 교대역, 남부터미널역);
@@ -88,7 +89,7 @@ public class PathFinderAcceptanceTest {
         @Test
         void 교대역에서_양재역까지_경로_조회() {
             // when
-            var 성공하는_경로_조회_응답 = 성공하는_지하철_경로_조회_요청(PathFinderFixture.지하철_경로(교대역, 양재역));
+            var 성공하는_경로_조회_응답 = 성공하는_지하철_경로_조회_요청(지하철_경로(교대역, 양재역));
 
             // then
             경로에_포함된_역_목록_검증(성공하는_경로_조회_응답, 교대역, 남부터미널역, 양재역);
@@ -112,7 +113,7 @@ public class PathFinderAcceptanceTest {
             @Test
             void 강남역에서_강남역까지_경로_조회() {
                 // when,then
-                실패하는_지하철_경로_조회_요청(PathFinderFixture.지하철_경로(강남역, 강남역));
+                실패하는_지하철_경로_조회_요청(지하철_경로(강남역, 강남역));
             }
 
         }
@@ -129,7 +130,7 @@ public class PathFinderAcceptanceTest {
             @Test
             void 강남역에서_오이도역까지_경로_조회() {
                 // when,then
-                실패하는_지하철_경로_조회_요청(PathFinderFixture.지하철_경로(강남역, 오이도역));
+                실패하는_지하철_경로_조회_요청(지하철_경로(강남역, 오이도역));
 
             }
 
@@ -145,7 +146,7 @@ public class PathFinderAcceptanceTest {
                 @Test
                 void 강남역에서_존재하지_않는_역까지_경로_조회() {
                     // when,then
-                    실패하는_지하철_경로_조회_요청(PathFinderFixture.지하철_경로(강남역, 존재하지_않는_역));
+                    실패하는_지하철_경로_조회_요청(지하철_경로(강남역, 존재하지_않는_역));
                 }
 
 
@@ -158,7 +159,7 @@ public class PathFinderAcceptanceTest {
                 @Test
                 void 존재하지_않는_역에서_강남역까지_경로_조회() {
                     // when,then
-                    실패하는_지하철_경로_조회_요청(PathFinderFixture.지하철_경로(존재하지_않는_역, 강남역));
+                    실패하는_지하철_경로_조회_요청(지하철_경로(존재하지_않는_역, 강남역));
                 }
 
             }

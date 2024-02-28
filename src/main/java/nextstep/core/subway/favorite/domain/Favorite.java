@@ -1,6 +1,5 @@
 package nextstep.core.subway.favorite.domain;
 
-import nextstep.core.member.domain.Member;
 import nextstep.core.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -11,8 +10,8 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Member member;
+    @JoinColumn(name = "MEMBER_ID")
+    private Long memberId;
 
     @ManyToOne
     private Station sourceStation;
@@ -23,10 +22,10 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Station source, Station target, Member member) {
+    public Favorite(Station source, Station target, Long memberId) {
         this.sourceStation = source;
         this.targetStation = target;
-        this.member = member;
+        this.memberId = memberId;
     }
 
     public Station getSourceStation() {
@@ -41,7 +40,7 @@ public class Favorite {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 }

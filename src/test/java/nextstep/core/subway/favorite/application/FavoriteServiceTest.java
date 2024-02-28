@@ -149,7 +149,7 @@ public class FavoriteServiceTest {
                 Member member = createMember("test@test.com", "test001!", 30);
 
                 // when
-                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member);
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member.getId());
 
                 // then
                 assertSavedFavoriteForMember(favorite, member);
@@ -177,7 +177,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(EntityNotFoundException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, member);
+                                favoriteService.createFavorite(favoriteRequest, member.getId());
                             })
                             .withMessageMatching("역 번호에 해당하는 역이 없습니다.");
                 }
@@ -198,7 +198,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(EntityNotFoundException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, member);
+                                favoriteService.createFavorite(favoriteRequest, member.getId());
                             })
                             .withMessageMatching("역 번호에 해당하는 역이 없습니다.");
                 }
@@ -219,7 +219,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(IllegalArgumentException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, member);
+                                favoriteService.createFavorite(favoriteRequest, member.getId());
                             })
                             .withMessageMatching("출발역과 도착역이 동일할 수 없습니다.");
                 }
@@ -240,7 +240,7 @@ public class FavoriteServiceTest {
                     // when, then
                     assertThatExceptionOfType(IllegalArgumentException.class)
                             .isThrownBy(() -> {
-                                favoriteService.createFavorite(favoriteRequest, member);
+                                favoriteService.createFavorite(favoriteRequest, member.getId());
                             })
                             .withMessageMatching("출발역과 도착역을 잇는 경로가 없습니다.");
                 }
@@ -265,7 +265,7 @@ public class FavoriteServiceTest {
                 FavoriteRequest favoriteRequest = new FavoriteRequest(강남역_번호, 교대역_번호);
 
                 // when
-                Favorite savedFavorite = favoriteService.createFavorite(favoriteRequest, member);
+                Favorite savedFavorite = favoriteService.createFavorite(favoriteRequest, member.getId());
 
                 // then
                 assertThat(favoriteService.findFavorites(member)).usingRecursiveComparison()
@@ -291,7 +291,7 @@ public class FavoriteServiceTest {
                 // given
                 Member member = createMember("test@test.com", "test001!", 30);
 
-                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member);
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member.getId());
                 assertSavedFavoriteForMember(favorite, member);
 
                 // when
@@ -315,7 +315,7 @@ public class FavoriteServiceTest {
                 Member memberA = createMember("test001@test.com", "test001!", 30);
                 Member memberB = createMember("test002@test.com", "test001!", 30);
 
-                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), memberA);
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), memberA.getId());
                 assertSavedFavoriteForMember(favorite, memberA);
 
                 // when
@@ -336,7 +336,7 @@ public class FavoriteServiceTest {
                 // given
                 Member member = createMember("test@test.com", "test001!", 30);
 
-                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member);
+                Favorite favorite = favoriteService.createFavorite(new FavoriteRequest(강남역_번호, 교대역_번호), member.getId());
                 assertSavedFavoriteForMember(favorite, member);
 
                 // when
@@ -361,7 +361,7 @@ public class FavoriteServiceTest {
         List<Favorite> favorites = favoriteRepository.findAll();
 
         List<Favorite> filteredByMember = favorites.stream()
-                .filter(it -> it.getMember().equals(member))
+                .filter(it -> it.getMemberId().equals(member.getId()))
                 .collect(Collectors.toList());
 
         assertThat(favorites).isEqualTo(filteredByMember);
