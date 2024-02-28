@@ -1,12 +1,6 @@
 package nextstep.core.auth.application;
 
-import nextstep.core.auth.application.GithubClient;
-import nextstep.core.auth.application.dto.GithubProfileResponse;
-import nextstep.core.auth.application.JwtTokenProvider;
-import nextstep.core.auth.application.TokenService;
 import nextstep.core.auth.application.dto.TokenResponse;
-import nextstep.core.member.application.MemberService;
-import nextstep.core.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,9 +17,6 @@ public class TokenServiceMockTest {
     TokenService tokenService;
 
     @Mock
-    MemberService memberService;
-
-    @Mock
     JwtTokenProvider jwtTokenProvider;
 
     @Mock
@@ -33,7 +24,7 @@ public class TokenServiceMockTest {
 
     @BeforeEach
     void 사전_토큰_서비스_생성() {
-        tokenService = new TokenService(memberService, jwtTokenProvider, githubClient);
+        tokenService = new TokenService(jwtTokenProvider, githubClient);
     }
 
     @Nested
@@ -56,19 +47,13 @@ public class TokenServiceMockTest {
             @Test
             void 깃허브로_회원가입된_회원의_토큰_발급_요청() {
                 // given
-                when(githubClient.requestGithubProfile(code)).thenReturn(new GithubProfileResponse(email));
-                when(memberService.findOrCreate(email)).thenReturn(new Member(email, password, age));
                 when(jwtTokenProvider.createToken(email)).thenReturn(token);
 
                 // when
-                TokenResponse tokenResponse = tokenService.createTokenByGithub(code);
+                TokenResponse tokenResponse = tokenService.createTokenByGithub(email);
 
                 // then
                 assertThat(tokenResponse.getAccessToken()).isNotBlank();
-
-                verify(githubClient, times(1)).requestGithubProfile(code);
-                verify(memberService, times(1)).findOrCreate(any(String.class));
-                verify(jwtTokenProvider, times(1)).createToken(email);
             }
         }
     }

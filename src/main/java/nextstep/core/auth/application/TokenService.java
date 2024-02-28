@@ -8,29 +8,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
-        this.memberService = memberService;
+    public TokenService(JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.githubClient = githubClient;
     }
 
-    public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.checkPassword(password)) {
-            throw new IllegalArgumentException("비밀번호가 다릅니다.");
-        }
-
-        return new TokenResponse(jwtTokenProvider.createToken(member.getEmail()));
+    public TokenResponse createToken(String email) {
+        return new TokenResponse(jwtTokenProvider.createToken(email));
     }
 
-    public TokenResponse createTokenByGithub(String code) {
-        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(code);
-        Member member = memberService.findOrCreate(githubProfileResponse.getEmail());
+    public TokenResponse createTokenByGithub(String email) {
+        return new TokenResponse(jwtTokenProvider.createToken(email));
+    }
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.getEmail()));
+    public GithubProfileResponse requestGithubProfile(String code) {
+        return githubClient.requestGithubProfile(code);
     }
 }
