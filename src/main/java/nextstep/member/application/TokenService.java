@@ -25,4 +25,8 @@ public class TokenService {
 
         return new TokenResponse(token);
     }
+
+    public TokenResponse createTokenFromGithub(String code) {
+        return new TokenResponse("");
+    }
 }
