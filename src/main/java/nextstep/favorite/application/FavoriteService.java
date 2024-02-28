@@ -44,11 +44,11 @@ public class FavoriteService {
         return favorites.stream().map(favorite -> new FavoriteResponse(favorite)).collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new SubwayException("존재하지 않는 사용자입니다."));
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new SubwayException("존재하지 않는 즐겨찾기입니다."));
+
+        favorite.validateDeletionByMember(member);
         favoriteRepository.deleteById(id);
     }
 }

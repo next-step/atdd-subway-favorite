@@ -1,5 +1,6 @@
 package nextstep.favorite.domain;
 
+import nextstep.member.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.station.Station;
 
@@ -33,6 +34,12 @@ public class Favorite {
         this.member = member;
     }
 
+    public void validateDeletionByMember(Member member) {
+        if (!this.member.equals(member)) {
+            throw new AuthenticationException();
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,4 +55,5 @@ public class Favorite {
     public Member getMember() {
         return member;
     }
+
 }
