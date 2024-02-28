@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -45,4 +46,10 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }
+
+    public Member getMemberByEmailOrThrow(String email) {
+        return  findMemberByEmail(email)
+                .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+    }
+
 }

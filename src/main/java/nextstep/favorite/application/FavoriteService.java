@@ -16,6 +16,9 @@ import nextstep.subway.service.StationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static nextstep.subway.controller.dto.StationResponse.stationToStationResponse;
 
 @Service
 public class FavoriteService {
@@ -32,8 +35,7 @@ public class FavoriteService {
     }
 
     public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail())
-                .orElseThrow(() -> new AuthenticationException("유효한 인증 토큰이 아닙니다."));
+        Member member = memberService.getMemberByEmailOrThrow(loginMember.getEmail());
 
         Station sourceStation = stationService.getStationById(request.getSource());
         Station targetStation = stationService.getStationById(request.getTarget());
@@ -50,14 +52,15 @@ public class FavoriteService {
         return favoriteRepository.save(favorite).getId();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+
         List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+        return favorites.stream().map(favorite -> FavoriteResponse.builder()
+                .id(favorite.getId())
+                .source(stationToStationResponse(favorite.getSourceStation()))
+                .target(stationToStationResponse(favorite.getTargetStation()))
+                .build()).collect(Collectors.toList());
     }
 
     /**

@@ -23,4 +23,13 @@ public class FavoriteSteps {
                 .when().post("/favorites")
                 .then().log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_조회요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
 }
