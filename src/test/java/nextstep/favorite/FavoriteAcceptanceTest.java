@@ -77,6 +77,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회됨(response, 교대역, 양재역);
     }
 
+    /**
+     * Given 즐겨찾기를 생성하고
+     * When 토큰을 가지고 즐겨찾기를 삭제하면
+     * Then 즐겨찾기가 삭제된다.
+     */
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createResponse, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private static Long 역_생성(String name) {
         return StationSteps.createStation(name).jsonPath().getLong("id");
     }
