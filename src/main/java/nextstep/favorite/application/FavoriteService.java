@@ -13,6 +13,7 @@ import nextstep.station.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -36,14 +37,11 @@ public class FavoriteService {
         return favoriteRepository.save(favorite).getId();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(() -> new SubwayException("존재하지 않는 사용자입니다."));
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
+
+        return favorites.stream().map(favorite -> new FavoriteResponse(favorite)).collect(Collectors.toList());
     }
 
     /**
