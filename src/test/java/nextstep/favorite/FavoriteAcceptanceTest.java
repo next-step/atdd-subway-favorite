@@ -10,9 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.favorite.FavoriteSteps.즐겨찾기_생성_요청;
+import static nextstep.favorite.FavoriteSteps.*;
 import static nextstep.member.acceptance.AuthSteps.토큰_생성;
-import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -57,6 +57,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * Given 즐겨찾기를 생성하고
+     * When 토큰을 가지고 즐겨찾기를 조회하면
+     * Then 즐겨찾기가 조회된다.
+     */
+    @DisplayName("즐겨찾기를 조회한다")
+    @Test
+    void getFavorite() {
+        // given
+        즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(accessToken);
+
+        // then
+        즐겨찾기_조회됨(response, 교대역, 양재역);
     }
 
     private static Long 역_생성(String name) {
