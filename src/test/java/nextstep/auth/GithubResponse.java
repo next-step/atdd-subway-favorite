@@ -37,11 +37,11 @@ public enum GithubResponse {
 
     public static GithubResponse findByCode(String code) {
         return Arrays.stream(values()).filter(g -> g.getCode().equals(code)).findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new AuthenticationException("존재하지 않는 회원입니다."));
     }
 
     public static GithubResponse findByAccessToken(String accessToken) {
         return Arrays.stream(values()).filter(g -> g.getAccessToken().equals(accessToken)).findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new AuthenticationException("존재하지 않는 회원입니다."));
     }
 }
