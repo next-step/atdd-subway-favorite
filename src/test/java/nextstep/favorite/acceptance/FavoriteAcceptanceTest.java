@@ -108,6 +108,27 @@ public class FavoriteAcceptanceTest{
 
         //then
         assertThat(즐겨찾기_생성요청.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    /**
+     * given 사용자 등록, 토큰을 생성, 즐겨찾기 등록한다.
+     * when 즐겨찾기 조회하면
+     * then 즐겨찾기 경로 확인이 가능하다.
+     */
+    @Test
+    @DisplayName("즐겨찾기를 조회한다.")
+    void 즐겨찾기조회() {
+        //given
+        MemberSteps.회원_생성_요청(email, password, 1);
+        String accessToken = TokenSteps.토큰_생성요청(email, password).as(TokenResponse.class).getAccessToken();
+        FavoriteSteps.즐겨찾기_생성요청(교대역.jsonPath().getLong("id"), 강남역.jsonPath().getLong("id"), accessToken);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회요청 = FavoriteSteps.즐겨찾기_조회요청(accessToken);
+
+        //then
+        assertThat(즐겨찾기_조회요청.jsonPath().getList("source").get(0)).isEqualTo(교대역.jsonPath().get());
+        assertThat(즐겨찾기_조회요청.jsonPath().getList("target").get(0)).isEqualTo(강남역.jsonPath().get());
 
     }
 }
