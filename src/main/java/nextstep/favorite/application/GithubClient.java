@@ -2,6 +2,7 @@ package nextstep.favorite.application;
 
 import nextstep.favorite.application.dto.GithubAccessTokenRequest;
 import nextstep.favorite.application.dto.GithubAccessTokenResponse;
+import nextstep.favorite.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,5 +42,18 @@ public class GithubClient {
                 .getAccessToken();
 
         return accessToken;
+    }
+
+    public GithubProfileResponse requestGithubProfile(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", "bearer " + accessToken);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate
+                .exchange(userUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .getBody();
     }
 }
