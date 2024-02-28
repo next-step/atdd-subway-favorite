@@ -126,7 +126,7 @@ public class PathAcceptanceTest {
         ExtractableResponse<Response> 조회_요청 = 경로_조회_요청("/paths",신림역.jsonPath().getLong("id"),사당역.jsonPath().getLong("id"));
 
         //then
-        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(조회_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**

@@ -107,7 +107,7 @@ public class FavoriteAcceptanceTest{
 
 
         //then
-        assertThat(즐겨찾기_생성요청.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(즐겨찾기_생성요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -192,7 +192,7 @@ public class FavoriteAcceptanceTest{
 
     /**
      * given 사용자 등록, 토큰을 생성한다.
-     * when 즐겨찾기 삭제하면
+     * when 존재하지 않는 즐겨찾기 삭제하면
      * then 오류를 반환한다.
      */
     @Test

@@ -6,8 +6,7 @@ import lombok.Getter;
 @Getter
 public class FavoriteCreateResponse {
     private Long id;
-
-
+    
     @Builder
     public FavoriteCreateResponse(Long id) {
         this.id = id;

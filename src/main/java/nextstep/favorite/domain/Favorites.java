@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
-public class Fovorites {
+public class Favorites {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();

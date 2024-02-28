@@ -1,7 +1,7 @@
 package nextstep.member.domain;
 
 import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.Fovorites;
+import nextstep.favorite.domain.Favorites;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -16,7 +16,7 @@ public class Member {
     private String password;
     private Integer age;
     @Embedded
-    private Fovorites fovorites = new Fovorites();
+    private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -54,6 +54,6 @@ public class Member {
     }
 
     public void addFavorite(Favorite favorite) {
-        this.fovorites.addFavorite(favorite);
+        this.favorites.addFavorite(favorite);
     }
 }
