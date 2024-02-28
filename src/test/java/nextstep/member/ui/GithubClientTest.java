@@ -1,9 +1,9 @@
 package nextstep.member.ui;
 
 import nextstep.auth.AuthenticationException;
-import nextstep.auth.application.GithubClient;
-import nextstep.auth.GithubResponses;
-import nextstep.auth.dto.GithubProfileResponse;
+import nextstep.auth.infra.GithubClient;
+import nextstep.auth.fixture.GithubResponses;
+import nextstep.auth.infra.dto.GithubProfileResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

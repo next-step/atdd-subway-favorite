@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.fixture;
 
 import java.util.Arrays;
 
@@ -19,19 +19,12 @@ public enum GithubResponses {
         this.token = token;
     }
 
-    public static GithubResponses getCode(String email) {
-        return Arrays.stream(GithubResponses.values())
-                .filter(gr -> gr.email.equals(email))
-                .findFirst()
-                .orElse(UNAUTHORIZED_USER);
-    }
 
-    public static String getEmail(String code) {
+    public static GithubResponses of(String code) {
         return Arrays.stream(GithubResponses.values())
                 .filter(gr -> gr.code.equals(code))
                 .findFirst()
-                .orElse(UNAUTHORIZED_USER)
-                .email;
+                .orElse(UNAUTHORIZED_USER);
     }
 
     public static String getEmailOfToken(String token) {
@@ -46,12 +39,13 @@ public enum GithubResponses {
         return token;
     }
 
-    public String getCode() {
-        return code;
-    }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public boolean isUnAuthorized() {

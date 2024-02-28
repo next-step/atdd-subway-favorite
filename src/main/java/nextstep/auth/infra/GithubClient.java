@@ -1,10 +1,10 @@
-package nextstep.auth.application;
+package nextstep.auth.infra;
 
 import nextstep.auth.AuthenticationException;
-import nextstep.auth.GithubResponses;
-import nextstep.auth.dto.GithubAccessTokenRequest;
-import nextstep.auth.dto.GithubAccessTokenResponse;
-import nextstep.auth.dto.GithubProfileResponse;
+import nextstep.auth.infra.dto.GithubAccessTokenRequest;
+import nextstep.auth.infra.dto.GithubAccessTokenResponse;
+import nextstep.auth.infra.dto.GithubProfileResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,23 +15,24 @@ import java.util.Objects;
 @Component
 public class GithubClient {
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final String GITHUB_URL = "http://localhost:8080/github/login/oauth/access_token";
-    private final String GITHUB_USER_URL = "http://localhost:8080/github/user";
-    public String getAccessTokenFromGithub(String code) {
-        String clientId = GithubResponses.getEmail(code);
-        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
-                code,
-                clientId, // client id
-                "clientSecret" // client secret
-        );
+    @Value("${github.client.id}")
+    private String id;
+    @Value("${github.client.secret}")
+    private String secret;
+    @Value("${github.url.access-token}")
+    private String accessTokenUrl;
+    @Value("${github.url.profile}")
+    private String profileUrl;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    public String getAccessTokenFromGithub(String code) {
+        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(code, id, secret);
 
         try {
             ResponseEntity<GithubAccessTokenResponse> responseEntity = restTemplate
-                    .postForEntity(GITHUB_URL, githubAccessTokenRequest, GithubAccessTokenResponse.class);
+                    .postForEntity(accessTokenUrl, githubAccessTokenRequest, GithubAccessTokenResponse.class);
             return Objects.requireNonNull(responseEntity.getBody()).getAccessToken();
         } catch (HttpClientErrorException.Unauthorized ex) {
             throw new AuthenticationException();
@@ -45,7 +46,7 @@ public class GithubClient {
 
         try {
             ResponseEntity<GithubProfileResponse> responseEntity = restTemplate
-                    .exchange(GITHUB_USER_URL, HttpMethod.GET, new HttpEntity<>(headers), GithubProfileResponse.class);
+                    .exchange(profileUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubProfileResponse.class);
             return Objects.requireNonNull(responseEntity.getBody());
         } catch (HttpClientErrorException.Unauthorized ex) {
             throw new AuthenticationException();

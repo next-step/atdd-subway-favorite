@@ -1,4 +1,4 @@
-package nextstep.auth.dto;
+package nextstep.auth.infra.dto;
 
 public class GithubAccessTokenRequest {
 

@@ -20,7 +20,4 @@ public class UserDetail {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
 }
