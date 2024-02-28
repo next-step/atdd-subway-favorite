@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.favorite.FavoriteSteps.*;
 import static nextstep.member.acceptance.AuthSteps.토큰_생성;
-import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -25,8 +25,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 교대역;
     private Long 강남역;
     private Long 양재역;
+    private Long 수내역;
+    private Long 서현역;
     private Long 이호선;
     private Long 신분당선;
+    private Long 수인분당선;
     private String accessToken;
 
     /**
@@ -38,8 +41,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = 역_생성("교대역");
         강남역 = 역_생성("강남역");
         양재역 = 역_생성("양재역");
+        수내역 = 역_생성("수내역");
+        서현역 = 역_생성("서현역");
         이호선 = 노선_생성("2호선", "green", 교대역, 강남역, 10L);
         신분당선 = 노선_생성("신분당선", "red", 강남역, 양재역, 10L);
+        수인분당선 = 노선_생성("수인분당선", "yellow", 수내역, 서현역, 10L);
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         accessToken = 토큰_생성(EMAIL, PASSWORD);
@@ -57,6 +63,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * When 찾을 수 없는 경로로 즐겨찾기를 생성하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("찾을 수 없는 경로를 등록할 경우 에러를 반환한다.")
+    @Test
+    void validatePathExists() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 수내역, 양재역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.jsonPath().getString("message")).isEqualTo("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 
     /**
