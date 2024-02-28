@@ -1,11 +1,14 @@
 package nextstep.member.application;
 
+import nextstep.favorite.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class MemberService {
@@ -42,5 +45,10 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Member findOrCreateMember(GithubProfileResponse githubProfileResponse) {
+        return memberRepository.findByEmail(githubProfileResponse.getEmail())
+                .orElseGet(() -> memberRepository.save(new Member(githubProfileResponse.getEmail(), UUID.randomUUID().toString(), githubProfileResponse.getAge())));
     }
 }
