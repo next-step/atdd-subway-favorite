@@ -1,4 +1,4 @@
-package nextstep.member.ui.dto;
+package nextstep.auth.dto;
 
 public class OAuthRequest {
     private String code;

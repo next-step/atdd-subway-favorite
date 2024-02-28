@@ -1,9 +1,9 @@
-package nextstep.member.ui;
+package nextstep.auth.presentation;
 
-import nextstep.member.GithubResponses;
-import nextstep.member.ui.dto.GithubAccessTokenRequest;
-import nextstep.member.ui.dto.GithubAccessTokenResponse;
-import nextstep.member.ui.dto.GithubProfileResponse;
+import nextstep.auth.GithubResponses;
+import nextstep.auth.dto.GithubAccessTokenRequest;
+import nextstep.auth.dto.GithubAccessTokenResponse;
+import nextstep.auth.dto.GithubProfileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

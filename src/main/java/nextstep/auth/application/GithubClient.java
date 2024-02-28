@@ -1,10 +1,10 @@
-package nextstep.member.ui;
+package nextstep.auth.application;
 
-import nextstep.member.exceptions.AuthenticationException;
-import nextstep.member.GithubResponses;
-import nextstep.member.ui.dto.GithubAccessTokenRequest;
-import nextstep.member.ui.dto.GithubAccessTokenResponse;
-import nextstep.member.ui.dto.GithubProfileResponse;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.GithubResponses;
+import nextstep.auth.dto.GithubAccessTokenRequest;
+import nextstep.auth.dto.GithubAccessTokenResponse;
+import nextstep.auth.dto.GithubProfileResponse;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;

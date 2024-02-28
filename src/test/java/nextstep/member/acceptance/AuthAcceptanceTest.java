@@ -3,7 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.GithubResponses;
+import nextstep.auth.GithubResponses;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +34,6 @@ class AuthAcceptanceTest {
         RestAssured.port = port;
     }
 
-    @Autowired
-    private MemberRepository memberRepository;
 
     @DisplayName("Bearer Auth")
     @Test
@@ -86,7 +84,7 @@ class AuthAcceptanceTest {
 
         ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.UNAUTHORIZED_USER.getCode(), HttpStatus.UNAUTHORIZED);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(response.jsonPath().getString("accessToken")).isNull();
     }
 
 
