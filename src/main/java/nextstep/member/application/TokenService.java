@@ -1,5 +1,7 @@
 package nextstep.member.application;
 
+import nextstep.favorite.application.GithubClient;
+import nextstep.favorite.application.dto.GithubProfileResponse;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
@@ -9,10 +11,12 @@ import org.springframework.stereotype.Service;
 public class TokenService {
     private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
+    private GithubClient githubClient;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.githubClient = githubClient;
     }
 
     public TokenResponse createToken(String email, String password) {
@@ -27,6 +31,11 @@ public class TokenService {
     }
 
     public TokenResponse createGithubToken(final String code) {
-        return new TokenResponse("access_token");
+        String githubToken = githubClient.requestGithubToken(code);
+        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubToken);
+        Member member = memberService.findOrCreateMember(githubProfileResponse);
+        String token = jwtTokenProvider.createToken(member.getEmail());
+
+        return new TokenResponse(token);
     }
 }
