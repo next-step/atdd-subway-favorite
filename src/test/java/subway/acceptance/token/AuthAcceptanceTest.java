@@ -1,10 +1,12 @@
 package subway.acceptance.token;
 
 import static org.assertj.core.api.Assertions.*;
+import static subway.fixture.acceptance.MemberAcceptanceSteps.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,28 +17,27 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.acceptance.AcceptanceTest;
 import subway.fixture.member.GithubResponses;
 import subway.member.JwtTokenProvider;
-import subway.member.Member;
-import subway.member.MemberRepository;
+import subway.utils.database.DatabaseCleanup;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class AuthAcceptanceTest extends AcceptanceTest {
-	public static final String EMAIL = "admin@email.com";
-	public static final String PASSWORD = "password";
-	public static final Integer AGE = 20;
-
-	@Autowired
-	private MemberRepository memberRepository;
-	
+class AuthAcceptanceTest {
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
+
+	@Autowired
+	private DatabaseCleanup databaseCleanup;
+
+	@BeforeEach
+	void setUp() {
+		databaseCleanup.execute();
+	}
 
 	@DisplayName("Bearer Auth")
 	@Test
 	void bearerAuth() {
-		memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+		멤버_생성();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("email", EMAIL);
@@ -47,9 +48,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
 			.body(params)
 			.when().post("/login/token")
 			.then().log().all()
-			.statusCode(HttpStatus.OK.value()).extract();
+			.statusCode(HttpStatus.OK.value())
+			.extract();
 
-		assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+		String token = jwtTokenProvider.createToken(EMAIL);
+		assertThat(response.jsonPath().getString("accessToken")).isEqualTo(token);
 	}
 
 	@DisplayName("Github Auth")
