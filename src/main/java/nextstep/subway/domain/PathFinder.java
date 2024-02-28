@@ -24,7 +24,7 @@ public class PathFinder {
         return Path.builder().path(path.getVertexList()).distance(shortestPath.getPathWeight(source, target)).build();
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(List<Line> lineList) {
+    public WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(List<Line> lineList) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         lineList.stream()

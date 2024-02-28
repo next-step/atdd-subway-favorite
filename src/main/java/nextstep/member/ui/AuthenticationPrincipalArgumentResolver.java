@@ -24,13 +24,23 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
-            throw new AuthenticationException();
-        }
+        checkTokenExists(authorization);
         String token = authorization.split(" ")[1];
+        checkValidToken(token);
 
         String email = jwtTokenProvider.getPrincipal(token);
-
         return new LoginMember(email);
+    }
+
+    private void checkTokenExists(String authorization) {
+        if (!authorization.split(" ")[0].equalsIgnoreCase("bearer")) {
+            throw new AuthenticationException("존재하지 않는 토큰의 인증입니다.");
+        }
+    }
+
+    private void checkValidToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException("유효한 토큰이 아닙니다.");
+        }
     }
 }
