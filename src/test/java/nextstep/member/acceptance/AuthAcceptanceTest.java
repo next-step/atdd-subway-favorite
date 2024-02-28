@@ -72,7 +72,16 @@ class AuthAcceptanceTest {
             .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(getStringPath(response.body(), "accessToken"))
-            .isEqualTo(githubUser.getAccessToken());
+
+        String accessToken = getStringPath(response.body(), "accessToken");
+        assertThat(accessToken).isNotEqualTo(githubUser.getAccessToken());
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when().get("/members/me")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(githubUser.getEmail());
     }
 }
