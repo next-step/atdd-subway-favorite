@@ -6,21 +6,20 @@ import io.restassured.response.Response;
 import nextstep.common.LineRestAssuredCRUD;
 import nextstep.common.SectionRestAssuredCRUD;
 import nextstep.common.StationRestAssuredCRUD;
+import nextstep.member.acceptance.MemberRestAssuredCRUD;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.subway.line.Line;
 import nextstep.utils.CommonAcceptanceTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
@@ -93,35 +92,27 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @Test
     @DisplayName("인증된 회원의 즐겨찾기를 생성하고 조회한다.")
     void 즐겨찾기_생성_조회() {
-        //회원 정보 생성
+        //given
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-
-        //회원 정보(이메일)로 토큰 발급 (회원 정보가 없으면 오류 발생)
-        ExtractableResponse<Response> authResponse = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> authResponse = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
 
         String accessToken = authResponse.jsonPath().getString("accessToken");
 
         ExtractableResponse<Response> createResponse = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, accessToken);
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        Assertions.assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
+        //then
         ExtractableResponse<Response> findResponse = FavoriteRestAssuredCRUD.findFavorite(accessToken);
 
-        List<Long> favoriteSourceIds = findResponse.jsonPath().getList("source.id");
-        List<Long> favoriteTargetIds = findResponse.jsonPath().getList("target.id");
+        List<Long> favoriteSourceIds = findResponse.jsonPath().getList("source.id", Long.class);
+        List<Long> favoriteTargetIds = findResponse.jsonPath().getList("target.id", Long.class);
 
-        Assertions.assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Assertions.assertThat(favoriteSourceIds).contains(강남역Id);
-        Assertions.assertThat(favoriteTargetIds).contains(양재역Id);
+        assertAll(
+            () -> assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(favoriteSourceIds).contains(강남역Id),
+            () -> assertThat(favoriteTargetIds).contains(양재역Id)
+        );
     }
 
     /**

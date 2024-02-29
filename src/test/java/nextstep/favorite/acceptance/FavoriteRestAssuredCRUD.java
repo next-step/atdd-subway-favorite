@@ -21,7 +21,7 @@ public class FavoriteRestAssuredCRUD {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(param)
                 .when()
-                    .post("/favorites/me")
+                    .post("/favorites")
                 .then().log().all()
                 .extract();
     }
