@@ -1,5 +1,6 @@
 package nextstep.core.subway.favorite.domain;
 
+import nextstep.core.member.domain.Member;
 import nextstep.core.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -26,6 +27,10 @@ public class Favorite {
         this.sourceStation = source;
         this.targetStation = target;
         this.memberId = memberId;
+    }
+
+    public boolean isOwn(Member member) {
+        return member.isSameId(memberId);
     }
 
     public Station getSourceStation() {
