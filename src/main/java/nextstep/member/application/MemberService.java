@@ -46,4 +46,10 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }
+
+    public Member findMemberByEmailAndAge(String email, Integer age) {
+        return memberRepository.findByEmailAndAge(email, age).stream()
+            .findAny()
+            .orElseThrow(AuthenticationException::new);
+    }
 }
