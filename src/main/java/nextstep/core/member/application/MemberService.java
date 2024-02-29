@@ -2,7 +2,7 @@ package nextstep.core.member.application;
 
 import nextstep.core.member.application.dto.MemberRequest;
 import nextstep.core.member.application.dto.MemberResponse;
-import nextstep.core.member.domain.LoginMember;
+import nextstep.core.auth.domain.LoginMember;
 import nextstep.core.member.domain.Member;
 import nextstep.core.member.domain.MemberRepository;
 import nextstep.core.member.exception.NotFoundMemberException;

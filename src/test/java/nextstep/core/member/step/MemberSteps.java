@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.core.member.application.dto.MemberRequest;
-import nextstep.core.member.fixture.GithubMemberFixture;
+import nextstep.core.auth.fixture.GithubMemberFixture;
 import nextstep.core.member.fixture.MemberFixture;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,11 +40,11 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(MemberFixture memberFixture) {
-        return 회원_생성_요청(memberFixture.getEmail(), memberFixture.getPassword(), memberFixture.getAge());
+        return 회원_생성_요청(memberFixture.이메일, memberFixture.비밀번호, memberFixture.나이);
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(GithubMemberFixture githubMemberFixture, String password, int age) {
-        return 회원_생성_요청(githubMemberFixture.getEmail(), password, age);
+        return 회원_생성_요청(githubMemberFixture.get이메일(), password, age);
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
@@ -70,7 +70,8 @@ public class MemberSteps {
         토큰으로_회원정보_요청(발급받은_토큰, HttpStatus.UNAUTHORIZED);
     }
 
-    public static void 회원_정보_확인(ExtractableResponse<Response> 회원정보_요청_응답, MemberFixture memberFixture) {
-        assertThat(회원정보_요청_응답.jsonPath().getString("email")).isEqualTo(memberFixture.getEmail());
+    public static void 회원_정보_확인(ExtractableResponse<Response> 회원정보_요청_응답, String 이메일, int 나이) {
+        assertThat(회원정보_요청_응답.jsonPath().getString("email")).isEqualTo(이메일);
+        assertThat(회원정보_요청_응답.jsonPath().getInt("age")).isEqualTo(나이);
     }
 }

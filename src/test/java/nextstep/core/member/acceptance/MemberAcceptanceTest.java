@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.core.member.fixture.MemberFixture.*;
-import static nextstep.core.member.step.AuthSteps.성공하는_토큰_발급_요청;
+import static nextstep.core.auth.step.AuthSteps.성공하는_토큰_발급_요청;
 import static nextstep.core.member.step.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +22,7 @@ class MemberAcceptanceTest {
     @Test
     void createMember() {
         // when
-        var response = 회원_생성_요청(BROWN);
+        var response = 회원_생성_요청(브라운);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -32,13 +32,13 @@ class MemberAcceptanceTest {
     @Test
     void getMember() {
         // given
-        var createResponse = 회원_생성_요청(BROWN);
+        var createResponse = 회원_생성_요청(브라운);
 
         // when
         var response = 회원_정보_조회_요청(createResponse);
 
         // then
-        회원_정보_확인(response, BROWN);
+        회원_정보_확인(response, 브라운.이메일, 브라운.나이);
 
     }
 
@@ -46,7 +46,7 @@ class MemberAcceptanceTest {
     @Test
     void updateMember() {
         // given
-        var createResponse = 회원_생성_요청(BROWN);
+        var createResponse = 회원_생성_요청(브라운);
 
         // when
         var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
@@ -59,7 +59,7 @@ class MemberAcceptanceTest {
     @Test
     void deleteMember() {
         // given
-        var createResponse = 회원_생성_요청(BROWN);
+        var createResponse = 회원_생성_요청(브라운);
 
         // when
         var response = 회원_삭제_요청(createResponse);
@@ -82,15 +82,15 @@ class MemberAcceptanceTest {
             @Test
             void 정상적인_토큰으로_조회() {
                 // given
-                회원_생성_요청(SMITH);
+                회원_생성_요청(스미스);
 
-                var 발급된_토큰 = 성공하는_토큰_발급_요청(SMITH);
+                var 발급된_토큰 = 성공하는_토큰_발급_요청(스미스);
 
                 // when
                 var 토큰으로_전달받은_회원_정보 = 성공하는_토큰으로_회원정보_요청(발급된_토큰);
 
                 // then
-                회원_정보_확인(토큰으로_전달받은_회원_정보, SMITH);
+                회원_정보_확인(토큰으로_전달받은_회원_정보, 스미스.이메일, 스미스.나이);
             }
 
         }
@@ -100,7 +100,7 @@ class MemberAcceptanceTest {
 
             @BeforeEach
             void 사전_회원_생성() {
-                회원_생성_요청(JOHNSON);
+                회원_생성_요청(존슨);
             }
 
             /**
@@ -127,9 +127,9 @@ class MemberAcceptanceTest {
             @Test
             void 비정상적인_토큰을_전달한_경우() {
                 // given
-                회원_생성_요청(WILLIAMS);
+                회원_생성_요청(윌리엄스);
 
-                var 임의로_수정된_토큰 = "Changed" + 성공하는_토큰_발급_요청(WILLIAMS);
+                var 임의로_수정된_토큰 = "Changed" + 성공하는_토큰_발급_요청(윌리엄스);
 
                 // when
                 실패하는_토큰으로_회원정보_요청(임의로_수정된_토큰);

@@ -5,9 +5,6 @@ spring:
       dev:
         - common
         - dev
-      test:
-        - cmmon
-        - test
 
 ---
 spring:
@@ -43,24 +40,6 @@ security:
 
 github:
   base-url: https://github.com/
-  client:
-    id: client-id
-    secret: github-client-secret
-
----
-spring:
-  config:
-    activate:
-      on-profile: test
-
-security:
-  jwt:
-    token:
-      secret-key: atdd-secret-key
-      expire-length: 3600000
-
-github:
-  base-url: http://localhost:8080/github/
   client:
     id: client-id
     secret: github-client-secret

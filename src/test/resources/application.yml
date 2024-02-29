@@ -1,0 +1,44 @@
+spring:
+  profiles:
+    active: test # defualt
+    group:
+      test:
+        - common
+        - test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "common"
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
+    org.hibernate.type.descriptor.sql: trace
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 3600000
+
+github:
+  base-url: http://localhost:8080/github/
+  client:
+    id: client-id
+    secret: github-client-secret

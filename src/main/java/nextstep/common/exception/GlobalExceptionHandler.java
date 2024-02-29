@@ -1,12 +1,13 @@
 package nextstep.common.exception;
 
 import nextstep.common.exception.dto.ExceptionResponse;
-import nextstep.core.member.AuthenticationException;
+import nextstep.core.auth.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -38,8 +39,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<ExceptionResponse> httpClientErrorException(HttpClientErrorException e) {
+    @ExceptionHandler(WebClientResponseException.class)
+    public ResponseEntity<ExceptionResponse> httpClientErrorException(WebClientResponseException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(e.getMessage()));
     }
 }
