@@ -12,6 +12,7 @@ public class FavoriteAcceptanceSteps {
 
     public static void 즐겨찾기_등록_요청(String accessToken, Map<String, Long> params) {
         RestAssured.given().log().all()
+                   .contentType(MediaType.APPLICATION_JSON_VALUE)
                    .auth().oauth2(accessToken)
                    .body(params)
                    .when().post("/favorites")
@@ -23,8 +24,7 @@ public class FavoriteAcceptanceSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
-                          .contentType(
-                              MediaType.APPLICATION_JSON_VALUE)
+                          .contentType(MediaType.APPLICATION_JSON_VALUE)
                           .auth().oauth2(accessToken)
                           .when().get("/favorites")
                           .then().log().all()
@@ -35,8 +35,9 @@ public class FavoriteAcceptanceSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(long id, String accessToken) {
         return RestAssured.given().log().all()
+                          .contentType(MediaType.APPLICATION_JSON_VALUE)
                           .auth().oauth2(accessToken)
-                          .when().delete("/favorites" + id)
+                          .when().delete("/favorites/" + id)
                           .then().log().all()
                           .extract();
     }

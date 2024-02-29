@@ -91,7 +91,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         var response = 즐겨찾기_조회_요청(accessToken);
 
         //then
-        long id = response.jsonPath().getLong("id");
+        long id = response.jsonPath().getLong("id[0]");
         assertTrue(favoriteRepository.findById(id).isPresent());
     }
 
@@ -105,7 +105,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void favoriteDeleteAcceptanceTest() {
         //given
         즐겨찾기_등록_요청(accessToken, 즐겨찾기_등록_파라미터생성(교대역, 양재역));
-        long id = 즐겨찾기_조회_요청(accessToken).jsonPath().getLong("id");
+        long id = 즐겨찾기_조회_요청(accessToken).jsonPath().getLong("id[0]");
 
         //when
         var response = 즐겨찾기_삭제_요청(id, accessToken);
