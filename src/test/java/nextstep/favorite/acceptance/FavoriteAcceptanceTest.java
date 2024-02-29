@@ -15,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -122,7 +123,23 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @Test
     @DisplayName("인증되지 않은 회원이 즐겨찾기를 등록하면 인증 오류가 발생한다.")
     void 즐겨찾기_생성_인증오류() {
+        //when
+        ExtractableResponse<Response> emptyTokenResponse = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, "");
+        ExtractableResponse<Response> wrongTokenResponse = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, "token");
+        ExtractableResponse<Response> nullTokenResponse = RestAssured
+                .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                    .post("/favorites")
+                .then().log().all()
+                .extract();
 
+        //then
+        assertAll(
+                () -> assertThat(emptyTokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(nullTokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(wrongTokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
+        );
     }
 
     /**
