@@ -1,7 +1,8 @@
-package nextstep.member.acceptance;
+package nextstep.auth.unit;
 
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.GithubResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
