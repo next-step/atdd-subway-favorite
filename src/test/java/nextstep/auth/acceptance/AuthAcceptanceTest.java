@@ -1,10 +1,10 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.GithubResponse;
-import nextstep.member.application.dto.GithubLoginRequest;
+import nextstep.auth.GithubResponse;
+import nextstep.auth.application.dto.GithubLoginRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.acceptance.annotation.AcceptanceTest;

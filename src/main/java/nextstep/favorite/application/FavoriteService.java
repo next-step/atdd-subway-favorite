@@ -6,7 +6,7 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.FavoriteException;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.subway.path.PathService;
 import nextstep.subway.station.Station;
