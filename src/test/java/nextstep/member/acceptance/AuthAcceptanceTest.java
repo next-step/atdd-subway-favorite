@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final Integer AGE = 20;
