@@ -18,6 +18,9 @@ public class TokenServiceMockTest {
     TokenService tokenService;
 
     @Mock
+    UserDetailsService userDetailsService;
+
+    @Mock
     JwtTokenProvider jwtTokenProvider;
 
     @Mock
@@ -25,7 +28,7 @@ public class TokenServiceMockTest {
 
     @BeforeEach
     void 사전_토큰_서비스_생성() {
-        tokenService = new TokenService(jwtTokenProvider, githubClient);
+        tokenService = new TokenService(userDetailsService, jwtTokenProvider, githubClient);
     }
 
     @Nested

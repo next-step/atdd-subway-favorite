@@ -9,13 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static nextstep.core.member.fixture.MemberFixture.존슨;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @DisplayName("토큰 서비스 레이어 테스트")
 @ApplicationTest
 public class TokenServiceTest {
 
     TokenService tokenService;
+
+    @Mock
+    UserDetailsService userDetailsService;
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
@@ -25,13 +30,11 @@ public class TokenServiceTest {
 
     @BeforeEach
     void 사전_토큰_서비스_생성() {
-        tokenService = new TokenService(jwtTokenProvider, githubClient);
+        tokenService = new TokenService(userDetailsService, jwtTokenProvider, githubClient);
     }
 
     @Nested
     class 토큰_발급 {
-
-        final String value = "Temp Value";
 
         @Nested
         class 성공 {
@@ -41,8 +44,11 @@ public class TokenServiceTest {
              */
             @Test
             void 토큰_발급_요청() {
+                // given
+                when(userDetailsService.validateUser(존슨.이메일, 존슨.비밀번호)).thenReturn(true);
+
                 // when
-                TokenResponse tokenResponse = tokenService.createToken(value);
+                TokenResponse tokenResponse = tokenService.createToken(존슨.이메일, 존슨.비밀번호);
 
                 // then
                 assertThat(tokenResponse.getAccessToken()).isNotBlank();

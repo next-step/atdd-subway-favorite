@@ -3,6 +3,7 @@ package nextstep.core.auth.application;
 import nextstep.common.annotation.ApplicationTest;
 import nextstep.core.auth.application.dto.TokenResponse;
 import nextstep.core.member.application.MemberService;
+import nextstep.core.member.application.UserDetailsServiceImpl;
 import nextstep.core.member.application.dto.MemberRequest;
 import nextstep.core.member.exception.NotFoundMemberException;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,10 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @ApplicationTest
 public class UserDetailServiceTest {
 
-    UserDetailService userDetailService;
-
-    @Autowired
-    TokenService tokenService;
+    UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     MemberService memberService;
@@ -30,7 +28,7 @@ public class UserDetailServiceTest {
 
     @BeforeEach
     void 사전_유저_서비스_생성() {
-        userDetailService = new UserDetailService(tokenService, memberService);
+        userDetailsService = new UserDetailsServiceImpl(memberService);
     }
 
     @Nested
@@ -49,10 +47,10 @@ public class UserDetailServiceTest {
                 memberService.createMember(memberRequest);
 
                 // when
-                TokenResponse tokenResponse = userDetailService.createToken(브라운.이메일, 브라운.비밀번호);
+                boolean actual = userDetailsService.validateUser(브라운.이메일, 브라운.비밀번호);
 
                 // then
-                assertThat(tokenResponse.getAccessToken()).isNotBlank();
+                assertThat(actual).isTrue();
             }
         }
 
@@ -74,7 +72,7 @@ public class UserDetailServiceTest {
                 // when, then
                 assertThatExceptionOfType(IllegalArgumentException.class)
                         .isThrownBy(() -> {
-                            userDetailService.createToken(스미스.이메일, changedPassword);
+                            userDetailsService.validateUser(스미스.이메일, changedPassword);
                         }).withMessageMatching("비밀번호가 다릅니다.");
             }
 
@@ -88,7 +86,7 @@ public class UserDetailServiceTest {
                 // when, then
                 assertThatExceptionOfType(NotFoundMemberException.class)
                         .isThrownBy(() -> {
-                            userDetailService.createToken(존슨.이메일, 존슨.비밀번호);
+                            userDetailsService.validateUser(존슨.이메일, 존슨.비밀번호);
                         }).withMessageMatching("회원 정보가 없습니다.");
             }
 
