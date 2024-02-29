@@ -11,18 +11,18 @@ import java.util.List;
 import java.util.Set;
 
 public class StationConverter {
-    public static List<StationResponse> convertToStationResponses(List<Section> sections) {
+    public static List<StationResponse> convertToResponses(List<Section> sections) {
         Set<StationResponse> stationResponses = new LinkedHashSet<>();
 
         sections.forEach(section -> {
-            stationResponses.add(convertToStationResponse(section.getUpStation()));
-            stationResponses.add(convertToStationResponse(section.getDownStation()));
+            stationResponses.add(convertToResponse(section.getUpStation()));
+            stationResponses.add(convertToResponse(section.getDownStation()));
         });
 
         return new ArrayList<>(stationResponses);
     }
 
-    public static StationResponse convertToStationResponse(Station station) {
+    public static StationResponse convertToResponse(Station station) {
         return new StationResponse(
                 station.getId(),
                 station.getName()

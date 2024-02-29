@@ -8,11 +8,11 @@ import nextstep.core.subway.pathFinder.domain.dto.PathFinderResult;
 
 public class PathFinderConverter {
 
-    public static PathFinderResponse convertToPathFinderResponse(PathFinderResult pathFinderResult) {
+    public static PathFinderResponse convertToResponse(PathFinderResult pathFinderResult) {
         return new PathFinderResponse(pathFinderResult.getStations(), pathFinderResult.getDistance());
     }
 
-    public static PathFinderRequest convertToPathFinderRequest(FavoriteRequest request) {
+    public static PathFinderRequest convertToRequest(FavoriteRequest request) {
         return new PathFinderRequest(request.getSource(), request.getTarget());
     }
 }

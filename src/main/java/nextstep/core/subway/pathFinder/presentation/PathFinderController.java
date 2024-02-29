@@ -20,6 +20,7 @@ public class PathFinderController {
     @GetMapping("/paths")
     public ResponseEntity<PathFinderResponse> findShortestPath(@RequestParam("source") Long departureStationId,
                                                                @RequestParam("target") Long arrivalStationId) {
-        return ResponseEntity.ok(pathFinderService.findShortestPath(new PathFinderRequest(departureStationId, arrivalStationId)));
+        PathFinderRequest pathFinderRequest = new PathFinderRequest(departureStationId, arrivalStationId);
+        return ResponseEntity.ok(pathFinderService.findShortestPath(pathFinderRequest));
     }
 }

@@ -35,12 +35,12 @@ public class LineService {
     public LineResponse createLine(LineRequest request) {
         Line line = LineConverter.convertToLine(request);
         line.addSection(createSection(request, line));
-        return LineConverter.convertToLineResponse(lineRepository.save(line));
+        return LineConverter.convertToResponse(lineRepository.save(line));
     }
 
     public List<LineResponse> findAllLineResponses() {
         return lineRepository.findAll().stream()
-                .map(LineConverter::convertToLineResponse)
+                .map(LineConverter::convertToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -48,7 +48,7 @@ public class LineService {
     public void updateLine(Long lineId, LineRequest request) {
         Line line = lineRepository.findById(lineId)
                 .orElseThrow(EntityNotFoundException::new);
-        LineConverter.convertToLineResponse(updateLine(request, line));
+        LineConverter.convertToResponse(updateLine(request, line));
     }
 
     @Transactional
@@ -57,7 +57,7 @@ public class LineService {
     }
 
     public LineResponse findLineWithConvertResponse(Long lineId) {
-        return LineConverter.convertToLineResponse(findLineById(lineId));
+        return LineConverter.convertToResponse(findLineById(lineId));
     }
 
     @Transactional

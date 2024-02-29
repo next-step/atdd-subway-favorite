@@ -5,7 +5,7 @@ import nextstep.core.subway.line.application.dto.LineRequest;
 import nextstep.core.subway.line.application.dto.LineResponse;
 import nextstep.core.subway.line.domain.Line;
 
-import static nextstep.core.subway.station.application.converter.StationConverter.convertToStationResponses;
+import static nextstep.core.subway.station.application.converter.StationConverter.convertToResponses;
 
 public class LineConverter {
 
@@ -15,11 +15,11 @@ public class LineConverter {
                 request.getColor());
     }
 
-    public static LineResponse convertToLineResponse(Line line) {
+    public static LineResponse convertToResponse(Line line) {
         return new LineResponse(
                 line.getId(),
                 line.getName(),
                 line.getColor(),
-                convertToStationResponses(line.getSortedAllSections()));
+                convertToResponses(line.getSortedAllSections()));
     }
 }

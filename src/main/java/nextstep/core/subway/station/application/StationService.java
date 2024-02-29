@@ -24,12 +24,12 @@ public class StationService {
     @Transactional
     public StationResponse createStation(StationRequest stationRequest) {
         Station station = stationRepository.save(new Station(stationRequest.getName()));
-        return StationConverter.convertToStationResponse(station);
+        return StationConverter.convertToResponse(station);
     }
 
     public List<StationResponse> findAllStations() {
         return stationRepository.findAll().stream()
-                .map(StationConverter::convertToStationResponse)
+                .map(StationConverter::convertToResponse)
                 .collect(Collectors.toList());
     }
 

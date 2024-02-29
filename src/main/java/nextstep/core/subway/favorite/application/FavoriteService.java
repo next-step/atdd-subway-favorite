@@ -2,6 +2,7 @@ package nextstep.core.subway.favorite.application;
 
 import nextstep.core.member.domain.Member;
 import nextstep.core.member.exception.NonMatchingMemberException;
+import nextstep.core.subway.favorite.application.converter.FavoriteConverter;
 import nextstep.core.subway.favorite.application.dto.FavoriteRequest;
 import nextstep.core.subway.favorite.application.dto.FavoriteResponse;
 import nextstep.core.subway.favorite.domain.Favorite;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static nextstep.core.subway.pathFinder.application.converter.PathFinderConverter.convertToPathFinderRequest;
+import static nextstep.core.subway.pathFinder.application.converter.PathFinderConverter.convertToRequest;
 
 @Transactional(readOnly = true)
 @Service
@@ -33,14 +34,15 @@ public class FavoriteService {
 
     @Transactional
     public Favorite createFavorite(FavoriteRequest request, Long memberId) {
-        if (!pathFinderService.isValidPath(convertToPathFinderRequest(request))) {
+        if (!pathFinderService.isValidPath(convertToRequest(request))) {
             throw new IllegalArgumentException("출발역과 도착역을 잇는 경로가 없습니다.");
         }
         return favoriteRepository.save(createFavoriteEntity(request, memberId));
     }
 
     public List<FavoriteResponse> findFavorites(Member member) {
-        return FavoriteConverter.convertToFavoriteResponses(favoriteRepository.findByMember(member.getId()));
+        List<Favorite> favorites = favoriteRepository.findByMember(member.getId());
+        return FavoriteConverter.convertToResponses(favorites);
     }
 
     @Transactional
