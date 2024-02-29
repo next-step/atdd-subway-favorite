@@ -2,6 +2,7 @@ package nextstep.auth.application;
 
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.infra.GithubClient;
+import nextstep.auth.infra.dto.GithubProfileResponse;
 import nextstep.auth.presentation.dto.TokenResponse;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class TokenService {
 
     public TokenResponse createToken(String email, String password) {
         UserDetail userDetail = userDetailService.loadUser(email);
-        if (!userDetail.isEquals(password)) {
+        if (!userDetail.matchPassword(password)) {
             throw new AuthenticationException();
         }
         return new TokenResponse(jwtTokenProvider.createToken(userDetail.getEmail()));
@@ -30,8 +31,11 @@ public class TokenService {
 
 
     public TokenResponse createToken(String code) {
-        String token = githubClient.getAccessTokenFromGithub(code);
-        UserDetail userDetail = userDetailService.loadUser(githubClient.getUserProfile(token).getEmail());
+        GithubProfileResponse userProfile = githubClient.getUserProfile(githubClient.getAccessTokenFromGithub(code));
+        UserDetail userDetail = userDetailService.loadUser(userProfile.getEmail());
+        if (!userDetail.hasUserDetail()) {
+            userDetailService.saveUser(userDetail.getEmail(), null, userProfile.getAge());
+        }
         return new TokenResponse(jwtTokenProvider.createToken(userDetail.getEmail()));
     }
 }
