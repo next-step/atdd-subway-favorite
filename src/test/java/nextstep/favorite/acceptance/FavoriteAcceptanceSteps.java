@@ -10,14 +10,13 @@ import org.springframework.http.MediaType;
 
 public class FavoriteAcceptanceSteps {
 
-    public static void 즐겨찾기_등록_요청(String accessToken, Map<String, Long> params) {
-        RestAssured.given().log().all()
+    public static ExtractableResponse<Response> 즐겨찾기_등록_요청(String accessToken, Map<String, Long> params) {
+        return RestAssured.given().log().all()
                    .contentType(MediaType.APPLICATION_JSON_VALUE)
                    .auth().oauth2(accessToken)
                    .body(params)
                    .when().post("/favorites")
                    .then().log().all()
-                   .statusCode(HttpStatus.CREATED.value())
                    .extract();
     }
 

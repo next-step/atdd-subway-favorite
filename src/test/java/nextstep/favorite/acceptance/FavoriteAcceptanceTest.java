@@ -73,7 +73,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void favoriteCreateAcceptanceTest() {
         Map<String, Long> params = 즐겨찾기_등록_파라미터생성(교대역, 양재역);
 
-        즐겨찾기_등록_요청(accessToken, params);
+        var response = 즐겨찾기_등록_요청(accessToken, params);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * given : 존재하지 않은 경로를
+     * when : 경로 즐겨찾기 등록시
+     * then : 경로 즐겨찾기에 실패한다.
+     */
+    @Test
+    @DisplayName("즐겨찾기 생성시 존재하지 않는 경로 테스트")
+    void favoriteCreateAcceptanceTestNotFoundStation() {
+        Map<String, Long> params = 즐겨찾기_등록_파라미터생성(-교대역, -양재역);
+
+        var response = 즐겨찾기_등록_요청(accessToken, params);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * given : 로그인 하지않고
+     * when : 경로 즐겨찾기 등록시
+     * then : 경로 즐겨찾기에 실패한다.
+     */
+    @Test
+    @DisplayName("로그인하지 않은 유저 실패 테스트")
+    void favoriteCreateAcceptanceTestinvalidToken() {
+        Map<String, Long> params = 즐겨찾기_등록_파라미터생성(교대역, 양재역);
+
+        var response = 즐겨찾기_등록_요청("invalid", params);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     /**
