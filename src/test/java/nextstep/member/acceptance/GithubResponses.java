@@ -1,4 +1,4 @@
-package nextstep.favorite.application.dto;
+package nextstep.member.acceptance;
 
 import java.util.Arrays;
 
@@ -12,7 +12,7 @@ public enum GithubResponses {
     private String code;
     private String accessToken;
     private String email;
-    private Integer age;
+    private int age;
 
     GithubResponses(String code, String accessToken, String email, Integer age) {
         this.code = code;

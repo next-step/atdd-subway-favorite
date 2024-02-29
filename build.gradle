@@ -25,6 +25,7 @@ dependencies {
 
     // lombok
     implementation 'org.projectlombok:lombok:1.18.28'
+    implementation 'org.testng:testng:7.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
 

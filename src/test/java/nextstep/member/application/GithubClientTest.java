@@ -2,7 +2,7 @@ package nextstep.member.application;
 
 import nextstep.favorite.application.GithubClient;
 import nextstep.favorite.application.dto.GithubProfileResponse;
-import nextstep.favorite.application.dto.GithubResponses;
+import nextstep.member.acceptance.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
