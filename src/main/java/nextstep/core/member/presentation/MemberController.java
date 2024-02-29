@@ -1,10 +1,10 @@
 package nextstep.core.member.presentation;
 
+import nextstep.core.auth.domain.LoginMember;
 import nextstep.core.auth.presentation.AuthenticationPrincipal;
+import nextstep.core.member.application.MemberService;
 import nextstep.core.member.application.dto.MemberRequest;
 import nextstep.core.member.application.dto.MemberResponse;
-import nextstep.core.auth.domain.LoginMember;
-import nextstep.core.member.application.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -14,7 +14,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public boolean validateUser(String email, String password) {
+    public boolean verifyUser(String email, String password) {
         Member member = memberService.findMemberByEmail(email);
         if (!member.checkPassword(password)) {
             throw new IllegalArgumentException("비밀번호가 다릅니다.");

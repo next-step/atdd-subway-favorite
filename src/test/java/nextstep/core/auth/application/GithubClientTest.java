@@ -31,12 +31,12 @@ public class GithubClientTest {
              */
             @Test
             void 회원_정보_반환() {
-                모든_깃허브_회원().forEach(githubMember -> {
+                모든_깃허브_회원().forEach(회원 -> {
                     // when
-                    GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubMember.get코드());
+                    GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(회원.get코드());
 
                     // then
-                    assertThat(githubProfileResponse.getEmail()).isEqualTo(githubMember.get이메일());
+                    assertThat(githubProfileResponse.getEmail()).isEqualTo(회원.get이메일());
                 });
             }
         }

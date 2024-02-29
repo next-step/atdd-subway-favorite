@@ -39,13 +39,14 @@ public class TokenServiceTest {
         @Nested
         class 성공 {
             /**
-             * When  토큰 발급을 요청할 경우
-             * Then  정상적으로 토큰이 발급된다.
+             * Given  회원의 이름과 비밀번호를 통해
+             * When   토큰 발급을 요청할 경우
+             * Then   정상적으로 토큰이 발급된다.
              */
             @Test
             void 토큰_발급_요청() {
                 // given
-                when(userDetailsService.validateUser(존슨.이메일, 존슨.비밀번호)).thenReturn(true);
+                when(userDetailsService.verifyUser(존슨.이메일, 존슨.비밀번호)).thenReturn(true);
 
                 // when
                 TokenResponse tokenResponse = tokenService.createToken(존슨.이메일, 존슨.비밀번호);

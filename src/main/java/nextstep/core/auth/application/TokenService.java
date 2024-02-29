@@ -18,7 +18,7 @@ public class TokenService {
     }
 
     public TokenResponse createToken(String email, String password) {
-        userDetailsService.validateUser(email, password);
+        userDetailsService.verifyUser(email, password);
         return new TokenResponse(jwtTokenProvider.createToken(email));
     }
 
