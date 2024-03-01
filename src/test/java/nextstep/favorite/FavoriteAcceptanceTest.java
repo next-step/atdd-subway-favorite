@@ -130,6 +130,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * Given 즐겨찾기를 생성하고
+     * When 토큰 없이 즐겨찾기를 삭제하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("토큰 없이 즐겨찾기를 삭제하면 에러를 반환한다")
+    @Test
+    void deleteFavoriteWithoutToken() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 토큰_없이_즐겨찾기_삭제_요청(createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private static Long 역_생성(String name) {
         return StationSteps.createStation(name).jsonPath().getLong("id");
     }

@@ -59,4 +59,11 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 토큰_없이_즐겨찾기_삭제_요청(ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured.given().log().all()
+                .when().delete(uri)
+                .then().log().all().extract();
+    }
+
 }
