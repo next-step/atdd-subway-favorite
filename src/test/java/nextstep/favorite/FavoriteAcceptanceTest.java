@@ -66,6 +66,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * When 토큰 없이 즐겨찾기를 생성하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("토큰 없이 즐겨찾기를 생성하면 에러를 반환한다.")
+    @Test
+    void createFavoriteWithoutToken() {
+        // when
+        ExtractableResponse<Response> response = 토큰_없이_즐겨찾기_생성_요청(교대역, 양재역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
      * When 찾을 수 없는 경로로 즐겨찾기를 생성하면
      * Then 에러를 반환한다.
      */
