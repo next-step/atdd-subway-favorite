@@ -1,5 +1,6 @@
 package nextstep.member.application.dto;
 
+import nextstep.auth.application.dto.GithubMemberRequest;
 import nextstep.member.domain.Member;
 
 public class MemberRequest {
@@ -14,6 +15,10 @@ public class MemberRequest {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public static MemberRequest of(GithubMemberRequest githubMemberRequest) {
+        return new MemberRequest(githubMemberRequest.getEmail(), null, githubMemberRequest.getAge());
     }
 
     public String getEmail() {

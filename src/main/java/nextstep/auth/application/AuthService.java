@@ -1,9 +1,9 @@
 package nextstep.auth.application;
 
 import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.dto.GithubMemberRequest;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -30,14 +30,12 @@ public class AuthService {
     }
 
     public TokenResponse authenticateWithGithub(String code) {
-        String token = githubClient.requestGithubToken(code);
-        GithubProfileResponse response = githubClient.requestUserProfile(token);
+        GithubProfileResponse response = githubClient.requestGithubProfile(code);
         Optional<Member> member = userDetailService.findMemberByEmail(response.getEmail());
         if (member.isEmpty()) {
-            userDetailService.createMember(new MemberRequest(response.getEmail(), null, response.getAge()));
+            userDetailService.createGithubMember(new GithubMemberRequest(response.getEmail(), response.getAge()));
             return createTokenAndResponse(response.getEmail());
         }
-
         return createTokenAndResponse(member.get().getEmail());
     }
 

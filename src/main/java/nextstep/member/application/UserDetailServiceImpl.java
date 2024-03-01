@@ -1,8 +1,8 @@
 package nextstep.member.application;
 
 import nextstep.auth.application.UserDetailService;
+import nextstep.auth.application.dto.GithubMemberRequest;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,8 @@ public class UserDetailServiceImpl implements UserDetailService {
     }
 
     @Override
-    public MemberResponse createMember(MemberRequest request) {
-        return memberService.createMember(request);
+    public void createGithubMember(GithubMemberRequest githubMemberRequest) {
+        memberService.createMember(MemberRequest.of(githubMemberRequest));
     }
 
 }

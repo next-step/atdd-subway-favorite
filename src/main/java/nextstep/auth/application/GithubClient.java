@@ -23,7 +23,7 @@ public class GithubClient {
     @Value("${github.url.profile}")
     private String userProfileUrl;
 
-    public String requestGithubToken(String code) {
+    private String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
                 clientId, // client id
@@ -43,7 +43,7 @@ public class GithubClient {
                 .getAccessToken();
     }
 
-    public GithubProfileResponse requestUserProfile(String accessToken) {
+    private GithubProfileResponse requestUserProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
 
@@ -52,5 +52,9 @@ public class GithubClient {
         return restTemplate
                 .exchange(userProfileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();
+    }
+
+    public GithubProfileResponse requestGithubProfile(String code) {
+        return requestUserProfile(requestGithubToken(code));
     }
 }

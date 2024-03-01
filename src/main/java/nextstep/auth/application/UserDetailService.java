@@ -1,7 +1,6 @@
 package nextstep.auth.application;
 
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.auth.application.dto.GithubMemberRequest;
 import nextstep.member.domain.Member;
 
 import java.util.Optional;
@@ -11,5 +10,5 @@ public interface UserDetailService {
 
     Optional<Member> findMemberByEmail(String email);
 
-    MemberResponse createMember(MemberRequest request);
+    void createGithubMember(GithubMemberRequest githubMemberRequest);
 }
