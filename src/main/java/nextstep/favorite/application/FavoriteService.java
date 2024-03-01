@@ -31,7 +31,7 @@ public class FavoriteService {
         this.lineRepository = lineRepository;
     }
 
-    public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
                 () -> new BadRequestException("사용자 정보를 찾을 수 없습니다.")
         );
@@ -46,6 +46,8 @@ public class FavoriteService {
 
         Favorite favorite = new Favorite(member.getId(), sourceStation, targetStation, lines);
         favoriteRepository.save(favorite);
+
+        return new FavoriteResponse(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
@@ -53,7 +55,8 @@ public class FavoriteService {
                 () -> new BadRequestException("사용자 정보를 찾을 수 없습니다.")
         );
 
-        return favoriteRepository.findById(member.getId()).stream()
+        return favoriteRepository.findByMemberId(member.getId()).orElseThrow()
+                .stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
