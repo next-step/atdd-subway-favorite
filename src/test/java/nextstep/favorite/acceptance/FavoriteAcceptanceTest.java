@@ -208,7 +208,24 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @Test
     @DisplayName("인증된 회원의 즐겨찾기를 삭제한다.")
     void 즐겨찾기_삭제() {
+        //given
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
+        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
+        String accessToken = 회원_인증_응답.jsonPath().getString("accessToken");
+
+        Long 강남역_양재역_즐겨찾기 = extractResponseId(FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, accessToken));
+        FavoriteRestAssuredCRUD.createFavorite(교대역Id, 양재역Id, accessToken);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_삭제됨 = FavoriteRestAssuredCRUD.deleteFavorite(accessToken, 강남역_양재역_즐겨찾기);
+        assertThat(즐겨찾기_삭제됨.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        //then
+        ExtractableResponse<Response> 즐겨찾기_조회됨 = FavoriteRestAssuredCRUD.showFavorite(accessToken);
+        List<Long> ids = 즐겨찾기_조회됨.jsonPath().getList("id", Long.class);
+
+        assertThat(ids).hasSize(1);
     }
 
     /**

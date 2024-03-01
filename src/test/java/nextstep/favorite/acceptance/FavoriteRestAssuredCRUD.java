@@ -36,4 +36,16 @@ public class FavoriteRestAssuredCRUD {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> deleteFavorite(String accessToken, Long favoriteId) {
+        return RestAssured
+                .given().log().all()
+                    .auth().oauth2(accessToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .pathParam("id", favoriteId)
+                .when()
+                    .delete("/favorites/{id}")
+                .then().log().all()
+                .extract();
+    }
 }
