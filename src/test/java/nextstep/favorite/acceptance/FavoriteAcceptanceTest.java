@@ -24,9 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+    public static final String 회원1_EMAIL = "email@email.com";
+    public static final String 회원1_PASSWORD = "password";
+    public static final int 회원1_AGE = 20;
+
+    public static final String 회원2_EMAIL = "email2@email.com";
+    public static final String 회원2_PASSWORD = "password2";
+    public static final int 회원2_AGE = 20;
 
     private Long 교대역Id;
     private Long 남부터미널역Id;
@@ -107,9 +111,9 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @DisplayName("인증된 회원의 즐겨찾기를 생성하고 조회한다.")
     void 즐겨찾기_생성_조회() {
         //given
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(new Member(회원1_EMAIL, 회원1_PASSWORD, 회원1_AGE));
 
-        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(회원1_EMAIL, 회원1_PASSWORD);
 
         String accessToken = 회원_인증_응답.jsonPath().getString("accessToken");
 
@@ -163,9 +167,9 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @DisplayName("존재하지 않는 경로를 즐겨찾기로 등록하면 405에러가 발생한다.")
     void 존재하지_않는_경로_즐겨찾기_등록_오류() {
         //given
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(new Member(회원1_EMAIL, 회원1_PASSWORD, 회원1_AGE));
 
-        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(회원1_EMAIL, 회원1_PASSWORD);
 
         String accessToken = 회원_인증_응답.jsonPath().getString("accessToken");
 
@@ -209,9 +213,9 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @DisplayName("인증된 회원의 즐겨찾기를 삭제한다.")
     void 즐겨찾기_삭제() {
         //given
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(new Member(회원1_EMAIL, 회원1_PASSWORD, 회원1_AGE));
 
-        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(회원1_EMAIL, 회원1_PASSWORD);
         String accessToken = 회원_인증_응답.jsonPath().getString("accessToken");
 
         Long 강남역_양재역_즐겨찾기 = extractResponseId(FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, accessToken));
@@ -226,6 +230,31 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
         List<Long> ids = 즐겨찾기_조회됨.jsonPath().getList("id", Long.class);
 
         assertThat(ids).hasSize(1);
+    }
+
+    /**
+     * when 회원이 등록하지 않은 즐겨찾기를 삭제하면
+     * then 400 에러가 발생한다.
+     */
+    @Test
+    @DisplayName("인증되지 않은 회원이 즐겨찾기를 삭제하면 인증 오류가 발생한다.")
+    void 회원이_등록하지_않은_즐겨찾기_삭제오류() {
+        //given
+        memberRepository.save(new Member(회원1_EMAIL, 회원1_PASSWORD, 회원1_AGE));
+        memberRepository.save(new Member(회원2_EMAIL, 회원2_PASSWORD, 회원2_AGE));
+
+        ExtractableResponse<Response> 회원1_인증_응답 = MemberRestAssuredCRUD.getLoginToken(회원1_EMAIL, 회원1_PASSWORD);
+        String 회원1_accessToken = 회원1_인증_응답.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> 회원2_인증_응답 = MemberRestAssuredCRUD.getLoginToken(회원2_EMAIL, 회원2_PASSWORD);
+        String 회원2_accessToken = 회원2_인증_응답.jsonPath().getString("accessToken");
+
+        Long 회원1_즐겨찾기 = extractResponseId(FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, 회원1_accessToken));
+        Long 회원2_즐겨찾기 = extractResponseId(FavoriteRestAssuredCRUD.createFavorite(교대역Id, 양재역Id, 회원2_accessToken));
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_삭제됨 = FavoriteRestAssuredCRUD.deleteFavorite(회원1_accessToken, 회원2_즐겨찾기);
+        assertThat(즐겨찾기_삭제됨.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**

@@ -61,11 +61,15 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
+                () -> new BadRequestException("사용자 정보를 찾을 수 없습니다.")
+        );
+
+        favoriteRepository.findByIdAndMemberId(favoriteId, member.getId()).orElseThrow(
+                () -> new BadRequestException("즐겨찾기를 등록한 회원 정보와 일치하지 않습니다.")
+        );
+
+        favoriteRepository.deleteById(favoriteId);
     }
 }
