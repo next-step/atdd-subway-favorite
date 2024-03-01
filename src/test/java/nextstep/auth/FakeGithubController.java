@@ -1,9 +1,9 @@
-package nextstep.member.ui;
+package nextstep.auth;
 
-import nextstep.member.GithubResponses;
-import nextstep.member.ui.dto.GithubAccessTokenRequest;
-import nextstep.member.ui.dto.GithubAccessTokenResponse;
-import nextstep.member.ui.dto.GithubProfileResponse;
+import nextstep.auth.infra.dto.GithubAccessTokenRequest;
+import nextstep.auth.infra.dto.GithubAccessTokenResponse;
+import nextstep.auth.infra.dto.GithubProfileResponse;
+import nextstep.auth.fixture.GithubResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class FakeGithubController {
 
-
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(
             @RequestBody GithubAccessTokenRequest tokenRequest) {
-        GithubResponses githubResponses = GithubResponses.getCode(tokenRequest.getClientId());
+        GithubResponses githubResponses = GithubResponses.of(tokenRequest.getCode());
         if (githubResponses.isUnAuthorized()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

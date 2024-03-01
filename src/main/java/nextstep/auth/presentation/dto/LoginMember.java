@@ -1,4 +1,4 @@
-package nextstep.member.domain;
+package nextstep.auth.presentation.dto;
 
 public class LoginMember {
     private String email;

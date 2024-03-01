@@ -1,4 +1,4 @@
-package nextstep.member.ui.dto;
+package nextstep.auth.infra.dto;
 
 public class GithubProfileResponse {
     private String email;

@@ -1,12 +1,11 @@
 package nextstep.favorite.acceptance;
 
-import groovy.transform.MapConstructor;
 import nextstep.favorite.application.exceptions.CannotFavoriteStationException;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.dao.StationDao;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.presentation.dto.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.path.service.PathService;

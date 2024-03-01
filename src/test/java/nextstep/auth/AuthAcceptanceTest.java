@@ -1,15 +1,14 @@
-package nextstep.member.acceptance;
+package nextstep.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.GithubResponses;
-import nextstep.member.domain.MemberRepository;
+import nextstep.auth.fixture.GithubResponses;
+import nextstep.member.acceptance.MemberSteps;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,8 +33,6 @@ class AuthAcceptanceTest {
         RestAssured.port = port;
     }
 
-    @Autowired
-    private MemberRepository memberRepository;
 
     @DisplayName("Bearer Auth")
     @Test
@@ -63,8 +60,7 @@ class AuthAcceptanceTest {
     @Test
     public void githubAuth() {
 
-        MemberSteps.회원_생성_요청(GithubResponses.USER_A.getEmail(), "pw", 12);
-        String actualToken = MemberSteps.토큰_생성(GithubResponses.USER_A.getEmail(), "pw");
+        MemberSteps.회원_생성_요청(GithubResponses.USER_A.getCode(), "pw", 12);
 
         ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.USER_A.getCode(), HttpStatus.OK);
 
@@ -86,7 +82,7 @@ class AuthAcceptanceTest {
 
         ExtractableResponse<Response> response = 깃허브_로그인_요청(GithubResponses.UNAUTHORIZED_USER.getCode(), HttpStatus.UNAUTHORIZED);
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(response.jsonPath().getString("accessToken")).isNull();
     }
 
 
