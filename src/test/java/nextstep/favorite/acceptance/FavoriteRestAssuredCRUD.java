@@ -26,7 +26,7 @@ public class FavoriteRestAssuredCRUD {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> findFavorite(String accessToken) {
+    public static ExtractableResponse<Response> showFavorite(String accessToken) {
         return RestAssured
                 .given().log().all()
                     .auth().oauth2(accessToken)

@@ -117,7 +117,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
         assertThat(즐겨찾기_생성됨.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //then
-        ExtractableResponse<Response> 즐겨찾기_조회됨 = FavoriteRestAssuredCRUD.findFavorite(accessToken);
+        ExtractableResponse<Response> 즐겨찾기_조회됨 = FavoriteRestAssuredCRUD.showFavorite(accessToken);
 
         List<Long> 즐겨찾기_출발역_리스트 = 즐겨찾기_조회됨.jsonPath().getList("source.id", Long.class);
         List<Long> 즐겨찾기_도착역_리스트 = 즐겨찾기_조회됨.jsonPath().getList("target.id", Long.class);
@@ -181,7 +181,23 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @Test
     @DisplayName("인증되지 않은 회원이 즐겨찾기를 조회하면 인증 오류가 발생한다.")
     void 즐겨찾기_조회_인증오류() {
+        //when
+        ExtractableResponse<Response> 빈_토큰값으로_즐겨찾기_조회 = FavoriteRestAssuredCRUD.showFavorite("");
+        ExtractableResponse<Response> 잘못된_토큰값으로_즐겨찾기_조회 = FavoriteRestAssuredCRUD.showFavorite("token");
+        ExtractableResponse<Response> null_토큰값으로_즐겨찾기_조회 = RestAssured
+                .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                    .get("/favorites")
+                .then().log().all()
+                .extract();
 
+        //then
+        assertAll(
+                () -> assertThat(빈_토큰값으로_즐겨찾기_조회.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(잘못된_토큰값으로_즐겨찾기_조회.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(null_토큰값으로_즐겨찾기_조회.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
+        );
     }
 
     /**

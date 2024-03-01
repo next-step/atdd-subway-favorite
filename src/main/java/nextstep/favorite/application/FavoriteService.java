@@ -10,10 +10,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.Line;
 import nextstep.subway.line.LineRepository;
-import nextstep.subway.path.PathMaker;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,8 +48,12 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites() {
-        return favoriteRepository.findAll().stream()
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
+                () -> new BadRequestException("사용자 정보를 찾을 수 없습니다.")
+        );
+
+        return favoriteRepository.findById(member.getId()).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
