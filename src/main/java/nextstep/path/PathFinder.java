@@ -55,4 +55,7 @@ public class PathFinder {
         }
     }
 
+    public void isValidateRoute(List<Line> lines, Station source, Station target) {
+        this.findPath(lines, source, target);
+    }
 }
