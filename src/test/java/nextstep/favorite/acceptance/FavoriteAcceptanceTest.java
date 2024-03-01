@@ -32,11 +32,14 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     private Long 남부터미널역Id;
     private Long 양재역Id;
     private Long 강남역Id;
+    private Long 반포역Id;
+    private Long 학동역Id;
 
     private static int 교대역_남부터미널역_거리 = 3;
     private static int 남부터미널역_양재역_거리 = 4;
     private static int 교대역_강남역_거리 = 1;
     private static int 양재역_강남역_거리 = 2;
+    private static int 반포역_학동역_거리 = 5;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -56,10 +59,13 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
         남부터미널역Id = extractResponseId(StationRestAssuredCRUD.createStation("남부터미널역"));
         양재역Id = extractResponseId(StationRestAssuredCRUD.createStation("양재역"));
         강남역Id = extractResponseId(StationRestAssuredCRUD.createStation("강남역"));
+        반포역Id = extractResponseId(StationRestAssuredCRUD.createStation("반포역"));
+        학동역Id = extractResponseId(StationRestAssuredCRUD.createStation("학동역"));
 
         setOrangeLine();
         setGreenLine();
         setRedLine();
+        setDarkGreenLine();
     }
 
     void setOrangeLine() {
@@ -84,6 +90,13 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
         SectionRestAssuredCRUD.addSection(강남역Id, 양재역Id, 양재역_강남역_거리, 신분당선Id);
     }
 
+    void setDarkGreenLine() {
+        ExtractableResponse<Response> lineResponse = LineRestAssuredCRUD.createLine("7호선", "bg-darkgreen-600");
+        Long 칠호선Id = lineResponse.jsonPath().getLong("id");
+
+        SectionRestAssuredCRUD.addSection(반포역Id, 학동역Id, 반포역_학동역_거리, 칠호선Id);
+    }
+
 
     /**
      * given 인증된 회원의 즐겨찾기를 생성하고
@@ -96,23 +109,23 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
         //given
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        ExtractableResponse<Response> authResponse = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
 
-        String accessToken = authResponse.jsonPath().getString("accessToken");
+        String accessToken = 회원_인증_응답.jsonPath().getString("accessToken");
 
-        ExtractableResponse<Response> createResponse = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, accessToken);
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        ExtractableResponse<Response> 즐겨찾기_생성됨 = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, accessToken);
+        assertThat(즐겨찾기_생성됨.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //then
-        ExtractableResponse<Response> findResponse = FavoriteRestAssuredCRUD.findFavorite(accessToken);
+        ExtractableResponse<Response> 즐겨찾기_조회됨 = FavoriteRestAssuredCRUD.findFavorite(accessToken);
 
-        List<Long> favoriteSourceIds = findResponse.jsonPath().getList("source.id", Long.class);
-        List<Long> favoriteTargetIds = findResponse.jsonPath().getList("target.id", Long.class);
+        List<Long> 즐겨찾기_출발역_리스트 = 즐겨찾기_조회됨.jsonPath().getList("source.id", Long.class);
+        List<Long> 즐겨찾기_도착역_리스트 = 즐겨찾기_조회됨.jsonPath().getList("target.id", Long.class);
 
         assertAll(
-            () -> assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(favoriteSourceIds).contains(강남역Id),
-            () -> assertThat(favoriteTargetIds).contains(양재역Id)
+            () -> assertThat(즐겨찾기_조회됨.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(즐겨찾기_출발역_리스트).contains(강남역Id),
+            () -> assertThat(즐겨찾기_도착역_리스트).contains(양재역Id)
         );
     }
 
@@ -124,9 +137,9 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @DisplayName("인증되지 않은 회원이 즐겨찾기를 등록하면 인증 오류가 발생한다.")
     void 즐겨찾기_생성_인증오류() {
         //when
-        ExtractableResponse<Response> emptyTokenResponse = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, "");
-        ExtractableResponse<Response> wrongTokenResponse = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, "token");
-        ExtractableResponse<Response> nullTokenResponse = RestAssured
+        ExtractableResponse<Response> 빈_토큰값으로_즐겨찾기_생성 = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, "");
+        ExtractableResponse<Response> 잘못된_토큰값으로_즐겨찾기_생성 = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 양재역Id, "token");
+        ExtractableResponse<Response> null_토큰값으로_즐겨찾기_생성 = RestAssured
                 .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -136,20 +149,29 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 
         //then
         assertAll(
-                () -> assertThat(emptyTokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
-                () -> assertThat(nullTokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
-                () -> assertThat(wrongTokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
+                () -> assertThat(빈_토큰값으로_즐겨찾기_생성.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(잘못된_토큰값으로_즐겨찾기_생성.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(null_토큰값으로_즐겨찾기_생성.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
         );
     }
 
     /**
-     * when 존재하지 않은 경로로 인증된 회원의 즐겨찾기를 생성하면
-     * then 405 에러가 발생한다.
+     * when 존재하지 않은 경로를 인증된 회원의 즐겨찾기로 생성하면
+     * then 400 에러가 발생한다.
      */
     @Test
     @DisplayName("존재하지 않는 경로를 즐겨찾기로 등록하면 405에러가 발생한다.")
     void 존재하지_않는_경로_즐겨찾기_등록_오류() {
+        //given
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
+        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(EMAIL, PASSWORD);
+
+        String accessToken = 회원_인증_응답.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> 즐겨찾기_생성됨 = FavoriteRestAssuredCRUD.createFavorite(강남역Id, 반포역Id, accessToken);
+
+        assertThat(즐겨찾기_생성됨.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
