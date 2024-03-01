@@ -1,4 +1,4 @@
-package nextstep.favorite.acceptance;
+package nextstep.favorite.unit;
 
 import nextstep.favorite.domain.Favorite;
 import nextstep.member.domain.Member;
