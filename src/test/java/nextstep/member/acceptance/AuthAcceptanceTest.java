@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.utils.AcceptanceTest;
+import nextstep.utils.context.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,8 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+@AcceptanceTest
+class AuthAcceptanceTest {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final Integer AGE = 20;
