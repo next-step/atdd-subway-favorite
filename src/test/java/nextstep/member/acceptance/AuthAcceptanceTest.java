@@ -51,5 +51,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+        //실행완료
     }
 }
