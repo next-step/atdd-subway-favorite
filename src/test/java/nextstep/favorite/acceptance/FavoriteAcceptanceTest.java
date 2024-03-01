@@ -233,6 +233,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     }
 
     /**
+     * given 두 명의 회원에 즐겨찾기를 등록하고
      * when 회원이 등록하지 않은 즐겨찾기를 삭제하면
      * then 400 에러가 발생한다.
      */
@@ -254,6 +255,8 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 
         //when
         ExtractableResponse<Response> 즐겨찾기_삭제됨 = FavoriteRestAssuredCRUD.deleteFavorite(회원1_accessToken, 회원2_즐겨찾기);
+
+        //then
         assertThat(즐겨찾기_삭제됨.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -264,7 +267,24 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
     @Test
     @DisplayName("인증되지 않은 회원이 즐겨찾기를 삭제하면 인증 오류가 발생한다.")
     void 즐겨찾기_삭제_인증오류() {
+        //when
+        ExtractableResponse<Response> 빈_토큰값으로_즐겨찾기_삭제 = FavoriteRestAssuredCRUD.deleteFavorite("", 1L);
+        ExtractableResponse<Response> 잘못된_토큰값으로_즐겨찾기_삭제 = FavoriteRestAssuredCRUD.deleteFavorite("token", 1L);
+        ExtractableResponse<Response> null_토큰값으로_즐겨찾기_삭제 = RestAssured
+                .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .pathParam("id", 1L)
+                .when()
+                    .delete("/favorites/{id}")
+                .then().log().all()
+                .extract();
 
+        //then
+        assertAll(
+                () -> assertThat(빈_토큰값으로_즐겨찾기_삭제.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(잘못된_토큰값으로_즐겨찾기_삭제.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(null_토큰값으로_즐겨찾기_삭제.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
+        );
     }
 
     Long extractResponseId(ExtractableResponse<Response> response) {
