@@ -116,10 +116,10 @@ public class PathAcceptanceTest {
 
     /**
      * given 출발역과 도착역이 주어졌지만
-     * when 출발역과 도착역이 연결되어있지 않으면
+     * when 출발역과 도착역이 연결되어 있지 않으면
      * then 경로 조회에 실패한다
      */
-    @DisplayName("주어진 출발역과 도착역이 같으면 경로를 조회할 수 없다")
+    @DisplayName("주어진 출발역과 도착역 연결되어 있지 않으면 경로를 조회할 수 없다")
     @Test
     void cannotGetPathIfNotConnected() {
         ExtractableResponse<Response> response = getPaths(강남역, 화서역);
@@ -132,11 +132,11 @@ public class PathAcceptanceTest {
      * when 존재하지 않으면
      * then 경로 조회에 실패한다
      */
-    @DisplayName("주어진 출발역과 도착역이 같으면 경로를 조회할 수 없다")
+    @DisplayName("주어진 출발역 혹은 도착역이 존재하지 않으면 경로를 조회할 수 없다")
     @Test
     void cannotGetPathIfNotFound() {
         ExtractableResponse<Response> response = getPaths(강남역, 없는역);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

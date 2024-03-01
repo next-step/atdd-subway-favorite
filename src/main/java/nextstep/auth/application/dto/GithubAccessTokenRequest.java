@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto;
 
 /** 깃헙 로그인 요청 데이터 */
 public class GithubAccessTokenRequest {
