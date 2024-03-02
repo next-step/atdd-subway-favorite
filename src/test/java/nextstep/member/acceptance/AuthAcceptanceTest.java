@@ -1,5 +1,6 @@
 package nextstep.member.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
@@ -9,8 +10,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
-import static nextstep.member.acceptance.AuthSteps.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static nextstep.member.acceptance.AuthSteps.토큰_생성;
 import static nextstep.member.acceptance.MemberSteps.내_정보_요청;
 import static nextstep.member.acceptance.MemberSteps.토큰_없이_내_정보_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,4 +50,19 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", "code");
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
 }
