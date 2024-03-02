@@ -78,7 +78,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 지하철 노선이 주어진다.
-     * Given source, target 이 주어진다.
+     * Given 출발역, 도착역이 주어진다.
      * When 즐겨찾기를 추가한다.
      * Then 즐겨찾기가 추가된다.
      */
@@ -114,8 +114,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given source, target 이 주어진다.
-     * When 즐겨찾기를 추가할 때 source 와 target 의 연결된 경로를 찾을 수 없으면
+     * Given 출발역, 도착역이 주어진다.
+     * When 즐겨찾기를 추가할 때 출발역과 도착역이 연결된 경로를 찾을 수 없으면
      * Then 즐겨찾기가 추가 되지 않고 예외가 발생한다.
      */
     @DisplayName("즐겨찾기를 추가하면 예외가 발생한다")
@@ -134,7 +134,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     /**
      * Given 즐겨찾기가 주어진다.
      * When 즐겨찾기를 조회한다.
-     * Then 즐겨찾기와 경로가 조회된다
+     * Then 즐겨찾기가 조회된다
      */
     @DisplayName("즐겨찾기를 조회한다.")
     @Test
