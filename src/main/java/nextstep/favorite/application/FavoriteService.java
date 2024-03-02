@@ -45,36 +45,49 @@ public class FavoriteService {
     public FavoriteSimpleResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
             NotCreatedException::new);
-        Station source = stationRepository.findById(request.getSource())
+        validatePath(request.getSource(), request.getTarget());
+        Favorite favorite = new Favorite(member.getId(), request.getSource(), request.getTarget());
+        favoriteRepository.save(favorite);
+        return new FavoriteSimpleResponse(favorite.getId());
+    }
+
+    private void validatePath(Long sourceId, Long targetId) {
+        Station source = stationRepository.findById(sourceId)
             .orElseThrow(StationNotFoundException::new);
-        Station target = stationRepository.findById(request.getTarget())
+        Station target = stationRepository.findById(targetId)
             .orElseThrow(StationNotFoundException::new);
         List<Line> lines = lineRepository.findAll();
         SectionEdges edges = new SectionEdges(lines);
         PathFinder pathFinder = new PathFinder(edges);
         pathFinder.findShortedPath(source.getId(), target.getId());
-        Favorite favorite = new Favorite(member.getId(), source.getId(), target.getId());
-        favoriteRepository.save(favorite);
-        return new FavoriteSimpleResponse(favorite.getId());
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = memberRepository.findByEmail(loginMember.getEmail())
             .orElseThrow(NotCreatedException::new);
+        Map<Long, Station> stationIdMap = getAllStationsInLinesMap();
+
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+        return favorites.stream().map(favorite -> getFavoriteResponse(stationIdMap, favorite))
+            .collect(Collectors.toList());
+    }
+
+    private Map<Long, Station> getAllStationsInLinesMap() {
         List<Line> lines = lineRepository.findAll();
-        Map<Long, Station> stationIdMap = lines.stream()
+        return lines.stream()
             .flatMap(line -> line.getStations().stream())
             .collect(Collectors.toSet()).stream()
             .collect(Collectors.toMap(Station::getId, station -> station));
-        return favorites.stream().map(favorite -> {
-            Station source = stationIdMap.get(favorite.getSource());
-            Station target = stationIdMap.get(favorite.getTarget());
-            return new FavoriteResponse(favorite.getId(),
-                new StationResponse(source.getId(), source.getName()),
-                new StationResponse(target.getId(), target.getName()));
-        }).collect(Collectors.toList());
+    }
+
+    private static FavoriteResponse getFavoriteResponse(Map<Long, Station> stationIdMap,
+        Favorite favorite) {
+        Station source = stationIdMap.get(favorite.getSource());
+        Station target = stationIdMap.get(favorite.getTarget());
+        return new FavoriteResponse(favorite.getId(),
+            new StationResponse(source.getId(), source.getName()),
+            new StationResponse(target.getId(), target.getName()));
     }
 
     @Transactional
