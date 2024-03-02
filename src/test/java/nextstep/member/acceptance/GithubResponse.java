@@ -30,6 +30,13 @@ public enum GithubResponse {
                 .orElseThrow(() -> new SubwayException("유효하지 않은 코드입니다."));
     }
 
+    public static GithubResponse findByAccessToken(String accessToken) {
+        return Arrays.stream(values())
+                .filter(member -> member.getAccessToken().equals(accessToken))
+                .findFirst()
+                .orElseThrow(() -> new SubwayException("유효하지 않은 토큰입니다."));
+    }
+
     public String getCode() {
         return code;
     }
