@@ -9,7 +9,6 @@ public class SectionEdges {
     private final List<Edge> edges;
 
     public SectionEdges(List<Line> lines) {
-        // convert to stream
         this.edges = lines.stream()
             .flatMap(line -> line.getSections().stream())
             .map(section -> new Edge(section.getUpStation().getId(),
