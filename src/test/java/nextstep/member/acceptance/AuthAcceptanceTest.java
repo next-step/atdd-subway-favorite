@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.member.acceptance.AuthSteps.깃허브_로그인_요청;
+import static nextstep.member.acceptance.AuthSteps.내_정보_조회;
 import static nextstep.utils.GithubResponses.사용자2;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,11 +47,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         String accessToken = response.jsonPath().getString("accessToken");
         assertThat(accessToken).isNotBlank();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> response2 = 내_정보_조회(accessToken);
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
@@ -87,17 +85,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        String accessToken = 깃허브_로그인_요청("code");
+        assertThat(accessToken).isNotBlank();
     }
 
     /**
@@ -107,26 +96,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Github login_신규 회원")
     @Test
     void github_login() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", 사용자2.getCode());
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        String accessToken = response.jsonPath().getString("accessToken");
+        String accessToken = 깃허브_로그인_요청(사용자2.getCode());
         assertThat(accessToken).isNotBlank();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(사용자2.getEmail());
+        ExtractableResponse<Response> response = 내_정보_조회(accessToken);
+        assertThat(response.jsonPath().getString("email")).isEqualTo(사용자2.getEmail());
     }
+
 
     /**
      * given 기존 사용자 한명을 저장하고
@@ -138,24 +114,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void github_login_exist_user() {
         memberRepository.save(new Member(사용자2.getEmail(), null, 20));
 
-        Map<String, String> params = new HashMap<>();
-        params.put("code", 사용자2.getCode());
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        String accessToken = response.jsonPath().getString("accessToken");
+        String accessToken = 깃허브_로그인_요청(사용자2.getCode());
         assertThat(accessToken).isNotBlank();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(사용자2.getEmail());
+        ExtractableResponse<Response> response = 내_정보_조회(accessToken);
+        assertThat(response.jsonPath().getString("email")).isEqualTo(사용자2.getEmail());
     }
 }

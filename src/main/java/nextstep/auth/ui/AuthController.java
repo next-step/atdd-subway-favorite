@@ -1,8 +1,8 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
-import nextstep.member.application.TokenService;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.AuthService;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,23 +11,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-public class TokenController {
-    private TokenService tokenService;
+public class AuthController {
+    private final AuthService authService;
 
-    public TokenController(TokenService tokenService) {
-        this.tokenService = tokenService;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
-
+        TokenResponse response = authService.authenticateWithEmail(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login/github")
     public ResponseEntity<TokenResponse> githubLogin(@RequestBody Map<String, String> codeMap) {
-        TokenResponse tokenResponse = tokenService.doGithubLogin(codeMap.get("code"));
+        TokenResponse tokenResponse = authService.authenticateWithGithub(codeMap.get("code"));
         return ResponseEntity.ok(tokenResponse);
     }
 }

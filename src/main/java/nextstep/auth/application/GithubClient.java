@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +23,7 @@ public class GithubClient {
     @Value("${github.url.profile}")
     private String userProfileUrl;
 
-    public String requestGithubToken(String code) {
+    private String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
                 clientId, // client id
@@ -36,15 +36,14 @@ public class GithubClient {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
                 githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
-        String accessToken = restTemplate
+
+        return restTemplate
                 .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                 .getBody()
                 .getAccessToken();
-
-        return accessToken;
     }
 
-    public GithubProfileResponse requestUserProfile(String accessToken) {
+    private GithubProfileResponse requestUserProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
 
@@ -53,5 +52,9 @@ public class GithubClient {
         return restTemplate
                 .exchange(userProfileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();
+    }
+
+    public GithubProfileResponse requestGithubProfile(String code) {
+        return requestUserProfile(requestGithubToken(code));
     }
 }

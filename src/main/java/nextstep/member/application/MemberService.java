@@ -2,22 +2,21 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
-
+    private final MemberRepository memberRepository;
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
+    }
+
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
     public MemberResponse findMember(Long id) {
@@ -34,17 +33,9 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
-    }
-
-    public Member findMemberByEmailForGithub(String email) {
-        return memberRepository.findByEmail(email).orElse(null);
     }
 }
