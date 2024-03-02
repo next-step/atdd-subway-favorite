@@ -24,4 +24,19 @@ public class FavoriteSteps {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회(String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when()
+            .get("/favorites")
+            .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String location) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when()
+            .delete(location)
+            .then().log().all().extract();
+    }
 }

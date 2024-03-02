@@ -1,7 +1,7 @@
 package nextstep.subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultEdge;
 
 public class SectionEdges {
@@ -9,16 +9,13 @@ public class SectionEdges {
     private final List<Edge> edges;
 
     public SectionEdges(List<Line> lines) {
-        List<Edge> result = new ArrayList<>();
-        for (Line line : lines) {
-            List<Section> sections = line.getSections();
-            for (Section section : sections) {
-                result.add(
-                    new Edge(section.getUpStation().getId(), section.getDownStation().getId(),
-                        section.getDistance()));
-            }
-        }
-        this.edges = result;
+        // convert to stream
+        this.edges = lines.stream()
+            .flatMap(line -> line.getSections().stream())
+            .map(section -> new Edge(section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                section.getDistance()))
+            .collect(Collectors.toList());
     }
 
     public List<Edge> getEdges() {
