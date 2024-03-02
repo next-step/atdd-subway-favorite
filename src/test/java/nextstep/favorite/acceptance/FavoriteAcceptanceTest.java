@@ -67,11 +67,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         한국선 = 지하철_노선_생성_요청("한국선", "RED", 북한역, 남한역, 10).jsonPath().getLong("id");
         지하철_노선에_지하철_구간_생성_요청(신분당선, 강남역, 양재역, 10);
         지하철_노선에_지하철_구간_생성_요청(신분당선, 양재역, 판교역, 10);
-        지하철_노선에_지하철_구간_생성_요청(신분당선, 양재역, 양재시민의숲역, 10);
+        지하철_노선에_지하철_구간_생성_요청(신분당선, 판교역, 양재시민의숲역, 10);
         지하철_노선에_지하철_구간_생성_요청(삼호선, 강남역, 신사역, 10);
         지하철_노선에_지하철_구간_생성_요청(삼호선, 신사역, 잠원역, 10);
         지하철_노선에_지하철_구간_생성_요청(삼호선, 잠원역, 고속터미널역, 10);
         지하철_노선에_지하철_구간_생성_요청(삼호선, 고속터미널역, 교대역, 10);
+        지하철_노선에_지하철_구간_생성_요청(삼호선, 교대역, 남부터미널역, 10);
         지하철_노선에_지하철_구간_생성_요청(한국선, 북한역, 남한역, 10);
     }
 
@@ -94,6 +95,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(201);
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    /**
+     * When 로그인이 되어 있지 않으면
+     * Then 즐겨찾기를 추가할 수 없다.
+     */
+    @DisplayName("로그인이 되어 있지 않으면 즐겨찾기를 추가할 수 없다.")
+    @Test
+    void addFavoriteWithoutLogin() {
+        // given
+        Map<String, String> params = new HashMap<>();
+        params.put("source", String.valueOf(강남역));
+        params.put("target", String.valueOf(교대역));
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.로그인_없이_즐겨찾기_생성_요청(강남역, 교대역);
+        // then
+        assertThat(response.statusCode()).isEqualTo(401);
     }
 
     /**
