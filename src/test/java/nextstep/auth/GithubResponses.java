@@ -1,4 +1,6 @@
-package nextstep.member;
+package nextstep.auth;
+
+import nextstep.auth.exception.AuthenticationException;
 
 import java.util.Arrays;
 

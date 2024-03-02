@@ -27,8 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AcceptanceTest
 public class FavoriteAcceptanceTest {
 
-    long 출발역;
-    long 도착역;
     String email = "gildong@email.com";
     String password = "rlfehdWKd101!";
     String accessToken;
@@ -169,7 +167,7 @@ public class FavoriteAcceptanceTest {
         @DisplayName("주어진 즐겨찾기 식별자 정보가 유효하면 즐겨찾기 삭제에 성공한다")
         @Test
         void deleteFavoritePaths() {
-            String location = createFavoriteWithSuccess(accessToken, 출발역, 도착역).header(HttpHeaders.LOCATION);
+            String location = createFavoriteWithSuccess(accessToken, 강남역, 논현역).header(HttpHeaders.LOCATION);
 
             ExtractableResponse<Response> response = deleteFavorite(accessToken, location);
 
@@ -179,7 +177,7 @@ public class FavoriteAcceptanceTest {
         @DisplayName("주어진 즐겨찾기 식별자와 토큰 정보로 즐겨찾기 정보를 찾을 수 없으면 삭제에 실패한다")
         @Test
         void deleteFailWithNotExistFavoriteId() {
-            String location = createFavoriteWithSuccess(accessToken, 출발역, 도착역).header(HttpHeaders.LOCATION);
+            String location = createFavoriteWithSuccess(accessToken, 강남역, 논현역).header(HttpHeaders.LOCATION);
 
             deleteFavorite(accessToken, location);
 

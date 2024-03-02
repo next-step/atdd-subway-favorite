@@ -3,7 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

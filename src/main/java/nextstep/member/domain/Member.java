@@ -1,11 +1,13 @@
 package nextstep.member.domain;
 
+import nextstep.auth.domain.UserDetail;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Table(name = "member")
 @Entity
-public class Member {
+public class Member implements UserDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,14 +32,17 @@ public class Member {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public Integer getAge() {
         return age;
     }
@@ -48,6 +53,7 @@ public class Member {
         this.age = member.age;
     }
 
+    @Override
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
     }

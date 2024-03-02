@@ -1,7 +1,7 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 
 public interface GithubClient {
 
