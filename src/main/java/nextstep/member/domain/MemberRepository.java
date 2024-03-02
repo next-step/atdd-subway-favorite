@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-
     default Member findByEmailOrFail(String email) {
         return findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }

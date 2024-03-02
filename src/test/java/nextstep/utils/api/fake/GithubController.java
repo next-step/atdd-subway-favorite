@@ -1,8 +1,9 @@
 package nextstep.utils.api.fake;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.GithubTokenRequest;
-import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.utils.fixture.GithubUserFixture;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,16 @@ public class GithubController {
     public ResponseEntity<TokenResponse> accessToken(@RequestBody GithubTokenRequest tokenRequest) {
         String accessToken = "access_token";
         TokenResponse response = new TokenResponse(accessToken);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/github/user")
+    public ResponseEntity<GithubProfileResponse> user(
+            @RequestHeader("Authorization") String authorization) {
+        String accessToken = authorization.split(" ")[1];
+
+        GithubUserFixture githubUserFixture = GithubUserFixture.findByAccessToken(accessToken);
+        GithubProfileResponse response = new GithubProfileResponse(githubUserFixture.getEmail());
         return ResponseEntity.ok(response);
     }
 }

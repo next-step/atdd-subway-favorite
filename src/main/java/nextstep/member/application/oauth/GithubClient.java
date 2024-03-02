@@ -1,5 +1,6 @@
 package nextstep.member.application.oauth;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.GithubTokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.ui.dto.GithubLoginRequest;
@@ -38,5 +39,19 @@ public class GithubClient {
                 .getAccessToken();
 
         return accessToken;
+    }
+
+    public GithubProfileResponse requestProfile(String accessToken) {
+        String requestPath = "/github/user";
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
+
+        return new RestTemplate()
+                .exchange(baseUrl + requestPath, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .getBody();
     }
 }
