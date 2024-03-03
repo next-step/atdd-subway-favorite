@@ -26,4 +26,18 @@ public class AuthSteps {
         return response.jsonPath().getString("accessToken");
     }
 
+    public static String 깃헙_로그인_토큰_생성(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        return response.jsonPath().getString("accessToken");
+    }
+
 }
