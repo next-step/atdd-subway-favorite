@@ -13,11 +13,9 @@ import org.springframework.web.client.RestTemplate;
 
 public class GithubClient implements OAuth2Client {
 
-    private String clientId;
-
-    private String clientSecret;
-
-    private String accessTokenUri;
+    private final String clientId;
+    private final String clientSecret;
+    private final String accessTokenUri;
 
     public GithubClient(String clientId, String clientSecret, String accessTokenUri) {
         this.clientId = clientId;

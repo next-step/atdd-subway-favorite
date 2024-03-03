@@ -23,6 +23,7 @@ public class GithubClientTest {
         String clientId = "clientId";
         String clientSecret = "clientSecret";
         String accessTokenUri = "http://localhost:" + port + "/github/login/oauth/access_token";
+
         OAuth2Client githubClient = new GithubClient(clientId, clientSecret, accessTokenUri);
         // when
         String accessToken = githubClient.requestAccessToken(code);

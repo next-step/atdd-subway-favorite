@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  profiles:
+    active:
+      - test
+    group:
+      test:
+        - test
+    include:
+      - env
+
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 3600000
+
+
