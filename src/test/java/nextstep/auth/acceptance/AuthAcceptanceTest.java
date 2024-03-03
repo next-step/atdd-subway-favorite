@@ -20,8 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.member.acceptance.MemberSteps.*;
-import static nextstep.member.acceptance.MemberSteps.깃허브_로그인_요청;
+import static nextstep.auth.acceptance.AuthSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
