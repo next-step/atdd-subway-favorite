@@ -25,31 +25,35 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    /**
+     * 로그인을 하면 액세스 토큰이 발급되고, 이 액세스 토큰을 요청 헤더(?)로 전달하면 토큰을 이용하여 원하는 정보를 조회할 수 있다.
+     */
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        // given
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE)); // 회원가입
 
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL);
         params.put("password", PASSWORD);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given().log().all() // 로그인 (post)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        String accessToken = response.jsonPath().getString("accessToken");
+        String accessToken = response.jsonPath().getString("accessToken"); // 발급된 Access 토큰 가져오기
         assertThat(accessToken).isNotBlank();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all() // 회원정보 조회 (get)
                 .auth().oauth2(accessToken)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL); // 회원 정보를 조회하여 이메일 값이 일치하는지.
     }
 }
