@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";
+    public static final String OTHER_EMAIL = "email2@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
@@ -63,6 +64,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * When 토큰 없이 즐겨찾기를 생성하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("토큰 없이 즐겨찾기를 생성하면 에러를 반환한다.")
+    @Test
+    void createFavoriteWithoutToken() {
+        // when
+        ExtractableResponse<Response> response = 토큰_없이_즐겨찾기_생성_요청(교대역, 양재역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -114,6 +129,44 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Given 즐겨찾기를 생성하고
+     * When 토큰 없이 즐겨찾기를 삭제하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("토큰 없이 즐겨찾기를 삭제하면 에러를 반환한다")
+    @Test
+    void deleteFavoriteWithoutToken() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 교대역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 토큰_없이_즐겨찾기_삭제_요청(createResponse);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 다른 회원이 즐겨찾기를 생성하고
+     * When 본인이 작성하지 않은 즐겨찾기를 삭제하면
+     * Then 에러를 반환한다.
+     */
+    @DisplayName("본인이 작성하지 않은 즐겨찾기를 삭제하면 에러를 반환한다")
+    @Test
+    void deleteFavoriteByOther() {
+        // given
+        회원_생성_요청(OTHER_EMAIL, PASSWORD, AGE);
+        String otherAccessToken = 토큰_생성(OTHER_EMAIL, PASSWORD);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(otherAccessToken, 교대역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createResponse, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private static Long 역_생성(String name) {

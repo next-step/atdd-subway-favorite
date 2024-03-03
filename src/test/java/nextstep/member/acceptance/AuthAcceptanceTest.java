@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.AuthSteps.*;
+import static nextstep.member.acceptance.AuthSteps.깃헙_로그인_토큰_생성;
+import static nextstep.member.acceptance.AuthSteps.토큰_생성;
+import static nextstep.member.acceptance.GithubResponse.사용자1;
 import static nextstep.member.acceptance.MemberSteps.내_정보_요청;
 import static nextstep.member.acceptance.MemberSteps.토큰_없이_내_정보_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,4 +47,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        String accessToken = 깃헙_로그인_토큰_생성(사용자1.getCode());
+
+        assertThat(accessToken).isNotBlank();
+    }
 }
