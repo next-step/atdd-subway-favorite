@@ -54,6 +54,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 
+    /**
+     * GIVEN 원래 멤버가 아닌 "사용자1"이
+     * WHEN 깃헙 코드로 로그인을 요청하면
+     * THEN 정상적으로 액세스 코드가 발급되고, "사용자1"은 그 시점으로부터 멤버로 조회된다.
+     */
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {

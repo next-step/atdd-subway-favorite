@@ -2,7 +2,7 @@ package nextstep.member.unit;
 
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.oauth.GithubClient;
-import nextstep.member.ui.dto.GithubLoginRequest;
+import nextstep.member.ui.dto.TokenFromGithubRequestBody;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ public class GithubClientTest {
     @Test
     @DisplayName("토큰 요청 정상 동작")
     void succeedToGetToken() {
-        GithubLoginRequest request = new GithubLoginRequest("code");
+        TokenFromGithubRequestBody request = new TokenFromGithubRequestBody(사용자1.getCode());
 
         String token = githubClient.requestToken(request);
-        assertThat(token).isEqualTo("access_token");
+        assertThat(token).isEqualTo(사용자1.getAccessToken());
     }
 
     @Test

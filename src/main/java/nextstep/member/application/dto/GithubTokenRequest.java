@@ -5,6 +5,9 @@ public class GithubTokenRequest {
     private String clientId;
     private String clientSecret;
 
+    protected GithubTokenRequest() {
+    }
+
     public GithubTokenRequest(String code, String clientId, String clientSecret) {
         this.code = code;
         this.clientId = clientId;

@@ -2,11 +2,11 @@ package nextstep.member.application;
 
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.TokenDto;
 import nextstep.member.application.oauth.GithubClient;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.ui.dto.GithubLoginRequest;
+import nextstep.member.ui.dto.TokenFromGithubRequestBody;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +26,7 @@ public class TokenService {
         this.githubClient = githubClient;
     }
 
-    public TokenResponse createToken(String email, String password) {
+    public TokenDto createToken(String email, String password) {
         Member member = memberRepository.findByEmailOrFail(email);
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
@@ -34,13 +34,12 @@ public class TokenService {
 
         String token = jwtTokenProvider.createToken(member.getEmail());
 
-        return new TokenResponse(token);
+        return new TokenDto(token);
     }
 
     @Transactional
-    public TokenResponse createTokenFromGithub(String code) {
-        String accessToken = this.githubClient.requestToken(new GithubLoginRequest(code));
-        System.out.println("token ? " + accessToken);
+    public TokenDto createTokenFromGithub(String code) {
+        String accessToken = this.githubClient.requestToken(new TokenFromGithubRequestBody(code));
         GithubProfileResponse githubProfileResponse = this.githubClient.requestProfile(accessToken);
 
         String email = githubProfileResponse.getEmail();
@@ -51,6 +50,6 @@ public class TokenService {
         memberRepository.save(member);
 
         String token = jwtTokenProvider.createToken(member.getEmail());
-        return new TokenResponse(token);
+        return new TokenDto(token);
     }
 }

@@ -1,12 +1,12 @@
 package nextstep.member.ui.dto;
 
-public class GithubLoginRequest {
+public class TokenFromGithubRequestBody {
     private String code;
 
-    public GithubLoginRequest() {
+    protected TokenFromGithubRequestBody() {
     }
 
-    public GithubLoginRequest(String code) {
+    public TokenFromGithubRequestBody(String code) {
         this.code = code;
     }
 
