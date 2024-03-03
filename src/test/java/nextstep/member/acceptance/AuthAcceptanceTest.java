@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AcceptanceTest
@@ -53,4 +54,24 @@ class AuthAcceptanceTest {
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    /**
+     * given 사용자가
+     * when github 로그인을 시도하면
+     * then accessToken이 발행된다.
+     */
+    @DisplayName("사용자가 github 로그인을 시도한다.")
+    @Test
+    void 회원가입한_사용자_github로그인() {
+        //given
+        GithubResponses 회원 = GithubResponses.사용자1;
+        회원_생성_요청(회원.getEmail(), 회원.getEmail(), 회원.getAge());
+
+        //when
+        ExtractableResponse<Response> 깃헙_로그인_요청 = AuthSteps.깃허브_토근_생성_요청(회원.getCode());
+
+        //then
+        assertThat(깃헙_로그인_요청.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
 }
