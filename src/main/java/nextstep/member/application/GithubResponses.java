@@ -10,9 +10,21 @@ public enum GithubResponses {
     private String accessToken;
     private String email;
 
-    GithubResponses(String aofijeowifjaoief, String accessToken1, String mail) {
-        this.code = aofijeowifjaoief;
-        this.accessToken = accessToken1;
-        this.email = mail;
+    GithubResponses(String code, String accessToken, String email) {
+        this.code = code;
+        this.accessToken = accessToken;
+        this.email = email;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

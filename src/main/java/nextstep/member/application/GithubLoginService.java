@@ -17,6 +17,7 @@ public class GithubLoginService {
 
 
     public TokenResponse login(OAuth2Request oAuth2Request) {
-        return new TokenResponse();
+        String accessToken = githubClient.requestAccessToken(oAuth2Request.getCode());
+        return new TokenResponse(accessToken);
     }
 }

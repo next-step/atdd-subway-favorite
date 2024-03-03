@@ -1,5 +1,6 @@
 package nextstep.member.acceptance;
 
+import static nextstep.member.acceptance.AuthSteps.깃허브_로그인_요청_하기;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -7,6 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import nextstep.member.application.GithubResponses;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -62,17 +64,12 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Github 로그인")
     void githubLogin() {
         // given
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "test-code");
+        String code = GithubResponses.사용자2.getCode();
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/login/github")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value()).extract();
-
+        ExtractableResponse<Response> response = 깃허브_로그인_요청_하기(code);
         // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo(
+            GithubResponses.사용자2.getAccessToken());
     }
 }
