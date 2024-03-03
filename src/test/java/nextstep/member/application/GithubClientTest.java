@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
-import nextstep.favorite.application.GithubClient;
-import nextstep.favorite.application.dto.GithubProfileResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.member.acceptance.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

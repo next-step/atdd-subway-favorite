@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.favorite.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;

@@ -1,8 +1,8 @@
-package nextstep.favorite.application;
+package nextstep.auth.application;
 
-import nextstep.favorite.application.dto.GithubAccessTokenRequest;
-import nextstep.favorite.application.dto.GithubAccessTokenResponse;
-import nextstep.favorite.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

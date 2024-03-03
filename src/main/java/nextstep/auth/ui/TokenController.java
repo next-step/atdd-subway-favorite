@@ -1,6 +1,6 @@
 package nextstep.auth.ui;
 
-import nextstep.favorite.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
 import nextstep.auth.application.TokenService;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
