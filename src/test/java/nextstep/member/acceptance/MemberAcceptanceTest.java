@@ -5,8 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.auth.utils.steps.AuthSteps.토큰_생성_요청;
 import static nextstep.member.utils.steps.MemberSteps.*;
-import static nextstep.member.utils.steps.TokenSteps.인증정보_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -76,7 +76,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
 
-        String accessToken = 인증정보_생성_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+        String accessToken = 토큰_생성_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
 
         // when
         var response = 내_정보_조회(accessToken).jsonPath();

@@ -1,8 +1,8 @@
 package nextstep.auth.utils.controller;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAuthRequest;
+import nextstep.auth.application.dto.GithubAuthResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.utils.fixture.GithubAuthFixture;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GithubTestController {
 	@PostMapping("/github/login/oauth/access_token")
-	public ResponseEntity<GithubAccessTokenResponse> getAccessToken(@RequestBody GithubAccessTokenRequest request) {
+	public ResponseEntity<GithubAuthResponse> getAccessToken(@RequestBody GithubAuthRequest request) {
 		String accessToken = GithubAuthFixture.getAccessTokenByCode(request.getCode());
-		GithubAccessTokenResponse response = new GithubAccessTokenResponse(accessToken, "", "");
+		GithubAuthResponse response = new GithubAuthResponse(accessToken, "", "");
 		return ResponseEntity.ok(response);
 	}
 

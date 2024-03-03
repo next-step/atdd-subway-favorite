@@ -1,8 +1,8 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GithubAccessTokenResponse {
+public class GithubAuthResponse {
 	@JsonProperty("access_token")
 	private String accessToken;
 
@@ -11,10 +11,10 @@ public class GithubAccessTokenResponse {
 	@JsonProperty("token_type")
 	private String tokenType;
 
-	public GithubAccessTokenResponse() {
+	public GithubAuthResponse() {
 	}
 
-	public GithubAccessTokenResponse(String accessToken, String scope, String tokenType) {
+	public GithubAuthResponse(String accessToken, String scope, String tokenType) {
 		this.accessToken = accessToken;
 		this.scope = scope;
 		this.tokenType = tokenType;

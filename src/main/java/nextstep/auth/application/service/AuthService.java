@@ -4,7 +4,6 @@ import nextstep.auth.application.dto.AuthResponse;
 import nextstep.exception.AuthenticationException;
 import nextstep.auth.application.GithubClient;
 import nextstep.auth.application.JwtTokenProvider;
-import nextstep.member.application.dto.TokenResponse;
 import org.springframework.stereotype.Service;
 
 @Service
