@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 public class GithubController {
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<TokenResponse> accessToken(@RequestBody GithubTokenRequest tokenRequest) {
-        String accessToken = "access_token";
-        TokenResponse response = new TokenResponse(accessToken);
+        GithubUserFixture user =  GithubUserFixture.findByCode(tokenRequest.getCode());
+        TokenResponse response = new TokenResponse(user.getAccessToken());
         return ResponseEntity.ok(response);
     }
 

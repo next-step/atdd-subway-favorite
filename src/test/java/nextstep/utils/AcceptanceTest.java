@@ -9,10 +9,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AcceptanceTest implements InitializingBean {
-    @LocalServerPort
-    private int port;
     @Autowired
     private DatabaseCleanup databaseCleanup;
     @Autowired
@@ -20,7 +18,6 @@ public class AcceptanceTest implements InitializingBean {
 
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
         dataLoader.loadData();
     }
 

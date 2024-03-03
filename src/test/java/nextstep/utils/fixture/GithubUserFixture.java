@@ -36,4 +36,10 @@ public enum GithubUserFixture {
                 .filter(githubUserFixture -> githubUserFixture.getAccessToken().equals(accessToken))
                 .findFirst().orElseThrow();
     }
+
+    public static GithubUserFixture findByCode(String code) {
+        return Arrays.stream(GithubUserFixture.values())
+                .filter(githubUserFixture -> githubUserFixture.getCode().equals(code))
+                .findFirst().orElseThrow();
+    }
 }

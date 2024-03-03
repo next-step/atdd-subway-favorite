@@ -3,6 +3,9 @@ package nextstep.member.ui.dto;
 public class GithubLoginRequest {
     private String code;
 
+    public GithubLoginRequest() {
+    }
+
     public GithubLoginRequest(String code) {
         this.code = code;
     }
