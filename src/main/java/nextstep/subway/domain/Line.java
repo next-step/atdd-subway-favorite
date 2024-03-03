@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import nextstep.subway.domain.exception.LineException;
+import nextstep.subway.domain.exception.LineException.NotExistSectionException;
 
 @Entity
 public class Line {
@@ -79,7 +80,7 @@ public class Line {
         while (!_headSection.isTail()) {
             Station downStation = _headSection.getDownStation();
             Section nextSection = searchSection(sections, downStation).orElseThrow(
-                () -> new LineException(LineException.NOT_EXIST_SECTION));
+                NotExistSectionException::new);
             result.add(nextSection);
             _headSection = nextSection;
         }
@@ -102,7 +103,7 @@ public class Line {
             return;
         }
         Section headSection = getHeadSection().orElseThrow(
-            () -> new LineException(LineException.NOT_EXIST_SECTION));
+            NotExistSectionException::new);
         Section tailSection = getTailSection();
         if (tailSection.isSameDownStation(upStation)) {
             addTail(upStation, downStation, distance, tailSection);
@@ -113,7 +114,7 @@ public class Line {
             return;
         }
         if (isNotExistsUpStationInSections(upStation)) {
-            throw new LineException(LineException.NOT_ADDABLE_SECTION);
+            throw new LineException.NotAddableSectionException();
         }
         sections.stream().filter(section -> section.getUpStation().equals(upStation))
             .findFirst()
@@ -164,20 +165,20 @@ public class Line {
     private void validateSameUpStationNotExists(Station upStation) {
         if (getSections().stream()
             .anyMatch(section -> section.getUpStation().equals(upStation))) {
-            throw new LineException(LineException.ALREADY_REGISTERED_STATION_EXCEPTION);
+            throw new LineException.AlreadyRegisteredStationException(upStation.getName());
         }
     }
 
     private void validateSameDownStationNotExists(Station downStation) {
         if (getSections().stream()
             .anyMatch(section -> section.getDownStation().equals(downStation))) {
-            throw new LineException(LineException.ALREADY_REGISTERED_STATION_EXCEPTION);
+            throw new LineException.AlreadyRegisteredStationException(downStation.getName());
         }
     }
 
     private Section getTailSection() {
         return this.sections.stream().filter(Section::isTail).findFirst()
-            .orElseThrow(() -> new LineException(LineException.NOT_EXIST_SECTION));
+            .orElseThrow(NotExistSectionException::new);
     }
 
     public Set<Station> getStations() {
@@ -191,10 +192,10 @@ public class Line {
 
     public void removeSection(Station station) {
         if (sections.isEmpty()) {
-            throw new LineException(LineException.NOT_REMOVE_EXCEPTION);
+            throw new LineException.NotRemoveException();
         }
         if (!getStations().contains(station)) {
-            throw new LineException(LineException.NOT_EXIST_STATION);
+            throw new LineException.NotExistStationException();
         }
         Optional<Section> targetSection = findSectionByDownStationInSections(station);
         if (targetSection.isEmpty()) {
@@ -229,7 +230,7 @@ public class Line {
         return sections.stream()
             .filter(section -> section.isSameUpStation(station))
             .findFirst()
-            .orElseThrow(() -> new LineException(LineException.NOT_EXIST_SECTION));
+            .orElseThrow(NotExistSectionException::new);
     }
 
     private void removeHeadSection(Section section) {
@@ -238,7 +239,7 @@ public class Line {
 
     private void removeHeadSectionBySection(Section section) {
         if (!section.isHead() || sections.size() == 1) {
-            throw new LineException(LineException.NOT_REMOVE_EXCEPTION);
+            throw new LineException.NotRemoveException();
         }
         Section nextSection = getSections().get(1);
         nextSection.changeHead(true);
@@ -254,7 +255,7 @@ public class Line {
 
     private void removeMiddleSection(Section targetSection) {
         if (targetSection.isHead() || targetSection.isTail()) {
-            throw new LineException(LineException.NOT_REMOVE_EXCEPTION);
+            throw new LineException.NotRemoveException();
         }
         Section previousSection = findPreviousSection(targetSection);
         previousSection.changeDistance(previousSection.getDistance() + targetSection.getDistance());
@@ -267,14 +268,14 @@ public class Line {
         return sections.stream()
             .filter(section -> section.isSameDownStation(targetSection.getUpStation()))
             .findFirst()
-            .orElseThrow(() -> new LineException(LineException.NOT_EXIST_SECTION));
+            .orElseThrow(NotExistSectionException::new);
     }
 
     private Section findNextSection(Section targetSection) {
         return sections.stream()
             .filter(section -> section.isSameUpStation(targetSection.getDownStation()))
             .findFirst()
-            .orElseThrow(() -> new LineException(LineException.NOT_EXIST_SECTION));
+            .orElseThrow(NotExistSectionException::new);
     }
 
     public void update(String name, String color) {
