@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.member.domain.Member;
 import nextstep.subway.domain.entity.Station;
 
 
@@ -36,5 +37,9 @@ public class Favorite {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
+    }
+
+    public boolean isOwner(Member member) {
+        return this.memberId.equals(member.getId());
     }
 }

@@ -18,10 +18,10 @@ import static nextstep.subway.fixture.StationFixture.교대역_생성_요청_본
 import static nextstep.subway.fixture.StationFixture.지하철역_생성_요청_본문;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.fixture.TokenFixture;
+import nextstep.auth.steps.TokenSteps;
 import nextstep.member.acceptance.steps.MemberSteps;
-import nextstep.member.acceptance.steps.TokenSteps;
-import nextstep.subway.fixture.MemberFixture;
-import nextstep.subway.fixture.TokenFixture;
+import nextstep.member.fixture.MemberFixture;
 import nextstep.utils.context.AcceptanceTest;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -107,7 +107,6 @@ class FavoriteAcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(token, 삭제할_즐겨찾기_경로);
 
         // then
-
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
             softAssertions.assertThat(즐겨찾기_목록_조회_응답에서_아이디_목록_추출(즐겨찾기_목록_조회_요청(token))).isEmpty();

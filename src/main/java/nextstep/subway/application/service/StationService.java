@@ -2,10 +2,11 @@ package nextstep.subway.application.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.domain.entity.Station;
-import nextstep.subway.domain.repository.StationRepository;
+import nextstep.common.error.exception.NotFoundException;
 import nextstep.subway.application.dto.request.StationCreateRequest;
 import nextstep.subway.application.dto.response.StationResponse;
+import nextstep.subway.domain.entity.Station;
+import nextstep.subway.domain.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,6 @@ public class StationService {
     }
 
     public Station getStationById(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(() -> new RuntimeException("not found station"));
+        return stationRepository.findById(stationId).orElseThrow(() -> new NotFoundException("not found station"));
     }
 }

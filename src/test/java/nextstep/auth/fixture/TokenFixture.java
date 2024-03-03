@@ -1,4 +1,4 @@
-package nextstep.subway.fixture;
+package nextstep.auth.fixture;
 
 import java.util.Map;
 

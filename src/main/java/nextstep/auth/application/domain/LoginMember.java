@@ -1,6 +1,7 @@
-package nextstep.member.domain;
+package nextstep.auth.application.domain;
 
 public class LoginMember {
+
     private String email;
 
     public LoginMember(String email) {

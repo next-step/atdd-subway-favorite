@@ -4,9 +4,9 @@ import static nextstep.subway.fixture.LineFixture.이호선_색;
 import static nextstep.subway.fixture.LineFixture.이호선_이름;
 import static nextstep.subway.fixture.StationFixture.강남역_이름;
 import static nextstep.subway.fixture.StationFixture.교대역_이름;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.domain.entity.Line;
 import nextstep.subway.domain.entity.Path;
 import nextstep.subway.domain.entity.PathFinder;
@@ -72,12 +72,13 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(List.of(이호선, 삼호선, 신분당선));
 
         // when
-        Path 교대역_양재역_최단경로 = pathFinder.findShortestPath(교대역, 양재역);
+        Optional<Path> 교대역_양재역_최단경로 = pathFinder.findShortestPath(교대역, 양재역);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(교대역_양재역_최단경로.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
-            assertThat(교대역_양재역_최단경로.getDistance()).isEqualTo(5L);
+            Path shortestPath = 교대역_양재역_최단경로.orElseThrow();
+            softAssertions.assertThat(shortestPath.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
+            softAssertions.assertThat(shortestPath.getDistance()).isEqualTo(5L);
         });
 
     }
@@ -96,8 +97,7 @@ class PathFinderTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(catchThrowable)
-                .isInstanceOf(IllegalArgumentException.class)
+            softAssertions.assertThat(catchThrowable).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Source and target stations are the same");
         });
 
@@ -111,15 +111,12 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(List.of(이호선, 신분당선));
 
         // when
-        Throwable catchThrowable = catchThrowable(() -> {
-            pathFinder.findShortestPath(교대역, 남부터미널역);
-        });
+        Optional<Path> 교대역_남부터미널역_경로 = pathFinder.findShortestPath(교대역, 남부터미널역);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(catchThrowable)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Unable to find the shortest path.");
+            softAssertions.assertThat(교대역_남부터미널역_경로).isEmpty();
+
         });
 
     }
@@ -133,17 +130,12 @@ class PathFinderTest {
         Station 존재하지_않는_역 = StationFixture.giveOne(Long.MAX_VALUE, "폐쇄역");
 
         // when
-        Throwable catchThrowable = catchThrowable(() -> {
-            pathFinder.findShortestPath(존재하지_않는_역, 양재역);
-        });
+        Optional<Path> 존재하지_않는_경로 = pathFinder.findShortestPath(존재하지_않는_역, 양재역);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(catchThrowable)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Unable to find the shortest path.");
+            softAssertions.assertThat(존재하지_않는_경로).isEmpty();
         });
-
     }
 
 

@@ -1,7 +1,7 @@
 package nextstep.subway.domain.entity;
 
 import java.util.List;
-import lombok.Getter;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -11,38 +11,41 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 @Slf4j
-@Getter
 public class PathFinder {
 
     private final List<Line> lines;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
         this.lines = lines;
+        this.dijkstraShortestPath = new DijkstraShortestPath<>(createWeightedGraph());
     }
 
-
-    public Path findShortestPath(Station source, Station target) {
+    public Optional<Path> findShortestPath(Station source, Station target) {
         if (source == target) {
             throw new IllegalArgumentException("Source and target stations are the same");
         }
-        WeightedGraph<Station, DefaultWeightedEdge> graph = createWeightedGraph();
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         try {
             GraphPath<Station, DefaultWeightedEdge> result = dijkstraShortestPath.getPath(source, target);
-            return new Path(result.getVertexList(), result.getWeight());
+            return Optional.of(new Path(result.getVertexList(), result.getWeight()));
         } catch (Exception e) {
-            log.warn("Failed to find the shortest path. Source station: {}, Target station: {}", source.getId(),
-                target.getId(), e);
-            throw new IllegalStateException("Unable to find the shortest path.");
+            return Optional.empty();
         }
-
-
     }
 
-    private SimpleWeightedGraph<Station, DefaultWeightedEdge> createWeightedGraph() {
+    public boolean isValidPath(Station source, Station target) {
+        try {
+            var path = findShortestPath(source, target);
+            return path.isPresent();
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private WeightedGraph<Station, DefaultWeightedEdge> createWeightedGraph() {
         SimpleWeightedGraph<Station, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
         addStationsAsVerticesToGraph(graph);
-        addEdgeWeightsToGraph(graph);
+        addSectionsAdSeightedEdgeToGraph(graph);
         return graph;
     }
 
@@ -52,7 +55,7 @@ public class PathFinder {
             .forEach(graph::addVertex);
     }
 
-    private void addEdgeWeightsToGraph(WeightedGraph<Station, DefaultWeightedEdge> graph) {
+    private void addSectionsAdSeightedEdgeToGraph(WeightedGraph<Station, DefaultWeightedEdge> graph) {
         this.lines.stream()
             .flatMap(line -> line.getSections().getAllSections().stream())
             .forEach(section -> graph.setEdgeWeight(
