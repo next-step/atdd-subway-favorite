@@ -2,6 +2,7 @@ package nextstep.path;
 
 import nextstep.section.Section;
 import nextstep.station.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -18,8 +19,14 @@ public class Path {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         init(graph, sections);
-        this.stations = getStations(graph, start, end);
-        this.distance = calcDistance(graph, start, end);
+
+        validateIsConnected(graph, start, end);
+        validateIsDifferentStation(start, end);
+
+        GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(start, end);
+
+        this.stations = path.getVertexList();
+        this.distance = (long) path.getWeight();
     }
 
     private void init(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
@@ -45,20 +52,6 @@ public class Path {
         return Stream.concat(upStations.stream(), downStations.stream())
                 .distinct()
                 .collect(Collectors.toList());
-    }
-
-    // 다익스트라 알고리즘을 활용하여 최단 경로 계산
-    private List<Station> getStations(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station start, Station end) {
-        validateIsConnected(graph, start, end);
-        validateIsDifferentStation(start, end);
-        return new DijkstraShortestPath<>(graph).getPath(start, end).getVertexList();
-    }
-
-    // 다익스트라 알고리즘을 활용하여 최단 거리 계산
-    private long calcDistance(WeightedMultigraph<Station, DefaultWeightedEdge> graph,Station start, Station end) {
-        validateIsConnected(graph, start, end);
-        validateIsDifferentStation(start, end);
-        return (long) new DijkstraShortestPath<>(graph).getPath(start, end).getWeight();
     }
 
     private void validateIsConnected(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station start, Station end) {
