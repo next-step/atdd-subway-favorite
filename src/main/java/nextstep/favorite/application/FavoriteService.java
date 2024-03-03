@@ -23,12 +23,7 @@ public class FavoriteService {
     private final StationRepository stationRepository;
     private final MemberRepository memberRepository;
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param loginMember
-     * @param request
-     */
+
     @Transactional
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Station source = stationRepository.findById(request.getSource()).orElseThrow();
@@ -38,12 +33,7 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    // 이주오, 이승우
+
     public List<FavoriteResponse> findFavorites() {
         List<Favorite> favorites = favoriteRepository.findAll();
         return favorites.stream()
@@ -51,12 +41,10 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
+
+    @Transactional
     public void deleteFavorite(Long id) {
+
         favoriteRepository.deleteById(id);
     }
 }

@@ -1,13 +1,5 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.fixture.LineFixture.강남역_교대역_구간_이호선_생성_요청;
-import static nextstep.subway.fixture.LineFixture.노선_생성_요청_본문;
-import static nextstep.subway.fixture.LineFixture.노선_수정_요청;
-import static nextstep.subway.fixture.LineFixture.서울역_청량리역_구간_일호선_생성_요청;
-import static nextstep.subway.fixture.LineFixture.이호선_이름;
-import static nextstep.subway.fixture.LineFixture.일호선_이름;
-import static nextstep.subway.fixture.StationFixture.강남역_생성_요청_본문;
-import static nextstep.subway.fixture.StationFixture.교대역_생성_요청_본문;
 import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_단일_조회_요청;
 import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_목록_응답에서_노선_아이디_목록_추출;
 import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_목록_응답에서_노선_이름_목록_추출;
@@ -20,7 +12,14 @@ import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답�
 import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_노선_이름_추출;
 import static nextstep.subway.acceptance.step.StationSteps.지하철_역_생성_요청;
 import static nextstep.subway.acceptance.step.StationSteps.지하철역_응답에서_역_아이디_추출;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.fixture.LineFixture.강남역_교대역_구간_이호선_생성_요청;
+import static nextstep.subway.fixture.LineFixture.노선_생성_요청_본문;
+import static nextstep.subway.fixture.LineFixture.노선_수정_요청;
+import static nextstep.subway.fixture.LineFixture.서울역_청량리역_구간_일호선_생성_요청;
+import static nextstep.subway.fixture.LineFixture.이호선_이름;
+import static nextstep.subway.fixture.LineFixture.일호선_이름;
+import static nextstep.subway.fixture.StationFixture.강남역_생성_요청_본문;
+import static nextstep.subway.fixture.StationFixture.교대역_생성_요청_본문;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -66,8 +65,8 @@ class LineAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_라인_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-            assertThat(지하철_노선_목록_응답에서_노선_이름_목록_추출(지하철_노선_목록_조회_요청())).containsAnyOf(LINE_TWO);
+            softAssertions.assertThat(지하철_라인_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            softAssertions.assertThat(지하철_노선_목록_응답에서_노선_이름_목록_추출(지하철_노선_목록_조회_요청())).containsAnyOf(LINE_TWO);
         });
 
     }
@@ -90,9 +89,9 @@ class LineAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_노선_목록_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철_노선_목록_조회_응답.body().as(List.class)).hasSize(2);
-            assertThat(지하철_노선_목록_응답에서_노선_이름_목록_추출(지하철_노선_목록_조회_응답)).containsAnyOf(일호선_이름, 이호선_이름);
+            softAssertions.assertThat(지하철_노선_목록_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철_노선_목록_조회_응답.body().as(List.class)).hasSize(2);
+            softAssertions.assertThat(지하철_노선_목록_응답에서_노선_이름_목록_추출(지하철_노선_목록_조회_응답)).containsAnyOf(일호선_이름, 이호선_이름);
         });
 
     }
@@ -113,8 +112,8 @@ class LineAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_노선_단일_조희_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철_노선_응답에서_노선_아이디_추출(지하철_노선_단일_조희_응답)).isEqualTo(일호선_아이디);
+            softAssertions.assertThat(지하철_노선_단일_조희_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철_노선_응답에서_노선_아이디_추출(지하철_노선_단일_조희_응답)).isEqualTo(일호선_아이디);
         });
 
     }
@@ -135,9 +134,9 @@ class LineAcceptanceTest {
         // then
         ExtractableResponse<Response> 지하철_노선_단일_조희_응답 = 지하철_노선_단일_조회_요청(일호선_아이디);
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_노선_수정_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철_노선_응답에서_노선_이름_추출(지하철_노선_단일_조희_응답)).isEqualTo(LINE_TWO);
-            assertThat(지하철_노선_응답에서_노선_색상_추출(지하철_노선_단일_조희_응답)).isEqualTo(COLOR_TWO);
+            softAssertions.assertThat(지하철_노선_수정_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철_노선_응답에서_노선_이름_추출(지하철_노선_단일_조희_응답)).isEqualTo(LINE_TWO);
+            softAssertions.assertThat(지하철_노선_응답에서_노선_색상_추출(지하철_노선_단일_조희_응답)).isEqualTo(COLOR_TWO);
         });
 
     }
@@ -158,8 +157,8 @@ class LineAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_노선_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-            assertThat(지하철_노선_목록_응답에서_노선_아이디_목록_추출(지하철_노선_목록_조회_요청())).doesNotContain(일호선_아이디).isEmpty();
+            softAssertions.assertThat(지하철_노선_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            softAssertions.assertThat(지하철_노선_목록_응답에서_노선_아이디_목록_추출(지하철_노선_목록_조회_요청())).doesNotContain(일호선_아이디).isEmpty();
         });
 
     }
