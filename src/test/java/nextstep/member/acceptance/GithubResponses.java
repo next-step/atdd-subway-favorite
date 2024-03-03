@@ -37,4 +37,23 @@ public enum GithubResponses {
     public int getAge() {
         return age;
     }
+
+    public static String getAccessTokenByCode(String code) {
+        for (GithubResponses member : values()) {
+            if (member.getCode().equals(code)) {
+                return member.getAccessToken();
+            }
+        }
+        throw new IllegalStateException("올바르지않은 코드 값입니다.");
+    }
+
+    public static String getEmailByAccessToken(String accessToken) {
+        for (GithubResponses member : values()) {
+            if (member.getAccessToken().equals(accessToken)) {
+                return member.getEmail();
+            }
+        }
+        throw new IllegalStateException("올바르지 않은 토큰 값입니다.");
+    }
+
 }
