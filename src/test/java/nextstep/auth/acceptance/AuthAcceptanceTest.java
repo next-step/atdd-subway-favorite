@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
 import nextstep.auth.application.dto.GithubProfileResponse;
-import nextstep.member.acceptance.GithubResponses;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
