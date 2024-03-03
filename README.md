@@ -100,3 +100,13 @@ Response
     "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
 }
 ~~~
+
+### 3. 패키지 리팩터링
+- 인증 관련 부분을 다른 프로젝트에서 재사용 할 수 있는 수준으로 리팩터링
+- email/password 로그인 로직과 github 로그인 로직에서 추상화 할 수 있는 부분은 추상화, 중복 제거
+- 리팩터링 간 패키지 사이의 상호 참조가 최대한 발생하지 않도록 한다.
+  
+### TDD를 활용한 리팩터링 방법
+1. 기존 코드는 그대로 두고 새로운 테스트를 만들기
+2. 새로운 테스트를 만족하는 프로덕션 코드 만들기 (이때 불가피하게 코드 중복 발생)
+3. 기존 코드를 모두 대체했다면 그 때 기존 테스트와 함께 지우기 (단, 코드 중복이 되어있는 상태를 짧게 가져가도록 해야함)
