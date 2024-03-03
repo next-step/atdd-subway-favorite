@@ -113,3 +113,38 @@ Date: Mon, 22 Mar 2021 14:27:37 GMT
 - 즐겨 찾기 기능이 정상적으로 동작하기 위해 필요한 예외 처리를 진행
   - 예시) 내가 등록하지 않은 즐겨찾기를 제거하려고 할 경우 등
 - 예외 처리에 대한 테스트는 어느 레이어에서 진행해야 할지 고민
+
+---
+## 🚀 2단계 - 깃헙 로그인 구현
+
+### 요구사항
+### 기능 요구사항
+- [x] 깃허브를 이용한 로그인 구현(토큰 발행)
+- [x] 가입이 되어있지 않은 경우 회원 가입으로 진행 후 토큰 발행
+
+### 프로그래밍 요구사항
+- [x] GitHub 로그인을 검증할 수 있는 인수 테스트 구현(실제 GitHub에 요청을 하지 않아도 됨)
+
+### 요구사항 설명
+- [x] AuthAcceptanceTest 테스트 만들기
+
+#### Request
+```
+POST /login/github HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "code": "qwerasdfzxvcqwerasdfzxcv"
+}
+```
+#### Response
+- accessToken는 깃헙으로부터 받아온게 아니라 subway 애플리케이션에서 생성한 토큰
+```
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjcyNjUyMzAwLCJleHAiOjE2NzI2NTU5MDAsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX0FETUlOIl19.uaUXk5GkqB6QE_qlZisk3RZ3fL74zDADqbJl6LoLkSc"
+}
+```
+
+#### code 별 응답 response
+- 매번 실제 깃헙 서비스에 요청을 보낼 수 없으니 어떤 코드로 요청이 오면 정해진 response를 응답하는 구조를 만든다.

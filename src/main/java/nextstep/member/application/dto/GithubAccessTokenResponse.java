@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class TokenResponse {
+public class GithubAccessTokenResponse {
     private String accessToken;
 
-    public TokenResponse() {
+    public GithubAccessTokenResponse() {
     }
 
     @Builder
-    public TokenResponse(String accessToken) {
+    public GithubAccessTokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 }
