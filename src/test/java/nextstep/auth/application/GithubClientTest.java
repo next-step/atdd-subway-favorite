@@ -1,7 +1,7 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.utils.fixture.GithubAuthFixture;
+import nextstep.auth.utils.fixture.GithubAuthFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

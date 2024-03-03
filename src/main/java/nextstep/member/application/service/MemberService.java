@@ -1,5 +1,6 @@
 package nextstep.member.application.service;
 
+import nextstep.auth.application.service.UserDetailService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 
 @Service
-public class MemberService {
+public class MemberService implements UserDetailService {
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -45,5 +46,19 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public boolean isNotMember(String email, String password) {
+        return !findMemberByEmail(email).checkPassword(password);
+    }
+
+    @Override
+    public void createMemberIfNotExist(String email, String password, int age) {
+        try {
+            findMemberByEmail(email);
+        } catch (EntityNotFoundException e) {
+            createMember(new MemberRequest(email, password, age));
+        }
     }
 }

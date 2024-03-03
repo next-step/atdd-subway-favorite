@@ -1,8 +1,8 @@
 package nextstep.member.application.service;
 
 import nextstep.exception.AuthenticationException;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.JwtTokenProvider;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.entity.Member;

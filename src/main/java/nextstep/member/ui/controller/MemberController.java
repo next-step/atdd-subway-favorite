@@ -4,7 +4,7 @@ import nextstep.member.application.service.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
-import nextstep.member.ui.AuthenticationPrincipal;
+import nextstep.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
