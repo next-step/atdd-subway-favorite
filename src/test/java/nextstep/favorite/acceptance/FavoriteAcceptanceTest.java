@@ -77,7 +77,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 
     /**
-     * Given 지하철 노선이 주어진다.
      * Given 출발역, 도착역이 주어진다.
      * When 즐겨찾기를 추가한다.
      * Then 즐겨찾기가 추가된다.
@@ -85,10 +84,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 추가한다.")
     @Test
     void addFavorite() {
-        // given
-        Map<String, String> params = new HashMap<>();
-        params.put("source", String.valueOf(강남역));
-        params.put("target", String.valueOf(교대역));
         // when
         ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성_요청(accessToken, 강남역, 교대역);
         // then
