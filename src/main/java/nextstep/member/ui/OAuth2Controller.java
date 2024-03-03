@@ -1,6 +1,6 @@
 package nextstep.member.ui;
 
-import nextstep.member.application.OAuth2Service;
+import nextstep.member.application.GithubLoginService;
 import nextstep.member.application.dto.OAuth2Request;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OAuth2Controller {
 
-    private final OAuth2Service oAuth2Service;
+    private final GithubLoginService githubLoginService;
 
-    public OAuth2Controller(OAuth2Service oAuth2Service) {
-        this.oAuth2Service = oAuth2Service;
+    public OAuth2Controller(GithubLoginService githubLoginService) {
+        this.githubLoginService = githubLoginService;
     }
 
     @PostMapping("/login/github")
     public ResponseEntity<TokenResponse> login(@ModelAttribute OAuth2Request oAuth2Request) {
-        oAuth2Service.login(oAuth2Request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(githubLoginService.login(oAuth2Request));
     }
-
 }
