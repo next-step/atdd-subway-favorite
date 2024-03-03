@@ -12,7 +12,6 @@ import nextstep.line.domain.Section;
 import nextstep.line.domain.exception.LineNotFoundException;
 import nextstep.station.domain.Station;
 import nextstep.station.domain.StationRepository;
-import nextstep.station.domain.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,7 +81,7 @@ public class LineService {
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
         Line line = findLineByIdOrFail(lineId);
-        line.deleteStation(stationId);
+        line.deleteSection(stationId);
     }
 
     private Line findLineByIdOrFail(Long id) {

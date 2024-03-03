@@ -35,9 +35,9 @@ public class PathFinderDijkstraStrategy implements PathFinderStrategy {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         List<Station> allExistingStations = lines.stream()
-                .flatMap(it -> it.getAllStations().stream())
+                .flatMap(it -> it.getStations().stream())
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         // XXX: allSections와 allStations를 받아 처리하는 것이 좋겠다. 다익스트라 모듈은 그래프 관리만 집중하도록.
         allExistingStations.forEach(graph::addVertex);
