@@ -1,8 +1,8 @@
-package nextstep.member.ui;
+package nextstep.auth.application.ui;
 
-import nextstep.member.application.TokenService;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenRequest;
+import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.application.service.TokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TokenController {
+
     private TokenService tokenService;
 
     public TokenController(TokenService tokenService) {

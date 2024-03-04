@@ -1,12 +1,15 @@
-package nextstep.member.application;
+package nextstep.auth.application.service;
 
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.application.exception.AuthenticationException;
+import nextstep.member.application.service.MemberService;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
+
     private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
 

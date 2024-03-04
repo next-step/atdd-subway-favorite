@@ -1,5 +1,15 @@
 package nextstep.subway.acceptance;
 
+import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_단일_조회_요청;
+import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_생성_요청;
+import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_노선_아이디_추출;
+import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_노선의_상행_종점역_아이디_추출;
+import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_노선의_하행_종점역_아이디_추출;
+import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_역_아이디_목록_추출;
+import static nextstep.subway.acceptance.step.SectionSteps.지하철_구간_등록_요청;
+import static nextstep.subway.acceptance.step.SectionSteps.지하철_구간_삭제_요청;
+import static nextstep.subway.acceptance.step.StationSteps.지하철_역_생성_요청;
+import static nextstep.subway.acceptance.step.StationSteps.지하철역_응답에서_역_아이디_추출;
 import static nextstep.subway.fixture.LineFixture.강남역_교대역_구간_이호선_생성_요청;
 import static nextstep.subway.fixture.LineFixture.강남역_봉천역_구간_이호선_생성_요청;
 import static nextstep.subway.fixture.LineFixture.노선_생성_요청_본문;
@@ -11,17 +21,6 @@ import static nextstep.subway.fixture.StationFixture.교대역_생성_요청_본
 import static nextstep.subway.fixture.StationFixture.낙성대역_생성_요청_본문;
 import static nextstep.subway.fixture.StationFixture.봉천역_생성_요청_본문;
 import static nextstep.subway.fixture.StationFixture.서울대입구역_생성_요청_본문;
-import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_단일_조회_요청;
-import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_생성_요청;
-import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_노선_아이디_추출;
-import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_노선의_상행_종점역_아이디_추출;
-import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_노선의_하행_종점역_아이디_추출;
-import static nextstep.subway.acceptance.step.LineSteps.지하철_노선_응답에서_역_아이디_목록_추출;
-import static nextstep.subway.acceptance.step.SectionSteps.지하철_구간_등록_요청;
-import static nextstep.subway.acceptance.step.SectionSteps.지하철_구간_삭제_요청;
-import static nextstep.subway.acceptance.step.StationSteps.지하철_역_생성_요청;
-import static nextstep.subway.acceptance.step.StationSteps.지하철역_응답에서_역_아이디_추출;
-import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.utils.context.AcceptanceTest;
@@ -60,8 +59,8 @@ class LineSectionAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철_노선_응답에서_노선의_하행_종점역_아이디_추출(지하철_노선_단일_조회_요청(이호선_아이디))).isEqualTo(봉천역_아이디);
+            softAssertions.assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철_노선_응답에서_노선의_하행_종점역_아이디_추출(지하철_노선_단일_조회_요청(이호선_아이디))).isEqualTo(봉천역_아이디);
         });
 
     }
@@ -89,7 +88,7 @@ class LineSectionAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            softAssertions.assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
         });
     }
 
@@ -120,7 +119,7 @@ class LineSectionAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            softAssertions.assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
         });
 
     }
@@ -149,8 +148,9 @@ class LineSectionAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철_노선_응답에서_역_아이디_목록_추출(지하철_노선_단일_조회_요청(이호선_아이디))).containsExactly(강남역_아이디, 서울대입구역_아이디, 봉천역_아이디);
+            softAssertions.assertThat(지하철_구간_등록_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철_노선_응답에서_역_아이디_목록_추출(지하철_노선_단일_조회_요청(이호선_아이디)))
+                .containsExactly(강남역_아이디, 서울대입구역_아이디, 봉천역_아이디);
         });
 
     }
@@ -176,8 +176,8 @@ class LineSectionAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철_노선_응답에서_역_아이디_목록_추출(지하철_구간_삭제_응답)).doesNotContain(봉천역_아이디).isNotEmpty();
+            softAssertions.assertThat(지하철_구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철_노선_응답에서_역_아이디_목록_추출(지하철_구간_삭제_응답)).doesNotContain(봉천역_아이디).isNotEmpty();
         });
 
     }
@@ -200,7 +200,7 @@ class LineSectionAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            softAssertions.assertThat(지하철_구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
         });
 
     }
@@ -225,8 +225,8 @@ class LineSectionAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철_구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철_노선_응답에서_역_아이디_목록_추출(지하철_구간_삭제_응답)).containsExactly(강남역_아이디, 낙성대역_아이디);
+            softAssertions.assertThat(지하철_구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철_노선_응답에서_역_아이디_목록_추출(지하철_구간_삭제_응답)).containsExactly(강남역_아이디, 낙성대역_아이디);
         });
 
     }

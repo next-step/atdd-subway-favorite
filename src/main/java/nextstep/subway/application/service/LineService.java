@@ -3,14 +3,15 @@ package nextstep.subway.application.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.domain.entity.Line;
-import nextstep.subway.domain.entity.Section;
-import nextstep.subway.domain.entity.Station;
-import nextstep.subway.domain.repository.LineRepository;
+import nextstep.common.error.exception.NotFoundException;
 import nextstep.subway.application.dto.request.AddSectionRequest;
 import nextstep.subway.application.dto.request.LineCreateRequest;
 import nextstep.subway.application.dto.request.LineUpdateRequest;
 import nextstep.subway.application.dto.response.LineResponse;
+import nextstep.subway.domain.entity.Line;
+import nextstep.subway.domain.entity.Section;
+import nextstep.subway.domain.entity.Station;
+import nextstep.subway.domain.repository.LineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,10 +80,8 @@ public class LineService {
         return new LineResponse(line);
     }
 
-
-    // TODO: custom exception & exception handler
     public Line getLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new RuntimeException("not found line"));
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException("not found line"));
     }
 
     public List<Line> getLines() {

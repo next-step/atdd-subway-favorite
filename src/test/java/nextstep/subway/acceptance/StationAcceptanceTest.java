@@ -1,15 +1,14 @@
 package nextstep.subway.acceptance;
 
-import static nextstep.subway.fixture.StationFixture.강남역_생성_요청_본문;
-import static nextstep.subway.fixture.StationFixture.강남역_이름;
-import static nextstep.subway.fixture.StationFixture.교대역_생성_요청_본문;
-import static nextstep.subway.fixture.StationFixture.교대역_이름;
 import static nextstep.subway.acceptance.step.StationSteps.지하철_역_삭제_요청;
 import static nextstep.subway.acceptance.step.StationSteps.지하철_역_생성_요청;
 import static nextstep.subway.acceptance.step.StationSteps.지하철역_목록_응답에서_역_이름_목록_추출;
 import static nextstep.subway.acceptance.step.StationSteps.지하철역_목록_조회_요청;
 import static nextstep.subway.acceptance.step.StationSteps.지하철역_응답에서_역_아이디_추출;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.fixture.StationFixture.강남역_생성_요청_본문;
+import static nextstep.subway.fixture.StationFixture.강남역_이름;
+import static nextstep.subway.fixture.StationFixture.교대역_생성_요청_본문;
+import static nextstep.subway.fixture.StationFixture.교대역_이름;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -32,14 +31,18 @@ class StationAcceptanceTest {
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
+        // given
+        var 강남역_생성_요청_본문 = 강남역_생성_요청_본문();
+
         // when
-        ExtractableResponse<Response> 강남역_생성_응답 = 지하철_역_생성_요청(강남역_생성_요청_본문());
+        ExtractableResponse<Response> 강남역_생성_응답 = 지하철_역_생성_요청(강남역_생성_요청_본문);
 
         // then
-        assertThat(강남역_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(강남역_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            softAssertions.assertThat(지하철역_목록_응답에서_역_이름_목록_추출(지하철역_목록_조회_요청())).containsAnyOf(강남역_이름);
+        });
 
-        // then
-        assertThat(지하철역_목록_응답에서_역_이름_목록_추출(지하철역_목록_조회_요청())).containsAnyOf(강남역_이름);
     }
 
     /**
@@ -59,9 +62,9 @@ class StationAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철역_목록_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(지하철역_목록_조회_응답.body().as(List.class)).hasSize(2);
-            assertThat(지하철역_목록_응답에서_역_이름_목록_추출(지하철역_목록_조회_응답)).containsAnyOf(강남역_이름, 교대역_이름);
+            softAssertions.assertThat(지하철역_목록_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            softAssertions.assertThat(지하철역_목록_조회_응답.body().as(List.class)).hasSize(2);
+            softAssertions.assertThat(지하철역_목록_응답에서_역_이름_목록_추출(지하철역_목록_조회_응답)).containsAnyOf(강남역_이름, 교대역_이름);
         });
 
     }
@@ -84,8 +87,8 @@ class StationAcceptanceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(지하철역_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-            assertThat(지하철역_목록_응답에서_역_이름_목록_추출(지하철역_목록_조회_요청()))
+            softAssertions.assertThat(지하철역_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            softAssertions.assertThat(지하철역_목록_응답에서_역_이름_목록_추출(지하철역_목록_조회_요청()))
                 .doesNotContain(강남역_이름)
                 .isNotEmpty();
         });
