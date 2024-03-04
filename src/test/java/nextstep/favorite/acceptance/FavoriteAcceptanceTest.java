@@ -24,14 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final String email = "nextstep@gmail.com";
+    private static final String password = "1234";
     private Long 이호선;
     private Long 서초역;
     private Long 교대역;
     private Long 강남역;
     private Long 고속터미널역;
-
-    private String email = "nextstep@gmail.com";
-    private String password = "1234";
     private String accessToken;
 
     @BeforeEach
