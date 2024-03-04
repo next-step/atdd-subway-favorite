@@ -14,4 +14,11 @@ public class GithubProfileResponse {
 
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public int getAge() {
+        return age;
+    }
 }

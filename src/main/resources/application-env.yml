@@ -8,6 +8,7 @@ subway:
       client_id: 'client_id'
       client_secret: 'client_secret'
       access_token_uri: http://localhost:8080/github/login/oauth/access_token
+      user_info_uri: http://localhost:8080/github/user
 ---
 # ???? ?? ?
 spring:
@@ -20,3 +21,4 @@ subway:
       client_id: 'client_id'
       client_secret: 'client_secret'
       access_token_uri: http://subway.nextstep.com/github/login/oauth/access_token
+      user_info_uri: http://subway.nextstep.com/github/user

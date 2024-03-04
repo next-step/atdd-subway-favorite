@@ -2,6 +2,8 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubUserInfoRequest;
+import nextstep.member.ui.dto.GithubProfileResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,11 +18,14 @@ public class GithubClient implements OAuth2Client {
     private final String clientId;
     private final String clientSecret;
     private final String accessTokenUri;
+    private final String userInfoUri;
 
-    public GithubClient(String clientId, String clientSecret, String accessTokenUri) {
+    public GithubClient(String clientId, String clientSecret, String accessTokenUri,
+        String userInfoUri) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.accessTokenUri = accessTokenUri;
+        this.userInfoUri = userInfoUri;
     }
 
     @Override
@@ -43,5 +48,23 @@ public class GithubClient implements OAuth2Client {
             .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class);
 
         return response.getBody().getAccessToken();
+    }
+
+    @Override
+    public GithubProfileResponse requestUserInfo(String accessToken) {
+        GithubUserInfoRequest githubUserInfoRequest = new GithubUserInfoRequest(accessToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+            githubUserInfoRequest, headers);
+
+        String url = userInfoUri;
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<GithubProfileResponse> response = restTemplate
+            .exchange(url, HttpMethod.GET, httpEntity, GithubProfileResponse.class);
+
+        return response.getBody();
     }
 }

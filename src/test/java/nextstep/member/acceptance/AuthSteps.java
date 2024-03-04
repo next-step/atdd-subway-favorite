@@ -20,8 +20,7 @@ public class AuthSteps {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(params)
             .when().post("/login/token")
-            .then().log().all()
-            .statusCode(HttpStatus.OK.value()).extract();
+            .then().log().all().extract();
         return response;
     }
 

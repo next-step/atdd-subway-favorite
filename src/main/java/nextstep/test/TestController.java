@@ -26,7 +26,8 @@ public class TestController {
     public ResponseEntity<GithubProfileResponse> user(
         @RequestHeader("Authorization") String authorization) {
         String accessToken = authorization.split(" ")[1];
-        GithubProfileResponse response = new GithubProfileResponse("email@email.com", 20);
+        GithubResponses responses = GithubResponses.fromAccessToken(accessToken);
+        GithubProfileResponse response = new GithubProfileResponse(responses.getEmail(), 20);
         return ResponseEntity.ok(response);
     }
 }

@@ -1,11 +1,11 @@
 package nextstep.member;
 
 import java.util.List;
-import nextstep.AppProperties;
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.OAuth2Client;
 import nextstep.member.ui.AuthenticationPrincipalArgumentResolver;
+import nextstep.properties.AppProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -30,6 +30,8 @@ public class AuthConfig implements WebMvcConfigurer {
     public OAuth2Client githubClient() {
         return new GithubClient(appProperties.getGithub().getClientId(),
             appProperties.getGithub().getClientSecret(),
-            appProperties.getGithub().getAccessTokenUri());
+            appProperties.getGithub().getAccessTokenUri(),
+            appProperties.getGithub().getUserInfoUri()
+        );
     }
 }

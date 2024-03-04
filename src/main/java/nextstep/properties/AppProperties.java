@@ -1,4 +1,4 @@
-package nextstep;
+package nextstep.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -31,12 +31,14 @@ public class AppProperties {
         private String clientId;
         private String clientSecret;
         private String accessTokenUri;
+        private String userInfoUri;
 
         public GithubProperties(String clientId, String clientSecret,
-            String accessTokenUri) {
+            String accessTokenUri, String userInfoUri) {
             this.clientId = clientId;
             this.clientSecret = clientSecret;
             this.accessTokenUri = accessTokenUri;
+            this.userInfoUri = userInfoUri;
         }
 
         public GithubProperties() {
@@ -64,6 +66,14 @@ public class AppProperties {
 
         public void setAccessTokenUri(String accessTokenUri) {
             this.accessTokenUri = accessTokenUri;
+        }
+
+        public void setUserInfoUri(String userInfoUri) {
+            this.userInfoUri = userInfoUri;
+        }
+
+        public String getUserInfoUri() {
+            return userInfoUri;
         }
     }
 }
