@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.test;
 
 public enum GithubResponses {
     사용자1("aofijeowifjaoief", "access_token_1", "email1@email.com"),

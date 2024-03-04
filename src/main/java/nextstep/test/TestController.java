@@ -1,6 +1,5 @@
 package nextstep.test;
 
-import nextstep.member.application.GithubResponses;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.ui.dto.GithubProfileResponse;
