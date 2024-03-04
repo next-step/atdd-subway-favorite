@@ -31,7 +31,7 @@ public class JwtTokenProvider {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }  catch (Exception e) {
-            throw new AuthenticationException();
+            throw new AuthenticationException("잘못된 토큰입니다.");
         }
     }
 
