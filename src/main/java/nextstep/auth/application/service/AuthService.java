@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    private UserDetailService userDetailService;
-    private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
+    private final UserDetailService userDetailService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
     public AuthService(UserDetailService userDetailService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
         this.userDetailService = userDetailService;

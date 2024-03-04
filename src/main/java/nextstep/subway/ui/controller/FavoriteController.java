@@ -1,6 +1,6 @@
 package nextstep.subway.ui.controller;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.auth.AuthenticationPrincipal;
 import nextstep.subway.application.service.FavoriteService;
 import nextstep.subway.application.dto.FavoriteRequest;
