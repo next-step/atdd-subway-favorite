@@ -1,8 +1,8 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.application.UserDetails;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -10,7 +10,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -28,7 +28,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new AuthenticationException();
         }
-        String token = "";
+        String token;
         try {
             token = authorization.split(" ")[1];
         } catch (Exception e) {
@@ -37,6 +37,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         String email = jwtTokenProvider.getPrincipal(token);
 
-        return new LoginMember(email);
+        return new UserDetails(email);
     }
 }

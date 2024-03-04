@@ -1,9 +1,7 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.favorite.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,38 +14,38 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @SpringBootTest
 @Transactional
-public class MemberServiceTest {
+public class UserDetailsServiceImplTest {
     private final String EMAIL = "test@test.com";
     private final int AGE = 20;
 
     @Autowired
-    private MemberService memberService;
+    private UserDetailsService userDetailsService;
 
-    private GithubProfileResponse githubProfileResponse;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
-        githubProfileResponse = new GithubProfileResponse(EMAIL, AGE);
     }
 
     @DisplayName("이미 존재하는 회원이라면 정보 조회")
     @Test
     void findOrCreateMemberWhenMemberExist() {
-        MemberResponse memberResponse = memberService.createMember(new MemberRequest(EMAIL, "", AGE));
-        Member member = memberService.findOrCreateMember(githubProfileResponse);
+        Member member = memberRepository.save(new Member(EMAIL, "", AGE));
+        UserDetails userDetails = userDetailsService.findOrCreateMember(member.getEmail(), member.getAge());
 
-        assertThat(memberResponse.getId()).isEqualTo(member.getId());
+        assertThat(userDetails.getEmail()).isEqualTo(member.getEmail());
     }
 
     @DisplayName("존재하지 않는 회원이라면 저장 후 정보 조회")
     @Test
     void findOrCreateMemberWhenMemberNotExist() {
-        final Member member = memberService.findOrCreateMember(githubProfileResponse);
+        UserDetails userDetails = userDetailsService.findOrCreateMember(EMAIL, AGE);
 
         assertSoftly(softly->{
-            softly.assertThat(member.getId()).isNotNull();
-            softly.assertThat(member.getEmail()).isEqualTo(EMAIL);
-            softly.assertThat(member.getAge()).isEqualTo(AGE);
+            softly.assertThat(userDetails.getId()).isNotNull();
+            softly.assertThat(userDetails.getEmail()).isEqualTo(EMAIL);
+            softly.assertThat(userDetails.getAge()).isEqualTo(AGE);
         });
     }
 }

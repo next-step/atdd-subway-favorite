@@ -1,8 +1,9 @@
-package nextstep.favorite.application;
+package nextstep.auth.application;
 
-import nextstep.favorite.application.dto.GithubAccessTokenRequest;
-import nextstep.favorite.application.dto.GithubAccessTokenResponse;
-import nextstep.favorite.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,9 @@ public class GithubClient {
     @Value("${github.url.user}")
     private String userUrl;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
@@ -34,7 +38,6 @@ public class GithubClient {
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
-        RestTemplate restTemplate = new RestTemplate();
 
         String accessToken = restTemplate
                 .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
@@ -50,7 +53,6 @@ public class GithubClient {
         headers.add("Authorization", "bearer " + accessToken);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
-        RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate
                 .exchange(userUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)

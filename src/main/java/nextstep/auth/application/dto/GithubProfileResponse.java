@@ -1,4 +1,4 @@
-package nextstep.favorite.application.dto;
+package nextstep.auth.application.dto;
 
 public class GithubProfileResponse {
 

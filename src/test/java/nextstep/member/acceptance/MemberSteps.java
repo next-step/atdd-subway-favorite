@@ -80,7 +80,7 @@ public class MemberSteps {
 
     public static ExtractableResponse<Response> 깃허브_정보_조회(String accessToken) {
          return RestAssured.given().log().all()
-                 .header("Authorization", "bearer " + accessToken)
+                 .auth().oauth2(accessToken)
                  .contentType(MediaType.APPLICATION_JSON_VALUE)
                  .when().get("/github/user")
                  .then().log().all().extract();

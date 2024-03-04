@@ -1,11 +1,10 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.favorite.application.dto.GithubAccessTokenResponse;
-import nextstep.favorite.application.dto.GithubProfileResponse;
-import nextstep.favorite.application.dto.GithubResponses;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -20,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.auth.acceptance.AuthSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
