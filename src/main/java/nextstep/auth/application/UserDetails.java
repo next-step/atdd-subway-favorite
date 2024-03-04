@@ -12,4 +12,8 @@ public class UserDetails {
     String email = null;
     String password = null;
     Integer age = null;
+
+    public UserDetails(String email) {
+        this.email = email;
+    }
 }

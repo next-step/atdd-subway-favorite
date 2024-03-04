@@ -1,12 +1,12 @@
 package nextstep.favorite.application;
 
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.UserDetails;
 import nextstep.exception.ApplicationException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.auth.AuthenticationException;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.domain.entity.Station;
@@ -33,20 +33,20 @@ public class FavoriteService {
         this.pathService = pathService;
     }
 
-    public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
+    public FavoriteResponse createFavorite(FavoriteRequest request, UserDetails userDetails) {
         Station source = getStation(request.getSource());
         Station target = getStation(request.getTarget());
 
         // 경로 확인
         pathService.findShortestPath(source.getId(), target.getId());
 
-        Favorite favorite = new Favorite(source, target, getMember(loginMember));
+        Favorite favorite = new Favorite(source, target, getMember(userDetails));
         favoriteRepository.save(favorite);
         return FavoriteResponse.from(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = getMember(loginMember);
+    public List<FavoriteResponse> findFavorites(UserDetails userDetails) {
+        Member member = getMember(userDetails);
         List<Favorite> favorites = favoriteRepository.findByMember(member);
         return listFrom(favorites);
     }
@@ -55,8 +55,8 @@ public class FavoriteService {
         favoriteRepository.deleteById(id);
     }
 
-    private Member getMember(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
+    private Member getMember(UserDetails userDetails) {
+        return memberRepository.findByEmail(userDetails.getEmail())
                 .orElseThrow(AuthenticationException::new);
     }
 

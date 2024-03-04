@@ -2,7 +2,7 @@ package nextstep.auth.ui;
 
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.application.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.application.UserDetails;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -37,6 +37,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         String email = jwtTokenProvider.getPrincipal(token);
 
-        return new LoginMember(email);
+        return new UserDetails(email);
     }
 }
