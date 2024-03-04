@@ -1,6 +1,6 @@
 package nextstep.favorite.domain;
 
-import nextstep.member.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.station.Station;
 

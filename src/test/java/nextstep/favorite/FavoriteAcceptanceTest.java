@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.favorite.FavoriteSteps.*;
-import static nextstep.member.acceptance.AuthSteps.토큰_생성;
-import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.auth.AuthSteps.토큰_생성;
+import static nextstep.member.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")

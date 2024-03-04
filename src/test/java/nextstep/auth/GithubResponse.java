@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.auth;
 
 import nextstep.exception.SubwayException;
 

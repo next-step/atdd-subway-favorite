@@ -1,10 +1,12 @@
 package nextstep.member.domain;
 
+import nextstep.auth.application.UserDetails;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class Member {
+public class Member implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +28,12 @@ public class Member {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }

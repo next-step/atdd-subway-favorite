@@ -1,7 +1,7 @@
 package nextstep.favorite;
 
 import nextstep.favorite.domain.Favorite;
-import nextstep.member.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.station.Station;
 import org.junit.jupiter.api.BeforeEach;
