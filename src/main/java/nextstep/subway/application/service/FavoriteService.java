@@ -42,11 +42,13 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(String email, Long id) {
-        findFavorites(email).stream()
-                .filter(favorite -> id.equals(favorite.getId()))
-                .findAny()
-                .orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
+    public void deleteFavorite(Long id, Long memberId) {
+        Favorite favorite = favoriteRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
+
+        if(favorite.notMemberEquals(memberId)) {
+            throw new AuthenticationException("삭제할 권한이 없습니다.");
+        }
 
         favoriteRepository.deleteById(id);
     }
