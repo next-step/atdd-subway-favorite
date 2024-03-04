@@ -1,46 +1,75 @@
 package nextstep.favorite.application;
 
+import nextstep.exception.BadRequestException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.subway.line.Line;
+import nextstep.subway.line.LineRepository;
+import nextstep.subway.station.Station;
+import nextstep.subway.station.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
+    private MemberRepository memberRepository;
+    private StationRepository stationRepository;
+    private LineRepository lineRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository, LineRepository lineRepository) {
         this.favoriteRepository = favoriteRepository;
+        this.memberRepository = memberRepository;
+        this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
+    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
+                () -> new BadRequestException("사용자 정보를 찾을 수 없습니다.")
+        );
+        Station sourceStation = stationRepository.findById(request.getSource()).orElseThrow(
+                () -> new BadRequestException("출발지 역을 찾을 수 없습니다.")
+        );
+        Station targetStation = stationRepository.findById(request.getTarget()).orElseThrow(
+                () -> new BadRequestException("목적지 역을 찾을 수 없습니다.")
+        );
+
+        List<Line> lines = lineRepository.findAll();
+
+        Favorite favorite = new Favorite(member.getId(), sourceStation, targetStation, lines);
         favoriteRepository.save(favorite);
+
+        return new FavoriteResponse(favorite);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
+                () -> new BadRequestException("사용자 정보를 찾을 수 없습니다.")
+        );
+
+        return favoriteRepository.findByMemberId(member.getId()).orElseThrow()
+                .stream()
+                .map(FavoriteResponse::new)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(
+                () -> new BadRequestException("사용자 정보를 찾을 수 없습니다.")
+        );
+
+        favoriteRepository.findByIdAndMemberId(favoriteId, member.getId()).orElseThrow(
+                () -> new BadRequestException("즐겨찾기를 등록한 회원 정보와 일치하지 않습니다.")
+        );
+
+        favoriteRepository.deleteById(favoriteId);
     }
 }
