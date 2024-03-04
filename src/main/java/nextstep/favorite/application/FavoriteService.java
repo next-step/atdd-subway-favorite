@@ -36,7 +36,7 @@ public class FavoriteService {
     }
 
     public FavoriteCreateResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
         Station sourceStation = stationService.getStationById(request.getSource());
         Station targetStation = stationService.getStationById(request.getTarget());
@@ -57,7 +57,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+        memberService.findMemberByEmail(loginMember.getEmail());
 
         List<Favorite> favorites = favoriteRepository.findAll();
         return favorites.stream().map(favorite -> FavoriteResponse.builder()
@@ -68,7 +68,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+        memberService.findMemberByEmail(loginMember.getEmail());
 
         Favorite favorite = findFavoriteById(id);
 

@@ -1,15 +1,10 @@
 package nextstep.member.application;
 
-import nextstep.exception.BadRequestException;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class TokenService {
@@ -24,8 +19,7 @@ public class TokenService {
     }
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email)
-                .orElseThrow(() -> new BadRequestException("요청하신 사용자 정보는 올바르지 않은 정보입니다."));
+        Member member = memberService.findMemberByEmail(email);
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
         }
@@ -40,22 +34,11 @@ public class TokenService {
 
         GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(accessToken);
 
-        Optional<Member> memberByEmail = memberService.findMemberByEmail(githubProfileResponse.getEmail());
+        Member member = memberService.findOrCreateMember(githubProfileResponse.getEmail(), githubProfileResponse.getAge());
 
-        if (memberByEmail.isPresent()) {
-            return TokenResponse.builder()
-                    .accessToken(jwtTokenProvider.createToken(memberByEmail.get().getEmail()))
-                    .build();
-        } else {
-            MemberResponse member = memberService.createMember(MemberRequest.builder()
-                    .email(githubProfileResponse.getEmail())
-                    .age(githubProfileResponse.getAge())
-                    .password(githubProfileResponse.getPassword())
-                    .build());
+        return TokenResponse.builder()
+                .accessToken(jwtTokenProvider.createToken(member.getEmail()))
+                .build();
 
-            return TokenResponse.builder()
-                    .accessToken(jwtTokenProvider.createToken(member.getEmail()))
-                    .build();
-        }
     }
 }
