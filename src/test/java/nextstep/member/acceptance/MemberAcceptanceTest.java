@@ -1,5 +1,7 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.CommonAcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,6 +74,13 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        ExtractableResponse<Response> 로그인_응답 = 회원_로그인_요청(EMAIL, PASSWORD);
+        String accessToken = 로그인_응답.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> 회원_정보_응답 = 토큰으로_회원_정보_조회_요청(accessToken);
+
+        회원_정보_조회됨(회원_정보_응답, EMAIL, AGE);
     }
 }
