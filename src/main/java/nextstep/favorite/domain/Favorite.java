@@ -24,12 +24,6 @@ public class Favorite {
 
     public Favorite() {}
 
-    public Favorite(Long memberId, Station sourceStation, Station targetStation) {
-        this.memberId = memberId;
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
-    }
-
     public Favorite(Long memberId, Station sourceStation, Station targetStation, List<Line> lines) {
         PathMaker pathMaker = new PathMaker(lines);
         pathMaker.findShortestPath(sourceStation, targetStation);
