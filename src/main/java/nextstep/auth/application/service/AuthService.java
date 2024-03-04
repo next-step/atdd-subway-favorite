@@ -26,7 +26,7 @@ public class AuthService {
             throw new AuthenticationException("아이디와 비밀번호가 맞지 않습니다.");
         }
 
-        String token = jwtTokenProvider.createToken(email);
+        String token = jwtTokenProvider.createToken(userDetail.getId(), userDetail.getEmail());
 
         return new AuthResponse(token);
     }
@@ -37,6 +37,6 @@ public class AuthService {
 
         UserDetail userDetail = userDetailService.createUserIfNotExist(new UserDetail(email, "", 0));
 
-        return new AuthResponse(jwtTokenProvider.createToken(email));
+        return new AuthResponse(jwtTokenProvider.createToken(userDetail.getId(), userDetail.getEmail()));
     }
 }

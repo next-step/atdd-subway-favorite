@@ -1,7 +1,5 @@
 package nextstep.subway.application;
 
-import nextstep.member.application.service.MemberService;
-import nextstep.member.domain.entity.Member;
 import nextstep.subway.domain.entity.Favorite;
 import nextstep.subway.application.dto.FavoriteRequest;
 import nextstep.subway.application.dto.FavoriteResponse;
@@ -20,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
-import static nextstep.common.ReflectionUtils.setId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,28 +33,17 @@ public class FavoriteServiceMockTest {
 	private StationService stationService;
 	@Mock
 	private PathService pathService;
-	@Mock
-	private MemberService memberService;
 	private FavoriteService favoriteService;
 
 	private final Long source = 1L;
 	private final Long target = 2L;
-	private final String email = "aab555586@gmail.com";
-	private final String password = "password";
-	private final Member member = new Member(email, password, 20);
 	private final Long memberId = 1L;
 	private final Favorite favorite = new Favorite(memberId, source, target);
 	private final Long favoriteId = 1L;
 
 	@BeforeEach
 	void setup() {
-		favoriteService = new FavoriteService(favoriteRepository, stationService, pathService, memberService);
-
-		setId(member, memberId);
-		setId(favorite, favoriteId);
-
-		given(memberService.findMemberByEmail(email))
-				.willReturn(member);
+		favoriteService = new FavoriteService(favoriteRepository, stationService, pathService);
 	}
 
 	@Test
@@ -76,7 +63,7 @@ public class FavoriteServiceMockTest {
 				.willReturn(favorite);
 
 		// when
-		FavoriteResponse response = favoriteService.saveFavorite(email, new FavoriteRequest(source, target));
+		FavoriteResponse response = favoriteService.saveFavorite(memberId, new FavoriteRequest(source, target));
 
 		// then
 		assertThat(response.getSource().getId()).isEqualTo(source);
@@ -87,21 +74,21 @@ public class FavoriteServiceMockTest {
 	@DisplayName("즐겨찾기를 삭제한다.")
 	void deleteFavorites() {
 		// given
-		given(favoriteRepository.findByMemberId(memberId))
-				.willReturn(List.of(favorite));
+		given(favoriteRepository.findById(favoriteId))
+				.willReturn(Optional.of(favorite));
 
 		// when
-		assertDoesNotThrow(() -> favoriteService.deleteFavorite(email, favoriteId));
+		assertDoesNotThrow(() -> favoriteService.deleteFavorite(favoriteId, memberId));
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 즐겨찾기 삭제 시 실패한다.")
 	void deleteFavoritesNotExist() {
 		// given
-		given(favoriteRepository.findByMemberId(memberId))
-				.willReturn(List.of());
+		given(favoriteRepository.findById(favoriteId))
+				.willReturn(Optional.empty());
 
 		// when
-		assertThrows(EntityNotFoundException.class, () -> favoriteService.deleteFavorite(email, favoriteId));
+		assertThrows(EntityNotFoundException.class, () -> favoriteService.deleteFavorite(favoriteId, memberId));
 	}
 }

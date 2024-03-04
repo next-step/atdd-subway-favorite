@@ -4,7 +4,6 @@ import nextstep.auth.application.service.UserDetailService;
 import nextstep.auth.domain.UserDetail;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.entity.Member;
 import nextstep.member.domain.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -38,15 +37,10 @@ public class MemberService implements UserDetailService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
-    }
-
-    public MemberResponse findMe(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
+    public MemberResponse findMe(Long id) {
+        return memberRepository.findById(id)
                 .map(MemberResponse::of)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
     }
 
     @Override

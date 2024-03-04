@@ -36,6 +36,10 @@ public class Favorite {
         return target;
     }
 
+    public boolean notMemberEquals(Long memberId) {
+        return !memberId.equals(this.memberId);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
