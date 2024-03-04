@@ -16,22 +16,9 @@ public class TestController {
     @PostMapping("/github/login/oauth/access_token")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(
         @RequestBody GithubAccessTokenRequest tokenRequest) {
-        String accessToken = "";
-        switch (tokenRequest.getCode()) {
-            case "aofijeowifjaoief":
-                accessToken = GithubResponses.사용자1.getAccessToken();
-                break;
-            case "fau3nfin93dmn":
-                accessToken = GithubResponses.사용자2.getAccessToken();
-                break;
-            case "afnm93fmdodf":
-                accessToken = GithubResponses.사용자3.getAccessToken();
-                break;
-            case "fm04fndkaladmd":
-                accessToken = GithubResponses.사용자4.getAccessToken();
-                break;
-        }
-        GithubAccessTokenResponse response = new GithubAccessTokenResponse(accessToken, "", "");
+        GithubResponses responses = GithubResponses.from(tokenRequest.getCode());
+        GithubAccessTokenResponse response = new GithubAccessTokenResponse(
+            responses.getAccessToken(), "", "");
         return ResponseEntity.ok(response);
     }
 

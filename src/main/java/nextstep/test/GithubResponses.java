@@ -27,4 +27,19 @@ public enum GithubResponses {
     public String getEmail() {
         return email;
     }
+
+    public static GithubResponses from(String code) {
+        switch (code) {
+            case "aofijeowifjaoief":
+                return GithubResponses.사용자1;
+            case "fau3nfin93dmn":
+                return GithubResponses.사용자2;
+            case "afnm93fmdodf":
+                return GithubResponses.사용자3;
+            case "fm04fndkaladmd":
+                return GithubResponses.사용자4;
+            default:
+                throw new IllegalArgumentException("존재하지 않는 코드입니다.");
+        }
+    }
 }
