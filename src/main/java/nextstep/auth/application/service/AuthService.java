@@ -1,6 +1,7 @@
 package nextstep.auth.application.service;
 
 import nextstep.auth.application.dto.AuthResponse;
+import nextstep.auth.domain.UserDetail;
 import nextstep.exception.AuthenticationException;
 import nextstep.auth.application.GithubClient;
 import nextstep.auth.application.JwtTokenProvider;
@@ -19,8 +20,10 @@ public class AuthService {
     }
 
     public AuthResponse createToken(String email, String password) {
-        if (userDetailService.isNotMember(email, password)) {
-            throw new AuthenticationException();
+        UserDetail userDetail = userDetailService.getUserDetailByEmail(email);
+
+        if(!password.equals(userDetail.getPassword())) {
+            throw new AuthenticationException("아이디와 비밀번호가 맞지 않습니다.");
         }
 
         String token = jwtTokenProvider.createToken(email);
@@ -32,7 +35,7 @@ public class AuthService {
         String githubToken = githubClient.requestGithubToken(code);
         String email = githubClient.requestGithubProfile(githubToken).getEmail();
 
-        userDetailService.createMemberIfNotExist(email, "", 0);
+        UserDetail userDetail = userDetailService.createUserIfNotExist(new UserDetail(email, "", 0));
 
         return new AuthResponse(jwtTokenProvider.createToken(email));
     }

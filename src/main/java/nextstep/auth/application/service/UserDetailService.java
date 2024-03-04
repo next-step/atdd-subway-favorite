@@ -1,6 +1,8 @@
 package nextstep.auth.application.service;
 
+import nextstep.auth.domain.UserDetail;
+
 public interface UserDetailService {
-	boolean isNotMember(String email, String password);
-	void createMemberIfNotExist(String email, String password, int age);
+	UserDetail getUserDetailByEmail(String email);
+	UserDetail createUserIfNotExist(UserDetail userDetail);
 }

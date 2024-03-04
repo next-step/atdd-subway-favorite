@@ -49,16 +49,19 @@ public class MemberService implements UserDetailService {
     }
 
     @Override
-    public boolean isNotMember(String email, String password) {
-        return !findMemberByEmail(email).checkPassword(password);
+    public UserDetail getUserDetailByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
+        return new UserDetail(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
     }
 
     @Override
-    public void createMemberIfNotExist(String email, String password, int age) {
+    public UserDetail createUserIfNotExist(UserDetail userDetail) {
         try {
-            findMemberByEmail(email);
+            return getUserDetailByEmail(userDetail.getEmail());
         } catch (EntityNotFoundException e) {
-            createMember(new MemberRequest(email, password, age));
+            Member member = memberRepository.save(new Member(userDetail.getEmail(), userDetail.getPassword(), userDetail.getAge()));
+            return new UserDetail(member.getId(), member.getEmail(), member.getPassword(), member.getAge());
         }
     }
 }
