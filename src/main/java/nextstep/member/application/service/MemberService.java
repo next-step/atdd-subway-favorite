@@ -8,36 +8,42 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(NotFoundException::new);
+        Member member = memberRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(NotFoundException::new);
+        Member member = memberRepository.findById(id)
+            .orElseThrow(NotFoundException::new);
         member.update(param.toMember());
     }
 
+    @Transactional
     public void deleteMember(Long id) {
-
         memberRepository.deleteById(id);
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+        return memberRepository.findByEmail(email)
+            .orElseThrow(NotFoundException::new);
     }
 
     public MemberResponse findMe(LoginMember loginMember) {

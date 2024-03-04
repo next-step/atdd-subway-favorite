@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("즐겨찾ㅈ기 단위테스트")
+@DisplayName("즐겨찾기 단위테스트")
 class FavoriteTest {
 
     private Member 사용자A;
@@ -39,7 +39,7 @@ class FavoriteTest {
         Favorite favorite = Favorite.of(사용자A.getId(), 강남역, 교대역);
 
         // when
-        var isOwner = favorite.isOwner(사용자A);
+        boolean isOwner = favorite.isOwner(사용자A.getId());
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
@@ -54,7 +54,7 @@ class FavoriteTest {
         Favorite favorite = Favorite.of(사용자A.getId(), 강남역, 교대역);
 
         // when
-        var isOwner = favorite.isOwner(사용자B);
+        boolean isOwner = favorite.isOwner(사용자B.getId());
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {

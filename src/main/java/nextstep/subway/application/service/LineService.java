@@ -15,9 +15,9 @@ import nextstep.subway.domain.repository.LineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Service
 public class LineService {
 
     private final StationService stationService;

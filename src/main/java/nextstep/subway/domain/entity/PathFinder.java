@@ -35,7 +35,7 @@ public class PathFinder {
 
     public boolean isValidPath(Station source, Station target) {
         try {
-            var path = findShortestPath(source, target);
+            Optional<Path> path = findShortestPath(source, target);
             return path.isPresent();
         } catch (IllegalArgumentException e) {
             return false;
