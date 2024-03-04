@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.acceptance;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import io.restassured.http.ContentType;
-import nextstep.subway.acceptance.BaseAcceptanceTest;
 import nextstep.subway.dto.PathResponse;
 import nextstep.subway.dto.SectionRequest;
 import nextstep.subway.dto.StationResponse;
