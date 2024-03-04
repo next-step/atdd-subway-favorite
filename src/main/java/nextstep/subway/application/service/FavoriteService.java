@@ -28,22 +28,25 @@ public class FavoriteService {
 
     public FavoriteResponse saveFavorite(String email, FavoriteRequest request) {
         validFavoriteRequest(request);
+        Member member = memberService.findMemberByEmail(email);
 
-        Favorite favorite = new Favorite(memberService.findMemberByEmail(email), request.getSource(), request.getTarget());
+        Favorite favorite = new Favorite(member.getId(), request.getSource(), request.getTarget());
         return createFavoriteResponse(favoriteRepository.save(favorite));
     }
 
     public List<FavoriteResponse> findFavorites(String email) {
         Member member = memberService.findMemberByEmail(email);
-        return favoriteRepository.findByMember(member).stream()
+
+        return favoriteRepository.findByMemberId(member.getId()).stream()
                 .map(this::createFavoriteResponse)
                 .collect(Collectors.toList());
     }
 
     public void deleteFavorite(String email, Long id) {
-        Member member = memberService.findMemberByEmail(email);
-
-        favoriteRepository.findByIdAndMember(id, member).orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
+        findFavorites(email).stream()
+                .filter(favorite -> id.equals(favorite.getId()))
+                .findAny()
+                .orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
 
         favoriteRepository.deleteById(id);
     }
