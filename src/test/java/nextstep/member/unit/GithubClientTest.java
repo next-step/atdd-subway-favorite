@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import nextstep.member.application.GithubClient;
 import nextstep.member.application.OAuth2Client;
+import nextstep.test.GithubResponses;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -18,7 +19,7 @@ public class GithubClientTest {
     @Test
     void requestAccessToken() {
         // given
-        String code = "code";
+        String code = GithubResponses.사용자1.getCode();
         String clientId = "clientId";
         String clientSecret = "clientSecret";
         String accessTokenUri = "http://localhost:" + port + "/github/login/oauth/access_token";
