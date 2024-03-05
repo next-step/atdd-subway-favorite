@@ -3,8 +3,8 @@ package nextstep.member.ui.controller;
 import nextstep.member.application.service.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
-import nextstep.member.ui.AuthenticationPrincipal;
+import nextstep.auth.domain.LoginMember;
+import nextstep.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,7 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -44,7 +44,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findMe(loginMember);
+        MemberResponse memberResponse = memberService.findMe(loginMember.getId());
         return ResponseEntity.ok().body(memberResponse);
     }
 }

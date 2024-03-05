@@ -1,14 +1,14 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto;
 
-public class GithubAccessTokenRequest {
+public class GithubAuthRequest {
 	private String clientId;
 	private String clientSecret;
 	private String code;
 
-	public GithubAccessTokenRequest() {
+	public GithubAuthRequest() {
 	}
 
-	public GithubAccessTokenRequest(String clientId, String clientSecret, String code) {
+	public GithubAuthRequest(String clientId, String clientSecret, String code) {
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.code = code;

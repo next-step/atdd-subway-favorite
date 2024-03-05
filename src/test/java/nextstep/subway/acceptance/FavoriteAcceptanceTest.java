@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.auth.utils.steps.AuthSteps.토큰_생성_요청;
 import static nextstep.member.utils.steps.MemberSteps.회원_생성_요청;
-import static nextstep.member.utils.steps.TokenSteps.인증정보_생성_요청;
 import static nextstep.subway.utils.steps.FavoriteSteps.*;
 import static nextstep.subway.utils.steps.StationSteps.역_삭제_요청;
 import static nextstep.subway.utils.steps.StationSteps.역_생성_요청;
@@ -37,7 +37,7 @@ public class FavoriteAcceptanceTest {
 		int age = 20;
 
 		회원_생성_요청(email, password, age);
-		accessToken = 인증정보_생성_요청(email, password).jsonPath().getString("accessToken");
+		accessToken = 토큰_생성_요청(email, password).jsonPath().getString("accessToken");
 	}
 
 	/**

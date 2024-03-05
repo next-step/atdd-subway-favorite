@@ -1,7 +1,6 @@
 package nextstep.subway.application.service;
 
-import nextstep.member.application.service.MemberService;
-import nextstep.member.domain.entity.Member;
+import nextstep.exception.AuthenticationException;
 import nextstep.subway.application.dto.FavoriteRequest;
 import nextstep.subway.application.dto.FavoriteResponse;
 import nextstep.subway.domain.entity.Favorite;
@@ -17,33 +16,32 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
     private final PathService pathService;
-    private final MemberService memberService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, PathService pathService, MemberService memberService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
         this.pathService = pathService;
-        this.memberService = memberService;
     }
 
-    public FavoriteResponse saveFavorite(String email, FavoriteRequest request) {
+    public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest request) {
         validFavoriteRequest(request);
-
-        Favorite favorite = new Favorite(memberService.findMemberByEmail(email), request.getSource(), request.getTarget());
+        Favorite favorite = new Favorite(memberId, request.getSource(), request.getTarget());
         return createFavoriteResponse(favoriteRepository.save(favorite));
     }
 
-    public List<FavoriteResponse> findFavorites(String email) {
-        Member member = memberService.findMemberByEmail(email);
-        return favoriteRepository.findByMember(member).stream()
+    public List<FavoriteResponse> findFavoritesByMemberId(Long memberId) {
+        return favoriteRepository.findByMemberId(memberId).stream()
                 .map(this::createFavoriteResponse)
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(String email, Long id) {
-        Member member = memberService.findMemberByEmail(email);
+    public void deleteFavorite(Long id, Long memberId) {
+        Favorite favorite = favoriteRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
 
-        favoriteRepository.findByIdAndMember(id, member).orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
+        if(favorite.notMemberEquals(memberId)) {
+            throw new AuthenticationException("삭제할 권한이 없습니다.");
+        }
 
         favoriteRepository.deleteById(id);
     }

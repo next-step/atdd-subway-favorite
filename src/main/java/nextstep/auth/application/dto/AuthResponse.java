@@ -1,12 +1,12 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto;
 
-public class TokenResponse {
+public class AuthResponse {
     private String accessToken;
 
-    public TokenResponse() {
+    public AuthResponse() {
     }
 
-    public TokenResponse(String accessToken) {
+    public AuthResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 

@@ -1,4 +1,4 @@
-package nextstep.member.utils.fixture;
+package nextstep.auth.utils.fixture;
 
 import java.util.Arrays;
 

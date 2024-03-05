@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubAuthRequest;
+import nextstep.auth.application.dto.GithubAuthResponse;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,7 +19,7 @@ public class GithubClient {
 	}
 
 	public String requestGithubToken(String code) {
-		GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(githubConfigProperties.getClientId(), githubConfigProperties.getClientSecret(), code);
+		GithubAuthRequest githubAccessTokenRequest = new GithubAuthRequest(githubConfigProperties.getClientId(), githubConfigProperties.getClientSecret(), code);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -28,7 +28,7 @@ public class GithubClient {
 				.exchange(githubConfigProperties.getUrlAccessToken(),
 						HttpMethod.POST,
 						new HttpEntity(githubAccessTokenRequest, headers),
-						GithubAccessTokenResponse.class)
+						GithubAuthResponse.class)
 				.getBody()
 				.getAccessToken();
 

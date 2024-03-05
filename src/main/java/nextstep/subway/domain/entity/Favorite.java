@@ -1,7 +1,5 @@
 package nextstep.subway.domain.entity;
 
-import nextstep.member.domain.entity.Member;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -11,8 +9,7 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Member member;
+    private Long memberId;
 
     private Long source;
 
@@ -21,8 +18,8 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Member member, Long source, Long target) {
-        this.member = member;
+    public Favorite(Long memberId, Long source, Long target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
@@ -37,6 +34,10 @@ public class Favorite {
 
     public Long getTarget() {
         return target;
+    }
+
+    public boolean notMemberEquals(Long memberId) {
+        return !memberId.equals(this.memberId);
     }
 
     @Override
