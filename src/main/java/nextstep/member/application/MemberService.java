@@ -8,9 +8,6 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
-
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -48,19 +45,4 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }
-
-    public Member findOrCreateMember(String email, int age) {
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
-
-        if (memberOptional.isPresent()) {
-            return memberOptional.get();
-        }
-
-        return memberRepository.save(Member.builder()
-                .email(email)
-                .age(age)
-                .password(UUID.randomUUID().toString())
-                .build());
-    }
-
 }

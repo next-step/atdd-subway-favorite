@@ -1,5 +1,6 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
+import nextstep.auth.acceptance.GithubResponses;
 import nextstep.auth.application.dto.GithubAccessTokenRequest;
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
 import nextstep.auth.application.dto.GithubProfileResponse;

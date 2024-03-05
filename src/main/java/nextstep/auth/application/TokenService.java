@@ -1,31 +1,29 @@
 package nextstep.auth.application;
 
-import nextstep.exception.AuthenticationException;
-import nextstep.member.application.MemberService;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
+import nextstep.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
     private GithubClient githubClient;
+    private UserDetailService userDetailService;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
-        this.memberService = memberService;
+    public TokenService(JwtTokenProvider jwtTokenProvider, GithubClient githubClient, UserDetailService userDetailService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.githubClient = githubClient;
+        this.userDetailService = userDetailService;
     }
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
+        UserDetail userDetail = userDetailService.findUser(email);
+        if (!userDetail.getPassword().equals(password)) {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = jwtTokenProvider.createToken(userDetail.getEmail());
 
         return new TokenResponse(token);
     }
@@ -35,10 +33,10 @@ public class TokenService {
 
         GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(accessToken);
 
-        Member member = memberService.findOrCreateMember(githubProfileResponse.getEmail(), githubProfileResponse.getAge());
+        UserDetail userDetail = userDetailService.findOrCreateUser(githubProfileResponse.getEmail(), githubProfileResponse.getAge());
 
         return TokenResponse.builder()
-                .accessToken(jwtTokenProvider.createToken(member.getEmail()))
+                .accessToken(jwtTokenProvider.createToken(userDetail.getEmail()))
                 .build();
 
     }
