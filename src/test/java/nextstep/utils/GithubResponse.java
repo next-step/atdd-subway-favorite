@@ -3,6 +3,7 @@ package nextstep.utils;
 import nextstep.member.AuthenticationException;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public enum GithubResponse {
     회원("aofijeowifjaoief", "access_token_1", "email1@email.com", 20),
@@ -27,6 +28,13 @@ public enum GithubResponse {
                 .filter(u -> u.code.equals(code))
                 .findFirst()
                 .orElseThrow(() -> new AuthenticationException("code에 해당하는 사용자 정보가 없습니다."));
+    }
+
+    public static GithubResponse ofToken(final String accessToken) {
+        return Arrays.stream(values())
+                .filter(u -> Objects.equals(accessToken, u.accessToken))
+                .findFirst()
+                .orElseThrow(() -> new AuthenticationException("access token에 해당하는 사용자 정보가 없습니다."));
     }
 
     public String getCode() {

@@ -3,6 +3,7 @@ package nextstep.member.application;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -52,4 +53,24 @@ public class GithubClient {
         return accessToken;
     }
 
+    public GithubProfileResponse requestGithubProfile(String accessToken) {
+        String authToken = "bearer " + accessToken;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", authToken);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        GithubProfileResponse profile = restTemplate
+                .exchange(profileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .getBody();
+
+        if(profile.getEmail() == null) {
+            throw new AuthenticationException("사용자 정보가 없습니다.");
+        }
+
+        return profile;
+    }
 }
