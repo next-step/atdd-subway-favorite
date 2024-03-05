@@ -1,9 +1,9 @@
 package nextstep.member.application;
 
+import nextstep.auth.domain.UserDetail;
 import nextstep.exception.BadRequestException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -40,8 +40,8 @@ public class MemberService {
                 .orElseThrow(() -> new BadRequestException("요청하신 이메일 정보는 정보는 올바르지 않은 정보입니다."));
     }
 
-    public MemberResponse findMe(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
+    public MemberResponse findMe(UserDetail userDetail) {
+        return memberRepository.findByEmail(userDetail.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }

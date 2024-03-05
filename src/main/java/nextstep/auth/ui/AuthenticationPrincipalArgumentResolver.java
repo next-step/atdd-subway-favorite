@@ -1,13 +1,15 @@
 package nextstep.auth.ui;
 
 import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.domain.UserDetail;
 import nextstep.exception.AuthenticationException;
-import nextstep.auth.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private JwtTokenProvider jwtTokenProvider;
@@ -29,7 +31,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         checkValidToken(token);
 
         String email = jwtTokenProvider.getPrincipal(token);
-        return new LoginMember(email);
+        return new UserDetail(email);
     }
 
     private void existToken(String authorization) {

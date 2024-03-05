@@ -13,6 +13,10 @@ public class UserDetail {
     public UserDetail() {
     }
 
+    public UserDetail(String email) {
+        this.email = email;
+    }
+
     @Builder
     public UserDetail(Long id, String email, String password, Integer age) {
         this.id = id;
