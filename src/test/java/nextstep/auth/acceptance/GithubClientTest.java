@@ -2,15 +2,19 @@ package nextstep.auth.acceptance;
 
 import static nextstep.auth.fixture.GithubResponses.사용자1;
 import static nextstep.auth.fixture.GithubResponses.사용자2;
+import nextstep.auth.oauth.github.GithubAccessTokenResponse;
 import nextstep.auth.oauth.github.GithubClient;
 import nextstep.auth.oauth.github.GithubProfileResponse;
-import nextstep.utils.context.AcceptanceTest;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.ActiveProfiles;
 
-@AcceptanceTest
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 class GithubClientTest {
 
     @Autowired
@@ -18,23 +22,23 @@ class GithubClientTest {
 
     @Test
     @DisplayName("깃허브 토큰을 요청한다.")
-    void 깃허브_토큰_요청() {
+    void requestGithubToken() {
         //given
         String code = 사용자1.getCode();
 
         //when
-        String 깃허브_토큰_응답 = githubClient.requestGithubToken(code);
+        GithubAccessTokenResponse 깃허브_토큰_응답 = githubClient.requestGithubToken(code);
 
         //then
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(깃허브_토큰_응답).isEqualTo(사용자1.getAccessToken());
+            softAssertions.assertThat(깃허브_토큰_응답.getAccessToken()).isEqualTo(사용자1.getAccessToken());
         });
 
     }
 
     @Test
     @DisplayName("사용자 정보를 요청한다.")
-    void 사용자_정보_요청() {
+    void requestGithubProfile() {
         //given
         String accessToken = 사용자2.getAccessToken();
 

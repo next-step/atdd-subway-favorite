@@ -17,7 +17,18 @@ public class TokenSteps {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 깃허브_토근_생성_요청(Map<String, String> 토큰_생성_본문) {
+        return RestAssured.given().log().all()
+            .body(토큰_생성_본문)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/login/github")
+            .then().log().all()
+            .extract();
+    }
+
     public static String 토큰_생성_응답에서_토큰값_추출(ExtractableResponse<Response> 토큰_생성_응답) {
         return 토큰_생성_응답.jsonPath().get("accessToken");
     }
+
+
 }
