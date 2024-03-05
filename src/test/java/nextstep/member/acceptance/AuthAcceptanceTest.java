@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.CommonAcceptanceTest;
+import nextstep.utils.GithubResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,42 @@ class AuthAcceptanceTest extends CommonAcceptanceTest {
 
         //토큰 발급 시 사용한 이메일과 응답 받은 회원 정보가 같은지 검증
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    /**
+     * given 회원 정보를 생성하고
+     * when 코드와 함께 깃헙 로그인 요청을 하면
+     * then 액세스 토큰을 발급 받을 수 있다. (로그인 성공)
+     */
+    @Test
+    void 깃허브_로그인_토큰발급() {
+        //given
+        memberRepository.save(new Member(GithubResponse.회원.getEmail(), PASSWORD, GithubResponse.회원.getAge()));
+
+        //when
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponse.회원.getCode());
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when()
+                .post("/login/github")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        String accessToken = response.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(GithubResponse.회원.getEmail());
     }
 }
