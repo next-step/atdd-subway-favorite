@@ -3,6 +3,7 @@ package nextstep.member.domain;
 import static nextstep.member.domain.GithubResponses.사용자1;
 
 
+import nextstep.member.application.GithubClient;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

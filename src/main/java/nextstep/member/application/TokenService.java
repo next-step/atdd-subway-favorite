@@ -7,12 +7,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private MemberService memberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider,
+        GithubClient githubClient) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.githubClient = githubClient;
     }
 
     public TokenResponse createToken(String email, String password) {
@@ -24,5 +27,10 @@ public class TokenService {
         String token = jwtTokenProvider.createToken(member.getEmail());
 
         return new TokenResponse(token);
+    }
+
+    public String requestGithubToken(String code) {
+        String accessToken = githubClient.requestGithubToken(code);
+        return accessToken;
     }
 }
