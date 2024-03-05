@@ -5,6 +5,7 @@ import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.domain.GithubClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
