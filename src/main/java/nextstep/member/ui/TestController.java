@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequestMapping("/test")
 public class TestController {
-    @PostMapping("/github/login/oauth/access_token")
+    @PostMapping("/github/login")
     public ResponseEntity<GithubAccessTokenResponse> accessToken(
         @RequestBody GithubAccessTokenRequest tokenRequest) {
         GithubResponses response = GithubResponses.getResponsesByCode(
