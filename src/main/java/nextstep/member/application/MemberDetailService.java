@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.auth.application.UserDetail;
+import nextstep.auth.domain.UserDetail;
 import nextstep.auth.application.UserDetailService;
 import nextstep.exception.BadRequestException;
 import nextstep.member.domain.Member;

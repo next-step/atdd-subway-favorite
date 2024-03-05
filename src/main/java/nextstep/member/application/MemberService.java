@@ -3,7 +3,7 @@ package nextstep.member.application;
 import nextstep.exception.BadRequestException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;

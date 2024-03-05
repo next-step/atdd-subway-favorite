@@ -2,6 +2,7 @@ package nextstep.auth.application;
 
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.UserDetail;
 import nextstep.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 

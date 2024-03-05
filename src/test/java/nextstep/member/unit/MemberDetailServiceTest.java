@@ -1,6 +1,6 @@
 package nextstep.member.unit;
 
-import nextstep.auth.application.UserDetail;
+import nextstep.auth.domain.UserDetail;
 import nextstep.member.application.MemberDetailService;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;

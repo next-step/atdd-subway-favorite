@@ -7,7 +7,7 @@ import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.PathFinder;
