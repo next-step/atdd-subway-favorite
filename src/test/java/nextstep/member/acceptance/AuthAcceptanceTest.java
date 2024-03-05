@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.fixture.GithubUserFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,27 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    /**
+     * GIVEN 원래 멤버가 아닌 "사용자1"이
+     * WHEN 깃헙 코드로 로그인을 요청하면
+     * THEN 정상적으로 액세스 코드가 발급되고, "사용자1"은 그 시점으로부터 멤버로 조회된다.
+     */
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubUserFixture.사용자1.getCode());
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(memberRepository.findByEmail(GithubUserFixture.사용자1.getEmail())).isNotEmpty();
     }
 }
