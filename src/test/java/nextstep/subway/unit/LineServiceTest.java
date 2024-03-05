@@ -9,7 +9,6 @@ import static nextstep.subway.fixture.StationFixture.교대역_이름;
 import static nextstep.subway.fixture.StationFixture.낙성대역_이름;
 import static nextstep.subway.fixture.StationFixture.서울역_이름;
 import static nextstep.subway.fixture.StationFixture.청량리역_이름;
-import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.application.dto.request.AddSectionRequest;
@@ -24,7 +23,6 @@ import nextstep.subway.domain.repository.StationRepository;
 import nextstep.subway.fixture.LineFixture;
 import nextstep.subway.fixture.SectionFixture;
 import nextstep.subway.fixture.StationFixture;
-
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +86,7 @@ class LineServiceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(result.getStations()).hasSize(3);
+            softAssertions.assertThat(result.getStations()).hasSize(3);
         });
     }
 
@@ -103,7 +101,7 @@ class LineServiceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(
+            softAssertions.assertThat(
                 result.getStations().stream()
                     .map(StationDto::getId)
                     .collect(Collectors.toList())
@@ -123,7 +121,7 @@ class LineServiceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(result).hasSize(2);
+            softAssertions.assertThat(result).hasSize(2);
         });
     }
 
@@ -139,11 +137,11 @@ class LineServiceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(result.getStations().stream()
-                .map(StationDto::getId)
-                .collect(Collectors.toList()))
-            .doesNotContain(낙성대역.getId())
-            .isNotEmpty();
+            softAssertions.assertThat(result.getStations().stream()
+                    .map(StationDto::getId)
+                    .collect(Collectors.toList()))
+                .doesNotContain(낙성대역.getId())
+                .isNotEmpty();
         });
     }
 

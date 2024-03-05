@@ -9,7 +9,6 @@ import static nextstep.subway.fixture.StationFixture.교대역_이름;
 import static nextstep.subway.fixture.StationFixture.낙성대역_이름;
 import static nextstep.subway.fixture.StationFixture.서울역_이름;
 import static nextstep.subway.fixture.StationFixture.청량리역_이름;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +91,7 @@ class LineServiceMockTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(result.getStations()).hasSize(3);
+            softAssertions.assertThat(result.getStations()).hasSize(3);
         });
     }
 
@@ -108,7 +107,7 @@ class LineServiceMockTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(
+            softAssertions.assertThat(
                 result.getStations().stream()
                     .map(StationDto::getId)
                     .collect(Collectors.toList())
@@ -129,7 +128,7 @@ class LineServiceMockTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(result).hasSize(2);
+            softAssertions.assertThat(result).hasSize(2);
         });
     }
 
@@ -147,9 +146,9 @@ class LineServiceMockTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(result.getStations().stream()
-                .map(StationDto::getId)
-                .collect(Collectors.toList()))
+            softAssertions.assertThat(result.getStations().stream()
+                    .map(StationDto::getId)
+                    .collect(Collectors.toList()))
                 .doesNotContain(낙성대역.getId())
                 .isNotEmpty();
         });

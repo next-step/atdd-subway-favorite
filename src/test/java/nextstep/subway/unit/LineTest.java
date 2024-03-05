@@ -5,7 +5,6 @@ import static nextstep.subway.fixture.LineFixture.이호선_이름;
 import static nextstep.subway.fixture.StationFixture.강남역_이름;
 import static nextstep.subway.fixture.StationFixture.교대역_이름;
 import static nextstep.subway.fixture.StationFixture.낙성대역_이름;
-import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.domain.entity.Line;
@@ -56,7 +55,7 @@ class LineTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(이호선.getSections().getAllSections()).hasSize(2);
+            softAssertions.assertThat(이호선.getSections().getAllSections()).hasSize(2);
         });
     }
 
@@ -74,7 +73,7 @@ class LineTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(이호선_모든_역_아이디_리스트).containsExactly(강남역.getId(), 교대역.getId());
+            softAssertions.assertThat(이호선_모든_역_아이디_리스트).containsExactly(강남역.getId(), 교대역.getId());
         });
     }
 
@@ -94,7 +93,7 @@ class LineTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            assertThat(이호선_모든_역_아이디_리스트).doesNotContain(낙성대역.getId()).isNotEmpty();
+            softAssertions.assertThat(이호선_모든_역_아이디_리스트).doesNotContain(낙성대역.getId()).isNotEmpty();
         });
     }
 
