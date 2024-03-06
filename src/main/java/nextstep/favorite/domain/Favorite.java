@@ -44,14 +44,4 @@ public class Favorite {
     public Long getTargetStationId() {
         return targetStationId;
     }
-
-    public void validate(Long memberId) {
-        if (!isOwner(memberId)) {
-            throw new IllegalArgumentException("해당 즐겨찾기 생성자가 아닙니다.");
-        }
-    }
-
-    private boolean isOwner(Long memberId) {
-        return this.memberId.equals(memberId);
-    }
 }

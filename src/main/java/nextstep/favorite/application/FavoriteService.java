@@ -66,9 +66,8 @@ public class FavoriteService {
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = memberRepository.findByEmail(loginMember.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("해당 이메일 계정을 찾을 수 없습니다."));
-        Favorite favorite = favoriteRepository.findById(id)
+        favoriteRepository.findByIdAndMemberId(id, member.getId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 즐겨찾기를 찾을 수 없습니다."));
-        favorite.validate(member.getId());
 
         favoriteRepository.deleteById(id);
     }

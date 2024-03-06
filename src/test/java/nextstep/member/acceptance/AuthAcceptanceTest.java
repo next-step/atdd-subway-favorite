@@ -3,6 +3,9 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.OAuth2ProfileResponse;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -11,12 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.member.acceptance.AuthSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class AuthAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
@@ -51,5 +57,43 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    /**
+     * Given 사용자가
+     * When github 로그인을 시도하면
+     * Then accessToken를 발급한다.
+     */
+    @DisplayName("깃허브 로그인을 시도하면 accessToken을 발급한다")
+    @Test
+    void loginToGithub() {
+        //given
+        GithubResponses res = GithubResponses.사용자1;
+        MemberSteps.회원_생성_요청(res.getEmail(), null, res.getAge());
+
+        //when
+        TokenResponse response = 깃허브_로그인_요청(res.getCode())
+                .as(TokenResponse.class);
+
+        //then
+        assertThat(response.getAccessToken()).isNotBlank();
+    }
+
+    /**
+     * Given 사용자 코드로 정보를 accessToken을 발급받고,
+     * When 해당 토큰으로 깃허브 정보 조회를 하면
+     * Then gitHubProfile 정보를 조회할 수 있다.
+     */
+    @DisplayName("깃허브 프로필을 조회한다.")
+    @Test
+    void findGithubProfile() {
+        GithubAccessTokenResponse accessTokenRes = 깃허브_토큰_발급(GithubResponses.사용자1.getCode())
+                .as(GithubAccessTokenResponse.class);
+
+        OAuth2ProfileResponse githubProfileResponse = 깃허브_정보_조회(accessTokenRes.getAccessToken())
+                .as(OAuth2ProfileResponse.class);
+
+        assertThat(githubProfileResponse.getEmail()).isEqualTo(GithubResponses.사용자1.getEmail());
+        assertThat(githubProfileResponse.getAge()).isEqualTo(GithubResponses.사용자1.getAge());
     }
 }
