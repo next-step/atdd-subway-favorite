@@ -4,7 +4,7 @@ import nextstep.auth.application.UserDetailService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.auth.application.dto.OAuth2ProfileResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.application.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
