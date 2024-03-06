@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import nextstep.auth.application.GithubClient;
 import nextstep.auth.application.dto.OAuth2ProfileResponse;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-import static nextstep.member.acceptance.GithubResponses.사용자1;
+import static nextstep.auth.acceptance.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
