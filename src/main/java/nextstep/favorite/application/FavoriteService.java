@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import nextstep.auth.domain.UserDetail;
 import nextstep.exception.NotFoundException;
 import nextstep.favorite.application.dto.FavoriteCreateResponse;
 import nextstep.favorite.application.dto.FavoriteRequest;
@@ -7,7 +8,6 @@ import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.subway.domain.Line;
 import nextstep.subway.domain.PathFinder;
@@ -35,8 +35,8 @@ public class FavoriteService {
         this.lineRepository = lineRepository;
     }
 
-    public FavoriteCreateResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+    public FavoriteCreateResponse createFavorite(UserDetail userDetail, FavoriteRequest request) {
+        Member member = memberService.findMemberByEmail(userDetail.getEmail());
 
         Station sourceStation = stationService.getStationById(request.getSource());
         Station targetStation = stationService.getStationById(request.getTarget());
@@ -56,8 +56,8 @@ public class FavoriteService {
                 .build();
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+    public List<FavoriteResponse> findFavorites(UserDetail userDetail) {
+        memberService.findMemberByEmail(userDetail.getEmail());
 
         List<Favorite> favorites = favoriteRepository.findAll();
         return favorites.stream().map(favorite -> FavoriteResponse.builder()
@@ -67,8 +67,8 @@ public class FavoriteService {
                 .build()).collect(Collectors.toList());
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long id) {
-        memberService.getMemberByEmailOrThrow(loginMember.getEmail());
+    public void deleteFavorite(UserDetail userDetail, Long id) {
+        memberService.findMemberByEmail(userDetail.getEmail());
 
         Favorite favorite = findFavoriteById(id);
 

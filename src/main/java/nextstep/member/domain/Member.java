@@ -1,11 +1,13 @@
 package nextstep.member.domain;
 
+import lombok.Builder;
+import lombok.Getter;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.Favorites;
 
 import javax.persistence.*;
 import java.util.Objects;
-
+@Getter
 @Entity
 public class Member {
     @Id
@@ -21,26 +23,11 @@ public class Member {
     public Member() {
     }
 
+    @Builder
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 
     public void update(Member member) {

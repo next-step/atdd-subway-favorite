@@ -5,7 +5,7 @@ import io.restassured.response.Response;
 import nextstep.common.annotation.AcceptanceTest;
 import nextstep.member.acceptance.MemberSteps;
 import nextstep.member.acceptance.TokenSteps;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.subway.acceptance.fixture.LineFixture;
 import nextstep.subway.acceptance.fixture.StationFixture;
 import org.junit.jupiter.api.BeforeEach;

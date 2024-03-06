@@ -1,14 +1,14 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import nextstep.common.annotation.AcceptanceTest;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static nextstep.member.acceptance.GithubResponses.사용자1;
-import static nextstep.member.acceptance.GithubResponses.사용자2;
+import static nextstep.auth.acceptance.GithubResponses.사용자1;
+import static nextstep.auth.acceptance.GithubResponses.사용자2;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @AcceptanceTest

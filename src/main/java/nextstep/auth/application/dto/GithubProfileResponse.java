@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,15 +9,12 @@ public class GithubProfileResponse {
 
     private int age;
 
-    private String password;
-
     public GithubProfileResponse() {
     }
 
     @Builder
-    public GithubProfileResponse(String email, int age, String password) {
+    public GithubProfileResponse(String email, int age) {
         this.email = email;
         this.age = age;
-        this.password = password;
     }
 }
