@@ -3,11 +3,12 @@ package nextstep.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "subway.app")
 public class AppProperties {
 
     private GithubProperties github;
+    private UserService userService;
+    private AuthService authService;
 
 
     public AppProperties() {
@@ -21,11 +22,26 @@ public class AppProperties {
         return github;
     }
 
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
     public void setGithub(GithubProperties github) {
         this.github = github;
     }
 
-    @ConstructorBinding
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public AuthService getAuthService() {
+        return authService;
+    }
+
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
+
     public static class GithubProperties {
 
         private String clientId;
@@ -74,6 +90,57 @@ public class AppProperties {
 
         public String getUserInfoUri() {
             return userInfoUri;
+        }
+    }
+
+    @ConstructorBinding
+    public static class UserService {
+
+        private String meUrl;
+        private String createUrl;
+
+        public UserService(String meUrl, String createUrl) {
+            this.meUrl = meUrl;
+            this.createUrl = createUrl;
+        }
+
+        public UserService() {
+        }
+
+        public String getMeUrl() {
+            return meUrl;
+        }
+
+        public String getCreateUrl() {
+            return createUrl;
+        }
+
+        public void setMeUrl(String meUrl) {
+            this.meUrl = meUrl;
+        }
+
+        public void setCreateUrl(String createUrl) {
+            this.createUrl = createUrl;
+        }
+    }
+
+    public static class AuthService {
+
+        private String tokenUrl;
+
+        public AuthService(String tokenUrl) {
+            this.tokenUrl = tokenUrl;
+        }
+
+        public AuthService() {
+        }
+
+        public String getTokenUrl() {
+            return tokenUrl;
+        }
+
+        public void setTokenUrl(String tokenUrl) {
+            this.tokenUrl = tokenUrl;
         }
     }
 }

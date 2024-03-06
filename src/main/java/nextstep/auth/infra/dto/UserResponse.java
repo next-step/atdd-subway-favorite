@@ -1,19 +1,23 @@
-package nextstep.auth.domain;
+package nextstep.auth.infra.dto;
 
-public class User {
+public class UserResponse {
 
     private Long id;
     private String email;
     private int age;
 
-    public User(Long id, String email, int age) {
+    public UserResponse(Long id, String email, int age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public User() {
+    public UserResponse() {
 
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {
@@ -22,10 +26,6 @@ public class User {
 
     public int getAge() {
         return age;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public void setId(Long id) {

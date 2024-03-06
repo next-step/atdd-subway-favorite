@@ -9,8 +9,12 @@ subway:
       client_secret: 'client_secret'
       access_token_uri: http://localhost:8080/github/login/oauth/access_token
       user_info_uri: http://localhost:8080/github/user
+    user_service:
+      create_url: http://localhost:8080/members
+      me_url: http://localhost:8080/members
+    auth-service:
+      token-url: http://localhost:8080/login/oauth/access_token
 ---
-# ???? ?? ?
 spring:
   config:
     activate:

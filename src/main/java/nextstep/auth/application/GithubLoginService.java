@@ -2,10 +2,9 @@ package nextstep.auth.application;
 
 import nextstep.auth.application.dto.OAuth2Request;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.member.application.OAuth2Client;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
-import nextstep.member.ui.dto.GithubProfileResponse;
+import nextstep.auth.domain.UserCreator;
+import nextstep.auth.domain.UserGetter;
+import nextstep.auth.ui.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +12,28 @@ import org.springframework.stereotype.Service;
 public class GithubLoginService {
 
     private final OAuth2Client githubClient;
-    private final MemberRepository memberRepository;
+    private final UserCreator userCreator;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserGetter userGetter;
 
     // bean name
     public GithubLoginService(@Qualifier("githubClient") OAuth2Client githubClient,
-        MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+        UserCreator userCreator, JwtTokenProvider jwtTokenProvider, UserGetter userGetter) {
         this.githubClient = githubClient;
-        this.memberRepository = memberRepository;
+        this.userCreator = userCreator;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userGetter = userGetter;
     }
 
     public TokenResponse login(OAuth2Request oAuth2Request) {
         String accessToken = githubClient.requestAccessToken(oAuth2Request.getCode());
         GithubProfileResponse githubProfile = githubClient.requestUserInfo(accessToken);
-        Member member = memberRepository.findByEmail(githubProfile.getEmail())
-            .orElseGet(() -> memberRepository.save(new Member(githubProfile.getEmail(), "", 0)));
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        try {
+            userGetter.getUser(githubProfile.getEmail());
+        } catch (Exception e) {
+            userCreator.createUser(githubProfile.getEmail(), null, githubProfile.getAge());
+        }
+        String token = jwtTokenProvider.createToken(githubProfile.getEmail());
         return new TokenResponse(token);
     }
 }

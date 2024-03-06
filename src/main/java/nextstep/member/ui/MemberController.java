@@ -3,12 +3,15 @@ package nextstep.member.ui;
 import java.net.URI;
 import nextstep.config.AuthenticationPrincipal;
 import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberInfoRequest;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,6 +36,14 @@ public class MemberController {
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
+        return ResponseEntity.ok().body(member);
+    }
+
+    @PatchMapping("/members")
+    public ResponseEntity<MemberResponse> findMember(
+        @ModelAttribute MemberInfoRequest request
+    ) {
+        MemberResponse member = memberService.findMember(request);
         return ResponseEntity.ok().body(member);
     }
 
