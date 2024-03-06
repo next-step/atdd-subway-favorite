@@ -2,6 +2,7 @@ package nextstep.member.infra;
 
 import java.util.Map;
 import nextstep.member.application.UserAuthenticator;
+import nextstep.member.infra.dto.AuthResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
@@ -24,18 +25,5 @@ public class UserAuthenticatorImpl implements UserAuthenticator {
             AuthResponse.class, params).getBody();
 
         return authResponse.getEmail();
-    }
-
-    private static class AuthResponse {
-
-        private String email;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
     }
 }
