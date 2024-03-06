@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.auth.application.UserDetailService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.auth.application.dto.OAuth2ProfileResponse;
@@ -11,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class MemberService {
+public class MemberService implements UserDetailService {
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
