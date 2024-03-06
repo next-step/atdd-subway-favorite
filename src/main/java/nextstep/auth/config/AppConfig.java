@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class AuthConfig implements WebMvcConfigurer {
+public class AppConfig implements WebMvcConfigurer {
 
     private AppProperties appProperties;
 
-    public AuthConfig(AppProperties appProperties) {
+    public AppConfig(AppProperties appProperties) {
         this.appProperties = appProperties;
     }
 
