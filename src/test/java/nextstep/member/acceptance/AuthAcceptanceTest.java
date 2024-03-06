@@ -3,10 +3,12 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.CommonAcceptanceTest;
 import nextstep.utils.GithubResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,5 +103,28 @@ class AuthAcceptanceTest extends CommonAcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(GithubResponse.회원.getEmail());
+    }
+
+    /**
+     * when 깃허브 토큰이 없는 회원이 로그인 시도를 하면
+     * then 인증오류가 발생한다.
+     */
+    @Test
+    void 깃허브_토큰_없는_경우_로그인_인증오류() {
+        //when
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponse.토큰_없음.getCode());
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when()
+                .post("/login/github")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
