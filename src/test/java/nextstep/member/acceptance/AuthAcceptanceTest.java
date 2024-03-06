@@ -1,25 +1,19 @@
 package nextstep.member.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.CommonAcceptanceTest;
 import nextstep.utils.GithubResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -40,32 +34,19 @@ class AuthAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void bearerAuth() {
         //회원 정보 생성
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
+        createMember(EMAIL, PASSWORD, AGE);
 
         //회원 정보(이메일)로 토큰 발급 (회원 정보가 없으면 오류 발생)
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> 회원_로그인_응답 = 회원_로그인_요청(EMAIL, PASSWORD);
 
-        String accessToken = response.jsonPath().getString("accessToken");
+        String accessToken = extractAccessToken(회원_로그인_응답);
         assertThat(accessToken).isNotBlank();
 
         //발급된 토큰으로 회원 정보 찾기
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> 회원_정보_응답 = 토큰으로_회원_정보_조회_요청(accessToken);
 
         //토큰 발급 시 사용한 이메일과 응답 받은 회원 정보가 같은지 검증
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(extractEmail(회원_정보_응답)).isEqualTo(EMAIL);
     }
 
     /**
@@ -76,33 +57,18 @@ class AuthAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void 깃허브_로그인_토큰발급() {
         //given
-        memberRepository.save(new Member(GithubResponse.회원.getEmail(), PASSWORD, GithubResponse.회원.getAge()));
+        createMember(GithubResponse.회원.getEmail(), PASSWORD, GithubResponse.회원.getAge());
 
         //when
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubResponse.회원.getCode());
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when()
-                .post("/login/github")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 깃헙_로그인_응답 = 깃헙_로그인_요청(GithubResponse.회원.getCode());
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(깃헙_로그인_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        String accessToken = response.jsonPath().getString("accessToken");
+        String accessToken = extractAccessToken(깃헙_로그인_응답);
+        ExtractableResponse<Response> 회원_정보_응답 = 토큰으로_회원_정보_조회_요청(accessToken);
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(GithubResponse.회원.getEmail());
+        assertThat(extractEmail(회원_정보_응답)).isEqualTo(GithubResponse.회원.getEmail());
     }
 
     /**
@@ -112,20 +78,10 @@ class AuthAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void 깃허브_토큰_없는_경우_로그인_인증오류() {
         //when
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubResponse.토큰_없음.getCode());
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when()
-                .post("/login/github")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 깃헙_로그인_응답 = 깃헙_로그인_요청(GithubResponse.토큰_없는_회원.getCode());
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(깃헙_로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -135,29 +91,23 @@ class AuthAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void 비회원_로그인시_회원가입_후_토큰발급() {
         //when
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubResponse.비회원.getCode());
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when()
-                .post("/login/github")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 깃헙_로그인_응답 = 깃헙_로그인_요청(GithubResponse.비회원.getCode());
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        String accessToken = extractAccessToken(깃헙_로그인_응답);
+        ExtractableResponse<Response> 회원_정보_응답 = 토큰으로_회원_정보_조회_요청(accessToken);
+        assertThat(extractEmail(회원_정보_응답)).isEqualTo(GithubResponse.비회원.getEmail());
+    }
 
-        String accessToken = response.jsonPath().getString("accessToken");
+    void createMember(String email, String password, int age) {
+        memberRepository.save(new Member(email, password, age));
+    }
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+    String extractEmail(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("email");
+    }
 
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(GithubResponse.비회원.getEmail());
+    String extractAccessToken(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("accessToken");
     }
 }

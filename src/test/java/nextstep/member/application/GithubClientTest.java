@@ -31,7 +31,7 @@ public class GithubClientTest {
 
     @Test
     void 깃헙_토큰이_잘못된_회원_토큰_발급_실패() {
-        String code = GithubResponse.토큰_없음.getCode();
+        String code = GithubResponse.토큰_없는_회원.getCode();
 
         Assertions.assertThatThrownBy( () -> githubClient.requestGithubToken(code)).isInstanceOf(
                 AuthenticationException.class

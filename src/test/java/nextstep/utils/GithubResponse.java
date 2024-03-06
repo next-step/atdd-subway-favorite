@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public enum GithubResponse {
     회원("aofijeowifjaoief", "access_token_1", "email1@email.com", 20),
-    토큰_없음("fau3nfin93dmn", null, null, 0),
+    토큰_없는_회원("fau3nfin93dmn", null, null, 0),
     사용자_정보_없음("afnm93fmdodf", "access_token_3", null, 0),
     비회원("fm04fndkaladmd", "access_token_4", "email4@email.com", 35);
 
