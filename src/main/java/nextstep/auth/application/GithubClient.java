@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.OAuth2ProfileResponse;
+import nextstep.auth.application.dto.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.OAuth2ProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +28,7 @@ public class GithubClient implements OAuth2Client{
     private final static String PREFIX = "bearer ";
 
     @Override
-    public String requestGithubToken(String code) {
+    public String requestToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
                 clientId,
@@ -49,7 +49,7 @@ public class GithubClient implements OAuth2Client{
     }
 
     @Override
-    public OAuth2ProfileResponse requestGithubProfile(String accessToken) {
+    public OAuth2ProfileResponse requestProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, PREFIX + accessToken);

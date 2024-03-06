@@ -1,9 +1,10 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.dto.OAuth2ProfileResponse;
-import nextstep.member.application.dto.OAuth2LoginRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.AuthenticationException;
+import nextstep.member.application.MemberService;
+import nextstep.auth.application.dto.OAuth2ProfileResponse;
+import nextstep.auth.application.dto.OAuth2LoginRequest;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -32,12 +33,12 @@ public class TokenService {
     }
 
     public TokenResponse createTokenByGithubLogin(OAuth2LoginRequest request) {
-        String accessToken = githubClient.requestGithubToken(request.getCode());
+        String accessToken = githubClient.requestToken(request.getCode());
         if (!StringUtils.hasText(accessToken)) {
             throw new AuthenticationException();
         }
 
-        OAuth2ProfileResponse profileResponse = githubClient.requestGithubProfile(accessToken);
+        OAuth2ProfileResponse profileResponse = githubClient.requestProfile(accessToken);
         Member member = memberService.findOrCreateMember(profileResponse);
 
         String token = jwtTokenProvider.createToken(member.getEmail());
