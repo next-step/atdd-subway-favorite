@@ -1,5 +1,6 @@
 package nextstep.auth.application.ui;
 
+import nextstep.auth.application.dto.GithubTokenRequest;
 import nextstep.auth.application.dto.TokenRequest;
 import nextstep.auth.application.dto.TokenResponse;
 import nextstep.auth.application.service.TokenService;
@@ -21,6 +22,12 @@ public class TokenController {
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody GithubTokenRequest request) {
+        TokenResponse response = tokenService.createTokenByGithub(request.getCode());
         return ResponseEntity.ok(response);
     }
 }

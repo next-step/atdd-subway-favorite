@@ -74,11 +74,13 @@ class FavoriteAcceptanceTest {
     void getFavorite() {
         // given
         이호선_삼호선_신분당선_노선의_구간_존재();
-        String token = 사용자A_인증_토큰();
-        즐겨찾기_등록_요청(token, 즐겨찾기_등록_본문(교대역_아이디, 양재역_아이디));
+        String tokenByMemberA = 사용자A_인증_토큰();
+        String tokenByMemberB = 사용자B_인증_토큰();
+        즐겨찾기_등록_요청(tokenByMemberA, 즐겨찾기_등록_본문(교대역_아이디, 양재역_아이디));
+        즐겨찾기_등록_요청(tokenByMemberB, 즐겨찾기_등록_본문(교대역_아이디, 양재역_아이디));
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(token);
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(tokenByMemberA);
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
@@ -137,6 +139,14 @@ class FavoriteAcceptanceTest {
 
     private String 사용자A_인증_토큰() {
         String email = "member_a@email.com";
+        String password = "1234";
+        int age = 10;
+        MemberSteps.회원_생성_요청(MemberFixture.회원_생성_요청_본문(email, password, age));
+        return TokenSteps.토큰_생성_응답에서_토큰값_추출(TokenSteps.토근_생성_요청(TokenFixture.토근_생성_요청_본문(email, password)));
+    }
+
+    private String 사용자B_인증_토큰() {
+        String email = "member_b@email.com";
         String password = "1234";
         int age = 10;
         MemberSteps.회원_생성_요청(MemberFixture.회원_생성_요청_본문(email, password, age));

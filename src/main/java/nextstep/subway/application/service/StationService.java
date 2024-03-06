@@ -2,6 +2,7 @@ package nextstep.subway.application.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import nextstep.common.error.exception.NotFoundException;
 import nextstep.subway.application.dto.request.StationCreateRequest;
 import nextstep.subway.application.dto.response.StationResponse;
@@ -10,15 +11,13 @@ import nextstep.subway.domain.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Service
 public class StationService {
 
     private final StationRepository stationRepository;
-
-    public StationService(StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
-    }
 
     @Transactional
     public StationResponse saveStation(StationCreateRequest stationCreateRequest) {
