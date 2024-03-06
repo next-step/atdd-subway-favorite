@@ -1,7 +1,8 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.application.dto.OAuth2Request;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.OAuth2Request;
+import nextstep.auth.application.dto.TokenResponse;
+import nextstep.member.application.OAuth2Client;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.ui.dto.GithubProfileResponse;
