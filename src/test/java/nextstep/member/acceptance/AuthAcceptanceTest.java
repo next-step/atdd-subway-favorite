@@ -127,4 +127,37 @@ class AuthAcceptanceTest extends CommonAcceptanceTest {
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    /**
+     * when 비회원이 깃헙 로그인 요청을 하면
+     * then 회원 가입 진행 후 토큰을 발급 받는다.
+     */
+    @Test
+    void 비회원_로그인시_회원가입_후_토큰발급() {
+        //when
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponse.비회원.getCode());
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when()
+                .post("/login/github")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        String accessToken = response.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response2.jsonPath().getString("email")).isEqualTo(GithubResponse.비회원.getEmail());
+    }
 }
