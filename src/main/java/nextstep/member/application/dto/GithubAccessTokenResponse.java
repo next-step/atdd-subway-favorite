@@ -11,10 +11,6 @@ public class GithubAccessTokenResponse {
         this.accessToken = accessToken;
     }
 
-    public GithubAccessTokenResponse(String accessToken, String s, String s1, String s2) {
-        this.accessToken = accessToken;
-    }
-
     public String getAccessToken() {
         return accessToken;
     }

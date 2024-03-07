@@ -6,10 +6,11 @@ public class GithubProfileResponse {
 
     public GithubProfileResponse() {
     }
+
     public GithubProfileResponse(String mail, int age) {
         this.mail = mail;
         this.age = age;
-    }
+    }   
 
     public String getMail() {
         return mail;
