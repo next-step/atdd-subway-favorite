@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.common.LineUtil;
 import nextstep.member.acceptance.MemberRestAssuredCRUD;
+import nextstep.member.acceptance.MemberSteps;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.CommonAcceptanceTest;
@@ -49,7 +50,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
 
     String 회원_인증_토큰_발급(String email, String password, int age) {
         memberRepository.save(new Member(email, password, age));
-        ExtractableResponse<Response> 회원_인증_응답 = MemberRestAssuredCRUD.getLoginToken(email, password);
+        ExtractableResponse<Response> 회원_인증_응답 = MemberSteps.회원_로그인_요청(email, password);
         return extractAccessToken(회원_인증_응답);
     }
 
@@ -116,8 +117,10 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
         //given
         String accessToken = 회원_인증_토큰_발급(회원1_EMAIL, 회원1_PASSWORD, 회원1_AGE);
 
+        //when
         ExtractableResponse<Response> 즐겨찾기_생성됨 = FavoriteRestAssuredCRUD.createFavorite(LineUtil.강남역Id, LineUtil.반포역Id, accessToken);
 
+        //then
         assertThat(즐겨찾기_생성됨.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
