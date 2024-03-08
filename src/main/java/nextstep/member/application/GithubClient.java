@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,9 @@ import org.springframework.web.client.RestTemplate;
 public class GithubClient {
     @Value("${oauth2.github.login-url}")
     private String url;
+
+    @Value("${oauth2.github.user-url}")
+    private String userInfoUrl;
 
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
@@ -38,4 +42,17 @@ public class GithubClient {
         return accessToken;
     }
 
+    public GithubProfileResponse findUserInfo(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("Authorization", accessToken);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate
+            .exchange(userInfoUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+            .getBody();
+
+    }
 }

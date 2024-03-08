@@ -1,6 +1,8 @@
 package nextstep.member.application;
 
 import nextstep.member.AuthenticationException;
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
@@ -29,8 +31,15 @@ public class TokenService {
         return new TokenResponse(token);
     }
 
-    public String requestGithubToken(String code) {
+    public String githubLogin(String code) {
         String accessToken = githubClient.requestGithubToken(code);
+        GithubProfileResponse response = githubClient.findUserInfo(accessToken);
+        try {
+            memberService.findMemberByEmail(response.getMail());
+        }catch(RuntimeException e) {
+            memberService.createMember(new MemberRequest(response.getMail(), response.getMail() + "123!", response.getAge()));
+        }
+
         return accessToken;
     }
 }

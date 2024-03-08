@@ -23,4 +23,12 @@ public class TestController {
             tokenRequest.getCode());
         return ResponseEntity.ok(new GithubAccessTokenResponse(response.getAccessToken()));
     }
+
+    @GetMapping("/github/user")
+    public ResponseEntity<GithubProfileResponse> user(
+        @RequestHeader("Authorization") String authorization) {
+        String accessToken = authorization.split(" ")[1];
+        GithubProfileResponse response = new GithubProfileResponse("email@email.com", 20);
+        return ResponseEntity.ok(response);
+    }
 }
