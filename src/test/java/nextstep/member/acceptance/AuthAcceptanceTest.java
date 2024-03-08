@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.domain.GithubResponses;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.member.domain.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -52,5 +54,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
         //실행완료
+    }
+
+    @DisplayName("Github Auth")
+    @Test
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", 사용자1.getCode());
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                                                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                                            .body(params)
+                                                            .when().post("/login/github")
+                                                            .then().log().all()
+                                                            .statusCode(HttpStatus.OK.value()).extract();
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(response.jsonPath().getString("accessToken")).isEqualTo(사용자1.getAccessToken());
     }
 }
