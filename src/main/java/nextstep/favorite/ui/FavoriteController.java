@@ -1,7 +1,7 @@
 package nextstep.favorite.ui;
 
 import nextstep.favorite.application.AddFavoriteService;
-import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.GetFavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.domain.LoginMember;
@@ -16,11 +16,11 @@ import java.util.List;
 public class FavoriteController {
 
     private final AddFavoriteService addFavoriteService;
-    private FavoriteService favoriteService;
+    private final GetFavoriteService getFavoriteService;
 
-    public FavoriteController(AddFavoriteService addFavoriteService, FavoriteService favoriteService) {
+    public FavoriteController(AddFavoriteService addFavoriteService, GetFavoriteService getFavoriteService) {
         this.addFavoriteService = addFavoriteService;
-        this.favoriteService = favoriteService;
+        this.getFavoriteService = getFavoriteService;
     }
 
     @PostMapping("/favorites")
@@ -35,14 +35,16 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites() {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites();
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(
+            @AuthenticationPrincipal LoginMember loginMember
+    ) {
+        List<FavoriteResponse> favorites = getFavoriteService.getFavorites(loginMember);
         return ResponseEntity.ok().body(favorites);
     }
 
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity deleteFavorite(@PathVariable Long id) {
-        favoriteService.deleteFavorite(id);
+//        favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }
 }
