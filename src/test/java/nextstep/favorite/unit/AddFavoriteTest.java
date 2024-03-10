@@ -10,7 +10,6 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.Line;
 import nextstep.subway.line.LineRepository;
 import nextstep.subway.line.SectionRepository;
-import nextstep.subway.path.Route;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +47,6 @@ public class AddFavoriteTest {
     private MemberRepository memberRepository;
 
 
-    private Route route;
     private Station 강남역;
     private Station 역삼역;
     private Station 선릉역;
@@ -67,8 +65,6 @@ public class AddFavoriteTest {
         선릉역 = stationRepository.save(new Station("선릉역"));
 
         lineRepository.save(new Line("2호선", "green", 강남역, 역삼역, 10L));
-
-        route = new Route(sectionRepository.findAll());
 
         최현구 = memberRepository.save(new Member("jinha3507@gmail.com", "password", 29));
     }
