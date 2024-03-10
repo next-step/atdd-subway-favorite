@@ -1,6 +1,5 @@
 package nextstep.subway.path;
 
-import nextstep.subway.line.Section;
 import nextstep.subway.line.SectionRepository;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
@@ -11,28 +10,21 @@ import java.util.List;
 @Service
 public class PathFinderService {
 
-    private final Route route;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public PathFinderService(Route route, SectionRepository sectionRepository, StationRepository stationRepository) {
-        this.route = route;
+    public PathFinderService(SectionRepository sectionRepository, StationRepository stationRepository) {
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
 
     public PathFoundResponse findPath(Long sourceStationId, Long targetStationId) {
-        initRoute();
         Station sourceStation = findStationById(sourceStationId);
         Station targetStation = findStationById(targetStationId);
+        Route route = new Route(sectionRepository.findAll());
         List<Station> stations = route.findShortestPath(sourceStation, targetStation);
         int distance = route.findShortestDistance(sourceStation, targetStation);
         return PathFoundResponse.of(stations, distance);
-    }
-
-    private void initRoute() {
-        List<Section> sections = sectionRepository.findAll();
-        route.initGraph(sections);
     }
 
     private Station findStationById(Long sourceStationId) {

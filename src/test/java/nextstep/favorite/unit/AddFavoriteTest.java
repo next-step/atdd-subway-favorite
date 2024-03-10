@@ -47,9 +47,8 @@ public class AddFavoriteTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private Route route;
 
+    private Route route;
     private Station 강남역;
     private Station 역삼역;
     private Station 선릉역;
@@ -69,7 +68,7 @@ public class AddFavoriteTest {
 
         lineRepository.save(new Line("2호선", "green", 강남역, 역삼역, 10L));
 
-        route.initGraph(sectionRepository.findAll());
+        route = new Route(sectionRepository.findAll());
 
         최현구 = memberRepository.save(new Member("jinha3507@gmail.com", "password", 29));
     }
@@ -87,10 +86,10 @@ public class AddFavoriteTest {
 
             List<Favorite> results = favoriteRepository.findAll();
             assertThat(results).hasSize(1);
-//            assertThat(results.get(0).getId()).isNotNull();
-//            assertThat(results.get(0).getSourceId()).isEqualTo(강남역.getId());
-//            assertThat(results.get(0).getTargetId()).isEqualTo(역삼역.getId());
-//            assertThat(results.get(0).getMemberId()).isEqualTo(최현구.getId());
+            assertThat(results.get(0).getId()).isNotNull();
+            assertThat(results.get(0).getMemberId()).isEqualTo(최현구.getId());
+            assertThat(results.get(0).getSourceStationId()).isEqualTo(강남역.getId());
+            assertThat(results.get(0).getTargetStationId()).isEqualTo(역삼역.getId());
         }
 
         @DisplayName("멤버 정보가 존재하지 않을 경우 예외가 발생한다.")
@@ -123,7 +122,7 @@ public class AddFavoriteTest {
 
             assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("도착역이 존재하지 않습니다. stationId: " + Long.MAX_VALUE);
+                    .hasMessage("지하철 역이 존재하지 않습니다. stationId: " + Long.MAX_VALUE);
         }
 
         @DisplayName("즐겨찾기에 이미 등록된 역을 다시 등록할 수 없다.")
@@ -135,7 +134,7 @@ public class AddFavoriteTest {
 
             assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
                     .isExactlyInstanceOf(IllegalStateException.class)
-                    .hasMessage("이미 즐겨찾기에 등록된 경로입니다. sourceStationId: " + 강남역.getId() + ", targetStationId: " + 역삼역.getId());
+                    .hasMessage("이미 즐겨찾기에 등록된 경로입니다. member: " + 최현구.getId() + ", source: " + 강남역.getId() + ", target: " + 역삼역.getId());
         }
     }
 }

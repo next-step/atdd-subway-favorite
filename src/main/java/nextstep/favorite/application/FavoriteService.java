@@ -17,16 +17,6 @@ public class FavoriteService {
     }
 
     /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
-    }
-
-    /**
      * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
      *
      * @return

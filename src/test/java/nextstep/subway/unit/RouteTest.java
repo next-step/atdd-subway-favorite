@@ -36,7 +36,7 @@ public class RouteTest {
     private Line 삼호선;
     private Line 사호선;
 
-    private Route route = new Route();
+    private Route route;
 
     @BeforeEach
     void setUp() {
@@ -54,7 +54,7 @@ public class RouteTest {
 
         삼호선.addNewSection(남부터미널역, 양재역, 3L);
 
-        route.initGraph(
+        route = new Route(
                 List.of(
                         new Section(이호선, 교대역, 강남역, 4L),
                         new Section(신분당선, 강남역, 양재역, 5L),

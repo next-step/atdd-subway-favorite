@@ -3,9 +3,11 @@ package nextstep.favorite.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 import static nextstep.favorite.fixture.MemberFixture.joinMember;
 import static nextstep.favorite.fixture.MemberFixture.loginMember;
@@ -34,11 +36,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         joinMember();
         String token = loginMember();
+        FavoriteRequest request = new FavoriteRequest(강남역, 양재역);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
-                .when().post("/favorites?source=" + 강남역 + "&target=" + 양재역)
+                .body(request)
+                .when().post("/favorites")
                 .then().log().all()
                 .statusCode(201)
                 .extract();
