@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.fixture.FavoriteFixture;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,5 +52,42 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(201);
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있다.
+     * And 지하철 노선이 등록되어 있다.
+     * And 사용자가 회원가입 되어있다.
+     * And 사용자가 로그인을 한다.
+     * And 지하철역을 사용자의 즐겨찾기에 등록한다.
+     * When 사용자가 즐겨찾기 리스트를 조회한다.
+     * Then 사용자의 즐겨찾기 목록이 조회된다.
+     */
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void getFavorites() {
+        // given
+        Long 강남역 = newStationAndGetId("강남역");
+        Long 양재역 = newStationAndGetId("양재역");
+        Long 신분당선 = newLineAndGetId("신분당선", "green", 강남역, 양재역, 100);
+
+        joinMember();
+        String token = loginMember();
+        FavoriteFixture.addFavorite(token, 강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().get("/favorites")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+        FavoriteResponse[] favoriteResponses = response.as(FavoriteResponse[].class);
+        assertThat(favoriteResponses.length).isEqualTo(1);
+        assertThat(favoriteResponses[0].getSource().getId()).isEqualTo(강남역);
+        assertThat(favoriteResponses[0].getTarget().getId()).isEqualTo(양재역);
     }
 }

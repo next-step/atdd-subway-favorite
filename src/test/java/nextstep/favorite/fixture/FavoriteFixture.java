@@ -23,4 +23,12 @@ public class FavoriteFixture {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> getFavorites(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
 }
