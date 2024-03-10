@@ -5,6 +5,14 @@ import nextstep.member.domain.Member;
 import javax.persistence.*;
 import java.util.Objects;
 
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_favorite_member_id_source_station_id_target_station_id",
+                        columnNames = {"member_id", "source_station_id", "target_station_id"}
+                )
+        }
+)
 @Entity
 public class Favorite {
     @Id
