@@ -9,7 +9,6 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.Line;
 import nextstep.subway.line.LineRepository;
-import nextstep.subway.line.Section;
 import nextstep.subway.line.SectionRepository;
 import nextstep.subway.path.Route;
 import nextstep.subway.station.Station;
@@ -108,13 +107,24 @@ public class AddFavoriteTest {
         @DisplayName("존재하지 않는 역을 즐겨찾기로 등록할 수 없다.")
         @Test
         void addFavoriteWithInvalidStation() {
+            LoginMember loginMember = new LoginMember("jinha3507@gmail.com");
+            FavoriteRequest request = new FavoriteRequest(강남역.getId(), Long.MAX_VALUE);
 
+            assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("도착역이 존재하지 않습니다. stationId: " + Long.MAX_VALUE);
         }
 
         @DisplayName("즐겨찾기에 이미 등록된 역을 다시 등록할 수 없다.")
         @Test
         void addFavoriteWithDuplicateStation() {
+            LoginMember loginMember = new LoginMember("jinha3507@gmail.com");
+            FavoriteRequest request = new FavoriteRequest(강남역.getId(), 역삼역.getId());
+            addFavoriteService.addFavorite(loginMember, request);
 
+            assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
+                    .isExactlyInstanceOf(IllegalStateException.class)
+                    .hasMessage("이미 즐겨찾기에 등록된 경로입니다. sourceStationId: " + 강남역.getId() + ", targetStationId: " + 역삼역.getId());
         }
     }
 }
