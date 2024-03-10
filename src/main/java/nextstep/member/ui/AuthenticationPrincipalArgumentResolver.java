@@ -24,7 +24,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+        if (authorization == null || isNotBearerTokenHeader(authorization)) {
             throw new AuthenticationException();
         }
         String token = authorization.split(" ")[1];
@@ -32,5 +32,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String email = jwtTokenProvider.getPrincipal(token);
 
         return new LoginMember(email);
+    }
+
+    private static boolean isNotBearerTokenHeader(String authorization) {
+        return !"bearer".equalsIgnoreCase(authorization.split(" ")[0]);
     }
 }

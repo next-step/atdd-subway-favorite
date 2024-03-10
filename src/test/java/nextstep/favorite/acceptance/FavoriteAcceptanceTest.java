@@ -24,6 +24,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Given 지하철역이 등록되어 있다.
      * And 지하철 노선이 등록되어 있다.
      * And 사용자가 회원가입 되어있다.
+     * When 사용자가 로그인을 하지 않고 기능을 사용하면
+     * Then 인증 관련 오류가 발생한다.
+     */
+    @DisplayName("로그인하지 않고 즐겨찾기 기능을 사용하면 인증 관련 오류가 발생한다.")
+    @Test
+    void notLogin() {
+        // given
+        Long 강남역 = newStationAndGetId("강남역");
+        Long 양재역 = newStationAndGetId("양재역");
+        Long 신분당선 = newLineAndGetId("신분당선", "green", 강남역, 양재역, 100);
+        FavoriteRequest request = new FavoriteRequest(강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/favorites")
+                .then().log().all()
+                .statusCode(401)
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(401);
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있다.
+     * And 지하철 노선이 등록되어 있다.
+     * And 사용자가 회원가입 되어있다.
      * And 사용자가 로그인을 한다.
      * When 지하철역을 사용자의 즐겨찾기에 등록한다.
      * Then 지하철역이 사용자의 즐겨찾기 목록에 추가되었다.
