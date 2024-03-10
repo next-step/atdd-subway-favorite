@@ -1,5 +1,7 @@
 package nextstep.favorite.domain;
 
+import nextstep.member.domain.Member;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -34,6 +36,12 @@ public class Favorite {
 
     public Long getId() {
         return id;
+    }
+
+    public void validateOwner(Member member) {
+        if (!memberId.equals(member.getId())) {
+            throw new IllegalStateException("즐겨찾기를 삭제할 권한이 없습니다.");
+        }
     }
 
     public Long getMemberId() {

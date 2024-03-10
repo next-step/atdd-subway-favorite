@@ -1,6 +1,7 @@
 package nextstep.favorite.ui;
 
 import nextstep.favorite.application.AddFavoriteService;
+import nextstep.favorite.application.DeleteFavoriteService;
 import nextstep.favorite.application.GetFavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -17,10 +18,12 @@ public class FavoriteController {
 
     private final AddFavoriteService addFavoriteService;
     private final GetFavoriteService getFavoriteService;
+    private final DeleteFavoriteService deleteFavoriteService;
 
-    public FavoriteController(AddFavoriteService addFavoriteService, GetFavoriteService getFavoriteService) {
+    public FavoriteController(AddFavoriteService addFavoriteService, GetFavoriteService getFavoriteService, DeleteFavoriteService deleteFavoriteService) {
         this.addFavoriteService = addFavoriteService;
         this.getFavoriteService = getFavoriteService;
+        this.deleteFavoriteService = deleteFavoriteService;
     }
 
     @PostMapping("/favorites")
@@ -43,8 +46,11 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/favorites/{id}")
-    public ResponseEntity deleteFavorite(@PathVariable Long id) {
-//        favoriteService.deleteFavorite(id);
+    public ResponseEntity deleteFavorite(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @PathVariable Long id
+    ) {
+        deleteFavoriteService.deleteFavorite(loginMember, id);
         return ResponseEntity.noContent().build();
     }
 }

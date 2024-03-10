@@ -86,12 +86,11 @@ public class DeleteFavoriteTest {
         @DisplayName("즐겨찾기가 존재하지 않을 경우 예외가 발생한다.")
         @Test
         void deleteFavoriteWithNotExists() {
-            Favorite favorite = favoriteRepository.save(new Favorite(최현구.getId(), 강남역.getId(), 역삼역.getId()));
             LoginMember loginMember = new LoginMember(최현구.getEmail());
 
-            assertThatThrownBy(() -> deleteFavoriteService.deleteFavorite(loginMember, favorite.getId()))
-                    .isExactlyInstanceOf(IllegalStateException.class)
-                    .hasMessage("ID 에 해당하는 즐겨찾기가 존재하지 않습니다. id: " + favorite.getId());
+            assertThatThrownBy(() -> deleteFavoriteService.deleteFavorite(loginMember, Long.MAX_VALUE))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("ID 에 해당하는 즐겨찾기가 존재하지 않습니다. id: " + Long.MAX_VALUE);
         }
 
         @DisplayName("멤버 정보가 존재하지 않을 경우 예외가 발생한다.")
@@ -113,7 +112,7 @@ public class DeleteFavoriteTest {
 
             assertThatThrownBy(() -> deleteFavoriteService.deleteFavorite(loginMember, favorite.getId()))
                     .isExactlyInstanceOf(IllegalStateException.class)
-                    .hasMessage("해당 즐겨찾기는 내가 등록한 즐겨찾기가 아닙니다. memberId: " + 최현구.getId() + ", favoriteId: " + favorite.getId());
+                    .hasMessage("즐겨찾기를 삭제할 권한이 없습니다.");
         }
     }
 }
