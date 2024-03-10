@@ -93,6 +93,17 @@ public class AddFavoriteTest {
 //            assertThat(results.get(0).getMemberId()).isEqualTo(최현구.getId());
         }
 
+        @DisplayName("멤버 정보가 존재하지 않을 경우 예외가 발생한다.")
+        @Test
+        void addFavoriteWithInvalidMember() {
+            LoginMember loginMember = new LoginMember("abcde@naver.com");
+            FavoriteRequest request = new FavoriteRequest(강남역.getId(), 역삼역.getId());
+
+            assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("이메일에 해당하는 멤버가 존재하지 않습니다. email: " + loginMember.getEmail());
+        }
+
         @DisplayName("경로를 찾을 수 없거나 연결되지 않는 등 경로 조회가 불가능한 조회의 경우 즐겨찾기로 등록할 수 없다.")
         @Test
         void addFavoriteWithInvalidPath() {
