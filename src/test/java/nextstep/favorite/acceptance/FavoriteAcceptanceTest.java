@@ -90,4 +90,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favoriteResponses[0].getSource().getId()).isEqualTo(강남역);
         assertThat(favoriteResponses[0].getTarget().getId()).isEqualTo(양재역);
     }
+
+    /**
+     * Given 지하철역이 등록되어 있다.
+     * And 지하철 노선이 등록되어 있다.
+     * And 사용자가 회원가입 되어있다.
+     * And 사용자가 로그인을 한다.
+     * And 지하철역을 사용자의 즐겨찾기에 등록한다.
+     * When 사용자가 즐겨찾기를 삭제한다.
+     * Then 사용자의 즐겨찾기 목록에서 삭제된다.
+     */
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        Long 강남역 = newStationAndGetId("강남역");
+        Long 양재역 = newStationAndGetId("양재역");
+        Long 신분당선 = newLineAndGetId("신분당선", "green", 강남역, 양재역, 100);
+
+        joinMember();
+        String token = loginMember();
+        String location = FavoriteFixture.addFavorite(token, 강남역, 양재역).header("Location");
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().delete(location)
+                .then().log().all()
+                .statusCode(204)
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(204);
+    }
 }
