@@ -1,7 +1,8 @@
 package nextstep.member.application;
 
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.exception.AuthenticationException;
+import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.utils.GithubResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
