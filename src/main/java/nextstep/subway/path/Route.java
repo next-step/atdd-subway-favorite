@@ -6,25 +6,18 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Component
 public class Route {
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> route;
     private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public Route() {
-        route = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        dijkstraShortestPath = new DijkstraShortestPath<>(route);
-    }
-
-    public void initGraph(List<Section> sections) {
+    public Route(List<Section> sections) {
         route = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         dijkstraShortestPath = new DijkstraShortestPath<>(route);
         initVertex(sections);
