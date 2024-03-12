@@ -1,6 +1,6 @@
 package nextstep.member.application.dto;
 
-import nextstep.member.domain.Member;
+import nextstep.member.domain.dto.MemberDto;
 
 public class MemberResponse {
     private Long id;
@@ -16,7 +16,7 @@ public class MemberResponse {
         this.age = age;
     }
 
-    public static MemberResponse of(Member member) {
+    public static MemberResponse of(MemberDto member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
 

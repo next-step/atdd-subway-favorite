@@ -4,35 +4,34 @@ import nextstep.auth.AuthenticationException;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenDto;
 import nextstep.auth.application.oauth.GithubClient;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
+import nextstep.auth.application.dto.UserDetailDto;
 import nextstep.auth.ui.dto.TokenFromGithubRequestBody;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TokenService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
+    private final UserDetailService userDetailService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final GithubClient githubClient;
 
     public TokenService(
-            MemberRepository memberRepository,
+            UserDetailService userDetailService,
             JwtTokenProvider jwtTokenProvider,
             GithubClient githubClient
     ) {
-        this.memberRepository = memberRepository;
+        this.userDetailService = userDetailService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.githubClient = githubClient;
     }
 
     public TokenDto createToken(String email, String password) {
-        Member member = memberRepository.findByEmailOrFail(email);
-        if (!member.getPassword().equals(password)) {
+        UserDetailDto userDetail = userDetailService.findByEmail(email);
+        if (!userDetail.getPassword().equals(password)) {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = jwtTokenProvider.createToken(userDetail.getEmail());
 
         return new TokenDto(token);
     }
@@ -44,12 +43,9 @@ public class TokenService {
 
         String email = githubProfileResponse.getEmail();
 
-        Member member = memberRepository
-                .findByEmail(email)
-                .orElse(new Member(email, null, null));
-        memberRepository.save(member);
+        UserDetailDto userDetail = userDetailService.findByEmailOrCreate(email);
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = jwtTokenProvider.createToken(userDetail.getEmail());
         return new TokenDto(token);
     }
 }

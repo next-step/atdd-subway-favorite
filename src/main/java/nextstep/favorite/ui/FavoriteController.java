@@ -1,12 +1,12 @@
 package nextstep.favorite.ui;
 
+import nextstep.auth.domain.LoginUserDetail;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteDeleteCommand;
 import nextstep.favorite.application.dto.FavoriteDto;
 import nextstep.favorite.application.dto.FavoriteFindQuery;
 import nextstep.favorite.ui.dto.FavoriteRequest;
 import nextstep.favorite.ui.dto.FavoriteResponse;
-import nextstep.member.domain.LoginMember;
 import nextstep.auth.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteService favoriteService;
 
     public FavoriteController(FavoriteService favoriteService) {
         this.favoriteService = favoriteService;
@@ -25,16 +25,16 @@ public class FavoriteController {
 
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(
-            @AuthenticationPrincipal LoginMember loginMember,
+            @AuthenticationPrincipal LoginUserDetail loginUserDetail,
             @RequestBody FavoriteRequest request
     ) {
-        FavoriteDto favorite = favoriteService.createFavorite(FavoriteRequest.toCommand(request, loginMember));
+        FavoriteDto favorite = favoriteService.createFavorite(FavoriteRequest.toCommand(request, loginUserDetail));
         return ResponseEntity.created(URI.create("/favorites" + favorite.getId())).build();
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteDto> favorites = favoriteService.findFavorites(new FavoriteFindQuery(loginMember.getEmail()));
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginUserDetail loginUserDetail) {
+        List<FavoriteDto> favorites = favoriteService.findFavorites(new FavoriteFindQuery(loginUserDetail.getEmail()));
         return ResponseEntity.ok().body(
                 favorites.stream()
                         .map(FavoriteResponse::from)
@@ -44,9 +44,9 @@ public class FavoriteController {
 
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<Void> deleteFavorite(
-            @AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id
+            @AuthenticationPrincipal LoginUserDetail loginUserDetail, @PathVariable Long id
     ) {
-        favoriteService.deleteFavorite(new FavoriteDeleteCommand(id, loginMember.getEmail()));
+        favoriteService.deleteFavorite(new FavoriteDeleteCommand(id, loginUserDetail.getEmail()));
         return ResponseEntity.noContent().build();
     }
 }
