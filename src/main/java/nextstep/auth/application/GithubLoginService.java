@@ -4,6 +4,7 @@ import nextstep.auth.application.dto.OAuth2Request;
 import nextstep.auth.application.dto.TokenResponse;
 import nextstep.auth.domain.UserCreator;
 import nextstep.auth.domain.UserGetter;
+import nextstep.auth.domain.exception.UserException;
 import nextstep.auth.ui.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class GithubLoginService {
         GithubProfileResponse githubProfile = githubClient.requestUserInfo(accessToken);
         try {
             userGetter.getUser(githubProfile.getEmail());
-        } catch (Exception e) {
+        } catch (UserException.NotFoundUserException e) {
             userCreator.createUser(githubProfile.getEmail(), null, githubProfile.getAge());
         }
         String token = jwtTokenProvider.createToken(githubProfile.getEmail());

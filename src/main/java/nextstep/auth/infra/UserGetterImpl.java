@@ -3,6 +3,7 @@ package nextstep.auth.infra;
 import java.util.Map;
 import nextstep.auth.domain.User;
 import nextstep.auth.domain.UserGetter;
+import nextstep.auth.domain.exception.UserException;
 import nextstep.auth.infra.dto.UserResponse;
 import nextstep.exception.BadRequestException;
 import org.springframework.http.HttpEntity;
@@ -21,7 +22,7 @@ public class UserGetterImpl implements UserGetter {
     }
 
     @Override
-    public User getUser(String email) {
+    public User getUser(String email) throws UserException.NotFoundUserException {
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
         String url = this.url + "?email={email}";
@@ -36,7 +37,7 @@ public class UserGetterImpl implements UserGetter {
                     params)
                 .getBody();
         } catch (Exception e) {
-            throw new BadRequestException(BadRequestException.MEMBER_NOT_FOUND);
+            throw new UserException.NotFoundUserException();
         }
 
         return new User(response.getId(), response.getEmail(), response.getAge());
