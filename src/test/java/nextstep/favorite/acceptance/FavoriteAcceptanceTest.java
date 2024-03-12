@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
+import static nextstep.utils.api.AuthApi.*;
 import static nextstep.utils.api.FavoriteApi.*;
 import static nextstep.utils.api.FavoriteApi.즐겨찾기를_삭제한다;
 import static nextstep.utils.api.LineApi.*;
 import static nextstep.utils.api.MemberApi.*;
 import static nextstep.utils.api.StationApi.지하철역_생성요청;
-import static nextstep.utils.api.TokenApi.*;
 import static nextstep.utils.fixture.LineFixture.신분당선_생성_바디;
 import static nextstep.utils.fixture.SectionFixture.추가구간_생성_바디;
 import static nextstep.utils.fixture.StationFixture.*;
@@ -55,14 +55,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("로그인한 사용자는 즐겨찾기를 추가할 수 있다.")
         void succeed() {
             // Given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
 
             // When
-            assertThat(즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰).statusCode()).isEqualTo(201);
+            assertThat(즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰).statusCode()).isEqualTo(201);
 
             // Then
-            ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_목록을_조회한다(인증_토큰);
+            ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_목록을_조회한다(액세스_토큰);
 
             assertThat(즐겨찾기_조회_결과.jsonPath().getString("[0].source.name")).isEqualTo("강남역");
             assertThat(즐겨찾기_조회_결과.jsonPath().getString("[0].target.name")).isEqualTo("신논현역");
@@ -90,15 +89,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("이미 추가된 즐겨찾기는 중복해서 추가할 수 없다.")
         void failForDuplicated() {
             // Given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
-            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰);
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
+            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰);
 
             // When
-            assertThat(즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰).statusCode()).isEqualTo(409);
+            assertThat(즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰).statusCode()).isEqualTo(409);
 
             // Then
-            assertThat(즐겨찾기_목록을_조회한다(인증_토큰).jsonPath().getList(".")).hasSize(1);
+            assertThat(즐겨찾기_목록을_조회한다(액세스_토큰).jsonPath().getList(".")).hasSize(1);
         }
 
         /**
@@ -110,16 +108,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 경로는 즐겨찾기에 추가할 수 없다.")
         void failForNotExist() {
             // Given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
-
-            Map<String, Long> 추가할_즐겨찾기 = Map.of("source", 1L, "target", 404L);
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
 
             // When
-            assertThat(즐겨찾기를_추가한다(추가할_즐겨찾기, 인증_토큰).statusCode()).isEqualTo(404);
+            Map<String, Long> 추가할_즐겨찾기 = Map.of("source", 1L, "target", 404L);
+            assertThat(즐겨찾기를_추가한다(추가할_즐겨찾기, 액세스_토큰).statusCode()).isEqualTo(404);
 
             // Then
-            assertThat(즐겨찾기_목록을_조회한다(인증_토큰).jsonPath().getList(".")).hasSize(0);
+            assertThat(즐겨찾기_목록을_조회한다(액세스_토큰).jsonPath().getList(".")).hasSize(0);
         }
     }
 
@@ -134,13 +130,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("로그인한 사용자는 즐겨찾기 목록을 조회할 수 있다.")
         void succeed() {
             // given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
-
-            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰);
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
+            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰);
 
             // when
-            ExtractableResponse<Response> 즐겨찾기_목록_조회 = 즐겨찾기_목록을_조회한다(인증_토큰);
+            ExtractableResponse<Response> 즐겨찾기_목록_조회 = 즐겨찾기_목록을_조회한다(액세스_토큰);
             
             // then
             assertThat(즐겨찾기_목록_조회.statusCode()).isEqualTo(200);
@@ -173,15 +167,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("로그인한 사용자는 즐겨찾기를 삭제할 수 있다.")
         void succeed() {
             // Given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
-
-            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰);
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
+            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰);
 
             // When
             // Then
-            assertThat(즐겨찾기를_삭제한다(1L, 인증_토큰).statusCode()).isEqualTo(204);
-            assertThat(즐겨찾기_목록을_조회한다(인증_토큰).jsonPath().getList(".")).isEmpty();
+            assertThat(즐겨찾기를_삭제한다(1L, 액세스_토큰).statusCode()).isEqualTo(204);
+            assertThat(즐겨찾기_목록을_조회한다(액세스_토큰).jsonPath().getList(".")).isEmpty();
         }
 
         /**
@@ -193,16 +185,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("로그인하지 않은 사용자는 즐겨찾기를 삭제할 수 없다.")
         void failForNotLogin() {
             // Given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
-
-            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰);
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
+            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰);
 
             // When
             // Then
             assertThat(즐겨찾기를_삭제한다(1L).statusCode()).isEqualTo(401);
 
-            ExtractableResponse<Response> 즐겨찾기_목록을_조회_확인 = 즐겨찾기_목록을_조회한다(인증_토큰);
+            ExtractableResponse<Response> 즐겨찾기_목록을_조회_확인 = 즐겨찾기_목록을_조회한다(액세스_토큰);
             assertThat(즐겨찾기_목록을_조회_확인.jsonPath().getList("source.name")).contains("강남역");
             assertThat(즐겨찾기_목록을_조회_확인.jsonPath().getList("target.name")).contains("신논현역");
         }
@@ -216,14 +206,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 즐겨찾기는 삭제할 수 없다.")
         void failForNotExist() {
             // Given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
-
-            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰);
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
+            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰);
 
             // When
             // Then
-            assertThat(즐겨찾기를_삭제한다(404L, 인증_토큰).statusCode()).isEqualTo(404);
+            assertThat(즐겨찾기를_삭제한다(404L, 액세스_토큰).statusCode()).isEqualTo(404);
         }
 
         /**
@@ -235,27 +223,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("다른 사용자의 즐겨찾기는 삭제할 수 없다.")
         void failForDifferentUser() {
             // Given
-            ExtractableResponse<Response> response = 로그인을_시도한다(회원_이메일, 회원_비밀번호);
-            String 인증_토큰 = response.jsonPath().getString("accessToken");
+            String 액세스_토큰 = 로그인으로_토큰_요청(회원_이메일, 회원_비밀번호);
+            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 액세스_토큰);
 
-            즐겨찾기를_추가한다(강남역에서_신논현역_즐겨찾기, 인증_토큰);
-
-            회원_생성_요청("sabotage@test.com", "test1234!!", 18);
-            ExtractableResponse<Response> 다른_사용자_로그인_요청 = 로그인을_시도한다(
-                    "sabotage@test.com", "test1234!!"
-            );
-            String 다른_사용자_인증_토큰 = 다른_사용자_로그인_요청.jsonPath().getString("accessToken");
+            String 다른유저_이메일 = "sabotage@test.com";
+            String 다른유저_비밀번호 = "test1234!!";
+            회원_생성_요청(다른유저_이메일, 다른유저_비밀번호, 18);
+            String 다른유저_액세스_토큰 = 로그인으로_토큰_요청(다른유저_이메일, 다른유저_비밀번호);
 
             // When
-
-            assertThat(즐겨찾기를_삭제한다(1L, 다른_사용자_인증_토큰).statusCode()).isEqualTo(403);
+            assertThat(즐겨찾기를_삭제한다(1L, 다른유저_액세스_토큰).statusCode()).isEqualTo(403);
 
             // Then
-            ExtractableResponse<Response> 즐겨찾기_목록을_조회_확인 = 즐겨찾기_목록을_조회한다(인증_토큰);
+            ExtractableResponse<Response> 즐겨찾기_목록을_조회_확인 = 즐겨찾기_목록을_조회한다(액세스_토큰);
             assertThat(즐겨찾기_목록을_조회_확인.jsonPath().getList("source.name")).contains("강남역");
             assertThat(즐겨찾기_목록을_조회_확인.jsonPath().getList("target.name")).contains("신논현역");
         }
     }
-
-
 }

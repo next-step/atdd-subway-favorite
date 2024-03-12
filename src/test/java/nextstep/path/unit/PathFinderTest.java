@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PathFinderTest {
-
     ArrayList<Line> 모든_노선 = new ArrayList<>();
     Station 출발역 = 논현역_엔티티;
     Station 도착역 = 역삼역_엔티티;

@@ -1,6 +1,5 @@
 package nextstep.auth.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
@@ -11,11 +10,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static nextstep.utils.api.AuthApi.깃헙_로그인으로_토큰_요청;
+import static nextstep.utils.api.AuthApi.로그인으로_토큰_요청;
+import static nextstep.utils.api.MemberApi.내_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -34,29 +32,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer 토큰 발급")
     @Test
     void bearerAuth() {
+        // Given
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
+        // When
+        String 액세스_토큰 = 로그인으로_토큰_요청(EMAIL, PASSWORD);
+        assertThat(액세스_토큰).isNotBlank();
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/auth/login")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        String accessToken = response.jsonPath().getString("accessToken");
-        assertThat(accessToken).isNotBlank();
-
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+        // Then
+        ExtractableResponse<Response> 내_정보_조회_요청_결과 = 내_정보_조회_요청(액세스_토큰);
+        assertThat(내_정보_조회_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(내_정보_조회_요청_결과.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 
     /**
@@ -67,25 +53,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Github Auth")
     @Test
     void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubUserFixture.사용자1.getCode());
+        // When
+        String 액세스_토큰 = 깃헙_로그인으로_토큰_요청(GithubUserFixture.사용자1.getCode());
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/auth/login/github")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> 내_정보_조회_요청_결과 = 내_정보_조회_요청(액세스_토큰);
 
-        String accessToken = response.jsonPath().getString("accessToken");
-        assertThat(accessToken).isNotBlank();
-
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(GithubUserFixture.사용자1.getEmail());
+        assertThat(내_정보_조회_요청_결과.jsonPath().getString("email")).isEqualTo(GithubUserFixture.사용자1.getEmail());
     }
 }
