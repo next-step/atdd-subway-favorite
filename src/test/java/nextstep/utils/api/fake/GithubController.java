@@ -1,8 +1,8 @@
 package nextstep.utils.api.fake;
 
-import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.GithubTokenRequest;
-import nextstep.member.ui.dto.TokenResponseBody;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.GithubTokenRequest;
+import nextstep.auth.ui.dto.TokenResponseBody;
 import nextstep.utils.fixture.GithubUserFixture;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;

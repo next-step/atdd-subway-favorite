@@ -1,12 +1,12 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.TokenDto;
-import nextstep.member.application.oauth.GithubClient;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.TokenDto;
+import nextstep.auth.application.oauth.GithubClient;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.member.ui.dto.TokenFromGithubRequestBody;
+import nextstep.auth.ui.dto.TokenFromGithubRequestBody;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
