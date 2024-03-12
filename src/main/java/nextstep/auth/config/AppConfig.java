@@ -9,6 +9,8 @@ import nextstep.auth.infra.UserGetterImpl;
 import nextstep.properties.AppProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -31,11 +33,19 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     public UserCreator userCreator() {
-        return new UserCreatorImpl(appProperties.getUserService().getCreateUrl());
+        return new UserCreatorImpl(appProperties.getUserService().getCreateUrl(), restTemplate());
     }
 
     @Bean
     public UserGetter userGetter() {
-        return new UserGetterImpl(appProperties.getUserService().getMeUrl());
+        return new UserGetterImpl(appProperties.getUserService().getMeUrl(), restTemplate());
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(5000);
+        return new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     }
 }

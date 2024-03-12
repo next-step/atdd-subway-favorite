@@ -15,21 +15,19 @@ import org.springframework.web.client.RestTemplate;
 
 public class UserGetterImpl implements UserGetter {
 
-    private String url;
+    private final String url;
+    private final RestTemplate restTemplate;
 
-    public UserGetterImpl(String url) {
+    public UserGetterImpl(String url, RestTemplate restTemplate) {
         this.url = url;
+        this.restTemplate = restTemplate;
     }
 
     @Override
     public User getUser(String email) throws UserException.NotFoundUserException {
-        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-
         String url = this.url + "?email={email}";
         Map<String, String> params = Map.of("email", email);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        HttpEntity<String> requestEntity = getRequestEntity();
         UserResponse response;
         try {
             response = restTemplate.exchange(url, HttpMethod.PATCH, requestEntity,
@@ -43,15 +41,19 @@ public class UserGetterImpl implements UserGetter {
         return new User(response.getId(), response.getEmail(), response.getAge());
     }
 
+    private HttpEntity<String> getRequestEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(null, headers);
+    }
+
     @Override
     public User getUser(String email, String password) {
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
         String url = this.url + "?email={email}&password={password}";
         Map<String, String> params = Map.of("email", email, "password", password);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        HttpEntity<String> requestEntity = getRequestEntity();
         UserResponse response;
         try {
             response = restTemplate.exchange(url, HttpMethod.PATCH, requestEntity,

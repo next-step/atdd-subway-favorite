@@ -7,9 +7,11 @@ import org.springframework.web.client.RestTemplate;
 public class UserCreatorImpl implements UserCreator {
 
     private final String url;
+    private final RestTemplate restTemplate;
 
-    public UserCreatorImpl(String url) {
+    public UserCreatorImpl(String url, RestTemplate restTemplate) {
         this.url = url;
+        this.restTemplate = restTemplate;
     }
 
     @Override
