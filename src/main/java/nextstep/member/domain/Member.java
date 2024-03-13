@@ -15,6 +15,7 @@ public class Member {
     private Long id;
     @Column(unique = true)
     private String email;
+
     private String password;
     private Integer age;
 

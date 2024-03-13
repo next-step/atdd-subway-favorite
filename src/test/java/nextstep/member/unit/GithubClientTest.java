@@ -2,9 +2,9 @@ package nextstep.member.unit;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.OAuth2Client;
-import nextstep.member.ui.dto.GithubProfileResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.OAuth2Client;
+import nextstep.auth.ui.dto.GithubProfileResponse;
 import nextstep.test.GithubResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

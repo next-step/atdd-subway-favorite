@@ -1,6 +1,6 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.ui.dto.GithubProfileResponse;
+import nextstep.auth.ui.dto.GithubProfileResponse;
 
 public interface OAuth2Client {
 
