@@ -1,6 +1,6 @@
 package nextstep.utils;
 
-import nextstep.exception.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 
 import java.util.Arrays;
 import java.util.Objects;

@@ -1,6 +1,6 @@
 package nextstep.auth.application;
 
-import nextstep.exception.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import nextstep.auth.application.dto.GithubAccessTokenRequest;
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
 import nextstep.auth.application.dto.GithubProfileResponse;

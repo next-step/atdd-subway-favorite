@@ -1,6 +1,6 @@
 package nextstep.auth.application;
 
-import nextstep.exception.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
 import org.springframework.stereotype.Service;

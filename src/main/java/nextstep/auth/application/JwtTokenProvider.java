@@ -1,7 +1,7 @@
 package nextstep.auth.application;
 
 import io.jsonwebtoken.*;
-import nextstep.exception.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
