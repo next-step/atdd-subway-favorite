@@ -1,12 +1,9 @@
 package nextstep.member.domain;
 
-import nextstep.auth.application.UserDetails;
-
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
-public class Member implements UserDetails {
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,15 +41,5 @@ public class Member implements UserDetails {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
-    }
-
-    @Override
-    public String getMemberEmail() {
-        return email;
-    }
-
-    @Override
-    public boolean isEqualPassword(String password) {
-        return Objects.equals(this.password, password);
     }
 }

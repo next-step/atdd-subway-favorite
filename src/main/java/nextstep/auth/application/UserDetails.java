@@ -1,6 +1,6 @@
 package nextstep.auth.application;
 
 public interface UserDetails {
-    String getMemberEmail();
+    String getEmail();
     boolean isEqualPassword(String password);
 }

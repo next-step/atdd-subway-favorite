@@ -24,7 +24,7 @@ public class TokenService {
             throw new AuthenticationException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtTokenProvider.createToken(userDetails.getMemberEmail());
+        String token = jwtTokenProvider.createToken(userDetails.getEmail());
 
         return new TokenResponse(token);
     }
@@ -35,7 +35,7 @@ public class TokenService {
 
         UserDetails userDetails = userDetailService.findMemberOrCreate(profile);
 
-        String token = jwtTokenProvider.createToken(userDetails.getMemberEmail());
+        String token = jwtTokenProvider.createToken(userDetails.getEmail());
 
         return new TokenResponse(token);
     }

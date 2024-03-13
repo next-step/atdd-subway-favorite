@@ -12,7 +12,7 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService implements UserDetailsService {
+public class MemberService implements UserDetailsService{
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -45,20 +45,26 @@ public class MemberService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(
-                () -> new BadRequestException("존재하지 않는 회원입니다.")
-        );
+    public LoginMember findMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                () -> new BadRequestException("존재하지 않는 회원입니다."));
+
+        return new LoginMember(member);
     }
 
     @Override
-    public UserDetails findMemberOrCreate(GithubProfileResponse githubProfileResponse) {
-        UserDetails member = memberRepository.findByEmail(githubProfileResponse.getEmail()).orElse(null);
+    public LoginMember findMemberOrCreate(GithubProfileResponse githubProfileResponse) {
+        Member member = memberRepository.findByEmail(githubProfileResponse.getEmail()).orElse(null);
 
         if(member == null) {
             member = memberRepository.save(new Member(githubProfileResponse.getEmail(), "", githubProfileResponse.getAge()));
         }
 
-        return member;
+        return new LoginMember(member);
+    }
+
+    @Override
+    public UserDetails loginMember(String email) {
+        return new LoginMember(email);
     }
 }
