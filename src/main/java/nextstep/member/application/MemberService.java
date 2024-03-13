@@ -1,5 +1,7 @@
 package nextstep.member.application;
 
+import nextstep.auth.application.UserDetails;
+import nextstep.auth.application.UserDetailsService;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.exception.BadRequestException;
 import nextstep.member.application.dto.MemberRequest;

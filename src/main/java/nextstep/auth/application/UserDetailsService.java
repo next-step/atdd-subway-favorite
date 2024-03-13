@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import nextstep.auth.application.dto.GithubProfileResponse;
 

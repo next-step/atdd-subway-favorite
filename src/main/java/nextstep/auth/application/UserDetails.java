@@ -1,4 +1,4 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 public interface UserDetails {
     String getMemberEmail();

@@ -3,8 +3,6 @@ package nextstep.auth.application;
 import nextstep.exception.AuthenticationException;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.member.application.UserDetailsService;
-import nextstep.member.application.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service

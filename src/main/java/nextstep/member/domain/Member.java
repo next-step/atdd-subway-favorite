@@ -1,6 +1,6 @@
 package nextstep.member.domain;
 
-import nextstep.member.application.UserDetails;
+import nextstep.auth.application.UserDetails;
 
 import javax.persistence.*;
 import java.util.Objects;
