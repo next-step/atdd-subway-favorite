@@ -1,7 +1,6 @@
 package nextstep.member.domain;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Member {
@@ -42,9 +41,5 @@ public class Member {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
-    }
-
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
     }
 }

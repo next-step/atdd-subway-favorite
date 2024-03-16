@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends CommonAcceptanceTest {
@@ -19,7 +18,7 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void createMember() {
         // when
-        var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var response = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -29,13 +28,13 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void getMember() {
         // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var createResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        var response = 회원_정보_조회_요청(createResponse);
+        var response = MemberSteps.회원_정보_조회_요청(createResponse);
 
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        MemberSteps.회원_정보_조회됨(response, EMAIL, AGE);
 
     }
 
@@ -43,10 +42,10 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void updateMember() {
         // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var createResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
+        var response = MemberSteps.회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -56,10 +55,10 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
     @Test
     void deleteMember() {
         // given
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
+        var createResponse = MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        var response = 회원_삭제_요청(createResponse);
+        var response = MemberSteps.회원_삭제_요청(createResponse);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -74,13 +73,13 @@ class MemberAcceptanceTest extends CommonAcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        MemberSteps.회원_생성_요청(EMAIL, PASSWORD, AGE);
 
-        ExtractableResponse<Response> 로그인_응답 = 회원_로그인_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> 로그인_응답 = MemberSteps.회원_로그인_요청(EMAIL, PASSWORD);
         String accessToken = 로그인_응답.jsonPath().getString("accessToken");
 
-        ExtractableResponse<Response> 회원_정보_응답 = 토큰으로_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> 회원_정보_응답 = MemberSteps.토큰으로_회원_정보_조회_요청(accessToken);
 
-        회원_정보_조회됨(회원_정보_응답, EMAIL, AGE);
+        MemberSteps.회원_정보_조회됨(회원_정보_응답, EMAIL, AGE);
     }
 }

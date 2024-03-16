@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.common.LineUtil;
-import nextstep.member.acceptance.MemberRestAssuredCRUD;
 import nextstep.member.acceptance.MemberSteps;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -194,7 +193,7 @@ public class FavoriteAcceptanceTest extends CommonAcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_삭제됨 = FavoriteRestAssuredCRUD.deleteFavorite(회원1_accessToken, 회원2_즐겨찾기);
 
         //then
-        assertThat(즐겨찾기_삭제됨.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(즐겨찾기_삭제됨.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**

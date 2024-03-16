@@ -1,5 +1,9 @@
 package nextstep.member.application;
 
+import nextstep.auth.application.UserDetails;
+import nextstep.auth.application.UserDetailsService;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.exception.BadRequestException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -8,7 +12,7 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService {
+public class MemberService implements UserDetailsService{
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -34,13 +38,33 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-    }
-
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public LoginMember findMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                () -> new BadRequestException("존재하지 않는 회원입니다."));
+
+        return new LoginMember(member);
+    }
+
+    @Override
+    public LoginMember findMemberOrCreate(GithubProfileResponse githubProfileResponse) {
+        Member member = memberRepository.findByEmail(githubProfileResponse.getEmail()).orElse(null);
+
+        if(member == null) {
+            member = memberRepository.save(new Member(githubProfileResponse.getEmail(), "", githubProfileResponse.getAge()));
+        }
+
+        return new LoginMember(member);
+    }
+
+    @Override
+    public UserDetails loginMember(String email) {
+        return new LoginMember(email);
     }
 }
