@@ -28,4 +28,17 @@ public class GitHubClientTest {
         // then
         assertThat(accessToken).isEqualTo("test code github-access-token");
     }
+
+    @DisplayName("GitHub 프로필을 요청한다.")
+    @Test
+    void requestGithubProfile() {
+        // given
+        var accessToken = "hyeon9mak github-access-token";
+
+        // when
+        var response = gitHubClient.requestGithubProfile(accessToken);
+
+        // then
+        assertThat(response.getEmail()).isEqualTo("hyeon9mak@gmail.com");
+    }
 }
