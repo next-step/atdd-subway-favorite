@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.GitHubLoginRequest;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -53,19 +54,49 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 
-    @DisplayName("Github Auth")
+    /**
+     * Given 멤버를 생성하고
+     * When 멤버와 매칭되는 코드로 깃허브 로그인을 요청하면
+     * Then 인증 토큰을 발급한다.
+     */
+    @DisplayName("기존 멤버의 깃허브 로그인")
     @Test
-    void githubAuth() {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+    void 기존_멤버의_깃허브_로그인() {
+        // given
+        GitHubLoginRequest request = new GitHubLoginRequest("hyeon9mak");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        // when
+        var response = loginGitHub(request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    /**
+     * When 기존 멤버와 매칭되지 않는 코드로 깃허브 로그인을 요청하면
+     * Then 회원가입을 진행 후 인증 토큰을 발급한다.
+     */
+    @DisplayName("회원이 아닌 멤버의 깃허브 로그인")
+    @Test
+    void 회원이_아닌_멤버의_깃허브_로그인() {
+        // given
+        GitHubLoginRequest request = new GitHubLoginRequest("unknown");
+
+        // when
+        var response = loginGitHub(request);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+    }
+
+    private static ExtractableResponse<Response> loginGitHub(GitHubLoginRequest body) {
+        return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(body)
                 .when().post("/login/github")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
-
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }
