@@ -2,7 +2,10 @@ package nextstep.member.application.dto;
 
 public class GitHubAccessTokenResponse {
 
-    private final String accessToken;
+    private String accessToken;
+
+    public GitHubAccessTokenResponse() {
+    }
 
     public GitHubAccessTokenResponse(String accessToken) {
         this.accessToken = accessToken;

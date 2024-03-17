@@ -2,8 +2,11 @@ package nextstep.member.application.dto;
 
 public class GitHubProfileResponse {
 
-    private final String email;
-    private final int age;
+    private String email;
+    private int age;
+
+    public GitHubProfileResponse() {
+    }
 
     public GitHubProfileResponse(String email, int age) {
         this.email = email;

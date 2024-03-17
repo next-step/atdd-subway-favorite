@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
-import nextstep.member.application.dto.GitHubAccessTokenResponse;
 import nextstep.member.application.dto.GitHubAccessTokenRequest;
+import nextstep.member.application.dto.GitHubAccessTokenResponse;
 import nextstep.member.application.dto.GitHubProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,7 @@ public class GitHubAccessTokenTestController {
     @PostMapping("/github/user")
     public ResponseEntity<GitHubProfileResponse> getUserProfile(@RequestHeader("Authorization") String authorization) {
         String accessToken = authorization.split(" ")[1];
-        String email = accessToken.replace("_access_token", "@gmail.com");
+        String email = accessToken + "@gmail.com";
         int age = 20;
 
         GitHubProfileResponse response = new GitHubProfileResponse(email, age);
