@@ -1,10 +1,13 @@
 package nextstep.member.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.utils.api.AuthApi.로그인으로_토큰_요청;
 import static nextstep.utils.api.MemberApi.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,6 +75,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
 
+        // and
+        String 액세스_토큰 = 로그인으로_토큰_요청(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> 내정보_조회_결과 = 내_정보_조회_요청(액세스_토큰);
+
+        // then
+        assertThat(내정보_조회_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

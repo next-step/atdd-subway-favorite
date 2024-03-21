@@ -1,8 +1,8 @@
-package nextstep.member.unit;
+package nextstep.auth.acceptance.unit;
 
-import nextstep.member.application.dto.GithubProfileResponse;
-import nextstep.member.application.oauth.GithubClient;
-import nextstep.member.ui.dto.TokenFromGithubRequestBody;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.auth.application.oauth.GithubClient;
+import nextstep.auth.ui.dto.TokenFromGithubRequestBody;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

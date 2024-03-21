@@ -1,4 +1,4 @@
-package nextstep.member.ui.dto;
+package nextstep.auth.ui.dto;
 
 public class TokenResponseBody {
     private String accessToken;

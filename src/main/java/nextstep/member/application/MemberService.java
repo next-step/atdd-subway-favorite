@@ -1,28 +1,30 @@
 package nextstep.member.application;
 
+import nextstep.auth.application.UserDetailService;
+import nextstep.auth.domain.LoginUserDetail;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.domain.dto.MemberDto;
+import nextstep.member.domain.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService {
-    private MemberRepository memberRepository;
+public class MemberService implements UserDetailService {
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
-    public MemberResponse createMember(MemberRequest request) {
+    public MemberDto createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+        return MemberDto.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberDto findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
+        return MemberDto.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
@@ -34,13 +36,25 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    @Override
+    public MemberDto findByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        return MemberDto.of(member);
     }
 
-    public MemberResponse findMe(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
-                .map(MemberResponse::of)
+    @Override
+    public MemberDto findByEmailOrCreate(String email) {
+        Member member = memberRepository
+                .findByEmail(email)
+                .orElse(new Member(email, null, null));
+        memberRepository.save(member);
+
+        return MemberDto.of(member);
+    }
+
+    public MemberDto findMe(LoginUserDetail loginUserDetail) {
+        return memberRepository.findByEmail(loginUserDetail.getEmail())
+                .map(MemberDto::of)
                 .orElseThrow(RuntimeException::new);
     }
 }

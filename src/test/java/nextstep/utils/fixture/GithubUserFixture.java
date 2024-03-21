@@ -1,7 +1,6 @@
 package nextstep.utils.fixture;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public enum GithubUserFixture {
     사용자1("aofijeowifjaoief", "access_token_1", "email1@email.com"),
