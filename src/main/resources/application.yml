@@ -1,0 +1,31 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 3600000
+
+github:
+  client:
+    base-url: https://github.com
+    id: client-id
+    secret: client-secret
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+
+github:
+  client:
+    base-url: http://localhost:8080
+    id: client-id
+    secret: client-secret
