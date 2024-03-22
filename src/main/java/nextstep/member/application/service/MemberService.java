@@ -41,13 +41,9 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-            .orElseThrow(NotFoundException::new);
-    }
 
-    public MemberResponse findMe(CustomUserPrincipal customUserDetail) {
-        return memberRepository.findByEmail(customUserDetail.getId())
+    public MemberResponse findMe(CustomUserPrincipal userPrincipal) {
+        return memberRepository.findByEmail(userPrincipal.getUserDetail().getId())
             .map(MemberResponse::of)
             .orElseThrow(NotFoundException::new);
     }

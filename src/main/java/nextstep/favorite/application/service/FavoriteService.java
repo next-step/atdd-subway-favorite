@@ -66,7 +66,7 @@ public class FavoriteService {
     }
 
     private Member getMember(CustomUserPrincipal userPrincipal) {
-        return memberRepository.findByEmail(userPrincipal.getId())
+        return memberRepository.findByEmail(userPrincipal.getUserDetail().getId())
             .orElseThrow(() -> new NotFoundException("not found member"));
     }
 }

@@ -5,11 +5,9 @@ import lombok.Getter;
 @Getter
 public class CustomUserPrincipal {
 
-    private final String id;
+    private final CustomUserDetail userDetail;
 
-    public CustomUserPrincipal(String id) {
-        this.id = id;
+    public CustomUserPrincipal(CustomUserDetail userDetail) {
+        this.userDetail = userDetail;
     }
-
-
 }
