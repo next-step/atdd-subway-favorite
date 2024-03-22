@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
 import java.net.URI;
-import nextstep.auth.application.domain.LoginMember;
+import nextstep.auth.application.domain.CustomUserPrincipal;
 import nextstep.auth.application.ui.AuthenticationPrincipal;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -52,8 +52,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findMe(loginMember);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal CustomUserPrincipal userPrincipal) {
+        MemberResponse memberResponse = memberService.findMe(userPrincipal);
         return ResponseEntity.ok().body(memberResponse);
     }
 }

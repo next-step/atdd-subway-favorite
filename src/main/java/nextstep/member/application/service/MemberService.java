@@ -1,7 +1,7 @@
 package nextstep.member.application.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.application.domain.LoginMember;
+import nextstep.auth.application.domain.CustomUserPrincipal;
 import nextstep.common.error.exception.NotFoundException;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -41,13 +41,9 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-            .orElseThrow(NotFoundException::new);
-    }
 
-    public MemberResponse findMe(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
+    public MemberResponse findMe(CustomUserPrincipal userPrincipal) {
+        return memberRepository.findByEmail(userPrincipal.getUserDetail().getId())
             .map(MemberResponse::of)
             .orElseThrow(NotFoundException::new);
     }
