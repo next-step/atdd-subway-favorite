@@ -1,6 +1,5 @@
 package nextstep.member.domain;
 
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,7 +48,4 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
-    }
 }

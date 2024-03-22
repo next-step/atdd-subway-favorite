@@ -3,14 +3,13 @@ package nextstep.auth.application.service;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.application.domain.CustomUserDetail;
 import nextstep.auth.application.dto.TokenResponse;
 import nextstep.auth.application.exception.AuthenticationException;
 import nextstep.auth.oauth.github.GithubAccessTokenResponse;
 import nextstep.auth.oauth.github.GithubClient;
 import nextstep.auth.oauth.github.GithubProfileResponse;
 import nextstep.common.error.exception.NotFoundException;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,21 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TokenService {
 
-    private final MemberRepository memberRepository;
+    private final UserDetailService userDetailService;
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
 
 
     public TokenResponse createToken(String email, String password) {
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
-        if (memberOptional.isEmpty()) {
+        Optional<CustomUserDetail> userDetailOptional = userDetailService.findById(email);
+        if (userDetailOptional.isEmpty()) {
             throw new NotFoundException();
         }
-        Member member = memberOptional.get();
-        if (!member.checkPassword(password)) {
+        CustomUserDetail customUserDetail = userDetailOptional.get();
+        if (!customUserDetail.checkPassword(password)) {
             throw new AuthenticationException();
         }
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = jwtTokenProvider.createToken(customUserDetail.getId());
         return new TokenResponse(token);
     }
 
@@ -43,11 +42,8 @@ public class TokenService {
         GithubAccessTokenResponse githubAccessTokenResponse = githubClient.requestGithubToken(code);
         GithubProfileResponse githubProfileResponse = githubClient
             .requestGithubProfile(githubAccessTokenResponse.getAccessToken());
-
-        Member member = memberRepository.findByEmail(githubProfileResponse.getEmail())
-            .orElseGet(() -> memberRepository.save(
-                new Member(githubProfileResponse.getEmail(), "default password", null))
-            );
-        return createToken(member.getEmail(), member.getPassword());
+        CustomUserDetail customUserDetail = userDetailService.findById(githubProfileResponse.getEmail())
+            .orElseGet(() -> userDetailService.loadUserDetail(githubProfileResponse.getEmail()));
+        return createToken(customUserDetail.getId(), customUserDetail.getPassword());
     }
 }

@@ -3,7 +3,7 @@ package nextstep.favorite.application.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.application.domain.LoginMember;
+import nextstep.auth.application.domain.CustomUserPrincipal;
 import nextstep.common.error.exception.BadRequestException;
 import nextstep.common.error.exception.NotFoundException;
 import nextstep.common.error.exception.UnAuthorizedException;
@@ -32,10 +32,10 @@ public class FavoriteService {
 
 
     @Transactional
-    public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public Long createFavorite(CustomUserPrincipal userPrincipal, FavoriteRequest request) {
         Station source = stationService.getStationById(request.getSource());
         Station target = stationService.getStationById(request.getTarget());
-        Member member = getMember(loginMember);
+        Member member = getMember(userPrincipal);
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         if (!pathFinder.isValidPath(source, target)) {
             throw new BadRequestException("invalid favorite info");
@@ -45,8 +45,8 @@ public class FavoriteService {
     }
 
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = getMember(loginMember);
+    public List<FavoriteResponse> findFavorites(CustomUserPrincipal userPrincipal) {
+        Member member = getMember(userPrincipal);
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return favorites.stream()
             .map(FavoriteResponse::new)
@@ -55,8 +55,8 @@ public class FavoriteService {
 
 
     @Transactional
-    public void deleteFavorite(LoginMember loginMember, Long id) {
-        Member member = getMember(loginMember);
+    public void deleteFavorite(CustomUserPrincipal userPrincipal, Long id) {
+        Member member = getMember(userPrincipal);
         Favorite favorite = favoriteRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("not found favorite"));
         if (!favorite.isOwner(member.getId())) {
@@ -65,8 +65,8 @@ public class FavoriteService {
         favoriteRepository.deleteByIdAndMemberId(id, member.getId());
     }
 
-    private Member getMember(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
+    private Member getMember(CustomUserPrincipal userPrincipal) {
+        return memberRepository.findByEmail(userPrincipal.getId())
             .orElseThrow(() -> new NotFoundException("not found member"));
     }
 }
