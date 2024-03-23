@@ -1,9 +1,9 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import nextstep.auth.GitHubClientProperties;
-import nextstep.member.application.dto.GitHubAccessTokenRequest;
-import nextstep.member.application.dto.GitHubAccessTokenResponse;
-import nextstep.member.application.dto.GitHubProfileResponse;
+import nextstep.auth.application.dto.GitHubAccessTokenRequest;
+import nextstep.auth.application.dto.GitHubAccessTokenResponse;
+import nextstep.auth.application.dto.GitHubProfileResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
