@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.member.GitHubClientProperties;
+import nextstep.auth.GitHubClientProperties;
 import nextstep.member.application.dto.GitHubAccessTokenRequest;
 import nextstep.member.application.dto.GitHubAccessTokenResponse;
 import nextstep.member.application.dto.GitHubProfileResponse;
