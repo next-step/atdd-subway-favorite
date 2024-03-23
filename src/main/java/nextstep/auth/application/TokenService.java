@@ -1,8 +1,7 @@
 package nextstep.auth.application;
 
-import nextstep.auth.AuthenticationException;
-import nextstep.member.application.MemberService;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +17,8 @@ public class TokenService {
 
     public TokenResponse createToken(String email, String password) {
         Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
-        }
-
+        member.validatePassword(password);
         String token = jwtTokenProvider.createToken(member.getEmail());
-
         return new TokenResponse(token);
     }
 }
