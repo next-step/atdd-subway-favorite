@@ -3,7 +3,7 @@ package nextstep.favorite.unit;
 import nextstep.favorite.application.DeleteFavoriteService;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.auth.domain.LoginMember;
+import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.Line;
