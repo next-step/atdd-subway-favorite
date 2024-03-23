@@ -3,7 +3,7 @@ package nextstep.favorite.application;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
+import nextstep.favorite.domain.LoginMemberForFavorite;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.SectionRepository;
@@ -29,7 +29,7 @@ public class AddFavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public Long addFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public Long addFavorite(LoginMemberForFavorite loginMember, FavoriteRequest request) {
         Member member = findMemberByEmail(loginMember.getEmail());
         Station sourceStation = findStationById(request.getSource());
         Station targetStation = findStationById(request.getTarget());

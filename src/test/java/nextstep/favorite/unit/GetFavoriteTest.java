@@ -4,7 +4,7 @@ import nextstep.favorite.application.GetFavoriteService;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
+import nextstep.favorite.domain.LoginMemberForFavorite;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.Line;
@@ -74,7 +74,7 @@ public class GetFavoriteTest {
         @Test
         void getFavoritesWithoutFavorites() {
             // given
-            LoginMember loginMember = new LoginMember(최현구.getEmail());
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite(최현구.getEmail());
 
             // when
             List<FavoriteResponse> favoriteResponses = getFavoriteService.getFavorites(loginMember);
@@ -88,7 +88,7 @@ public class GetFavoriteTest {
         void getFavoritesWithFavorites() {
             // given
             favoriteRepository.save(new Favorite(최현구.getId(), 강남역.getId(), 역삼역.getId()));
-            LoginMember loginMember = new LoginMember(최현구.getEmail());
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite(최현구.getEmail());
 
             // when
             List<FavoriteResponse> favoriteResponses = getFavoriteService.getFavorites(loginMember);
@@ -102,7 +102,7 @@ public class GetFavoriteTest {
         @DisplayName("멤버 정보가 존재하지 않을 경우 예외가 발생한다.")
         @Test
         void getFavoritesWithNotExistsMember() {
-            LoginMember loginMember = new LoginMember("abcde@naver.com");
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite("abcde@naver.com");
 
             assertThatThrownBy(() -> getFavoriteService.getFavorites(loginMember))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
