@@ -3,7 +3,7 @@ package nextstep.favorite.application;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
+import nextstep.favorite.domain.LoginMemberForFavorite;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.station.Station;
@@ -26,7 +26,7 @@ public class GetFavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
+    public List<FavoriteResponse> getFavorites(LoginMemberForFavorite loginMember) {
         Member member = findMemberByEmail(loginMember.getEmail());
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return mapToFavoriteResponses(favorites);

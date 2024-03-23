@@ -1,6 +1,6 @@
-package nextstep.member.unit;
+package nextstep.auth.unit;
 
-import nextstep.member.application.GitHubClient;
+import nextstep.auth.application.GitHubClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

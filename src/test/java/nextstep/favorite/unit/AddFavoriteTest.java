@@ -4,7 +4,7 @@ import nextstep.favorite.application.AddFavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
+import nextstep.favorite.domain.LoginMemberForFavorite;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.Line;
@@ -75,7 +75,7 @@ public class AddFavoriteTest {
         @DisplayName("즐겨찾기에 지하철역을 등록한다.")
         @Test
         void addFavorite() {
-            LoginMember loginMember = new LoginMember("jinha3507@gmail.com");
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite("jinha3507@gmail.com");
             FavoriteRequest request = new FavoriteRequest(강남역.getId(), 역삼역.getId());
 
             addFavoriteService.addFavorite(loginMember, request);
@@ -91,7 +91,7 @@ public class AddFavoriteTest {
         @DisplayName("멤버 정보가 존재하지 않을 경우 예외가 발생한다.")
         @Test
         void addFavoriteWithInvalidMember() {
-            LoginMember loginMember = new LoginMember("abcde@naver.com");
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite("abcde@naver.com");
             FavoriteRequest request = new FavoriteRequest(강남역.getId(), 역삼역.getId());
 
             assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
@@ -102,7 +102,7 @@ public class AddFavoriteTest {
         @DisplayName("경로를 찾을 수 없거나 연결되지 않는 등 경로 조회가 불가능한 조회의 경우 즐겨찾기로 등록할 수 없다.")
         @Test
         void addFavoriteWithInvalidPath() {
-            LoginMember loginMember = new LoginMember("jinha3507@gmail.com");
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite("jinha3507@gmail.com");
             FavoriteRequest request = new FavoriteRequest(강남역.getId(), 선릉역.getId());
 
             assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
@@ -113,7 +113,7 @@ public class AddFavoriteTest {
         @DisplayName("존재하지 않는 역을 즐겨찾기로 등록할 수 없다.")
         @Test
         void addFavoriteWithInvalidStation() {
-            LoginMember loginMember = new LoginMember("jinha3507@gmail.com");
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite("jinha3507@gmail.com");
             FavoriteRequest request = new FavoriteRequest(강남역.getId(), Long.MAX_VALUE);
 
             assertThatThrownBy(() -> addFavoriteService.addFavorite(loginMember, request))
@@ -124,7 +124,7 @@ public class AddFavoriteTest {
         @DisplayName("즐겨찾기에 이미 등록된 역을 다시 등록할 수 없다.")
         @Test
         void addFavoriteWithDuplicateStation() {
-            LoginMember loginMember = new LoginMember("jinha3507@gmail.com");
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite("jinha3507@gmail.com");
             FavoriteRequest request = new FavoriteRequest(강남역.getId(), 역삼역.getId());
             addFavoriteService.addFavorite(loginMember, request);
 

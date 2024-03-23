@@ -3,7 +3,7 @@ package nextstep.favorite.unit;
 import nextstep.favorite.application.DeleteFavoriteService;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
+import nextstep.favorite.domain.LoginMemberForFavorite;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.Line;
@@ -74,7 +74,7 @@ public class DeleteFavoriteTest {
         void deleteFavorite() {
             // given
             Favorite favorite = favoriteRepository.save(new Favorite(최현구.getId(), 강남역.getId(), 역삼역.getId()));
-            LoginMember loginMember = new LoginMember(최현구.getEmail());
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite(최현구.getEmail());
 
             // when
             deleteFavoriteService.deleteFavorite(loginMember, favorite.getId());
@@ -86,7 +86,7 @@ public class DeleteFavoriteTest {
         @DisplayName("즐겨찾기가 존재하지 않을 경우 예외가 발생한다.")
         @Test
         void deleteFavoriteWithNotExists() {
-            LoginMember loginMember = new LoginMember(최현구.getEmail());
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite(최현구.getEmail());
 
             assertThatThrownBy(() -> deleteFavoriteService.deleteFavorite(loginMember, Long.MAX_VALUE))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
@@ -97,7 +97,7 @@ public class DeleteFavoriteTest {
         @Test
         void deleteFavoriteWithInvalidMember() {
             Favorite favorite = favoriteRepository.save(new Favorite(최현구.getId(), 강남역.getId(), 역삼역.getId()));
-            LoginMember loginMember = new LoginMember("abcde@naver.com");
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite("abcde@naver.com");
 
             assertThatThrownBy(() -> deleteFavoriteService.deleteFavorite(loginMember, favorite.getId()))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
@@ -108,7 +108,7 @@ public class DeleteFavoriteTest {
         @Test
         void deleteFavoriteWithNotMyFavorite() {
             Favorite favorite = favoriteRepository.save(new Favorite(Long.MAX_VALUE, 강남역.getId(), 역삼역.getId()));
-            LoginMember loginMember = new LoginMember(최현구.getEmail());
+            LoginMemberForFavorite loginMember = new LoginMemberForFavorite(최현구.getEmail());
 
             assertThatThrownBy(() -> deleteFavoriteService.deleteFavorite(loginMember, favorite.getId()))
                     .isExactlyInstanceOf(IllegalStateException.class)

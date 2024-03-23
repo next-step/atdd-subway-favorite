@@ -1,9 +1,9 @@
-package nextstep.member.domain;
+package nextstep.favorite.domain;
 
-public class LoginMember {
+public class LoginMemberForFavorite {
     private final String email;
 
-    public LoginMember(String email) {
+    public LoginMemberForFavorite(String email) {
         this.email = email;
     }
 

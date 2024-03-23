@@ -2,7 +2,7 @@ package nextstep.favorite.application;
 
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.LoginMember;
+import nextstep.favorite.domain.LoginMemberForFavorite;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class DeleteFavoriteService {
         this.memberRepository = memberRepository;
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long id) {
+    public void deleteFavorite(LoginMemberForFavorite loginMember, Long id) {
         Member member = findMemberByEmail(loginMember.getEmail());
         Favorite favorite = findFavoriteById(id);
         favorite.validateOwner(member);
