@@ -1,4 +1,4 @@
-package nextstep.member.unit;
+package nextstep.auth.unit;
 
 import nextstep.member.application.GitHubClient;
 import org.junit.jupiter.api.DisplayName;

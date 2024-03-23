@@ -1,4 +1,4 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
 import nextstep.member.application.dto.GitHubAccessTokenRequest;
 import nextstep.member.application.dto.GitHubAccessTokenResponse;
