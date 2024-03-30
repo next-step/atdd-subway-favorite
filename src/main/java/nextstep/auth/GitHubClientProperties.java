@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.auth;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
