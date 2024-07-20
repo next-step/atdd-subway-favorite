@@ -1,13 +1,12 @@
 package nextstep.member.domain;
 
+import lombok.Getter;
+
+@Getter
 public class LoginMember {
-    private String email;
+  private final String email;
 
-    public LoginMember(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
+  public LoginMember(String email) {
+    this.email = email;
+  }
 }

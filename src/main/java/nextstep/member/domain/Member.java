@@ -1,50 +1,38 @@
 package nextstep.member.domain;
 
-import javax.persistence.*;
 import java.util.Objects;
+import javax.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique = true)
-    private String email;
-    private String password;
-    private Integer age;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    public Member() {
-    }
+  @Column(unique = true)
+  private String email;
 
-    public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-    }
+  private String password;
+  private Integer age;
 
-    public Long getId() {
-        return id;
-    }
+  public Member(String email, String password, Integer age) {
+    this.email = email;
+    this.password = password;
+    this.age = age;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public void update(Member member) {
+    this.email = member.email;
+    this.password = member.password;
+    this.age = member.age;
+  }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public boolean checkPassword(String password) {
-        return Objects.equals(this.password, password);
-    }
+  public boolean checkPassword(String password) {
+    return Objects.equals(this.password, password);
+  }
 }

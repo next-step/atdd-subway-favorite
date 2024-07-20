@@ -1,10 +1,9 @@
-package nextstep.utils;
+package nextstep.support;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataLoader {
 
-    public void loadData() {
-    }
+  public void loadData() {}
 }
