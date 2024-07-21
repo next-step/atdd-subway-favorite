@@ -7,12 +7,12 @@ public class FavoriteRequest {
   private final Long source;
   private final Long target;
 
-  public FavoriteRequest() {
-    this(null, null);
-  }
-
-  public FavoriteRequest(Long source, Long target) {
+  private FavoriteRequest(Long source, Long target) {
     this.source = source;
     this.target = target;
+  }
+
+  public static FavoriteRequest of(Long source, Long target) {
+    return new FavoriteRequest(source, target);
   }
 }
