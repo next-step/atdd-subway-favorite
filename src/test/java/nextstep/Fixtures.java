@@ -1,5 +1,7 @@
 package nextstep;
 
+import nextstep.member.domain.Member;
+import nextstep.member.domain.Member.MemberBuilder;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Line.LineBuilder;
 import nextstep.subway.line.domain.LineSection;
@@ -8,7 +10,8 @@ import nextstep.subway.station.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class Fixtures {
-  private Fixtures() {}
+  private Fixtures() {
+  }
 
   public static Station 강남역() {
     return Station.builder().id(1L).name("강남역").build();
@@ -86,5 +89,9 @@ public class Fixtures {
 
   public static LineSection 남부터미널_양재_구간() {
     return LineSection.builder().upStation(남부터미널역()).downStation(양재역()).distance(3).build();
+  }
+
+  public static MemberBuilder aMember() {
+    return Member.builder().id(1L).email("user@example.com").password("password").age(21);
   }
 }

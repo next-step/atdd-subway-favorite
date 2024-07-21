@@ -1,12 +1,11 @@
 package nextstep.member.acceptance;
 
+import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.Map;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.support.AcceptanceTest;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 class AuthAcceptanceTest extends AcceptanceTest {
   public static final String EMAIL = "admin@email.com";
@@ -28,25 +26,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
   void bearerAuth() {
     memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
-    Map<String, String> params = new HashMap<>();
-    params.put("email", EMAIL);
-    params.put("password", PASSWORD);
-
-    ExtractableResponse<Response> response =
-        RestAssured.given()
-            .log()
-            .all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when()
-            .post("/login/token")
-            .then()
-            .log()
-            .all()
-            .statusCode(HttpStatus.OK.value())
-            .extract();
-
-    String accessToken = response.jsonPath().getString("accessToken");
+    String accessToken = 로그인_요청(EMAIL, PASSWORD);
     assertThat(accessToken).isNotBlank();
 
     ExtractableResponse<Response> response2 =

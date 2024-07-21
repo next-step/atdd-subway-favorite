@@ -3,6 +3,7 @@ package nextstep.member.domain;
 import java.util.Objects;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,10 +21,16 @@ public class Member {
   private String password;
   private Integer age;
 
-  public Member(String email, String password, Integer age) {
+  @Builder
+  public Member(Long id, String email, String password, Integer age) {
+    this.id = id;
     this.email = email;
     this.password = password;
     this.age = age;
+  }
+
+  public Member(String email, String password, Integer age) {
+    this(null, email, password, age);
   }
 
   public void update(Member member) {
