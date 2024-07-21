@@ -10,8 +10,7 @@ import nextstep.subway.station.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class Fixtures {
-  private Fixtures() {
-  }
+  private Fixtures() {}
 
   public static Station 강남역() {
     return Station.builder().id(1L).name("강남역").build();
