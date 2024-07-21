@@ -6,6 +6,8 @@ import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.Collections;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.domain.LineRepository;
@@ -19,9 +21,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("즐겨찾기 관련 기능 인수 테스트")
@@ -50,8 +49,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
             .lineSections(
                 new LineSections(LineSection.of(교대역, 남부터미널역, 2), LineSection.of(남부터미널역, 양재역, 3)))
             .build());
-    Member member = memberRepository.save(aMember().build());
-    accessToken = 로그인_요청(member.getEmail(), member.getPassword());
+    Member 사용자 = memberRepository.save(aMember().build());
+    accessToken = 로그인_요청(사용자.getEmail(), 사용자.getPassword());
   }
 
   /** When 즐겨찾기를 추가하면 Then 즐겨찾기 목록에 추가한 즐겨찾기가 조회된다. */
@@ -68,20 +67,20 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
   @DisplayName("즐겨찾기 목록을 조회한다.")
   @Test
   void listFavorites() {
-    ExtractableResponse<Response> 즐겨찾기1 = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
-    ExtractableResponse<Response> 즐겨찾기2 = 즐겨찾기_생성_요청(양재역, 남부터미널역, accessToken);
+    ExtractableResponse<Response> 교대_양재_즐겨찾기_응답 = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
+    ExtractableResponse<Response> 양재_남부터미널_구간_응답 = 즐겨찾기_생성_요청(양재역, 남부터미널역, accessToken);
 
     ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
 
-    즐겨찾기_목록에_포함됨(response, Arrays.asList(즐겨찾기1, 즐겨찾기2));
+    즐겨찾기_목록에_포함됨(response, Arrays.asList(교대_양재_즐겨찾기_응답, 양재_남부터미널_구간_응답));
   }
 
   /** When 즐겨찾기를 삭제하면 Then 즐겨찾기 목록에서 삭제한 즐겨찾기가 조회되지 않는다. */
   @DisplayName("즐겨찾기를 삭제한다.")
   @Test
   void deleteFavorite() {
-    ExtractableResponse<Response> response = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
-    String uri = response.header(HttpHeaders.LOCATION);
+    ExtractableResponse<Response> 즐겨찾기_응답 = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
+    String uri = 즐겨찾기_응답.header(HttpHeaders.LOCATION);
 
     ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(uri, accessToken);
 
