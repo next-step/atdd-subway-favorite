@@ -18,7 +18,7 @@ public class FavoriteAcceptanceSteps {
 
   public static ExtractableResponse<Response> 즐겨찾기_생성_요청(
       Station source, Station target, String accessToken) {
-    FavoriteRequest request = new FavoriteRequest(source.getId(), target.getId());
+    FavoriteRequest request = FavoriteRequest.of(source.getId(), target.getId());
     return RestAssured.given()
         .log()
         .all()

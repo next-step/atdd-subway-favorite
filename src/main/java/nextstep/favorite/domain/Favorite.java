@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Favorite {
   @Id
@@ -28,7 +28,11 @@ public class Favorite {
     this.memberId = memberId;
   }
 
-  public Favorite(Long sourceStationId, Long targetStationId, Long memberId) {
+  private Favorite(Long sourceStationId, Long targetStationId, Long memberId) {
     this(null, sourceStationId, targetStationId, memberId);
+  }
+
+  public static Favorite of(Long sourceStationId, Long targetStationId, Long memberId) {
+    return new Favorite(sourceStationId, targetStationId, memberId);
   }
 }

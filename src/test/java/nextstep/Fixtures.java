@@ -1,5 +1,7 @@
 package nextstep;
 
+import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.Favorite.FavoriteBuilder;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.Member.MemberBuilder;
 import nextstep.subway.line.domain.Line;
@@ -92,5 +94,9 @@ public class Fixtures {
 
   public static MemberBuilder aMember() {
     return Member.builder().id(1L).email("user@example.com").password("password").age(21);
+  }
+
+  public static FavoriteBuilder aFavorite() {
+    return Favorite.builder().id(1L).sourceStationId(1L).targetStationId(2L).memberId(1L);
   }
 }
