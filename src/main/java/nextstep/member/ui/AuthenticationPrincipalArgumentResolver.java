@@ -1,9 +1,9 @@
 package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

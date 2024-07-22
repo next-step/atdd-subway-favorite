@@ -35,4 +35,11 @@ public class Favorite {
   public static Favorite of(Long sourceStationId, Long targetStationId, Long memberId) {
     return new Favorite(sourceStationId, targetStationId, memberId);
   }
+
+  public boolean isOwner(Long memberId) {
+    if (this.memberId == null) {
+      return false;
+    }
+    return this.memberId.equals(memberId);
+  }
 }

@@ -1,9 +1,9 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
+import nextstep.member.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service

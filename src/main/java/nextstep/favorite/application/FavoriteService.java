@@ -7,9 +7,11 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
+import nextstep.member.exception.AuthorizationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,8 +54,15 @@ public class FavoriteService {
    * 즐겨찾기를 삭제한다.
    *
    * @param id 즐겨찾기 ID
+   * @param loginMember 인증된 사용자
    */
-  public void deleteFavorite(Long id) {
+  public void deleteFavorite(Long id, LoginMember loginMember) {
+    Member member = memberService.findMemberByEmail(loginMember.getEmail());
+    Favorite favorite =
+        favoriteRepository.findById(id).orElseThrow(() -> new FavoriteNotFoundException(id));
+    if (!favorite.isOwner(member.getId())) {
+      throw new AuthorizationException();
+    }
     favoriteRepository.deleteById(id);
   }
 }

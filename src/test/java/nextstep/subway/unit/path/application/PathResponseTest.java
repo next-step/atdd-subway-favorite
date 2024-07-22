@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
+@DisplayName("경로 응답 단위 테스트")
 class PathResponseTest {
   @DisplayName("경로로부터 응답을 생성한다.")
   @Test
