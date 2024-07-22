@@ -24,7 +24,7 @@ public class FavoriteController {
   }
 
   @GetMapping("/favorites")
-  public ResponseEntity<List<FavoriteResponse>> getFavorites() {
+  public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
     List<FavoriteResponse> favorites = favoriteService.findFavorites();
     return ResponseEntity.ok().body(favorites);
   }

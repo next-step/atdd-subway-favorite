@@ -1,10 +1,15 @@
 package nextstep.favorite.unit.ui;
 
 import static nextstep.Fixtures.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Arrays;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
@@ -31,9 +36,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("FavoriteController 단위 테스트")
 class FavoriteControllerTest {
-  @Autowired private MockMvc mockMvc;
-  @Autowired private JwtTokenProvider jwtTokenProvider;
-  @MockBean private FavoriteService favoriteService;
+  @Autowired
+  private MockMvc mockMvc;
+  @Autowired
+  private JwtTokenProvider jwtTokenProvider;
+  @MockBean
+  private FavoriteService favoriteService;
 
   private String authorizationHeader;
 
@@ -72,6 +80,41 @@ class FavoriteControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"source\": 99, \"target\": 99}")
                 .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @DisplayName("인증된 사용자가 즐겨찾기 목록을 조회한다.")
+  @Test
+  void getFavorites() throws Exception {
+    Station 교대역 = 교대역();
+    Station 양재역 = 양재역();
+    Station 강남역 = 강남역();
+    Station 역삼역 = 역삼역();
+    given(favoriteService.findFavorites())
+        .willReturn(
+            Arrays.asList(FavoriteResponse.of(1L, 교대역, 양재역), FavoriteResponse.of(2L, 강남역, 역삼역)));
+
+    mockMvc
+        .perform(get("/favorites").header(HttpHeaders.AUTHORIZATION, authorizationHeader))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(2)))
+        .andExpect(jsonPath("$[0].id").value(1L))
+        .andExpect(jsonPath("$[0].source.id").value(교대역.getId()))
+        .andExpect(jsonPath("$[0].source.name").value(교대역.getName()))
+        .andExpect(jsonPath("$[0].target.id").value(양재역.getId()))
+        .andExpect(jsonPath("$[0].target.name").value(양재역.getName()))
+        .andExpect(jsonPath("$[1].id").value(2L))
+        .andExpect(jsonPath("$[1].source.id").value(강남역.getId()))
+        .andExpect(jsonPath("$[1].source.name").value(강남역.getName()))
+        .andExpect(jsonPath("$[1].target.id").value(역삼역.getId()))
+        .andExpect(jsonPath("$[1].target.name").value(역삼역.getName()));
+  }
+
+  @DisplayName("인증되지 않은 사용자가 즐겨찾기 목록을 조회하려고 하면 401 Unauthorized를 반환한다.")
+  @Test
+  void unauthorizedGetFavorites() throws Exception {
+    mockMvc
+        .perform(get("/favorites"))
         .andExpect(status().isUnauthorized());
   }
 }
