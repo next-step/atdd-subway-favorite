@@ -2,14 +2,11 @@ package nextstep.favorite.acceptance;
 
 import static nextstep.Fixtures.*;
 import static nextstep.favorite.acceptance.steps.FavoriteAcceptanceSteps.*;
-import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.Collections;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.LineSection;
 import nextstep.subway.line.domain.LineSections;
@@ -27,12 +24,10 @@ import org.springframework.http.HttpHeaders;
 class FavoriteAcceptanceTest extends AcceptanceTest {
   @Autowired private StationRepository stationRepository;
   @Autowired private LineRepository lineRepository;
-  @Autowired private MemberRepository memberRepository;
 
   private Station 교대역;
   private Station 남부터미널역;
   private Station 양재역;
-  private String accessToken;
 
   /** Given 지하철 역과 노선이 등록되어 있고 사용자 또한 로그인 되어 있다. */
   @Override
@@ -49,8 +44,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
             .lineSections(
                 new LineSections(LineSection.of(교대역, 남부터미널역, 2), LineSection.of(남부터미널역, 양재역, 3)))
             .build());
-    Member 사용자 = memberRepository.save(aMember().build());
-    accessToken = 로그인_요청(사용자.getEmail(), 사용자.getPassword());
   }
 
   /** When 즐겨찾기를 추가하면 Then 즐겨찾기 목록에 추가한 즐겨찾기가 조회된다. */
