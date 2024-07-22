@@ -4,8 +4,7 @@ import static nextstep.Fixtures.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -115,6 +114,22 @@ class FavoriteControllerTest {
   void unauthorizedGetFavorites() throws Exception {
     mockMvc
         .perform(get("/favorites"))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @DisplayName("인증된 사용자가 즐겨찾기를 삭제한다.")
+  @Test
+  void deleteFavorite() throws Exception {
+    mockMvc
+        .perform(delete("/favorites/" + 1L).header(HttpHeaders.AUTHORIZATION, authorizationHeader))
+        .andExpect(status().isNoContent());
+  }
+
+  @DisplayName("인증되지 않은 사용자가 즐겨찾기를 삭제하려고 하면 401 Unauthorized를 반환한다.")
+  @Test
+  void unauthorizedDeleteFavorite() throws Exception {
+    mockMvc
+        .perform(delete("/favorites/" + 1L))
         .andExpect(status().isUnauthorized());
   }
 }

@@ -2,6 +2,7 @@ package nextstep.favorite.ui;
 
 import java.net.URI;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
@@ -30,7 +31,7 @@ public class FavoriteController {
   }
 
   @DeleteMapping("/favorites/{id}")
-  public ResponseEntity<Void> deleteFavorite(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteFavorite(@PathVariable Long id, @AuthenticationPrincipal LoginMember loginMember) {
     favoriteService.deleteFavorite(id);
     return ResponseEntity.noContent().build();
   }
