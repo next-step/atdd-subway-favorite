@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
-
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -35,18 +34,15 @@ import org.springframework.test.web.servlet.MockMvc;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("FavoriteController 단위 테스트")
 class FavoriteControllerTest {
-  @Autowired
-  private MockMvc mockMvc;
-  @Autowired
-  private JwtTokenProvider jwtTokenProvider;
-  @MockBean
-  private FavoriteService favoriteService;
+  @Autowired private MockMvc mockMvc;
+  @Autowired private JwtTokenProvider jwtTokenProvider;
+  @MockBean private FavoriteService favoriteService;
 
+  private final Member member = aMember().build();
   private String authorizationHeader;
 
   @BeforeEach
   void setUp() {
-    Member member = aMember().build();
     String accessToken = jwtTokenProvider.createToken(member.getEmail());
     authorizationHeader = "Bearer " + accessToken;
   }
@@ -89,7 +85,7 @@ class FavoriteControllerTest {
     Station 양재역 = 양재역();
     Station 강남역 = 강남역();
     Station 역삼역 = 역삼역();
-    given(favoriteService.findFavorites())
+    given(favoriteService.findFavorites(any(LoginMember.class)))
         .willReturn(
             Arrays.asList(FavoriteResponse.of(1L, 교대역, 양재역), FavoriteResponse.of(2L, 강남역, 역삼역)));
 
@@ -112,9 +108,7 @@ class FavoriteControllerTest {
   @DisplayName("인증되지 않은 사용자가 즐겨찾기 목록을 조회하려고 하면 401 Unauthorized를 반환한다.")
   @Test
   void unauthorizedGetFavorites() throws Exception {
-    mockMvc
-        .perform(get("/favorites"))
-        .andExpect(status().isUnauthorized());
+    mockMvc.perform(get("/favorites")).andExpect(status().isUnauthorized());
   }
 
   @DisplayName("인증된 사용자가 즐겨찾기를 삭제한다.")
@@ -128,8 +122,6 @@ class FavoriteControllerTest {
   @DisplayName("인증되지 않은 사용자가 즐겨찾기를 삭제하려고 하면 401 Unauthorized를 반환한다.")
   @Test
   void unauthorizedDeleteFavorite() throws Exception {
-    mockMvc
-        .perform(delete("/favorites/" + 1L))
-        .andExpect(status().isUnauthorized());
+    mockMvc.perform(delete("/favorites/" + 1L)).andExpect(status().isUnauthorized());
   }
 }

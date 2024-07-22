@@ -37,10 +37,12 @@ public class FavoriteService {
   /**
    * 즐겨찾기 목록을 조회한다.
    *
+   * @param loginMember 인증된 사용자
    * @return 즐겨찾기 목록
    */
-  public List<FavoriteResponse> findFavorites() {
-    List<Favorite> favorites = favoriteRepository.findAll();
+  public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+    Member member = memberService.findMemberByEmail(loginMember.getEmail());
+    List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
     return favorites.stream()
         .map(favoriteMapper::mapToFavoriteResponse)
         .collect(Collectors.toList());

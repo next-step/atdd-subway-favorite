@@ -29,14 +29,16 @@ class FavoriteServiceTest {
   @Mock private FavoriteMapper favoriteMapper;
   @InjectMocks private FavoriteService favoriteService;
 
+  private final Member member = aMember().build();
+  private final LoginMember loginMember = new LoginMember(member.getEmail());
+
   @DisplayName("즐겨찾기를 저장한다.")
   @Test
-  void createFavoriteShouldPersist() {
-    Member member = aMember().build();
+  void createFavorite() {
     FavoriteRequest request = FavoriteRequest.of(교대역().getId(), 양재역().getId());
     given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
 
-    favoriteService.createFavorite(request, new LoginMember(member.getEmail()));
+    favoriteService.createFavorite(request, loginMember);
 
     then(favoriteRepository).should().save(any(Favorite.class));
   }
@@ -44,9 +46,11 @@ class FavoriteServiceTest {
   @DisplayName("즐겨찾기 목록을 조회한다.")
   @Test
   void findFavorites() {
-    favoriteService.findFavorites();
+    given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
 
-    then(favoriteRepository).should().findAll();
+    favoriteService.findFavorites(loginMember);
+
+    then(favoriteRepository).should().findAllByMemberId(member.getId());
   }
 
   @DisplayName("즐겨찾기를 삭제한다.")
