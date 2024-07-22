@@ -40,4 +40,12 @@ class FavoriteServiceTest {
 
     then(favoriteRepository).should().save(any(Favorite.class));
   }
+
+  @DisplayName("즐겨찾기 목록을 조회한다.")
+  @Test
+  void findFavorites() {
+    favoriteService.findFavorites();
+
+    then(favoriteRepository).should().findAll();
+  }
 }

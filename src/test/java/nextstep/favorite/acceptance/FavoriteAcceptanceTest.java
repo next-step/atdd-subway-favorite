@@ -7,6 +7,7 @@ import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
+import java.util.Collections;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.subway.line.domain.LineRepository;
@@ -59,7 +60,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> response = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
 
     즐겨찾기_생성됨(response);
-    //    즐겨찾기_목록에_포함됨(즐겨찾기_목록_조회_요청(accessToken), Collections.singletonList(response));
+    즐겨찾기_목록에_포함됨(즐겨찾기_목록_조회_요청(accessToken), Collections.singletonList(response));
   }
 
   /** Given 즐겨찾기가 등록되어 있고 When 즐겨찾기 목록을 조회하면 Then 즐겨찾기 목록이 조회된다. */
@@ -67,11 +68,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
   @Test
   void listFavorites() {
     ExtractableResponse<Response> 교대_양재_즐겨찾기_응답 = 즐겨찾기_생성_요청(교대역, 양재역, accessToken);
-    ExtractableResponse<Response> 양재_남부터미널_구간_응답 = 즐겨찾기_생성_요청(양재역, 남부터미널역, accessToken);
+    ExtractableResponse<Response> 양재_남부터미널_즐겨찾기_응답 = 즐겨찾기_생성_요청(양재역, 남부터미널역, accessToken);
 
     ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(accessToken);
 
-    즐겨찾기_목록에_포함됨(response, Arrays.asList(교대_양재_즐겨찾기_응답, 양재_남부터미널_구간_응답));
+    즐겨찾기_목록에_포함됨(response, Arrays.asList(교대_양재_즐겨찾기_응답, 양재_남부터미널_즐겨찾기_응답));
   }
 
   /** When 즐겨찾기를 삭제하면 Then 즐겨찾기 목록에서 삭제한 즐겨찾기가 조회되지 않는다. */

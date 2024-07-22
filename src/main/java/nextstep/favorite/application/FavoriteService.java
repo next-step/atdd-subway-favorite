@@ -1,6 +1,7 @@
 package nextstep.favorite.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
@@ -23,6 +24,7 @@ public class FavoriteService {
    *
    * @param request FavoriteRequest 내용
    * @param loginMember 인증된 사용자
+   * @return 생성된 즐겨찾기
    * @throws nextstep.subway.station.exception.StationNotFoundException 역을 찾을 수 없는 경우
    */
   public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
@@ -33,13 +35,15 @@ public class FavoriteService {
   }
 
   /**
-   * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
+   * 즐겨찾기 목록을 조회한다.
    *
-   * @return
+   * @return 즐겨찾기 목록
    */
   public List<FavoriteResponse> findFavorites() {
     List<Favorite> favorites = favoriteRepository.findAll();
-    return null;
+    return favorites.stream()
+        .map(favoriteMapper::mapToFavoriteResponse)
+        .collect(Collectors.toList());
   }
 
   /**
