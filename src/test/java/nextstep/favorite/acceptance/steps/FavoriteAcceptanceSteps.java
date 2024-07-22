@@ -75,11 +75,13 @@ public class FavoriteAcceptanceSteps {
         .extract();
   }
 
-  public static void 즐겨찾기_삭제됨(
-      String uri, ExtractableResponse<Response> response, String accessToken) {
+  public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+  }
+
+  public static void 즐겨찾기_목록에서_제외됨(String uri, String accessToken) {
     ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(accessToken);
-    List<Long> favoriteIds = 즐겨찾기_목록_조회_응답.jsonPath().getList(".id", Long.class);
+    List<Long> favoriteIds = 즐겨찾기_목록_조회_응답.jsonPath().getList("id", Long.class);
     assertThat(favoriteIds).doesNotContain(parseId(uri)).isEmpty();
   }
 

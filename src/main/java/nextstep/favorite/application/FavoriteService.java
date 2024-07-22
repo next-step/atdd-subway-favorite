@@ -47,9 +47,9 @@ public class FavoriteService {
   }
 
   /**
-   * TODO: 요구사항 설명에 맞게 수정합니다.
+   * 즐겨찾기를 삭제한다.
    *
-   * @param id
+   * @param id 즐겨찾기 ID
    */
   public void deleteFavorite(Long id) {
     favoriteRepository.deleteById(id);

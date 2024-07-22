@@ -84,6 +84,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(uri, accessToken);
 
-    즐겨찾기_삭제됨(uri, response, accessToken);
+    즐겨찾기_삭제됨(response);
+    즐겨찾기_목록에서_제외됨(uri, accessToken);
   }
 }

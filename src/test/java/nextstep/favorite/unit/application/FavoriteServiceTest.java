@@ -48,4 +48,12 @@ class FavoriteServiceTest {
 
     then(favoriteRepository).should().findAll();
   }
+
+  @DisplayName("즐겨찾기를 삭제한다.")
+  @Test
+  void deleteFavorite() {
+    favoriteService.deleteFavorite(1L);
+
+    then(favoriteRepository).should().deleteById(1L);
+  }
 }
