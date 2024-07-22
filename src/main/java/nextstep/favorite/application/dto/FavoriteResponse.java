@@ -12,7 +12,7 @@ public class FavoriteResponse {
   private final StationResponse source;
   private final StationResponse target;
 
-  public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
+  private FavoriteResponse(Long id, StationResponse source, StationResponse target) {
     this.id = id;
     this.source = source;
     this.target = target;

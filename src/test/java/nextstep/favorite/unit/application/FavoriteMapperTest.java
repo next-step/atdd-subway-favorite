@@ -29,8 +29,8 @@ class FavoriteMapperTest {
     Favorite favorite = aFavorite().build();
     Station 교대역 = 교대역();
     Station 양재역 = 양재역();
-    given(stationReader.readById(1L)).willReturn(교대역);
-    given(stationReader.readById(2L)).willReturn(양재역);
+    given(stationReader.readById(교대역.getId())).willReturn(교대역);
+    given(stationReader.readById(양재역.getId())).willReturn(양재역);
 
     FavoriteResponse actualResponse = favoriteMapper.mapToFavoriteResponse(favorite);
 

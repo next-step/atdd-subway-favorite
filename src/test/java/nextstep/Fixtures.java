@@ -97,6 +97,10 @@ public class Fixtures {
   }
 
   public static FavoriteBuilder aFavorite() {
-    return Favorite.builder().id(1L).sourceStationId(1L).targetStationId(2L).memberId(1L);
+    return Favorite.builder()
+        .id(1L)
+        .sourceStationId(교대역().getId())
+        .targetStationId(양재역().getId())
+        .memberId(aMember().build().getId());
   }
 }
