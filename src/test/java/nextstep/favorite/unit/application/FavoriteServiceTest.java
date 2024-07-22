@@ -6,13 +6,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import java.util.Arrays;
 import nextstep.favorite.application.*;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.exception.AuthorizationException;
+import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.application.dto.PathRequest;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +35,7 @@ class FavoriteServiceTest {
   @Mock private FavoriteAppender favoriteAppender;
   @Mock private FavoriteReader favoriteReader;
   @Mock private FavoriteRemover favoriteRemover;
+  @Mock private PathService pathService;
   @InjectMocks private FavoriteService favoriteService;
 
   private final Member member = aMember().build();
@@ -40,10 +46,22 @@ class FavoriteServiceTest {
   void createFavorite() {
     FavoriteRequest request = FavoriteRequest.of(교대역().getId(), 양재역().getId());
     given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
+    given(pathService.findPath(any(PathRequest.class)))
+        .willReturn(Path.of(Arrays.asList(교대역(), 강남역(), 양재역()), 10));
 
     favoriteService.createFavorite(request, loginMember);
 
     then(favoriteAppender).should().append(any(Favorite.class));
+  }
+
+  @DisplayName("비정상 경로를 즐겨찾기로 등록하는 경우 예외 처리된다.")
+  @Test
+  void createFavoriteWhenPathNotFound() {
+    FavoriteRequest request = FavoriteRequest.of(1L, 99L);
+    given(pathService.findPath(any(PathRequest.class))).willReturn(Path.empty());
+
+    assertThatExceptionOfType(FavoritePathNotFoundException.class)
+        .isThrownBy(() -> favoriteService.createFavorite(request, loginMember));
   }
 
   @DisplayName("즐겨찾기 목록을 조회한다.")

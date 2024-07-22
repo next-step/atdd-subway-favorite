@@ -6,10 +6,14 @@ import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.exception.AuthorizationException;
+import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.application.dto.PathRequest;
+import nextstep.subway.path.domain.Path;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +24,7 @@ public class FavoriteService {
   private final FavoriteAppender favoriteAppender;
   private final FavoriteReader favoriteReader;
   private final FavoriteRemover favoriteRemover;
+  private final PathService pathService;
 
   /**
    * 즐겨찾기를 생성한다.
@@ -30,10 +35,18 @@ public class FavoriteService {
    * @throws nextstep.subway.station.exception.StationNotFoundException 역을 찾을 수 없는 경우
    */
   public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
+    validate(request.getSource(), request.getTarget());
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
     Favorite favorite = Favorite.of(request.getSource(), request.getTarget(), member.getId());
     Favorite savedFavorite = favoriteAppender.append(favorite);
     return favoriteMapper.mapToFavoriteResponse(savedFavorite);
+  }
+
+  private void validate(Long sourceId, Long targetId) {
+    Path path = pathService.findPath(PathRequest.of(sourceId, targetId));
+    if (path.getStations().isEmpty()) {
+      throw new FavoritePathNotFoundException();
+    }
   }
 
   /**
