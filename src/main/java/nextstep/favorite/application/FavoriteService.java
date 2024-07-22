@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.favorite.exception.FavoriteNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
@@ -17,9 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FavoriteService {
-  private final FavoriteRepository favoriteRepository;
   private final MemberService memberService;
   private final FavoriteMapper favoriteMapper;
+  private final FavoriteAppender favoriteAppender;
+  private final FavoriteReader favoriteReader;
+  private final FavoriteRemover favoriteRemover;
 
   /**
    * 즐겨찾기를 생성한다.
@@ -32,7 +32,7 @@ public class FavoriteService {
   public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
     Favorite favorite = Favorite.of(request.getSource(), request.getTarget(), member.getId());
-    Favorite savedFavorite = favoriteRepository.save(favorite);
+    Favorite savedFavorite = favoriteAppender.append(favorite);
     return favoriteMapper.mapToFavoriteResponse(savedFavorite);
   }
 
@@ -44,7 +44,7 @@ public class FavoriteService {
    */
   public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
-    List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+    List<Favorite> favorites = favoriteReader.readAllByMemberId(member.getId());
     return favorites.stream()
         .map(favoriteMapper::mapToFavoriteResponse)
         .collect(Collectors.toList());
@@ -58,11 +58,10 @@ public class FavoriteService {
    */
   public void deleteFavorite(Long id, LoginMember loginMember) {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
-    Favorite favorite =
-        favoriteRepository.findById(id).orElseThrow(() -> new FavoriteNotFoundException(id));
+    Favorite favorite = favoriteReader.readById(id);
     if (!favorite.isOwner(member.getId())) {
       throw new AuthorizationException();
     }
-    favoriteRepository.deleteById(id);
+    favoriteRemover.removeById(id);
   }
 }

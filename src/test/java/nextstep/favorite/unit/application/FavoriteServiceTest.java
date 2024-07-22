@@ -6,13 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-import java.util.Optional;
-import nextstep.favorite.application.FavoriteMapper;
-import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.*;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.favorite.exception.FavoriteNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
@@ -29,9 +25,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("즐겨찾기 서비스 단위 테스트")
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
-  @Mock private FavoriteRepository favoriteRepository;
   @Mock private MemberService memberService;
   @Mock private FavoriteMapper favoriteMapper;
+  @Mock private FavoriteAppender favoriteAppender;
+  @Mock private FavoriteReader favoriteReader;
+  @Mock private FavoriteRemover favoriteRemover;
   @InjectMocks private FavoriteService favoriteService;
 
   private final Member member = aMember().build();
@@ -45,7 +43,7 @@ class FavoriteServiceTest {
 
     favoriteService.createFavorite(request, loginMember);
 
-    then(favoriteRepository).should().save(any(Favorite.class));
+    then(favoriteAppender).should().append(any(Favorite.class));
   }
 
   @DisplayName("즐겨찾기 목록을 조회한다.")
@@ -55,28 +53,20 @@ class FavoriteServiceTest {
 
     favoriteService.findFavorites(loginMember);
 
-    then(favoriteRepository).should().findAllByMemberId(member.getId());
+    then(favoriteReader).should().readAllByMemberId(member.getId());
   }
 
   @DisplayName("즐겨찾기를 삭제한다.")
   @Test
   void deleteFavorite() {
+    Favorite favorite = aFavorite().build();
+    long favoriteId = favorite.getId();
     given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
-    given(favoriteRepository.findById(1L)).willReturn(Optional.of(aFavorite().build()));
+    given(favoriteReader.readById(favoriteId)).willReturn(favorite);
 
-    favoriteService.deleteFavorite(1L, loginMember);
+    favoriteService.deleteFavorite(favoriteId, loginMember);
 
-    then(favoriteRepository).should().deleteById(1L);
-  }
-
-  @DisplayName("존재하지 않는 즐겨찾기를 삭제하려 하면 예외가 던져진다.")
-  @Test
-  void deleteFavoriteNotFound() {
-    given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
-    given(favoriteRepository.findById(99L)).willReturn(Optional.empty());
-
-    assertThatExceptionOfType(FavoriteNotFoundException.class)
-        .isThrownBy(() -> favoriteService.deleteFavorite(99L, loginMember));
+    then(favoriteRemover).should().removeById(favoriteId);
   }
 
   @DisplayName("다른 사용자의 즐겨찾기를 삭제하려 하면 예외 처리된다.")
@@ -94,7 +84,7 @@ class FavoriteServiceTest {
             .memberId(otherMemberId)
             .build();
     given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
-    given(favoriteRepository.findById(favoriteId)).willReturn(Optional.of(favorite));
+    given(favoriteReader.readById(favoriteId)).willReturn(favorite);
 
     assertThatExceptionOfType(AuthorizationException.class)
         .isThrownBy(() -> favoriteService.deleteFavorite(favoriteId, loginMember));
