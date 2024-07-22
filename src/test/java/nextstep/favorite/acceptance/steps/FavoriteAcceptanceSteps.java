@@ -55,7 +55,7 @@ public class FavoriteAcceptanceSteps {
   public static void 즐겨찾기_목록에_포함됨(
       ExtractableResponse<Response> listResponse,
       List<ExtractableResponse<Response>> createResponses) {
-    List<Long> actualFavoriteIds = listResponse.jsonPath().getList(".id", Long.class);
+    List<Long> actualFavoriteIds = listResponse.jsonPath().getList("$.id", Long.class);
     List<Long> expectedFavoriteIds =
         createResponses.stream().map(FavoriteAcceptanceSteps::parseId).collect(Collectors.toList());
     assertThat(actualFavoriteIds).containsExactlyInAnyOrderElementsOf(expectedFavoriteIds);

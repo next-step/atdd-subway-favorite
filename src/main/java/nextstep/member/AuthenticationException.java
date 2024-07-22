@@ -1,7 +1,10 @@
 package nextstep.member;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import nextstep.support.error.ApiException;
+import nextstep.support.error.ErrorCode;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class AuthenticationException extends RuntimeException {}
+public class AuthenticationException extends ApiException {
+  public AuthenticationException() {
+    super(ErrorCode.UNAUTHORIZED);
+  }
+}
