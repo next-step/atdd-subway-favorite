@@ -15,9 +15,9 @@ public class PathService {
   private final StationReader stationReader;
 
   public Path findPath(PathRequest request) {
-    SubwayGraph graph = graphService.loadGraph();
     Station source = stationReader.readById(request.getSource());
     Station sink = stationReader.readById(request.getTarget());
+    SubwayGraph graph = graphService.loadGraph();
     return graph.getShortestPath(source, sink);
   }
 }
