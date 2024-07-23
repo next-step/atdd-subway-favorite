@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Embeddable
 public class LineSections implements Iterable<LineSection> {
-
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position")
     private List<LineSection> data = new ArrayList<>();
@@ -26,6 +24,12 @@ public class LineSections implements Iterable<LineSection> {
 
     private boolean containsStation(Long stationId) {
         return getAllStationIds().contains(stationId);
+    }
+
+    private void arrangePosition() {
+        for (int i=0; i<data.size(); i++) {
+            data.get(i).changePosition((long) i);
+        }
     }
 
     protected void addSection(LineSection section) {
@@ -49,16 +53,22 @@ public class LineSections implements Iterable<LineSection> {
             throw new InvalidStationException("상행역이 노선에 존재한다면 가장 앞 구간으로 추가할 수 없습니다.");
         }
 
+        addToPosition(section);
+        arrangePosition();
+    }
 
+    private void addToPosition(LineSection section) {
         if (section.isPrevSectionThan(getFirstSection())) {
             addToFirst(section);
-        } else if (section.isNextSectionThan(getLastSection())) {
-            addToLast(section);
-        } else {
-            addToMiddle(section);
+            return;
         }
 
-        arrangePosition();
+        if (section.isNextSectionThan(getLastSection())) {
+            addToLast(section);
+            return;
+        }
+
+        addToMiddle(section);
     }
 
     private void addToFirst(LineSection section) {
@@ -69,24 +79,11 @@ public class LineSections implements Iterable<LineSection> {
         data.add(section);
     }
 
-    private LineSection findSameUpStationSectionOrThrow(LineSection section) {
-        return data.stream()
-                .filter(dataSection -> dataSection.isSameUpStation(section))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundSectionException("상행역이 동일한 section 을 찾을 수 없습니다."));
-    }
-
     private void addToMiddle(LineSection section) {
-        LineSection originSection = findSameUpStationSectionOrThrow(section);
+        LineSection originSection = getSectionByUpStationIdOrThrow(section.getUpStationId());
         List<LineSection> splits = originSection.split(section.getDownStationId(), section.getDistance());
-        data.addAll(Math.toIntExact(originSection.getPosition()), splits);
+        data.addAll(data.indexOf(originSection), splits);
         data.remove(originSection);
-    }
-
-    private void arrangePosition() {
-        for (int i=0; i<data.size(); i++) {
-            data.get(i).changePosition((long) i);
-        }
     }
 
     protected void deleteSection(Long stationId) {
@@ -94,21 +91,55 @@ public class LineSections implements Iterable<LineSection> {
             throw new SubwayDomainException(SubwayDomainExceptionType.INVALID_SECTION_SIZE);
         }
 
-        // 삭제할 역이 노선의 하행종창역이 아닌 경우 에러
-        if (!getLastSection().getDownStationId().equals(stationId)) {
-            throw new InvalidStationException(stationId);
+        if (!containsStation(stationId)) {
+            throw new NotFoundStationOnLineException("노선에 존재하지 않는 역입니다.");
         }
 
-        // 마지막 section 에서 제거
+        deleteToPosition(stationId);
+        arrangePosition();
+    }
+
+    private void deleteToPosition(Long stationId) {
+        if (isFirstStation(stationId)) {
+            deleteFirst();
+            return;
+        }
+
+        if (isLastStation(stationId)){
+            deleteLast();
+            return;
+        }
+
+        deleteMiddle(stationId);
+    }
+
+    private void deleteFirst() {
+        data.remove(0);
+    }
+
+    private void deleteLast() {
         data.remove(size() -1);
     }
 
-    public Stream<LineSection> stream() {
-        return data.stream();
+    private void deleteMiddle(Long stationId) {
+        LineSection frontSection = getSectionByDownStationIdOrThrow(stationId);
+        LineSection backSection = getSectionByUpStationIdOrThrow(stationId);
+
+        data.add(data.indexOf(frontSection), frontSection.joinNext(backSection));
+        data.remove(frontSection);
+        data.remove(backSection);
     }
 
     public int size() {
         return data.size();
+    }
+
+    private boolean isFirstStation(Long stationId) {
+        return getFirstSection().isSameUpStation(stationId);
+    }
+
+    private boolean isLastStation(Long stationId) {
+        return getLastSection().isSameDownStation(stationId);
     }
 
     public LineSection getFirstSection() {
@@ -117,6 +148,20 @@ public class LineSections implements Iterable<LineSection> {
 
     public LineSection getLastSection() {
         return data.isEmpty() ? null : data.get(size() - 1);
+    }
+
+    private LineSection getSectionByUpStationIdOrThrow(Long upStationId) {
+        return data.stream()
+                .filter(section -> section.isSameUpStation(upStationId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundSectionException("상행역이 동일한 section 을 찾을 수 없습니다."));
+    }
+
+    private LineSection getSectionByDownStationIdOrThrow(Long downStationId) {
+        return data.stream()
+                .filter(section -> section.isSameDownStation(downStationId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundSectionException("하행역이 동일한 section 을 찾을 수 없습니다."));
     }
 
     private List<Long> getAllUpStationIds() {

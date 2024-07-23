@@ -56,6 +56,15 @@ public class LineSection {
         return List.of(first, second);
     }
 
+    public LineSection joinNext(LineSection nextSection) {
+        return new LineSection(
+                line,
+                upStationId,
+                nextSection.getDownStationId(),
+                distance + nextSection.getDistance()
+        );
+    }
+
     public boolean isPrevSectionThan(LineSection section) {
         return downStationId.equals(section.getUpStationId());
     }
@@ -64,7 +73,11 @@ public class LineSection {
         return upStationId.equals(section.getDownStationId());
     }
 
-    public boolean isSameUpStation(LineSection section) {
-        return upStationId.equals(section.upStationId);
+    public boolean isSameUpStation(Long upStationId) {
+        return this.upStationId.equals(upStationId);
+    }
+
+    public boolean isSameDownStation(Long downStationId) {
+        return this.downStationId.equals(downStationId);
     }
 }

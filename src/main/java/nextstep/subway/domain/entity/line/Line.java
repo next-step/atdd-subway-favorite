@@ -38,7 +38,6 @@ public class Line {
         return line;
     }
 
-
     public void update(LineCommand.UpdateLine command) {
         this.name = command.getName();
         this.color = command.getColor();

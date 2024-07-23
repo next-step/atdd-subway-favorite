@@ -64,7 +64,7 @@ public class LineTest {
         @Test
         public void sut_throws_if_upStation_not_existed_but_not_first_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.addSection(5L, 7L, 5L));
@@ -76,7 +76,7 @@ public class LineTest {
         @Test
         public void sut_throws_if_downStation_existed_but_not_first_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.addSection(4L, 3L, 5L));
@@ -88,7 +88,7 @@ public class LineTest {
         @Test
         public void sut_throws_if_upStation_existed_but_first_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.addSection(3L, 1L, 5L));
@@ -100,7 +100,7 @@ public class LineTest {
         @Test
         public void sut_throws_if_distance_greater_than_inserted_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.addSection(2L, 9L, 11L));
@@ -124,7 +124,7 @@ public class LineTest {
         @Test
         public void sut_add_section_if_first_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             sut.addSection(99L, 1L, 10L);
@@ -137,7 +137,7 @@ public class LineTest {
         @Test
         public void sut_add_section_if_last_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             sut.addSection(4L, 5L, 10L);
@@ -150,7 +150,7 @@ public class LineTest {
         @Test
         public void sut_add_section_if_middle_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             sut.addSection(3L, 88L, 5L);
@@ -162,7 +162,7 @@ public class LineTest {
         @Test
         public void sut_split_distance_if_middle_section() {
             // given
-            Line sut = LineFixture.prepareLineOne(1L, 4L);
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
 
             // when
             sut.addSection(1L, 88L, 4L);
@@ -170,6 +170,82 @@ public class LineTest {
             // then
             assertThat(sut.getSections().get(0).getDistance()).isEqualTo(4L);
             assertThat(sut.getSections().get(1).getDistance()).isEqualTo(6L);
+        }
+    }
+
+    @DisplayName("deleteSection")
+    @Nested
+    class DeleteSection {
+        @Test
+        public void sut_throws_if_section_size_one() {
+            // given
+            Line sut = LineFixture.prepareLineOne(1L, 2L);
+
+            // when
+            SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.deleteSection(1L));
+
+            // then
+            assertThat(actual.getExceptionType()).isEqualTo(SubwayDomainExceptionType.INVALID_SECTION_SIZE);
+        }
+
+        @Test
+        public void sut_throws_if_not_includes_station() {
+            // given
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
+
+            // when
+            SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.deleteSection(999L));
+
+            // then
+            assertThat(actual.getExceptionType()).isEqualTo(SubwayDomainExceptionType.INVALID_STATION);
+        }
+
+        @Test
+        public void sut_delete_section_if_first_section() {
+            // given
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
+
+            // when
+            sut.deleteSection(1L);
+
+            // then
+            assertThat(sut.getSections().getAllStationIds()).isEqualTo(List.of(2L, 3L, 4L));
+        }
+
+        @Test
+        public void sut_delete_section_if_last_section() {
+            // given
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
+
+            // when
+            sut.deleteSection(4L);
+
+            // then
+            assertThat(sut.getSections().getAllStationIds()).isEqualTo(List.of(1L, 2L, 3L));
+        }
+
+        @Test
+        public void sut_delete_section_if_middle_section() {
+            // given
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
+
+            // when
+            sut.deleteSection(2L);
+
+            // then
+            assertThat(sut.getSections().getAllStationIds()).isEqualTo(List.of(1L, 3L, 4L));
+        }
+
+        @Test
+        public void sut_join_distance_if_middle_section() {
+            // given
+            Line sut = LineFixture.prepareLineOne(1L, 2L, 3L, 4L);
+
+            // when
+            sut.deleteSection(2L);
+
+            // then
+            assertThat(sut.getSections().get(0).getDistance()).isEqualTo(20L);
         }
     }
 }

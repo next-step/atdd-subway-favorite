@@ -20,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -339,38 +337,28 @@ public class LineCommanderTest extends BaseTestSetup {
         }
 
         @Test
-        public void sut_throws_if_section_size_one() {
-            // given
-            List<Station> stations = stationDbUtil.insertStations("삼성역", "잠실역", "선릉역", "강남역");
-            Line line = lineDbUtil.insertLine(stations.get(0).getId(), stations.get(1).getId());
-
-            LineCommand.DeleteSection command = new LineCommand.DeleteSection(line.getId(), stations.get(1).getId());
-
-            // when
-            SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.deleteSection(command));
-
-            // then
-            assertThat(actual.getExceptionType()).isEqualTo(SubwayDomainExceptionType.INVALID_SECTION_SIZE);
-        }
-
-        @Test
-        public void sut_throws_if_station_not_equal_to_last_line_downStation() {
+        public void sut_delete_section_first() {
             // given
             List<Station> stations = stationDbUtil.insertStations("삼성역", "잠실역", "선릉역", "강남역");
             Line line = lineDbUtil.insertLine(stations.get(0).getId(), stations.get(1).getId());
             lineDbUtil.insertSection(line, stations.get(1).getId(), stations.get(2).getId(), 20L);
 
-            LineCommand.DeleteSection command = new LineCommand.DeleteSection(line.getId(), stations.get(1).getId());
+            LineCommand.DeleteSection command = new LineCommand.DeleteSection(line.getId(), stations.get(0).getId());
 
             // when
-            SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.deleteSection(command));
+            sut.deleteSection(command);
 
             // then
-            assertThat(actual.getExceptionType()).isEqualTo(SubwayDomainExceptionType.INVALID_STATION);
+            transactionTemplate.execute(status -> {
+                Line actual = lineRepository.findByIdOrThrow(line.getId());
+                assertThat(actual.getSections().size()).isEqualTo(1);
+                assertThat(actual.getSections().getAllStationIds()).doesNotContain(stations.get(0).getId());
+                return null;
+            });
         }
 
         @Test
-        public void sut_delete_section() {
+        public void sut_delete_section_last() {
             // given
             List<Station> stations = stationDbUtil.insertStations("삼성역", "잠실역", "선릉역", "강남역");
             Line line = lineDbUtil.insertLine(stations.get(0).getId(), stations.get(1).getId());
@@ -385,10 +373,34 @@ public class LineCommanderTest extends BaseTestSetup {
             transactionTemplate.execute(status -> {
                 Line actual = lineRepository.findByIdOrThrow(line.getId());
                 assertThat(actual.getSections().size()).isEqualTo(1);
-                assertThat(actual.getSections().stream()
-                        .flatMap(section -> Stream.of(section.getUpStationId(), section.getDownStationId()))
-                        .collect(Collectors.toList())
-                ).doesNotContain(stations.get(2).getId());
+                assertThat(actual.getSections().getAllStationIds()).doesNotContain(stations.get(2).getId());
+                return null;
+            });
+        }
+
+        @Test
+        public void sut_delete_section_middle() {
+            // given
+            List<Station> stations = stationDbUtil.insertStations("삼성역", "잠실역", "선릉역", "강남역");
+            Line line = lineDbUtil.insertLine(stations.get(0).getId(), stations.get(1).getId());
+
+            lineDbUtil.insertSection(line, stations.get(1).getId(), stations.get(2).getId(), 10L);
+            lineDbUtil.insertSection(line, stations.get(2).getId(), stations.get(3).getId(), 10L);
+
+            LineCommand.DeleteSection command = new LineCommand.DeleteSection(line.getId(), stations.get(1).getId());
+
+            // when
+            sut.deleteSection(command);
+
+            // then
+            transactionTemplate.execute(status -> {
+                Line actual = lineRepository.findByIdOrThrow(line.getId());
+                assertThat(actual.getSections().size()).isEqualTo(2);
+
+                assertThat(actual.getSections().getFirstSection().getUpStationId()).isEqualTo(stations.get(0).getId());
+                assertThat(actual.getSections().getFirstSection().getDownStationId()).isEqualTo(stations.get(2).getId());
+                assertThat(actual.getSections().getFirstSection().getDistance()).isEqualTo(20L);
+
                 return null;
             });
         }

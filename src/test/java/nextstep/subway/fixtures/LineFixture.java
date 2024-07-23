@@ -12,9 +12,10 @@ public class LineFixture {
         return line;
     }
 
-    public static Line prepareLineOne(Long firstStationId, Long lastStationId) {
+    public static Line prepareLineOne(Long... stationIds) {
         Line line = new Line("1호선", "#0052A4", new LineSections());
-        for (long i = firstStationId; i<lastStationId; i++) {
+
+        for (long i = 0; i<stationIds.length-1; i++) {
             line.addSection(i, i+1, 10L);
         }
         return line;
