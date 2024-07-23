@@ -42,6 +42,7 @@ public class FavoriteAcceptanceSteps {
     return RestAssured.given()
         .log()
         .all()
+        .accept(MediaType.APPLICATION_JSON_VALUE)
         .auth()
         .oauth2(accessToken)
         .when()

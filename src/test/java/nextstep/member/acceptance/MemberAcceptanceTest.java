@@ -1,5 +1,6 @@
 package nextstep.member.acceptance;
 
+import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
 import static nextstep.member.acceptance.steps.MemberAcceptanceSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
+@DisplayName("회원 관련 기능 인수 테스트")
 class MemberAcceptanceTest extends AcceptanceTest {
   public static final String EMAIL = "email@email.com";
   public static final String PASSWORD = "password";
@@ -66,5 +68,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
   /** Given 회원 가입을 생성하고 And 로그인을 하고 When 토큰을 통해 내 정보를 조회하면 Then 내 정보를 조회할 수 있다 */
   @DisplayName("내 정보를 조회한다.")
   @Test
-  void getMyInfo() {}
+  void getMyInfo() {
+    회원_생성_요청(EMAIL, PASSWORD, AGE);
+    String accessToken = 로그인_요청(EMAIL, PASSWORD);
+
+    var response = 내_정보_조회_요청(accessToken);
+
+    회원_정보_조회됨(response, EMAIL, AGE);
+  }
 }
