@@ -73,7 +73,7 @@ class FavoriteControllerTest {
         .perform(
             post("/favorites")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"source\": 99, \"target\": 99}")
+                .content("{\"source\": 1, \"target\": 2}")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized());
   }
