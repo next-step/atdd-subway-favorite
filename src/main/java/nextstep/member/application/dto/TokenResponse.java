@@ -1,16 +1,16 @@
 package nextstep.member.application.dto;
 
+import lombok.Getter;
+
+@Getter
 public class TokenResponse {
-    private String accessToken;
+  private final String accessToken;
 
-    public TokenResponse() {
-    }
+  public TokenResponse() {
+    this(null);
+  }
 
-    public TokenResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
+  public TokenResponse(String accessToken) {
+    this.accessToken = accessToken;
+  }
 }

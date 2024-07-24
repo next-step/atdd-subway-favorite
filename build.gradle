@@ -2,11 +2,18 @@ plugins {
     id 'org.springframework.boot' version '2.7.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'nextstep'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
 repositories {
     mavenCentral()
@@ -26,6 +33,13 @@ dependencies {
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // guava
+    implementation 'com.google.guava:guava:33.2.1-jre'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:4.5.1'
@@ -35,4 +49,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        removeUnusedImports()
+        googleJavaFormat().reorderImports(true).reflowLongStrings()
+        formatAnnotations()
+    }
 }
