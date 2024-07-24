@@ -13,7 +13,13 @@ public class TokenService {
   private final JwtTokenProvider jwtTokenProvider;
 
   public TokenResponse createToken(String email, String password) {
-    Member member = memberService.findMemberByEmail(email);
+    Member member;
+    try {
+      member = memberService.findMemberByEmail(email);
+    } catch (RuntimeException e) {
+      throw new AuthenticationException();
+    }
+
     if (!member.getPassword().equals(password)) {
       throw new AuthenticationException();
     }
