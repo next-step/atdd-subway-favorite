@@ -66,7 +66,7 @@ class FavoriteControllerTest {
         .andExpect(status().isCreated());
   }
 
-  @DisplayName("인증되지 않은 사용자가 즐겨찾기를 생성하려고 하면 401 Unauthorized를 반환한다.")
+  @DisplayName("인증되지 않은 사용자가 즐겨찾기를 생성하려고 하면 401 Unauthorized 를 반환한다.")
   @Test
   void unauthenticatedCreateFavorite() throws Exception {
     mockMvc
@@ -105,7 +105,7 @@ class FavoriteControllerTest {
         .andExpect(jsonPath("$[1].target.name").value(역삼역.getName()));
   }
 
-  @DisplayName("인증되지 않은 사용자가 즐겨찾기 목록을 조회하려고 하면 401 Unauthorized를 반환한다.")
+  @DisplayName("인증되지 않은 사용자가 즐겨찾기 목록을 조회하려고 하면 401 Unauthorized 를 반환한다.")
   @Test
   void unauthorizedGetFavorites() throws Exception {
     mockMvc.perform(get("/favorites")).andExpect(status().isUnauthorized());
@@ -119,7 +119,7 @@ class FavoriteControllerTest {
         .andExpect(status().isNoContent());
   }
 
-  @DisplayName("인증되지 않은 사용자가 즐겨찾기를 삭제하려고 하면 401 Unauthorized를 반환한다.")
+  @DisplayName("인증되지 않은 사용자가 즐겨찾기를 삭제하려고 하면 401 Unauthorized 를 반환한다.")
   @Test
   void unauthorizedDeleteFavorite() throws Exception {
     mockMvc.perform(delete("/favorites/" + 1L)).andExpect(status().isUnauthorized());
