@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import java.util.Arrays;
+import java.util.Optional;
 import nextstep.favorite.application.*;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
@@ -33,7 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FavoriteServiceTest {
   @Mock private MemberService memberService;
   @Mock private FavoriteMapper favoriteMapper;
-  @Mock private FavoriteReader favoriteReader;
   @Mock private FavoriteRemover favoriteRemover;
   @Mock private FavoriteRepository favoriteRepository;
   @Mock private PathService pathService;
@@ -72,7 +72,7 @@ class FavoriteServiceTest {
 
     favoriteService.findFavorites(loginMember);
 
-    then(favoriteReader).should().readAllByMemberId(member.getId());
+    then(favoriteRepository).should().findAllByMemberId(member.getId());
   }
 
   @DisplayName("즐겨찾기를 삭제한다.")
@@ -81,7 +81,7 @@ class FavoriteServiceTest {
     Favorite favorite = aFavorite().build();
     long favoriteId = favorite.getId();
     given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
-    given(favoriteReader.readById(favoriteId)).willReturn(favorite);
+    given(favoriteRepository.findById(favoriteId)).willReturn(Optional.of(favorite));
 
     favoriteService.deleteFavorite(favoriteId, loginMember);
 
@@ -103,7 +103,7 @@ class FavoriteServiceTest {
             .memberId(otherMemberId)
             .build();
     given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
-    given(favoriteReader.readById(favoriteId)).willReturn(favorite);
+    given(favoriteRepository.findById(favoriteId)).willReturn(Optional.of(favorite));
 
     assertThatExceptionOfType(AuthorizationException.class)
         .isThrownBy(() -> favoriteService.deleteFavorite(favoriteId, loginMember));

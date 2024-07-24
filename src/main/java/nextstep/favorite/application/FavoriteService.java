@@ -7,6 +7,7 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exception.FavoriteNotFoundException;
 import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 public class FavoriteService {
   private final MemberService memberService;
   private final FavoriteMapper favoriteMapper;
-  private final FavoriteReader favoriteReader;
   private final FavoriteRemover favoriteRemover;
   private final FavoriteRepository favoriteRepository;
   private final PathService pathService;
@@ -60,7 +60,7 @@ public class FavoriteService {
    */
   public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
-    List<Favorite> favorites = favoriteReader.readAllByMemberId(member.getId());
+    List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
     return favorites.stream()
         .map(favoriteMapper::mapToFavoriteResponse)
         .collect(Collectors.toList());
@@ -74,7 +74,8 @@ public class FavoriteService {
    */
   public void deleteFavorite(Long id, LoginMember loginMember) {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
-    Favorite favorite = favoriteReader.readById(id);
+    Favorite favorite =
+        favoriteRepository.findById(id).orElseThrow(() -> new FavoriteNotFoundException(id));
     if (!favorite.isOwner(member.getId())) {
       throw new AuthorizationException();
     }
