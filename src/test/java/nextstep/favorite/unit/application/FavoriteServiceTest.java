@@ -10,6 +10,7 @@ import java.util.Arrays;
 import nextstep.favorite.application.*;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
@@ -32,9 +33,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FavoriteServiceTest {
   @Mock private MemberService memberService;
   @Mock private FavoriteMapper favoriteMapper;
-  @Mock private FavoriteAppender favoriteAppender;
   @Mock private FavoriteReader favoriteReader;
   @Mock private FavoriteRemover favoriteRemover;
+  @Mock private FavoriteRepository favoriteRepository;
   @Mock private PathService pathService;
   @InjectMocks private FavoriteService favoriteService;
 
@@ -51,7 +52,7 @@ class FavoriteServiceTest {
 
     favoriteService.createFavorite(request, loginMember);
 
-    then(favoriteAppender).should().append(any(Favorite.class));
+    then(favoriteRepository).should().save(any(Favorite.class));
   }
 
   @DisplayName("비정상 경로를 즐겨찾기로 등록하는 경우 예외 처리된다.")

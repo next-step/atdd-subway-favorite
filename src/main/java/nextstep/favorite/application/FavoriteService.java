@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
+import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
@@ -21,9 +22,9 @@ import org.springframework.stereotype.Service;
 public class FavoriteService {
   private final MemberService memberService;
   private final FavoriteMapper favoriteMapper;
-  private final FavoriteAppender favoriteAppender;
   private final FavoriteReader favoriteReader;
   private final FavoriteRemover favoriteRemover;
+  private final FavoriteRepository favoriteRepository;
   private final PathService pathService;
 
   /**
@@ -42,7 +43,7 @@ public class FavoriteService {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
     Favorite favorite = Favorite.of(request.getSource(), request.getTarget(), member.getId());
-    Favorite savedFavorite = favoriteAppender.append(favorite);
+    Favorite savedFavorite = favoriteRepository.save(favorite);
     return favoriteMapper.mapToFavoriteResponse(savedFavorite);
   }
 
