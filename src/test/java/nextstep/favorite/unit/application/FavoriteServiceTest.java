@@ -34,7 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FavoriteServiceTest {
   @Mock private MemberService memberService;
   @Mock private FavoriteMapper favoriteMapper;
-  @Mock private FavoriteRemover favoriteRemover;
   @Mock private FavoriteRepository favoriteRepository;
   @Mock private PathService pathService;
   @InjectMocks private FavoriteService favoriteService;
@@ -85,7 +84,7 @@ class FavoriteServiceTest {
 
     favoriteService.deleteFavorite(favoriteId, loginMember);
 
-    then(favoriteRemover).should().removeById(favoriteId);
+    then(favoriteRepository).should().deleteById(favoriteId);
   }
 
   @DisplayName("다른 사용자의 즐겨찾기를 삭제하려 하면 예외 처리된다.")

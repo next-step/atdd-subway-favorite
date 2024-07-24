@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 public class FavoriteService {
   private final MemberService memberService;
   private final FavoriteMapper favoriteMapper;
-  private final FavoriteRemover favoriteRemover;
   private final FavoriteRepository favoriteRepository;
   private final PathService pathService;
 
@@ -74,11 +73,14 @@ public class FavoriteService {
    */
   public void deleteFavorite(Long id, LoginMember loginMember) {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
+
     Favorite favorite =
         favoriteRepository.findById(id).orElseThrow(() -> new FavoriteNotFoundException(id));
+
     if (!favorite.isOwner(member.getId())) {
       throw new AuthorizationException();
     }
-    favoriteRemover.removeById(id);
+
+    favoriteRepository.deleteById(id);
   }
 }
