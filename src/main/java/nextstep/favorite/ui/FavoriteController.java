@@ -12,25 +12,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/favorites")
 @RequiredArgsConstructor
 public class FavoriteController {
   private final FavoriteService favoriteService;
 
-  @PostMapping("/favorites")
+  @PostMapping
   public ResponseEntity<Void> createFavorite(
       @RequestBody FavoriteRequest request, @AuthenticationPrincipal LoginMember loginMember) {
     FavoriteResponse favorite = favoriteService.createFavorite(request, loginMember);
     return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
   }
 
-  @GetMapping("/favorites")
+  @GetMapping
   public ResponseEntity<List<FavoriteResponse>> getFavorites(
       @AuthenticationPrincipal LoginMember loginMember) {
     List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
     return ResponseEntity.ok().body(favorites);
   }
 
-  @DeleteMapping("/favorites/{id}")
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteFavorite(
       @PathVariable Long id, @AuthenticationPrincipal LoginMember loginMember) {
     favoriteService.deleteFavorite(id, loginMember);
