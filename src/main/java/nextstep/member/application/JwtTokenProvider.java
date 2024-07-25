@@ -29,17 +29,19 @@ public class JwtTokenProvider {
 
   public String getPrincipal(String token) {
     try {
-      return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+      return getPayload(token).getSubject();
     } catch (JwtException | IllegalArgumentException e) {
       throw new AuthenticationException();
     }
   }
 
+  private Claims getPayload(String token) {
+    return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+  }
+
   public boolean validateToken(String token) {
     try {
-      Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-      return !claims.getBody().getExpiration().before(new Date());
+      return !getPayload(token).getExpiration().before(new Date());
     } catch (JwtException | IllegalArgumentException e) {
       return false;
     }

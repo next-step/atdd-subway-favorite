@@ -35,7 +35,7 @@ public class FavoriteService {
    * @throws nextstep.subway.station.exception.StationNotFoundException 역을 찾을 수 없는 경우
    */
   public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
-    if (!validatePath(request)) {
+    if (!isValidPath(request)) {
       throw new FavoritePathNotFoundException();
     }
 
@@ -46,7 +46,7 @@ public class FavoriteService {
     return favoriteMapper.mapToFavoriteResponse(savedFavorite);
   }
 
-  private boolean validatePath(FavoriteRequest request) {
+  private boolean isValidPath(FavoriteRequest request) {
     Path path = pathService.findPath(PathRequest.of(request.getSource(), request.getTarget()));
     return !path.getStations().isEmpty();
   }
