@@ -7,6 +7,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import nextstep.member.domain.Member;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -93,5 +95,10 @@ public class MemberAcceptanceSteps {
     assertThat(response.jsonPath().getString("id")).isNotNull();
     assertThat(response.jsonPath().getString("email")).isEqualTo(email);
     assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+  }
+
+  public static void 내_정보_조회됨(ExtractableResponse<Response> response, Member member) {
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.jsonPath().getString("email")).isEqualTo(member.getEmail());
   }
 }

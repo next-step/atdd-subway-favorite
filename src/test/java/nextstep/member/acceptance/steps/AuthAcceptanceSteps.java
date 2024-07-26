@@ -7,6 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import nextstep.member.application.dto.GithubLoginRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -53,5 +54,27 @@ public class AuthAcceptanceSteps {
 
   public static void 인증_실패함(ExtractableResponse<Response> response) {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+  }
+
+  public static ExtractableResponse<Response> 깃헙_로그인_요청(String code) {
+    GithubLoginRequest request = new GithubLoginRequest(code);
+    return RestAssured.given()
+        .log()
+        .all()
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body(request)
+        .when()
+        .get("/login/github")
+        .then()
+        .log()
+        .all()
+        .extract();
+  }
+
+  public static String 깃헙_로그인됨(ExtractableResponse<Response> response) {
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    String accessToken = response.jsonPath().getString("accessToken");
+    assertThat(accessToken).isNotBlank();
+    return accessToken;
   }
 }
