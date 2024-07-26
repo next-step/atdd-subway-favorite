@@ -4,7 +4,7 @@ import static nextstep.Fixtures.aMember;
 import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.*;
 import static nextstep.member.acceptance.steps.MemberAcceptanceSteps.내_정보_조회_요청;
 import static nextstep.member.acceptance.steps.MemberAcceptanceSteps.내_정보_조회됨;
-import static nextstep.member.acceptance.support.GithubResponses.사용자;
+import static nextstep.member.support.GithubResponses.사용자;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
