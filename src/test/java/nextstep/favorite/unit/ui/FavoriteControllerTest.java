@@ -9,13 +9,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.domain.LoginMember;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.ui.FavoriteController;
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;

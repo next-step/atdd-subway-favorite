@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.auth.application.JwtTokenProvider;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.application.dto.PathRequest;
 import nextstep.subway.path.domain.Path;

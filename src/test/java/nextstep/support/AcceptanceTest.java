@@ -1,7 +1,7 @@
 package nextstep.support;
 
 import static nextstep.Fixtures.aMember;
-import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
+import static nextstep.auth.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
 
 import io.restassured.RestAssured;
 import nextstep.member.domain.Member;

@@ -8,15 +8,15 @@ import static org.mockito.BDDMockito.then;
 
 import java.util.Arrays;
 import java.util.Optional;
+import nextstep.auth.domain.LoginMember;
+import nextstep.auth.exception.AuthorizationException;
 import nextstep.favorite.application.*;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
-import nextstep.member.exception.AuthorizationException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.application.dto.PathRequest;
 import nextstep.subway.path.domain.Path;
