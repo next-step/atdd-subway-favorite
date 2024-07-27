@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class GithubClient {
+public class GithubTokenClient {
   @Value("${github.url.access-token}")
   private String accessTokenUrl;
 
@@ -25,7 +25,7 @@ public class GithubClient {
 
   private final RestTemplate restTemplate;
 
-  public GithubClient(RestTemplateBuilder restTemplateBuilder) {
+  public GithubTokenClient(RestTemplateBuilder restTemplateBuilder) {
     this.restTemplate = restTemplateBuilder.build();
   }
 

@@ -8,7 +8,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.GithubTokenClient;
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
 import nextstep.auth.exception.AuthenticationException;
 import org.junit.jupiter.api.DisplayName;
@@ -23,12 +23,12 @@ import org.springframework.test.web.client.MockRestServiceServer;
 @DisplayName("GithubClient 단위 테스트")
 @SuppressWarnings("NonAsciiCharacters")
 @ActiveProfiles("test")
-@RestClientTest(GithubClient.class)
-class GithubClientTest {
+@RestClientTest(GithubTokenClient.class)
+class GithubTokenClientTest {
   @Value("${github.url.access-token}")
   private String accessTokenUrl;
 
-  @Autowired private GithubClient githubClient;
+  @Autowired private GithubTokenClient githubTokenClient;
   @Autowired private MockRestServiceServer mockServer;
   @Autowired private ObjectMapper objectMapper;
 
@@ -42,7 +42,7 @@ class GithubClientTest {
         .andRespond(
             withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 
-    String accessToken = githubClient.getAccessToken(사용자.getCode());
+    String accessToken = githubTokenClient.getAccessToken(사용자.getCode());
 
     assertThat(accessToken).isEqualTo(사용자.getAccessToken());
   }
@@ -58,6 +58,6 @@ class GithubClientTest {
         .andRespond(withSuccess(errorResponse, MediaType.APPLICATION_JSON));
 
     assertThatExceptionOfType(AuthenticationException.class)
-        .isThrownBy(() -> githubClient.getAccessToken("bad_verification_code"));
+        .isThrownBy(() -> githubTokenClient.getAccessToken("bad_verification_code"));
   }
 }
