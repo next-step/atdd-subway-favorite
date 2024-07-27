@@ -59,5 +59,4 @@ public class DefaultPathService implements PathService {
     private Station findStationOrElseNull(Long stationId) {
         return stationRepository.findById(stationId).orElse(null);
     }
-
 }
