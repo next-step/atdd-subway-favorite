@@ -9,4 +9,8 @@ public class GithubLoginRequest {
   public GithubLoginRequest(String code) {
     this.code = code;
   }
+
+  public GithubLoginRequest() {
+    this(null);
+  }
 }

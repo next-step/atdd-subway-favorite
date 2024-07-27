@@ -32,7 +32,7 @@ class GithubTokenClientTest {
   @Autowired private MockRestServiceServer mockServer;
   @Autowired private ObjectMapper objectMapper;
 
-  @DisplayName("Github API를 통해서 액세스 토큰을 가져온다.")
+  @DisplayName("Github API 를 통해서 액세스 토큰을 가져온다.")
   @Test
   void getAccessToken() throws JsonProcessingException {
     GithubAccessTokenResponse response =
@@ -47,7 +47,7 @@ class GithubTokenClientTest {
     assertThat(accessToken).isEqualTo(사용자.getAccessToken());
   }
 
-  @DisplayName("Github API에서 에러 메시지를 반환한다.")
+  @DisplayName("Github API 에서 에러 메시지를 반환한다.")
   @Test
   void accessTokenErrors() {
     String errorResponse =
