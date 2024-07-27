@@ -13,6 +13,8 @@ public enum SubwayDomainExceptionType {
     INVALID_STATION(HttpStatus.BAD_REQUEST.value(), "INVALID_STATION", "invalid station"),
     INVALID_SECTION_SIZE(HttpStatus.BAD_REQUEST.value(), "INVALID_SECTION_SIZE", "invalid section size"),
     INVALID_SECTION_DISTANCE(HttpStatus.BAD_REQUEST.value(), "INVALID_SECTION_DISTANCE", "invalid section distance"),
+    SOURCE_TARGET_SAME_STATION(HttpStatus.BAD_REQUEST.value(), "SOURCE_TARGET_SAME_STATION", "source & target are same station"),
+    SOURCE_TARGET_NOT_CONNECTED(HttpStatus.BAD_REQUEST.value(), "SOURCE_TARGET_NOT_CONNECTED", "source & target are not connected"),
     ;
 
     private final int status;

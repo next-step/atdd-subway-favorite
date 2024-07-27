@@ -25,12 +25,41 @@ public class StationStep {
         return 역을_생성한다("구로역");
     }
 
+    public static ExtractableResponse<Response> 을지로입구역을_생성한다() {
+        return 역을_생성한다("을지로입구역");
+    }
+
+    public static ExtractableResponse<Response> 을지로3가역을_생성한다() {
+        return 역을_생성한다("을지로3가역");
+    }
+
+    public static ExtractableResponse<Response> 회현역을_생성한다() {
+        return 역을_생성한다("회현역");
+    }
+
+    public static ExtractableResponse<Response> 명동역을_생성한다() {
+        return 역을_생성한다("명동역");
+    }
+
+    public static ExtractableResponse<Response> 충무로역을_생성한다() {
+        return 역을_생성한다("충무로역");
+    }
+
+
     public static ExtractableResponse<Response> 역삼역을_생성한다() {
         return 역을_생성한다("역삼역");
     }
 
     public static ExtractableResponse<Response> 잠실역을_생성한다() {
         return 역을_생성한다("잠실역");
+    }
+
+    public static ExtractableResponse<Response> 선릉역을_생성한다() {
+        return 역을_생성한다("선릉역");
+    }
+
+    public static ExtractableResponse<Response> 한티역을_생성한다() {
+        return 역을_생성한다("한티역");
     }
 
     public static ExtractableResponse<Response> 역을_생성한다(String name) {

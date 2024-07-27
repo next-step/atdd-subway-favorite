@@ -9,6 +9,26 @@ import nextstep.subway.controller.dto.CreateLineRequest;
 import nextstep.subway.controller.dto.UpdateLineRequest;
 
 public class LineStep {
+    public static ExtractableResponse<Response> 일호선을_생성한다(Long upStationId, Long downStationId, Long distance) {
+        return 노선을_생성한다(new CreateLineRequest("1호선", "#0052A4", upStationId, downStationId, distance));
+    }
+
+    public static ExtractableResponse<Response> 이호선을_생성한다(Long upStationId, Long downStationId, Long distance) {
+        return 노선을_생성한다(new CreateLineRequest("2호선", "#00A84D", upStationId, downStationId, distance));
+    }
+
+    public static ExtractableResponse<Response> 삼호선을_생성한다(Long upStationId, Long downStationId, Long distance) {
+        return 노선을_생성한다(new CreateLineRequest("3호선", "#EF7C1C", upStationId, downStationId, distance));
+    }
+
+    public static ExtractableResponse<Response> 사호선을_생성한다(Long upStationId, Long downStationId, Long distance) {
+        return 노선을_생성한다(new CreateLineRequest("4호선", "#00A4E3", upStationId, downStationId, distance));
+    }
+
+    public static ExtractableResponse<Response> 분당선을_생성한다(Long upStationId, Long downStationId, Long distance) {
+        return 노선을_생성한다(new CreateLineRequest("분당선", "#F5A200", upStationId, downStationId, distance));
+    }
+
     public static ExtractableResponse<Response> 노선을_생성한다(CreateLineRequest request) {
         return RestAssured
                 .given().log().all()
