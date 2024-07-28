@@ -7,8 +7,6 @@ import static nextstep.member.acceptance.steps.MemberAcceptanceSteps.내_정보_
 import static nextstep.member.acceptance.steps.MemberAcceptanceSteps.내_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.support.AcceptanceTest;
@@ -79,11 +77,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
   @DisplayName("깃헙 인증")
   @Test
   void githubAuth() {
-    ExtractableResponse<Response> response = 깃헙_로그인_요청(사용자.getCode());
+    var response = 깃헙_로그인_요청(사용자.getCode());
 
     String accessToken = 깃헙_로그인됨(response);
 
-    ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(accessToken);
+    var 내_정보_조회_응답 = 내_정보_조회_요청(accessToken);
     내_정보_조회됨(내_정보_조회_응답, 사용자.getMember());
   }
 }

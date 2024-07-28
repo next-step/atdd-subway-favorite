@@ -64,7 +64,7 @@ public class AuthAcceptanceSteps {
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body(request)
         .when()
-        .get("/login/github")
+        .post("/login/github")
         .then()
         .log()
         .all()

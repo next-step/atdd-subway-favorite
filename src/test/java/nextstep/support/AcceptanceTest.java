@@ -15,7 +15,7 @@ import org.springframework.test.context.TestConstructor;
 @SuppressWarnings("NonAsciiCharacters")
 @ActiveProfiles("test")
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public abstract class AcceptanceTest {
   @LocalServerPort private int port;
 
