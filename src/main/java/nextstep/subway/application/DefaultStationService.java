@@ -27,13 +27,15 @@ public class DefaultStationService implements StationService {
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationRepository.save(new Station(stationRequest.getName()));
-        return createStationResponse(station);
+        return StationResponse.of(station);
     }
 
+    @Override
     public List<StationResponse> findAllStations() {
-        return stationRepository.findAll().stream()
-                .map(this::createStationResponse)
-                .collect(Collectors.toList());
+        return stationRepository.findAll()
+            .stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -42,15 +44,9 @@ public class DefaultStationService implements StationService {
             .orElseThrow(() -> new IllegalArgumentException(STATION_NOT_FOUND_MESSAGE));
     }
 
+    @Override
     @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    private StationResponse createStationResponse(Station station) {
-        return new StationResponse(
-                station.getId(),
-                station.getName()
-        );
     }
 }
