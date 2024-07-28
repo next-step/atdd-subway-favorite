@@ -9,7 +9,6 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.favorite.exception.FavoriteNotFoundException;
 import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
@@ -75,7 +74,9 @@ public class FavoriteService {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
     Favorite favorite =
-        favoriteRepository.findById(id).orElseThrow(() -> new FavoriteNotFoundException(id));
+        favoriteRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("즐겨찾기 #" + id + "이 존재하지 않습니다."));
 
     if (!favorite.isOwner(member.getId())) {
       throw new AuthorizationException();
