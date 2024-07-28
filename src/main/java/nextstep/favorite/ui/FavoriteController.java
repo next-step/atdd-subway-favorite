@@ -3,11 +3,11 @@ package nextstep.favorite.ui;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.domain.LoginMember;
+import nextstep.auth.ui.AuthenticationPrincipal;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.member.domain.LoginMember;
-import nextstep.member.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

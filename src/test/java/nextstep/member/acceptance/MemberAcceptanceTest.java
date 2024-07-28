@@ -1,6 +1,6 @@
 package nextstep.member.acceptance;
 
-import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
+import static nextstep.auth.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
 import static nextstep.member.acceptance.steps.MemberAcceptanceSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

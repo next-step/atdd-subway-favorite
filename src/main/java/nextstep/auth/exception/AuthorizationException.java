@@ -1,4 +1,4 @@
-package nextstep.member.exception;
+package nextstep.auth.exception;
 
 import nextstep.support.error.ApiException;
 import nextstep.support.error.ErrorCode;

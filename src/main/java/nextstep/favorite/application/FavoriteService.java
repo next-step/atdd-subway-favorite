@@ -3,16 +3,15 @@ package nextstep.favorite.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.domain.LoginMember;
+import nextstep.auth.exception.AuthorizationException;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.favorite.exception.FavoriteNotFoundException;
 import nextstep.favorite.exception.FavoritePathNotFoundException;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
-import nextstep.member.exception.AuthorizationException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.application.dto.PathRequest;
 import nextstep.subway.path.domain.Path;
@@ -35,7 +34,7 @@ public class FavoriteService {
    * @throws nextstep.subway.station.exception.StationNotFoundException 역을 찾을 수 없는 경우
    */
   public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
-    if (!validatePath(request)) {
+    if (!isValidPath(request)) {
       throw new FavoritePathNotFoundException();
     }
 
@@ -46,7 +45,7 @@ public class FavoriteService {
     return favoriteMapper.mapToFavoriteResponse(savedFavorite);
   }
 
-  private boolean validatePath(FavoriteRequest request) {
+  private boolean isValidPath(FavoriteRequest request) {
     Path path = pathService.findPath(PathRequest.of(request.getSource(), request.getTarget()));
     return !path.getStations().isEmpty();
   }
@@ -75,7 +74,9 @@ public class FavoriteService {
     Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
     Favorite favorite =
-        favoriteRepository.findById(id).orElseThrow(() -> new FavoriteNotFoundException(id));
+        favoriteRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("즐겨찾기 #" + id + "이 존재하지 않습니다."));
 
     if (!favorite.isOwner(member.getId())) {
       throw new AuthorizationException();

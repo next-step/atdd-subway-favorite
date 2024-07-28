@@ -1,7 +1,7 @@
 package nextstep.support;
 
 import static nextstep.Fixtures.aMember;
-import static nextstep.member.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
+import static nextstep.auth.acceptance.steps.AuthAcceptanceSteps.로그인_요청;
 
 import io.restassured.RestAssured;
 import nextstep.member.domain.Member;
@@ -15,7 +15,7 @@ import org.springframework.test.context.TestConstructor;
 @SuppressWarnings("NonAsciiCharacters")
 @ActiveProfiles("test")
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public abstract class AcceptanceTest {
   @LocalServerPort private int port;
 

@@ -1,0 +1,37 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 3600000
+
+github:
+  client:
+    id: client-id
+    secret: client-secret
+  url:
+    access-token: https://github.com/login/oauth/access_token
+    profile: https://api.github.com
+
+---
+spring.config.activate.on-profile: test
+
+github:
+  client:
+    id: 1234567890
+    secret: 1234567890
+  url:
+    access-token: http://localhost:8080/github/login/oauth/access_token
+    profile: http://localhost:8080/github
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
