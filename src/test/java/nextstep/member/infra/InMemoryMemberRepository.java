@@ -7,7 +7,7 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
 public class InMemoryMemberRepository implements MemberRepository {
-    private HashMap<Long, Member> members = new HashMap<>();
+    private final HashMap<Long, Member> members = new HashMap<>();
 
     @Override
     public Optional<Member> findByEmail(String email) {

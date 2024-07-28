@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.application.DefaultLineQueryService;
 import nextstep.subway.application.dto.LineResponse;
 import nextstep.subway.domain.model.Line;
-import nextstep.subway.domain.repository.InMemoryLineRepository;
+import nextstep.subway.infra.repository.InMemoryLineRepository;
 import nextstep.subway.domain.repository.LineRepository;
 import nextstep.subway.domain.service.LineQueryService;
 

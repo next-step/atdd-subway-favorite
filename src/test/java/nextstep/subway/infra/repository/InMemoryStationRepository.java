@@ -1,4 +1,4 @@
-package nextstep.subway.domain.repository;
+package nextstep.subway.infra.repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import nextstep.subway.domain.model.Station;
+import nextstep.subway.domain.repository.StationRepository;
 
 public class InMemoryStationRepository implements StationRepository {
     private static final String ID = "id";

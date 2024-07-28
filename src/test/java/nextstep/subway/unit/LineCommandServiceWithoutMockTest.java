@@ -24,8 +24,8 @@ import nextstep.subway.application.strategy.addition.AddSectionBeforeDownStation
 import nextstep.subway.domain.model.Line;
 import nextstep.subway.domain.model.Section;
 import nextstep.subway.domain.model.Station;
-import nextstep.subway.domain.repository.InMemoryLineRepository;
-import nextstep.subway.domain.repository.InMemoryStationRepository;
+import nextstep.subway.infra.repository.InMemoryLineRepository;
+import nextstep.subway.infra.repository.InMemoryStationRepository;
 import nextstep.subway.domain.repository.LineRepository;
 import nextstep.subway.domain.repository.StationRepository;
 import nextstep.subway.domain.service.LineCommandService;

@@ -8,15 +8,24 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String email;
+
     private String password;
+
     private Integer age;
 
-    public Member() {
+
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
+        this(null, email, password, age);
+    }
+
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
@@ -44,7 +53,11 @@ public class Member {
         this.age = member.age;
     }
 
-    public boolean checkPassword(String password) {
+    public boolean matchesPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public boolean matchesEmail(String email) {
+        return Objects.equals(this.email, email);
     }
 }
