@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.util.Pair;
@@ -23,7 +24,7 @@ public class Sections {
     public static final String LAST_SECTION_CANNOT_BE_REMOVED_MESSAGE = "지하철 노선에 상행 종점역과 하행 종점역만 있는 경우 역을 삭제할 수 없습니다.";
     public static final String ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION_MESSAGE = "인덱스가 범위를 벗어났습니다.";
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
     private final List<Section> sections = new ArrayList<>();
 
     protected Sections() {

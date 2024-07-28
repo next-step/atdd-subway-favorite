@@ -12,6 +12,7 @@ import nextstep.subway.domain.model.Path;
 import nextstep.subway.domain.model.Station;
 import nextstep.subway.domain.repository.LineRepository;
 import nextstep.subway.domain.repository.StationRepository;
+import nextstep.subway.domain.service.PathFinder;
 import nextstep.subway.domain.service.PathService;
 
 @Service
@@ -36,4 +37,27 @@ public class DefaultPathService implements PathService {
         return stationRepository.findById(stationId)
             .orElseThrow(() -> new IllegalArgumentException(STATION_NOT_FOUND_MESSAGE));
     }
+
+    public boolean pathExists(Long sourceId, Long targetId) {
+        Station source = findStationOrElseNull(sourceId);
+        Station target = findStationOrElseNull(targetId);
+
+        if (source == null || target == null) {
+            return false;
+        }
+
+        List<Line> lines = lineRepository.findAll();
+
+        try {
+            Path.of(lines, source, target);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private Station findStationOrElseNull(Long stationId) {
+        return stationRepository.findById(stationId).orElse(null);
+    }
+
 }

@@ -15,7 +15,7 @@ import nextstep.subway.domain.model.Path;
 import nextstep.subway.domain.model.Section;
 import nextstep.subway.domain.model.Station;
 
-public class DefaultPathFinderTest {
+class DefaultPathFinderTest {
     private DefaultPathFinder pathFinder;
 
     private Station 강남역;

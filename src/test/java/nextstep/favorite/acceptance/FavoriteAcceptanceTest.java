@@ -9,7 +9,7 @@ import io.restassured.response.Response;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.subway.domain.service.StationService;
+import nextstep.subway.application.dto.LineRequest;
 import nextstep.utils.AcceptanceTest;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,8 +28,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private MemberService memberService;
 
     private String token;
-    private Long sourceId;
-    private Long targetId;
+    private Long 교대역;
+    private Long 양재역;
 
     @BeforeEach
     void setUpBeforeEach() {
@@ -39,8 +39,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         memberService.createMember(memberRequest);
         token = jwtTokenProvider.createToken(memberRequest.getEmail());
 
-        sourceId = createStationAndGetId("교대역");
-        targetId = createStationAndGetId("양재역");
+        교대역 = createStationAndGetId("교대역");
+        양재역 = createStationAndGetId("양재역");
+
+        createLine(new LineRequest("2호선", "green", 교대역, 양재역, 10));
     }
 
     @Test
@@ -49,7 +51,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(token, sourceId, targetId);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(token, 교대역, 양재역);
 
         // then
         즐겨찾기_생성됨(response);
@@ -59,7 +61,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 조회할 때 즐겨찾기가 존재하면 즐겨찾기 목록을 반환한다")
     void getFavorites() {
         // given
-        즐겨찾기_생성_요청(token, sourceId, targetId);
+        즐겨찾기_생성_요청(token, 교대역, 양재역);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(token);
@@ -72,7 +74,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 삭제할 때 유효한 요청이면 즐겨찾기가 삭제된다")
     void deleteFavorite() {
         // given
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(token, sourceId, targetId);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(token, 교대역, 양재역);
         String location = createResponse.header("Location");
         Long favoriteId = Long.parseLong(location.split("/")[2]);
 

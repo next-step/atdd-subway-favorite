@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import static nextstep.favorite.application.DefaultFavoriteService.*;
 import static nextstep.member.application.MemberService.*;
 import static nextstep.subway.application.DefaultLineCommandService.*;
 import static org.assertj.core.api.Assertions.*;
@@ -24,7 +25,10 @@ import nextstep.member.AuthenticationException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.subway.domain.model.Line;
+import nextstep.subway.domain.model.Section;
 import nextstep.subway.domain.model.Station;
+import nextstep.subway.domain.repository.LineRepository;
 import nextstep.subway.domain.repository.StationRepository;
 
 @DisplayName("DefaultFavoriteService 도메인 테스트")
@@ -42,21 +46,43 @@ class DefaultFavoriteServiceTest {
     private StationRepository stationRepository;
 
     @Autowired
+    private LineRepository lineRepository;
+
+    @Autowired
     private FavoriteService favoriteService;
 
     private Member member;
-    private Station sourceStation;
-    private Station targetStation;
+    private Station yeoksamStation;
+    private Station gangnamStation;
+    private Station yangjaeStation;
+    private Station suwonStation;
 
     @BeforeEach
     void setUp() {
         member = new Member(1L, "email@example.com", "password", 20);
         memberRepository.save(member);
 
-        sourceStation = new Station(1L, "교대역");
-        targetStation = new Station(2L, "양재역");
-        stationRepository.save(sourceStation);
-        stationRepository.save(targetStation);
+        yeoksamStation = new Station(1L, "역삼역");
+        gangnamStation = new Station(2L, "강남역");
+        yangjaeStation = new Station(3L, "양재역");
+        suwonStation = new Station(4L, "수원역");
+
+        stationRepository.save(yeoksamStation);
+        stationRepository.save(gangnamStation);
+        stationRepository.save(yangjaeStation);
+        stationRepository.save(suwonStation);
+
+        Line secondLine = new Line(1L, "2호선", "green");
+        Line newBundangLine = new Line(2L, "신분당선", "red");
+
+        Section yeoksam_gangnam = new Section(1L, secondLine, yeoksamStation, gangnamStation, 10);
+        Section gangnam_yangjae = new Section(2L, newBundangLine, gangnamStation, yangjaeStation, 5);
+
+        secondLine.addSection(yeoksam_gangnam);
+        newBundangLine.addSection(gangnam_yangjae);
+
+        lineRepository.save(secondLine);
+        lineRepository.save(newBundangLine);
     }
 
     @Nested
@@ -66,7 +92,7 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨찾기를 성공적으로 생성한다")
         void createFavoriteSuccess() {
             // given
-            FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStation.getId(), targetStation.getId());
+            FavoriteRequest favoriteRequest = new FavoriteRequest(yeoksamStation.getId(), yangjaeStation.getId());
             LoginMember loginMember = new LoginMember("email@example.com");
 
             // when
@@ -75,15 +101,15 @@ class DefaultFavoriteServiceTest {
             // then
             List<Favorite> favorites = favoriteRepository.findByMember(member);
             assertThat(favorites).hasSize(1);
-            assertThat(favorites.get(0).getSourceStation()).isEqualTo(sourceStation);
-            assertThat(favorites.get(0).getTargetStation()).isEqualTo(targetStation);
+            assertThat(favorites.get(0).getSourceStation()).isEqualTo(yeoksamStation);
+            assertThat(favorites.get(0).getTargetStation()).isEqualTo(yangjaeStation);
         }
 
         @Test
         @DisplayName("즐겨찾기 생성 시 source 역이 존재하지 않는 경우 예외가 발생한다")
         void createFavoriteSourceStationNotFound() {
             // given
-            FavoriteRequest favoriteRequest = new FavoriteRequest(3L, targetStation.getId());
+            FavoriteRequest favoriteRequest = new FavoriteRequest(999L, yangjaeStation.getId());
             LoginMember loginMember = new LoginMember("email@example.com");
 
             // when & then
@@ -96,20 +122,33 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨찾기 생성 시 target 역이 존재하지 않는 경우 예외 발생한다")
         void createFavoriteTargetStationNotFound() {
             // given
-            FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStation.getId(), 3L);
+            FavoriteRequest favoriteRequest = new FavoriteRequest(yeoksamStation.getId(), 999L);
             LoginMember loginMember = new LoginMember("email@example.com");
 
             // when & then
-            assertThatExceptionOfType(RuntimeException.class)
+            assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> favoriteService.createFavorite(favoriteRequest, loginMember))
                 .withMessageContaining(STATION_NOT_FOUND_MESSAGE);
+        }
+
+        @Test
+        @DisplayName("즐겨찾기 생성 시 경로가 존재하지 않는 경우 예외 발생한다")
+        void createFavoritePathNotFound() {
+            // given
+            FavoriteRequest favoriteRequest = new FavoriteRequest(yeoksamStation.getId(), suwonStation.getId());
+            LoginMember loginMember = new LoginMember("email@example.com");
+
+            // when & then
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> favoriteService.createFavorite(favoriteRequest, loginMember))
+                .withMessageContaining(PATH_NOT_FOUND_MESSAGE);
         }
 
         @Test
         @DisplayName("즐겨찾기를 생성할 때 회원이 존재하지 않는 경우 예외가 발생한다")
         void createFavoriteUnauthorizedMember() {
             // given
-            FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStation.getId(), targetStation.getId());
+            FavoriteRequest favoriteRequest = new FavoriteRequest(yeoksamStation.getId(), yangjaeStation.getId());
             LoginMember unauthorizedMember = new LoginMember("unauthorized@example.com");
 
             // when & then
@@ -126,8 +165,9 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨찾기를 성공적으로 조회한다")
         void getFavoritesSuccess() {
             // given
-            Favorite favorite = new Favorite(sourceStation, targetStation, member);
+            Favorite favorite = new Favorite(yeoksamStation, yangjaeStation, member);
             favoriteRepository.save(favorite);
+
             LoginMember loginMember = new LoginMember("email@example.com");
 
             // when
@@ -135,8 +175,8 @@ class DefaultFavoriteServiceTest {
 
             // then
             assertThat(favorites).hasSize(1);
-            assertThat(favorites.get(0).getSource().getName()).isEqualTo(sourceStation.getName());
-            assertThat(favorites.get(0).getTarget().getName()).isEqualTo(targetStation.getName());
+            assertThat(favorites.get(0).getSource().getName()).isEqualTo(yeoksamStation.getName());
+            assertThat(favorites.get(0).getTarget().getName()).isEqualTo(yangjaeStation.getName());
         }
 
         @Test
@@ -159,7 +199,7 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨찾기를 성공적으로 삭제한다")
         void deleteFavoriteSuccess() {
             // given
-            Favorite favorite = new Favorite(sourceStation, targetStation, member);
+            Favorite favorite = new Favorite(yeoksamStation, yangjaeStation, member);
             favoriteRepository.save(favorite);
             LoginMember loginMember = new LoginMember("email@example.com");
 
@@ -175,7 +215,7 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨 찾기 삭제 시 회원이 존재하지 않는 경우 예외가 발생한다")
         void deleteFavoriteUnauthorizedMember() {
             // given
-            Favorite favorite = new Favorite(sourceStation, targetStation, member);
+            Favorite favorite = new Favorite(yeoksamStation, yangjaeStation, member);
             favoriteRepository.save(favorite);
 
             LoginMember unauthorizedMember = new LoginMember("unauthorized@example.com");
