@@ -21,7 +21,7 @@ public class TokenService {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = jwtTokenProvider.createToken(member.getId() ,member.getEmail());
 
         return new TokenResponse(token);
     }
