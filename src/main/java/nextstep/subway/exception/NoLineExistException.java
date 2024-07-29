@@ -1,10 +1,10 @@
 package nextstep.subway.exception;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 
 public class NoLineExistException extends RuntimeException {
 
-    public NoLineExistException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+    public NoLineExistException(SubwayErrorMessage subwayErrorMessage) {
+        super(subwayErrorMessage.getMessage());
     }
 }

@@ -3,7 +3,7 @@ package nextstep.subway.common;
 import lombok.Getter;
 
 @Getter
-public enum ErrorMessage {
+public enum SubwayErrorMessage {
 
     CANNOT_DELETE_SECTION("구간을 삭제할 수 없습니다."),
     NO_LINE_EXIST("해당하는 지하철 노선 정보가 없습니다."),
@@ -16,7 +16,7 @@ public enum ErrorMessage {
 
     private final String message;
 
-    ErrorMessage(String message) {
+    SubwayErrorMessage(String message) {
         this.message = message;
     }
 }

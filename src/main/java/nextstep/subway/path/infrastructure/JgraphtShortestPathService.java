@@ -1,7 +1,7 @@
 package nextstep.subway.path.infrastructure;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.NotConnectedStationException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
@@ -28,7 +28,7 @@ public class JgraphtShortestPathService implements ShortestPathService {
             GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
             return new Path(shortestPath.getVertexList(), (long) shortestPath.getWeight());
         } catch (NullPointerException | IllegalArgumentException e) {
-            throw new NotConnectedStationException(ErrorMessage.NOT_CONNECTED_STATION);
+            throw new NotConnectedStationException(SubwayErrorMessage.NOT_CONNECTED_STATION);
         }
     }
 

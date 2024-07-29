@@ -1,10 +1,10 @@
 package nextstep.subway.exception;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 
 public class IllegalDistanceValueException extends RuntimeException {
 
-    public IllegalDistanceValueException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+    public IllegalDistanceValueException(SubwayErrorMessage subwayErrorMessage) {
+        super(subwayErrorMessage.getMessage());
     }
 }

@@ -1,6 +1,6 @@
 package nextstep.subway.station;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.NoStationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,7 @@ public class StationService {
 
     public Station findById(Long stationId) {
         return stationRepository.findById(stationId)
-                .orElseThrow(() -> new NoStationException(ErrorMessage.NO_STATION_EXIST));
+                .orElseThrow(() -> new NoStationException(SubwayErrorMessage.NO_STATION_EXIST));
     }
 
     @Transactional

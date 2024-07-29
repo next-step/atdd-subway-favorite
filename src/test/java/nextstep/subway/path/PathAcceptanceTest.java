@@ -2,7 +2,7 @@ package nextstep.subway.path;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.line.LineAssuredTemplate;
 import nextstep.subway.line.SectionAssuredTemplate;
 import nextstep.subway.line.dto.LineRequest;
@@ -84,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        Assertions.assertThat(result.body().asString()).isEqualTo(ErrorMessage.NOT_CONNECTED_STATION.getMessage());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.NOT_CONNECTED_STATION.getMessage());
     }
 
     /**
@@ -102,6 +102,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        Assertions.assertThat(result.body().asString()).isEqualTo(ErrorMessage.NO_STATION_EXIST.getMessage());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.NO_STATION_EXIST.getMessage());
     }
 }

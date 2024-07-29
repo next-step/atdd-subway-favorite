@@ -1,7 +1,7 @@
 package nextstep.subway.path.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.common.SuccessResponse;
+import nextstep.common.SuccessResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.service.PathService;
 import org.springframework.http.ResponseEntity;

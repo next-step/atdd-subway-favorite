@@ -1,10 +1,10 @@
 package nextstep.subway.exception;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 
 public class NotSameUpAndDownStationException extends RuntimeException {
 
-    public NotSameUpAndDownStationException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+    public NotSameUpAndDownStationException(SubwayErrorMessage subwayErrorMessage) {
+        super(subwayErrorMessage.getMessage());
     }
 }

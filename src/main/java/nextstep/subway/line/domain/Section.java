@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.IllegalDistanceValueException;
 import nextstep.subway.exception.NotSameUpAndDownStationException;
 import nextstep.subway.station.Station;
@@ -36,10 +36,10 @@ public class Section {
 
     private Section(Line line, Integer lineOrder, Station upStation, Station downStation, Long distance) {
         if (upStation.equals(downStation)) {
-            throw new NotSameUpAndDownStationException(ErrorMessage.NOT_SAME_UP_AND_DOWN_STATION);
+            throw new NotSameUpAndDownStationException(SubwayErrorMessage.NOT_SAME_UP_AND_DOWN_STATION);
         }
         if (distance <= 0) {
-            throw new IllegalDistanceValueException(ErrorMessage.ILLEGAL_DISTANCE_VALUE);
+            throw new IllegalDistanceValueException(SubwayErrorMessage.ILLEGAL_DISTANCE_VALUE);
         }
 
         this.line = line;
@@ -73,7 +73,7 @@ public class Section {
 
     public void decreaseDistance(Long distance) {
         if (this.distance <= distance) {
-            throw new IllegalDistanceValueException(ErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION);
+            throw new IllegalDistanceValueException(SubwayErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION);
         }
 
         this.distance -= distance;

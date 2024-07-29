@@ -1,4 +1,4 @@
-package nextstep.subway.common;
+package nextstep.common;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

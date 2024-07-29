@@ -1,10 +1,10 @@
 package nextstep.subway.exception;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 
 public class CannotDeleteSectionException extends RuntimeException {
 
-    public CannotDeleteSectionException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+    public CannotDeleteSectionException(SubwayErrorMessage subwayErrorMessage) {
+        super(subwayErrorMessage.getMessage());
     }
 }

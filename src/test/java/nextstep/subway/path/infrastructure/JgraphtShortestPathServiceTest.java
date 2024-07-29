@@ -1,6 +1,6 @@
 package nextstep.subway.path.infrastructure;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.NotConnectedStationException;
 import nextstep.subway.line.LineAssuredTemplate;
 import nextstep.subway.line.SectionAssuredTemplate;
@@ -86,7 +86,7 @@ class JgraphtShortestPathServiceTest extends AcceptanceTest {
         // then
         Assertions.assertThatThrownBy(() -> shortestPathService.findShortestPath(sections, sourceStation, targetStation))
                 .isInstanceOf(NotConnectedStationException.class)
-                .hasMessage(ErrorMessage.NOT_CONNECTED_STATION.getMessage());
+                .hasMessage(SubwayErrorMessage.NOT_CONNECTED_STATION.getMessage());
     }
 
     @DisplayName("source 역 id와 target 역 id 를 입력받으면 최단거리를 구간 목록을 전달합니다.")

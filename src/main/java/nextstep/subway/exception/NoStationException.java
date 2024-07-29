@@ -1,10 +1,10 @@
 package nextstep.subway.exception;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 
 public class NoStationException extends RuntimeException {
 
-    public NoStationException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+    public NoStationException(SubwayErrorMessage subwayErrorMessage) {
+        super(subwayErrorMessage.getMessage());
     }
 }

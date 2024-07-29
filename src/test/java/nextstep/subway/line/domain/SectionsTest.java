@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.AlreadyHasUpAndDownStationException;
 import nextstep.subway.exception.CannotDeleteSectionException;
 import nextstep.subway.exception.IllegalDistanceValueException;
@@ -33,7 +33,7 @@ class SectionsTest {
         // then
         Assertions.assertThatThrownBy(() -> sections.addSection(newSection))
                 .isInstanceOf(NoStationException.class)
-                .hasMessage(ErrorMessage.CANNOT_ADD_STATION.getMessage());
+                .hasMessage(SubwayErrorMessage.CANNOT_ADD_STATION.getMessage());
     }
 
     @Test
@@ -48,7 +48,7 @@ class SectionsTest {
         // then
         Assertions.assertThatThrownBy(() -> sections.addSection(newSection))
                 .isInstanceOf(AlreadyHasUpAndDownStationException.class)
-                .hasMessage(ErrorMessage.CANNOT_ADD_STATION.getMessage());
+                .hasMessage(SubwayErrorMessage.CANNOT_ADD_STATION.getMessage());
 
     }
 
@@ -63,7 +63,7 @@ class SectionsTest {
         // then
         Assertions.assertThatThrownBy(() -> sections.addSection(newSection))
                 .isInstanceOf(IllegalDistanceValueException.class)
-                .hasMessage(ErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION.getMessage());
+                .hasMessage(SubwayErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION.getMessage());
     }
 
     @Test
@@ -76,7 +76,7 @@ class SectionsTest {
         // then
         Assertions.assertThatThrownBy(() -> sections.addSection(newSection))
                 .isInstanceOf(IllegalDistanceValueException.class)
-                .hasMessage(ErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION.getMessage());
+                .hasMessage(SubwayErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION.getMessage());
     }
 
     @DisplayName("새로운 구역을 추가할 때 기존에 존재하는 역이 아니라면 에러가 발생합니다.")
@@ -194,7 +194,7 @@ class SectionsTest {
         // then
         Assertions.assertThatThrownBy(() -> sections.deleteSection(StationFixtures.FIRST_DOWN_STATION))
                 .isInstanceOf(CannotDeleteSectionException.class)
-                .hasMessage(ErrorMessage.CANNOT_DELETE_SECTION.getMessage());
+                .hasMessage(SubwayErrorMessage.CANNOT_DELETE_SECTION.getMessage());
     }
 
     @Test
@@ -207,7 +207,7 @@ class SectionsTest {
         // then
         Assertions.assertThatThrownBy(() -> sections.deleteSection(StationFixtures.FIRST_DOWN_STATION))
                 .isInstanceOf(CannotDeleteSectionException.class)
-                .hasMessage(ErrorMessage.CANNOT_DELETE_SECTION.getMessage());
+                .hasMessage(SubwayErrorMessage.CANNOT_DELETE_SECTION.getMessage());
     }
 
     @DisplayName("전달받은 역 정보가 상행역이라면 정상적으로 삭제합니다.")

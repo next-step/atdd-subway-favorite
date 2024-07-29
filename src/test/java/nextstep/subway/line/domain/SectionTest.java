@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.IllegalDistanceValueException;
 import nextstep.subway.exception.NotSameUpAndDownStationException;
 import nextstep.subway.station.StationFixtures;
@@ -20,7 +20,7 @@ class SectionTest {
         // then
         Assertions.assertThatThrownBy(() -> Section.firstSection(StationFixtures.FIRST_UP_STATION, StationFixtures.FIRST_DOWN_STATION, 0L))
                 .isInstanceOf(IllegalDistanceValueException.class)
-                .hasMessage(ErrorMessage.ILLEGAL_DISTANCE_VALUE.getMessage());
+                .hasMessage(SubwayErrorMessage.ILLEGAL_DISTANCE_VALUE.getMessage());
     }
 
     @DisplayName("상행역과 하행역은 같으면 안됩니다.")
@@ -42,6 +42,6 @@ class SectionTest {
         // then
         Assertions.assertThatThrownBy(() -> section.decreaseDistance(distance))
                 .isInstanceOf(IllegalDistanceValueException.class)
-                .hasMessage(ErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION.getMessage());
+                .hasMessage(SubwayErrorMessage.LARGE_DISTANCE_THAN_CURRENT_SECTION.getMessage());
     }
 }

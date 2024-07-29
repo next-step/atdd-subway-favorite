@@ -2,7 +2,7 @@ package nextstep.subway.line.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.line.LineAssuredTemplate;
 import nextstep.subway.line.SectionAssuredTemplate;
 import nextstep.subway.line.dto.LineRequest;
@@ -61,7 +61,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        Assertions.assertThat(result.body().asString()).isEqualTo(ErrorMessage.CANNOT_ADD_STATION.getMessage());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.CANNOT_ADD_STATION.getMessage());
     }
 
     /**
@@ -85,7 +85,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        Assertions.assertThat(result.body().asString()).isEqualTo(ErrorMessage.CANNOT_ADD_STATION.getMessage());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.CANNOT_ADD_STATION.getMessage());
     }
 
     /**
@@ -105,7 +105,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        Assertions.assertThat(result.body().asString()).isEqualTo(ErrorMessage.CANNOT_ADD_STATION.getMessage());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.CANNOT_ADD_STATION.getMessage());
     }
 
     /**
@@ -162,7 +162,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        Assertions.assertThat(result.body().asString()).isEqualTo(ErrorMessage.CANNOT_DELETE_SECTION.getMessage());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.CANNOT_DELETE_SECTION.getMessage());
     }
 
     /**

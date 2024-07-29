@@ -1,7 +1,7 @@
 package nextstep.subway.line.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.common.SuccessResponse;
+import nextstep.common.SuccessResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;

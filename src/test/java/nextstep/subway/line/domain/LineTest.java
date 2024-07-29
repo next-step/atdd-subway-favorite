@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.NoStationException;
 import nextstep.subway.line.SectionFixtures;
 import nextstep.subway.station.StationFixtures;
@@ -45,7 +45,7 @@ class LineTest {
         // then
         Assertions.assertThatThrownBy(() -> line.addSection(Section.firstSection(StationFixtures.THIRD_UP_STATION, StationFixtures.THIRD_DOWN_STATION, 10L)))
                 .isInstanceOf(NoStationException.class)
-                .hasMessage(ErrorMessage.CANNOT_ADD_STATION.getMessage());
+                .hasMessage(SubwayErrorMessage.CANNOT_ADD_STATION.getMessage());
     }
 
     @DisplayName("노선에 새로운 구간을 추가합니다.")

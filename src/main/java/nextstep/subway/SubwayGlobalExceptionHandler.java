@@ -1,13 +1,13 @@
 package nextstep.subway;
 
-import nextstep.subway.common.ErrorResponse;
+import nextstep.common.ErrorResponse;
 import nextstep.subway.exception.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class SubwayGlobalExceptionHandler {
 
     @ExceptionHandler(NoLineExistException.class)
     public ResponseEntity<String> lineException(Exception exception) {

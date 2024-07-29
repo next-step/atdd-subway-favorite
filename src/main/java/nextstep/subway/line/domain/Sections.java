@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.AlreadyHasUpAndDownStationException;
 import nextstep.subway.exception.CannotDeleteSectionException;
 import nextstep.subway.exception.NoStationException;
@@ -31,11 +31,11 @@ public class Sections {
         Optional<Section> downSection = findExistDownStationSection(newSection);
 
         if (upSection.isEmpty() && downSection.isEmpty()) {
-            throw new NoStationException(ErrorMessage.CANNOT_ADD_STATION);
+            throw new NoStationException(SubwayErrorMessage.CANNOT_ADD_STATION);
         }
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            throw new AlreadyHasUpAndDownStationException(ErrorMessage.CANNOT_ADD_STATION);
+            throw new AlreadyHasUpAndDownStationException(SubwayErrorMessage.CANNOT_ADD_STATION);
         }
 
         if (upSection.isPresent()) {
@@ -99,14 +99,14 @@ public class Sections {
 
     public void deleteSection(Station station) {
         if (sections.size() <= 1) {
-            throw new CannotDeleteSectionException(ErrorMessage.CANNOT_DELETE_SECTION);
+            throw new CannotDeleteSectionException(SubwayErrorMessage.CANNOT_DELETE_SECTION);
         }
 
         List<Section> targetSections = sections.stream().filter(section -> section.containStation(station))
                 .collect(Collectors.toList());
 
         if (targetSections.isEmpty()) {
-            throw new CannotDeleteSectionException(ErrorMessage.NO_STATION_EXIST);
+            throw new CannotDeleteSectionException(SubwayErrorMessage.NO_STATION_EXIST);
         }
 
         if (isFirstStationOrLastStation(targetSections)) {

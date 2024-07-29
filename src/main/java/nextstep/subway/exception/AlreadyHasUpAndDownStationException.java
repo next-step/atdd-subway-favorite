@@ -1,10 +1,10 @@
 package nextstep.subway.exception;
 
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 
 public class AlreadyHasUpAndDownStationException extends RuntimeException {
 
-    public AlreadyHasUpAndDownStationException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+    public AlreadyHasUpAndDownStationException(SubwayErrorMessage subwayErrorMessage) {
+        super(subwayErrorMessage.getMessage());
     }
 }

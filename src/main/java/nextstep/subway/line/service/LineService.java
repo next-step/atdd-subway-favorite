@@ -1,7 +1,7 @@
 package nextstep.subway.line.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.NoLineExistException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -61,7 +61,7 @@ public class LineService {
 
     public void updateLine(Long lineId, UpdateLineRequest updateLineRequest) {
         Line line = lineRepository.findById(lineId)
-                .orElseThrow(() -> new NoLineExistException(ErrorMessage.NO_LINE_EXIST));
+                .orElseThrow(() -> new NoLineExistException(SubwayErrorMessage.NO_LINE_EXIST));
         line.updateName(updateLineRequest.getName());
         line.updateColor(updateLineRequest.getColor());
     }
@@ -93,6 +93,6 @@ public class LineService {
 
     private Line findLineByIdWithSectionsAndStations(Long lineId) {
         return lineRepository.findByIdWithSectionsAndStations(lineId)
-                .orElseThrow(() -> new NoLineExistException(ErrorMessage.NO_LINE_EXIST));
+                .orElseThrow(() -> new NoLineExistException(SubwayErrorMessage.NO_LINE_EXIST));
     }
 }

@@ -1,6 +1,6 @@
 package nextstep.subway.station;
 
-import nextstep.subway.common.SuccessResponse;
+import nextstep.common.SuccessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
